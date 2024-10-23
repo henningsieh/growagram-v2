@@ -1,28 +1,29 @@
 "use client";
 
 import {
-  AudioWaveform,
   BadgeCheck,
   Bell,
-  BookOpen,
-  Bot,
+  CalendarCheck,
+  Cannabis,
   ChevronRight,
   ChevronsUpDown,
-  Command,
+  Clipboard,
   CreditCard,
   Folder,
   Forward,
-  Frame,
-  GalleryVerticalEnd,
+  Leaf,
   LogOut,
-  Map,
   MoreHorizontal,
-  PieChart,
+  PencilRuler,
   Plus,
-  Settings2,
+  Settings,
   Sparkles,
-  SquareTerminal,
+  Sprout,
+  Thermometer,
   Trash2,
+  TreeDeciduous,
+  Users,
+  Workflow,
 } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
@@ -94,86 +95,115 @@ const geistMono = localFont({
 // This is sample data.
 const data = {
   user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
+    name: "grower_user", // Placeholder user
+    email: "grower@example.com",
+    avatar: "/avatars/grower.jpg", // Example avatar
   },
   teams: [
     {
-      name: "Acme Inc",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise",
+      name: "GrowAGram Collective", // A community or team of growers
+      logo: Leaf, // Icon for cannabis
+      plan: "Premium", // GrowAGram plan (could have different tiers)
     },
     {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
+      name: "Personal Growers", // Individual growers could have "teams"
+      logo: TreeDeciduous,
+      plan: "Basic",
     },
   ],
   navMain: [
     {
-      title: "Playground",
+      title: "Grows",
       url: "#",
-      icon: SquareTerminal,
+      icon: Cannabis, // An icon representing plants or growth
       isActive: true,
       items: [
         {
-          title: "History",
+          title: "My Grows", // View and manage their cannabis grows
           url: "#",
         },
         {
-          title: "Starred",
+          title: "Create New Grow", // Easily add new grows
           url: "#",
         },
         {
-          title: "Settings",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Models",
-      url: "#",
-      icon: Bot,
-      items: [
-        {
-          title: "Genesis",
-          url: "#",
-        },
-        {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
+          title: "Grow History", // Check history of completed grows
           url: "#",
         },
       ],
     },
     {
-      title: "Documentation",
+      title: "Plants",
       url: "#",
-      icon: BookOpen,
+      icon: Sprout, // Icon representing individual plants
       items: [
         {
-          title: "Introduction",
+          title: "All Plants", // View and manage all plants within grows
           url: "#",
         },
         {
-          title: "Get Started",
+          title: "Add Plant", // Easily add new plants to a grow
           url: "#",
         },
         {
-          title: "Tutorials",
+          title: "Plant Details", // Check detailed info about plants
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "Updates & Posts",
+      url: "#",
+      icon: Clipboard, // Icon for updates, posts, or activity feed
+      items: [
+        {
+          title: "All Updates", // View and manage updates on grows
           url: "#",
         },
         {
-          title: "Changelog",
+          title: "Add Update", // Add an update (watering, pruning, etc.)
+          url: "#",
+        },
+        {
+          title: "Ask Question", // Ask the community or other growers
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "Inventory",
+      url: "#",
+      icon: PencilRuler, // Icon representing inventory or tools
+      items: [
+        {
+          title: "My Inventory", // Manage seeds, tools, LEDs, etc.
+          url: "#",
+        },
+        {
+          title: "Add Item", // Add an item to the inventory
+          url: "#",
+        },
+        {
+          title: "Item Categories", // Manage item categories (e.g., seeds, tools)
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "Community",
+      url: "#",
+      icon: Users, // Icon for community or collaboration
+      items: [
+        {
+          title: "Discussions", // Community forum discussions
+          url: "#",
+        },
+        {
+          title: "Guides & Tips", // Guides shared by other growers
+          url: "#",
+        },
+        {
+          title: "Events", // Grow-related events and meetups
           url: "#",
         },
       ],
@@ -181,22 +211,22 @@ const data = {
     {
       title: "Settings",
       url: "#",
-      icon: Settings2,
+      icon: Settings, // Icon for settings
       items: [
         {
-          title: "General",
+          title: "Account Settings", // Manage user profile, billing, etc.
           url: "#",
         },
         {
-          title: "Team",
+          title: "Team Management", // Manage team members if part of a collective
           url: "#",
         },
         {
-          title: "Billing",
+          title: "Notifications", // Manage notifications and alerts
           url: "#",
         },
         {
-          title: "Limits",
+          title: "Subscription", // View or upgrade subscription
           url: "#",
         },
       ],
@@ -204,19 +234,19 @@ const data = {
   ],
   projects: [
     {
-      name: "Design Engineering",
+      name: "Grow Automation",
       url: "#",
-      icon: Frame,
+      icon: Workflow, // Icon representing automation
     },
     {
-      name: "Sales & Marketing",
+      name: "Nutrient Scheduling",
       url: "#",
-      icon: PieChart,
+      icon: CalendarCheck, // Icon for scheduling or feeding plans
     },
     {
-      name: "Travel",
+      name: "Climate Control",
       url: "#",
-      icon: Map,
+      icon: Thermometer, // Icon for temperature and climate control
     },
   ],
 };
