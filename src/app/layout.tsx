@@ -11,22 +11,21 @@ import {
   CreditCard,
   Folder,
   Forward,
-  Leaf,
   LogOut,
   MoreHorizontal,
   PencilRuler,
-  Settings,
   Sparkles,
   Sprout,
+  TentTree,
   Thermometer,
   Trash2,
   TreeDeciduous,
-  Users,
   Workflow,
 } from "lucide-react";
 import localFont from "next/font/local";
-// import type { Metadata } from "next";
+import { TeamSwitcher } from "~/components/sidebar/team-switcher";
 import { ThemeProvider } from "~/components/theme-provider";
+import { ThemeToggle } from "~/components/theme-toggle";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import {
   Breadcrumb,
@@ -69,7 +68,6 @@ import {
   SidebarTrigger,
 } from "~/components/ui/sidebar";
 import { SidebarInset, SidebarProvider } from "~/components/ui/sidebar";
-import { TeamSwitcher } from "~/components/ui/sidebar/team-switcher";
 
 import "./globals.css";
 
@@ -99,7 +97,7 @@ const data = {
   teams: [
     {
       name: "GrowAGram Collective", // A community or team of growers
-      logo: Leaf, // Icon for cannabis
+      logo: Cannabis, // Icon for cannabis
       plan: "Premium", // GrowAGram plan (could have different tiers)
     },
     {
@@ -112,7 +110,7 @@ const data = {
     {
       title: "Grows",
       url: "#",
-      icon: Cannabis, // An icon representing plants or growth
+      icon: TentTree, // An icon representing plants or growth
       isActive: true,
       items: [
         {
@@ -186,48 +184,48 @@ const data = {
         },
       ],
     },
-    {
-      title: "Community",
-      url: "#",
-      icon: Users, // Icon for community or collaboration
-      items: [
-        {
-          title: "Discussions", // Community forum discussions
-          url: "#",
-        },
-        {
-          title: "Guides & Tips", // Guides shared by other growers
-          url: "#",
-        },
-        {
-          title: "Events", // Grow-related events and meetups
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Settings",
-      url: "#",
-      icon: Settings, // Icon for settings
-      items: [
-        {
-          title: "Account Settings", // Manage user profile, billing, etc.
-          url: "#",
-        },
-        {
-          title: "Team Management", // Manage team members if part of a collective
-          url: "#",
-        },
-        {
-          title: "Notifications", // Manage notifications and alerts
-          url: "#",
-        },
-        {
-          title: "Subscription", // View or upgrade subscription
-          url: "#",
-        },
-      ],
-    },
+    // {
+    //   title: "Community",
+    //   url: "#",
+    //   icon: Users, // Icon for community or collaboration
+    //   items: [
+    //     {
+    //       title: "Discussions", // Community forum discussions
+    //       url: "#",
+    //     },
+    //     {
+    //       title: "Guides & Tips", // Guides shared by other growers
+    //       url: "#",
+    //     },
+    //     {
+    //       title: "Events", // Grow-related events and meetups
+    //       url: "#",
+    //     },
+    //   ],
+    // },
+    // {
+    //   title: "Settings",
+    //   url: "#",
+    //   icon: Settings, // Icon for settings
+    //   items: [
+    //     {
+    //       title: "Account Settings", // Manage user profile, billing, etc.
+    //       url: "#",
+    //     },
+    //     {
+    //       title: "Team Management", // Manage team members if part of a collective
+    //       url: "#",
+    //     },
+    //     {
+    //       title: "Notifications", // Manage notifications and alerts
+    //       url: "#",
+    //     },
+    //     {
+    //       title: "Subscription", // View or upgrade subscription
+    //       url: "#",
+    //     },
+    //   ],
+    // },
   ],
   projects: [
     {
@@ -262,7 +260,7 @@ export default function RootLayout({
           attribute="class"
           defaultTheme="system"
           enableSystem
-          disableTransitionOnChange
+          // disableTransitionOnChange
         >
           <SidebarProvider>
             <Sidebar collapsible="icon">
@@ -446,7 +444,7 @@ export default function RootLayout({
               <SidebarRail />
             </Sidebar>
             <SidebarInset>
-              <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+              <header className="flex h-16 shrink-0 items-center justify-between gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
                 <div className="flex items-center gap-2 px-4">
                   <SidebarTrigger className="-ml-1" />
                   <Separator orientation="vertical" className="mr-2 h-4" />
@@ -463,6 +461,9 @@ export default function RootLayout({
                       </BreadcrumbItem>
                     </BreadcrumbList>
                   </Breadcrumb>
+                </div>
+                <div className="mr-4">
+                  <ThemeToggle />
                 </div>
               </header>
               <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
