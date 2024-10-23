@@ -24,7 +24,9 @@ import {
   Users,
   Workflow,
 } from "lucide-react";
-
+import localFont from "next/font/local";
+// import type { Metadata } from "next";
+import { ThemeProvider } from "~/components/theme-provider";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import {
   Breadcrumb,
@@ -66,13 +68,10 @@ import {
   SidebarRail,
   SidebarTrigger,
 } from "~/components/ui/sidebar";
-
-// import type { Metadata } from "next";
-import localFont from "next/font/local";
-import "./globals.css";
-import { ThemeProvider } from "~/components/theme-provider";
-import { SidebarProvider, SidebarInset } from "~/components/ui/sidebar";
+import { SidebarInset, SidebarProvider } from "~/components/ui/sidebar";
 import { TeamSwitcher } from "~/components/ui/sidebar/team-switcher";
+
+import "./globals.css";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
