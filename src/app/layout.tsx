@@ -1,7 +1,7 @@
 // app/layout.tsx
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import NavigationMenuDemo from "~/components/navbar";
+import { MainNavigationBar } from "~/components/navbar";
 import { ThemeProvider } from "~/components/theme-provider";
 import { ThemeToggle } from "~/components/theme-toggle";
 
@@ -43,7 +43,7 @@ export default function RootLayout({
           <div className="relative flex min-h-screen flex-col">
             <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
               <div className="relative flex h-14 items-center justify-center">
-                <NavigationMenuDemo />
+                <MainNavigationBar />
                 <div className="absolute right-4 top-1/2 -translate-y-1/2">
                   <ThemeToggle />
                 </div>

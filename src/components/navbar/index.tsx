@@ -1,6 +1,9 @@
-// components/nav-menu.tsx
+// src/components/navbar/index.tsx:
+"use client";
+
 import Link from "next/link";
-import React from "react";
+import * as React from "react";
+// import { Icons } from "~/components/icons"
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -8,89 +11,136 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
 } from "~/components/ui/navigation-menu";
 import { cn } from "~/lib/utils";
 
-const NavigationMenuDemo = () => {
+// src/components/navbar/index.tsx:
+
+const components: { title: string; href: string; description: string }[] = [
+  {
+    title: "Alert Dialog",
+    href: "/docs/primitives/alert-dialog",
+    description:
+      "A modal dialog that interrupts the user with important content and expects a response.",
+  },
+  {
+    title: "Hover Card",
+    href: "/docs/primitives/hover-card",
+    description:
+      "For sighted users to preview content available behind a link.",
+  },
+  {
+    title: "Progress",
+    href: "/docs/primitives/progress",
+    description:
+      "Displays an indicator showing the completion progress of a task, typically displayed as a progress bar.",
+  },
+  {
+    title: "Scroll-area",
+    href: "/docs/primitives/scroll-area",
+    description: "Visually or semantically separates content.",
+  },
+  {
+    title: "Tabs",
+    href: "/docs/primitives/tabs",
+    description:
+      "A set of layered sections of content—known as tab panels—that are displayed one at a time.",
+  },
+  {
+    title: "Tooltip",
+    href: "/docs/primitives/tooltip",
+    description:
+      "A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it.",
+  },
+];
+
+export function MainNavigationBar() {
   return (
     <NavigationMenu>
       <NavigationMenuList>
         <NavigationMenuItem>
-          <Link href="/" legacyBehavior passHref>
-            <NavigationMenuLink
-              className={cn(
-                "group inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium",
-                "transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-                "dark:hover:bg-accent dark:hover:text-accent-foreground",
-                "disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50",
-              )}
-            >
-              Home
-            </NavigationMenuLink>
-          </Link>
-        </NavigationMenuItem>
-
-        <NavigationMenuItem>
-          <NavigationMenuTrigger>Track your Grow</NavigationMenuTrigger>
+          <NavigationMenuTrigger>Getting started</NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
-              <li>
-                <NavigationMenuLink asChild>
-                  <Link
-                    className={cn(
-                      "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none",
-                      "transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-                    )}
-                    href="/dashboard"
-                  >
-                    <div className="text-sm font-medium leading-none">
-                      Dashboard
-                    </div>
-                    <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                      Start tracking your Grows
-                    </p>
-                  </Link>
-                </NavigationMenuLink>
-              </li>
-              <li>
+            <ul className="grid gap-3 p-4 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
+              <li className="row-span-3">
                 <NavigationMenuLink asChild>
                   <a
-                    className={cn(
-                      "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none",
-                      "transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-                    )}
-                    href="/guides"
+                    className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
+                    href="/"
                   >
-                    <div className="text-sm font-medium leading-none">
-                      Guides
+                    {/* <Icons.logo className="h-6 w-6" /> */}
+                    <div className="mb-2 mt-4 text-lg font-medium">
+                      GrowAGram
                     </div>
-                    <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                      Step-by-step tutorials
+                    <p className="text-sm leading-tight text-muted-foreground">
+                      Track your Grow today and create your <b>first plant</b>!
                     </p>
                   </a>
                 </NavigationMenuLink>
               </li>
+              <ListItem href="/docs" title="Introduction">
+                Re-usable components built using Radix UI and Tailwind CSS.
+              </ListItem>
+              <ListItem href="/docs/installation" title="Installation">
+                How to install dependencies and structure your app.
+              </ListItem>
+              <ListItem href="/docs/primitives/typography" title="Typography">
+                Styles for headings, paragraphs, lists...etc
+              </ListItem>
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
-
         <NavigationMenuItem>
-          <Link href="/about" legacyBehavior passHref>
-            <NavigationMenuLink
-              className={cn(
-                "group inline-flex h-9 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium",
-                "transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-                "dark:hover:bg-accent dark:hover:text-accent-foreground",
-                "disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50",
-              )}
-            >
-              About
+          <NavigationMenuTrigger>Components</NavigationMenuTrigger>
+          <NavigationMenuContent>
+            <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+              {components.map((component) => (
+                <ListItem
+                  key={component.title}
+                  title={component.title}
+                  href={component.href}
+                >
+                  {component.description}
+                </ListItem>
+              ))}
+            </ul>
+          </NavigationMenuContent>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
+          <Link href="/docs" legacyBehavior passHref>
+            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+              Documentation
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>
   );
-};
+}
 
-export default NavigationMenuDemo;
+const ListItem = React.forwardRef<
+  React.ElementRef<"a">,
+  React.ComponentPropsWithoutRef<"a">
+>(({ className, title, children, ...props }, ref) => {
+  return (
+    <li>
+      <NavigationMenuLink asChild>
+        <a
+          ref={ref}
+          className={cn(
+            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+            className,
+          )}
+          {...props}
+        >
+          <div className="text-sm font-medium leading-none">{title}</div>
+          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+            {children}
+          </p>
+        </a>
+      </NavigationMenuLink>
+    </li>
+  );
+});
+ListItem.displayName = "ListItem";
