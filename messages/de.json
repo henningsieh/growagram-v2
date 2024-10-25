@@ -1,0 +1,40 @@
+{
+  "HomePage": {
+    "title": "Hallo Welt!",
+    "about": "Gehe zur About Seite"
+  },
+  "LoginPage": {
+    "title": "Anmelden",
+    "description": "Geben Sie Ihre E-Mail-Adresse ein, um sich anzumelden",
+    "email": {
+      "label": "E-Mail"
+    },
+    "password": {
+      "label": "Passwort",
+      "forgot": "Passwort vergessen?"
+    },
+    "submit": "Anmelden",
+    "googleLogin": "Mit Google anmelden",
+    "signUp": {
+      "text": "Noch kein Konto?",
+      "link": "Registrieren"
+    }
+  },
+  "ThemeToggler": {
+    "toggle-theme": "Designthema umschalten",
+    "light": "Hell",
+    "dark": "Dunkel",
+    "system": "Systemeinstellung"
+  },
+  "Navigation": {
+    "re-usable-components-built-using-radix-ui-and-tailwind-css": "Wiederverwendbare Komponenten, die mit Radix UI und Tailwind CSS erstellt wurden.",
+    "track-your-grow-today-and-create-your": "Verfolgen Sie noch heute Ihr Wachstum und erstellen Sie Ihr eigenes",
+    "first-plant": "erste Pflanze",
+    "login": "Login",
+    "components": "Komponenten",
+    "dashboard": "Dashboard"
+  },
+  "LanguageToggler": {
+    "toggle-language": "Toogle-Sprache"
+  }
+}

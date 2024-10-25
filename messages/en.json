@@ -1,0 +1,40 @@
+{
+  "HomePage": {
+    "title": "Hello world!",
+    "about": "Go to the about page"
+  },
+  "LoginPage": {
+    "title": "Login",
+    "description": "Enter your email below to login to your account",
+    "email": {
+      "label": "Email"
+    },
+    "password": {
+      "label": "Password",
+      "forgot": "Forgot your password?"
+    },
+    "submit": "Login",
+    "googleLogin": "Login with Google",
+    "signUp": {
+      "text": "Don't have an account?",
+      "link": "Sign up"
+    }
+  },
+  "ThemeToggler": {
+    "toggle-theme": "Toggle theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "Navigation": {
+    "re-usable-components-built-using-radix-ui-and-tailwind-css": "Re-usable components built using Radix UI and Tailwind CSS.",
+    "track-your-grow-today-and-create-your": "Track your Grow today and create your",
+    "first-plant": "first plant",
+    "login": "Login",
+    "components": "Components",
+    "dashboard": "Dashboard"
+  },
+  "LanguageToggler": {
+    "toggle-language": "Toogle language"
+  }
+}

@@ -2,9 +2,9 @@
 
 // src/components/navbar/index.tsx:
 import { HamburgerMenuIcon } from "@radix-ui/react-icons";
-import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { forwardRef } from "react";
-import { ThemeToggle } from "~/components/navbar/theme-toggle";
+import { ThemeToggle } from "~/components/navbar/theme-toggler";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,9 +28,11 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "~/components/ui/navigation-menu";
+import { Link } from "~/i18n/routing";
 import { cn } from "~/lib/utils";
 
 import { Button } from "../ui/button";
+import { LanguageToogle } from "./language-toggler";
 
 const components: { title: string; href: string; description: string }[] = [
   {
@@ -71,6 +73,8 @@ const components: { title: string; href: string; description: string }[] = [
 ];
 
 export function MainNavigationBar() {
+  const t = useTranslations("Navigation");
+
   return (
     <>
       {/* Desktop Navigation */}
@@ -78,7 +82,7 @@ export function MainNavigationBar() {
         <NavigationMenu>
           <NavigationMenuList>
             <NavigationMenuItem>
-              <NavigationMenuTrigger>Getting started</NavigationMenuTrigger>
+              <NavigationMenuTrigger>Getting Started</NavigationMenuTrigger>
               <NavigationMenuContent>
                 <ul className="grid gap-3 p-4 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
                   <li className="row-span-3">
@@ -88,16 +92,21 @@ export function MainNavigationBar() {
                         href="/login"
                       >
                         {/* <Icons.logo className="h-6 w-6" /> */}
-                        <div className="mb-2 mt-4 text-xl font-bold">Login</div>
+                        <div className="mb-2 mt-4 text-xl font-bold">
+                          {t("login")}
+                        </div>
                         <p className="text-sm leading-tight text-muted-foreground">
-                          Track your Grow today and create your{" "}
-                          <b>first plant</b>!
+                          {t("track-your-grow-today-and-create-your")}{" "}
+                          <b>{t("first-plant")}</b>
+                          {"!"}
                         </p>
                       </Link>
                     </NavigationMenuLink>
                   </li>
                   <ListItem href="/docs" title="Introduction">
-                    Re-usable components built using Radix UI and Tailwind CSS.
+                    {t(
+                      "re-usable-components-built-using-radix-ui-and-tailwind-css",
+                    )}
                   </ListItem>
                   <ListItem href="/docs/installation" title="Installation">
                     How to install dependencies and structure your app.
@@ -112,7 +121,7 @@ export function MainNavigationBar() {
               </NavigationMenuContent>
             </NavigationMenuItem>
             <NavigationMenuItem>
-              <NavigationMenuTrigger>Components</NavigationMenuTrigger>
+              <NavigationMenuTrigger>{t("components")}</NavigationMenuTrigger>
               <NavigationMenuContent>
                 <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
                   {components.map((component) => (
@@ -128,9 +137,12 @@ export function MainNavigationBar() {
               </NavigationMenuContent>
             </NavigationMenuItem>
             <NavigationMenuItem>
-              <Link href="/dashboard" legacyBehavior passHref>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                  Dashboard
+              <Link href="/dashboard" passHref>
+                <NavigationMenuLink
+                  className={navigationMenuTriggerStyle()}
+                  asChild
+                >
+                  <div>{t("dashboard")}</div>
                 </NavigationMenuLink>
               </Link>
             </NavigationMenuItem>
@@ -139,6 +151,9 @@ export function MainNavigationBar() {
       </div>
 
       <div className="absolute right-4 top-1/2 flex -translate-y-1/2 items-center space-x-2">
+        {/* Language Toggle Button */}
+        <LanguageToogle />
+
         {/* Theme Toggle Button */}
         <ThemeToggle />
 
