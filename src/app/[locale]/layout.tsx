@@ -6,7 +6,7 @@ import localFont from "next/font/local";
 import { notFound } from "next/navigation";
 import { MainNavigationBar } from "~/components/navbar";
 import { ThemeProvider } from "~/components/theme-provider";
-import { routing } from "~/i18n/routing";
+import { routing } from "~/lib/i18n/routing";
 
 import "../globals.css";
 

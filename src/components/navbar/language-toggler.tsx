@@ -1,5 +1,8 @@
+"use client";
+
 import { Globe } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useParams } from "next/navigation";
 import DEFlag from "~/assets/flags/de.svg";
 import UKFlag from "~/assets/flags/us.svg";
 import { Button } from "~/components/ui/button";
@@ -9,15 +12,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
-import { usePathname, useRouter } from "~/i18n/routing";
+import { usePathname, useRouter } from "~/lib/i18n/routing";
 
-export function LanguageToogle() {
+export function LanguageToggle() {
   const router = useRouter();
-  const pathname = usePathname();
-
+  const pathname = usePathname(); // Get the current pathname
+  const params = useParams(); // Get URL parameters if needed
   const t = useTranslations("LanguageToggler");
-
-  // These should match your configured locales in routing.ts
 
   const languages = [
     {
@@ -33,11 +34,11 @@ export function LanguageToogle() {
   ];
 
   const handleLanguageChange = (newLocale: string) => {
-    // Get the current pathname without the locale prefix
-    const pathWithoutLocale = pathname.replace(/^\/[^/]+/, "");
+    // Create the new path with the new locale and keep other params intact
+    const newPath = { pathname, params };
 
-    // Navigate to the same path with new locale
-    router.replace(pathWithoutLocale || "/", { locale: newLocale });
+    // Use the router to replace the current path with the new one
+    router.replace(newPath, { locale: newLocale });
   };
 
   return (

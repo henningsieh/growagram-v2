@@ -10,7 +10,7 @@ import {
 } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
-import { Link } from "~/i18n/routing";
+import { Link } from "~/lib/i18n/routing";
 
 export function LoginForm() {
   const t = useTranslations("LoginPage");

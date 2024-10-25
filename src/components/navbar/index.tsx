@@ -28,11 +28,11 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "~/components/ui/navigation-menu";
-import { Link } from "~/i18n/routing";
+import { Link } from "~/lib/i18n/routing";
 import { cn } from "~/lib/utils";
 
 import { Button } from "../ui/button";
-import { LanguageToogle } from "./language-toggler";
+import { LanguageToggle } from "./language-toggler";
 
 const components: { title: string; href: string; description: string }[] = [
   {
@@ -152,7 +152,7 @@ export function MainNavigationBar() {
 
       <div className="absolute right-4 top-1/2 flex -translate-y-1/2 items-center space-x-2">
         {/* Language Toggle Button */}
-        <LanguageToogle />
+        <LanguageToggle />
 
         {/* Theme Toggle Button */}
         <ThemeToggle />
