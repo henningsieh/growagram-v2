@@ -23,7 +23,6 @@ import {
   Workflow,
 } from "lucide-react";
 import { TeamSwitcher } from "~/components/sidebar/team-switcher";
-import { ThemeToggle } from "~/components/theme-toggle";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import {
   Breadcrumb,
