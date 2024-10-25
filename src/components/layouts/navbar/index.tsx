@@ -4,7 +4,7 @@
 import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 import { useTranslations } from "next-intl";
 import { forwardRef } from "react";
-import { ThemeToggle } from "~/components/navbar/theme-toggler";
+import { ThemeToggle } from "~/components/layouts/navbar/theme-toggler";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,7 +31,7 @@ import {
 import { Link } from "~/lib/i18n/routing";
 import { cn } from "~/lib/utils";
 
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 import { LanguageToggle } from "./language-toggler";
 
 const components: { title: string; href: string; description: string }[] = [

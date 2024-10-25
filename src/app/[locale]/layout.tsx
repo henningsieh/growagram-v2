@@ -4,20 +4,20 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import localFont from "next/font/local";
 import { notFound } from "next/navigation";
-import { MainNavigationBar } from "~/components/navbar";
-import { ThemeProvider } from "~/components/theme-provider";
+import { MainNavigationBar } from "~/components/layouts/navbar";
+import { ThemeProvider } from "~/components/layouts/theme-provider";
 import { routing } from "~/lib/i18n/routing";
 
-import "../globals.css";
+import "../../styles/globals.css";
 
 const geistSans = localFont({
-  src: "../fonts/GeistVF.woff",
+  src: "../../lib/fonts/GeistVF.woff",
   variable: "--font-geist-sans",
   weight: "100 900",
 });
 
 const geistMono = localFont({
-  src: "../fonts/GeistMonoVF.woff",
+  src: "../../lib/fonts/GeistMonoVF.woff",
   variable: "--font-geist-mono",
   weight: "100 900",
 });

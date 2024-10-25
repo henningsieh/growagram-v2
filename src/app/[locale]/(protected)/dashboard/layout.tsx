@@ -22,7 +22,7 @@ import {
   TreeDeciduous,
   Workflow,
 } from "lucide-react";
-import { TeamSwitcher } from "~/components/sidebar/team-switcher";
+import { TeamSwitcher } from "~/components/layouts/sidebar/team-switcher";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import {
   Breadcrumb,
