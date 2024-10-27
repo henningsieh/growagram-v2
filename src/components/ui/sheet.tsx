@@ -55,35 +55,42 @@ interface SheetContentProps
   extends React.ComponentPropsWithoutRef<typeof SheetPrimitive.Content>,
     VariantProps<typeof sheetVariants> {
   title?: string;
+  description?: string;
 }
 
 const SheetContent = React.forwardRef<
   React.ElementRef<typeof SheetPrimitive.Content>,
   SheetContentProps
->(({ side = "right", className, children, title, ...props }, ref) => (
-  <SheetPortal>
-    <SheetOverlay />
-    <SheetPrimitive.Content
-      ref={ref}
-      className={cn(sheetVariants({ side }), className)}
-      {...props}
-    >
-      {/* Wrap the SheetTitle with VisuallyHidden to make it invisible but accessible */}
-      {title && (
+>(
+  (
+    { side = "right", className, children, title, description, ...props },
+    ref,
+  ) => (
+    <SheetPortal>
+      <SheetOverlay />
+      <SheetPrimitive.Content
+        ref={ref}
+        className={cn(sheetVariants({ side }), className)}
+        {...props}
+      >
+        {/* Wrap the Sheet Title and Description with VisuallyHidden to make it invisible but accessible */}
+        {/* prevents browser warnings like "Missing `Description` or `aria-describedby={undefined}` for {DialogContent}"*/}
         <VisuallyHidden>
           <SheetPrimitive.Title>{title}</SheetPrimitive.Title>
+          <SheetPrimitive.Description>{description}</SheetPrimitive.Description>
         </VisuallyHidden>
-      )}
-      <Button variant="ghost" size="icon" asChild>
-        <SheetPrimitive.Close className="absolute right-2 top-2 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary">
-          <X width="20" height="20" />
-          <span className="sr-only">Close</span>
-        </SheetPrimitive.Close>
-      </Button>
-      {children}
-    </SheetPrimitive.Content>
-  </SheetPortal>
-));
+
+        <Button variant="ghost" size="icon" asChild>
+          <SheetPrimitive.Close className="absolute right-2 top-2 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary">
+            <X width="20" height="20" />
+            <span className="sr-only">Close</span>
+          </SheetPrimitive.Close>
+        </Button>
+        {children}
+      </SheetPrimitive.Content>
+    </SheetPortal>
+  ),
+);
 SheetContent.displayName = SheetPrimitive.Content.displayName;
 
 const SheetHeader = ({

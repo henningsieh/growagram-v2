@@ -32,6 +32,7 @@
   },
   "Navigation": {
     "navigation": "Navigation",
+    "gettingStarted": "Getting Started",
     "re-usable-components-built-using-radix-ui-and-tailwind-css": "Re-usable components built using Radix UI and Tailwind CSS.",
     "track-your-grow-today-and-create-your": "Track your Grow today and create your",
     "first-plant": "first plant",

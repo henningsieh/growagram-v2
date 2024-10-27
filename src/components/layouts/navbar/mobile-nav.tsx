@@ -41,7 +41,8 @@ export default function MobileNavigationMenu() {
         </Button>
       </SheetTrigger>
       <SheetContent
-        title="Navigation" // invisible but accessible
+        title="Mobile Navigation" // invisible but accessible
+        description="Layer showing the mobile navigation" // invisible but accessible
         side="right"
         className="w-full border-r p-0"
       >

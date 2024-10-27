@@ -19,7 +19,7 @@ export function MainNavigationBar() {
           width={86} // Add appropriate width
           height={50} // Add appropriate height
           priority // Add priority for above-the-fold image
-          className="h-12" // Make it responsive
+          className="h-12 w-auto" // Make it responsive
         />
       </div>
 

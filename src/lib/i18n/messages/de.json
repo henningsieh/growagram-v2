@@ -3,6 +3,9 @@
     "title": "Hallo Welt!",
     "about": "Gehe zur About Seite"
   },
+  "LanguageToggle": {
+    "toggle-language": "Sprache wechseln"
+  },
   "LoginPage": {
     "title": "Bei GrowAGram anmelden",
     "description": "Geben Sie Ihre E-Mail-Adresse und Passwort ein oder wählen Sie unten einen Social Provider für den Login aus, um sich anzumelden.",
@@ -28,14 +31,13 @@
     "system": "Systemeinstellung"
   },
   "Navigation": {
+    "navigation": "Navigation",
+    "gettingStarted": "Erste Schritte",
     "re-usable-components-built-using-radix-ui-and-tailwind-css": "Wiederverwendbare Komponenten, die mit Radix UI und Tailwind CSS erstellt wurden.",
-    "track-your-grow-today-and-create-your": "Verfolgen Sie noch heute Ihr Wachstum und erstellen Sie Ihr eigenes",
+    "track-your-grow-today-and-create-your": "Dokumentiere noch heute deinen Anbau und erstelle jetzt deine",
     "first-plant": "erste Pflanze",
     "login": "Login",
     "components": "Komponenten",
     "dashboard": "Dashboard"
-  },
-  "LanguageToggle": {
-    "toggle-language": "Sprache wechseln"
   }
 }
