@@ -1,24 +1,10 @@
 "use client";
 
 // src/components/navbar/index.tsx:
-import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 import { forwardRef } from "react";
 import { ThemeToggle } from "~/components/layouts/navbar/theme-toggler";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuPortal,
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
-  DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -31,8 +17,8 @@ import {
 import { Link } from "~/lib/i18n/routing";
 import { cn } from "~/lib/utils";
 
-import { Button } from "../../ui/button";
 import { LanguageToggle } from "./language-toggler";
+import MobileNavigationMenu from "./mobile-nav";
 
 const components: { title: string; href: string; description: string }[] = [
   {
@@ -77,6 +63,17 @@ export function MainNavigationBar() {
 
   return (
     <>
+      <div className="absolute left-4 top-1/2 flex -translate-y-1/2 items-center">
+        {/* Main Logo */}
+        <Image
+          src="/images/grow-a-gram-high-resolution-logo.webp" // Remove "public" from path
+          alt="GrowAGram Logo"
+          width={86} // Add appropriate width
+          height={50} // Add appropriate height
+          priority // Add priority for above-the-fold image
+          className="h-12" // Make it responsive
+        />
+      </div>
       {/* Desktop Navigation */}
       <div className="hidden items-center sm:flex">
         <NavigationMenu>
@@ -89,11 +86,11 @@ export function MainNavigationBar() {
                     <NavigationMenuLink asChild>
                       <Link
                         className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
-                        href="/login"
+                        href="/dashboard"
                       >
                         {/* <Icons.logo className="h-6 w-6" /> */}
                         <div className="mb-2 mt-4 text-xl font-bold">
-                          {t("login")}
+                          {t("dashboard")}
                         </div>
                         <p className="text-sm leading-tight text-muted-foreground">
                           {t("track-your-grow-today-and-create-your")}{" "}
@@ -137,12 +134,12 @@ export function MainNavigationBar() {
               </NavigationMenuContent>
             </NavigationMenuItem>
             <NavigationMenuItem>
-              <Link href="/dashboard" passHref>
+              <Link href="/login" passHref>
                 <NavigationMenuLink
                   className={navigationMenuTriggerStyle()}
                   asChild
                 >
-                  <div>{t("dashboard")}</div>
+                  <div>{t("login")}</div>
                 </NavigationMenuLink>
               </Link>
             </NavigationMenuItem>
@@ -151,21 +148,22 @@ export function MainNavigationBar() {
       </div>
 
       <div className="absolute right-4 top-1/2 flex -translate-y-1/2 items-center space-x-2">
-        {/* Language Toggle Button */}
-        <LanguageToggle />
-
         {/* Theme Toggle Button */}
         <ThemeToggle />
 
+        {/* Language Toggle Button */}
+        <LanguageToggle />
+
         {/* Burger Menu (Mobile Navigation) */}
-        <div className="sm:hidden">
+        <MobileNavigationMenu />
+        {/* <div className="sm:hidden">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-9 w-9">
+              <Button size="icon" variant="ghost" aria-haspopup="menu">
                 <HamburgerMenuIcon />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="mr-4 w-56">
+            <DropdownMenuContent className="mr-4 w-5/6">
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
@@ -216,7 +214,7 @@ export function MainNavigationBar() {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-        </div>
+        </div> */}
       </div>
     </>
   );
@@ -232,15 +230,13 @@ const ListItem = forwardRef<
         <a
           ref={ref}
           className={cn(
-            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+            "block select-none space-y-1 rounded-md p-3 leading-none text-accent-foreground no-underline outline-none transition-colors hover:bg-accent hover:text-foreground focus:bg-accent focus:text-accent-foreground",
             className,
           )}
           {...props}
         >
-          <div className="text-sm font-medium leading-none">{title}</div>
-          <p className="line-clamp-2 text-sm leading-snug text-accent-foreground">
-            {children}
-          </p>
+          <div className="text-sm font-bold leading-none">{title}</div>
+          <p className="line-clamp-2 text-sm leading-snug">{children}</p>
         </a>
       </NavigationMenuLink>
     </li>

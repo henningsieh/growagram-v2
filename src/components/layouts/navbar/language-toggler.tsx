@@ -1,6 +1,6 @@
 "use client";
 
-import { Globe } from "lucide-react";
+import { LanguagesIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import DEFlag from "~/assets/flags/de.svg";
@@ -18,18 +18,18 @@ export function LanguageToggle() {
   const router = useRouter();
   const pathname = usePathname(); // Get the current pathname
   const params = useParams(); // Get URL parameters if needed
-  const t = useTranslations("LanguageToggler");
+  const t = useTranslations("LanguageToggle");
 
   const languages = [
     {
-      code: "en",
-      label: "English",
-      flag: <UKFlag className="h-4 w-6" />,
-    },
-    {
       code: "de",
       label: "Deutsch",
-      flag: <DEFlag className="h-4 w-6" />,
+      flag: <DEFlag />,
+    },
+    {
+      code: "en",
+      label: "English",
+      flag: <UKFlag />,
     },
   ];
 
@@ -44,8 +44,13 @@ export function LanguageToggle() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="w-9 px-0">
-          <Globe className="h-4 w-4" />
+        <Button
+          size="icon"
+          variant="ghost"
+          aria-haspopup="menu"
+          // aria-expanded="false"
+        >
+          <LanguagesIcon size={20} strokeWidth={1.6} />
           <span className="sr-only">{t("toggle-language")}</span>
         </Button>
       </DropdownMenuTrigger>
@@ -54,7 +59,7 @@ export function LanguageToggle() {
           <DropdownMenuItem
             key={language.code}
             onClick={() => handleLanguageChange(language.code)}
-            className="cursor-pointer"
+            // className="cursor-pointer"
           >
             {language.flag}
             {language.label}

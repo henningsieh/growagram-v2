@@ -4,10 +4,10 @@
     "about": "Gehe zur About Seite"
   },
   "LoginPage": {
-    "title": "Anmelden",
-    "description": "Geben Sie Ihre E-Mail-Adresse ein, um sich anzumelden",
+    "title": "Bei GrowAGram anmelden",
+    "description": "Geben Sie Ihre E-Mail-Adresse und Passwort ein oder wählen Sie unten einen Social Provider für den Login aus, um sich anzumelden.",
     "email": {
-      "label": "E-Mail"
+      "label": "E-Mail-Adresse"
     },
     "password": {
       "label": "Passwort",
@@ -18,7 +18,8 @@
     "signUp": {
       "text": "Noch kein Konto?",
       "link": "Registrieren"
-    }
+    },
+    "login-with-discord": "Mit Discord anmelden"
   },
   "ThemeToggler": {
     "toggle-theme": "Designthema umschalten",
@@ -34,7 +35,7 @@
     "components": "Komponenten",
     "dashboard": "Dashboard"
   },
-  "LanguageToggler": {
-    "toggle-language": "Toogle-Sprache"
+  "LanguageToggle": {
+    "toggle-language": "Sprache wechseln"
   }
 }

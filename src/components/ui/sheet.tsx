@@ -1,11 +1,13 @@
 "use client";
 
 import * as SheetPrimitive from "@radix-ui/react-dialog";
-import { Cross2Icon } from "@radix-ui/react-icons";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { type VariantProps, cva } from "class-variance-authority";
+import { X } from "lucide-react";
 import * as React from "react";
 import { cn } from "~/lib/utils";
+
+import { Button } from "./button";
 
 const Sheet = SheetPrimitive.Root;
 
@@ -51,12 +53,14 @@ const sheetVariants = cva(
 
 interface SheetContentProps
   extends React.ComponentPropsWithoutRef<typeof SheetPrimitive.Content>,
-    VariantProps<typeof sheetVariants> {}
+    VariantProps<typeof sheetVariants> {
+  title?: string;
+}
 
 const SheetContent = React.forwardRef<
   React.ElementRef<typeof SheetPrimitive.Content>,
   SheetContentProps
->(({ side = "right", className, children, ...props }, ref) => (
+>(({ side = "right", className, children, title, ...props }, ref) => (
   <SheetPortal>
     <SheetOverlay />
     <SheetPrimitive.Content
@@ -65,14 +69,17 @@ const SheetContent = React.forwardRef<
       {...props}
     >
       {/* Wrap the SheetTitle with VisuallyHidden to make it invisible but accessible */}
-      <VisuallyHidden>
-        <SheetTitle>This is the title of the sheet</SheetTitle>
-      </VisuallyHidden>
-
-      <SheetPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary">
-        <Cross2Icon className="h-4 w-4" />
-        <span className="sr-only">Close</span>
-      </SheetPrimitive.Close>
+      {title && (
+        <VisuallyHidden>
+          <SheetPrimitive.Title>{title}</SheetPrimitive.Title>
+        </VisuallyHidden>
+      )}
+      <Button variant="ghost" size="icon" asChild>
+        <SheetPrimitive.Close className="absolute right-2 top-2 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary">
+          <X width="20" height="20" />
+          <span className="sr-only">Close</span>
+        </SheetPrimitive.Close>
+      </Button>
       {children}
     </SheetPrimitive.Content>
   </SheetPortal>
