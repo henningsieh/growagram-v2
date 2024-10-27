@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { ListItem } from "~/components/layouts/navbar/desktop-nav/list-item";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -11,10 +12,8 @@ import {
   navigationMenuTriggerStyle,
 } from "~/components/ui/navigation-menu";
 import { Link } from "~/lib/i18n/routing";
-import navigationData from "~/lib/navigation";
 import type { NavigationItem } from "~/lib/navigation";
-
-import { ListItem } from "./list-item";
+import navigationData from "~/lib/navigation";
 
 function DesktopNavigationMenu() {
   const t = useTranslations("Navigation");

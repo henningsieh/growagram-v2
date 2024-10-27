@@ -69,9 +69,9 @@ import { SidebarInset, SidebarProvider } from "~/components/ui/sidebar";
 // This is sample data.
 const data = {
   user: {
-    name: "grower_user", // Placeholder user
-    email: "grower@example.com",
-    avatar: "/avatars/grower.jpg", // Example avatar
+    name: "Django ElRey 🌱", // Placeholder user
+    email: "django@growagram.com",
+    avatar: "/images/XYUV-dwm_400x400.jpg", // Example avatar
   },
   teams: [
     {
