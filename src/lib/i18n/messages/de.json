@@ -16,13 +16,15 @@
       "label": "Passwort",
       "forgot": "Passwort vergessen?"
     },
-    "submit": "Anmelden",
-    "googleLogin": "Mit Google anmelden",
     "signUp": {
       "text": "Noch kein Konto?",
       "link": "Registrieren"
     },
-    "login-with-discord": "Mit Discord anmelden"
+    "submit": "Anmelden",
+    "login-with-google": "Mit Google anmelden",
+    "login-with-discord": "Mit Discord anmelden",
+    "login-with-twitter": "Mit Twitter anmelden",
+    "social-identity-oauth-providers": "OAuth-Anbieter für soziale Identität"
   },
   "ThemeToggler": {
     "toggle-theme": "Designthema umschalten",

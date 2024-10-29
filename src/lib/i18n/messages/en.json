@@ -17,12 +17,14 @@
       "forgot": "Forgot your password?"
     },
     "submit": "Login",
-    "googleLogin": "Login with Google",
     "signUp": {
       "text": "Don't have an account?",
       "link": "Sign up"
     },
-    "login-with-discord": "Login with Discord"
+    "social-identity-oauth-providers": "Social Identity OAuth Providers",
+    "login-with-google": "Login with Google",
+    "login-with-discord": "Login with Discord",
+    "login-with-twitter": "Login with Twitter"
   },
   "ThemeToggler": {
     "toggle-theme": "Toggle theme",

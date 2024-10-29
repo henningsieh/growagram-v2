@@ -1,25 +1,26 @@
 // src/lib/auth/index.ts:
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
-import NextAuth, { type NextAuthConfig } from "next-auth";
-import Google from "next-auth/providers/google";
+import NextAuth from "next-auth";
 import { db } from "~/lib/db";
 
-export const authConfig = {
-  providers: [Google],
+import authConfig from "./auth.config";
+
+export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: DrizzleAdapter(db),
+  session: { strategy: "jwt" },
   callbacks: {
-    async session({ session, user }) {
-      session.user.id = user.id;
+    async session({ session, token }) {
+      session.user.id = token.sub as string;
+      console.debug("session: ", session);
       return session;
     },
-    authorized({ auth, request: { nextUrl } }) {
-      console.error("asödviubasdlvizb");
+    async authorized({ auth, request: { nextUrl } }) {
+      console.debug("'AUTHORIZED' CALLED");
       const isLoggedIn = !!auth?.user;
       const paths = ["/me", "/profile"];
       const isProtected = paths.some((path) =>
         nextUrl.pathname.startsWith(path),
       );
-      console.log("aweiubawdlviubu", isProtected);
 
       if (isProtected && !isLoggedIn) {
         const redirectUrl = new URL("api/auth/signin", nextUrl.origin);
@@ -30,6 +31,5 @@ export const authConfig = {
       return true;
     },
   },
-} satisfies NextAuthConfig;
-
-export const { handlers, auth, signOut, signIn } = NextAuth(authConfig);
+  ...authConfig,
+});

@@ -1,8 +1,11 @@
+"use client";
+
 // src/components/login-form.tsx
 import { LogIn } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { FaDiscord } from "react-icons/fa";
+import { FaDiscord, FaTwitter } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
+import { signInWithProvider } from "~/app/actions/authActions";
 import { Button } from "~/components/ui/button";
 import {
   Card,
@@ -51,21 +54,53 @@ export function LoginForm() {
             </div>
           </div>
           <Button type="submit" className="relative w-full" size="lg">
-            <LogIn size={24} className="absolute left-4" />
+            <LogIn size={32} className="absolute left-4" />
             {t("submit")}
           </Button>
 
           <Separator className="rounded-sm bg-muted-foreground/30" />
 
+          <h4 className="font-semibold">
+            {t("social-identity-oauth-providers")}
+          </h4>
+
           <div className="space-y-2">
-            <Button variant="outline" className="relative w-full" size="lg">
-              <FcGoogle size={24} className="absolute left-4" />
-              {t("googleLogin")}
+            <Button
+              onClick={async () => {
+                await signInWithProvider("google");
+              }}
+              variant="outline"
+              className="relative w-full"
+              size="lg"
+            >
+              <FcGoogle size={32} className="absolute left-4" />
+              {t("login-with-google")}
             </Button>
-            <Button variant="outline" className="relative w-full" size="lg">
-              <FaDiscord size={24} className="absolute left-4" />
+
+            <Button
+              onClick={async () => {
+                await signInWithProvider("discord");
+              }}
+              variant="outline"
+              className="relative w-full"
+              size="lg"
+            >
+              <FaDiscord size={32} className="absolute left-4 text-[#7289da]" />
 
               {t("login-with-discord")}
+            </Button>
+
+            <Button
+              onClick={async () => {
+                await signInWithProvider("twitter");
+              }}
+              variant="outline"
+              className="relative w-full"
+              size="lg"
+            >
+              <FaTwitter size={32} className="absolute left-4 text-[#1DA1F2]" />
+
+              {t("login-with-twitter")}
             </Button>
           </div>
         </div>

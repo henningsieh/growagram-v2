@@ -1,8 +1,9 @@
 // src/app/[locale]/(protected)/layout.tsx
 // import { headers } from "next/headers";
 // eslint-disable-next-line no-restricted-imports
-import { redirect } from "next/navigation";
+//import { redirect } from "next/navigation";
 import { auth } from "~/lib/auth";
+import { redirect } from "~/lib/i18n/routing";
 
 import ProtectedSidebar from "./_components/sidebar";
 
@@ -22,9 +23,10 @@ export default async function ProtectedLayout(props: LayoutProps) {
 
   if (!session) {
     // Redirect to home page with the current locale
-    redirect(
-      `/api/auth/signin?callbackUrl=http://localhost:3000/${locale}/dashboard`,
-    );
+    redirect({
+      href: `/login?callbackUrl=http://localhost:3000/${locale}/dashboard`,
+      locale,
+    });
   }
 
   return (
