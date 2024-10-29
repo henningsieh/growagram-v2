@@ -24,6 +24,7 @@ import {
   Workflow,
 } from "lucide-react";
 import { useState } from "react";
+import { handleSignOut } from "~/app/actions/authActions";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import {
   Breadcrumb,
@@ -402,7 +403,12 @@ export default function ProtectedSidebar({
                     </DropdownMenuItem>
                   </DropdownMenuGroup>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem>
+
+                  <DropdownMenuItem
+                    onClick={async () => {
+                      await handleSignOut();
+                    }}
+                  >
                     <LogOut />
                     Log out
                   </DropdownMenuItem>
