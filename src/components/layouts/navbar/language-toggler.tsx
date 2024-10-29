@@ -2,9 +2,8 @@
 
 import { LanguagesIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
+import dynamic from "next/dynamic";
 import { useParams } from "next/navigation";
-import DEFlag from "~/assets/flags/de.svg";
-import UKFlag from "~/assets/flags/us.svg";
 import { Button } from "~/components/ui/button";
 import {
   DropdownMenu,
@@ -13,6 +12,12 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import { usePathname, useRouter } from "~/lib/i18n/routing";
+
+// This way of importing fixes an error:
+// React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: object.
+// Source
+const DEFlag = dynamic(() => import("~/assets/flags/de.svg"), { ssr: false });
+const UKFlag = dynamic(() => import("~/assets/flags/us.svg"), { ssr: false });
 
 export function LanguageToggle() {
   const router = useRouter();

@@ -1,6 +1,10 @@
 // src/app/[locale]/(protected)/layout.tsx
+// import { headers } from "next/headers";
+// eslint-disable-next-line no-restricted-imports
+import { redirect } from "next/navigation";
 import { auth } from "~/lib/auth";
-import { redirect } from "~/lib/i18n/routing";
+
+import ProtectedSidebar from "./_components/sidebar";
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -18,16 +22,17 @@ export default async function ProtectedLayout(props: LayoutProps) {
 
   if (!session) {
     // Redirect to home page with the current locale
-    redirect({
-      href: "/",
-      locale,
-    });
+    redirect(
+      `/api/auth/signin?callbackUrl=http://localhost:3000/${locale}/dashboard`,
+    );
   }
 
   return (
-    <div className="min-h-screen">
-      {/* You can add protected layout elements here, like a dashboard navbar */}
-      {props.children}
-    </div>
+    <ProtectedSidebar>
+      <div className="min-h-screen">
+        {/* You can add protected layout elements here, like a dashboard navbar */}
+        {props.children}
+      </div>
+    </ProtectedSidebar>
   );
 }
