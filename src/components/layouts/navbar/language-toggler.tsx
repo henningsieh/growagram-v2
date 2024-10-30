@@ -2,8 +2,10 @@
 
 import { LanguagesIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
-import dynamic from "next/dynamic";
+import Image from "next/image";
 import { useParams } from "next/navigation";
+import DEFlag from "~/assets/flags/Flag_of_Germany-64x38.png";
+import USFlag from "~/assets/flags/Flag_of_United_States-64x34.png";
 import { Button } from "~/components/ui/button";
 import {
   DropdownMenu,
@@ -13,36 +15,27 @@ import {
 } from "~/components/ui/dropdown-menu";
 import { usePathname, useRouter } from "~/lib/i18n/routing";
 
-// This way of importing fixes an error:
-// React.jsx: type is invalid -- expected a string (for built-in components) or a class/function (for composite components) but got: object.
-// Source
-const DEFlag = dynamic(() => import("~/assets/flags/de.svg"), { ssr: false });
-const UKFlag = dynamic(() => import("~/assets/flags/us.svg"), { ssr: false });
-
 export function LanguageToggle() {
   const router = useRouter();
-  const pathname = usePathname(); // Get the current pathname
-  const params = useParams(); // Get URL parameters if needed
+  const pathname = usePathname();
+  const params = useParams();
   const t = useTranslations("LanguageToggle");
 
   const languages = [
     {
       code: "de",
       label: "Deutsch",
-      flag: <DEFlag />,
+      flag: <Image className="h-[11] w-5" src={DEFlag} alt="German flag" />,
     },
     {
       code: "en",
       label: "English",
-      flag: <UKFlag />,
+      flag: <Image className="h-[11] w-5" src={USFlag} alt="UK flag" />,
     },
   ];
 
   const handleLanguageChange = (newLocale: string) => {
-    // Create the new path with the new locale and keep other params intact
     const newPath = { pathname, params };
-
-    // Use the router to replace the current path with the new one
     router.replace(newPath, { locale: newLocale });
   };
 
@@ -53,7 +46,7 @@ export function LanguageToggle() {
           size="icon"
           variant="ghost"
           aria-haspopup="menu"
-          // aria-expanded="false"
+          title={t("toggle-language")}
         >
           <LanguagesIcon size={20} strokeWidth={1.6} />
           <span className="sr-only">{t("toggle-language")}</span>
@@ -64,10 +57,11 @@ export function LanguageToggle() {
           <DropdownMenuItem
             key={language.code}
             onClick={() => handleLanguageChange(language.code)}
-            // className="cursor-pointer"
           >
-            {language.flag}
-            {language.label}
+            <div className="flex w-full items-center">
+              <div className="mr-3 flex-shrink-0">{language.flag}</div>
+              <span>{language.label}</span>
+            </div>
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>

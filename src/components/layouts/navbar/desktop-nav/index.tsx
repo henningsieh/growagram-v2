@@ -54,7 +54,7 @@ function DesktopNavigationMenu() {
   };
 
   return (
-    <NavigationMenu className="hidden items-center sm:flex">
+    <NavigationMenu className="hidden items-center md:flex">
       <NavigationMenuList>
         {navigationData.navigationItems.map((item) => (
           <NavigationMenuItem key={item.title}>
