@@ -8,13 +8,13 @@ async function getPosts() {
       id: "1",
       user: {
         id: "u1",
-        name: "GreenThumb",
-        avatar: "/placeholder.svg?height=40&width=40",
+        name: "Django ElRey 🌱",
+        avatar: "/images/XYUV-dwm_400x400.jpg",
       },
       grow: {
         id: "g1",
         name: "Summer Summer Summer Summer Summer Grow 2023",
-        startDate: new Date(2023, 5, 1),
+        startDate: new Date(2024, 8, 12),
         type: "outdoor" as const,
       },
       plants: [
