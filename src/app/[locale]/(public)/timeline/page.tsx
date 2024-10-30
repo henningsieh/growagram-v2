@@ -15,6 +15,7 @@ async function getPosts() {
         id: "g1",
         name: "Summer Grow 2023",
         startDate: new Date(2023, 5, 1),
+        type: "outdoor" as const,
       },
       plants: [
         { id: "p1", strain: "Blue Dream", growPhase: "Vegetative" },
