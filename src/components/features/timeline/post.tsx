@@ -1,16 +1,23 @@
 "use client";
 
 import { format } from "date-fns";
-import { Droplet, Leaf, Scissors, TestTubes } from "lucide-react";
+import { Droplet, Leaf, Scissors, TestTubes, User } from "lucide-react";
 import { useState } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Badge } from "~/components/ui/badge";
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
-  CardTitle,
 } from "~/components/ui/card";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "~/components/ui/carousel";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 
 interface Plant {
@@ -25,11 +32,20 @@ interface Grow {
   startDate: Date;
 }
 
+interface User {
+  id: string;
+  name: string;
+  avatar?: string;
+}
+
 interface Post {
   id: string;
+  user: User;
   grow: Grow;
   plants: Plant[];
   createdAt: Date;
+  content: string;
+  images: string[];
   feeding: boolean;
   watering: boolean;
   pruning: boolean;
@@ -40,23 +56,66 @@ export default function PostComponent({ post }: { post: Post }) {
 
   return (
     <Card className="mx-auto my-4 w-full max-w-3xl">
-      <CardHeader>
-        <CardTitle className="flex items-center justify-between">
-          <span>{post.grow.name}</span>
-          <span className="text-sm font-normal text-muted-foreground">
-            {format(post.createdAt, "PPP")}
-          </span>
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="mb-4">
-          <h3 className="mb-2 text-lg font-semibold">Grow Information</h3>
-          <p>Start Date: {format(post.grow.startDate, "PPP")}</p>
+      <CardHeader className="space-y-4">
+        {/* User Panel */}
+        <div className="flex items-center space-x-4">
+          <Avatar className="h-10 w-10 border">
+            <AvatarImage src={post.user.avatar} />
+            <AvatarFallback>
+              <User className="h-5 w-5" />
+            </AvatarFallback>
+          </Avatar>
+          <div className="flex-1">
+            <p className="text-sm font-medium leading-none">{post.user.name}</p>
+            <p className="text-sm text-muted-foreground">
+              {format(post.createdAt, "PPP")}
+            </p>
+          </div>
         </div>
-        <div className="mb-4">
-          <h3 className="mb-2 text-lg font-semibold">Plant Information</h3>
-          <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList>
+
+        {/* Image Carousel */}
+        <Carousel className="w-full">
+          <CarouselContent>
+            {post.images.map((image, index) => (
+              <CarouselItem key={index}>
+                <div className="aspect-video w-full overflow-hidden rounded-lg">
+                  <img
+                    src={image}
+                    alt={`Grow update ${index + 1}`}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious className="left-2" />
+          <CarouselNext className="right-2" />
+        </Carousel>
+
+        {/* Post Content */}
+        <div className="text-sm">{post.content}</div>
+      </CardHeader>
+
+      <CardContent className="space-y-4">
+        <div className="space-y-2">
+          <h3 className="text-lg font-semibold">Grow Information</h3>
+          <div className="text-sm">
+            <p className="flex items-center">
+              <span className="font-medium">{post.grow.name}</span>
+              <span className="mx-2">•</span>
+              <span>Started {format(post.grow.startDate, "PPP")}</span>
+            </p>
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <h3 className="text-lg font-semibold">Plant Information</h3>
+          <Tabs
+            value={activeTab}
+            onValueChange={setActiveTab}
+            className="w-full"
+          >
+            <TabsList className="grid w-full grid-cols-2">
               {post.plants.map((plant) => (
                 <TabsTrigger key={plant.id} value={plant.id}>
                   {plant.strain}
@@ -64,7 +123,7 @@ export default function PostComponent({ post }: { post: Post }) {
               ))}
             </TabsList>
             {post.plants.map((plant) => (
-              <TabsContent key={plant.id} value={plant.id}>
+              <TabsContent key={plant.id} value={plant.id} className="text-sm">
                 <div className="space-y-2">
                   <p>Strain: {plant.strain}</p>
                   <p>Growth Phase: {plant.growPhase}</p>
@@ -74,28 +133,29 @@ export default function PostComponent({ post }: { post: Post }) {
           </Tabs>
         </div>
       </CardContent>
-      <CardFooter className="flex items-center justify-between">
-        <div className="flex space-x-2">
+
+      <CardFooter className="mt-4 flex items-center justify-between border-t py-4">
+        <div className="flex flex-wrap gap-2">
           {post.feeding && (
-            <Badge variant="secondary">
+            <Badge variant="secondary" className=" ">
               <TestTubes className="mr-1 h-4 w-4" />
               Feeding
             </Badge>
           )}
           {post.watering && (
-            <Badge variant="secondary">
+            <Badge variant="secondary" className=" ">
               <Droplet className="mr-1 h-4 w-4" />
               Watering
             </Badge>
           )}
           {post.pruning && (
-            <Badge variant="secondary">
+            <Badge variant="secondary" className=" ">
               <Scissors className="mr-1 h-4 w-4" />
               Pruning
             </Badge>
           )}
         </div>
-        <Badge variant="outline">
+        <Badge variant="outline" className="border-zinc-700">
           <Leaf className="mr-1 h-4 w-4" />
           {post.plants.length} Plant{post.plants.length > 1 ? "s" : ""}
         </Badge>
