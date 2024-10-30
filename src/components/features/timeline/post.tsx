@@ -111,7 +111,9 @@ export default function PostComponent({ post }: { post: Post }) {
             </div>
           </div>
         </div>
+      </CardHeader>
 
+      <CardContent className="space-y-4">
         {/* Image Carousel */}
         <Carousel className="w-full">
           <CarouselContent>
@@ -133,9 +135,6 @@ export default function PostComponent({ post }: { post: Post }) {
 
         {/* Post Content */}
         <div className="text-sm">{post.content}</div>
-      </CardHeader>
-
-      <CardContent className="space-y-4">
         <div className="space-y-2">
           <h3 className="text-lg font-semibold">Plant Information</h3>
           <Tabs
