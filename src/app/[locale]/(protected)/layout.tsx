@@ -1,7 +1,4 @@
 // src/app/[locale]/(protected)/layout.tsx
-// import { headers } from "next/headers";
-// eslint-disable-next-line no-restricted-imports
-//import { redirect } from "next/navigation";
 import { auth } from "~/lib/auth";
 import { redirect } from "~/lib/i18n/routing";
 
