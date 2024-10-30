@@ -4,8 +4,11 @@ import { format } from "date-fns";
 import {
   Calendar,
   Droplet,
+  Home,
   Leaf,
   Scissors,
+  ScrollText,
+  Sun,
   TestTubes,
   User,
 } from "lucide-react";
@@ -37,6 +40,7 @@ interface Grow {
   id: string;
   name: string;
   startDate: Date;
+  type: "indoor" | "outdoor";
 }
 
 interface User {
@@ -63,23 +67,48 @@ export default function PostComponent({ post }: { post: Post }) {
 
   return (
     <Card className="mx-auto my-4 w-full max-w-3xl">
-      <CardHeader className="space-y-4">
-        {/* User Panel */}
-        <div className="flex items-center space-x-4">
-          <Avatar className="h-10 w-10 border">
-            <AvatarImage src={post.user.avatar} />
-            <AvatarFallback>
-              <User className="h-5 w-5" />
-            </AvatarFallback>
-          </Avatar>
-          <div className="flex-1 space-y-1">
-            <p className="text-base font-medium leading-none">
-              {post.user.name}
-            </p>
-            <p className="flex items-center text-sm text-muted-foreground">
-              <Calendar size={14} className="mr-1" />{" "}
-              {format(post.createdAt, "PPP")}
-            </p>
+      <CardHeader className="space-y-6">
+        <div className="flex flex-col space-y-6 sm:flex-row sm:justify-between sm:space-y-0">
+          {/* User Information */}
+          <div className="flex items-start space-x-4">
+            <Avatar className="h-10 w-10 border">
+              <AvatarImage src={post.user.avatar} />
+              <AvatarFallback>
+                <User className="h-5 w-5" />
+              </AvatarFallback>
+            </Avatar>
+            <div className="flex-1 space-y-1">
+              <p className="text-sm font-medium leading-none">
+                {post.user.name}
+              </p>
+              <p className="flex items-center text-sm text-muted-foreground">
+                <ScrollText className="mr-1 h-3.5 w-3.5" />
+                {format(post.createdAt, "PPP")}
+              </p>
+            </div>
+          </div>
+
+          {/* Grow Information */}
+          <div className="flex items-start space-x-4 sm:text-right">
+            <div className="flex-1 space-y-1">
+              <p className="text-base font-semibold leading-none">
+                {post.grow.name}
+              </p>
+              <div className="flex items-center justify-end space-x-4 text-sm text-muted-foreground">
+                <span className="flex items-center">
+                  <Calendar className="mr-1 h-3.5 w-3.5" />
+                  Started {format(post.grow.startDate, "MMM d, yyyy")}
+                </span>
+                <span className="flex items-center">
+                  {post.grow.type === "indoor" ? (
+                    <Home className="mr-1 h-3.5 w-3.5" />
+                  ) : (
+                    <Sun className="mr-1 h-3.5 w-3.5" />
+                  )}
+                  {post.grow.type === "indoor" ? "Indoor" : "Outdoor"}
+                </span>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -107,17 +136,6 @@ export default function PostComponent({ post }: { post: Post }) {
       </CardHeader>
 
       <CardContent className="space-y-4">
-        <div className="space-y-2">
-          <h3 className="text-lg font-semibold">Grow Information</h3>
-          <div className="text-sm">
-            <p className="flex items-center">
-              <span className="font-medium">{post.grow.name}</span>
-              <span className="mx-2">•</span>
-              <span>Started {format(post.grow.startDate, "PPP")}</span>
-            </p>
-          </div>
-        </div>
-
         <div className="space-y-2">
           <h3 className="text-lg font-semibold">Plant Information</h3>
           <Tabs
@@ -151,25 +169,25 @@ export default function PostComponent({ post }: { post: Post }) {
       <CardFooter className="mt-4 flex items-center justify-between border-t py-4">
         <div className="flex flex-wrap gap-2">
           {post.feeding && (
-            <Badge variant="secondary" className=" ">
+            <Badge variant="secondary">
               <TestTubes className="mr-1 h-4 w-4" />
               Feeding
             </Badge>
           )}
           {post.watering && (
-            <Badge variant="secondary" className=" ">
+            <Badge variant="secondary">
               <Droplet className="mr-1 h-4 w-4" />
               Watering
             </Badge>
           )}
           {post.pruning && (
-            <Badge variant="secondary" className=" ">
+            <Badge variant="secondary">
               <Scissors className="mr-1 h-4 w-4" />
               Pruning
             </Badge>
           )}
         </div>
-        <Badge variant="outline" className="border-zinc-700">
+        <Badge variant="outline">
           <Leaf className="mr-1 h-4 w-4" />
           {post.plants.length} Plant{post.plants.length > 1 ? "s" : ""}
         </Badge>
