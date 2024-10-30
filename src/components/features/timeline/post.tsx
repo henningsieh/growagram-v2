@@ -1,6 +1,5 @@
 "use client";
 
-import { format } from "date-fns";
 import {
   Calendar,
   Droplet,
@@ -9,6 +8,7 @@ import {
   Sun,
   TestTubes,
 } from "lucide-react";
+import { useLocale } from "next-intl";
 import Image from "next/image";
 import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
@@ -33,6 +33,7 @@ import {
 } from "~/components/ui/popover";
 import { Separator } from "~/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
+import { formatDate } from "~/lib/utils";
 
 interface Plant {
   id: string;
@@ -67,24 +68,45 @@ interface Post {
 }
 
 export default function PostComponent({ post }: { post: Post }) {
+  const locale = useLocale(); // Get the current locale
+
   const [activeTab, setActiveTab] = useState(post.plants[0].id);
+  const [open, setOpen] = useState(false);
+
+  const handleMouseEnter = () => {
+    setOpen(true);
+  };
+
+  const handleMouseLeave = () => {
+    setOpen(false);
+  };
 
   return (
     <Card className="mx-auto my-4 w-full max-w-3xl">
-      <CardHeader className="space-y-2 p-4">
+      <CardHeader className="space-y-4 p-4">
         {/* Header with title and avatar */}
         <div className="flex items-center justify-between">
-          <h3 className="text-xl font-semibold">{post.grow.name}</h3>
-          <Popover>
-            <PopoverTrigger asChild>
-              <Avatar className="h-12 w-12 cursor-pointer ring-2 ring-transparent transition-all hover:ring-primary">
+          <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger
+              asChild
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+              onClick={(e) => {
+                e.preventDefault();
+              }}
+            >
+              <Avatar className="h-10 w-10 cursor-pointer ring-2 ring-transparent transition-all hover:ring-primary">
                 <AvatarImage src={post.user.avatar} alt={post.user.name} />
                 <AvatarFallback className="text-lg">
                   {post.user.name.slice(0, 2).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
             </PopoverTrigger>
-            <PopoverContent className="w-64 p-4">
+            <PopoverContent
+              className="w-64 p-4"
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+            >
               <div className="flex flex-col gap-3">
                 <div className="flex items-center gap-3">
                   <Avatar className="h-14 w-14">
@@ -102,24 +124,29 @@ export default function PostComponent({ post }: { post: Post }) {
                     </span>
                   </div>
                 </div>
-                <span className="text-sm text-muted-foreground">
-                  Posted {format(post.createdAt, "MMM d, yyyy")}
-                </span>
               </div>
             </PopoverContent>
           </Popover>
+          <h3 className="text-xl font-semibold">{post.grow.name}</h3>
         </div>
 
         {/* Grow Info */}
-        <div className="flex flex-wrap items-center gap-4 p-2 text-sm">
+        <div className="flex flex-wrap items-center justify-between gap-4 px-2 text-sm">
           <span className="flex items-center gap-1.5 font-medium text-muted-foreground">
             <Calendar className="h-4 w-4" />
-            Started {format(post.grow.startDate, "MMM d")}
+            {/* {post.grow.startDate.toLocaleDateString(locale)} */}
+            {formatDate(post.grow.startDate, locale, {
+              // weekday: "short",
+              // month: "2-digit",
+              includeYear: true,
+            })}
           </span>
-          <span className="flex items-center gap-1.5 font-medium text-muted-foreground">
-            <Sun className="h-4 w-4" />
-            {post.grow.type}
-          </span>
+          <Badge>
+            <span className="flex items-center gap-2 font-medium">
+              <Sun className="h-4 w-4" />
+              {post.grow.type}
+            </span>
+          </Badge>
         </div>
       </CardHeader>
 
@@ -145,7 +172,9 @@ export default function PostComponent({ post }: { post: Post }) {
         </Carousel>
 
         {/* Post Content */}
-        <div className="text-sm leading-relaxed">{post.content}</div>
+        <div className="rounded-sm bg-muted p-2 text-base font-light leading-relaxed">
+          {post.content}
+        </div>
 
         <Separator />
 
