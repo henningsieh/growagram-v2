@@ -1,7 +1,14 @@
 "use client";
 
 import { format } from "date-fns";
-import { Droplet, Leaf, Scissors, TestTubes, User } from "lucide-react";
+import {
+  Calendar,
+  Droplet,
+  Leaf,
+  Scissors,
+  TestTubes,
+  User,
+} from "lucide-react";
 import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Badge } from "~/components/ui/badge";
@@ -65,9 +72,12 @@ export default function PostComponent({ post }: { post: Post }) {
               <User className="h-5 w-5" />
             </AvatarFallback>
           </Avatar>
-          <div className="flex-1">
-            <p className="text-sm font-medium leading-none">{post.user.name}</p>
-            <p className="text-sm text-muted-foreground">
+          <div className="flex-1 space-y-1">
+            <p className="text-base font-medium leading-none">
+              {post.user.name}
+            </p>
+            <p className="flex items-center text-sm text-muted-foreground">
+              <Calendar size={14} className="mr-1" />{" "}
               {format(post.createdAt, "PPP")}
             </p>
           </div>
@@ -115,7 +125,7 @@ export default function PostComponent({ post }: { post: Post }) {
             onValueChange={setActiveTab}
             className="w-full"
           >
-            <TabsList className="grid w-full grid-cols-2">
+            <TabsList>
               {post.plants.map((plant) => (
                 <TabsTrigger key={plant.id} value={plant.id}>
                   {plant.strain}
@@ -123,7 +133,11 @@ export default function PostComponent({ post }: { post: Post }) {
               ))}
             </TabsList>
             {post.plants.map((plant) => (
-              <TabsContent key={plant.id} value={plant.id} className="text-sm">
+              <TabsContent
+                key={plant.id}
+                value={plant.id}
+                className="p-2 text-sm"
+              >
                 <div className="space-y-2">
                   <p>Strain: {plant.strain}</p>
                   <p>Growth Phase: {plant.growPhase}</p>
