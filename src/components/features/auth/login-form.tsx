@@ -53,7 +53,12 @@ export function LoginForm() {
               <Input id="password" type="password" required />
             </div>
           </div>
-          <Button type="submit" className="relative w-full" size="lg">
+          <Button
+            variant={"primary"}
+            type="submit"
+            className="relative w-full"
+            size="lg"
+          >
             <LogIn size={32} className="absolute left-4" />
             {t("submit")}
           </Button>
