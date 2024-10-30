@@ -13,7 +13,7 @@ async function getPosts() {
       },
       grow: {
         id: "g1",
-        name: "Summer Grow 2023",
+        name: "Summer Summer Summer Summer Summer Grow 2023",
         startDate: new Date(2023, 5, 1),
         type: "outdoor" as const,
       },
