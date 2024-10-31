@@ -1,8 +1,8 @@
 "use client";
 
 // src/app/[locale]/(protected)/grows/[id]/connect-plants/page.tsx:
+// import { useParams } from "next/navigation"
 import { Check, Flower2, Leaf } from "lucide-react";
-// import { useParams } from "next/navigation";
 import { useState } from "react";
 import { Grow, Plant } from "~/components/features/timeline/post";
 import { Badge } from "~/components/ui/badge";
@@ -36,7 +36,7 @@ const mockGrow: Grow = {
   ],
 };
 
-const availablePlants: Plant[] = [
+const initialAvailablePlants: Plant[] = [
   { id: "p3", strain: "Blue Dream", growPhase: "seedling" },
   { id: "p4", strain: "Girl Scout Cookies", growPhase: "vegetation" },
   { id: "p5", strain: "Purple Haze", growPhase: "vegetation" },
@@ -45,10 +45,14 @@ const availablePlants: Plant[] = [
 
 export default function ConnectPlantsPage() {
   const { toast } = useToast();
-  //   const params = useParams();
-  //   const growId = params.id as string;
+  //   const params = useParams()
+  //   const growId = params.id as string
   const [grow, setGrow] = useState<Grow>(mockGrow);
   const [selectedPlants, setSelectedPlants] = useState<Set<string>>(new Set());
+  const [availablePlants, setAvailablePlants] = useState<Plant[]>(
+    initialAvailablePlants,
+  );
+  const [searchQuery, setSearchQuery] = useState("");
 
   const handleTogglePlant = (plantId: string) => {
     const newSelected = new Set(selectedPlants);
@@ -69,6 +73,9 @@ export default function ConnectPlantsPage() {
       plants: [...grow.plants, ...plantsToConnect],
     };
     setGrow(updatedGrow);
+    setAvailablePlants((prevAvailable) =>
+      prevAvailable.filter((p) => !selectedPlants.has(p.id)),
+    );
     setSelectedPlants(new Set());
     toast({
       title: "Plants Connected",
@@ -77,15 +84,20 @@ export default function ConnectPlantsPage() {
   };
 
   const handleRemovePlant = (plantId: string) => {
-    const updatedGrow = {
-      ...grow,
-      plants: grow.plants.filter((p) => p.id !== plantId),
-    };
-    setGrow(updatedGrow);
-    toast({
-      title: "Plant Removed",
-      description: "Successfully removed plant from grow",
-    });
+    const plantToRemove = grow.plants.find((p) => p.id === plantId);
+    if (plantToRemove) {
+      const updatedGrow = {
+        ...grow,
+        plants: grow.plants.filter((p) => p.id !== plantId),
+      };
+      setGrow(updatedGrow);
+      setAvailablePlants((prevAvailable) => [...prevAvailable, plantToRemove]);
+      toast({
+        title: "Plant Removed",
+        description:
+          "Successfully removed plant from grow and added back to available plants.",
+      });
+    }
   };
 
   return (
@@ -115,12 +127,23 @@ export default function ConnectPlantsPage() {
           </CardHeader>
           <CardContent>
             <Command className="rounded-lg border shadow-md">
-              <CommandInput placeholder="Search plants..." />
+              <CommandInput
+                placeholder="Search plants..."
+                value={searchQuery}
+                onValueChange={setSearchQuery}
+              />
               <CommandList>
                 <CommandEmpty>No plants found.</CommandEmpty>
                 <CommandGroup>
                   {availablePlants
-                    .filter((p) => !grow.plants.some((gp) => gp.id === p.id))
+                    .filter(
+                      (p) =>
+                        !grow.plants.some((gp) => gp.id === p.id) &&
+                        (searchQuery === "" ||
+                          p.strain
+                            .toLowerCase()
+                            .includes(searchQuery.toLowerCase())),
+                    )
                     .map((plant) => (
                       <CommandItem
                         key={plant.id}
