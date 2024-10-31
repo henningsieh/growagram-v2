@@ -1,7 +1,7 @@
 {
   "HomePage": {
     "title": "Hallo Welt!",
-    "about": "Gehe zur About Seite"
+    "about": "gehe zur Zeitleiste"
   },
   "LanguageToggle": {
     "toggle-language": "Sprache wechseln"
@@ -33,13 +33,20 @@
     "system": "Systemeinstellung"
   },
   "Navigation": {
-    "navigation": "Navigation",
-    "gettingStarted": "Erste Schritte",
-    "re-usable-components-built-using-radix-ui-and-tailwind-css": "Wiederverwendbare Komponenten, die mit Radix UI und Tailwind CSS erstellt wurden.",
-    "track-your-grow-today-and-create-your": "Dokumentiere noch heute deinen Anbau und erstelle jetzt deine",
-    "first-plant": "erste Pflanze",
     "login": "Login",
+    "navigation": "Navigation",
+    "grower-menu": "Für Grower",
     "components": "Komponenten",
-    "dashboard": "Dashboard"
+    "timeline": "Zeitleiste",
+    "timelline-description": "Eine Social-Media-artike Zeitleiste mit Beiträgen und Updates von Growern.",
+    "dashboard": "Dashboard",
+    "dashboard-description": "Erfasse deine Grows und deine Pflanzen, einschließlich Umgebungen und Werkzeuge.",
+    "my-grows": "Meine Grows",
+    "manage-your-grows": "Organisiere Deine Ihre Pflanzen, indem Du sie in Gruppen zusammenstellst."
+  },
+  "Dashboard": {
+    "Grows": {
+      "your-grows": "Deine Grows"
+    }
   }
 }

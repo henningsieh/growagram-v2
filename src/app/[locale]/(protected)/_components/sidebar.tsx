@@ -69,6 +69,7 @@ import {
   useSidebar,
 } from "~/components/ui/sidebar";
 import { SidebarInset, SidebarProvider } from "~/components/ui/sidebar";
+import { Link, usePathname } from "~/lib/i18n/routing";
 
 // This is sample data.
 const data = {
@@ -92,13 +93,13 @@ const data = {
   navMain: [
     {
       title: "Grows",
-      url: "/grows",
+      url: "#",
       icon: TentTree, // An icon representing plants or growth
       isActive: true,
       items: [
         {
           title: "My Grows", // View and manage their cannabis grows
-          url: "#",
+          url: "/grows",
         },
         {
           title: "Create New Grow", // Easily add new grows
@@ -234,6 +235,9 @@ export default function ProtectedSidebar({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const path = usePathname();
+  console.debug("PATH: ", path);
+
   return (
     <SidebarProvider>
       <Sidebar collapsible="icon" variant="inset">
@@ -264,9 +268,9 @@ export default function ProtectedSidebar({
                         {item.items?.map((subItem) => (
                           <SidebarMenuSubItem key={subItem.title}>
                             <SidebarMenuSubButton asChild>
-                              <a href={subItem.url}>
+                              <Link href={subItem.url}>
                                 <span>{subItem.title}</span>
-                              </a>
+                              </Link>
                             </SidebarMenuSubButton>
                           </SidebarMenuSubItem>
                         ))}

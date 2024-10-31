@@ -1,7 +1,7 @@
 {
   "HomePage": {
     "title": "Hello world!",
-    "about": "Go to the about page"
+    "about": "go to Timeline"
   },
   "LanguageToggle": {
     "toggle-language": "Change language"
@@ -33,13 +33,20 @@
     "system": "System"
   },
   "Navigation": {
-    "navigation": "Navigation",
-    "gettingStarted": "Getting Started",
-    "re-usable-components-built-using-radix-ui-and-tailwind-css": "Re-usable components built using Radix UI and Tailwind CSS.",
-    "track-your-grow-today-and-create-your": "Track your Grow today and create your",
-    "first-plant": "first plant",
     "login": "Login",
+    "navigation": "Navigation",
     "components": "Components",
-    "dashboard": "Dashboard"
+    "timeline": "Timeline",
+    "timelline-description": "A Social Media like Stream of Posts and Updates from the Growers.",
+    "grower-menu": "For Growers",
+    "dashboard": "Dashboard",
+    "dashboard-description": "Track your Grows and Plants including environments and tools. ",
+    "my-grows": "My Grows",
+    "manage-your-grows": "Organise your plants by grouping them into Grows."
+  },
+  "Dashboard": {
+    "Grows": {
+      "your-grows": "Your Grows"
+    }
   }
 }

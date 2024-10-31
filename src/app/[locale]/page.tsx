@@ -5,8 +5,9 @@ export default function HomePage() {
   const t = useTranslations("HomePage");
   return (
     <div>
-      <h1>{t("title")}</h1>
-      <Link href="/about">{t("about")}</Link>
+      <h1 className="m-4 text-4xl">{t("title")}</h1>
+
+      <Link href="/timeline"> -- {t("about")}</Link>
     </div>
   );
 }
