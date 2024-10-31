@@ -17,7 +17,7 @@ body {
   :root {
     --background: 0 0% 98%;
     --foreground: 240 10% 3.9%;
-    --card: 120 80% 96% / 0.4;
+    --card: 0 0% 96%;
     --card-foreground: 240 10% 3.9%;
     --popover: 0 0% 98%;
     --popover-foreground: 240 10% 3.9%;
@@ -35,7 +35,7 @@ body {
     --input: 240 5.9% 90%;
     --ring: 120 61% 34%;
     --radius: 0.5rem;
-    --sidebar-background: 120 80% 96% / 0.4;
+    --sidebar-background: 0 0% 96%;
     --sidebar-foreground: 240 10% 3.9%;
     --sidebar-primary: 120 61% 34%;
     --sidebar-primary-foreground: 240 4.8% 95.9%;
