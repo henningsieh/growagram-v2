@@ -1,7 +1,7 @@
 "use client";
 
 import {
-  Calendar,
+  Calendar1,
   Droplet,
   Leaf,
   Scissors,
@@ -133,7 +133,7 @@ export default function PostComponent({ post }: { post: Post }) {
         {/* Grow Info */}
         <div className="flex flex-wrap items-center justify-between gap-4 px-2 text-sm">
           <span className="flex items-center gap-1.5 font-medium text-muted-foreground">
-            <Calendar className="h-4 w-4" />
+            <Calendar1 className="h-4 w-4" />
             {/* {post.grow.startDate.toLocaleDateString(locale)} */}
             {formatDate(post.grow.startDate, locale, {
               // weekday: "short",
@@ -186,13 +186,9 @@ export default function PostComponent({ post }: { post: Post }) {
             onValueChange={setActiveTab}
             className="w-full"
           >
-            <TabsList className="grid h-auto min-h-10 w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-4">
+            <TabsList className="grid h-auto w-full grid-cols-2 gap-1 p-1 sm:grid-cols-3 md:grid-cols-4">
               {post.plants.map((plant) => (
-                <TabsTrigger
-                  key={plant.id}
-                  value={plant.id}
-                  className="h-10 sm:h-auto"
-                >
+                <TabsTrigger key={plant.id} value={plant.id} className="h-8">
                   {plant.strain}
                 </TabsTrigger>
               ))}
@@ -201,14 +197,14 @@ export default function PostComponent({ post }: { post: Post }) {
               <TabsContent
                 key={plant.id}
                 value={plant.id}
-                className="bg-background p-4 text-sm"
+                className="bg-muted p-4 text-sm"
               >
                 <div className="space-y-2">
                   <p className="flex items-center gap-2">
-                    <span className="font-medium">Strain:</span> {plant.strain}
+                    <span className="font-bold">Strain:</span> {plant.strain}
                   </p>
                   <p className="flex items-center gap-2">
-                    <span className="font-medium">Growth Phase:</span>{" "}
+                    <span className="font-semibold">Growth Phase:</span>{" "}
                     {plant.growPhase}
                   </p>
                 </div>
