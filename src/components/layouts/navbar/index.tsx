@@ -16,11 +16,11 @@ export function MainNavigationBar() {
       <div className="absolute left-4 top-1/2 flex -translate-y-1/2 items-center">
         <Link href={"/"}>
           <Image
-            src="/images/grow-a-gram-high-resolution-logo.webp" // Remove "public" from path
+            src="/images/grow-a-gram-high-resolution-logo.webp"
             alt="GrowAGram Logo"
-            width={86} // Add appropriate width
-            height={50} // Add appropriate height
-            priority // Add priority for above-the-fold image
+            width={86}
+            height={50}
+            priority
             className="h-12 w-auto" // Make it responsive
           />
         </Link>

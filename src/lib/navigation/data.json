@@ -1,45 +1,30 @@
 {
   "navigationItems": [
     {
-      "title": "gettingStarted",
+      "title": "components",
       "content": {
-        "featured": {
-          "title": "dashboard",
-          "href": "/dashboard",
-          "description": "track-your-grow-today-and-create-your-first-plant"
-        },
         "items": [
           {
-            "title": "Introduction",
-            "href": "/docs",
-            "description": "Re-usable components built using Radix UI and Tailwind CSS"
-          },
-          {
-            "title": "Installation",
-            "href": "/docs/installation",
-            "description": "How to install dependencies and structure your app."
-          },
-          {
-            "title": "Typography",
-            "href": "/docs/primitives/typography",
-            "description": "Styles for headings, paragraphs, lists...etc"
+            "title": "timeline",
+            "href": "/timeline",
+            "description": "timelline-description"
           }
         ]
       }
     },
     {
-      "title": "components",
+      "title": "grower-menu",
       "content": {
+        "featured": {
+          "title": "dashboard",
+          "href": "/dashboard",
+          "description": "dashboard-description"
+        },
         "items": [
           {
-            "title": "Timeline",
-            "href": "/timeline",
-            "description": "A Social Media like Stream of Posts and Updates from the Growers."
-          },
-          {
-            "title": "Hover Card",
-            "href": "/docs/primitives/hover-card",
-            "description": "For sighted users to preview content available behind a link."
+            "title": "my-grows",
+            "href": "/grows",
+            "description": "manage-your-grows"
           }
         ]
       }

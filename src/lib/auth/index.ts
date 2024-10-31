@@ -11,7 +11,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   callbacks: {
     async session({ session, token }) {
       session.user.id = token.sub as string;
-      console.debug("session: ", session);
+      // console.debug("session: ", session);
       return session;
     },
     async authorized({ auth, request: { nextUrl } }) {
