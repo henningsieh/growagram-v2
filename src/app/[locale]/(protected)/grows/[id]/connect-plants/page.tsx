@@ -2,6 +2,7 @@
 
 // src/app/[locale]/(protected)/grows/[id]/connect-plants/page.tsx:
 // import { useParams } from "next/navigation"
+import { AnimatePresence, motion } from "framer-motion";
 import { Check, Flower2, Leaf } from "lucide-react";
 import { useState } from "react";
 import { Grow, Plant } from "~/components/features/timeline/post";
@@ -135,39 +136,49 @@ export default function ConnectPlantsPage() {
               <CommandList>
                 <CommandEmpty>No plants found.</CommandEmpty>
                 <CommandGroup>
-                  {availablePlants
-                    .filter(
-                      (p) =>
-                        !grow.plants.some((gp) => gp.id === p.id) &&
-                        (searchQuery === "" ||
-                          p.strain
-                            .toLowerCase()
-                            .includes(searchQuery.toLowerCase())),
-                    )
-                    .map((plant) => (
-                      <CommandItem
-                        key={plant.id}
-                        onSelect={() => handleTogglePlant(plant.id)}
-                        className="cursor-pointer"
-                      >
-                        <div
-                          className={`mr-2 flex h-4 w-4 items-center justify-center rounded-sm border ${
-                            selectedPlants.has(plant.id)
-                              ? "border-primary bg-primary"
-                              : "border-primary"
-                          }`}
+                  <AnimatePresence>
+                    {availablePlants
+                      .filter(
+                        (p) =>
+                          !grow.plants.some((gp) => gp.id === p.id) &&
+                          (searchQuery === "" ||
+                            p.strain
+                              .toLowerCase()
+                              .includes(searchQuery.toLowerCase())),
+                      )
+                      .map((plant) => (
+                        <motion.div
+                          key={plant.id}
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          exit={{ opacity: 0, x: 20 }}
+                          transition={{ duration: 0.3 }}
                         >
-                          {selectedPlants.has(plant.id) && (
-                            <Check className="h-3 w-3 text-primary-foreground" />
-                          )}
-                        </div>
-                        <Flower2 className="mr-2 h-4 w-4" />
-                        <span>{plant.strain}</span>
-                        <Badge variant="secondary" className="ml-auto">
-                          {plant.growPhase}
-                        </Badge>
-                      </CommandItem>
-                    ))}
+                          <CommandItem
+                            key={plant.id}
+                            onSelect={() => handleTogglePlant(plant.id)}
+                            className="cursor-pointer"
+                          >
+                            <div
+                              className={`mr-2 flex h-4 w-4 items-center justify-center rounded-sm border ${
+                                selectedPlants.has(plant.id)
+                                  ? "border-primary bg-primary"
+                                  : "border-primary"
+                              }`}
+                            >
+                              {selectedPlants.has(plant.id) && (
+                                <Check className="h-3 w-3 text-primary-foreground" />
+                              )}
+                            </div>
+                            <Flower2 className="mr-2 h-4 w-4" />
+                            <span>{plant.strain}</span>
+                            <Badge variant="secondary" className="ml-auto">
+                              {plant.growPhase}
+                            </Badge>
+                          </CommandItem>
+                        </motion.div>
+                      ))}
+                  </AnimatePresence>
                 </CommandGroup>
               </CommandList>
             </Command>
@@ -183,29 +194,36 @@ export default function ConnectPlantsPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {grow.plants.map((plant) => (
-                <Card
-                  key={plant.id}
-                  className="flex items-center justify-between rounded-lg border p-4"
-                >
-                  <div className="flex items-center gap-3">
-                    <Leaf className="h-4 w-4 text-primary" />
-                    <div>
-                      <p className="font-medium">{plant.strain}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {plant.growPhase}
-                      </p>
-                    </div>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleRemovePlant(plant.id)}
+              <AnimatePresence>
+                {grow.plants.map((plant) => (
+                  <motion.div
+                    key={plant.id}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 20 }}
+                    transition={{ duration: 0.3 }}
                   >
-                    Remove
-                  </Button>
-                </Card>
-              ))}
+                    <Card className="flex items-center justify-between rounded-lg border p-4">
+                      <div className="flex items-center gap-3">
+                        <Leaf className="h-4 w-4 text-primary" />
+                        <div>
+                          <p className="font-medium">{plant.strain}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {plant.growPhase}
+                          </p>
+                        </div>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleRemovePlant(plant.id)}
+                      >
+                        Remove
+                      </Button>
+                    </Card>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
               {grow.plants.length === 0 && (
                 <div className="py-8 text-center text-muted-foreground">
                   No plants connected yet
