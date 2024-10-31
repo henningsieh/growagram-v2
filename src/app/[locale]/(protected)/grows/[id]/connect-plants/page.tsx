@@ -117,7 +117,7 @@ export default function ConnectPlantsPage() {
         </Button>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="mx-auto grid max-w-4xl gap-6 lg:grid-cols-2">
         <Card>
           <CardHeader>
             <CardTitle>Available Plants</CardTitle>
@@ -184,7 +184,7 @@ export default function ConnectPlantsPage() {
           <CardContent>
             <div className="space-y-4">
               {grow.plants.map((plant) => (
-                <div
+                <Card
                   key={plant.id}
                   className="flex items-center justify-between rounded-lg border p-4"
                 >
@@ -204,7 +204,7 @@ export default function ConnectPlantsPage() {
                   >
                     Remove
                   </Button>
-                </div>
+                </Card>
               ))}
               {grow.plants.length === 0 && (
                 <div className="py-8 text-center text-muted-foreground">
