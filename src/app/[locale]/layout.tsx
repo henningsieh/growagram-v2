@@ -6,6 +6,7 @@ import localFont from "next/font/local";
 import { notFound } from "next/navigation";
 import { MainNavigationBar } from "~/components/layouts/navbar";
 import { ThemeProvider } from "~/components/layouts/theme-provider";
+import { Toaster } from "~/components/ui/toaster";
 import { routing } from "~/lib/i18n/routing";
 
 import "../../styles/globals.css";
@@ -67,6 +68,8 @@ export default async function RootLayout(props: LayoutProps) {
               </header>
               <main className="flex-1">{props.children}</main>
             </div>
+
+            <Toaster />
           </ThemeProvider>
         </NextIntlClientProvider>
       </body>
