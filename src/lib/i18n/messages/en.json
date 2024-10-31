@@ -1,52 +1,53 @@
 {
+  "Dashboard": {
+    "Grows": {
+      "your-grows": "Your Grows"
+    }
+  },
   "HomePage": {
-    "title": "Hello world!",
-    "about": "go to Timeline"
+    "about": "go to Timeline",
+    "title": "Hello world!"
   },
   "LanguageToggle": {
     "toggle-language": "Change language"
   },
   "LoginPage": {
-    "title": "Login to GrowAGram",
     "description": "To log in, enter your email address and password or select a social login provider below.",
     "email": {
       "label": "Email address"
     },
+    "login-with-discord": "Login with Discord",
+    "login-with-google": "Login with Google",
+    "login-with-twitter": "Login with Twitter",
     "password": {
-      "label": "Password",
-      "forgot": "Forgot your password?"
+      "forgot": "Forgot your password?",
+      "label": "Password"
     },
-    "submit": "Login",
     "signUp": {
-      "text": "Don't have an account?",
-      "link": "Sign up"
+      "link": "Sign up",
+      "text": "Don't have an account?"
     },
     "social-identity-oauth-providers": "Social Identity OAuth Providers",
-    "login-with-google": "Login with Google",
-    "login-with-discord": "Login with Discord",
-    "login-with-twitter": "Login with Twitter"
-  },
-  "ThemeToggler": {
-    "toggle-theme": "Toggle theme",
-    "light": "Light",
-    "dark": "Dark",
-    "system": "System"
+    "submit": "Login",
+    "title": "Login to GrowAGram"
   },
   "Navigation": {
-    "login": "Login",
-    "navigation": "Navigation",
     "components": "Components",
-    "timeline": "Timeline",
-    "timelline-description": "A Social Media like Stream of Posts and Updates from the Growers.",
-    "grower-menu": "For Growers",
     "dashboard": "Dashboard",
     "dashboard-description": "Track your Grows and Plants including environments and tools. ",
+    "grower-menu": "For Growers",
+    "login": "Login",
+    "manage-your-grows": "Organise your plants by grouping them into Grows.",
     "my-grows": "My Grows",
-    "manage-your-grows": "Organise your plants by grouping them into Grows."
+    "navigation": "Navigation",
+    "timeline": "Timeline",
+    "timelline-description": "A Social Media like Stream of Posts and Updates from the Growers.",
+    "toggle-menu": "Toggle menu"
   },
-  "Dashboard": {
-    "Grows": {
-      "your-grows": "Your Grows"
-    }
+  "ThemeToggler": {
+    "dark": "Dark",
+    "light": "Light",
+    "system": "System",
+    "toggle-theme": "Toggle theme"
   }
 }

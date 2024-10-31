@@ -1,52 +1,53 @@
 {
+  "Dashboard": {
+    "Grows": {
+      "your-grows": "Deine Grows"
+    }
+  },
   "HomePage": {
-    "title": "Hallo Welt!",
-    "about": "gehe zur Zeitleiste"
+    "about": "gehe zur Zeitleiste",
+    "title": "Hallo Welt!"
   },
   "LanguageToggle": {
     "toggle-language": "Sprache wechseln"
   },
   "LoginPage": {
-    "title": "Bei GrowAGram anmelden",
     "description": "Geben Sie Ihre E-Mail-Adresse und Passwort ein oder wählen Sie unten einen Social Provider für den Login aus, um sich anzumelden.",
     "email": {
       "label": "E-Mail-Adresse"
     },
+    "login-with-discord": "Mit Discord anmelden",
+    "login-with-google": "Mit Google anmelden",
+    "login-with-twitter": "Mit Twitter anmelden",
     "password": {
-      "label": "Passwort",
-      "forgot": "Passwort vergessen?"
+      "forgot": "Passwort vergessen?",
+      "label": "Passwort"
     },
     "signUp": {
-      "text": "Noch kein Konto?",
-      "link": "Registrieren"
+      "link": "Registrieren",
+      "text": "Noch kein Konto?"
     },
+    "social-identity-oauth-providers": "OAuth-Anbieter für soziale Identität",
     "submit": "Anmelden",
-    "login-with-google": "Mit Google anmelden",
-    "login-with-discord": "Mit Discord anmelden",
-    "login-with-twitter": "Mit Twitter anmelden",
-    "social-identity-oauth-providers": "OAuth-Anbieter für soziale Identität"
-  },
-  "ThemeToggler": {
-    "toggle-theme": "Designthema umschalten",
-    "light": "Hell",
-    "dark": "Dunkel",
-    "system": "Systemeinstellung"
+    "title": "Bei GrowAGram anmelden"
   },
   "Navigation": {
-    "login": "Login",
-    "navigation": "Navigation",
-    "grower-menu": "Für Grower",
     "components": "Komponenten",
-    "timeline": "Zeitleiste",
-    "timelline-description": "Eine Social-Media-artike Zeitleiste mit Beiträgen und Updates von Growern.",
     "dashboard": "Dashboard",
     "dashboard-description": "Erfasse deine Grows und deine Pflanzen, einschließlich Umgebungen und Werkzeuge.",
+    "grower-menu": "Für Grower",
+    "login": "Login",
+    "manage-your-grows": "Organisiere Deine Ihre Pflanzen, indem Du sie in Gruppen zusammenstellst.",
     "my-grows": "Meine Grows",
-    "manage-your-grows": "Organisiere Deine Ihre Pflanzen, indem Du sie in Gruppen zusammenstellst."
+    "navigation": "Navigation",
+    "timeline": "Zeitleiste",
+    "timelline-description": "Eine Social-Media-artike Zeitleiste mit Beiträgen und Updates von Growern.",
+    "toggle-menu": "Menü umschalten"
   },
-  "Dashboard": {
-    "Grows": {
-      "your-grows": "Deine Grows"
-    }
+  "ThemeToggler": {
+    "dark": "Dunkel",
+    "light": "Hell",
+    "system": "System",
+    "toggle-theme": "Designthema umschalten"
   }
 }
