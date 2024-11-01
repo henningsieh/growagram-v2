@@ -1,6 +1,19 @@
+"use client";
+
+import { format } from "date-fns";
 import { AnimatePresence, motion } from "framer-motion";
-import { Flower2 } from "lucide-react";
+import {
+  ChartBar,
+  Flower2,
+  Heart,
+  MessageCircle,
+  Share2,
+  User2,
+} from "lucide-react";
+import Image from "next/image";
+import { useState } from "react";
 import { Grow } from "~/components/features/timeline/post";
+import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import {
@@ -8,29 +21,97 @@ import {
   CardContent,
   CardDescription,
   CardHeader,
-  CardTitle,
 } from "~/components/ui/card";
+import { Separator } from "~/components/ui/separator";
 
 interface GrowCardProps {
   grow: Grow;
   onUnassignPlant?: (plantId: string) => void;
   showUnassignButton?: boolean;
+  grower?: {
+    name: string;
+    username: string;
+    avatar?: string;
+  };
+  stats?: {
+    comments: number;
+    views: number;
+    likes: number;
+  };
 }
 
 export function GrowCard({
   grow,
   onUnassignPlant,
   showUnassignButton = true,
+  grower = {
+    name: "Anonymous Grower",
+    username: "anon",
+  },
+  stats = {
+    comments: 0,
+    views: 0,
+    likes: 0,
+  },
 }: GrowCardProps) {
+  const [isImageHovered, setIsImageHovered] = useState(false);
+  const [isLiked, setIsLiked] = useState(false);
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-lg">{grow.name}</CardTitle>
-        <CardDescription>
-          Plants currently assigned to this grow
-        </CardDescription>
+    <Card className="overflow-hidden">
+      <CardHeader className="space-y-0 pb-4">
+        <div className="flex items-start justify-between">
+          <div className="flex gap-3">
+            <Avatar className="h-10 w-10">
+              <AvatarImage src={grower.avatar} />
+              <AvatarFallback>
+                <User2 className="h-5 w-5" />
+              </AvatarFallback>
+            </Avatar>
+            <div className="flex flex-col">
+              <p className="text-sm font-semibold">{grower.name}</p>
+              <p className="text-sm text-muted-foreground">
+                @{grower.username}
+              </p>
+            </div>
+          </div>
+          <Badge
+            variant={grow.type === "indoor" ? "default" : "secondary"}
+            className="uppercase"
+          >
+            {grow.type}
+          </Badge>
+        </div>
       </CardHeader>
-      <CardContent>
+
+      <div
+        className="relative aspect-video overflow-hidden"
+        onMouseEnter={() => setIsImageHovered(true)}
+        onMouseLeave={() => setIsImageHovered(false)}
+      >
+        <Image
+          src="/placeholder.svg?height=400&width=800"
+          alt={grow.name}
+          className="object-cover transition-transform duration-300"
+          style={{
+            transform: isImageHovered ? "scale(1.05)" : "scale(1)",
+          }}
+          width={800}
+          height={400}
+        />
+      </div>
+
+      <CardContent className="space-y-4 pt-4">
+        <div>
+          <h3 className="text-xl font-bold">{grow.name}</h3>
+          <CardDescription className="mt-1 space-y-1">
+            <p>Started on {format(grow.startDate, "PPP")}</p>
+            {grow.updatedAt && (
+              <p>Last updated {format(grow.updatedAt, "PPP")}</p>
+            )}
+          </CardDescription>
+        </div>
+
         <div className="space-y-4">
           <AnimatePresence>
             {grow.plants.map((plant) => (
@@ -41,7 +122,7 @@ export function GrowCard({
                 exit={{ opacity: 0, x: 20 }}
                 transition={{ duration: 0.3 }}
               >
-                <Card className="border-primary/40 bg-background text-foreground shadow-sm">
+                <Card className="border-primary/40 bg-card text-card-foreground shadow-sm">
                   <CardContent className="flex items-center justify-between p-4">
                     <div className="flex items-center gap-3">
                       <Flower2 strokeWidth={0.9} className="h-12 w-12" />
@@ -73,6 +154,35 @@ export function GrowCard({
               No plants assigned yet
             </div>
           )}
+        </div>
+
+        <Separator />
+
+        <div className="flex items-center justify-between">
+          <Button variant="ghost" size="sm" className="flex items-center gap-1">
+            <MessageCircle className="h-4 w-4" />
+            <span>{stats.comments}</span>
+          </Button>
+          <Button variant="ghost" size="sm" className="flex items-center gap-1">
+            <ChartBar className="h-4 w-4" />
+            <span>{stats.views}</span>
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="flex items-center gap-1"
+            onClick={() => setIsLiked(!isLiked)}
+          >
+            <Heart
+              className={`h-4 w-4 ${
+                isLiked ? "fill-destructive text-destructive" : ""
+              }`}
+            />
+            <span>{isLiked ? stats.likes + 1 : stats.likes}</span>
+          </Button>
+          <Button variant="ghost" size="sm" className="flex items-center gap-1">
+            <Share2 className="h-4 w-4" />
+          </Button>
         </div>
       </CardContent>
     </Card>

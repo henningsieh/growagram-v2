@@ -30,6 +30,7 @@ const mockGrow: Grow = {
   id: "1",
   name: "Indoor Grow 2024",
   startDate: new Date("2024-01-01"),
+  updatedAt: new Date("2024-09-16"),
   type: "indoor",
   plants: [
     { id: "p1", strain: "Northern Lights", growPhase: "vegetation" },

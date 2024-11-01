@@ -46,6 +46,7 @@ export interface Grow {
   name: string;
   plants: Plant[];
   startDate: Date;
+  updatedAt: Date;
   type: "indoor" | "outdoor";
 }
 
