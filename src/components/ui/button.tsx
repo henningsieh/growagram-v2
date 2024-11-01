@@ -4,12 +4,12 @@ import * as React from "react";
 import { cn } from "~/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex  font-medium items-center justify-center gap-2 whitespace-nowrap rounded-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+  "inline-flex font-medium items-center justify-center gap-2 whitespace-nowrap rounded-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-30 [&_svg]:pointer-events-none [&_svg]:shrink-0",
   {
     variants: {
       variant: {
         primary:
-          "border bg-primary text-primary-foreground shadow hover:bg-primary/90",
+          "border border-green-700/80 bg-primary text-primary-foreground shadow hover:bg-primary/90",
         secondary:
           "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
         outline:
@@ -21,8 +21,8 @@ const buttonVariants = cva(
       },
       size: {
         default: "h-10 px-4 py-4",
-        sm: "h-8 rounded-md px-3 text-xs",
-        lg: "h-12 font-semibold px-8 py-6",
+        sm: "h-8 px-3 py-3 text-xs",
+        lg: "h-12 border-2 rounded-md font-semibold px-8 py-6",
         icon: "h-10 w-10",
       },
     },

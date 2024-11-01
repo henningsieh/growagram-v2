@@ -12,6 +12,33 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      container: {
+        center: true, // Center the container
+        padding: "1rem", // Optional: add padding
+        screens: {
+          sm: "100%", // Full width for small screens
+          md: "100%", // Full width for medium screens
+          lg: "1024px", // Set maximum width for large screens
+          xl: "1024px", // Override to keep the same max width
+          "2xl": "1024px", // Override for larger screens as well
+        },
+      },
+      fontSize: {
+        // Custom font sizes
+        xs: ["0.75rem", { lineHeight: "1rem" }], // 12px
+        sm: ["0.875rem", { lineHeight: "1.25rem" }], // 14px
+        base: ["1rem", { lineHeight: "1.5rem" }], // 16px
+        lg: ["1.125rem", { lineHeight: "1.75rem" }], // 18px
+        xl: ["1.25rem", { lineHeight: "1.75rem" }], // 20px
+        "2xl": ["1.5rem", { lineHeight: "2rem" }], // 24px
+        "3xl": ["1.875rem", { lineHeight: "2.25rem" }], // 30px
+        "4xl": ["2.25rem", { lineHeight: "2.5rem" }], // 36px
+        "5xl": ["3rem", { lineHeight: "1" }], // 48px
+        "6xl": ["3.75rem", { lineHeight: "1" }], // 60px
+        "7xl": ["4.5rem", { lineHeight: "1" }], // 72px
+        "8xl": ["6rem", { lineHeight: "1" }], // 96px
+        "9xl": ["8rem", { lineHeight: "1" }], // 128px
+      },
       colors: {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",

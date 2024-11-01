@@ -35,15 +35,16 @@ import { Separator } from "~/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { formatDate } from "~/lib/utils";
 
-interface Plant {
+export interface Plant {
   id: string;
   strain: string;
   growPhase: string;
 }
 
-interface Grow {
+export interface Grow {
   id: string;
   name: string;
+  plants: Plant[];
   startDate: Date;
   type: "indoor" | "outdoor";
 }

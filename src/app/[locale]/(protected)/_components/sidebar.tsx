@@ -102,8 +102,8 @@ const data = {
           url: "/grows",
         },
         {
-          title: "Create New Grow", // Easily add new grows
-          url: "#",
+          title: "Connect Plants", // Easily add new grows
+          url: "/grows/123/connect-plants",
         },
         {
           title: "Grow History", // Check history of completed grows
