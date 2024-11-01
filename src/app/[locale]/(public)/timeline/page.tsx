@@ -14,8 +14,10 @@ async function getPosts() {
       grow: {
         id: "g1",
         name: "Summer Summer Summer Summer Summer Grow 2023",
+        image: "/images/IMG_20241005_062601~2.jpg",
         plants: [],
         startDate: new Date(2024, 8, 12),
+        updatedAt: new Date(2024, 10, 30),
         type: "outdoor" as const,
       },
       plants: [
