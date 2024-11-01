@@ -1,14 +1,48 @@
-import { useTranslations } from "next-intl";
-import React from "react";
+"use client";
+
+import { useState } from "react";
+import { Grow } from "~/components/features/timeline/post";
+import { GrowCard } from "~/components/grow/grow-card";
 import PageHeader from "~/components/layouts/page-header";
 
-function Grows() {
-  const t = useTranslations("Dashboard.Grows");
+// Mock data for multiple grows
+const mockGrows: Grow[] = [
+  {
+    id: "1",
+    name: "Indoor Grow 2024",
+    image: "/images/IMG_20241005_062601~2.jpg",
+    startDate: new Date("2024-01-01"),
+    updatedAt: new Date("2024-09-16"),
+    type: "indoor",
+    plants: [
+      { id: "p1", strain: "Northern Lights", growPhase: "vegetation" },
+      { id: "p2", strain: "White Widow", growPhase: "flowering" },
+    ],
+  },
+  {
+    id: "2",
+    name: "Outdoor Summer Grow",
+    image: "/images/IMG_20241020_102123.jpg",
+    startDate: new Date("2024-05-01"),
+    updatedAt: new Date("2024-10-31"),
+    type: "outdoor",
+    plants: [
+      { id: "p3", strain: "Blue Dream", growPhase: "seedling" },
+      { id: "p4", strain: "Girl Scout Cookies", growPhase: "vegetation" },
+    ],
+  },
+];
+
+export default function MyGrowsPage() {
+  const [grows, setGrows] = useState<Grow[]>(mockGrows);
+
   return (
-    <PageHeader title={t("your-grows")} subtitle={``}>
-      <></>
+    <PageHeader title="My Grows" subtitle="View and manage your current grows">
+      <div className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-2">
+        {grows.map((grow) => (
+          <GrowCard key={grow.id} grow={grow} showUnassignButton={false} />
+        ))}
+      </div>
     </PageHeader>
   );
 }
-
-export default Grows;

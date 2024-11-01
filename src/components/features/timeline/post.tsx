@@ -44,8 +44,10 @@ export interface Plant {
 export interface Grow {
   id: string;
   name: string;
+  image: string;
   plants: Plant[];
   startDate: Date;
+  updatedAt: Date;
   type: "indoor" | "outdoor";
 }
 
