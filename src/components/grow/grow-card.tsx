@@ -3,11 +3,13 @@
 import { format } from "date-fns";
 import { AnimatePresence, motion } from "framer-motion";
 import {
-  ChartBar,
+  ChartColumn,
   Flower2,
+  FolderOutput,
   Heart,
   MessageCircle,
-  Share2,
+  MinusSquare,
+  Share,
   User2,
 } from "lucide-react";
 import Image from "next/image";
@@ -31,6 +33,7 @@ interface GrowCardProps {
   grower?: {
     name: string;
     username: string;
+    email: string;
     avatar?: string;
   };
   stats?: {
@@ -45,8 +48,10 @@ export function GrowCard({
   onUnassignPlant,
   showUnassignButton = true,
   grower = {
-    name: "Anonymous Grower",
-    username: "anon",
+    name: "Django ElRey 🌱",
+    username: "django",
+    email: "django@growagram.com",
+    avatar: "/images/XYUV-dwm_400x400.jpg",
   },
   stats = {
     comments: 0,
@@ -90,7 +95,7 @@ export function GrowCard({
         onMouseLeave={() => setIsImageHovered(false)}
       >
         <Image
-          src="/placeholder.svg?height=400&width=800"
+          src="/images/IMG_20241020_102123.jpg?height=400&width=800"
           alt={grow.name}
           className="object-cover transition-transform duration-300"
           style={{
@@ -104,10 +109,14 @@ export function GrowCard({
       <CardContent className="space-y-4 pt-4">
         <div>
           <h3 className="text-xl font-bold">{grow.name}</h3>
-          <CardDescription className="mt-1 space-y-1">
-            <p>Started on {format(grow.startDate, "PPP")}</p>
+          <CardDescription>
+            <span className="block">
+              Started on {format(grow.startDate, "PPP")}
+            </span>
             {grow.updatedAt && (
-              <p>Last updated {format(grow.updatedAt, "PPP")}</p>
+              <span className="block">
+                Last updated {format(grow.updatedAt, "PPP")}
+              </span>
             )}
           </CardDescription>
         </div>
@@ -141,6 +150,7 @@ export function GrowCard({
                         size="sm"
                         onClick={() => onUnassignPlant(plant.id)}
                       >
+                        <MinusSquare strokeWidth={3} size={14} />
                         Unassign
                       </Button>
                     )}
@@ -164,7 +174,7 @@ export function GrowCard({
             <span>{stats.comments}</span>
           </Button>
           <Button variant="ghost" size="sm" className="flex items-center gap-1">
-            <ChartBar className="h-4 w-4" />
+            <ChartColumn className="h-4 w-4" />
             <span>{stats.views}</span>
           </Button>
           <Button
@@ -181,7 +191,7 @@ export function GrowCard({
             <span>{isLiked ? stats.likes + 1 : stats.likes}</span>
           </Button>
           <Button variant="ghost" size="sm" className="flex items-center gap-1">
-            <Share2 className="h-4 w-4" />
+            <Share className="h-4 w-4" />
           </Button>
         </div>
       </CardContent>

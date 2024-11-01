@@ -10,6 +10,7 @@ const mockGrows: Grow[] = [
   {
     id: "1",
     name: "Indoor Grow 2024",
+    image: "/images/IMG_20241005_062601~2.jpg",
     startDate: new Date("2024-01-01"),
     updatedAt: new Date("2024-09-16"),
     type: "indoor",
@@ -21,6 +22,7 @@ const mockGrows: Grow[] = [
   {
     id: "2",
     name: "Outdoor Summer Grow",
+    image: "/images/IMG_20241020_102123.jpg",
     startDate: new Date("2024-05-01"),
     updatedAt: new Date("2024-10-31"),
     type: "outdoor",

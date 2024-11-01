@@ -74,9 +74,10 @@ import { Link, usePathname } from "~/lib/i18n/routing";
 // This is sample data.
 const data = {
   user: {
-    name: "Django ElRey 🌱", // Placeholder user
+    name: "Django ElRey 🌱",
+    username: "django",
     email: "django@growagram.com",
-    avatar: "/images/XYUV-dwm_400x400.jpg", // Example avatar
+    avatar: "/images/XYUV-dwm_400x400.jpg",
   },
   teams: [
     {
@@ -102,8 +103,8 @@ const data = {
           url: "/grows",
         },
         {
-          title: "Connect Plants", // Easily add new grows
-          url: "/grows/123/connect-plants",
+          title: "Assign Plants", // Easily add new grows
+          url: "/grows/123/assign-plants",
         },
         {
           title: "Grow History", // Check history of completed grows
