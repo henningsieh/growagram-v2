@@ -106,85 +106,83 @@ export default function ConnectPlantsPage() {
       subtitle={`Assign or unassign plants to/from ${grow.name}`}
     >
       <div className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-2">
-        <div>
-          <Card>
-            <CardHeader>
-              <CardTitle>Available Plants (unassigned)</CardTitle>
-              <CardDescription>
-                Select plants to assign to this Grow
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <Command className="rounded-lg border shadow-md">
-                <CommandInput
-                  placeholder="Search plants..."
-                  value={searchQuery}
-                  onValueChange={setSearchQuery}
-                />
-                <CommandList>
-                  <CommandEmpty>No plants found.</CommandEmpty>
-                  <CommandGroup>
-                    <AnimatePresence>
-                      {availablePlants
-                        .filter(
-                          (p) =>
-                            !grow.plants.some((gp) => gp.id === p.id) &&
-                            (searchQuery === "" ||
-                              p.strain
-                                .toLowerCase()
-                                .includes(searchQuery.toLowerCase())),
-                        )
-                        .map((plant) => (
-                          <motion.div
-                            key={plant.id}
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            exit={{ opacity: 0, x: 20 }}
-                            transition={{ duration: 0.3 }}
+        <Card>
+          <CardHeader>
+            <CardTitle>Available Plants (unassigned)</CardTitle>
+            <CardDescription>
+              Select plants to assign to this Grow
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Command className="rounded-lg border shadow-md">
+              <CommandInput
+                placeholder="Search plants..."
+                value={searchQuery}
+                onValueChange={setSearchQuery}
+              />
+              <CommandList>
+                <CommandEmpty>No plants found.</CommandEmpty>
+                <CommandGroup>
+                  <AnimatePresence>
+                    {availablePlants
+                      .filter(
+                        (p) =>
+                          !grow.plants.some((gp) => gp.id === p.id) &&
+                          (searchQuery === "" ||
+                            p.strain
+                              .toLowerCase()
+                              .includes(searchQuery.toLowerCase())),
+                      )
+                      .map((plant) => (
+                        <motion.div
+                          key={plant.id}
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          exit={{ opacity: 0, x: 20 }}
+                          transition={{ duration: 0.3 }}
+                        >
+                          <CommandItem
+                            onSelect={() => handleTogglePlant(plant.id)}
+                            className="cursor-pointer"
                           >
-                            <CommandItem
-                              onSelect={() => handleTogglePlant(plant.id)}
-                              className="cursor-pointer"
+                            <div
+                              className={`mr-2 flex h-4 w-4 items-center justify-center rounded-sm border ${
+                                selectedPlants.has(plant.id)
+                                  ? "border-primary bg-primary"
+                                  : "border-primary"
+                              }`}
                             >
-                              <div
-                                className={`mr-2 flex h-4 w-4 items-center justify-center rounded-sm border ${
-                                  selectedPlants.has(plant.id)
-                                    ? "border-primary bg-primary"
-                                    : "border-primary"
-                                }`}
-                              >
-                                {selectedPlants.has(plant.id) && (
-                                  <Check className="h-3 w-3 text-primary-foreground" />
-                                )}
-                              </div>
-                              <Flower2 className="mr-2 h-4 w-4" />
-                              <span>{plant.strain}</span>
-                              <Badge
-                                variant="secondary"
-                                className="ml-auto uppercase"
-                              >
-                                {plant.growPhase}
-                              </Badge>
-                            </CommandItem>
-                          </motion.div>
-                        ))}
-                    </AnimatePresence>
-                  </CommandGroup>
-                </CommandList>
-              </Command>
-              <Button
-                onClick={handleConnectPlants}
-                disabled={selectedPlants.size === 0}
-                className="w-full"
-              >
-                <Workflow />
-                Assign Selected Plants to Grow
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
+                              {selectedPlants.has(plant.id) && (
+                                <Check className="h-3 w-3 text-primary-foreground" />
+                              )}
+                            </div>
+                            <Flower2 className="mr-2 h-4 w-4" />
+                            <span>{plant.strain}</span>
+                            <Badge
+                              variant="secondary"
+                              className="ml-auto uppercase"
+                            >
+                              {plant.growPhase}
+                            </Badge>
+                          </CommandItem>
+                        </motion.div>
+                      ))}
+                  </AnimatePresence>
+                </CommandGroup>
+              </CommandList>
+            </Command>
+            <Button
+              onClick={handleConnectPlants}
+              disabled={selectedPlants.size === 0}
+              className="w-full"
+            >
+              <Workflow />
+              Assign Selected Plants to Grow
+            </Button>
+          </CardContent>
+        </Card>
 
-        <Card className="">
+        <Card>
           <CardHeader>
             <CardTitle className="text-lg">{grow.name}</CardTitle>
             <CardDescription>
