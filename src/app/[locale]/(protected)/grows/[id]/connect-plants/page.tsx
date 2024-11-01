@@ -3,9 +3,10 @@
 // src/app/[locale]/(protected)/grows/[id]/connect-plants/page.tsx:
 // import { useParams } from "next/navigation"
 import { AnimatePresence, motion } from "framer-motion";
-import { Check, Flower2, Leaf } from "lucide-react";
+import { Check, Flower2, Workflow } from "lucide-react";
 import { useState } from "react";
 import { Grow, Plant } from "~/components/features/timeline/post";
+import PageHeader from "~/components/layouts/page-header";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import {
@@ -64,7 +65,6 @@ export default function ConnectPlantsPage() {
     }
     setSelectedPlants(newSelected);
   };
-
   const handleConnectPlants = () => {
     const plantsToConnect = availablePlants.filter((p) =>
       selectedPlants.has(p.id),
@@ -79,8 +79,8 @@ export default function ConnectPlantsPage() {
     );
     setSelectedPlants(new Set());
     toast({
-      title: "Plants Connected",
-      description: `Successfully connected ${plantsToConnect.length} plants to ${grow.name}`,
+      title: "Plants Assigned",
+      description: `Successfully assigned ${plantsToConnect.length} plants to ${grow.name}`,
     });
   };
 
@@ -94,102 +94,101 @@ export default function ConnectPlantsPage() {
       setGrow(updatedGrow);
       setAvailablePlants((prevAvailable) => [...prevAvailable, plantToRemove]);
       toast({
-        title: "Plant Removed",
-        description:
-          "Successfully removed plant from grow and added back to available plants.",
+        title: "Plant Unassigned",
+        description: "Plant has been unassigned from this Grow.",
       });
     }
   };
 
   return (
-    <div className="container mx-auto space-y-8 py-6">
-      <div className="flex items-center justify-between">
+    <PageHeader
+      title={"Assign Plants to your Grow"}
+      subtitle={`Assign or unassign plants to/from ${grow.name}`}
+    >
+      <div className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-2">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Connect Plants</h1>
-          <p className="text-muted-foreground">
-            Add or remove plants from {grow.name}
-          </p>
-        </div>
-        <Button
-          onClick={handleConnectPlants}
-          disabled={selectedPlants.size === 0}
-        >
-          Connect Selected Plants
-        </Button>
-      </div>
-
-      <div className="mx-auto grid max-w-4xl gap-6 lg:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>Available Plants</CardTitle>
-            <CardDescription>
-              Select plants to connect to this grow
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Command className="rounded-lg border shadow-md">
-              <CommandInput
-                placeholder="Search plants..."
-                value={searchQuery}
-                onValueChange={setSearchQuery}
-              />
-              <CommandList>
-                <CommandEmpty>No plants found.</CommandEmpty>
-                <CommandGroup>
-                  <AnimatePresence>
-                    {availablePlants
-                      .filter(
-                        (p) =>
-                          !grow.plants.some((gp) => gp.id === p.id) &&
-                          (searchQuery === "" ||
-                            p.strain
-                              .toLowerCase()
-                              .includes(searchQuery.toLowerCase())),
-                      )
-                      .map((plant) => (
-                        <motion.div
-                          key={plant.id}
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          exit={{ opacity: 0, x: 20 }}
-                          transition={{ duration: 0.3 }}
-                        >
-                          <CommandItem
+          <Card>
+            <CardHeader>
+              <CardTitle>Available Plants (unassigned)</CardTitle>
+              <CardDescription>
+                Select plants to assign to this Grow
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Command className="rounded-lg border shadow-md">
+                <CommandInput
+                  placeholder="Search plants..."
+                  value={searchQuery}
+                  onValueChange={setSearchQuery}
+                />
+                <CommandList>
+                  <CommandEmpty>No plants found.</CommandEmpty>
+                  <CommandGroup>
+                    <AnimatePresence>
+                      {availablePlants
+                        .filter(
+                          (p) =>
+                            !grow.plants.some((gp) => gp.id === p.id) &&
+                            (searchQuery === "" ||
+                              p.strain
+                                .toLowerCase()
+                                .includes(searchQuery.toLowerCase())),
+                        )
+                        .map((plant) => (
+                          <motion.div
                             key={plant.id}
-                            onSelect={() => handleTogglePlant(plant.id)}
-                            className="cursor-pointer"
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: 20 }}
+                            transition={{ duration: 0.3 }}
                           >
-                            <div
-                              className={`mr-2 flex h-4 w-4 items-center justify-center rounded-sm border ${
-                                selectedPlants.has(plant.id)
-                                  ? "border-primary bg-primary"
-                                  : "border-primary"
-                              }`}
+                            <CommandItem
+                              onSelect={() => handleTogglePlant(plant.id)}
+                              className="cursor-pointer"
                             >
-                              {selectedPlants.has(plant.id) && (
-                                <Check className="h-3 w-3 text-primary-foreground" />
-                              )}
-                            </div>
-                            <Flower2 className="mr-2 h-4 w-4" />
-                            <span>{plant.strain}</span>
-                            <Badge variant="secondary" className="ml-auto">
-                              {plant.growPhase}
-                            </Badge>
-                          </CommandItem>
-                        </motion.div>
-                      ))}
-                  </AnimatePresence>
-                </CommandGroup>
-              </CommandList>
-            </Command>
-          </CardContent>
-        </Card>
+                              <div
+                                className={`mr-2 flex h-4 w-4 items-center justify-center rounded-sm border ${
+                                  selectedPlants.has(plant.id)
+                                    ? "border-primary bg-primary"
+                                    : "border-primary"
+                                }`}
+                              >
+                                {selectedPlants.has(plant.id) && (
+                                  <Check className="h-3 w-3 text-primary-foreground" />
+                                )}
+                              </div>
+                              <Flower2 className="mr-2 h-4 w-4" />
+                              <span>{plant.strain}</span>
+                              <Badge
+                                variant="secondary"
+                                className="ml-auto uppercase"
+                              >
+                                {plant.growPhase}
+                              </Badge>
+                            </CommandItem>
+                          </motion.div>
+                        ))}
+                    </AnimatePresence>
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+              <Button
+                onClick={handleConnectPlants}
+                disabled={selectedPlants.size === 0}
+                className="w-full"
+              >
+                <Workflow />
+                Assign Selected Plants to Grow
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
 
-        <Card>
+        <Card className="">
           <CardHeader>
-            <CardTitle>{grow.name} </CardTitle>
+            <CardTitle className="text-lg">{grow.name}</CardTitle>
             <CardDescription>
-              Currently connected plants in this grow
+              Plants currently assigned to this grow
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -203,36 +202,40 @@ export default function ConnectPlantsPage() {
                     exit={{ opacity: 0, x: 20 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <Card className="flex items-center justify-between rounded-lg border p-4">
-                      <div className="flex items-center gap-3">
-                        <Leaf className="h-4 w-4 text-primary" />
-                        <div>
-                          <p className="font-medium">{plant.strain}</p>
-                          <p className="text-sm text-muted-foreground">
-                            {plant.growPhase}
-                          </p>
+                    <Card className="border-primary/40 bg-background text-foreground shadow-sm">
+                      <CardContent className="flex items-center justify-between p-4">
+                        <div className="flex items-center gap-3">
+                          <Flower2 strokeWidth={0.9} className="h-12 w-12" />
+                          <div>
+                            <p className="text-base font-semibold">
+                              {plant.strain}
+                            </p>
+                            <Badge variant="secondary" className="uppercase">
+                              {plant.growPhase}
+                            </Badge>
+                          </div>
                         </div>
-                      </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleRemovePlant(plant.id)}
-                      >
-                        Remove
-                      </Button>
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => handleRemovePlant(plant.id)}
+                        >
+                          Unassign
+                        </Button>
+                      </CardContent>
                     </Card>
                   </motion.div>
                 ))}
               </AnimatePresence>
               {grow.plants.length === 0 && (
                 <div className="py-8 text-center text-muted-foreground">
-                  No plants connected yet
+                  No plants assigned yet
                 </div>
               )}
             </div>
           </CardContent>
         </Card>
       </div>
-    </div>
+    </PageHeader>
   );
 }
