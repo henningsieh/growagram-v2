@@ -6,10 +6,17 @@ import { auth } from "~/lib/auth";
 import { db } from "~/lib/db";
 import { images } from "~/lib/db/schema";
 import { Link } from "~/lib/i18n/routing";
+import { formatDate, formatTime } from "~/lib/utils";
 
 import PageHeader from "../../../../components/layouts/page-header";
 
-export default async function ImagesPage() {
+export default async function ImagesPage(props: {
+  params: { locale: string };
+}) {
+  // Await params before accessing locale
+  const { locale } = await (props.params as unknown as Promise<
+    typeof props.params
+  >);
   const session = await auth();
   if (!session?.user?.id) return null;
 
@@ -43,7 +50,12 @@ export default async function ImagesPage() {
             </div>
             <div className="p-3">
               <p className="text-sm text-gray-500">
-                Uploaded on {new Date(image.createdAt).toLocaleDateString()}
+                Uploaded:{" "}
+                {formatDate(image.createdAt, locale, {
+                  includeYear: true,
+                })}
+                {" at "}
+                {formatTime(image.createdAt, locale, { includeSeconds: true })}
               </p>
             </div>
           </div>
