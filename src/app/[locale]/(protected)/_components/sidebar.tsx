@@ -4,6 +4,7 @@ import {
   BadgeCheck,
   Bell,
   CalendarCheck,
+  Camera,
   Cannabis,
   ChevronRight,
   ChevronsUpDown,
@@ -132,21 +133,17 @@ const data = {
       ],
     },
     {
-      title: "Posts",
+      title: "Images",
       url: "#",
-      icon: Clipboard, // Icon for updates, posts, or activity feed
+      icon: Camera, // Icon for Photos
       items: [
         {
-          title: "My Posts", // View and manage updates on grows
-          url: "#",
+          title: "My Images", // View and manage updates on grows
+          url: "/images",
         },
         {
-          title: "Add Post", // Add an update (watering, pruning, etc.)
-          url: "#",
-        },
-        {
-          title: "Ask Question", // Ask the community or other growers
-          url: "#",
+          title: "Add Image", // Add an update (watering, pruning, etc.)
+          url: "images/upload",
         },
       ],
     },

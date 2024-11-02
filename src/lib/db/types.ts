@@ -4,6 +4,8 @@ import type { InferInsertModel, InferSelectModel } from "drizzle-orm";
 import {
   accounts,
   authenticators,
+  images,
+  plants,
   posts,
   sessions,
   users,
@@ -39,3 +41,11 @@ export type NewAuthenticator = InferInsertModel<typeof authenticators>;
 // Post types
 export type Post = InferSelectModel<typeof posts>;
 export type NewPost = InferInsertModel<typeof posts>;
+
+// Image types
+export type Image = InferSelectModel<typeof images>;
+export type NewImage = InferInsertModel<typeof images>;
+
+// Plant types
+export type Plant = InferSelectModel<typeof plants>;
+export type NewPlant = InferInsertModel<typeof plants>;

@@ -27,3 +27,30 @@ export function formatDate<Locale extends string = "en" | "de">(
 
   return new Intl.DateTimeFormat(locale, formatOptions).format(date);
 }
+
+export function formatTime<Locale extends string = "en" | "de">(
+  time: Date,
+  locale: Locale,
+  options: TimeFormatOptions = {},
+): string {
+  const { includeSeconds = false, includeMinutes = true } = options;
+
+  // Use Intl.DateTimeFormat to determine whether the locale defaults to a 12-hour or 24-hour format
+  const testFormat = new Intl.DateTimeFormat(locale, { hour: "numeric" });
+  const inferredHour12 = testFormat.resolvedOptions().hour12 ?? false;
+
+  const formatOptions: Intl.DateTimeFormatOptions = {
+    hour: "2-digit",
+    minute: includeMinutes ? "2-digit" : undefined,
+    second: includeSeconds ? "2-digit" : undefined,
+    hour12: inferredHour12, // Explicitly use the inferred hour12 setting
+  };
+
+  return new Intl.DateTimeFormat(locale, formatOptions).format(time);
+}
+
+// Example options interface
+interface TimeFormatOptions {
+  includeSeconds?: boolean;
+  includeMinutes?: boolean;
+}
