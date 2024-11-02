@@ -9,6 +9,7 @@ import { MainNavigationBar } from "~/components/layouts/navbar";
 import { ThemeProvider } from "~/components/layouts/theme-provider";
 import { Toaster } from "~/components/ui/toaster";
 import { routing } from "~/lib/i18n/routing";
+import { TRPCReactProvider } from "~/lib/trpc/react";
 import "~/styles/globals.css";
 
 const geistSans = localFont({
@@ -53,27 +54,29 @@ export default async function RootLayout(props: LayoutProps) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-background font-sans antialiased`}
       >
-        <NextIntlClientProvider messages={messages}>
-          <SessionProvider>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="system"
-              enableSystem
-              disableTransitionOnChange
-            >
-              <div className="relative flex min-h-screen flex-col">
-                <header className="sticky top-0 z-50 w-full border-b bg-background backdrop-blur supports-[backdrop-filter]:bg-background">
-                  <div className="relative flex h-14 items-center justify-center">
-                    <MainNavigationBar />
-                  </div>
-                </header>
-                <main className="flex-1">{props.children}</main>
-              </div>
+        <TRPCReactProvider>
+          <NextIntlClientProvider messages={messages}>
+            <SessionProvider>
+              <ThemeProvider
+                attribute="class"
+                defaultTheme="system"
+                enableSystem
+                disableTransitionOnChange
+              >
+                <div className="relative flex min-h-screen flex-col">
+                  <header className="sticky top-0 z-50 w-full border-b bg-background backdrop-blur supports-[backdrop-filter]:bg-background">
+                    <div className="relative flex h-14 items-center justify-center">
+                      <MainNavigationBar />
+                    </div>
+                  </header>
+                  <main className="flex-1">{props.children}</main>
+                </div>
 
-              <Toaster />
-            </ThemeProvider>
-          </SessionProvider>
-        </NextIntlClientProvider>
+                <Toaster />
+              </ThemeProvider>
+            </SessionProvider>
+          </NextIntlClientProvider>
+        </TRPCReactProvider>
       </body>
     </html>
   );
