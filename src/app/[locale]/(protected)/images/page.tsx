@@ -22,55 +22,63 @@ export default async function ImagesPage(props: {
   const session = await auth();
   if (!session?.user?.id) return null;
 
-  const hello = api.image.getUserImages;
-
-  const userImages = await db.query.images.findMany({
-    where: eq(images.ownerId, session.user.id),
-    orderBy: (images, { desc }) => [desc(images.createdAt)],
+  const [tRPCresult] = api.image.getUserImages.useSuspenseQuery({
+    cursor: null,
+    limit: undefined,
   });
+  const userImages = tRPCresult.images;
+
+  // const userImages = await db.query.images.findMany({
+  //   where: eq(images.ownerId, session.user.id),
+  //   orderBy: (images, { desc }) => [desc(images.createdAt)],
+  // });
 
   return (
-    <PageHeader
-      title="My Images"
-      subtitle="View and manage your current images"
-    >
-      <Button asChild variant={"secondary"}>
-        <Link href="/images/upload">Upload New Image</Link>
-      </Button>
+    <HydrateClient>
+      <PageHeader
+        title="My Images"
+        subtitle="View and manage your current images"
+      >
+        <Button asChild variant={"secondary"}>
+          <Link href="/images/upload">Upload New Image</Link>
+        </Button>
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {userImages.map((image) => (
-          <div
-            key={image.id}
-            className="overflow-hidden rounded-lg border shadow-sm"
-          >
-            <div className="relative h-48">
-              <Image
-                src={image.imageUrl}
-                alt=""
-                fill
-                className="object-cover"
-              />
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {userImages.map((image) => (
+            <div
+              key={image.id}
+              className="overflow-hidden rounded-lg border shadow-sm"
+            >
+              <div className="relative h-48">
+                <Image
+                  src={image.imageUrl}
+                  alt=""
+                  fill
+                  className="object-cover"
+                />
+              </div>
+              <div className="p-3">
+                <p className="text-sm text-gray-500">
+                  Uploaded:{" "}
+                  {formatDate(image.createdAt, locale, {
+                    includeYear: true,
+                  })}
+                  {" at "}
+                  {formatTime(image.createdAt, locale, {
+                    includeSeconds: true,
+                  })}
+                </p>
+              </div>
             </div>
-            <div className="p-3">
-              <p className="text-sm text-gray-500">
-                Uploaded:{" "}
-                {formatDate(image.createdAt, locale, {
-                  includeYear: true,
-                })}
-                {" at "}
-                {formatTime(image.createdAt, locale, { includeSeconds: true })}
-              </p>
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
 
-      {userImages.length === 0 && (
-        <p className="mt-8 text-center text-gray-500">
-          You haven&apos;t uploaded any images yet.
-        </p>
-      )}
-    </PageHeader>
+        {userImages.length === 0 && (
+          <p className="mt-8 text-center text-gray-500">
+            You haven&apos;t uploaded any images yet.
+          </p>
+        )}
+      </PageHeader>
+    </HydrateClient>
   );
 }

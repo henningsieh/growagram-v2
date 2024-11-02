@@ -1,3 +1,4 @@
+// src/server/api/routers/image.ts:
 import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { images } from "~/lib/db/schema";

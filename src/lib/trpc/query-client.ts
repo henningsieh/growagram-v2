@@ -1,6 +1,7 @@
+// src/lib/trpc/query-client.ts:
 import {
-  defaultShouldDehydrateQuery,
   QueryClient,
+  defaultShouldDehydrateQuery,
 } from "@tanstack/react-query";
 import SuperJSON from "superjson";
 
