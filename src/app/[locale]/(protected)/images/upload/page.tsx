@@ -17,11 +17,11 @@ export default function ImageUpload() {
     try {
       setUploading(true);
 
-      // Create a FormData object and append the file
+      // 1. Create a FormData object and append the file
       const formData = new FormData();
       formData.append("file", file);
 
-      // Make a POST request to the server-side API route
+      // 2. Make a POST request to the server-side API route
       const uploadResponse = await fetch("/api/upload", {
         method: "POST",
         body: formData,
@@ -33,15 +33,29 @@ export default function ImageUpload() {
 
       const { imageUrl } = await uploadResponse.json();
 
-      // Optionally: Save the image record in your database
-      // (This can be moved to a separate API route if needed)
+      // 3. Save the image record in the database
+      const dbResponse = await fetch("/api/images", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ imageUrl }),
+      });
 
-      // Redirect to another page or refresh
+      if (!dbResponse.ok) {
+        throw new Error("Failed to save image record");
+      }
+
+      // 4. Navigate to images page
       router.push("/images");
       router.refresh();
     } catch (error) {
       console.error("Error uploading image:", error);
-      alert("Failed to upload image");
+      if (error instanceof Error) {
+        alert(`Failed to upload image: ${error.message}`);
+      } else {
+        alert("Failed to upload image");
+      }
     } finally {
       setUploading(false);
     }

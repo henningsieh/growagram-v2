@@ -1,10 +1,13 @@
 // src/app/[locale]/(protected)/images/page.tsx
 import { eq } from "drizzle-orm";
 import Image from "next/image";
+import { Button } from "~/components/ui/button";
 import { auth } from "~/lib/auth";
 import { db } from "~/lib/db";
 import { images } from "~/lib/db/schema";
 import { Link } from "~/lib/i18n/routing";
+
+import PageHeader from "../../../../components/layouts/page-header";
 
 export default async function ImagesPage() {
   const session = await auth();
@@ -16,16 +19,13 @@ export default async function ImagesPage() {
   });
 
   return (
-    <div className="mx-auto max-w-6xl p-4">
-      <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold">My Images</h1>
-        <Link
-          href="/images/upload"
-          className="rounded bg-blue-500 px-4 py-2 text-white"
-        >
-          Upload New Image
-        </Link>
-      </div>
+    <PageHeader
+      title="My Images"
+      subtitle="View and manage your current images"
+    >
+      <Button asChild variant={"secondary"}>
+        <Link href="/images/upload">Upload New Image</Link>
+      </Button>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
         {userImages.map((image) => (
@@ -55,6 +55,6 @@ export default async function ImagesPage() {
           You haven&apos;t uploaded any images yet.
         </p>
       )}
-    </div>
+    </PageHeader>
   );
 }
