@@ -6,6 +6,8 @@ import { auth } from "~/lib/auth";
 import { db } from "~/lib/db";
 import { images } from "~/lib/db/schema";
 import { Link } from "~/lib/i18n/routing";
+import { api } from "~/lib/trpc/react";
+import { HydrateClient } from "~/lib/trpc/server";
 import { formatDate, formatTime } from "~/lib/utils";
 
 import PageHeader from "../../../../components/layouts/page-header";
@@ -19,6 +21,8 @@ export default async function ImagesPage(props: {
   >);
   const session = await auth();
   if (!session?.user?.id) return null;
+
+  const hello = api.image.getUserImages;
 
   const userImages = await db.query.images.findMany({
     where: eq(images.ownerId, session.user.id),
