@@ -1,15 +1,13 @@
-// src/app/actions/upload.ts
 "use server";
 
+// src/app/actions/upload.ts
 import { z } from "zod";
 import { auth } from "~/lib/auth";
 import cloudinary from "~/lib/cloudinary";
 import { db } from "~/lib/db";
 import { images } from "~/lib/db/schema";
 
-// src/app/actions/upload.ts
-
-const MAX_FILE_SIZE = 5000000; // 5MB
+const MAX_FILE_SIZE = 10000000; // 10MB
 const ACCEPTED_IMAGE_TYPES = [
   "image/jpeg",
   "image/jpg",
@@ -34,16 +32,11 @@ export async function uploadImage(formData: FormData) {
     throw new Error("No file provided");
   }
 
-  // Debug log
-  console.log("File type:", file.type);
-  console.log("File name:", file.name);
-  console.log("File size:", file.size);
-
   // More lenient MIME type check
   const isAcceptedType = ACCEPTED_IMAGE_TYPES.some(
-    (type) =>
+    (acceptedType) =>
       file.type.toLowerCase().startsWith("image/") ||
-      ACCEPTED_IMAGE_TYPES.includes(file.type.toLowerCase()),
+      acceptedType === file.type.toLowerCase(),
   );
 
   if (!isAcceptedType) {
