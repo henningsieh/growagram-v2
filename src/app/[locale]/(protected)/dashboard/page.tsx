@@ -1,13 +1,12 @@
-"use client";
-
 import { UserProfile } from "~/components/features/UserProfile";
-import { useAuthUser } from "~/hooks/use-authentication";
+import { auth } from "~/lib/auth";
+import { User } from "~/types";
 
-export default function Dashboard() {
-  const { user, loading, isAuthenticated } = useAuthUser();
+export default async function Dashboard() {
+  const session = await auth();
 
-  if (loading) return <div>Loading...</div>;
-  if (!isAuthenticated) return <div>Not authenticated</div>;
+  const user = session?.user as User;
+  if (!user) return null;
 
   return (
     <div className="grid min-h-screen grid-rows-[20px_1fr_20px] items-center justify-items-center gap-16 p-8 pb-20">

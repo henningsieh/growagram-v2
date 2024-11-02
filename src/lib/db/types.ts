@@ -10,13 +10,15 @@ import {
   verificationTokens,
 } from "./schema";
 
-// Base types from schema
+// Base User type from schema
 type FullUser = InferSelectModel<typeof users>;
 type FullNewUser = InferInsertModel<typeof users>;
 
-// Method 1: Using Omit utility type
+// Using Omit utility type to match Auth.js User type definition
 export type User = Omit<FullUser, "emailVerified">;
 export type NewUser = Omit<FullNewUser, "emailVerified">;
+
+// Base types from schema
 
 // Account types
 export type Account = InferSelectModel<typeof accounts>;
