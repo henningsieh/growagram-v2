@@ -7,17 +7,13 @@ import { useCallback, useEffect, useRef } from "react";
 import { Link } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import { formatDate, formatTime } from "~/lib/utils";
-import type { AppRouter } from "~/server/api/root";
+import type { AppRouter, UserImage } from "~/server/api/root";
 
 import { Button } from "../ui/button";
 import UserImagesLoadingGrid from "./loading-grid";
 
 export function ImageGrid() {
   const locale = useLocale();
-
-  type RouterOutput = inferRouterOutputs<AppRouter>;
-  type GetUserImagesOutput = RouterOutput["image"]["getUserImages"];
-  type UserImage = GetUserImagesOutput["images"][number];
 
   const {
     data,
@@ -66,10 +62,7 @@ export function ImageGrid() {
     return () => observer.disconnect();
   }, [onIntersect]);
 
-  // if (isFetching && userImages.length === 0) {
-  //   return <UserImagesLoadingGrid />;
-  // }
-
+  // Handling case if user hasn't uploaded any images
   if (!isFetching && userImages.length === 0) {
     return (
       <p className="mt-8 text-center text-gray-500">
