@@ -3,41 +3,82 @@
 import type { inferRouterOutputs } from "@trpc/server";
 import { useLocale } from "next-intl";
 import Image from "next/image";
+import { useCallback, useEffect, useRef } from "react";
 import { Link } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import { formatDate, formatTime } from "~/lib/utils";
-import type { AppRouter } from "~/server/api/root";
+import type { AppRouter, UserImage } from "~/server/api/root";
 
 import { Button } from "../ui/button";
+import UserImagesLoadingGrid from "./loading-grid";
 
 export function ImageGrid() {
-  type RouterOutput = inferRouterOutputs<AppRouter>;
-  type GetUserImagesOutput = RouterOutput["image"]["getUserImages"];
-  type UserImage = GetUserImagesOutput["images"][number];
-
   const locale = useLocale();
-  const { data, isLoading, hasNextPage, fetchNextPage, isFetchingNextPage } =
-    api.image.getUserImages.useInfiniteQuery(
-      {
-        limit: 2,
-      },
-      {
-        getNextPageParam: (lastPage) => lastPage.nextCursor,
-      },
-    );
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  const {
+    data,
+    isFetching,
+    isPending,
+    hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage,
+  } = api.image.getUserImages.useInfiniteQuery(
+    {
+      limit: 2,
+    },
+    {
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
+    },
+  );
 
   // Flatten all pages of images into a single array
   const userImages = data?.pages.flatMap((page) => page.images) ?? [];
 
+  // Intersection Observer callback
+  const onIntersect = useCallback(
+    (entries: IntersectionObserverEntry[]) => {
+      const firstEntry = entries[0];
+      if (firstEntry.isIntersecting && hasNextPage && !isFetchingNextPage) {
+        void fetchNextPage();
+      }
+    },
+    [fetchNextPage, hasNextPage, isFetchingNextPage],
+  );
+
+  const loadingRef = useRef<HTMLDivElement>(null);
+
+  // Set up intersection observer
+  useEffect(() => {
+    const observer = new IntersectionObserver(onIntersect, {
+      root: null, // Use viewport as root
+      rootMargin: "0px",
+      threshold: 0.01, // Trigger when even 10% of the element is visible
+    });
+
+    if (loadingRef.current) {
+      observer.observe(loadingRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [onIntersect]);
+
+  // Handling case if user hasn't uploaded any images
+  if (!isFetching && userImages.length === 0) {
+    return (
+      <p className="mt-8 text-center text-gray-500">
+        You haven&apos;t uploaded any images yet.
+      </p>
+    );
+  }
+
   return (
     <div className="space-y-4">
-      <Button asChild variant="secondary">
-        <Link href="/images/upload">Upload New Image</Link>
-      </Button>
+      <div className="flex items-end">
+        <Button asChild variant="link">
+          <Link href="/images/upload">Upload New Image</Link>
+        </Button>
+      </div>
+      {isPending && <UserImagesLoadingGrid />}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
         {userImages.map((image: UserImage) => (
           <div
@@ -69,24 +110,10 @@ export function ImageGrid() {
         ))}
       </div>
 
-      {userImages.length === 0 && (
-        <p className="mt-8 text-center text-gray-500">
-          You haven&apos;t uploaded any images yet.
-        </p>
-      )}
+      {hasNextPage && isFetchingNextPage && <UserImagesLoadingGrid />}
 
-      {hasNextPage && (
-        <div className="mt-4 flex justify-center">
-          <Button
-            size={"sm"}
-            variant={"outline"}
-            onClick={() => void fetchNextPage()}
-            disabled={isFetchingNextPage}
-          >
-            {isFetchingNextPage ? "Loading more..." : "Load More"}
-          </Button>
-        </div>
-      )}
+      {/* Intersection Observer target */}
+      {hasNextPage && <div ref={loadingRef}></div>}
     </div>
   );
 }
