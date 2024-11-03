@@ -1,34 +1,28 @@
 // src/app/[locale]/(protected)/images/page.tsx
+import type { inferRouterInputs } from "@trpc/server";
 import { ImageGrid } from "~/components/images/image-grid";
-import { Button } from "~/components/ui/button";
-import { auth } from "~/lib/auth";
-import { Link } from "~/lib/i18n/routing";
-import { HydrateClient } from "~/lib/trpc/server";
+import PageHeader from "~/components/layouts/page-header";
+import { api } from "~/lib/trpc/server";
+import type { AppRouter } from "~/server/api/root";
 
-import PageHeader from "../../../../components/layouts/page-header";
+export default async function ImagesPage() {
+  // Only define the types you need in the component
+  type GetUserImagesInput =
+    inferRouterInputs<AppRouter>["image"]["getUserImages"];
 
-export default async function ImagesPage(props: {
-  params: { locale: string };
-}) {
-  // Await params before accessing locale
-  const { locale } = await (props.params as unknown as Promise<
-    typeof props.params
-  >);
-  const session = await auth();
+  const getUserImagesInput: GetUserImagesInput = {
+    limit: 2,
+    cursor: null,
+  };
 
-  if (!session?.user?.id) return null;
+  void api.image.getUserImages.prefetch(getUserImagesInput);
 
   return (
-    <HydrateClient>
-      <PageHeader
-        title="My Images"
-        subtitle="View and manage your current images"
-      >
-        <Button asChild variant={"secondary"}>
-          <Link href="/images/upload">Upload New Image</Link>
-        </Button>
-        <ImageGrid locale={locale} />
-      </PageHeader>
-    </HydrateClient>
+    <PageHeader
+      title="My Images"
+      subtitle="View and manage your current images"
+    >
+      <ImageGrid />
+    </PageHeader>
   );
 }
