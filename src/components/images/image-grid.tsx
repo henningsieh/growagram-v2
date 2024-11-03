@@ -1,22 +1,18 @@
 "use client";
 
-import type { inferRouterOutputs } from "@trpc/server";
+// src/components/images/image-grid.tsx
 import { useLocale } from "next-intl";
 import Image from "next/image";
-import { Link } from "~/lib/i18n/routing";
+import { useCallback, useEffect, useRef } from "react";
 import { api } from "~/lib/trpc/react";
 import { formatDate, formatTime } from "~/lib/utils";
-import type { AppRouter } from "~/server/api/root";
-
-import { Button } from "../ui/button";
+import type { UserImage } from "~/server/api/root";
 
 export function ImageGrid() {
-  type RouterOutput = inferRouterOutputs<AppRouter>;
-  type GetUserImagesOutput = RouterOutput["image"]["getUserImages"];
-  type UserImage = GetUserImagesOutput["images"][number];
-
   const locale = useLocale();
-  const { data, isLoading, hasNextPage, fetchNextPage, isFetchingNextPage } =
+  const loadingRef = useRef<HTMLDivElement>(null);
+
+  const { data, isFetching, fetchNextPage, hasNextPage, isFetchingNextPage } =
     api.image.getUserImages.useInfiniteQuery(
       {
         limit: 2,
@@ -26,18 +22,45 @@ export function ImageGrid() {
       },
     );
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
   // Flatten all pages of images into a single array
   const userImages = data?.pages.flatMap((page) => page.images) ?? [];
 
+  // Intersection Observer callback
+  const onIntersect = useCallback(
+    (entries: IntersectionObserverEntry[]) => {
+      const firstEntry = entries[0];
+      if (firstEntry.isIntersecting && hasNextPage && !isFetchingNextPage) {
+        void fetchNextPage();
+      }
+    },
+    [fetchNextPage, hasNextPage, isFetchingNextPage],
+  );
+
+  // Set up intersection observer
+  useEffect(() => {
+    const observer = new IntersectionObserver(onIntersect, {
+      root: null, // Use viewport as root
+      rootMargin: "0px",
+      threshold: 0.1, // Trigger when even 10% of the element is visible
+    });
+
+    if (loadingRef.current) {
+      observer.observe(loadingRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [onIntersect]);
+
+  if (!isFetching && userImages.length === 0) {
+    return (
+      <p className="mt-8 text-center text-gray-500">
+        You haven&apos;t uploaded any images yet.
+      </p>
+    );
+  }
+
   return (
     <div className="space-y-4">
-      <Button asChild variant="secondary">
-        <Link href="/images/upload">Upload New Image</Link>
-      </Button>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
         {userImages.map((image: UserImage) => (
           <div
@@ -69,22 +92,12 @@ export function ImageGrid() {
         ))}
       </div>
 
-      {userImages.length === 0 && (
-        <p className="mt-8 text-center text-gray-500">
-          You haven&apos;t uploaded any images yet.
-        </p>
-      )}
-
+      {/* Intersection Observer target */}
       {hasNextPage && (
-        <div className="mt-4 flex justify-center">
-          <Button
-            size={"sm"}
-            variant={"outline"}
-            onClick={() => void fetchNextPage()}
-            disabled={isFetchingNextPage}
-          >
-            {isFetchingNextPage ? "Loading more..." : "Load More"}
-          </Button>
+        <div ref={loadingRef} className="mt-4 flex justify-center p-4">
+          {isFetchingNextPage && (
+            <div className="text-sm text-gray-500">Loading more images...</div>
+          )}
         </div>
       )}
     </div>
