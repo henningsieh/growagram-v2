@@ -1,14 +1,8 @@
 // src/server/api/routers/image.ts:
 import { desc, eq, inArray } from "drizzle-orm";
 import { z } from "zod";
-import {
-  createTRPCRouter,
-  protectedProcedure,
-  publicProcedure,
-} from "~/server/api/trpc";
-
-import { plants } from "../../../lib/db/schema";
-import { GetUserImagesInput } from "../root";
+import { plants } from "~/lib/db/schema";
+import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
 // Import the plants schema correctly
 
@@ -23,14 +17,6 @@ export const plantRouter = createTRPCRouter({
     )
     .query(async ({ ctx, input }) => {
       const userId = ctx.session.user.id as string; // Access the user ID from session
-
-      // Query the database for plants owned by the user, ordered by creation date
-      const plantssList = await ctx.db.query.plants.findMany({
-        where: eq(plants.ownerId, userId),
-        orderBy: (plants, { desc }) => [desc(plants.createdAt)],
-        limit: input.limit + 1, // Fetch one extra item to check if there's a next page
-        offset: input.cursor ?? 0,
-      });
 
       // Step 1: Fetch Plants Owned by User
       const userPlants = await ctx.db.query.plants.findMany({
@@ -62,17 +48,17 @@ export const plantRouter = createTRPCRouter({
           .map((plantImage) => imagesMap.get(plantImage.imageId)), // Get actual image objects
       }));
 
-      console.log(userPlantsWithImages);
+      console.log({ userPlantsWithImages });
 
       // Check if there is a next page
       let nextCursor: number | null = null;
-      if (plantssList.length > input.limit) {
+      if (userPlantsWithImages.length > input.limit) {
         nextCursor = (input.cursor ?? 0) + input.limit;
-        plantssList.pop(); // Remove the extra item
+        userPlantsWithImages.pop(); // Remove the extra item
       }
 
       return {
-        plants: plantssList,
+        plants: userPlantsWithImages,
         nextCursor,
       };
     }),

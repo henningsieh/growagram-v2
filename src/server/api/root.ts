@@ -24,6 +24,11 @@ export type GetUserImagesInput =
 export type GetUserImagesOutput = RouterOutput["image"]["getUserImages"];
 export type UserImage = GetUserImagesOutput["images"][number];
 
+export type GetUserPlantsInput =
+  inferRouterInputs<AppRouter>["plant"]["getUserPlants"];
+export type GetUserPlantsOutput = RouterOutput["plant"]["getUserPlants"];
+export type UserPlant = GetUserPlantsOutput["plants"][number];
+
 /**
  * Create a server-side caller for the tRPC API.
  * @example
