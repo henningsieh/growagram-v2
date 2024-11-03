@@ -3,6 +3,8 @@ import { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 import { imageRouter } from "~/server/api/routers/image";
 import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 
+import { plantRouter } from "./routers/plant";
+
 // export type definition of API
 export type AppRouter = typeof appRouter;
 type RouterOutput = inferRouterOutputs<AppRouter>;
@@ -14,6 +16,7 @@ type RouterOutput = inferRouterOutputs<AppRouter>;
  */
 export const appRouter = createTRPCRouter({
   image: imageRouter,
+  plant: plantRouter,
 });
 
 export type GetUserImagesInput =

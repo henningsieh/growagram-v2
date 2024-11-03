@@ -120,11 +120,11 @@ const data = {
       items: [
         {
           title: "My Plants", // View and manage all plants within grows
-          url: "#",
+          url: "/plants",
         },
         {
-          title: "Add Plant", // Easily add new plants to a grow
-          url: "#",
+          title: "Create Plant", // Easily add new plants to a grow
+          url: "/plants/create",
         },
         // {
         //   title: "Plant Details", // Check detailed info about plants

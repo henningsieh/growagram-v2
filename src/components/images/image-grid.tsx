@@ -1,13 +1,12 @@
 "use client";
 
-import type { inferRouterOutputs } from "@trpc/server";
 import { useLocale } from "next-intl";
 import Image from "next/image";
 import { useCallback, useEffect, useRef } from "react";
 import { Link } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import { formatDate, formatTime } from "~/lib/utils";
-import type { AppRouter, UserImage } from "~/server/api/root";
+import type { UserImage } from "~/server/api/root";
 
 import { Button } from "../ui/button";
 import UserImagesLoadingGrid from "./loading-grid";

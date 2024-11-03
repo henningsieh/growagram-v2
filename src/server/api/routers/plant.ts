@@ -1,5 +1,5 @@
 // src/server/api/routers/image.ts:
-import { eq } from "drizzle-orm";
+import { desc, eq, inArray } from "drizzle-orm";
 import { z } from "zod";
 import {
   createTRPCRouter,
@@ -31,6 +31,38 @@ export const plantRouter = createTRPCRouter({
         limit: input.limit + 1, // Fetch one extra item to check if there's a next page
         offset: input.cursor ?? 0,
       });
+
+      // Step 1: Fetch Plants Owned by User
+      const userPlants = await ctx.db.query.plants.findMany({
+        where: eq(plants.ownerId, userId), // Filtering by the user's ID
+        orderBy: (plants) => [desc(plants.createdAt)], // Optional: Order by creation date
+      });
+
+      // Step 2: Extract plant IDs from the fetched plants
+      const plantIds = userPlants.map((plant) => plant.id);
+
+      // Fetch associated plant images for the given plant IDs
+      const plantImages = await ctx.db.query.plantImages.findMany({
+        where: (t) => inArray(t.plantId, plantIds), // Correctly filter by the array of plant IDs
+      });
+
+      // Step 3: Fetch the actual images for those plant images
+      const imageIds = plantImages.map((plantImage) => plantImage.imageId);
+      const images = await ctx.db.query.images.findMany({
+        where: (t) => inArray(t.id, imageIds), // Fetch images by their IDs
+      });
+
+      // Step 4: Combine Plants with Their Images
+      const imagesMap = new Map(images.map((image) => [image.id, image]));
+
+      const userPlantsWithImages = userPlants.map((plant) => ({
+        ...plant,
+        images: plantImages
+          .filter((plantImage) => plantImage.plantId === plant.id)
+          .map((plantImage) => imagesMap.get(plantImage.imageId)), // Get actual image objects
+      }));
+
+      console.log(userPlantsWithImages);
 
       // Check if there is a next page
       let nextCursor: number | null = null;
