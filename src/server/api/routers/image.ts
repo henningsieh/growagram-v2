@@ -8,10 +8,7 @@ import {
   publicProcedure,
 } from "~/server/api/trpc";
 
-// Import the images schema correctly
-
 export const imageRouter = createTRPCRouter({
-  // Get paginated images for the current user
   getUserImages: protectedProcedure
     .input(
       z.object({

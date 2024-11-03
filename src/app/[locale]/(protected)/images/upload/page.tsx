@@ -1,20 +1,33 @@
 "use client";
 
 // src/app/[locale]/(protected)/images/upload/page.tsx:
+import { Upload, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { uploadImage } from "~/app/actions/upload";
+import PageHeader from "~/components/layouts/page-header";
 import { Button } from "~/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "~/components/ui/card";
+import { Input } from "~/components/ui/input";
+import { Label } from "~/components/ui/label";
 import { useToast } from "~/hooks/use-toast";
 import { useRouter } from "~/lib/i18n/routing";
 
 export default function ImageUpload() {
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
-  const formRef = useRef<HTMLFormElement>(null);
   const router = useRouter();
   const { toast } = useToast();
 
-  async function action(formData: FormData) {
+  const formRef = useRef<HTMLFormElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  async function handleSubmit(formData: FormData) {
     try {
       setUploading(true);
 
@@ -55,54 +68,82 @@ export default function ImageUpload() {
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (file) {
-      // Clean up previous preview if it exists
-      if (preview) {
-        URL.revokeObjectURL(preview);
-      }
-
-      const url = URL.createObjectURL(file);
-      setPreview(url);
+      if (preview) URL.revokeObjectURL(preview);
+      setPreview(URL.createObjectURL(file));
     }
   }
 
-  // Cleanup preview URL when component unmounts
+  function handleRemoveFile() {
+    if (fileInputRef.current) fileInputRef.current.value = "";
+    if (preview) URL.revokeObjectURL(preview);
+    setPreview(null);
+  }
+
   useEffect(() => {
     return () => {
-      if (preview) {
-        URL.revokeObjectURL(preview);
-      }
+      if (preview) URL.revokeObjectURL(preview);
     };
   }, [preview]);
 
   return (
-    <div className="mx-auto max-w-xl p-4">
-      <h1 className="mb-4 text-2xl font-bold">Upload Image</h1>
-      <form ref={formRef} action={action} className="space-y-4">
-        <div>
-          <label className="mb-2 block text-sm font-medium">Select Image</label>
-          <input
-            type="file"
-            name="file"
-            accept="image/*"
-            onChange={handleFileChange}
-            className="w-full rounded border p-2"
-          />
-        </div>
-
-        {preview && (
-          <div className="mt-4">
-            <img
-              src={preview}
-              alt="Preview"
-              className="max-h-64 rounded object-contain"
-            />
-          </div>
-        )}
-
-        <Button type="submit" disabled={uploading} className="px-4 py-2">
-          {uploading ? "Uploading..." : "Upload"}
-        </Button>
-      </form>
-    </div>
+    <PageHeader title="Image Upload" subtitle="Upload a new image">
+      <Card className="mx-auto max-w-xl">
+        <form ref={formRef} action={handleSubmit}>
+          {/* <CardHeader>
+            <CardTitle>Image Upload</CardTitle>
+          </CardHeader> */}
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="file">Select Image</Label>
+              <Input
+                id="file"
+                ref={fileInputRef}
+                type="file"
+                name="file"
+                accept="image/*"
+                onChange={handleFileChange}
+              />
+            </div>
+            {preview && (
+              <div className="relative mt-4">
+                <img
+                  src={preview}
+                  alt="Preview"
+                  className="max-h-64 w-full rounded-md object-contain"
+                />
+                <Button
+                  type="button"
+                  variant="destructive"
+                  size="icon"
+                  className="absolute right-2 top-2"
+                  onClick={handleRemoveFile}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            )}
+          </CardContent>
+          <CardFooter>
+            <Button
+              type="submit"
+              disabled={uploading || !preview}
+              className="w-full"
+            >
+              {uploading ? (
+                <>
+                  <Upload className="mr-2 h-4 w-4 animate-spin" />
+                  Uploading...
+                </>
+              ) : (
+                <>
+                  <Upload className="mr-2 h-4 w-4" />
+                  Upload
+                </>
+              )}
+            </Button>
+          </CardFooter>
+        </form>
+      </Card>
+    </PageHeader>
   );
 }
