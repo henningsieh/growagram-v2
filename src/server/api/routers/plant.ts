@@ -18,25 +18,15 @@ export const plantRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const userId = ctx.session.user.id as string; // Access the user ID from session
 
-      // This does relly the same as Step 1 -4 above???
-      const userPlantsNew = await ctx.db.query.plants.findMany({
+      const userPlants = await ctx.db.query.plants.findMany({
         where: eq(plants.ownerId, userId),
-        with: {
-          plantImages: {
-            with: {
-              image: true,
-            },
-          },
-        },
-      });
-
-      const userPlantsFlattened = await ctx.db.query.plants.findMany({
-        where: eq(plants.ownerId, userId),
+        orderBy: (plants, { desc }) => [desc(plants.createdAt)],
+        limit: input.limit + 1, // Fetch extra item to check for next page
+        offset: input.cursor ?? 0, // Use cursor for offset
         columns: {
           id: true,
           name: true,
           ownerId: true,
-          // headerImageId: true,
           createdAt: true,
           updatedAt: true,
         },
@@ -58,13 +48,13 @@ export const plantRouter = createTRPCRouter({
 
       // Check if there is a next page
       let nextCursor: number | null = null;
-      if (userPlantsFlattened.length > input.limit) {
+      if (userPlants.length > input.limit) {
         nextCursor = (input.cursor ?? 0) + input.limit;
-        userPlantsFlattened.pop(); // Remove the extra item
+        userPlants.pop(); // Remove the extra item
       }
 
       return {
-        plants: userPlantsFlattened,
+        plants: userPlants,
         nextCursor,
       };
     }),
