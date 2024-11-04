@@ -6,7 +6,6 @@ import {
   authenticators,
   images,
   plants,
-  posts,
   sessions,
   users,
   verificationTokens,
@@ -37,10 +36,6 @@ export type NewVerificationToken = InferInsertModel<typeof verificationTokens>;
 // Authenticator types
 export type Authenticator = InferSelectModel<typeof authenticators>;
 export type NewAuthenticator = InferInsertModel<typeof authenticators>;
-
-// Post types
-export type Post = InferSelectModel<typeof posts>;
-export type NewPost = InferInsertModel<typeof posts>;
 
 // Image types
 export type Image = InferSelectModel<typeof images>;

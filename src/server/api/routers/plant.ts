@@ -1,5 +1,5 @@
 // src/server/api/routers/image.ts:
-import { desc, eq, inArray } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { plants } from "~/lib/db/schema";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
@@ -18,47 +18,56 @@ export const plantRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const userId = ctx.session.user.id as string; // Access the user ID from session
 
-      // Step 1: Fetch Plants Owned by User
-      const userPlants = await ctx.db.query.plants.findMany({
-        where: eq(plants.ownerId, userId), // Filtering by the user's ID
-        orderBy: (plants) => [desc(plants.createdAt)], // Optional: Order by creation date
+      // // Step 1: Fetch Plants Owned by User
+      // const userPlants = await ctx.db.query.plants.findMany({
+      //   where: eq(plants.ownerId, userId), // Filtering by the user's ID
+      //   orderBy: (plants) => [desc(plants.createdAt)], // Optional: Order by creation date
+      // });
+
+      // // Step 2: Extract plant IDs from the fetched plants
+      // const plantIds = userPlants.map((plant) => plant.id);
+
+      // // Fetch associated plant images for the given plant IDs
+      // const plantImages = await ctx.db.query.plantImages.findMany({
+      //   where: (t) => inArray(t.plantId, plantIds), // Correctly filter by the array of plant IDs
+      // });
+
+      // // Step 3: Fetch the actual images for those plant images
+      // const imageIds = plantImages.map((plantImage) => plantImage.imageId);
+      // const images = await ctx.db.query.images.findMany({
+      //   where: (t) => inArray(t.id, imageIds), // Fetch images by their IDs
+      // });
+
+      // // Step 4: Combine Plants with Their Images
+      // const imagesMap = new Map(images.map((image) => [image.id, image]));
+      // const userPlantsWithImages = userPlants.map((plant) => ({
+      //   ...plant,
+      //   images: plantImages
+      //     .filter((plantImage) => plantImage.plantId === plant.id)
+      //     .map((plantImage) => imagesMap.get(plantImage.imageId)), // Get actual image objects
+      // }));
+
+      // This does relly the same as Step 1 -4 above???
+      const userPlantsNew = await ctx.db.query.plants.findMany({
+        where: eq(plants.ownerId, userId),
+        with: {
+          plantImages: {
+            with: {
+              image: true,
+            },
+          },
+        },
       });
-
-      // Step 2: Extract plant IDs from the fetched plants
-      const plantIds = userPlants.map((plant) => plant.id);
-
-      // Fetch associated plant images for the given plant IDs
-      const plantImages = await ctx.db.query.plantImages.findMany({
-        where: (t) => inArray(t.plantId, plantIds), // Correctly filter by the array of plant IDs
-      });
-
-      // Step 3: Fetch the actual images for those plant images
-      const imageIds = plantImages.map((plantImage) => plantImage.imageId);
-      const images = await ctx.db.query.images.findMany({
-        where: (t) => inArray(t.id, imageIds), // Fetch images by their IDs
-      });
-
-      // Step 4: Combine Plants with Their Images
-      const imagesMap = new Map(images.map((image) => [image.id, image]));
-
-      const userPlantsWithImages = userPlants.map((plant) => ({
-        ...plant,
-        images: plantImages
-          .filter((plantImage) => plantImage.plantId === plant.id)
-          .map((plantImage) => imagesMap.get(plantImage.imageId)), // Get actual image objects
-      }));
-
-      console.log({ userPlantsWithImages });
 
       // Check if there is a next page
       let nextCursor: number | null = null;
-      if (userPlantsWithImages.length > input.limit) {
+      if (userPlantsNew.length > input.limit) {
         nextCursor = (input.cursor ?? 0) + input.limit;
-        userPlantsWithImages.pop(); // Remove the extra item
+        userPlantsNew.pop(); // Remove the extra item
       }
 
       return {
-        plants: userPlantsWithImages,
+        plants: userPlantsNew,
         nextCursor,
       };
     }),

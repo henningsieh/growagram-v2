@@ -1,4 +1,9 @@
-import { InferInsertModel, InferSelectModel, sql } from "drizzle-orm";
+import {
+  InferInsertModel,
+  InferSelectModel,
+  relations,
+  sql,
+} from "drizzle-orm";
 import {
   boolean,
   index,
@@ -143,3 +148,28 @@ export const plantImages = pgTable(
     pk: primaryKey({ columns: [t.plantId, t.imageId] }),
   }),
 );
+
+// Drizzle ORM Relations
+
+export const plantsRelations = relations(plants, ({ many }) => ({
+  // A plant can have many plant-image associations
+  plantImages: many(plantImages),
+}));
+
+export const imagesRelations = relations(images, ({ many }) => ({
+  // An image can have many plant-image associations
+  plantImages: many(plantImages),
+}));
+
+export const plantImagesRelations = relations(plantImages, ({ one }) => ({
+  // Each plant-image association belongs to exactly one plant
+  plant: one(plants, {
+    fields: [plantImages.plantId],
+    references: [plants.id],
+  }),
+  // Each plant-image association belongs to exactly one image
+  image: one(images, {
+    fields: [plantImages.imageId],
+    references: [images.id],
+  }),
+}));
