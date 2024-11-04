@@ -65,7 +65,7 @@ export default function PlantsPage() {
               <div className="relative h-48">
                 <Image
                   src={
-                    plant.plantImages[0]?.image.imageUrl ??
+                    plant.headerImage?.imageUrl ??
                     "/placeholder.svg?height=200&width=400"
                   }
                   alt={plant.name}

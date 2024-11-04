@@ -124,6 +124,10 @@ export const plants = pgTable("plant", {
   ownerId: text("owner_id")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
+  // Add a reference to the main header image
+  headerImageId: text("header_image_id").references(() => images.id, {
+    onDelete: "set null",
+  }),
   createdAt: timestamp("created_at", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
@@ -133,7 +137,7 @@ export const plants = pgTable("plant", {
     .notNull(),
 });
 
-// Many-to-many relationship between plants and images
+// Many-to-many relationship between plants and images (for all images)
 export const plantImages = pgTable(
   "plant_images",
   {
@@ -151,14 +155,21 @@ export const plantImages = pgTable(
 
 // Drizzle ORM Relations
 
-export const plantsRelations = relations(plants, ({ many }) => ({
+export const plantsRelations = relations(plants, ({ one, many }) => ({
   // A plant can have many plant-image associations
   plantImages: many(plantImages),
+  // A plant has one header image
+  headerImage: one(images, {
+    fields: [plants.headerImageId],
+    references: [images.id],
+  }),
 }));
 
 export const imagesRelations = relations(images, ({ many }) => ({
   // An image can have many plant-image associations
   plantImages: many(plantImages),
+  // An image can be the header image for many plants
+  plantsAsHeader: many(plants, { relationName: "headerImage" }),
 }));
 
 export const plantImagesRelations = relations(plantImages, ({ one }) => ({

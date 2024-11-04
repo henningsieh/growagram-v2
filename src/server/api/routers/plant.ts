@@ -18,35 +18,6 @@ export const plantRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const userId = ctx.session.user.id as string; // Access the user ID from session
 
-      // // Step 1: Fetch Plants Owned by User
-      // const userPlants = await ctx.db.query.plants.findMany({
-      //   where: eq(plants.ownerId, userId), // Filtering by the user's ID
-      //   orderBy: (plants) => [desc(plants.createdAt)], // Optional: Order by creation date
-      // });
-
-      // // Step 2: Extract plant IDs from the fetched plants
-      // const plantIds = userPlants.map((plant) => plant.id);
-
-      // // Fetch associated plant images for the given plant IDs
-      // const plantImages = await ctx.db.query.plantImages.findMany({
-      //   where: (t) => inArray(t.plantId, plantIds), // Correctly filter by the array of plant IDs
-      // });
-
-      // // Step 3: Fetch the actual images for those plant images
-      // const imageIds = plantImages.map((plantImage) => plantImage.imageId);
-      // const images = await ctx.db.query.images.findMany({
-      //   where: (t) => inArray(t.id, imageIds), // Fetch images by their IDs
-      // });
-
-      // // Step 4: Combine Plants with Their Images
-      // const imagesMap = new Map(images.map((image) => [image.id, image]));
-      // const userPlantsWithImages = userPlants.map((plant) => ({
-      //   ...plant,
-      //   images: plantImages
-      //     .filter((plantImage) => plantImage.plantId === plant.id)
-      //     .map((plantImage) => imagesMap.get(plantImage.imageId)), // Get actual image objects
-      // }));
-
       // This does relly the same as Step 1 -4 above???
       const userPlantsNew = await ctx.db.query.plants.findMany({
         where: eq(plants.ownerId, userId),
@@ -59,15 +30,41 @@ export const plantRouter = createTRPCRouter({
         },
       });
 
+      const userPlantsFlattened = await ctx.db.query.plants.findMany({
+        where: eq(plants.ownerId, userId),
+        columns: {
+          id: true,
+          name: true,
+          ownerId: true,
+          // headerImageId: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+        with: {
+          headerImage: { columns: { id: true, imageUrl: true } },
+          plantImages: {
+            columns: { imageId: false, plantId: false },
+            with: {
+              image: {
+                columns: {
+                  id: true,
+                  imageUrl: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
       // Check if there is a next page
       let nextCursor: number | null = null;
-      if (userPlantsNew.length > input.limit) {
+      if (userPlantsFlattened.length > input.limit) {
         nextCursor = (input.cursor ?? 0) + input.limit;
-        userPlantsNew.pop(); // Remove the extra item
+        userPlantsFlattened.pop(); // Remove the extra item
       }
 
       return {
-        plants: userPlantsNew,
+        plants: userPlantsFlattened,
         nextCursor,
       };
     }),
