@@ -15,6 +15,13 @@
       "when": 1730699391581,
       "tag": "0001_boring_harry_osborn",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1730808921017,
+      "tag": "0002_tearful_miss_america",
+      "breakpoints": true
     }
   ]
 }

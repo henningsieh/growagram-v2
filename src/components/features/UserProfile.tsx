@@ -1,5 +1,5 @@
 // src/components/UserProfile.tsx
-import { type User } from "~/types";
+import { type User } from "~/types/db";
 
 interface UserProfileProps {
   user: User;

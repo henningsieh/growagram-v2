@@ -1,26 +1,19 @@
-import {
-  InferInsertModel,
-  InferSelectModel,
-  relations,
-  sql,
-} from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import {
   boolean,
-  index,
   integer,
   pgTable,
   pgTableCreator,
   primaryKey,
-  serial,
   text,
   timestamp,
-  varchar,
 } from "drizzle-orm/pg-core";
 import type { AdapterAccountType } from "next-auth/adapters";
 
 // Creating table with a prefix for multi-project schema
 export const createTable = pgTableCreator((name) => `growagram.com_${name}`);
 
+// Define the users table
 export const users = pgTable("user", {
   id: text("id")
     .primaryKey()
@@ -31,6 +24,7 @@ export const users = pgTable("user", {
   image: text("image"),
 });
 
+// Define the accounts table
 export const accounts = pgTable(
   "account",
   {
@@ -55,6 +49,7 @@ export const accounts = pgTable(
   }),
 );
 
+// Define the sessions table
 export const sessions = pgTable("session", {
   sessionToken: text("sessionToken").primaryKey(),
   userId: text("userId")
@@ -63,6 +58,7 @@ export const sessions = pgTable("session", {
   expires: timestamp("expires", { mode: "date" }).notNull(),
 });
 
+// Define the verificationTokens table
 export const verificationTokens = pgTable(
   "verificationToken",
   {
@@ -77,6 +73,7 @@ export const verificationTokens = pgTable(
   }),
 );
 
+// Define the authenticators table
 export const authenticators = pgTable(
   "authenticator",
   {
@@ -98,6 +95,60 @@ export const authenticators = pgTable(
   }),
 );
 
+// Define the Breeders table
+export const breeders = pgTable("breeder", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  name: text("name").notNull().unique(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .$onUpdate(() => new Date())
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+});
+
+// Define the CannabisStrains table
+export const cannabisStrains = pgTable("cannabis_strain", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  name: text("name").notNull(),
+  thcContent: integer("thc_content"),
+  cbdContent: integer("cbd_content"),
+  breederId: text("breeder_id")
+    .notNull()
+    .references(() => breeders.id, { onDelete: "cascade" }),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .$onUpdate(() => new Date())
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+});
+
+// Define the Grows table
+export const grows = pgTable("grow", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  name: text("name").notNull(),
+  ownerId: text("owner_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .$onUpdate(() => new Date())
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+});
+
+// Define the images table
 export const images = pgTable("image", {
   id: text("id")
     .primaryKey()
@@ -124,10 +175,26 @@ export const plants = pgTable("plant", {
   ownerId: text("owner_id")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
-  // Add a reference to the main header image
   headerImageId: text("header_image_id").references(() => images.id, {
     onDelete: "set null",
   }),
+  growId: text("grow_id").references(() => grows.id, { onDelete: "cascade" }),
+  strainId: text("strain_id").references(() => cannabisStrains.id, {
+    onDelete: "restrict",
+  }),
+  startDate: timestamp("start_date", { withTimezone: true }).default(
+    sql`CURRENT_TIMESTAMP`,
+  ),
+  growthProgress: integer("growth_progress").notNull().default(0),
+  seedlingPhaseStart: timestamp("seedling_phase_start", { withTimezone: true }),
+  vegetationPhaseStart: timestamp("vegetation_phase_start", {
+    withTimezone: true,
+  }),
+  floweringPhaseStart: timestamp("flowering_phase_start", {
+    withTimezone: true,
+  }),
+  harvestDate: timestamp("harvest_date", { withTimezone: true }),
+  curingPhaseStart: timestamp("curing_phase_start", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
@@ -155,21 +222,56 @@ export const plantImages = pgTable(
 
 // Drizzle ORM Relations
 
+export const breedersRelations = relations(breeders, ({ many }) => ({
+  strains: many(cannabisStrains),
+}));
+
+export const cannabisStrainsRelations = relations(
+  cannabisStrains,
+  ({ one, many }) => ({
+    breeder: one(breeders, {
+      fields: [cannabisStrains.breederId],
+      references: [breeders.id],
+    }),
+    plants: many(plants),
+  }),
+);
+
+export const growsRelations = relations(grows, ({ one, many }) => ({
+  owner: one(users, {
+    fields: [grows.ownerId],
+    references: [users.id],
+  }),
+  plants: many(plants),
+}));
+
 export const plantsRelations = relations(plants, ({ one, many }) => ({
-  // A plant can have many plant-image associations
-  plantImages: many(plantImages),
+  // A plant has one grow
+  grow: one(grows, {
+    fields: [plants.growId],
+    references: [grows.id],
+  }),
+  // A plant has one strain
+  strain: one(cannabisStrains, {
+    fields: [plants.strainId],
+    references: [cannabisStrains.id],
+  }),
+  // A plant has one owner
+  owner: one(users, {
+    fields: [plants.ownerId],
+    references: [users.id],
+  }),
   // A plant has one header image
   headerImage: one(images, {
     fields: [plants.headerImageId],
     references: [images.id],
   }),
+  plantImages: many(plantImages),
 }));
 
 export const imagesRelations = relations(images, ({ many }) => ({
-  // An image can have many plant-image associations
   plantImages: many(plantImages),
-  // An image can be the header image for many plants
-  plantsAsHeader: many(plants, { relationName: "headerImage" }),
+  plantsAsHeader: many(plants),
 }));
 
 export const plantImagesRelations = relations(plantImages, ({ one }) => ({

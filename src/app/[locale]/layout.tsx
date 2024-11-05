@@ -5,8 +5,9 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import localFont from "next/font/local";
 import { notFound } from "next/navigation";
-import { MainNavigationBar } from "~/components/layouts/navbar";
-import { ThemeProvider } from "~/components/layouts/theme-provider";
+import NextTopLoader from "nextjs-toploader";
+import { MainNavigationBar } from "~/components/Layouts/navigation";
+import { ThemeProvider } from "~/components/Layouts/theme-provider";
 import { Toaster } from "~/components/ui/toaster";
 import { routing } from "~/lib/i18n/routing";
 import { TRPCReactProvider } from "~/lib/trpc/react";
@@ -35,7 +36,8 @@ type LayoutProps = {
 };
 
 export default async function RootLayout(props: LayoutProps) {
-  // Await params before accessing locale
+  // Await params before accessing params, see:
+  // https://nextjs.org/docs/messages/sync-dynamic-apis
   const { locale } = await (props.params as unknown as Promise<
     typeof props.params
   >);
@@ -54,6 +56,13 @@ export default async function RootLayout(props: LayoutProps) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-background font-sans antialiased`}
       >
+        <NextTopLoader
+          color="hsl(var(--primary))"
+          speed={900}
+          showSpinner={false}
+          initialPosition={0.28}
+        />
+
         <TRPCReactProvider>
           <NextIntlClientProvider messages={messages}>
             <SessionProvider>

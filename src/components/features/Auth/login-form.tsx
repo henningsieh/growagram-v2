@@ -5,7 +5,6 @@ import { LogIn } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { FaDiscord, FaTwitter } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
-import { signInWithProvider } from "~/app/actions/authActions";
 import { Button } from "~/components/ui/button";
 import {
   Card,
@@ -18,6 +17,7 @@ import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { Separator } from "~/components/ui/separator";
 import { Link } from "~/lib/i18n/routing";
+import { signInWithProvider } from "~/server/actions/authActions";
 
 export function LoginForm() {
   const t = useTranslations("LoginPage");

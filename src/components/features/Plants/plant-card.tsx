@@ -1,10 +1,8 @@
-// PlantCard.tsx
-// Import your formatDate function
-import { Flower2, Leaf, Loader2, Plus, Sprout, Sun, Wheat } from "lucide-react";
+// src/components/features/plant/plant-card.tsx:
+import { Flower2, Leaf, Sprout, Wheat } from "lucide-react";
 import { useLocale } from "next-intl";
-// Adjust the import path as necessary
 import Image from "next/image";
-import React, { forwardRef, useState } from "react";
+import { forwardRef, useState } from "react";
 import headerImagePlaceholder from "~/assets/landscape-placeholdersvg.svg";
 import {
   Card,
@@ -15,21 +13,17 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 import { Progress } from "~/components/ui/progress";
-// Adjust this import if you're not using Next.js
 import { formatDate } from "~/lib/utils";
 import { UserPlant } from "~/server/api/root";
 
-// Define the props interface
 interface PlantCardProps {
   plant: UserPlant;
 }
 
-// Use forwardRef to allow refs to be passed down
 const PlantCard = forwardRef<HTMLDivElement, PlantCardProps>((props, ref) => {
-  // Destructure props, and use ref
-  const { plant } = props; // Destructure plant from props
+  const { plant } = props;
+  const locale = useLocale();
 
-  const locale = useLocale(); // Assuming you have this hook for localization
   const [isImageHovered, setIsImageHovered] = useState(false);
 
   return (
@@ -57,7 +51,6 @@ const PlantCard = forwardRef<HTMLDivElement, PlantCardProps>((props, ref) => {
       <CardContent className="p-4">
         <CardTitle>{plant.name}</CardTitle>
         <CardDescription>Strain: {plant.strain ?? "Unknown"}</CardDescription>
-        <CardDescription>{plant.id}</CardDescription>
         <div className="mt-4 space-y-2">
           <div className="flex items-center">
             <Sprout className="mr-2 h-4 w-4" />

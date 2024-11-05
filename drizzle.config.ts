@@ -3,7 +3,7 @@ import { env } from "~/env";
 
 const drizzleConfig = {
   schema: "./src/lib/db/schema.ts",
-  out: "./migrations",
+  out: "./src/lib/db/migrations",
   dialect: "postgresql",
   dbCredentials: {
     url: env.DATABASE_URL,

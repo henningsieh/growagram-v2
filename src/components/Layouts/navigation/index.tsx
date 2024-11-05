@@ -2,12 +2,12 @@
 
 // src/components/navbar/index.tsx:
 import Image from "next/image";
-import { ThemeToggle } from "~/components/layouts/navbar/theme-toggler";
+import { ThemeToggle } from "~/components/Layouts/navigation/theme-toggler";
 import { Link } from "~/lib/i18n/routing";
 
-import DesktopNavigationManu from "./desktop-nav";
+import DesktopNavigationManu from "./desktop";
 import { LanguageToggle } from "./language-toggler";
-import MobileNavigationMenu from "./mobile-nav";
+import MobileNavigationMenu from "./mobile";
 
 export function MainNavigationBar() {
   return (

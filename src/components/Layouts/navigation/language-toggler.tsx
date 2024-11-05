@@ -4,8 +4,8 @@ import { LanguagesIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import DEFlag from "~/assets/flags/Flag_of_Germany-64x38.png";
-import USFlag from "~/assets/flags/Flag_of_United_States-64x34.png";
+import DEFlag from "~/assets/flags/germany-svgrepo-com.svg";
+import USFlag from "~/assets/flags/united-states-svgrepo-com.svg";
 import { Button } from "~/components/ui/button";
 import {
   DropdownMenu,
@@ -25,12 +25,12 @@ export function LanguageToggle() {
     {
       code: "de",
       label: "Deutsch",
-      flag: <Image className="h-[11] w-5" src={DEFlag} alt="German flag" />,
+      flag: <Image className="h-[21] w-6" src={DEFlag} alt="German flag" />,
     },
     {
       code: "en",
       label: "English",
-      flag: <Image className="h-[11] w-5" src={USFlag} alt="UK flag" />,
+      flag: <Image className="h-[21] w-6" src={USFlag} alt="UK flag" />,
     },
   ];
 
@@ -58,9 +58,9 @@ export function LanguageToggle() {
             key={language.code}
             onClick={() => handleLanguageChange(language.code)}
           >
-            <div className="flex w-full items-center">
-              <div className="mr-3 flex-shrink-0">{language.flag}</div>
-              <span>{language.label}</span>
+            <div className="flex w-full items-start">
+              <div className="mr-2">{language.flag}</div>
+              <div>{language.label}</div>
             </div>
           </DropdownMenuItem>
         ))}

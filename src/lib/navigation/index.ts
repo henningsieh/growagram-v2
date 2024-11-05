@@ -1,6 +1,7 @@
 // src/lib/navigation/index.ts
+import type { NavigationData, NavigationItem } from "~/types/navigation";
+
 import navigationData from "./data.json";
-import type { NavigationData, NavigationItem } from "./types";
 
 export type { NavigationData, NavigationItem };
 export default navigationData;

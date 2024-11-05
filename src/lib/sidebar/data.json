@@ -1,0 +1,104 @@
+{
+  "user": {
+    "name": "Django ElRey 🌱",
+    "username": "django",
+    "email": "django@growagram.com",
+    "avatar": "/images/XYUV-dwm_400x400.jpg"
+  },
+  "teams": [
+    {
+      "name": "GrowAGram Collective",
+      "logo": "Cannabis",
+      "plan": "Premium"
+    },
+    {
+      "name": "Personal Growers",
+      "logo": "TreeDeciduous",
+      "plan": "Basic"
+    }
+  ],
+  "navMain": [
+    {
+      "title": "Grows",
+      "url": "#",
+      "icon": "TentTree",
+      "isActive": true,
+      "items": [
+        {
+          "title": "My Grows",
+          "url": "/grows"
+        },
+        {
+          "title": "Assign Plants",
+          "url": "/grows/123/assign-plants"
+        },
+        {
+          "title": "Grow Archive",
+          "url": "#"
+        }
+      ]
+    },
+    {
+      "title": "Plants",
+      "url": "#",
+      "icon": "Sprout",
+      "items": [
+        {
+          "title": "My Plants",
+          "url": "/plants"
+        },
+        {
+          "title": "Create Plant",
+          "url": "/plants/create"
+        }
+      ]
+    },
+    {
+      "title": "Images",
+      "url": "#",
+      "icon": "Camera",
+      "items": [
+        {
+          "title": "My Images",
+          "url": "/images"
+        },
+        {
+          "title": "Add Image",
+          "url": "/images/upload"
+        }
+      ]
+    },
+    {
+      "title": "Inventory",
+      "url": "#",
+      "icon": "PencilRuler",
+      "items": [
+        {
+          "title": "My Inventory",
+          "url": "/inventory"
+        },
+        {
+          "title": "Add Item",
+          "url": "/inventory/add"
+        }
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "Grow Automation",
+      "url": "#",
+      "icon": "Workflow"
+    },
+    {
+      "name": "Nutrient Scheduling",
+      "url": "#",
+      "icon": "CalendarCheck"
+    },
+    {
+      "name": "Climate Control",
+      "url": "#",
+      "icon": "Thermometer"
+    }
+  ]
+}

@@ -52,6 +52,7 @@
     "next-auth": "^5.0.0-beta.25",
     "next-intl": "^3.24.0",
     "next-themes": "^0.3.0",
+    "nextjs-toploader": "^3.7.15",
     "postgres": "^3.4.5",
     "react": "19.0.0-rc-02c0e824-20241028",
     "react-dom": "19.0.0-rc-02c0e824-20241028",

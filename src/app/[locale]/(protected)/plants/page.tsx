@@ -3,8 +3,8 @@
 import { useIntersection } from "@mantine/hooks";
 import { Loader2 } from "lucide-react";
 import { useEffect, useRef } from "react";
-import PlantCard from "~/components/features/plant/plant-card";
-import PageHeader from "~/components/layouts/page-header";
+import PageHeader from "~/components/Layouts/page-header";
+import PlantCard from "~/components/features/Plants/plant-card";
 import { api } from "~/lib/trpc/react";
 
 export default function PlantsPage() {
