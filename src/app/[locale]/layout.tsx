@@ -35,7 +35,8 @@ type LayoutProps = {
 };
 
 export default async function RootLayout(props: LayoutProps) {
-  // Await params before accessing locale
+  // Await params before accessing params, see:
+  // https://nextjs.org/docs/messages/sync-dynamic-apis
   const { locale } = await (props.params as unknown as Promise<
     typeof props.params
   >);

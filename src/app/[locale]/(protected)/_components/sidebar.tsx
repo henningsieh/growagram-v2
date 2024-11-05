@@ -70,10 +70,12 @@ import {
   useSidebar,
 } from "~/components/ui/sidebar";
 import { SidebarInset, SidebarProvider } from "~/components/ui/sidebar";
-import { Link, usePathname } from "~/lib/i18n/routing";
+import { Link } from "~/lib/i18n/routing";
+
+import { NavigationBreadcrumb } from "./breadcrumbs";
 
 // This is sample data.
-const data = {
+export const sidebarItems = {
   user: {
     name: "Django ElRey 🌱",
     username: "django",
@@ -108,7 +110,7 @@ const data = {
           url: "/grows/123/assign-plants",
         },
         {
-          title: "Grow History", // Check history of completed grows
+          title: "Grow Archive", // Check history of completed grows
           url: "#",
         },
       ],
@@ -227,6 +229,7 @@ const data = {
     },
   ],
 };
+export type PlatformSidebarItems = typeof sidebarItems.navMain;
 
 export default function ProtectedSidebar({
   children,
@@ -237,13 +240,13 @@ export default function ProtectedSidebar({
     <SidebarProvider>
       <Sidebar collapsible="icon" variant="floating">
         <SidebarHeader>
-          <TeamSwitcher teams={data.teams} />
+          <TeamSwitcher teams={sidebarItems.teams} />
         </SidebarHeader>
         <SidebarContent>
           <SidebarGroup>
             <SidebarGroupLabel>Platform</SidebarGroupLabel>
             <SidebarMenu>
-              {data.navMain.map((item) => (
+              {sidebarItems.navMain.map((item) => (
                 <Collapsible
                   key={item.title}
                   asChild
@@ -279,7 +282,7 @@ export default function ProtectedSidebar({
           <SidebarGroup className="group-data-[collapsible=icon]:hidden">
             <SidebarGroupLabel>Projects</SidebarGroupLabel>
             <SidebarMenu>
-              {data.projects.map((item) => (
+              {sidebarItems.projects.map((item) => (
                 <SidebarMenuItem key={item.name}>
                   <SidebarMenuButton asChild>
                     <a href={item.url}>
@@ -336,17 +339,17 @@ export default function ProtectedSidebar({
                   >
                     <Avatar className="h-8 w-8 rounded-lg">
                       <AvatarImage
-                        src={data.user.avatar}
-                        alt={data.user.name}
+                        src={sidebarItems.user.avatar}
+                        alt={sidebarItems.user.name}
                       />
                       <AvatarFallback className="rounded-lg">CN</AvatarFallback>
                     </Avatar>
                     <div className="grid flex-1 text-left text-sm leading-tight">
                       <span className="truncate font-semibold">
-                        {data.user.name}
+                        {sidebarItems.user.name}
                       </span>
                       <span className="truncate text-xs">
-                        {data.user.email}
+                        {sidebarItems.user.email}
                       </span>
                     </div>
                     <ChevronsUpDown className="ml-auto size-4" />
@@ -362,8 +365,8 @@ export default function ProtectedSidebar({
                     <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                       <Avatar className="h-8 w-8 rounded-lg">
                         <AvatarImage
-                          src={data.user.avatar}
-                          alt={data.user.name}
+                          src={sidebarItems.user.avatar}
+                          alt={sidebarItems.user.name}
                         />
                         <AvatarFallback className="rounded-lg">
                           CN
@@ -371,10 +374,10 @@ export default function ProtectedSidebar({
                       </Avatar>
                       <div className="grid flex-1 text-left text-sm leading-tight">
                         <span className="truncate font-semibold">
-                          {data.user.name}
+                          {sidebarItems.user.name}
                         </span>
                         <span className="truncate text-xs">
-                          {data.user.email}
+                          {sidebarItems.user.email}
                         </span>
                       </div>
                     </div>
@@ -423,19 +426,7 @@ export default function ProtectedSidebar({
           <div className="flex items-center gap-2 px-4">
             <SidebarTrigger className="-ml-1" />
             <Separator orientation="vertical" className="mr-2 h-4" />
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="#">
-                    Building Your Application
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
+            <NavigationBreadcrumb />
           </div>
         </header>
         <div className="flex flex-1 flex-col gap-2 p-4 pt-0">
