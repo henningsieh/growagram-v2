@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Grow } from "~/components/features/timeline/post";
-import { GrowCard } from "~/components/grow/grow-card";
-import PageHeader from "~/components/layouts/page-header";
+import PageHeader from "~/components/Layouts/page-header";
+import { GrowCard } from "~/components/features/Grows/grow-card";
+import { Grow } from "~/components/features/Timeline/post";
 
 // Mock data for multiple grows
 const mockGrows: Grow[] = [

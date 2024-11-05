@@ -1,7 +1,7 @@
+import PageHeader from "~/components/Layouts/page-header";
 import { UserProfile } from "~/components/features/UserProfile";
-import PageHeader from "~/components/layouts/page-header";
 import { auth } from "~/lib/auth";
-import { User } from "~/types";
+import { User } from "~/types/db";
 
 export default async function Dashboard() {
   const session = await auth();

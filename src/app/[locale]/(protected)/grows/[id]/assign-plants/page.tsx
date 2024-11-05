@@ -3,9 +3,9 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Check, Flower2, FolderInput, SquarePlus } from "lucide-react";
 import { useState } from "react";
-import { Grow, Plant } from "~/components/features/timeline/post";
-import { GrowCard } from "~/components/grow/grow-card";
-import PageHeader from "~/components/layouts/page-header";
+import PageHeader from "~/components/Layouts/page-header";
+import { GrowCard } from "~/components/features/Grows/grow-card";
+import { Grow, Plant } from "~/components/features/Timeline/post";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import {

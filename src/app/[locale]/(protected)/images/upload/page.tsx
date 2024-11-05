@@ -3,14 +3,14 @@
 // src/app/[locale]/(protected)/images/upload/page.tsx:
 import { Upload, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { uploadImage } from "~/app/actions/imageUpload";
-import PageHeader from "~/components/layouts/page-header";
+import PageHeader from "~/components/Layouts/page-header";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardFooter } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { useToast } from "~/hooks/use-toast";
 import { useRouter } from "~/lib/i18n/routing";
+import { uploadImage } from "~/server/actions/imageUpload";
 
 export default function ImageUpload() {
   const [uploading, setUploading] = useState(false);

@@ -1,6 +1,6 @@
 // src/app/[locale]/(protected)/images/page.tsx
-import { ImageGrid } from "~/components/images/image-grid";
-import PageHeader from "~/components/layouts/page-header";
+import PageHeader from "~/components/Layouts/page-header";
+import { ImageGrid } from "~/components/features/Images/image-grid";
 import { api } from "~/lib/trpc/server";
 
 export default async function ImagesPage() {

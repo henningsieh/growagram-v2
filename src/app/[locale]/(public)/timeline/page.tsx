@@ -1,5 +1,5 @@
 // src/app/[locale]/(public)/timeline/page.tsx:
-import PostComponent from "~/components/features/timeline/post";
+import PostComponent from "~/components/features/Timeline/post";
 
 // This is a mock function to simulate fetching posts
 async function getPosts() {

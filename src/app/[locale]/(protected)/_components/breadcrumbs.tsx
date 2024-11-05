@@ -7,8 +7,7 @@ import {
   BreadcrumbSeparator,
 } from "~/components/ui/breadcrumb";
 import { Link, usePathname } from "~/lib/i18n/routing";
-
-import { PlatformSidebarItems, sidebarItems } from "./sidebar";
+import { findCurrentNavItem, sidebarItems } from "~/lib/sidebar";
 
 export function NavigationBreadcrumb() {
   const pathname = usePathname();
@@ -41,15 +40,4 @@ export function NavigationBreadcrumb() {
       </BreadcrumbList>
     </Breadcrumb>
   );
-}
-
-// helper function to find the current navigation item
-function findCurrentNavItem(path: string, navItems: PlatformSidebarItems) {
-  for (const item of navItems) {
-    const subItem = item.items?.find((subItem) => subItem.url === path);
-    if (subItem) {
-      return { main: item, sub: subItem };
-    }
-  }
-  return null;
 }

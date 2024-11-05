@@ -1,20 +1,12 @@
-import {
-  InferInsertModel,
-  InferSelectModel,
-  relations,
-  sql,
-} from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import {
   boolean,
-  index,
   integer,
   pgTable,
   pgTableCreator,
   primaryKey,
-  serial,
   text,
   timestamp,
-  varchar,
 } from "drizzle-orm/pg-core";
 import type { AdapterAccountType } from "next-auth/adapters";
 

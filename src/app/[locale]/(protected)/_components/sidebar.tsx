@@ -25,7 +25,6 @@ import {
   Workflow,
 } from "lucide-react";
 import { useState } from "react";
-import { handleSignOut } from "~/app/actions/authActions";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import {
   Breadcrumb,
@@ -71,165 +70,10 @@ import {
 } from "~/components/ui/sidebar";
 import { SidebarInset, SidebarProvider } from "~/components/ui/sidebar";
 import { Link } from "~/lib/i18n/routing";
+import { sidebarItems } from "~/lib/sidebar";
+import { handleSignOut } from "~/server/actions/authActions";
 
 import { NavigationBreadcrumb } from "./breadcrumbs";
-
-// This is sample data.
-export const sidebarItems = {
-  user: {
-    name: "Django ElRey 🌱",
-    username: "django",
-    email: "django@growagram.com",
-    avatar: "/images/XYUV-dwm_400x400.jpg",
-  },
-  teams: [
-    {
-      name: "GrowAGram Collective", // A community or team of growers
-      logo: Cannabis, // Icon for cannabis
-      plan: "Premium", // GrowAGram plan (could have different tiers)
-    },
-    {
-      name: "Personal Growers", // Individual growers could have "teams"
-      logo: TreeDeciduous,
-      plan: "Basic",
-    },
-  ],
-  navMain: [
-    {
-      title: "Grows",
-      url: "#",
-      icon: TentTree, // An icon representing plants or growth
-      isActive: true,
-      items: [
-        {
-          title: "My Grows", // View and manage their cannabis grows
-          url: "/grows",
-        },
-        {
-          title: "Assign Plants", // Easily add new grows
-          url: "/grows/123/assign-plants",
-        },
-        {
-          title: "Grow Archive", // Check history of completed grows
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Plants",
-      url: "#",
-      icon: Sprout, // Icon representing individual plants
-      items: [
-        {
-          title: "My Plants", // View and manage all plants within grows
-          url: "/plants",
-        },
-        {
-          title: "Create Plant", // Easily add new plants to a grow
-          url: "/plants/create",
-        },
-        // {
-        //   title: "Plant Details", // Check detailed info about plants
-        //   url: "#",
-        // },
-      ],
-    },
-    {
-      title: "Images",
-      url: "#",
-      icon: Camera, // Icon for Photos
-      items: [
-        {
-          title: "My Images", // View and manage updates on grows
-          url: "/images",
-        },
-        {
-          title: "Add Image", // Add an update (watering, pruning, etc.)
-          url: "images/upload",
-        },
-      ],
-    },
-    {
-      title: "Inventory",
-      url: "#",
-      icon: PencilRuler, // Icon representing inventory or tools
-      items: [
-        {
-          title: "My Inventory", // Manage seeds, tools, LEDs, etc.
-          url: "#",
-        },
-        {
-          title: "Add Item", // Add an item to the inventory
-          url: "#",
-        },
-        // {
-        //   title: "Item Categories", // Manage item categories (e.g., seeds, tools)
-        //   url: "#",
-        // },
-      ],
-    },
-    // {
-    //   title: "Community",
-    //   url: "#",
-    //   icon: Users, // Icon for community or collaboration
-    //   items: [
-    //     {
-    //       title: "Discussions", // Community forum discussions
-    //       url: "#",
-    //     },
-    //     {
-    //       title: "Guides & Tips", // Guides shared by other growers
-    //       url: "#",
-    //     },
-    //     {
-    //       title: "Events", // Grow-related events and meetups
-    //       url: "#",
-    //     },
-    //   ],
-    // },
-    // {
-    //   title: "Settings",
-    //   url: "#",
-    //   icon: Settings, // Icon for settings
-    //   items: [
-    //     {
-    //       title: "Account Settings", // Manage user profile, billing, etc.
-    //       url: "#",
-    //     },
-    //     {
-    //       title: "Team Management", // Manage team members if part of a collective
-    //       url: "#",
-    //     },
-    //     {
-    //       title: "Notifications", // Manage notifications and alerts
-    //       url: "#",
-    //     },
-    //     {
-    //       title: "Subscription", // View or upgrade subscription
-    //       url: "#",
-    //     },
-    //   ],
-    // },
-  ],
-  projects: [
-    {
-      name: "Grow Automation",
-      url: "#",
-      icon: Workflow, // Icon representing automation
-    },
-    {
-      name: "Nutrient Scheduling",
-      url: "#",
-      icon: CalendarCheck, // Icon for scheduling or feeding plans
-    },
-    {
-      name: "Climate Control",
-      url: "#",
-      icon: Thermometer, // Icon for temperature and climate control
-    },
-  ],
-};
-export type PlatformSidebarItems = typeof sidebarItems.navMain;
 
 export default function ProtectedSidebar({
   children,
