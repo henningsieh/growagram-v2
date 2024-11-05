@@ -3,26 +3,16 @@
 import {
   BadgeCheck,
   Bell,
-  CalendarCheck,
-  Camera,
-  Cannabis,
   ChevronRight,
   ChevronsUpDown,
-  Clipboard,
   CreditCard,
   Folder,
   Forward,
   LogOut,
   MoreHorizontal,
-  PencilRuler,
   Plus,
   Sparkles,
-  Sprout,
-  TentTree,
-  Thermometer,
   Trash2,
-  TreeDeciduous,
-  Workflow,
 } from "lucide-react";
 import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
@@ -49,6 +39,7 @@ import {
   SidebarGroup,
   SidebarGroupLabel,
   SidebarHeader,
+  SidebarInset,
   SidebarMenu,
   SidebarMenuAction,
   SidebarMenuButton,
@@ -56,11 +47,11 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
+  SidebarProvider,
   SidebarRail,
   SidebarTrigger,
   useSidebar,
 } from "~/components/ui/sidebar";
-import { SidebarInset, SidebarProvider } from "~/components/ui/sidebar";
 import { Link } from "~/lib/i18n/routing";
 import { sidebarItems } from "~/lib/sidebar";
 import { handleSignOut } from "~/server/actions/authActions";
