@@ -3,12 +3,10 @@
 import { useLocale } from "next-intl";
 import Image from "next/image";
 import { useCallback, useEffect, useRef } from "react";
-import { Link } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import { formatDate, formatTime } from "~/lib/utils";
 import type { UserImage } from "~/server/api/root";
 
-import { Button } from "../ui/button";
 import UserImagesLoadingGrid from "./loading-grid";
 
 export function ImageGrid() {
@@ -72,11 +70,6 @@ export function ImageGrid() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-end">
-        <Button asChild variant="link">
-          <Link href="/images/upload">Upload New Image</Link>
-        </Button>
-      </div>
       {isPending && <UserImagesLoadingGrid />}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
         {userImages.map((image: UserImage) => (

@@ -18,22 +18,23 @@ export default function Component({
   buttonLabel = "Upload New Image",
 }: IPageHeader) {
   return (
-    <div className="container mx-auto space-y-8 pt-4">
-      <div className="flex flex-row justify-between">
+    <div className="mx-auto space-y-8 pt-4">
+      <div className="flex justify-between">
         <div className="flex flex-col space-y-2">
           <div className="text-2xl font-bold sm:text-4xl md:text-5xl">
             {title}
           </div>
           <p className="text-muted-foreground">{subtitle}</p>
         </div>
-        {buttonLink && (
-          <Button asChild className="self-end" variant="secondary">
-            <Link href={buttonLink}>{buttonLabel}</Link>
-          </Button>
-        )}
+        <div className="flex items-end">
+          {buttonLink && (
+            <Button asChild variant="secondary">
+              <Link href={buttonLink}>{buttonLabel}</Link>
+            </Button>
+          )}
+        </div>
       </div>
-
-      {children}
+      <div className="container">{children}</div>
     </div>
   );
 }
