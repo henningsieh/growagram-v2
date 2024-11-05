@@ -4,8 +4,6 @@ import { z } from "zod";
 import { plants } from "~/lib/db/schema";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
-// Import the plants schema correctly
-
 export const plantRouter = createTRPCRouter({
   // Get paginated plants for the current user
   getUserPlants: protectedProcedure
