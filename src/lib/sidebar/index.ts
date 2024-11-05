@@ -1,4 +1,4 @@
-// utils/sidebar.ts
+// src/lib/sidebar/index.ts:
 import * as Icons from "lucide-react";
 import sidebarConfig from "~/lib/sidebar/data.json";
 import { SidebarItems } from "~/types/sidebar";

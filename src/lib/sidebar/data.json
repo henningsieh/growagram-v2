@@ -75,11 +75,11 @@
       "items": [
         {
           "title": "My Inventory",
-          "url": "#"
+          "url": "/inventory"
         },
         {
           "title": "Add Item",
-          "url": "#"
+          "url": "/inventory/add"
         }
       ]
     }
