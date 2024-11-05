@@ -1,4 +1,9 @@
-import { InferInsertModel, InferSelectModel, sql } from "drizzle-orm";
+import {
+  InferInsertModel,
+  InferSelectModel,
+  relations,
+  sql,
+} from "drizzle-orm";
 import {
   boolean,
   index,
@@ -13,12 +18,7 @@ import {
 } from "drizzle-orm/pg-core";
 import type { AdapterAccountType } from "next-auth/adapters";
 
-/**
- * This is an example of how to use the multi-project schema feature of Drizzle ORM.
- * Use the same database instance for multiple projects.
- *
- * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
- */
+// Creating table with a prefix for multi-project schema
 export const createTable = pgTableCreator((name) => `growagram.com_${name}`);
 
 export const users = pgTable("user", {
@@ -115,6 +115,7 @@ export const images = pgTable("image", {
     .notNull(),
 });
 
+// Define the plants table
 export const plants = pgTable("plant", {
   id: text("id")
     .primaryKey()
@@ -123,6 +124,10 @@ export const plants = pgTable("plant", {
   ownerId: text("owner_id")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
+  // Add a reference to the main header image
+  headerImageId: text("header_image_id").references(() => images.id, {
+    onDelete: "set null",
+  }),
   createdAt: timestamp("created_at", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
@@ -132,7 +137,7 @@ export const plants = pgTable("plant", {
     .notNull(),
 });
 
-// Many-to-many relationship between plants and images
+// Many-to-many relationship between plants and images (for all images)
 export const plantImages = pgTable(
   "plant_images",
   {
@@ -147,3 +152,35 @@ export const plantImages = pgTable(
     pk: primaryKey({ columns: [t.plantId, t.imageId] }),
   }),
 );
+
+// Drizzle ORM Relations
+
+export const plantsRelations = relations(plants, ({ one, many }) => ({
+  // A plant can have many plant-image associations
+  plantImages: many(plantImages),
+  // A plant has one header image
+  headerImage: one(images, {
+    fields: [plants.headerImageId],
+    references: [images.id],
+  }),
+}));
+
+export const imagesRelations = relations(images, ({ many }) => ({
+  // An image can have many plant-image associations
+  plantImages: many(plantImages),
+  // An image can be the header image for many plants
+  plantsAsHeader: many(plants, { relationName: "headerImage" }),
+}));
+
+export const plantImagesRelations = relations(plantImages, ({ one }) => ({
+  // Each plant-image association belongs to exactly one plant
+  plant: one(plants, {
+    fields: [plantImages.plantId],
+    references: [plants.id],
+  }),
+  // Each plant-image association belongs to exactly one image
+  image: one(images, {
+    fields: [plantImages.imageId],
+    references: [images.id],
+  }),
+}));

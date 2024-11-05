@@ -10,6 +10,8 @@ export default async function ImagesPage() {
     <PageHeader
       title="My Images"
       subtitle="View and manage your current images"
+      buttonLink="/images/upload"
+      buttonLabel="Upload New Image"
     >
       {/* <ErrorBoundary fallback={<div>Something went wrong loading images</div>}>
         <Suspense fallback={<UserImagesLoadingGrid />}> */}

@@ -28,10 +28,7 @@ export default async function ProtectedLayout(props: LayoutProps) {
 
   return (
     <ProtectedSidebar>
-      <div className="min-h-screen">
-        {/* You can add protected layout elements here, like a dashboard navbar */}
-        {props.children}
-      </div>
+      <div className="min-h-screen">{props.children}</div>
     </ProtectedSidebar>
   );
 }
