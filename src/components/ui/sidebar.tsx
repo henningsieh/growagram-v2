@@ -72,6 +72,22 @@ const SidebarProvider = React.forwardRef<
     // This is the internal state of the sidebar.
     // We use openProp and setOpenProp for control from outside the component.
     const [_open, _setOpen] = React.useState(defaultOpen);
+
+    // Update the state based on the cookie only on the client side
+    React.useEffect(() => {
+      const cookieValue =
+        typeof window !== "undefined"
+          ? document.cookie
+              .split("; ")
+              .find((row) => row.startsWith(SIDEBAR_COOKIE_NAME))
+              ?.split("=")[1]
+          : undefined;
+
+      if (cookieValue !== undefined) {
+        _setOpen(cookieValue === "true");
+      }
+    }, []);
+
     const open = openProp ?? _open;
     const setOpen = React.useCallback(
       (value: boolean | ((value: boolean) => boolean)) => {
@@ -84,7 +100,8 @@ const SidebarProvider = React.forwardRef<
         _setOpen(value);
 
         // This sets the cookie to keep the sidebar state.
-        document.cookie = `${SIDEBAR_COOKIE_NAME}=${open}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}; SameSite=Lax`;
+        const newValue = typeof value === "function" ? value(open) : value;
+        document.cookie = `${SIDEBAR_COOKIE_NAME}=${newValue}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}; SameSite=Lax`;
       },
       [setOpenProp, open],
     );
@@ -330,8 +347,8 @@ const SidebarInset = React.forwardRef<
     <main
       ref={ref}
       className={cn(
-        "relative flex min-h-svh flex-1 flex-col bg-background",
-        "peer-data-[variant=inset]:min-h-[calc(100svh-theme(spacing.4))] md:peer-data-[variant=inset]:m-2 md:peer-data-[state=collapsed]:peer-data-[variant=inset]:ml-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow",
+        "relative flex flex-1 flex-col bg-background",
+        "peer-data-[variant=inset]:300 md:peer-data-[variant=inset]:m-2 md:peer-data-[state=collapsed]:peer-data-[variant=inset]:ml-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow",
         className,
       )}
       {...props}
