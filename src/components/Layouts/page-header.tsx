@@ -34,7 +34,7 @@ export default function Component({
           )}
         </div>
       </div>
-      <div className="container">{children}</div>
+      <div className="container mx-auto max-w-6xl">{children}</div>
     </div>
   );
 }

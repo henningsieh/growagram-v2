@@ -50,13 +50,15 @@ const PlantCard = forwardRef<HTMLDivElement, PlantCardProps>((props, ref) => {
       </CardHeader>
       <CardContent className="p-4">
         <CardTitle>{plant.name}</CardTitle>
-        <CardDescription>Strain: {plant.strain ?? "Unknown"}</CardDescription>
+        <CardDescription>
+          Strain: {plant.strain?.name ?? "Unknown"}
+        </CardDescription>
         <div className="mt-4 space-y-2">
           <div className="flex items-center">
             <Sprout className="mr-2 h-4 w-4" />
             <span className="text-sm">
               Seedling:{" "}
-              {formatDate(plant.seedlingDate ?? new Date(), locale, {
+              {formatDate(plant.seedlingPhaseStart ?? new Date(), locale, {
                 includeYear: true,
               })}
             </span>
@@ -65,7 +67,7 @@ const PlantCard = forwardRef<HTMLDivElement, PlantCardProps>((props, ref) => {
             <Leaf className="mr-2 h-4 w-4" />
             <span className="text-sm">
               Veg Phase:{" "}
-              {formatDate(plant.vegPhaseDate ?? new Date(), locale, {
+              {formatDate(plant.vegetationPhaseStart ?? new Date(), locale, {
                 includeYear: true,
               })}
             </span>
@@ -74,7 +76,7 @@ const PlantCard = forwardRef<HTMLDivElement, PlantCardProps>((props, ref) => {
             <Flower2 className="mr-2 h-4 w-4" />
             <span className="text-sm">
               Flower Phase:{" "}
-              {formatDate(plant.flowerPhaseDate ?? new Date(), locale, {
+              {formatDate(plant.floweringPhaseStart ?? new Date(), locale, {
                 includeYear: true,
               })}
             </span>
@@ -83,7 +85,7 @@ const PlantCard = forwardRef<HTMLDivElement, PlantCardProps>((props, ref) => {
             <Wheat className="mr-2 h-4 w-4" />
             <span className="text-sm">
               Harvest Date:{" "}
-              {formatDate(plant.harvesedtDate ?? new Date(), locale, {
+              {formatDate(plant.harvestDate ?? new Date(), locale, {
                 includeYear: true,
               })}
             </span>
@@ -100,10 +102,10 @@ const PlantCard = forwardRef<HTMLDivElement, PlantCardProps>((props, ref) => {
       <CardFooter className="bg-muted/50 p-4">
         <div className="flex w-full items-center justify-between">
           <span className="text-sm text-muted-foreground">
-            THC: {plant.thcContent ?? "N/A"}%
+            THC: {plant.strain?.thcContent ?? "N/A"}%
           </span>
           <span className="text-sm text-muted-foreground">
-            CBD: {plant.cbdContent ?? "N/A"}%
+            CBD: {plant.strain?.cbdContent ?? "N/A"}%
           </span>
         </div>
       </CardFooter>

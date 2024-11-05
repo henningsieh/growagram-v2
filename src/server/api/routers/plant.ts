@@ -21,14 +21,8 @@ export const plantRouter = createTRPCRouter({
         orderBy: (plants, { desc }) => [desc(plants.createdAt)],
         limit: input.limit + 1, // Fetch extra item to check for next page
         offset: input.cursor ?? 0, // Use cursor for offset
-        columns: {
-          id: true,
-          name: true,
-          ownerId: true,
-          createdAt: true,
-          updatedAt: true,
-        },
         with: {
+          strain: true,
           headerImage: { columns: { id: true, imageUrl: true } },
           plantImages: {
             columns: { imageId: false, plantId: false },
