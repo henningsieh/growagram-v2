@@ -41,6 +41,7 @@ const PlantCard = forwardRef<HTMLDivElement, PlantCardProps>((props, ref) => {
             src={plant.headerImage?.imageUrl ?? headerImagePlaceholder}
             alt={plant.name}
             fill
+            sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
             className="object-cover transition-transform duration-300"
             style={{
               transform: isImageHovered ? "scale(1.05)" : "scale(1)",
