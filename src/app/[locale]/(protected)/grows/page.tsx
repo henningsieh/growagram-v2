@@ -38,7 +38,7 @@ export default function MyGrowsPage() {
 
   return (
     <PageHeader title="My Grows" subtitle="View and manage your current grows">
-      <div className="grid gap-4 lg:grid-cols-2 lg:gap-6">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {grows.map((grow) => (
           <GrowCard key={grow.id} grow={grow} showUnassignButton={false} />
         ))}

@@ -5,7 +5,7 @@ import CreatePlant from "~/components/features/Plants/create-plant";
 export default function CreatePlantPage() {
   return (
     <PageHeader
-      title={"Add new Plant"}
+      title={"Create New Plant"}
       subtitle={"Add a new plant to your collection"}
     >
       <CreatePlant />

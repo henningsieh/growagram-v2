@@ -50,8 +50,10 @@ const PlantCard = forwardRef<HTMLDivElement, PlantCardProps>((props, ref) => {
       </CardHeader>
       <CardContent className="p-4">
         <CardTitle>{plant.name}</CardTitle>
-        <CardDescription>
-          Strain: {plant.strain?.name ?? "Unknown"}
+        <CardDescription className="my-1 flex gap-1">
+          <span>Strain: {plant.strain?.name ?? "Unknown"}</span>
+          <span>|</span>
+          <span>Breeder: {plant.strain?.breeder.name ?? "Unknown"}</span>
         </CardDescription>
         <div className="mt-4 space-y-2">
           <div className="flex items-center">
