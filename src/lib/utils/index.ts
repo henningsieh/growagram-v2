@@ -14,17 +14,15 @@ type DateFormatOptions = {
 export function formatDate<Locale extends string = "en" | "de">(
   date: Date,
   locale: Locale,
-  options: DateFormatOptions,
+  options: DateFormatOptions = {},
 ): string {
   const { month = "short", weekday, includeYear = true } = options;
-
   const formatOptions: Intl.DateTimeFormatOptions = {
     day: "2-digit",
     weekday: weekday,
     month: month,
     year: includeYear ? "numeric" : undefined,
   };
-
   return new Intl.DateTimeFormat(locale, formatOptions).format(date);
 }
 
