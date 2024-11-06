@@ -19,7 +19,7 @@ export default function Component({
 }: IPageHeader) {
   return (
     <div className="mx-auto space-y-8 pt-4">
-      <div className="flex justify-between">
+      <div className="flex justify-between px-2 xl:px-12">
         <div className="flex flex-col space-y-2">
           <div className="text-2xl font-bold sm:text-3xl md:text-4xl">
             {title}
@@ -34,7 +34,7 @@ export default function Component({
           )}
         </div>
       </div>
-      <div className="mx-auto max-w-6xl">{children}</div>
+      <div className="mx-auto max-w-6xl xl:px-12">{children}</div>
     </div>
   );
 }

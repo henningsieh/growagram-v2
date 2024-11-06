@@ -73,7 +73,7 @@ export default async function RootLayout(props: LayoutProps) {
                 disableTransitionOnChange
               >
                 <div className="relative flex min-h-screen flex-col">
-                  <header className="sticky top-0 z-50 w-full border-b bg-background backdrop-blur supports-[backdrop-filter]:bg-background">
+                  <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur">
                     <div className="relative flex h-14 items-center justify-center">
                       <MainNavigationBar />
                     </div>
