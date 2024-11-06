@@ -185,7 +185,6 @@ export const plants = pgTable("plant", {
   startDate: timestamp("start_date", { withTimezone: true }).default(
     sql`CURRENT_TIMESTAMP`,
   ),
-  growthProgress: integer("growth_progress").notNull().default(0),
   seedlingPhaseStart: timestamp("seedling_phase_start", { withTimezone: true }),
   vegetationPhaseStart: timestamp("vegetation_phase_start", {
     withTimezone: true,
