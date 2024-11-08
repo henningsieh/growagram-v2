@@ -1,7 +1,7 @@
 // src/server/api/routers/image.ts:
 import { eq } from "drizzle-orm";
 import { z } from "zod";
-import { images } from "~/lib/db/schema";
+import { images, plantImages } from "~/lib/db/schema";
 import {
   createTRPCRouter,
   protectedProcedure,
@@ -9,7 +9,7 @@ import {
 } from "~/server/api/trpc";
 
 export const imageRouter = createTRPCRouter({
-  getUserImages: protectedProcedure
+  getOwnImages: protectedProcedure
     .input(
       z.object({
         limit: z.number().min(1).max(100).default(9),
@@ -45,8 +45,32 @@ export const imageRouter = createTRPCRouter({
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
       // Logic to fetch a single image by ID
-      return await ctx.db.query.images.findFirst({
+      const image = await ctx.db.query.images.findFirst({
         where: eq(images.id, input.id),
+        with: {
+          plantImages: {
+            columns: { plantId: false, imageId: false },
+            with: { plant: true },
+          },
+        },
+      });
+
+      return image;
+    }),
+
+  // Connect image to plant
+  connectToPlant: protectedProcedure
+    .input(
+      z.object({
+        imageId: z.string(),
+        plantId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.db.insert(plantImages).values({
+        // ownerId: ctx.session.user.id as string,
+        imageId: input.imageId,
+        plantId: input.plantId,
       });
     }),
 

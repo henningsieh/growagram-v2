@@ -8,14 +8,21 @@ import PlantCard from "~/components/features/Plants/plant-card";
 import { api } from "~/lib/trpc/react";
 
 export default function PlantsPage() {
-  // getUserPlants from tRPC
-  const { data, fetchNextPage, isFetchingNextPage, hasNextPage } =
-    api.plant.getUserPlants.useInfiniteQuery(
-      { limit: 1 },
-      {
-        getNextPageParam: (lastPage) => lastPage.nextCursor,
-      },
-    );
+  // getOwnPlants from tRPC
+  const {
+    data,
+    isFetching,
+    isPending,
+    isLoading,
+    fetchNextPage,
+    isFetchingNextPage,
+    hasNextPage,
+  } = api.plant.getOwnPlants.useInfiniteQuery(
+    { limit: 1 },
+    {
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
+    },
+  );
   const plants = data?.pages.flatMap((page) => page.plants) ?? [];
 
   // infinite refetching and scrolling
@@ -32,7 +39,7 @@ export default function PlantsPage() {
 
   return (
     <PageHeader title="My Plants" subtitle="View and manage your plants">
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
         {plants.map((plant, index) => (
           <PlantCard
             plant={plant}
@@ -41,7 +48,7 @@ export default function PlantsPage() {
           />
         ))}
       </div>
-      {isFetchingNextPage && (
+      {(isLoading || isFetchingNextPage) && (
         <div className="mt-8 flex justify-center">
           <Loader2 className="h-8 w-8 animate-spin" />
         </div>
@@ -51,7 +58,7 @@ export default function PlantsPage() {
           No more plants to load.
         </p>
       )}
-      {plants.length === 0 && (
+      {!isPending && plants.length === 0 && (
         <p className="mt-8 text-center text-muted-foreground">
           You haven&apos;t added any plants yet.
         </p>

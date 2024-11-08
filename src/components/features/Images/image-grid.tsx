@@ -7,6 +7,7 @@ import { api } from "~/lib/trpc/react";
 import { formatDate, formatTime } from "~/lib/utils";
 import type { UserImage } from "~/server/api/root";
 
+import ImageCard from "./image-card";
 import UserImagesLoadingGrid from "./loading-grid";
 
 export function ImageGrid() {
@@ -19,7 +20,7 @@ export function ImageGrid() {
     hasNextPage,
     fetchNextPage,
     isFetchingNextPage,
-  } = api.image.getUserImages.useInfiniteQuery(
+  } = api.image.getOwnImages.useInfiniteQuery(
     {
       limit: 2,
     },
@@ -72,33 +73,8 @@ export function ImageGrid() {
     <div className="space-y-4">
       {isPending && <UserImagesLoadingGrid />}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {userImages.map((image: UserImage) => (
-          <div
-            key={image.id}
-            className="overflow-hidden rounded-lg border shadow-sm"
-          >
-            <div className="relative aspect-video">
-              <Image
-                src={image.imageUrl}
-                alt=""
-                fill
-                className="object-cover"
-                sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
-              />
-            </div>
-            <div className="p-3">
-              <p className="text-sm text-gray-500">
-                Uploaded:{" "}
-                {formatDate(image.createdAt, locale, {
-                  includeYear: true,
-                })}
-                {" at "}
-                {formatTime(image.createdAt, locale, {
-                  includeSeconds: true,
-                })}
-              </p>
-            </div>
-          </div>
+        {userImages.map((image: UserImage, key) => (
+          <ImageCard image={image} key={key} />
         ))}
       </div>
 

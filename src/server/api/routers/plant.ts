@@ -4,9 +4,13 @@ import { z } from "zod";
 import { plants } from "~/lib/db/schema";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
+import { imageRouter } from "./image";
+
+const connectToPlant__imported_from_imageRouter = imageRouter.connectToPlant;
+
 export const plantRouter = createTRPCRouter({
   // Get paginated plants for the current user
-  getUserPlants: protectedProcedure
+  getOwnPlants: protectedProcedure
     .input(
       z.object({
         limit: z.number().min(1).max(100).default(9),
@@ -68,6 +72,9 @@ export const plantRouter = createTRPCRouter({
         where: eq(plants.id, input.id),
       });
     }),
+
+  // Connect plant to image
+  connectToImage: connectToPlant__imported_from_imageRouter,
 
   // Create a plant
   create: protectedProcedure

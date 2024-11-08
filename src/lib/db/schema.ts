@@ -157,6 +157,9 @@ export const images = pgTable("image", {
   ownerId: text("owner_id")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
+  captureDate: timestamp("captureDate", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
   createdAt: timestamp("created_at", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
@@ -182,9 +185,9 @@ export const plants = pgTable("plant", {
   strainId: text("strain_id").references(() => cannabisStrains.id, {
     onDelete: "restrict",
   }),
-  startDate: timestamp("start_date", { withTimezone: true }).default(
-    sql`CURRENT_TIMESTAMP`,
-  ),
+  startDate: timestamp("start_date", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
   seedlingPhaseStart: timestamp("seedling_phase_start", { withTimezone: true }),
   vegetationPhaseStart: timestamp("vegetation_phase_start", {
     withTimezone: true,

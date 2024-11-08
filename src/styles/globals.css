@@ -15,6 +15,13 @@ body {
 
 @layer base {
   :root {
+    --planting: 45 93.4% 47.5%; /* yello-400 */
+    --seedling: 293 69.5% 48.8%; /* fuchsia-600 */
+    --vegetation: 142 76.2% 36.3%; /* green-600 */
+    --flowering: 350 89.2% 60.2%; /* rose-600 */
+    --harvest: 25 95% 53.1%; /* orange-500 */
+    --curing: 221 83.2% 53.3%; /* blue-600 */
+
     --background: 0 0% 95%;
     --foreground: 240 10% 20%;
     --card: 0 0% 98%;
@@ -46,6 +53,13 @@ body {
     --sidebar-ring: 120 61% 34%;
   }
   .dark {
+    --planting: 293 69.5% 48.8%; /* fuchsia-600 */
+    --seedling: 48 95.8% 53.1%; /* yello-400 */
+    --vegetation: 142 76.2% 36.3%; /* green-600 */
+    --flowering: 350 89.2% 60.2%; /* rose-600 */
+    --harvest: 38 92.1% 50.2%; /* amber-600 */
+    --curing: 221 83.2% 53.3%; /* blue-600 */
+
     --background: 240 5.9% 10%;
     --foreground: 0 0% 98%;
     --card: 240 10% 7.8%;

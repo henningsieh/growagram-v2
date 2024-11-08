@@ -1,9 +1,11 @@
 // src/components/features/plant/plant-card.tsx:
-import { Flower2, Leaf, Sprout, Wheat } from "lucide-react";
+import { TooltipContent } from "@radix-ui/react-tooltip";
+import { Flower2, Leaf, Nut, Sprout, Wheat } from "lucide-react";
 import { useLocale } from "next-intl";
 import Image from "next/image";
 import { forwardRef, useState } from "react";
 import headerImagePlaceholder from "~/assets/landscape-placeholdersvg.svg";
+import { Badge } from "~/components/ui/badge";
 import {
   Card,
   CardContent,
@@ -13,11 +15,12 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 import { Progress } from "~/components/ui/progress";
-import { formatDate } from "~/lib/utils";
-import { UserPlant } from "~/server/api/root";
+import { Tooltip, TooltipTrigger } from "~/components/ui/tooltip";
+import { calculateGrowthProgress, formatDate } from "~/lib/utils";
+import { OwnPlant } from "~/server/api/root";
 
 interface PlantCardProps {
-  plant: UserPlant;
+  plant: OwnPlant;
 }
 
 const PlantCard = forwardRef<HTMLDivElement, PlantCardProps>((props, ref) => {
@@ -25,6 +28,11 @@ const PlantCard = forwardRef<HTMLDivElement, PlantCardProps>((props, ref) => {
   const locale = useLocale();
 
   const [isImageHovered, setIsImageHovered] = useState(false);
+
+  const progress = calculateGrowthProgress(
+    plant.startDate,
+    plant.floweringPhaseStart,
+  );
 
   return (
     <Card
@@ -58,50 +66,86 @@ const PlantCard = forwardRef<HTMLDivElement, PlantCardProps>((props, ref) => {
         </CardDescription>
         <div className="mt-4 space-y-2">
           <div className="flex items-center">
-            <Sprout className="mr-2 h-4 w-4" />
-            <span className="text-sm">
-              Seedling:{" "}
-              {formatDate(plant.seedlingPhaseStart ?? new Date(), locale, {
-                includeYear: true,
-              })}
-            </span>
+            <Tooltip>
+              <TooltipTrigger>
+                <div className="flex items-center text-sm font-semibold">
+                  <Nut className="mr-2 h-4 w-4" />
+                  {formatDate(plant.startDate, locale)}
+                </div>
+              </TooltipTrigger>
+              <TooltipContent side="right">
+                <Badge className="bg-planting ml-2 text-sm">
+                  Seed planting date
+                </Badge>
+              </TooltipContent>
+            </Tooltip>
+          </div>
+
+          <div className="flex items-center">
+            <Tooltip>
+              <TooltipTrigger>
+                <Sprout className="mr-2 h-4 w-4" />
+              </TooltipTrigger>
+              {plant.seedlingPhaseStart &&
+                formatDate(plant.seedlingPhaseStart, locale)}
+              <TooltipContent side="right">
+                <Badge className="whitespace-nowrap bg-seedling text-sm">
+                  Germination date
+                </Badge>
+              </TooltipContent>
+            </Tooltip>
           </div>
           <div className="flex items-center">
-            <Leaf className="mr-2 h-4 w-4" />
-            <span className="text-sm">
-              Veg Phase:{" "}
-              {formatDate(plant.vegetationPhaseStart ?? new Date(), locale, {
-                includeYear: true,
-              })}
-            </span>
+            <Tooltip>
+              <TooltipTrigger>
+                <Leaf className="mr-2 h-4 w-4" />
+              </TooltipTrigger>
+              {plant.vegetationPhaseStart &&
+                formatDate(plant.vegetationPhaseStart, locale)}
+              <TooltipContent side="right">
+                <Badge className="whitespace-nowrap bg-vegetation text-sm">
+                  Veg. start date
+                </Badge>
+              </TooltipContent>
+            </Tooltip>
           </div>
           <div className="flex items-center">
-            <Flower2 className="mr-2 h-4 w-4" />
-            <span className="text-sm">
-              Flower Phase:{" "}
-              {formatDate(plant.floweringPhaseStart ?? new Date(), locale, {
-                includeYear: true,
-              })}
-            </span>
+            <Tooltip>
+              <TooltipTrigger>
+                <Flower2 className="mr-2 h-4 w-4" />
+              </TooltipTrigger>
+              {plant.floweringPhaseStart &&
+                formatDate(plant.floweringPhaseStart, locale)}
+              <TooltipContent side="right">
+                <Badge className="whitespace-nowrap bg-flowering text-sm">
+                  Flowering start date
+                </Badge>
+              </TooltipContent>
+            </Tooltip>
           </div>
           <div className="flex items-center">
-            <Wheat className="mr-2 h-4 w-4" />
-            <span className="text-sm">
-              Harvest Date:{" "}
-              {formatDate(plant.harvestDate ?? new Date(), locale, {
-                includeYear: true,
-              })}
-            </span>
+            <Tooltip>
+              <TooltipTrigger>
+                <Wheat className="mr-2 h-4 w-4" />
+              </TooltipTrigger>
+              {plant.harvestDate && formatDate(plant.harvestDate, locale)}
+              <TooltipContent side="right">
+                <Badge className="whitespace-nowrap bg-harvest text-sm">
+                  Harvest date
+                </Badge>
+              </TooltipContent>
+            </Tooltip>
           </div>
         </div>
         <div className="mt-4">
           <div className="mb-1 flex justify-between text-sm">
             <span>Growth Progress</span>
-            <span>{plant.growthProgress ?? 40}%</span>
+            <span>{progress}%</span>
           </div>
-          <Progress value={plant.growthProgress ?? 40} className="w-full" />
+          <Progress value={progress} className="w-full" />
         </div>
       </CardContent>
+
       <CardFooter className="bg-muted/50 p-4">
         <div className="flex w-full items-center justify-between">
           <span className="text-sm text-muted-foreground">

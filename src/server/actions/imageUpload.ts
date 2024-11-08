@@ -6,6 +6,7 @@ import { auth } from "~/lib/auth";
 import cloudinary from "~/lib/cloudinary";
 import { db } from "~/lib/db";
 import { images } from "~/lib/db/schema";
+import { getExifData } from "~/lib/utils/getExifData";
 
 const MAX_FILE_SIZE = 10000000; // 10MB
 const ACCEPTED_IMAGE_TYPES = [
@@ -115,23 +116,48 @@ export async function uploadImage(formData: FormData) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
+    // Read EXIF data before upload
+    const exifResult = await getExifData(buffer);
+    // if (exifResult) {
+    //   const { captureDate, make, model, gpsLocation, rawExif } = exifResult;
+
+    //   if (captureDate) {
+    //     console.log("Photo taken on:", captureDate);
+    //   }
+
+    //   if (gpsLocation) {
+    //     console.log(
+    //       "Photo location:",
+    //       `${gpsLocation.latitude}, ${gpsLocation.longitude}`,
+    //       gpsLocation.altitude ? `altitude: ${gpsLocation.altitude}m` : "",
+    //     );
+    //   }
+
+    //   // Access any other EXIF data from rawExif
+    //   console.log("Camera:", make, model);
+    //   console.log("ISO:", rawExif.Photo?.ISOSpeedRatings);
+    //   console.log("Aperture:", rawExif.Photo?.ApertureValue);
+    //   console.log("Exposure Time:", rawExif.Photo?.ExposureTime);
+    // }
+
     // Convert the buffer to base64
     const base64String = buffer.toString("base64");
     const dataURI = `data:${file.type};base64,${base64String}`;
 
     // Upload to Cloudinary
-    const cloudinaryResult = (await cloudinary.uploader.upload(dataURI, {
+    const cloudinaryResponse = (await cloudinary.uploader.upload(dataURI, {
       folder: "growagram",
       resource_type: "auto", // This allows Cloudinary to auto-detect the file type
-      allowed_formats: ["jpg", "jpeg", "png", "webp"], // Specify allowed formats in Cloudinary
+      allowed_formats: ACCEPTED_IMAGE_TYPES, // Specify allowed formats in Cloudinary
     })) satisfies UploadApiResponse;
 
     // Save image record to database using Drizzle
     const [newImage] = await db
       .insert(images)
       .values({
-        imageUrl: cloudinaryResult.secure_url,
         ownerId: session.user.id,
+        imageUrl: cloudinaryResponse.secure_url,
+        captureDate: exifResult?.captureDate,
       })
       .returning();
 
@@ -158,8 +184,8 @@ export async function uploadImage(formData: FormData) {
 
     return {
       success: true as const,
-      imageUrl: cloudinaryResult.secure_url,
-      publicId: cloudinaryResult.public_id,
+      imageUrl: cloudinaryResponse.secure_url,
+      publicId: cloudinaryResponse.public_id,
       image: newImage,
     };
   } catch (error) {

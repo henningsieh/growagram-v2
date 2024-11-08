@@ -29,6 +29,13 @@
       "when": 1730902956787,
       "tag": "0003_cool_mercury",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1731064421334,
+      "tag": "0004_loving_psynapse",
+      "breakpoints": true
     }
   ]
 }

@@ -1,4 +1,6 @@
 import { type ClassValue, clsx } from "clsx";
+import { differenceInDays, differenceInWeeks } from "date-fns";
+import { isDate } from "date-fns";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -51,4 +53,47 @@ export function formatTime<Locale extends string = "en" | "de">(
 interface TimeFormatOptions {
   includeSeconds?: boolean;
   includeMinutes?: boolean;
+}
+
+export function calculateGrowthProgress(
+  plantedDate: Date,
+  flowingStaredDate?: Date | null,
+): number {
+  const now = new Date();
+  const totalVegetativeWeeks = 5; // Typical vegetative phase duration
+  const totalFloweringWeeks = 10; // Typical flowering phase duration
+  const totalGrowthWeeks = totalVegetativeWeeks + totalFloweringWeeks; // Total growth duration
+
+  // Helper function to calculate the difference in weeks between two dates
+  const getWeeksBetween = (start: Date, end: Date) => {
+    const millisecondsPerWeek = 1000 * 60 * 60 * 24 * 7;
+    return (end.getTime() - start.getTime()) / millisecondsPerWeek;
+  };
+
+  // If flowering start date is provided, calculate progress based on the flowering phase
+  if (flowingStaredDate) {
+    const weeksFromPlantedToFlowering = getWeeksBetween(
+      plantedDate,
+      flowingStaredDate,
+    );
+    const weeksFromFloweringStarted = getWeeksBetween(flowingStaredDate, now);
+
+    if (weeksFromFloweringStarted >= 0) {
+      // We are in the flowering phase or later
+      const totalWeeksPassed =
+        weeksFromPlantedToFlowering + weeksFromFloweringStarted;
+      const overallProgress = (totalWeeksPassed / totalGrowthWeeks) * 100;
+      return Math.min(Math.max(Math.round(overallProgress), 0), 100);
+    } else {
+      // Still in the vegetative phase
+      const progressDuringVegetative =
+        (weeksFromPlantedToFlowering / totalVegetativeWeeks) * 100;
+      return Math.min(Math.max(Math.round(progressDuringVegetative), 0), 100);
+    }
+  } else {
+    // If only planted date is provided, estimate progress in the full 15-week cycle
+    const weeksFromPlanted = getWeeksBetween(plantedDate, now);
+    const overallProgress = (weeksFromPlanted / totalGrowthWeeks) * 100;
+    return Math.min(Math.max(Math.round(overallProgress), 0), 100);
+  }
 }

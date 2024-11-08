@@ -40,6 +40,13 @@ const config: Config = {
         "9xl": ["8rem", { lineHeight: "1" }], // 128px
       },
       colors: {
+        planting: "hsl(var(--planting))",
+        seedling: "hsl(var(--seedling))",
+        vegetation: "hsl(var(--vegetation))",
+        flowering: "hsl(var(--flowering))",
+        harvest: "hsl(var(--harvest))",
+        curing: "hsl(var(--curing))",
+
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {
