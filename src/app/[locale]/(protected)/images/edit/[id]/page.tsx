@@ -12,13 +12,6 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from "~/components/ui/command";
-import {
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -33,21 +26,19 @@ export default function EditImage() {
   const [open, setOpen] = React.useState(false);
   const [selectedPlantId, setSelectedPlantId] = React.useState<string>("");
 
-  // Fetch all plants at once for the combobox (limit: 100, no pagination needed for UI)
   const { data: plantsData, isLoading: isPlantsLoading } =
     api.plant.getOwnPlants.useQuery({
       limit: 100,
       cursor: null,
     });
 
-  // Connect plant mutation
   const connectPlantMutation = api.image.connectPlant.useMutation({
     onSuccess: () => {
       toast({
         title: "Success",
         description: "Plant connected to image successfully",
       });
-      setSelectedPlantId(""); // Reset selection
+      setSelectedPlantId("");
       setOpen(false);
     },
     onError: (error) => {
@@ -59,7 +50,6 @@ export default function EditImage() {
     },
   });
 
-  // Handle plant selection and connection
   const handleConnectPlant = async () => {
     if (!selectedPlantId || !imageId) return;
 
@@ -103,15 +93,16 @@ export default function EditImage() {
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-full p-0">
-              <Command>
-                <CommandInput placeholder="Search plants..." />
-                <CommandEmpty>No plants found.</CommandEmpty>
-                <CommandGroup>
-                  {plantsData?.plants.map((plant) => (
-                    <CommandItem
+              <div className="max-h-[300px] overflow-y-auto">
+                {isPlantsLoading ? (
+                  <div className="p-2 text-sm">Loading plants...</div>
+                ) : plantsData?.plants && plantsData.plants.length > 0 ? (
+                  plantsData.plants.map((plant) => (
+                    <Button
                       key={plant.id}
-                      value={plant.name}
-                      onSelect={() => {
+                      variant="ghost"
+                      className="w-full justify-start"
+                      onClick={() => {
                         setSelectedPlantId(
                           plant.id === selectedPlantId ? "" : plant.id,
                         );
@@ -132,10 +123,12 @@ export default function EditImage() {
                           ({plant.strain.name})
                         </span>
                       )}
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              </Command>
+                    </Button>
+                  ))
+                ) : (
+                  <div className="p-2 text-sm">No plants available</div>
+                )}
+              </div>
             </PopoverContent>
           </Popover>
 
