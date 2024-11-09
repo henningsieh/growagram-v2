@@ -1,7 +1,8 @@
 "use client";
 
-import { Upload, X } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { Loader2, Upload, X } from "lucide-react";
+import Image from "next/image";
+import { useCallback, useEffect, useRef, useState } from "react";
 import PageHeader from "~/components/Layouts/page-header";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardFooter } from "~/components/ui/card";
@@ -89,9 +90,10 @@ export default function ImageUpload() {
 
   useEffect(() => {
     return () => {
-      // Cleanup preview URLs on unmount
       previews.forEach((preview) => URL.revokeObjectURL(preview.preview));
     };
+    // Cleanup preview URLs on unmount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -115,7 +117,7 @@ export default function ImageUpload() {
               <div className="grid grid-cols-2 gap-4">
                 {previews.map((preview, index) => (
                   <div key={preview.preview} className="relative">
-                    <img
+                    <Image
                       src={preview.preview}
                       alt={`Preview ${index + 1}`}
                       className="h-40 w-full rounded-md object-cover"
@@ -147,13 +149,13 @@ export default function ImageUpload() {
             >
               {uploading ? (
                 <>
-                  <Upload className="mr-2 h-4 w-4 animate-spin" />
-                  Uploading...
+                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                  Upload
                 </>
               ) : (
                 <>
-                  <Upload className="mr-2 h-4 w-4" />
-                  Upload{" "}
+                  <Upload className="mr-2 h-5 w-5" />
+                  Upload
                   {previews.length > 0 ? `(${previews.length} files)` : ""}
                 </>
               )}

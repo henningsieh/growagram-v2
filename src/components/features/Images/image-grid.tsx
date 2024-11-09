@@ -1,18 +1,13 @@
 "use client";
 
-import { useLocale } from "next-intl";
-import Image from "next/image";
 import { useCallback, useEffect, useRef } from "react";
 import { api } from "~/lib/trpc/react";
-import { formatDate, formatTime } from "~/lib/utils";
 import type { UserImage } from "~/server/api/root";
 
 import ImageCard from "./image-card";
 import UserImagesLoadingGrid from "./loading-grid";
 
 export function ImageGrid() {
-  const locale = useLocale();
-
   const {
     data,
     isFetching,

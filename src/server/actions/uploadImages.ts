@@ -26,7 +26,7 @@ function generateCloudinaryFilename(
     .digest("hex")
     .slice(0, 8);
 
-  return `${hash}_${originalFilename}_${username}`;
+  return `${username}_${originalFilename}_${hash}`;
 }
 
 export async function uploadImages(formData: FormData) {
@@ -127,7 +127,7 @@ export async function uploadImages(formData: FormData) {
       // Generate unique filename for Cloudinary
       const cloudinaryFilename = generateCloudinaryFilename(
         originalFilename,
-        session.user.email || session.user.id,
+        session.user.name || session.user.email || session.user.id,
       );
 
       // Upload to Cloudinary

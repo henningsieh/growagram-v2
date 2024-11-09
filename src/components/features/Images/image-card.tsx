@@ -20,6 +20,7 @@ import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardFooter, CardTitle } from "~/components/ui/card";
 import { Switch } from "~/components/ui/switch";
 import { TooltipContent, TooltipTrigger } from "~/components/ui/tooltip";
+import { Link } from "~/lib/i18n/routing";
 import { formatDate, formatTime } from "~/lib/utils";
 import { UserImage } from "~/server/api/root";
 
@@ -121,9 +122,11 @@ export default function Component({ image }: { image: UserImage }) {
           >
             <Trash2 className="h-4 w-4" /> Delete
           </Button>
-          <Button size={"sm"} className="w-full text-sm font-bold">
-            <Edit className="h-5 w-5" />
-            Edit
+          <Button asChild size={"sm"} className="w-full text-sm font-bold">
+            <Link href={`images/edit/${image.id}`}>
+              <Edit className="h-5 w-5" />
+              Edit
+            </Link>
           </Button>
         </CardFooter>
       </Card>
