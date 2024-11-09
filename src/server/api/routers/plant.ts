@@ -6,7 +6,7 @@ import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
 import { imageRouter } from "./image";
 
-const connectToPlant__imported_from_imageRouter = imageRouter.connectToPlant;
+const connectPlant__imported_from_imageRouter = imageRouter.connectPlant;
 
 export const plantRouter = createTRPCRouter({
   // Get paginated plants for the current user
@@ -14,7 +14,7 @@ export const plantRouter = createTRPCRouter({
     .input(
       z.object({
         limit: z.number().min(1).max(100).default(9),
-        cursor: z.number().nullish(), // Cursor-based pagination
+        cursor: z.number().nullish().default(null), // Cursor-based pagination
       }),
     )
     .query(async ({ ctx, input }) => {
@@ -73,8 +73,8 @@ export const plantRouter = createTRPCRouter({
       });
     }),
 
-  // Connect plant to image
-  connectToImage: connectToPlant__imported_from_imageRouter,
+  // Connect an image to plant
+  connectImage: connectPlant__imported_from_imageRouter,
 
   // Create a plant
   create: protectedProcedure

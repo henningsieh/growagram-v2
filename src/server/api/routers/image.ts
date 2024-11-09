@@ -60,8 +60,8 @@ export const imageRouter = createTRPCRouter({
       return image;
     }),
 
-  // Connect image to plant
-  connectToPlant: protectedProcedure
+  // Connect a plant to this image
+  connectPlant: protectedProcedure
     .input(
       z.object({
         imageId: z.string(),
@@ -70,7 +70,6 @@ export const imageRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       return await ctx.db.insert(plantImages).values({
-        // ownerId: ctx.session.user.id as string,
         imageId: input.imageId,
         plantId: input.plantId,
       });
