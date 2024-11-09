@@ -1,0 +1,1 @@
+ALTER TABLE "image" ADD COLUMN "originalFilename" text NOT NULL;

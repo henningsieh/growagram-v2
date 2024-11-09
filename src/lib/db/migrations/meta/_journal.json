@@ -36,6 +36,13 @@
       "when": 1731064421334,
       "tag": "0004_loving_psynapse",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1731140714197,
+      "tag": "0005_green_black_tarantula",
+      "breakpoints": true
     }
   ]
 }

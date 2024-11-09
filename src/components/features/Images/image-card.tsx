@@ -78,7 +78,7 @@ export default function Component({ image }: { image: UserImage }) {
             priority
           />
         </div>
-        <CardTitle className="p-3">Todo: filename</CardTitle>
+        <CardTitle className="p-3">{image.originalFilename}</CardTitle>
         <CardContent className="flex flex-col gap-2 py-2">
           <TooltipProvider delayDuration={0}>
             <Tooltip>

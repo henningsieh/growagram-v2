@@ -1,6 +1,5 @@
 "use client";
 
-// src/app/[locale]/(protected)/images/upload/page.tsx:
 import { Upload, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import PageHeader from "~/components/Layouts/page-header";
@@ -10,11 +9,16 @@ import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { useToast } from "~/hooks/use-toast";
 import { useRouter } from "~/lib/i18n/routing";
-import { uploadImage } from "~/server/actions/imageUpload";
+import { uploadImages } from "~/server/actions/uploadImages";
+
+interface FilePreview {
+  file: File;
+  preview: string;
+}
 
 export default function ImageUpload() {
   const [uploading, setUploading] = useState(false);
-  const [preview, setPreview] = useState<string | null>(null);
+  const [previews, setPreviews] = useState<FilePreview[]>([]);
   const router = useRouter();
   const { toast } = useToast();
 
@@ -25,17 +29,17 @@ export default function ImageUpload() {
     try {
       setUploading(true);
 
-      const result = await uploadImage(formData);
+      const result = await uploadImages(formData);
 
       if (result.success) {
         toast({
           title: "Success",
-          description: `Image uploaded successfully! ID: ${result.image.id}`,
+          description: `${result.images.length} image(s) uploaded successfully!`,
         });
 
-        // Reset form and preview
+        // Reset form and previews
         formRef.current?.reset();
-        setPreview(null);
+        setPreviews([]);
 
         // Navigate to images page
         router.push("/images");
@@ -46,12 +50,12 @@ export default function ImageUpload() {
         throw new Error("Upload failed");
       }
     } catch (error) {
-      console.error("Error uploading image:", error);
+      console.error("Error uploading images:", error);
 
       toast({
         title: "Error",
         description:
-          error instanceof Error ? error.message : "Failed to upload image",
+          error instanceof Error ? error.message : "Failed to upload images",
         variant: "destructive",
       });
     } finally {
@@ -60,67 +64,85 @@ export default function ImageUpload() {
   }
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (file) {
-      if (preview) URL.revokeObjectURL(preview);
-      setPreview(URL.createObjectURL(file));
-    }
+    const files = Array.from(e.target.files || []);
+
+    // Revoke existing preview URLs
+    previews.forEach((preview) => URL.revokeObjectURL(preview.preview));
+
+    // Create new previews
+    const newPreviews = files.map((file) => ({
+      file,
+      preview: URL.createObjectURL(file),
+    }));
+
+    setPreviews(newPreviews);
   }
 
-  function handleRemoveFile() {
-    if (fileInputRef.current) fileInputRef.current.value = "";
-    if (preview) URL.revokeObjectURL(preview);
-    setPreview(null);
+  function handleRemoveFile(index: number) {
+    setPreviews((current) => {
+      const updated = [...current];
+      URL.revokeObjectURL(updated[index].preview);
+      updated.splice(index, 1);
+      return updated;
+    });
   }
 
   useEffect(() => {
     return () => {
-      if (preview) URL.revokeObjectURL(preview);
+      // Cleanup preview URLs on unmount
+      previews.forEach((preview) => URL.revokeObjectURL(preview.preview));
     };
-  }, [preview]);
+  }, []);
 
   return (
-    <PageHeader title="Image Upload" subtitle="Upload a new image">
+    <PageHeader title="Image Upload" subtitle="Upload new images">
       <Card className="mx-auto max-w-xl">
         <form ref={formRef} action={handleSubmit}>
-          {/* <CardHeader>
-            <CardTitle>Image Upload</CardTitle>
-          </CardHeader> */}
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="file">Select Image</Label>
+              <Label htmlFor="files">Select Images</Label>
               <Input
-                id="file"
+                id="files"
                 ref={fileInputRef}
                 type="file"
-                name="file"
+                name="files"
                 accept="image/*"
                 onChange={handleFileChange}
+                multiple
               />
             </div>
-            {preview && (
-              <div className="relative mt-4">
-                <img
-                  src={preview}
-                  alt="Preview"
-                  className="max-h-64 w-full rounded-md object-contain"
-                />
-                <Button
-                  type="button"
-                  variant="destructive"
-                  size="icon"
-                  className="absolute right-2 top-2"
-                  onClick={handleRemoveFile}
-                >
-                  <X className="h-4 w-4" />
-                </Button>
+            {previews.length > 0 && (
+              <div className="grid grid-cols-2 gap-4">
+                {previews.map((preview, index) => (
+                  <div key={preview.preview} className="relative">
+                    <img
+                      src={preview.preview}
+                      alt={`Preview ${index + 1}`}
+                      className="h-40 w-full rounded-md object-cover"
+                    />
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      size="icon"
+                      className="absolute right-2 top-2"
+                      onClick={() => handleRemoveFile(index)}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                    <input
+                      type="hidden"
+                      name="originalFilenames"
+                      value={preview.file.name}
+                    />
+                  </div>
+                ))}
               </div>
             )}
           </CardContent>
           <CardFooter>
             <Button
               type="submit"
-              disabled={uploading || !preview}
+              disabled={uploading || previews.length === 0}
               className="w-full"
             >
               {uploading ? (
@@ -131,7 +153,8 @@ export default function ImageUpload() {
               ) : (
                 <>
                   <Upload className="mr-2 h-4 w-4" />
-                  Upload
+                  Upload{" "}
+                  {previews.length > 0 ? `(${previews.length} files)` : ""}
                 </>
               )}
             </Button>

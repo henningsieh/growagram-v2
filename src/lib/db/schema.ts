@@ -160,6 +160,7 @@ export const images = pgTable("image", {
   captureDate: timestamp("captureDate", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
+  originalFilename: text("originalFilename").notNull(),
   createdAt: timestamp("created_at", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
