@@ -65,29 +65,27 @@ const PlantCard = forwardRef<HTMLDivElement, PlantCardProps>((props, ref) => {
           <span>Breeder: {plant.strain?.breeder.name ?? "Unknown"}</span>
         </CardDescription>
         <div className="mt-4 space-y-2">
-          <div className="flex items-center">
+          <div className="flex h-4 items-center">
             <Tooltip>
-              <TooltipTrigger>
-                <div className="flex items-center text-sm font-semibold">
-                  <Nut className="mr-2 h-4 w-4" />
-                  {formatDate(plant.startDate, locale)}
-                </div>
+              <TooltipTrigger className="flex items-center font-mono text-sm font-semibold tracking-tighter">
+                <Nut className="mr-2 h-4 w-4 text-planting" />
+                {formatDate(plant.startDate, locale)}
               </TooltipTrigger>
               <TooltipContent side="right">
-                <Badge className="bg-planting ml-2 text-sm">
+                <Badge className="ml-2 bg-planting text-sm">
                   Seed planting date
                 </Badge>
               </TooltipContent>
             </Tooltip>
           </div>
 
-          <div className="flex items-center">
+          <div className="flex h-4 items-center">
             <Tooltip>
-              <TooltipTrigger>
-                <Sprout className="mr-2 h-4 w-4" />
+              <TooltipTrigger className="flex items-center font-mono text-sm font-semibold tracking-tighter">
+                <Sprout className="mr-2 h-4 w-4 text-seedling" />
+                {plant.seedlingPhaseStart &&
+                  formatDate(plant.seedlingPhaseStart, locale)}
               </TooltipTrigger>
-              {plant.seedlingPhaseStart &&
-                formatDate(plant.seedlingPhaseStart, locale)}
               <TooltipContent side="right">
                 <Badge className="whitespace-nowrap bg-seedling text-sm">
                   Germination date
@@ -95,13 +93,13 @@ const PlantCard = forwardRef<HTMLDivElement, PlantCardProps>((props, ref) => {
               </TooltipContent>
             </Tooltip>
           </div>
-          <div className="flex items-center">
+          <div className="flex h-4 items-center">
             <Tooltip>
-              <TooltipTrigger>
-                <Leaf className="mr-2 h-4 w-4" />
+              <TooltipTrigger className="flex items-center font-mono text-sm font-semibold tracking-tighter">
+                <Leaf className="mr-2 h-4 w-4 text-vegetation" />
+                {plant.vegetationPhaseStart &&
+                  formatDate(plant.vegetationPhaseStart, locale)}
               </TooltipTrigger>
-              {plant.vegetationPhaseStart &&
-                formatDate(plant.vegetationPhaseStart, locale)}
               <TooltipContent side="right">
                 <Badge className="whitespace-nowrap bg-vegetation text-sm">
                   Veg. start date
@@ -109,13 +107,13 @@ const PlantCard = forwardRef<HTMLDivElement, PlantCardProps>((props, ref) => {
               </TooltipContent>
             </Tooltip>
           </div>
-          <div className="flex items-center">
+          <div className="flex h-4 items-center">
             <Tooltip>
-              <TooltipTrigger>
-                <Flower2 className="mr-2 h-4 w-4" />
+              <TooltipTrigger className="flex items-center font-mono text-sm font-semibold tracking-tighter">
+                <Flower2 className="mr-2 h-4 w-4 text-flowering" />
+                {plant.floweringPhaseStart &&
+                  formatDate(plant.floweringPhaseStart, locale)}
               </TooltipTrigger>
-              {plant.floweringPhaseStart &&
-                formatDate(plant.floweringPhaseStart, locale)}
               <TooltipContent side="right">
                 <Badge className="whitespace-nowrap bg-flowering text-sm">
                   Flowering start date
@@ -123,12 +121,12 @@ const PlantCard = forwardRef<HTMLDivElement, PlantCardProps>((props, ref) => {
               </TooltipContent>
             </Tooltip>
           </div>
-          <div className="flex items-center">
+          <div className="flex h-4 items-center">
             <Tooltip>
-              <TooltipTrigger>
-                <Wheat className="mr-2 h-4 w-4" />
+              <TooltipTrigger className="flex items-center font-mono text-sm font-semibold tracking-tighter">
+                <Wheat className="mr-2 h-4 w-4 text-harvest" />
+                {plant.harvestDate && formatDate(plant.harvestDate, locale)}
               </TooltipTrigger>
-              {plant.harvestDate && formatDate(plant.harvestDate, locale)}
               <TooltipContent side="right">
                 <Badge className="whitespace-nowrap bg-harvest text-sm">
                   Harvest date

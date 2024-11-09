@@ -5,6 +5,7 @@ import {
   CalendarDays,
   Flower,
   Leaf,
+  Nut,
   PillBottle,
   Sprout,
   Wheat,
@@ -116,7 +117,7 @@ export default function CreatePlant() {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Plant Name</FormLabel>
+                  <FormLabel className="font-semibold">Plant Name</FormLabel>
                   <FormControl>
                     <Input placeholder="Enter plant name" {...field} />
                   </FormControl>
@@ -136,15 +137,19 @@ export default function CreatePlant() {
                   name="startDate"
                   render={({ field }) => (
                     <FormItem className="flex flex-col">
-                      <FormLabel>Seed planting date</FormLabel>
+                      <FormLabel className="font-semibold">
+                        Seed planting date
+                      </FormLabel>
                       <Popover>
                         <PopoverTrigger asChild>
                           <FormControl>
                             <Button
                               variant={"outline"}
                               className={cn(
-                                "w-full pl-3 text-left font-normal",
-                                !field.value && "text-muted-foreground",
+                                "w-full bg-transparent pl-3 text-left font-normal",
+                                !field.value
+                                  ? "text-muted-foreground"
+                                  : "text-foreground",
                               )}
                             >
                               {field.value ? (
@@ -152,7 +157,7 @@ export default function CreatePlant() {
                               ) : (
                                 <span>Pick a date</span>
                               )}
-                              <CalendarDays className="ml-auto h-4 w-4 opacity-50" />
+                              <Nut className="ml-auto h-5 w-5 text-planting opacity-70" />
                             </Button>
                           </FormControl>
                         </PopoverTrigger>
@@ -177,14 +182,16 @@ export default function CreatePlant() {
                   name="seedlingPhaseStart"
                   render={({ field }) => (
                     <FormItem className="flex flex-col">
-                      <FormLabel>Seedling Phase</FormLabel>
+                      <FormLabel className="font-semibold">
+                        Seedling Phase
+                      </FormLabel>
                       <Popover>
                         <PopoverTrigger asChild>
                           <FormControl>
                             <Button
                               variant={"outline"}
                               className={cn(
-                                "w-full pl-3 text-left font-normal",
+                                "w-full bg-transparent pl-3 text-left font-normal",
                                 !field.value && "text-muted-foreground",
                               )}
                             >
@@ -193,7 +200,7 @@ export default function CreatePlant() {
                               ) : (
                                 <span>Pick a date</span>
                               )}
-                              <Sprout className="ml-auto h-4 w-4 text-seedling opacity-50" />
+                              <Sprout className="ml-auto h-5 w-5 text-seedling opacity-60" />
                             </Button>
                           </FormControl>
                         </PopoverTrigger>
@@ -221,14 +228,16 @@ export default function CreatePlant() {
                   name="vegetationPhaseStart"
                   render={({ field }) => (
                     <FormItem className="flex flex-col">
-                      <FormLabel>Vegetation Phase</FormLabel>
+                      <FormLabel className="font-semibold">
+                        Vegetation Phase
+                      </FormLabel>
                       <Popover>
                         <PopoverTrigger asChild>
                           <FormControl>
                             <Button
                               variant={"outline"}
                               className={cn(
-                                "w-full pl-3 text-left font-normal",
+                                "w-full bg-transparent pl-3 text-left font-normal",
                                 !field.value && "text-muted-foreground",
                               )}
                             >
@@ -237,7 +246,7 @@ export default function CreatePlant() {
                               ) : (
                                 <span>Pick a date</span>
                               )}
-                              <Leaf className="ml-auto h-4 w-4 text-vegetation opacity-50" />
+                              <Leaf className="ml-auto h-5 w-5 text-vegetation opacity-70" />
                             </Button>
                           </FormControl>
                         </PopoverTrigger>
@@ -262,14 +271,16 @@ export default function CreatePlant() {
                   name="floweringPhaseStart"
                   render={({ field }) => (
                     <FormItem className="flex flex-col">
-                      <FormLabel>Flowering Phase</FormLabel>
+                      <FormLabel className="font-semibold">
+                        Flowering Phase
+                      </FormLabel>
                       <Popover>
                         <PopoverTrigger asChild>
                           <FormControl>
                             <Button
                               variant={"outline"}
                               className={cn(
-                                "w-full pl-3 text-left font-normal",
+                                "w-full bg-transparent pl-3 text-left font-normal",
                                 !field.value && "text-muted-foreground",
                               )}
                             >
@@ -278,7 +289,7 @@ export default function CreatePlant() {
                               ) : (
                                 <span>Pick a date</span>
                               )}
-                              <Flower className="ml-auto h-4 w-4 text-flowering opacity-50" />
+                              <Flower className="ml-auto h-5 w-5 text-flowering opacity-70" />
                             </Button>
                           </FormControl>
                         </PopoverTrigger>
@@ -306,14 +317,16 @@ export default function CreatePlant() {
                   name="harvestDate"
                   render={({ field }) => (
                     <FormItem className="flex flex-col">
-                      <FormLabel>Harvest Date</FormLabel>
+                      <FormLabel className="font-semibold">
+                        Harvest Date
+                      </FormLabel>
                       <Popover>
                         <PopoverTrigger asChild>
                           <FormControl>
                             <Button
                               variant={"outline"}
                               className={cn(
-                                "w-full pl-3 text-left font-normal",
+                                "w-full bg-transparent pl-3 text-left font-normal",
                                 !field.value && "text-muted-foreground",
                               )}
                             >
@@ -322,7 +335,7 @@ export default function CreatePlant() {
                               ) : (
                                 <span>Pick a date</span>
                               )}
-                              <Wheat className="ml-auto h-4 w-4 text-harvest opacity-50" />
+                              <Wheat className="ml-auto h-5 w-5 text-harvest opacity-70" />
                             </Button>
                           </FormControl>
                         </PopoverTrigger>
@@ -348,14 +361,16 @@ export default function CreatePlant() {
                   name="curingPhaseStart"
                   render={({ field }) => (
                     <FormItem className="flex flex-col">
-                      <FormLabel>Curing Phase</FormLabel>
+                      <FormLabel className="font-semibold">
+                        Curing Phase
+                      </FormLabel>
                       <Popover>
                         <PopoverTrigger asChild>
                           <FormControl>
                             <Button
                               variant={"outline"}
                               className={cn(
-                                "w-full pl-3 text-left font-normal",
+                                "w-full bg-transparent pl-3 text-left font-normal",
                                 !field.value && "text-muted-foreground",
                               )}
                             >
@@ -364,7 +379,7 @@ export default function CreatePlant() {
                               ) : (
                                 <span>Pick a date</span>
                               )}
-                              <PillBottle className="ml-auto h-4 w-4 text-curing opacity-50" />
+                              <PillBottle className="ml-auto h-5 w-5 text-curing opacity-70" />
                             </Button>
                           </FormControl>
                         </PopoverTrigger>
