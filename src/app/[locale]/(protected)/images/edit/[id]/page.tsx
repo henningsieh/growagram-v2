@@ -24,13 +24,14 @@ export default function EditImage() {
   const { id: imageId } = useParams<{ id: string }>();
   const { toast } = useToast();
   const [open, setOpen] = React.useState(false);
-  const [selectedPlantId, setSelectedPlantId] = React.useState<string>("");
+  const [selectedPlantIds, setSelectedPlantIds] = React.useState<string[]>([]);
 
-  const { data: plantsData, isLoading: isPlantsLoading } =
-    api.plant.getOwnPlants.useQuery({
-      limit: 100,
-      cursor: null,
-    });
+  const { data, isLoading } = api.plant.getOwnPlants.useQuery({
+    limit: 100,
+    cursor: null,
+  });
+
+  const plants = data?.plants;
 
   const connectPlantMutation = api.image.connectPlant.useMutation({
     onSuccess: () => {
@@ -38,7 +39,7 @@ export default function EditImage() {
         title: "Success",
         description: "Plant connected to image successfully",
       });
-      setSelectedPlantId("");
+      setSelectedPlantIds([]);
       setOpen(false);
     },
     onError: (error) => {
@@ -51,26 +52,33 @@ export default function EditImage() {
   });
 
   const handleConnectPlant = async () => {
-    if (!selectedPlantId || !imageId) return;
+    if (!selectedPlantIds.length || !imageId) return;
 
-    connectPlantMutation.mutate({
-      imageId,
-      plantId: selectedPlantId,
-    });
+    for (const plantId of selectedPlantIds) {
+      await connectPlantMutation.mutateAsync({
+        imageId,
+        plantId,
+      });
+    }
+
+    setSelectedPlantIds([]);
+    setOpen(false);
   };
 
-  const getSelectedPlantName = () => {
-    if (!selectedPlantId || !plantsData?.plants) return "Select a plant...";
-    const plant = plantsData.plants.find((p) => p.id === selectedPlantId);
-    return plant?.name || "Select a plant...";
+  const getSelectedPlantNames = () => {
+    if (!selectedPlantIds.length || !plants) return "Select plants...";
+    const selectedPlants = plants.filter((p) =>
+      selectedPlantIds.includes(p.id),
+    );
+    return selectedPlants.map((p) => p.name).join(", ") || "Select plants...";
   };
 
   return (
     <Card className="max-w-2xl">
       <CardHeader>
-        <CardTitle>Connect Image to Plant</CardTitle>
+        <CardTitle>Connect Plants to Image</CardTitle>
         <CardDescription>
-          Select a plant to connect with this image
+          Select all plants beeing seen on this image
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -82,37 +90,38 @@ export default function EditImage() {
                 role="combobox"
                 aria-expanded={open}
                 className="w-full justify-between"
-                disabled={isPlantsLoading}
+                disabled={isLoading}
               >
-                {isPlantsLoading ? (
+                {isLoading ? (
                   <span>Loading plants...</span>
                 ) : (
-                  getSelectedPlantName()
+                  getSelectedPlantNames()
                 )}
                 <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-full p-0">
               <div className="max-h-[300px] overflow-y-auto">
-                {isPlantsLoading ? (
+                {isLoading ? (
                   <div className="p-2 text-sm">Loading plants...</div>
-                ) : plantsData?.plants && plantsData.plants.length > 0 ? (
-                  plantsData.plants.map((plant) => (
+                ) : plants && plants.length > 0 ? (
+                  plants.map((plant) => (
                     <Button
                       key={plant.id}
                       variant="ghost"
                       className="w-full justify-start"
                       onClick={() => {
-                        setSelectedPlantId(
-                          plant.id === selectedPlantId ? "" : plant.id,
+                        setSelectedPlantIds((prev) =>
+                          prev.includes(plant.id)
+                            ? prev.filter((id) => id !== plant.id)
+                            : [...prev, plant.id],
                         );
-                        setOpen(false);
                       }}
                     >
                       <Check
                         className={cn(
                           "mr-2 h-4 w-4",
-                          selectedPlantId === plant.id
+                          selectedPlantIds.includes(plant.id)
                             ? "opacity-100"
                             : "opacity-0",
                         )}
@@ -134,7 +143,9 @@ export default function EditImage() {
 
           <Button
             onClick={handleConnectPlant}
-            disabled={!selectedPlantId || connectPlantMutation.isPending}
+            disabled={
+              !selectedPlantIds.length || connectPlantMutation.isPending
+            }
             className="w-full"
           >
             {connectPlantMutation.isPending ? (
@@ -143,7 +154,7 @@ export default function EditImage() {
                 Connecting...
               </div>
             ) : (
-              "Connect to Plant"
+              `Connect to ${selectedPlantIds.length} Plant${selectedPlantIds.length !== 1 ? "s" : ""}`
             )}
           </Button>
         </div>
