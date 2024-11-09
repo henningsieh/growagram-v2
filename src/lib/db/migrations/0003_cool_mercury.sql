@@ -1,0 +1,1 @@
+ALTER TABLE "plant" DROP COLUMN IF EXISTS "growth_progress";

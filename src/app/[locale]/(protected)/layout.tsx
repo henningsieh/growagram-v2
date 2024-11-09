@@ -28,7 +28,7 @@ export default async function ProtectedLayout(props: LayoutProps) {
 
   return (
     <ProtectedSidebar>
-      <div className="min-h-screen">{props.children}</div>
+      <>{props.children}</>
     </ProtectedSidebar>
   );
 }

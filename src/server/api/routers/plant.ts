@@ -4,9 +4,13 @@ import { z } from "zod";
 import { plants } from "~/lib/db/schema";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
+import { imageRouter } from "./image";
+
+const connectToPlant__imported_from_imageRouter = imageRouter.connectToPlant;
+
 export const plantRouter = createTRPCRouter({
   // Get paginated plants for the current user
-  getUserPlants: protectedProcedure
+  getOwnPlants: protectedProcedure
     .input(
       z.object({
         limit: z.number().min(1).max(100).default(9),
@@ -21,14 +25,16 @@ export const plantRouter = createTRPCRouter({
         orderBy: (plants, { desc }) => [desc(plants.createdAt)],
         limit: input.limit + 1, // Fetch extra item to check for next page
         offset: input.cursor ?? 0, // Use cursor for offset
-        columns: {
-          id: true,
-          name: true,
-          ownerId: true,
-          createdAt: true,
-          updatedAt: true,
-        },
         with: {
+          strain: {
+            columns: {
+              id: true,
+              name: true,
+              thcContent: true,
+              cbdContent: true,
+            },
+            with: { breeder: { columns: { id: true, name: true } } },
+          },
           headerImage: { columns: { id: true, imageUrl: true } },
           plantImages: {
             columns: { imageId: false, plantId: false },
@@ -66,6 +72,9 @@ export const plantRouter = createTRPCRouter({
         where: eq(plants.id, input.id),
       });
     }),
+
+  // Connect plant to image
+  connectToImage: connectToPlant__imported_from_imageRouter,
 
   // Create a plant
   create: protectedProcedure

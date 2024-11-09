@@ -1,7 +1,9 @@
 // src/server/api/routers/image.ts:
+import { TRPCError } from "@trpc/server";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
-import { images } from "~/lib/db/schema";
+import cloudinary from "~/lib/cloudinary";
+import { images, plantImages } from "~/lib/db/schema";
 import {
   createTRPCRouter,
   protectedProcedure,
@@ -9,7 +11,7 @@ import {
 } from "~/server/api/trpc";
 
 export const imageRouter = createTRPCRouter({
-  getUserImages: protectedProcedure
+  getOwnImages: protectedProcedure
     .input(
       z.object({
         limit: z.number().min(1).max(100).default(9),
@@ -45,38 +47,106 @@ export const imageRouter = createTRPCRouter({
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
       // Logic to fetch a single image by ID
-      return await ctx.db.query.images.findFirst({
+      const image = await ctx.db.query.images.findFirst({
         where: eq(images.id, input.id),
+        with: {
+          plantImages: {
+            columns: { plantId: false, imageId: false },
+            with: { plant: true },
+          },
+        },
       });
+
+      return image;
     }),
 
-  // Upload image
-  upload: protectedProcedure
+  // Connect image to plant
+  connectToPlant: protectedProcedure
     .input(
       z.object({
-        imageUrl: z.string().url(),
-        // other metadata fields can be added here
+        imageId: z.string(),
+        plantId: z.string(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      // Logic to handle image creation
-      const newImage = await ctx.db.insert(images).values({
-        ownerId: ctx.session.user.id as string,
-        imageUrl: input.imageUrl,
-        createdAt: new Date(),
+      return await ctx.db.insert(plantImages).values({
+        // ownerId: ctx.session.user.id as string,
+        imageId: input.imageId,
+        plantId: input.plantId,
       });
-
-      return newImage;
     }),
 
+  /**
+   * Uploads an image.
+   *
+   * @see {@link ./src/server/actions/uploadImages.ts#L141}
+   */
+
   // Delete image
-  delete: protectedProcedure
+  deleteImage: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      // Logic to delete an image by ID
-      const deletedImage = await ctx.db
-        .delete(images)
-        .where(eq(images.id, input.id));
-      return { success: !!deletedImage };
+      try {
+        // First, fetch the image to get its URL
+        const image = await ctx.db.query.images.findFirst({
+          where: eq(images.id, input.id),
+        });
+
+        if (!image) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "Image not found",
+          });
+        }
+
+        // Verify ownership
+        if (image.ownerId !== ctx.session.user.id) {
+          throw new TRPCError({
+            code: "FORBIDDEN",
+            message: "You don't have permission to delete this image",
+          });
+        }
+
+        // Extract public_id from Cloudinary URL
+        const urlParts = image.imageUrl.split("/");
+        const filenameWithExtension = urlParts[urlParts.length - 1];
+        const publicId = `growagram/${filenameWithExtension.split(".")[0]}`; // Adjust folder name if needed
+
+        // Delete from Cloudinary
+        await cloudinary.uploader.destroy(publicId);
+
+        // Delete from database
+        const deletedImage = await ctx.db
+          .delete(images)
+          .where(eq(images.id, input.id))
+          .returning();
+
+        if (!deletedImage || deletedImage.length === 0) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Failed to delete image from database",
+          });
+        }
+
+        return {
+          success: true,
+          deletedImage: deletedImage[0],
+        };
+      } catch (error) {
+        // Log the error for debugging
+        console.error("Error deleting image:", error);
+
+        // If it's already a TRPCError, rethrow it
+        if (error instanceof TRPCError) {
+          throw error;
+        }
+
+        // Otherwise, wrap it in a TRPCError
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to delete image",
+          cause: error,
+        });
+      }
     }),
 });

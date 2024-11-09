@@ -48,7 +48,7 @@
           "url": "/plants"
         },
         {
-          "title": "Create Plant",
+          "title": "Create New Plant",
           "url": "/plants/create"
         }
       ]

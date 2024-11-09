@@ -24,15 +24,15 @@ CREATE TABLE IF NOT EXISTS "grow" (
 	"updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 --> statement-breakpoint
--- ALTER TABLE "plant" ADD COLUMN "grow_id" text;--> statement-breakpoint
--- ALTER TABLE "plant" ADD COLUMN "strain_id" text;--> statement-breakpoint
--- ALTER TABLE "plant" ADD COLUMN "start_date" timestamp with time zone DEFAULT CURRENT_TIMESTAMP;--> statement-breakpoint
--- ALTER TABLE "plant" ADD COLUMN "growth_progress" integer DEFAULT 0 NOT NULL;--> statement-breakpoint
--- ALTER TABLE "plant" ADD COLUMN "seedling_phase_start" timestamp with time zone;--> statement-breakpoint
--- ALTER TABLE "plant" ADD COLUMN "vegetation_phase_start" timestamp with time zone;--> statement-breakpoint
--- ALTER TABLE "plant" ADD COLUMN "flowering_phase_start" timestamp with time zone;--> statement-breakpoint
--- ALTER TABLE "plant" ADD COLUMN "harvest_date" timestamp with time zone;--> statement-breakpoint
--- ALTER TABLE "plant" ADD COLUMN "curing_phase_start" timestamp with time zone;--> statement-breakpoint
+ALTER TABLE "plant" ADD COLUMN "grow_id" text;--> statement-breakpoint
+ALTER TABLE "plant" ADD COLUMN "strain_id" text;--> statement-breakpoint
+ALTER TABLE "plant" ADD COLUMN "start_date" timestamp with time zone DEFAULT CURRENT_TIMESTAMP;--> statement-breakpoint
+ALTER TABLE "plant" ADD COLUMN "growth_progress" integer DEFAULT 0 NOT NULL;--> statement-breakpoint
+ALTER TABLE "plant" ADD COLUMN "seedling_phase_start" timestamp with time zone;--> statement-breakpoint
+ALTER TABLE "plant" ADD COLUMN "vegetation_phase_start" timestamp with time zone;--> statement-breakpoint
+ALTER TABLE "plant" ADD COLUMN "flowering_phase_start" timestamp with time zone;--> statement-breakpoint
+ALTER TABLE "plant" ADD COLUMN "harvest_date" timestamp with time zone;--> statement-breakpoint
+ALTER TABLE "plant" ADD COLUMN "curing_phase_start" timestamp with time zone;--> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "cannabis_strain" ADD CONSTRAINT "cannabis_strain_breeder_id_breeder_id_fk" FOREIGN KEY ("breeder_id") REFERENCES "public"."breeder"("id") ON DELETE cascade ON UPDATE no action;
 EXCEPTION

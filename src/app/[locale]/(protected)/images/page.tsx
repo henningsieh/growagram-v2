@@ -4,7 +4,7 @@ import { ImageGrid } from "~/components/features/Images/image-grid";
 import { api } from "~/lib/trpc/server";
 
 export default async function ImagesPage() {
-  void api.image.getUserImages.prefetch({});
+  void api.image.getOwnImages.prefetch({});
 
   return (
     <PageHeader

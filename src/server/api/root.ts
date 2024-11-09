@@ -21,15 +21,15 @@ export const appRouter = createTRPCRouter({
 
 // imageRouter
 export type GetUserImagesInput =
-  inferRouterInputs<AppRouter>["image"]["getUserImages"];
-export type GetUserImagesOutput = RouterOutput["image"]["getUserImages"];
+  inferRouterInputs<AppRouter>["image"]["getOwnImages"];
+export type GetUserImagesOutput = RouterOutput["image"]["getOwnImages"];
 export type UserImage = GetUserImagesOutput["images"][number];
 
 // plantRouter
-export type GetUserPlantsInput =
-  inferRouterInputs<AppRouter>["plant"]["getUserPlants"];
-export type GetUserPlantsOutput = RouterOutput["plant"]["getUserPlants"];
-export type UserPlant = GetUserPlantsOutput["plants"][number];
+export type GetOwnPlantsInput =
+  inferRouterInputs<AppRouter>["plant"]["getOwnPlants"];
+export type GetOwnPlantsOutput = RouterOutput["plant"]["getOwnPlants"];
+export type OwnPlant = GetOwnPlantsOutput["plants"][number];
 
 /**
  * Create a server-side caller for the tRPC API.

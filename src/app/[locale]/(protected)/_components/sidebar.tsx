@@ -65,7 +65,7 @@ export default function ProtectedSidebar({
 }>) {
   return (
     <SidebarProvider>
-      <Sidebar collapsible="icon" variant="floating">
+      <Sidebar collapsible="icon" variant="floating" className="top-14">
         <SidebarHeader>
           <TeamSwitcher teams={sidebarItems.teams} />
         </SidebarHeader>

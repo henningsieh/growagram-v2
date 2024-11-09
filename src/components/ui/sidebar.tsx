@@ -72,36 +72,18 @@ const SidebarProvider = React.forwardRef<
     // This is the internal state of the sidebar.
     // We use openProp and setOpenProp for control from outside the component.
     const [_open, _setOpen] = React.useState(defaultOpen);
-
-    // Update the state based on the cookie only on the client side
-    React.useEffect(() => {
-      const cookieValue =
-        typeof window !== "undefined"
-          ? document.cookie
-              .split("; ")
-              .find((row) => row.startsWith(SIDEBAR_COOKIE_NAME))
-              ?.split("=")[1]
-          : undefined;
-
-      if (cookieValue !== undefined) {
-        _setOpen(cookieValue === "true");
-      }
-    }, []);
-
     const open = openProp ?? _open;
     const setOpen = React.useCallback(
       (value: boolean | ((value: boolean) => boolean)) => {
+        const openState = typeof value === "function" ? value(open) : value;
         if (setOpenProp) {
-          return setOpenProp?.(
-            typeof value === "function" ? value(open) : value,
-          );
+          setOpenProp(openState);
+        } else {
+          _setOpen(openState);
         }
 
-        _setOpen(value);
-
         // This sets the cookie to keep the sidebar state.
-        const newValue = typeof value === "function" ? value(open) : value;
-        document.cookie = `${SIDEBAR_COOKIE_NAME}=${newValue}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}; SameSite=Lax`;
+        document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`;
       },
       [setOpenProp, open],
     );
@@ -206,7 +188,7 @@ const Sidebar = React.forwardRef<
       return (
         <div
           className={cn(
-            "flex h-[calc(100vh-3.5rem)] w-[--sidebar-width] flex-col bg-sidebar text-sidebar-foreground",
+            "flex h-full w-[--sidebar-width] flex-col bg-sidebar text-sidebar-foreground",
             className,
           )}
           ref={ref}
@@ -223,17 +205,17 @@ const Sidebar = React.forwardRef<
           <SheetContent
             data-sidebar="sidebar"
             data-mobile="true"
-            className="w-[--sidebar-width] bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden"
+            className="top-14 w-[--sidebar-width] bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden"
             style={
               {
                 "--sidebar-width": SIDEBAR_WIDTH_MOBILE,
-                top: "3.5rem", // 56px equivalent
-                height: "calc(100vh - 3.5rem)",
               } as React.CSSProperties
             }
             side={side}
           >
-            <div className="flex h-full w-full flex-col">{children}</div>
+            <div className="flex h-[calc(100vh-3.5rem)] w-full flex-col">
+              {children}
+            </div>
           </SheetContent>
         </Sheet>
       );
@@ -248,9 +230,10 @@ const Sidebar = React.forwardRef<
         data-variant={variant}
         data-side={side}
       >
+        {/* This is what handles the sidebar gap on desktop */}
         <div
           className={cn(
-            "relative h-[calc(100vh-3.5rem)] w-[--sidebar-width] bg-transparent transition-[width] duration-200 ease-linear",
+            "relative h-svh w-[--sidebar-width] bg-transparent transition-[width] duration-200 ease-linear",
             "group-data-[collapsible=offcanvas]:w-0",
             "group-data-[side=right]:rotate-180",
             variant === "floating" || variant === "inset"
@@ -260,10 +243,11 @@ const Sidebar = React.forwardRef<
         />
         <div
           className={cn(
-            "fixed bottom-0 top-14 z-10 hidden h-[calc(100vh-3.5rem)] w-[--sidebar-width] transition-[left,right,width] duration-200 ease-linear md:flex",
+            "fixed inset-y-0 z-10 hidden h-[calc(100vh-3.5rem)] w-[--sidebar-width] transition-[left,right,width] duration-200 ease-linear md:flex",
             side === "left"
               ? "left-0 group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]"
               : "right-0 group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]",
+            // Adjust the padding for floating and inset variants.
             variant === "floating" || variant === "inset"
               ? "p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)_+_theme(spacing.4)_+2px)]"
               : "group-data-[collapsible=icon]:w-[--sidebar-width-icon] group-data-[side=left]:border-r group-data-[side=right]:border-l",
@@ -273,7 +257,7 @@ const Sidebar = React.forwardRef<
         >
           <div
             data-sidebar="sidebar"
-            className="flex h-full w-full flex-col group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:border-sidebar-border group-data-[variant=floating]:shadow"
+            className="flex h-full w-full flex-col bg-sidebar group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:border-sidebar-border group-data-[variant=floating]:shadow"
           >
             {children}
           </div>
@@ -347,8 +331,8 @@ const SidebarInset = React.forwardRef<
     <main
       ref={ref}
       className={cn(
-        "relative flex flex-1 flex-col bg-background",
-        "peer-data-[variant=inset]:300 md:peer-data-[variant=inset]:m-2 md:peer-data-[state=collapsed]:peer-data-[variant=inset]:ml-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow",
+        "relative flex min-h-svh flex-1 flex-col bg-background",
+        "peer-data-[variant=inset]:min-h-[calc(100svh-theme(spacing.4))] md:peer-data-[variant=inset]:m-2 md:peer-data-[state=collapsed]:peer-data-[variant=inset]:ml-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow",
         className,
       )}
       {...props}

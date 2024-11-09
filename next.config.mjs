@@ -5,7 +5,7 @@ import createNextIntlPlugin from "next-intl/plugin";
 const nextConfig = {
   experimental: {
     serverActions: {
-      bodySizeLimit: "10mb",
+      bodySizeLimit: "30mb",
     },
   },
   images: {

@@ -15,9 +15,16 @@ body {
 
 @layer base {
   :root {
-    --background: 0 0% 98%;
+    --planting: 45 93.4% 47.5%; /* yello-500 */
+    --seedling: 293 69.5% 48.8%; /* fuchsia-600 */
+    --vegetation: 142 71.8% 29.2%; /* green-700 */
+    --flowering: 350 89.2% 60.2%; /* rose-600 */
+    --harvest: 25 95% 53.1%; /* orange-500 */
+    --curing: 221 83.2% 53.3%; /* blue-600 */
+
+    --background: 0 0% 95%;
     --foreground: 240 10% 20%;
-    --card: 0 0% 96%;
+    --card: 0 0% 98%;
     --card-foreground: 240 10% 20%;
     --popover: 0 0% 98%;
     --popover-foreground: 240 10% 20%;
@@ -31,46 +38,55 @@ body {
     --accent-foreground: 240 5.9% 10%;
     --destructive: 0 84.2% 56%;
     --destructive-foreground: 240 4.8% 95.9%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
+    --border: 120 16% 64%;
+    --input: 120 16% 64%;
     --ring: 120 61% 34%;
     --radius: 0.5rem;
-    --sidebar-background: 0 0% 96%;
+    --navbar-background: 0 0% 98%;
+    --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 10% 20%;
     --sidebar-primary: 120 61% 34%;
     --sidebar-primary-foreground: 240 4.8% 95.9%;
     --sidebar-accent: 120 61% 34% / 0.66;
     --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 240 5.9% 90%;
+    --sidebar-border: 120 16% 64%;
     --sidebar-ring: 120 61% 34%;
   }
   .dark {
+    --planting: 45 93.4% 47.5%; /* yello-500 */
+    --seedling: 292 84.1% 60.6%; /* fuchsia-500 */
+    --vegetation: 142 71.8% 29.2%; /* green-700 */
+    --flowering: 350 89.2% 60.2%; /* rose-500 */
+    --harvest: 25 95% 53.1%; /* orange-500 */
+    --curing: 217 91.2% 59.8%; /* blue-500 */
+
     --background: 240 5.9% 10%;
     --foreground: 0 0% 98%;
     --card: 240 10% 7.8%;
     --card-foreground: 0 0% 98%;
-    --popover: 240 5.9% 10%;
+    --popover: 240 10% 7.8%;
     --popover-foreground: 0 0% 98%;
     --primary: 114 64% 28%;
     --primary-foreground: 0 0% 86%;
     --secondary: 12 92% 58%;
     --secondary-foreground: 0 0% 98%;
     --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
+    --muted-foreground: 240 5% 34.9%;
     --accent: 114 64% 28% / 0.33;
     --accent-foreground: 240 5% 64.9%;
     --destructive: 0 80% 52%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
+    --border: 120 16% 18%;
+    --input: 120 16% 18%;
     --ring: 114 64% 28%;
+    --navbar-background: 0 0% 98%;
     --sidebar-background: 240 10% 7.8%;
     --sidebar-foreground: 0 0% 98%;
     --sidebar-primary: 114 64% 28%;
     --sidebar-primary-foreground: 240 10% 20%;
     --sidebar-accent: 114 64% 28% / 0.33;
     --sidebar-accent-foreground: 240 5% 64.9%;
-    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-border: 120 16% 18%;
     --sidebar-ring: 114 64% 28%;
   }
 }
