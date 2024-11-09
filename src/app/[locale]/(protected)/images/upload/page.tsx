@@ -6,10 +6,10 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import PageHeader from "~/components/Layouts/page-header";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardFooter } from "~/components/ui/card";
-import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { useToast } from "~/hooks/use-toast";
 import { useRouter } from "~/lib/i18n/routing";
+import { cn } from "~/lib/utils";
 import { uploadImages } from "~/server/actions/uploadImages";
 
 interface FilePreview {
@@ -20,16 +20,22 @@ interface FilePreview {
 export default function ImageUpload() {
   const [uploading, setUploading] = useState(false);
   const [previews, setPreviews] = useState<FilePreview[]>([]);
+  const [isDragging, setIsDragging] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
 
   const formRef = useRef<HTMLFormElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  async function handleSubmit(formData: FormData) {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (!formRef.current) return;
+
+    const formData = new FormData(formRef.current);
+
     try {
       setUploading(true);
-
       const result = await uploadImages(formData);
 
       if (result.success) {
@@ -38,21 +44,15 @@ export default function ImageUpload() {
           description: `${result.images.length} image(s) uploaded successfully!`,
         });
 
-        // Reset form and previews
         formRef.current?.reset();
         setPreviews([]);
-
-        // Navigate to images page
         router.push("/images");
         router.refresh();
       } else {
-        // TypeScript should prevent this case based on the server action return type,
-        // but it's good practice to handle it
         throw new Error("Upload failed");
       }
     } catch (error) {
       console.error("Error uploading images:", error);
-
       toast({
         title: "Error",
         description:
@@ -62,21 +62,27 @@ export default function ImageUpload() {
     } finally {
       setUploading(false);
     }
-  }
+  };
+
+  const handleFiles = useCallback(
+    (files: File[]) => {
+      // Revoke existing preview URLs
+      previews.forEach((preview) => URL.revokeObjectURL(preview.preview));
+
+      // Create new previews
+      const newPreviews = files.map((file) => ({
+        file,
+        preview: URL.createObjectURL(file),
+      }));
+
+      setPreviews(newPreviews);
+    },
+    [previews],
+  );
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const files = Array.from(e.target.files || []);
-
-    // Revoke existing preview URLs
-    previews.forEach((preview) => URL.revokeObjectURL(preview.preview));
-
-    // Create new previews
-    const newPreviews = files.map((file) => ({
-      file,
-      preview: URL.createObjectURL(file),
-    }));
-
-    setPreviews(newPreviews);
+    handleFiles(files);
   }
 
   function handleRemoveFile(index: number) {
@@ -88,29 +94,86 @@ export default function ImageUpload() {
     });
   }
 
+  const handleDrop = useCallback(
+    (e: React.DragEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      setIsDragging(false);
+
+      const files = Array.from(e.dataTransfer.files).filter((file) =>
+        file.type.startsWith("image/"),
+      );
+
+      if (files.length > 0) {
+        handleFiles(files);
+      }
+    },
+    [handleFiles],
+  );
+
+  const handleDrag = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+  }, []);
+
+  const handleDragEnter = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragging(true);
+  }, []);
+
+  const handleDragLeave = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragging(false);
+  }, []);
+
   useEffect(() => {
     return () => {
       previews.forEach((preview) => URL.revokeObjectURL(preview.preview));
     };
-    // Cleanup preview URLs on unmount
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [previews]);
 
   return (
     <PageHeader title="Image Upload" subtitle="Upload new images">
       <Card className="mx-auto max-w-xl">
-        <form ref={formRef} action={handleSubmit}>
+        {/* <form ref={formRef} action={handleSubmit}> */}
+        <form ref={formRef} onSubmit={onSubmit}>
+          {" "}
+          {/* Changed from action={handleSubmit} to onSubmit={onSubmit} */}
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="files">Select Images</Label>
-              <Input
-                id="files"
+              <Label htmlFor="files">Upload Images</Label>
+              <div
+                onClick={() => fileInputRef.current?.click()}
+                onDrop={handleDrop}
+                onDragOver={handleDrag}
+                onDragEnter={handleDragEnter}
+                onDragLeave={handleDragLeave}
+                className={cn(
+                  "cursor-pointer rounded-lg border-2 border-dashed p-8 text-center transition-colors duration-200",
+                  isDragging
+                    ? "border-primary bg-primary/5"
+                    : "border-muted-foreground/25",
+                  "hover:border-primary hover:bg-primary/5",
+                )}
+              >
+                <div className="flex flex-col items-center gap-2">
+                  <Upload className="h-8 w-8 text-muted-foreground" />
+                  <div className="text-sm text-muted-foreground">
+                    <span className="font-semibold">Click to upload</span> or
+                    drag and drop
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    Images (PNG, JPG, GIF up to 10MB)
+                  </div>
+                </div>
+              </div>
+              <input
                 ref={fileInputRef}
                 type="file"
                 name="files"
                 accept="image/*"
                 onChange={handleFileChange}
                 multiple
+                className="hidden"
               />
             </div>
             {previews.length > 0 && (
@@ -121,6 +184,8 @@ export default function ImageUpload() {
                       src={preview.preview}
                       alt={`Preview ${index + 1}`}
                       className="h-40 w-full rounded-md object-cover"
+                      width={320}
+                      height={160}
                     />
                     <Button
                       type="button"
@@ -150,13 +215,13 @@ export default function ImageUpload() {
               {uploading ? (
                 <>
                   <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                  Upload
+                  Uploading...
                 </>
               ) : (
                 <>
                   <Upload className="mr-2 h-5 w-5" />
                   Upload
-                  {previews.length > 0 ? `(${previews.length} files)` : ""}
+                  {previews.length > 0 ? ` (${previews.length} files)` : ""}
                 </>
               )}
             </Button>

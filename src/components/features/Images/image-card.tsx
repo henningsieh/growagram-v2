@@ -1,13 +1,12 @@
 "use client";
 
-import { Pencil2Icon, TrashIcon } from "@radix-ui/react-icons";
 import { Tooltip, TooltipProvider } from "@radix-ui/react-tooltip";
 import {
   Camera,
   Edit,
+  Loader2,
   Maximize,
   Minimize,
-  PenIcon,
   Trash2,
   UploadCloud,
   X,
@@ -20,14 +19,54 @@ import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardFooter, CardTitle } from "~/components/ui/card";
 import { Switch } from "~/components/ui/switch";
 import { TooltipContent, TooltipTrigger } from "~/components/ui/tooltip";
+// Make sure this import exists
+import { useToast } from "~/hooks/use-toast";
 import { Link } from "~/lib/i18n/routing";
+// Assuming you have toast component
+import { useRouter } from "~/lib/i18n/routing";
+import { api } from "~/lib/trpc/react";
 import { formatDate, formatTime } from "~/lib/utils";
 import { UserImage } from "~/server/api/root";
+
+// For refreshing after delete
+
+// hey claude.ai: here new import imageRouter with `imageRouter.deleteImage` method in it!
 
 export default function Component({ image }: { image: UserImage }) {
   const locale = useLocale();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isUnrestrictedView, setIsUnrestrictedView] = useState(false);
+
+  const { toast } = useToast();
+  const router = useRouter();
+  const utils = api.useContext();
+
+  // Initialize delete mutation
+  const deleteMutation = api.image.deleteImage.useMutation({
+    onSuccess: () => {
+      toast({
+        title: "Success",
+        description: "Image deleted successfully",
+      });
+      // Invalidate the images query to refresh the list
+      utils.image.getOwnImages.invalidate();
+      // Optionally redirect or refresh the page
+      router.refresh();
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to delete image",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleDelete = async () => {
+    if (window.confirm("Are you sure you want to delete this image?")) {
+      deleteMutation.mutate({ id: image.id });
+    }
+  };
 
   const handleImageClick = () => {
     setIsModalOpen(true);
@@ -116,11 +155,23 @@ export default function Component({ image }: { image: UserImage }) {
         </CardContent>
         <CardFooter className="gap-2 p-3">
           <Button
-            variant={"destructive"}
-            size={"sm"}
+            variant="destructive"
+            size="sm"
             className="w-full text-sm font-bold"
+            onClick={handleDelete}
+            disabled={deleteMutation.isPending}
           >
-            <Trash2 className="h-4 w-4" /> Delete
+            {deleteMutation.isPending ? (
+              <>
+                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                Deleting...
+              </>
+            ) : (
+              <>
+                <Trash2 className="mr-2 h-5 w-5" />
+                Delete
+              </>
+            )}
           </Button>
           <Button asChild size={"sm"} className="w-full text-sm font-bold">
             <Link href={`images/edit/${image.id}`}>
