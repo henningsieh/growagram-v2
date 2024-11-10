@@ -1,8 +1,8 @@
 "use client";
 
-import { Loader2, Upload, X } from "lucide-react";
+import { CloudUpload, Loader2, Upload, X } from "lucide-react";
 import Image from "next/image";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import PageHeader from "~/components/Layouts/page-header";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardFooter } from "~/components/ui/card";
@@ -30,9 +30,16 @@ export default function ImageUpload() {
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!formRef.current) return;
+    if (!formRef.current || previews.length === 0) return;
 
-    const formData = new FormData(formRef.current);
+    const formData = new FormData();
+
+    // Add each file to FormData
+    previews.forEach((preview) => {
+      // 'index' is declared but its value is never read.ts(6133)
+      formData.append("files", preview.file);
+      formData.append("originalFilenames", preview.file.name);
+    });
 
     try {
       setUploading(true);
@@ -64,66 +71,86 @@ export default function ImageUpload() {
     }
   };
 
-  const handleFiles = useCallback(
-    (files: File[]) => {
-      // Revoke existing preview URLs
-      previews.forEach((preview) => URL.revokeObjectURL(preview.preview));
+  const dragCounter = useRef(0);
 
-      // Create new previews
-      const newPreviews = files.map((file) => ({
-        file,
-        preview: URL.createObjectURL(file),
-      }));
+  const handleDragIn = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dragCounter.current++;
+    if (e.dataTransfer.items && e.dataTransfer.items.length > 0) {
+      setIsDragging(true);
+    }
+  };
 
-      setPreviews(newPreviews);
-    },
-    [previews],
-  );
+  const handleDragOut = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dragCounter.current--;
+    if (dragCounter.current === 0) {
+      setIsDragging(false);
+    }
+  };
 
-  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const files = Array.from(e.target.files || []);
-    handleFiles(files);
-  }
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      handleFiles(Array.from(e.target.files));
+    }
+  };
 
-  function handleRemoveFile(index: number) {
+  const handleRemoveFile = (index: number) => {
     setPreviews((current) => {
       const updated = [...current];
       URL.revokeObjectURL(updated[index].preview);
       updated.splice(index, 1);
       return updated;
     });
-  }
+  };
 
-  const handleDrop = useCallback(
-    (e: React.DragEvent<HTMLDivElement>) => {
-      e.preventDefault();
-      setIsDragging(false);
-
-      const files = Array.from(e.dataTransfer.files).filter((file) =>
-        file.type.startsWith("image/"),
-      );
-
-      if (files.length > 0) {
-        handleFiles(files);
-      }
-    },
-    [handleFiles],
-  );
-
-  const handleDrag = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+  const handleDrag = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
-  }, []);
+  };
 
-  const handleDragEnter = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
-    setIsDragging(true);
-  }, []);
-
-  const handleDragLeave = useCallback((e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
+    e.stopPropagation();
     setIsDragging(false);
-  }, []);
+    dragCounter.current = 0;
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      handleFiles(Array.from(e.dataTransfer.files));
+    }
+  };
+
+  const handleFiles = (files: File[]) => {
+    const validFiles = files.filter((file) => {
+      const isValid = file.type.startsWith("image/");
+      const isValidSize = file.size <= 10 * 1024 * 1024; // 10MB limit
+
+      if (!isValid) {
+        toast({
+          title: "Invalid file type",
+          description: `${file.name} is not an image file`,
+          variant: "destructive",
+        });
+      }
+      if (!isValidSize) {
+        toast({
+          title: "File too large",
+          description: `${file.name} exceeds 10MB limit`,
+          variant: "destructive",
+        });
+      }
+
+      return isValid && isValidSize;
+    });
+
+    const newPreviews = validFiles.map((file) => ({
+      file,
+      preview: URL.createObjectURL(file),
+    }));
+
+    setPreviews((current) => [...current, ...newPreviews]);
+  };
 
   useEffect(() => {
     return () => {
@@ -141,14 +168,15 @@ export default function ImageUpload() {
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="files">Upload Images</Label>
+
               <div
                 onClick={() => fileInputRef.current?.click()}
-                onDrop={handleDrop}
                 onDragOver={handleDrag}
-                onDragEnter={handleDragEnter}
-                onDragLeave={handleDragLeave}
+                onDragEnter={handleDragIn}
+                onDragLeave={handleDragOut}
+                onDrop={handleDrop}
                 className={cn(
-                  "cursor-pointer rounded-lg border-2 border-dashed p-8 text-center transition-colors duration-200",
+                  "cursor-pointer rounded-lg border-2 border-dashed bg-muted p-8 text-center transition-colors duration-200",
                   isDragging
                     ? "border-primary bg-primary/5"
                     : "border-muted-foreground/25",
@@ -156,8 +184,8 @@ export default function ImageUpload() {
                 )}
               >
                 <div className="flex flex-col items-center gap-2">
-                  <Upload className="h-8 w-8 text-muted-foreground" />
-                  <div className="text-sm text-muted-foreground">
+                  <CloudUpload className="h-10 w-10 text-muted-foreground" />
+                  <div className="text-lg text-muted-foreground">
                     <span className="font-semibold">Click to upload</span> or
                     drag and drop
                   </div>
@@ -165,7 +193,20 @@ export default function ImageUpload() {
                     Images (PNG, JPG, GIF up to 10MB)
                   </div>
                 </div>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  hidden
+                  onChange={(e) => {
+                    // Handle file selection logic here
+                    if (e.target.files && e.target.files.length > 0) {
+                      console.log(e.target.files);
+                    }
+                  }}
+                  accept="image/png, image/jpeg, image/gif"
+                />
               </div>
+
               <input
                 ref={fileInputRef}
                 type="file"
@@ -196,11 +237,6 @@ export default function ImageUpload() {
                     >
                       <X className="h-4 w-4" />
                     </Button>
-                    <input
-                      type="hidden"
-                      name="originalFilenames"
-                      value={preview.file.name}
-                    />
                   </div>
                 ))}
               </div>

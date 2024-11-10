@@ -77,10 +77,13 @@ export const imageRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      return await ctx.db.insert(plantImages).values({
-        imageId: input.imageId,
-        plantId: input.plantId,
-      });
+      return await ctx.db
+        .insert(plantImages)
+        .values({
+          imageId: input.imageId,
+          plantId: input.plantId,
+        })
+        .onConflictDoNothing();
     }),
 
   // Disonnect a plant to this image
