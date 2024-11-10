@@ -16,6 +16,7 @@ import {
 } from "~/components/ui/card";
 import { Progress } from "~/components/ui/progress";
 import { Tooltip, TooltipTrigger } from "~/components/ui/tooltip";
+import { Link } from "~/lib/i18n/routing";
 import { calculateGrowthProgress, formatDate } from "~/lib/utils";
 import { OwnPlant } from "~/server/api/root";
 
@@ -145,6 +146,7 @@ const PlantCard = forwardRef<HTMLDivElement, PlantCardProps>((props, ref) => {
       </CardContent>
 
       <CardFooter className="bg-muted/50 p-4">
+        <Link href={`/plants/edit/${plant.id}`}>edit</Link>
         <div className="flex w-full items-center justify-between">
           <span className="text-sm text-muted-foreground">
             THC: {plant.strain?.thcContent ?? "N/A"}%

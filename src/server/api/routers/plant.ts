@@ -3,6 +3,7 @@ import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { plants } from "~/lib/db/schema";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { plantSchema } from "~/types/zodSchema";
 
 import { imageRouter } from "./image";
 
@@ -77,18 +78,36 @@ export const plantRouter = createTRPCRouter({
   connectImage: connectPlant__imported_from_imageRouter,
 
   // Create a plant
-  create: protectedProcedure
-    .input(
-      z.object({
-        name: z.string(),
-      }),
-    )
+  createOrEdit: protectedProcedure
+    .input(plantSchema)
     .mutation(async ({ ctx, input }) => {
       // Logic to handle image creation
-      const newPlant = await ctx.db.insert(plants).values({
-        name: input.name,
-        ownerId: ctx.session.user.id as string,
-      });
+      const newPlant = await ctx.db
+        .insert(plants)
+        .values({
+          id: input.id,
+          name: input.name,
+          ownerId: ctx.session.user.id as string,
+          startDate: input.startDate,
+          seedlingPhaseStart: input.seedlingPhaseStart,
+          vegetationPhaseStart: input.vegetationPhaseStart,
+          floweringPhaseStart: input.floweringPhaseStart,
+          harvestDate: input.harvestDate,
+          curingPhaseStart: input.curingPhaseStart,
+        })
+        .onConflictDoUpdate({
+          target: plants.id,
+          set: {
+            name: input.name,
+            // ownerId: ctx.session.user.id as string,
+            startDate: input.startDate,
+            seedlingPhaseStart: input.seedlingPhaseStart,
+            vegetationPhaseStart: input.vegetationPhaseStart,
+            floweringPhaseStart: input.floweringPhaseStart,
+            harvestDate: input.harvestDate,
+            curingPhaseStart: input.curingPhaseStart,
+          },
+        });
 
       return newPlant;
     }),

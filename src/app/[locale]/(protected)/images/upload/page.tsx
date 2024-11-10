@@ -9,6 +9,7 @@ import { Card, CardContent, CardFooter } from "~/components/ui/card";
 import { Label } from "~/components/ui/label";
 import { useToast } from "~/hooks/use-toast";
 import { useRouter } from "~/lib/i18n/routing";
+import { api } from "~/lib/trpc/react";
 import { cn } from "~/lib/utils";
 import { uploadImages } from "~/server/actions/uploadImages";
 
@@ -22,6 +23,7 @@ export default function ImageUpload() {
   const [previews, setPreviews] = useState<FilePreview[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const router = useRouter();
+  const utils = api.useUtils();
   const { toast } = useToast();
 
   const formRef = useRef<HTMLFormElement>(null);
@@ -53,8 +55,10 @@ export default function ImageUpload() {
 
         formRef.current?.reset();
         setPreviews([]);
+        // Invalidate the images query to refresh the list
+        utils.image.getOwnImages.invalidate();
         router.push("/images");
-        router.refresh();
+        // router.refresh();
       } else {
         throw new Error("Upload failed");
       }

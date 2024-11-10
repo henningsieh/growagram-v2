@@ -39,7 +39,7 @@ export default function Component({ image }: { image: UserImage }) {
 
   const { toast } = useToast();
   const router = useRouter();
-  const utils = api.useContext();
+  const utils = api.useUtils();
 
   // Initialize delete mutation
   const deleteMutation = api.image.deleteImage.useMutation({
