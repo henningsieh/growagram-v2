@@ -19,20 +19,14 @@ import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardFooter, CardTitle } from "~/components/ui/card";
 import { Switch } from "~/components/ui/switch";
 import { TooltipContent, TooltipTrigger } from "~/components/ui/tooltip";
-// Make sure this import exists
 import { useToast } from "~/hooks/use-toast";
 import { Link } from "~/lib/i18n/routing";
-// Assuming you have toast component
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import { formatDate, formatTime } from "~/lib/utils";
 import { UserImage } from "~/server/api/root";
 
-// For refreshing after delete
-
-// hey claude.ai: here new import imageRouter with `imageRouter.deleteImage` method in it!
-
-export default function Component({ image }: { image: UserImage }) {
+export default function ImageCard({ image }: { image: UserImage }) {
   const locale = useLocale();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isUnrestrictedView, setIsUnrestrictedView] = useState(false);

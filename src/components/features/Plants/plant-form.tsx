@@ -87,7 +87,7 @@ export default function PlantForm({ plant }: { plant?: Plant }) {
       <CardHeader>
         <CardTitle>Plant Details</CardTitle>
         <CardDescription>
-          Complete the fields below to add your plant.
+          Edit the plant&apos;s name and relevant dates.
         </CardDescription>
       </CardHeader>
       <CardContent>

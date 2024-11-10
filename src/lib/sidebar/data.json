@@ -48,8 +48,8 @@
           "url": "/plants"
         },
         {
-          "title": "Create New Plant",
-          "url": "/plants/create"
+          "title": "Add New Plant",
+          "url": "/plants/add"
         }
       ]
     },
@@ -63,7 +63,7 @@
           "url": "/images"
         },
         {
-          "title": "Add Image",
+          "title": "Upload Images",
           "url": "/images/upload"
         }
       ]

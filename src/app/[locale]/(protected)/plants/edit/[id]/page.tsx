@@ -14,8 +14,8 @@ export default async function EditPlantPage({
 
   return (
     <PageHeader
-      title={"Create New Plant"}
-      subtitle={"Add a new plant to your collection"}
+      title={"Edit Plant"}
+      subtitle={"Edit a plant of your collection"}
     >
       <PlantForm plant={plant} />
     </PageHeader>
