@@ -3,7 +3,7 @@
 import { Tooltip, TooltipProvider } from "@radix-ui/react-tooltip";
 import {
   Camera,
-  Edit,
+  Flower2,
   Loader2,
   Maximize,
   Minimize,
@@ -157,26 +157,26 @@ export default function Component({ image }: { image: UserImage }) {
           <Button
             variant="destructive"
             size="sm"
-            className="w-full text-sm font-bold"
+            className="w-1/3 gap-0 text-sm font-bold"
             onClick={handleDelete}
             disabled={deleteMutation.isPending}
           >
             {deleteMutation.isPending ? (
               <>
-                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                <Loader2 className="mr-1 h-4 w-4 animate-spin" />
                 Deleting...
               </>
             ) : (
               <>
-                <Trash2 className="mr-2 h-5 w-5" />
+                <Trash2 className="mr-1 h-4 w-4" />
                 Delete
               </>
             )}
           </Button>
-          <Button asChild size={"sm"} className="w-full text-sm font-bold">
+          <Button asChild size={"sm"} className="w-2/3 text-base font-semibold">
             <Link href={`images/edit/${image.id}`}>
-              <Edit className="h-5 w-5" />
-              Edit
+              <Flower2 strokeWidth={1.8} className="h-4 w-4" />
+              Select plants
             </Link>
           </Button>
         </CardFooter>

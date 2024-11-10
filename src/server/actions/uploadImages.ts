@@ -21,12 +21,12 @@ function generateCloudinaryFilename(
   username: string,
 ): string {
   const timestamp = Date.now();
-  const hash = createHash("md5")
+  const hash = createHash("sha512")
     .update(`${originalFilename}_${timestamp}_${username}`)
     .digest("hex")
-    .slice(0, 8);
+    .slice(0, 16); // 16 characters
 
-  return `${username}_${originalFilename}_${hash}`;
+  return `${originalFilename}_${hash}`;
 }
 
 export async function uploadImages(formData: FormData) {
