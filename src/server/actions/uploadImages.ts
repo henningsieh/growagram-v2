@@ -138,12 +138,16 @@ export async function uploadImages(formData: FormData) {
         public_id: cloudinaryFilename,
       })) satisfies UploadApiResponse;
 
+      console.debug("cloudinaryResponse: ", cloudinaryResponse);
+
       // Save image record to database
       const [newImage] = await db
         .insert(images)
         .values({
           ownerId: session.user.id,
           imageUrl: cloudinaryResponse.secure_url,
+          cloudinaryAssetId: cloudinaryResponse.asset_id,
+          cloudinaryPublicId: cloudinaryResponse.public_id,
           captureDate: exifResult?.captureDate,
           originalFilename: originalFilename,
         })

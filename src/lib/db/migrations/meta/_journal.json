@@ -43,6 +43,13 @@
       "when": 1731140714197,
       "tag": "0005_green_black_tarantula",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1731230893417,
+      "tag": "0006_absurd_the_hunter",
+      "breakpoints": true
     }
   ]
 }

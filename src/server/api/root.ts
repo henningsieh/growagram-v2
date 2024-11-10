@@ -24,6 +24,7 @@ export type GetUserImagesInput =
   inferRouterInputs<AppRouter>["image"]["getOwnImages"];
 export type GetUserImagesOutput = RouterOutput["image"]["getOwnImages"];
 export type UserImage = GetUserImagesOutput["images"][number];
+export type ImageById = RouterOutput["image"]["getById"];
 
 // plantRouter
 export type GetOwnPlantsInput =
