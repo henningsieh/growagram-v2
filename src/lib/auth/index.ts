@@ -17,7 +17,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     async authorized({ auth, request: { nextUrl } }) {
       console.debug("'AUTHORIZED' CALLED");
       const isLoggedIn = !!auth?.user;
-      const paths = ["/me", "/profile"];
+      const paths = ["/me", "/dashboard"];
       const isProtected = paths.some((path) =>
         nextUrl.pathname.startsWith(path),
       );

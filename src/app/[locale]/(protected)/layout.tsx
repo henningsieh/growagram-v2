@@ -18,13 +18,13 @@ export default async function ProtectedLayout(props: LayoutProps) {
     typeof props.params
   >);
 
-  if (!session) {
-    // Redirect to home page with the current locale
-    redirect({
-      href: `/login?callbackUrl=http://localhost:3000/${locale}/dashboard`,
-      locale,
-    });
-  }
+  // if (!session) {
+  //   // Redirect to home page with the current locale
+  //   redirect({
+  //     href: `/login?callbackUrl=http://localhost:3000/${locale}/dashboard`,
+  //     locale,
+  //   });
+  // }
 
   return (
     <ProtectedSidebar>
