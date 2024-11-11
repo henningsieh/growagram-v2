@@ -1,7 +1,6 @@
 import PageHeader from "~/components/Layouts/page-header";
 import PlantForm from "~/components/features/Plants/plant-form";
 import { api } from "~/lib/trpc/server";
-import { OwnPlant } from "~/server/api/root";
 
 export default async function EditPlantPage({
   params,

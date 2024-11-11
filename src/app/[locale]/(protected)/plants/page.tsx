@@ -1,10 +1,8 @@
 "use client";
 
 // src/app/[locale]/(protected)/plants/page.tsx:
-import { useIntersection } from "@mantine/hooks";
 import { useCallback, useEffect, useRef } from "react";
 import InfiniteScrollLoader from "~/components/Layouts/InfiniteScrollLoader";
-import SpinningLoader from "~/components/Layouts/loader";
 import PageHeader from "~/components/Layouts/page-header";
 import ResponsiveGrid from "~/components/Layouts/responsive-grid";
 import PlantCard from "~/components/features/Plants/plant-card";

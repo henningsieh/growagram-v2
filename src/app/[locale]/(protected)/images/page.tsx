@@ -3,7 +3,6 @@
 // src/app/[locale]/(protected)/images/page.tsx
 import { useCallback, useEffect, useRef } from "react";
 import InfiniteScrollLoader from "~/components/Layouts/InfiniteScrollLoader";
-import SpinningLoader from "~/components/Layouts/loader";
 import PageHeader from "~/components/Layouts/page-header";
 import ResponsiveGrid from "~/components/Layouts/responsive-grid";
 import ImageCard from "~/components/features/Images/image-card";
@@ -18,9 +17,7 @@ export default function ImagesPage() {
     fetchNextPage,
     isFetchingNextPage,
   } = api.image.getOwnImages.useInfiniteQuery(
-    {
-      limit: 2,
-    },
+    { limit: 2 },
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
     },

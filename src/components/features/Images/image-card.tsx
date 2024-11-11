@@ -1,6 +1,5 @@
 "use client";
 
-import { Tooltip, TooltipProvider } from "@radix-ui/react-tooltip";
 import {
   Camera,
   Flower2,
@@ -18,7 +17,11 @@ import { createPortal } from "react-dom";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardFooter, CardTitle } from "~/components/ui/card";
 import { Switch } from "~/components/ui/switch";
-import { TooltipContent, TooltipTrigger } from "~/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "~/components/ui/tooltip";
 import { useToast } from "~/hooks/use-toast";
 import { Link } from "~/lib/i18n/routing";
 import { useRouter } from "~/lib/i18n/routing";
@@ -26,14 +29,19 @@ import { api } from "~/lib/trpc/react";
 import { formatDate, formatTime } from "~/lib/utils";
 import { UserImage } from "~/server/api/root";
 
-export default function ImageCard({ image }: { image: UserImage }) {
-  const locale = useLocale();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isUnrestrictedView, setIsUnrestrictedView] = useState(false);
+interface ImageCardProps {
+  image: UserImage;
+}
 
-  const { toast } = useToast();
+export default function ImageCard({ image }: ImageCardProps) {
+  const locale = useLocale();
   const router = useRouter();
   const utils = api.useUtils();
+
+  const { toast } = useToast();
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isUnrestrictedView, setIsUnrestrictedView] = useState(false);
 
   // Initialize delete mutation
   const deleteMutation = api.image.deleteImage.useMutation({
@@ -98,7 +106,7 @@ export default function ImageCard({ image }: { image: UserImage }) {
 
   return (
     <>
-      <Card className="overflow-hidden">
+      <Card>
         <div
           className="relative aspect-video cursor-pointer"
           onClick={handleImageClick}
@@ -114,38 +122,35 @@ export default function ImageCard({ image }: { image: UserImage }) {
         </div>
         <CardTitle className="p-3">{image.originalFilename}</CardTitle>
         <CardContent className="flex flex-col gap-2 py-2">
-          <TooltipProvider delayDuration={0}>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <p className="flex items-center gap-2 text-sm text-accent-foreground">
-                  <UploadCloud size={18} />
-                  {formatDate(image.createdAt, locale)}
-                  {locale !== "en" ? " um " : " at "}
-                  {formatTime(image.createdAt, locale)}
-                  {locale !== "en" && " Uhr"}
-                </p>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Upload Date </p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-          <TooltipProvider delayDuration={0}>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <p className="flex items-center gap-2 text-sm text-accent-foreground">
-                  <Camera size={18} />
-                  {formatDate(image.captureDate, locale)}
-                  {locale !== "en" ? " um " : " at "}
-                  {formatTime(image.captureDate, locale)}
-                  {locale !== "en" && " Uhr"}
-                </p>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Capture Date (EXIF data)</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <p className="flex items-center gap-2 text-sm text-accent-foreground">
+                <UploadCloud size={18} />
+                {formatDate(image.createdAt, locale)}
+                {locale !== "en" ? " um " : " at "}
+                {formatTime(image.createdAt, locale)}
+                {locale !== "en" && " Uhr"}
+              </p>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Upload Date </p>
+            </TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <p className="flex items-center gap-2 text-sm text-accent-foreground">
+                <Camera size={18} />
+                {formatDate(image.captureDate, locale)}
+                {locale !== "en" ? " um " : " at "}
+                {formatTime(image.captureDate, locale)}
+                {locale !== "en" && " Uhr"}
+              </p>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Capture Date (EXIF data)</p>
+            </TooltipContent>
+          </Tooltip>
         </CardContent>
         <CardFooter className="gap-2 p-3">
           <Button

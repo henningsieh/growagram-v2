@@ -1,15 +1,10 @@
 // src/server/api/routers/image.ts:
 import { TRPCError } from "@trpc/server";
-import { DeleteApiResponse } from "cloudinary";
 import { and, eq } from "drizzle-orm";
 import { z } from "zod";
 import cloudinary from "~/lib/cloudinary";
 import { images, plantImages } from "~/lib/db/schema";
-import {
-  createTRPCRouter,
-  protectedProcedure,
-  publicProcedure,
-} from "~/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
 export const imageRouter = createTRPCRouter({
   getOwnImages: protectedProcedure

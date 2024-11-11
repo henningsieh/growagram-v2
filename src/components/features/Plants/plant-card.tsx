@@ -1,9 +1,8 @@
 // src/components/features/plant/plant-card.tsx:
-import { TooltipContent } from "@radix-ui/react-tooltip";
 import { Flower2, Leaf, Nut, Sprout, Wheat } from "lucide-react";
 import { useLocale } from "next-intl";
 import Image from "next/image";
-import { forwardRef, useState } from "react";
+import { useState } from "react";
 import headerImagePlaceholder from "~/assets/landscape-placeholdersvg.svg";
 import { Badge } from "~/components/ui/badge";
 import {
@@ -15,7 +14,11 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 import { Progress } from "~/components/ui/progress";
-import { Tooltip, TooltipTrigger } from "~/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "~/components/ui/tooltip";
 import { Link } from "~/lib/i18n/routing";
 import { calculateGrowthProgress, formatDate } from "~/lib/utils";
 import { OwnPlant } from "~/server/api/root";
@@ -24,8 +27,7 @@ interface PlantCardProps {
   plant: OwnPlant;
 }
 
-const PlantCard = forwardRef<HTMLDivElement, PlantCardProps>((props, ref) => {
-  const { plant } = props;
+export default function PlantCard({ plant }: PlantCardProps) {
   const locale = useLocale();
 
   const [isImageHovered, setIsImageHovered] = useState(false);
@@ -36,10 +38,7 @@ const PlantCard = forwardRef<HTMLDivElement, PlantCardProps>((props, ref) => {
   );
 
   return (
-    <Card
-      ref={ref}
-      className="overflow-hidden transition-shadow duration-300 hover:shadow-lg"
-    >
+    <Card>
       <CardHeader className="p-0">
         <div
           className="relative aspect-video overflow-hidden"
@@ -158,9 +157,4 @@ const PlantCard = forwardRef<HTMLDivElement, PlantCardProps>((props, ref) => {
       </CardFooter>
     </Card>
   );
-});
-
-// Set display name for debugging purposes
-PlantCard.displayName = "PlantCard";
-
-export default PlantCard;
+}
