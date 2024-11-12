@@ -16,6 +16,14 @@ import React, { useCallback, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardFooter, CardTitle } from "~/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "~/components/ui/dialog";
 import { Switch } from "~/components/ui/switch";
 import {
   Tooltip,
@@ -42,6 +50,7 @@ export default function ImageCard({ image }: ImageCardProps) {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isUnrestrictedView, setIsUnrestrictedView] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   // Initialize delete mutation
   const deleteMutation = api.image.deleteImage.useMutation({
@@ -64,10 +73,13 @@ export default function ImageCard({ image }: ImageCardProps) {
     },
   });
 
-  const handleDelete = async () => {
-    if (window.confirm("Are you sure you want to delete this image?")) {
-      deleteMutation.mutate({ id: image.id });
-    }
+  const handleDelete = () => {
+    setIsDeleteDialogOpen(true);
+  };
+
+  const confirmDelete = () => {
+    deleteMutation.mutate({ id: image.id });
+    setIsDeleteDialogOpen(false);
   };
 
   const handleImageClick = () => {
@@ -186,9 +198,6 @@ export default function ImageCard({ image }: ImageCardProps) {
       {isModalOpen &&
         createPortal(
           <div
-            // className={`fixed inset-0 z-50 ${
-            //   isUnrestrictedView ? "overflow-auto" : "overflow-hidden"
-            // } bg-black bg-opacity-75`}
             className={`fixed inset-0 z-50 ${isUnrestrictedView ? "overflow-auto" : "overflow-hidden"}`}
             onClick={handleModalClose}
           >
@@ -241,6 +250,31 @@ export default function ImageCard({ image }: ImageCardProps) {
           </div>,
           document.body,
         )}
+
+      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              Are you sure you want to delete this image?
+            </DialogTitle>
+            <DialogDescription>
+              This action cannot be undone. This will permanently delete the
+              image from our servers.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setIsDeleteDialogOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={confirmDelete}>
+              Delete
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
