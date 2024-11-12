@@ -20,11 +20,12 @@ export const appRouter = createTRPCRouter({
 });
 
 // imageRouter
-export type GetUserImagesInput =
-  inferRouterInputs<AppRouter>["image"]["getOwnImages"];
-export type GetUserImagesOutput = RouterOutput["image"]["getOwnImages"];
+       type GetUserImagesOutput = RouterOutput["image"]["getOwnImages"];
+export type GetUserImagesInput = inferRouterInputs<AppRouter>["image"]["getOwnImages"];
 export type UserImage = GetUserImagesOutput["images"][number];
 export type ImageById = RouterOutput["image"]["getById"];
+
+export type CreateImageInput = inferRouterInputs<AppRouter>["image"]["createImage"];
 
 // plantRouter
 export type GetOwnPlantsInput =

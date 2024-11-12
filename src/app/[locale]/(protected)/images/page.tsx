@@ -7,6 +7,7 @@ import PageHeader from "~/components/Layouts/page-header";
 import ResponsiveGrid from "~/components/Layouts/responsive-grid";
 import ImageCard from "~/components/features/Images/image-card";
 import { api } from "~/lib/trpc/react";
+import { GetUserImagesInput, UserImage } from "~/server/api/root";
 
 export default function ImagesPage() {
   const {
@@ -17,12 +18,13 @@ export default function ImagesPage() {
     fetchNextPage,
     isFetchingNextPage,
   } = api.image.getOwnImages.useInfiniteQuery(
-    { limit: 2 },
+    { limit: 2 } satisfies GetUserImagesInput, // Strictly validated input
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
     },
   );
-  const userImages = data?.pages.flatMap((page) => page.images) ?? [];
+  const userImages: UserImage[] =
+    data?.pages.flatMap((page) => page.images) ?? [];
 
   // Intersection Observer callback
   const onIntersect = useCallback(
