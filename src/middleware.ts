@@ -1,31 +1,85 @@
+import NextAuth from "next-auth";
 import createMiddleware from "next-intl/middleware";
 import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { NextRequest } from "next/server";
+import authConfig from "~/lib/auth/auth.config";
 
 import { routing } from "./lib/i18n/routing";
 
-// Create a custom middleware handler
-export async function middleware(request: NextRequest) {
-  const handleI18nRouting = createMiddleware(routing);
+// Initialize NextAuth's middleware (edge-compatible)
+const { auth } = NextAuth(authConfig);
 
-  // Get the pathname from the request
+const languages = routing.locales;
+
+export default async function middleware(request: NextRequest) {
+  // Get the current session (user's authentication status)
+  const session = await auth();
+  // console.debug("Session:", session); // Debugging session
+
+  // Get the pathname
   const pathname = request.nextUrl.pathname;
 
-  // Check if the path starts with a locale that's not 'de' or 'en'
-  const pathnameHasLocale = /^\/[a-zA-Z]{2}(?:\/|$)/.test(pathname);
-  const pathnameHasValidLocale = /^\/(?:de|en)(?:\/|$)/.test(pathname);
+  // Extract the locale from the path. Example: /de/images or /en/images
+  const localeMatch = request.nextUrl.pathname.match(
+    new RegExp(`^\/(${languages.join("|")})\/`),
+  );
 
-  if (pathnameHasLocale && !pathnameHasValidLocale) {
-    // Redirect to home page if an invalid locale is found
-    const url = new URL("/", request.url);
-    return NextResponse.redirect(url);
+  // Get the real host from the 'X-Forwarded-Host' header or fallback to the request's host
+  const realHost =
+    request.headers.get("X-Forwarded-Host") || request.nextUrl.host;
+
+  // This will be the actual URL seen in the browser
+  const realUrl = `http://${realHost}${request.nextUrl.pathname}`;
+  console.debug("Real requested URL (client's perspective): ", realUrl); // Logs the real URL seen by the user
+
+  const currentLocale = localeMatch ? localeMatch[1] : null;
+
+  console.debug("currentLocale: ", currentLocale);
+
+  // Check if the requested path is a localized protected path (like /en/images or /de/images)
+  const isLocalePath = localeMatch !== null;
+  const isProtectedPath =
+    isLocalePath && request.nextUrl.pathname.includes("/images");
+
+  // If the path is protected and the user is not logged in, redirect to the sign-in page
+  if (isProtectedPath && !session?.user) {
+    console.debug("User is not authenticated. Redirecting to sign-in page.");
+
+    // Redirect using the real URL, preserving the client-facing URL
+    const redirectUrl = new URL(
+      // `/${currentLocale}/login`,
+      `/api/auth/signin`,
+      `http://${realHost}`,
+    );
+    redirectUrl.searchParams.append("callbackUrl", realUrl); // Use the real URL here
+    return NextResponse.redirect(redirectUrl); // Redirect to the sign-in page with the real URL
   }
 
-  // Handle regular i18n routing for valid paths
-  return handleI18nRouting(request);
+  // Handle the i18n routing for locales
+  const handleI18nRouting = createMiddleware(routing);
+
+  // const pathname = request.nextUrl.pathname;
+  const pathnameHasLocale = /^\/[a-zA-Z]{2}(?:\/|$)/.test(pathname); // Match any locale (like '/en' or '/de')
+  const pathnameHasValidLocale = new RegExp(
+    `^\/(?:${languages.join("|")})(?:\/|$)`,
+  ).test(pathname);
+
+  // If an invalid locale is found, redirect to the home page
+  if (pathnameHasLocale && !pathnameHasValidLocale) {
+    return NextResponse.redirect(new URL("/", request.url));
+  }
+
+  // Proceed with handling locale routing
+  const i18nResponse = handleI18nRouting(request);
+  if (i18nResponse) {
+    return i18nResponse; // Ensure locale routing is applied
+  }
+
+  // Allow the request to proceed if no issues were found
+  return NextResponse.next();
 }
 
 export const config = {
-  // Match all paths to check for invalid locales
-  matcher: ["/((?!api|_next|.*\\..*).*)", "/"],
+  // Match all paths to check for invalid locales and routes
+  matcher: ["/((?!api|_next|_next/static|_next/image|.*\\..*).*)", "/"],
 };
