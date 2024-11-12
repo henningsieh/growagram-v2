@@ -1,5 +1,7 @@
 "use client";
 
+// src/app/[locale]/(protected)/images/upload/page.tsx:
+import { UploadApiResponse } from "cloudinary";
 import { CloudUpload, Loader2, Upload, X } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
@@ -11,12 +13,56 @@ import { useToast } from "~/hooks/use-toast";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import { cn } from "~/lib/utils";
-import { uploadImages } from "~/server/actions/uploadImages";
+import { CreateImageInput } from "~/server/api/root";
 
 interface FilePreview {
   file: File;
   preview: string;
 }
+
+interface CloudinarySignature {
+  signature: string;
+  timestamp: number;
+  cloud_name: string;
+  api_key: string;
+  folder: string;
+  transformation: string;
+}
+
+async function uploadToCloudinary(
+  file: File,
+  signature: CloudinarySignature,
+): Promise<UploadApiResponse> {
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("api_key", signature.api_key);
+  formData.append("timestamp", signature.timestamp.toString());
+  formData.append("signature", signature.signature);
+  formData.append("folder", signature.folder);
+  formData.append("transformation", signature.transformation);
+
+  const response = await fetch(
+    `https://api.cloudinary.com/v1_1/${signature.cloud_name}/image/upload`,
+    {
+      method: "POST",
+      body: formData,
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error("Upload failed");
+  }
+
+  return response.json();
+}
+
+const MAX_FILE_SIZE = 10000000; // 10MB
+const ACCEPTED_IMAGE_TYPES = [
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp",
+];
 
 export default function ImageUpload() {
   const [uploading, setUploading] = useState(false);
@@ -25,6 +71,7 @@ export default function ImageUpload() {
   const router = useRouter();
   const utils = api.useUtils();
   const { toast } = useToast();
+  const saveImageMutation = api.image.createImage.useMutation();
 
   const formRef = useRef<HTMLFormElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -32,36 +79,63 @@ export default function ImageUpload() {
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!formRef.current || previews.length === 0) return;
-
-    const formData = new FormData();
-
-    // Add each file to FormData
-    previews.forEach((preview) => {
-      // 'index' is declared but its value is never read.ts(6133)
-      formData.append("files", preview.file);
-      formData.append("originalFilenames", preview.file.name);
-    });
+    if (!previews.length) return;
 
     try {
       setUploading(true);
-      const result = await uploadImages(formData);
 
-      if (result.success) {
-        toast({
-          title: "Success",
-          description: `${result.images.length} image(s) uploaded successfully!`,
-        });
+      // Get signature for each file
+      const uploadedImages = await Promise.all(
+        previews.map(async (preview) => {
+          // Get signature from your API
+          const signatureResponse = await fetch(
+            "/api/cloudinary/getSignature",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                folder: "growagram",
+              }),
+            },
+          );
 
-        formRef.current?.reset();
-        setPreviews([]);
-        // Invalidate the images query to refresh the list
-        utils.image.getOwnImages.invalidate();
-        router.push("/images");
-        // router.refresh();
-      } else {
-        throw new Error("Upload failed");
-      }
+          if (!signatureResponse.ok) {
+            throw new Error("Failed to get upload signature");
+          }
+
+          const signature: CloudinarySignature = await signatureResponse.json();
+
+          // Upload to Cloudinary
+          const cloudinaryResponse = await uploadToCloudinary(
+            preview.file,
+            signature,
+          );
+
+          // Save to your database using your tRPC mutation
+          const savedImage = await saveImageMutation.mutateAsync({
+            imageUrl: cloudinaryResponse.secure_url,
+            cloudinaryAssetId: cloudinaryResponse.asset_id,
+            cloudinaryPublicId: cloudinaryResponse.public_id,
+            captureDate: new Date(),
+            originalFilename: cloudinaryResponse.original_filename,
+          } satisfies CreateImageInput);
+
+          return savedImage;
+        }),
+      );
+
+      toast({
+        title: "Success",
+        description: `${uploadedImages.length} image(s) uploaded successfully!`,
+      });
+
+      formRef.current?.reset();
+      setPreviews([]);
+      // Invalidate the images query to refresh the list
+      utils.image.getOwnImages.invalidate();
+      router.push("/images");
     } catch (error) {
       console.error("Error uploading images:", error);
       toast({
@@ -127,13 +201,13 @@ export default function ImageUpload() {
 
   const handleFiles = (files: File[]) => {
     const validFiles = files.filter((file) => {
-      const isValid = file.type.startsWith("image/");
-      const isValidSize = file.size <= 10 * 1024 * 1024; // 10MB limit
+      const isValid = ACCEPTED_IMAGE_TYPES.includes(file.type);
+      const isValidSize = file.size <= MAX_FILE_SIZE;
 
       if (!isValid) {
         toast({
           title: "Invalid file type",
-          description: `${file.name} is not an image file`,
+          description: `${file.name} is not an accepted image type`,
           variant: "destructive",
         });
       }
@@ -165,14 +239,10 @@ export default function ImageUpload() {
   return (
     <PageHeader title="Image Upload" subtitle="Upload new images">
       <Card className="mx-auto max-w-xl">
-        {/* <form ref={formRef} action={handleSubmit}> */}
         <form ref={formRef} onSubmit={onSubmit}>
-          {" "}
-          {/* Changed from action={handleSubmit} to onSubmit={onSubmit} */}
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="files">Upload Images</Label>
-
               <div
                 onClick={() => fileInputRef.current?.click()}
                 onDragOver={handleDrag}
@@ -194,33 +264,22 @@ export default function ImageUpload() {
                     drag and drop
                   </div>
                   <div className="text-xs text-muted-foreground">
-                    Images (PNG, JPG, GIF up to 10MB)
+                    Images (JPG, PNG, WebP up to 10MB)
                   </div>
                 </div>
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  hidden
-                  onChange={(e) => {
-                    // Handle file selection logic here
-                    if (e.target.files && e.target.files.length > 0) {
-                      console.log(e.target.files);
-                    }
-                  }}
-                  accept="image/png, image/jpeg, image/gif"
-                />
               </div>
 
               <input
                 ref={fileInputRef}
                 type="file"
                 name="files"
-                accept="image/*"
+                accept={ACCEPTED_IMAGE_TYPES.join(", ")}
                 onChange={handleFileChange}
                 multiple
                 className="hidden"
               />
             </div>
+
             {previews.length > 0 && (
               <div className="grid grid-cols-2 gap-4">
                 {previews.map((preview, index) => (
@@ -260,7 +319,7 @@ export default function ImageUpload() {
               ) : (
                 <>
                   <Upload className="mr-2 h-5 w-5" />
-                  Upload
+                  Upload{" "}
                   {previews.length > 0 ? ` (${previews.length} files)` : ""}
                 </>
               )}

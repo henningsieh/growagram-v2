@@ -5,6 +5,7 @@ import { z } from "zod";
 import cloudinary from "~/lib/cloudinary";
 import { images, plantImages } from "~/lib/db/schema";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { imageSchema } from "~/types/zodSchema";
 
 export const imageRouter = createTRPCRouter({
   getOwnImages: protectedProcedure
@@ -105,6 +106,32 @@ export const imageRouter = createTRPCRouter({
    *
    * @see {@link ./src/server/actions/uploadImages.ts#L141}
    */
+
+  // Create Image
+  createImage: protectedProcedure
+    .input(imageSchema)
+    .mutation(async ({ ctx, input }) => {
+      // Save image record to database
+      const newImage = await ctx.db
+        .insert(images)
+        .values({
+          id: input.id,
+          ownerId: ctx.session.user.id as string,
+          imageUrl: input.imageUrl,
+          cloudinaryAssetId: input.cloudinaryAssetId,
+          cloudinaryPublicId: input.cloudinaryPublicId,
+          captureDate: input.captureDate,
+          originalFilename: input.originalFilename,
+        })
+        // .onConflictDoUpdate() // ToDo!!!
+        .returning();
+
+      if (!newImage) {
+        throw new Error("Failed to save image record");
+      }
+
+      return newImage;
+    }),
 
   // Delete image
   deleteImage: protectedProcedure
