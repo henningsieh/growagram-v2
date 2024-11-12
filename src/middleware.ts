@@ -14,16 +14,30 @@ const languages = routing.locales;
 export default async function middleware(request: NextRequest) {
   // Get the current session (user's authentication status)
   const session = await auth();
-  console.debug("Session:", session); // Debugging session
+  // console.debug("Session:", session); // Debugging session
+
+  // Get the pathname
+  const pathname = request.nextUrl.pathname;
 
   // Extract the locale from the path. Example: /de/images or /en/images
   const localeMatch = request.nextUrl.pathname.match(
     new RegExp(`^\/(${languages.join("|")})\/`),
   );
 
-  const isLocalePath = localeMatch !== null;
+  // Get the real host from the 'X-Forwarded-Host' header or fallback to the request's host
+  const realHost =
+    request.headers.get("X-Forwarded-Host") || request.nextUrl.host;
+
+  // This will be the actual URL seen in the browser
+  const realUrl = `http://${realHost}${request.nextUrl.pathname}`;
+  console.debug("Real requested URL (client's perspective): ", realUrl); // Logs the real URL seen by the user
+
+  const currentLocale = localeMatch ? localeMatch[1] : null;
+
+  console.debug("currentLocale: ", currentLocale);
 
   // Check if the requested path is a localized protected path (like /en/images or /de/images)
+  const isLocalePath = localeMatch !== null;
   const isProtectedPath =
     isLocalePath && request.nextUrl.pathname.includes("/images");
 
@@ -31,16 +45,20 @@ export default async function middleware(request: NextRequest) {
   if (isProtectedPath && !session?.user) {
     console.debug("User is not authenticated. Redirecting to sign-in page.");
 
-    // Redirect to sign-in page and append the current URL as the callback URL
-    const redirectUrl = new URL("/api/auth/signin", request.url);
-    redirectUrl.searchParams.append("callbackUrl", request.url);
-    return NextResponse.redirect(redirectUrl);
+    // Redirect using the real URL, preserving the client-facing URL
+    const redirectUrl = new URL(
+      // `/${currentLocale}/login`,
+      `/api/auth/signin`,
+      `http://${realHost}`,
+    );
+    redirectUrl.searchParams.append("callbackUrl", realUrl); // Use the real URL here
+    return NextResponse.redirect(redirectUrl); // Redirect to the sign-in page with the real URL
   }
 
   // Handle the i18n routing for locales
   const handleI18nRouting = createMiddleware(routing);
 
-  const pathname = request.nextUrl.pathname;
+  // const pathname = request.nextUrl.pathname;
   const pathnameHasLocale = /^\/[a-zA-Z]{2}(?:\/|$)/.test(pathname); // Match any locale (like '/en' or '/de')
   const pathnameHasValidLocale = new RegExp(
     `^\/(?:${languages.join("|")})(?:\/|$)`,
