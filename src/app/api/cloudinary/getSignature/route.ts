@@ -1,25 +1,15 @@
 import { v2 as cloudinary } from "cloudinary";
-import { NextApiRequest } from "next";
 import { NextResponse } from "next/server";
 import { env } from "~/env";
 import { auth } from "~/lib/auth";
-
-// Configuration for the API route
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
 
 // Since this is a dynamic route that requires authentication,
 // we explicitly mark it as non-static
 export const dynamic = "force-dynamic";
 
-export async function GET(request: NextApiRequest) {
+export async function POST(request: Request) {
   try {
     const session = await auth();
-
-    console.debug(request);
 
     if (!session) {
       return NextResponse.json(
@@ -28,16 +18,19 @@ export async function GET(request: NextApiRequest) {
       );
     }
 
+    // Get folder from request body
+    const body = await request.json();
+    const folder = `growagram/${body.folder}`;
+
     const timestamp = Math.round(new Date().getTime() / 1000);
     const api_secret = env.CLOUDINARY_API_SECRET;
     const transformation = "w_2000,h_2000,c_limit,q_auto";
-    const folder = "growagram/user_uploads";
 
     const signature = cloudinary.utils.api_sign_request(
       {
-        timestamp: timestamp,
-        transformation: transformation,
-        folder: folder,
+        timestamp,
+        transformation,
+        folder,
       },
       api_secret,
     );
@@ -45,10 +38,10 @@ export async function GET(request: NextApiRequest) {
     return NextResponse.json({
       cloud_name: env.NEXT_PUBLIC_CLOUDINARY_NAME,
       api_key: env.CLOUDINARY_API_KEY,
-      signature: signature,
-      timestamp: timestamp,
-      transformation: transformation,
-      folder: folder,
+      signature,
+      timestamp,
+      transformation,
+      folder,
     });
   } catch (error) {
     console.error(error);
@@ -59,7 +52,7 @@ export async function GET(request: NextApiRequest) {
   }
 }
 
-// Optional: Add a GET method that returns a 405 Method Not Allowed
-export async function Post() {
+// Handle other methods
+export async function GET() {
   return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
 }
