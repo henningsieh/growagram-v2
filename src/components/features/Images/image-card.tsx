@@ -120,7 +120,9 @@ export default function ImageCard({ image }: ImageCardProps) {
             priority
           />
         </div>
-        <CardTitle className="p-3">{image.originalFilename}</CardTitle>
+        <CardTitle className="overflow-hidden p-2">
+          {image.originalFilename}
+        </CardTitle>
         <CardContent className="flex flex-col gap-2 py-2">
           <Tooltip>
             <TooltipTrigger asChild>
