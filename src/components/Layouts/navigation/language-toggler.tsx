@@ -25,12 +25,28 @@ export function LanguageToggle() {
     {
       code: "de",
       label: "Deutsch",
-      flag: <Image className="h-[21] w-6" src={DEFlag} alt="German flag" />,
+      flag: (
+        <Image
+          width={24}
+          height={20}
+          className="h-5 w-6"
+          src={DEFlag}
+          alt="German flag"
+        />
+      ),
     },
     {
       code: "en",
       label: "English",
-      flag: <Image className="h-[21] w-6" src={USFlag} alt="UK flag" />,
+      flag: (
+        <Image
+          width={24}
+          height={20}
+          className="h-5 w-6"
+          src={USFlag}
+          alt="UK flag"
+        />
+      ),
     },
   ];
 

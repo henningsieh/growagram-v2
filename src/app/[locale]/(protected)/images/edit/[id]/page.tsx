@@ -1,10 +1,25 @@
-"use client";
+import PageHeader from "~/components/Layouts/page-header";
+import ConnectPlants from "~/components/features/Images/connect-plants";
+import { HydrateClient, api } from "~/lib/trpc/server";
 
-import { useParams } from "next/navigation";
-import React from "react";
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const imageId = (await params).id;
 
-export default function EditImage() {
-  const { id: imageId } = useParams<{ id: string }>();
+  const image = await api.image.getById({ id: imageId });
+  void api.plant.getOwnPlants.prefetch({});
 
-  return <div>Edit Image with id: {imageId}</div>;
+  return (
+    <HydrateClient>
+      <PageHeader
+        title={"Edit Image"}
+        subtitle={"Select the plants on this image"}
+      >
+        <ConnectPlants image={image} />
+      </PageHeader>
+    </HydrateClient>
+  );
 }

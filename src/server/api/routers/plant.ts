@@ -3,10 +3,11 @@ import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { plants } from "~/lib/db/schema";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { plantSchema } from "~/types/zodSchema";
 
 import { imageRouter } from "./image";
 
-const connectToPlant__imported_from_imageRouter = imageRouter.connectToPlant;
+const connectPlant__imported_from_imageRouter = imageRouter.connectPlant;
 
 export const plantRouter = createTRPCRouter({
   // Get paginated plants for the current user
@@ -14,7 +15,7 @@ export const plantRouter = createTRPCRouter({
     .input(
       z.object({
         limit: z.number().min(1).max(100).default(9),
-        cursor: z.number().nullish(), // Cursor-based pagination
+        cursor: z.number().nullish().default(null), // Cursor-based pagination
       }),
     )
     .query(async ({ ctx, input }) => {
@@ -73,22 +74,40 @@ export const plantRouter = createTRPCRouter({
       });
     }),
 
-  // Connect plant to image
-  connectToImage: connectToPlant__imported_from_imageRouter,
+  // Connect an image to plant
+  connectImage: connectPlant__imported_from_imageRouter,
 
   // Create a plant
-  create: protectedProcedure
-    .input(
-      z.object({
-        name: z.string(),
-      }),
-    )
+  createOrEdit: protectedProcedure
+    .input(plantSchema)
     .mutation(async ({ ctx, input }) => {
       // Logic to handle image creation
-      const newPlant = await ctx.db.insert(plants).values({
-        name: input.name,
-        ownerId: ctx.session.user.id as string,
-      });
+      const newPlant = await ctx.db
+        .insert(plants)
+        .values({
+          id: input.id,
+          name: input.name,
+          ownerId: ctx.session.user.id as string,
+          startDate: input.startDate,
+          seedlingPhaseStart: input.seedlingPhaseStart,
+          vegetationPhaseStart: input.vegetationPhaseStart,
+          floweringPhaseStart: input.floweringPhaseStart,
+          harvestDate: input.harvestDate,
+          curingPhaseStart: input.curingPhaseStart,
+        })
+        .onConflictDoUpdate({
+          target: plants.id,
+          set: {
+            name: input.name,
+            // ownerId: ctx.session.user.id as string,
+            startDate: input.startDate,
+            seedlingPhaseStart: input.seedlingPhaseStart,
+            vegetationPhaseStart: input.vegetationPhaseStart,
+            floweringPhaseStart: input.floweringPhaseStart,
+            harvestDate: input.harvestDate,
+            curingPhaseStart: input.curingPhaseStart,
+          },
+        });
 
       return newPlant;
     }),

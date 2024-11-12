@@ -1,15 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  CalendarDays,
-  Flower,
-  Leaf,
-  Nut,
-  PillBottle,
-  Sprout,
-  Wheat,
-} from "lucide-react";
+import { Flower, Leaf, Nut, PillBottle, Sprout, Wheat } from "lucide-react";
 import { useLocale } from "next-intl";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -39,46 +31,35 @@ import {
   PopoverTrigger,
 } from "~/components/ui/popover";
 import { useToast } from "~/hooks/use-toast";
-import { useRouter } from "~/lib/i18n/routing";
+import { Link, useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import { cn, formatDate } from "~/lib/utils";
+import { Plant } from "~/types/db";
+import { plantSchema } from "~/types/zodSchema";
 
-const formSchema = z.object({
-  name: z.string().min(2, {
-    message: "Plant name must be at least 2 characters.",
-  }),
-  startDate: z.date({
-    required_error: "Start date is required.",
-  }),
-  seedlingPhaseStart: z.date().optional(),
-  vegetationPhaseStart: z.date().optional(),
-  floweringPhaseStart: z.date().optional(),
-  harvestDate: z.date().optional(),
-  curingPhaseStart: z.date().optional(),
-});
+type FormValues = z.infer<typeof plantSchema>;
 
-type FormValues = z.infer<typeof formSchema>;
-
-export default function CreatePlant() {
+export default function PlantForm({ plant }: { plant?: Plant }) {
   const router = useRouter();
   const locale = useLocale();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(plantSchema),
     defaultValues: {
-      name: "",
-      startDate: undefined,
-      seedlingPhaseStart: undefined,
-      vegetationPhaseStart: undefined,
-      floweringPhaseStart: undefined,
-      harvestDate: undefined,
-      curingPhaseStart: undefined,
+      id: plant?.id,
+      name: plant?.name,
+      startDate: plant?.startDate,
+      seedlingPhaseStart: plant?.seedlingPhaseStart || undefined,
+      vegetationPhaseStart: plant?.vegetationPhaseStart || undefined,
+      floweringPhaseStart: plant?.floweringPhaseStart || undefined,
+      harvestDate: plant?.harvestDate || undefined,
+      curingPhaseStart: plant?.curingPhaseStart || undefined,
     },
   });
 
-  const createPlant = api.plant.create.useMutation({
+  const createOrEditPlant = api.plant.createOrEdit.useMutation({
     onSuccess: () => {
       toast({
         title: "Success",
@@ -98,7 +79,7 @@ export default function CreatePlant() {
 
   function onSubmit(values: FormValues) {
     setIsSubmitting(true);
-    createPlant.mutate(values);
+    createOrEditPlant.mutate(values);
   }
 
   return (
@@ -106,7 +87,7 @@ export default function CreatePlant() {
       <CardHeader>
         <CardTitle>Plant Details</CardTitle>
         <CardDescription>
-          Complete the fields below to add your plant.
+          Edit the plant&apos;s name and relevant dates.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -404,14 +385,21 @@ export default function CreatePlant() {
 
             <div className="flex gap-4">
               <Button
+                asChild
                 variant="outline"
-                onClick={() => router.push("/plants")}
+                // onClick={() => router.push("/plants")}
                 className="w-full"
               >
-                Cancel
+                <Link href="/plants">Cancel</Link>
               </Button>
               <Button type="submit" className="w-full" disabled={isSubmitting}>
-                {isSubmitting ? "Creating..." : "Create Plant"}
+                {isSubmitting
+                  ? plant?.id
+                    ? "Editing..."
+                    : "Creating..."
+                  : plant?.id
+                    ? "Edit Plant"
+                    : "Create Plant"}
               </Button>
             </div>
           </form>

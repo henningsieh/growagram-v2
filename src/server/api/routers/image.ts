@@ -1,14 +1,10 @@
 // src/server/api/routers/image.ts:
 import { TRPCError } from "@trpc/server";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { z } from "zod";
 import cloudinary from "~/lib/cloudinary";
 import { images, plantImages } from "~/lib/db/schema";
-import {
-  createTRPCRouter,
-  protectedProcedure,
-  publicProcedure,
-} from "~/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
 export const imageRouter = createTRPCRouter({
   getOwnImages: protectedProcedure
@@ -57,11 +53,18 @@ export const imageRouter = createTRPCRouter({
         },
       });
 
+      if (!image) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Image not found",
+        });
+      }
+
       return image;
     }),
 
-  // Connect image to plant
-  connectToPlant: protectedProcedure
+  // Connect a plant to this image
+  connectPlant: protectedProcedure
     .input(
       z.object({
         imageId: z.string(),
@@ -69,11 +72,32 @@ export const imageRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      return await ctx.db.insert(plantImages).values({
-        // ownerId: ctx.session.user.id as string,
-        imageId: input.imageId,
-        plantId: input.plantId,
-      });
+      return await ctx.db
+        .insert(plantImages)
+        .values({
+          imageId: input.imageId,
+          plantId: input.plantId,
+        })
+        .onConflictDoNothing();
+    }),
+
+  // Disonnect a plant to this image
+  disconnectPlant: protectedProcedure
+    .input(
+      z.object({
+        imageId: z.string(),
+        plantId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.db
+        .delete(plantImages)
+        .where(
+          and(
+            eq(plantImages.imageId, input.imageId),
+            eq(plantImages.plantId, input.plantId),
+          ),
+        );
     }),
 
   /**
@@ -107,13 +131,17 @@ export const imageRouter = createTRPCRouter({
           });
         }
 
-        // Extract public_id from Cloudinary URL
-        const urlParts = image.imageUrl.split("/");
-        const filenameWithExtension = urlParts[urlParts.length - 1];
-        const publicId = `growagram/${filenameWithExtension.split(".")[0]}`; // Adjust folder name if needed
-
         // Delete from Cloudinary
-        await cloudinary.uploader.destroy(publicId);
+        const deleteResult = (await cloudinary.uploader.destroy(
+          image.cloudinaryPublicId,
+        )) as { result: string };
+
+        if (deleteResult.result !== "ok") {
+          throw new TRPCError({
+            code: "UNPROCESSABLE_CONTENT",
+            message: "Failed delete image from Cloudinary",
+          });
+        }
 
         // Delete from database
         const deletedImage = await ctx.db

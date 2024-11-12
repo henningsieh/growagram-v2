@@ -153,10 +153,12 @@ export const images = pgTable("image", {
   id: text("id")
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
-  imageUrl: text("image_url").notNull(),
   ownerId: text("owner_id")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
+  imageUrl: text("image_url").notNull(),
+  cloudinaryAssetId: text("asset_id").notNull(),
+  cloudinaryPublicId: text("public_id").notNull(),
   captureDate: timestamp("captureDate", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),

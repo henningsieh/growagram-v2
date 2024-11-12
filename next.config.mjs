@@ -22,14 +22,23 @@ const nextConfig = {
     ],
   },
   webpack(config) {
+    // Modified SVG configuration
     config.module.rules.push({
       test: /\.svg$/,
-      issuer: /\.[jt]sx?$/,
       use: [
         {
           loader: "@svgr/webpack",
-          options: { svgo: true, icon: true },
+          options: {
+            svgo: true,
+            icon: true,
+            typescript: true,
+            ext: "tsx",
+            svgProps: {
+              className: "w-full h-full",
+            },
+          },
         },
+        "url-loader", // Add this loader
       ],
     });
     return config;

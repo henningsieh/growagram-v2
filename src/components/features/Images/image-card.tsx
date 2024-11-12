@@ -1,9 +1,8 @@
 "use client";
 
-import { Tooltip, TooltipProvider } from "@radix-ui/react-tooltip";
 import {
   Camera,
-  Edit,
+  Flower2,
   Loader2,
   Maximize,
   Minimize,
@@ -18,28 +17,31 @@ import { createPortal } from "react-dom";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardFooter, CardTitle } from "~/components/ui/card";
 import { Switch } from "~/components/ui/switch";
-import { TooltipContent, TooltipTrigger } from "~/components/ui/tooltip";
-// Make sure this import exists
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "~/components/ui/tooltip";
 import { useToast } from "~/hooks/use-toast";
 import { Link } from "~/lib/i18n/routing";
-// Assuming you have toast component
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import { formatDate, formatTime } from "~/lib/utils";
 import { UserImage } from "~/server/api/root";
 
-// For refreshing after delete
+interface ImageCardProps {
+  image: UserImage;
+}
 
-// hey claude.ai: here new import imageRouter with `imageRouter.deleteImage` method in it!
-
-export default function Component({ image }: { image: UserImage }) {
+export default function ImageCard({ image }: ImageCardProps) {
   const locale = useLocale();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isUnrestrictedView, setIsUnrestrictedView] = useState(false);
+  const router = useRouter();
+  const utils = api.useUtils();
 
   const { toast } = useToast();
-  const router = useRouter();
-  const utils = api.useContext();
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isUnrestrictedView, setIsUnrestrictedView] = useState(false);
 
   // Initialize delete mutation
   const deleteMutation = api.image.deleteImage.useMutation({
@@ -104,7 +106,7 @@ export default function Component({ image }: { image: UserImage }) {
 
   return (
     <>
-      <Card className="overflow-hidden">
+      <Card>
         <div
           className="relative aspect-video cursor-pointer"
           onClick={handleImageClick}
@@ -118,65 +120,64 @@ export default function Component({ image }: { image: UserImage }) {
             priority
           />
         </div>
-        <CardTitle className="p-3">{image.originalFilename}</CardTitle>
+        <CardTitle className="overflow-hidden p-2">
+          {image.originalFilename}
+        </CardTitle>
         <CardContent className="flex flex-col gap-2 py-2">
-          <TooltipProvider delayDuration={0}>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <p className="flex items-center gap-2 text-sm text-accent-foreground">
-                  <UploadCloud size={18} />
-                  {formatDate(image.createdAt, locale)}
-                  {locale !== "en" ? " um " : " at "}
-                  {formatTime(image.createdAt, locale)}
-                  {locale !== "en" && " Uhr"}
-                </p>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Upload Date </p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-          <TooltipProvider delayDuration={0}>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <p className="flex items-center gap-2 text-sm text-accent-foreground">
-                  <Camera size={18} />
-                  {formatDate(image.captureDate, locale)}
-                  {locale !== "en" ? " um " : " at "}
-                  {formatTime(image.captureDate, locale)}
-                  {locale !== "en" && " Uhr"}
-                </p>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Capture Date (EXIF data)</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <p className="flex items-center gap-2 text-sm text-accent-foreground">
+                <UploadCloud size={18} />
+                {formatDate(image.createdAt, locale)}
+                {locale !== "en" ? " um " : " at "}
+                {formatTime(image.createdAt, locale)}
+                {locale !== "en" && " Uhr"}
+              </p>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Upload Date </p>
+            </TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <p className="flex items-center gap-2 text-sm text-accent-foreground">
+                <Camera size={18} />
+                {formatDate(image.captureDate, locale)}
+                {locale !== "en" ? " um " : " at "}
+                {formatTime(image.captureDate, locale)}
+                {locale !== "en" && " Uhr"}
+              </p>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Capture Date (EXIF data)</p>
+            </TooltipContent>
+          </Tooltip>
         </CardContent>
         <CardFooter className="gap-2 p-3">
           <Button
             variant="destructive"
             size="sm"
-            className="w-full text-sm font-bold"
+            className="w-1/3 gap-0 text-sm font-bold"
             onClick={handleDelete}
             disabled={deleteMutation.isPending}
           >
             {deleteMutation.isPending ? (
               <>
-                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                <Loader2 className="mr-1 h-4 w-4 animate-spin" />
                 Deleting...
               </>
             ) : (
               <>
-                <Trash2 className="mr-2 h-5 w-5" />
+                <Trash2 className="mr-1 h-4 w-4" />
                 Delete
               </>
             )}
           </Button>
-          <Button asChild size={"sm"} className="w-full text-sm font-bold">
+          <Button asChild size={"sm"} className="w-2/3 text-base font-semibold">
             <Link href={`images/edit/${image.id}`}>
-              <Edit className="h-5 w-5" />
-              Edit
+              <Flower2 strokeWidth={1.8} className="h-4 w-4" />
+              Select plants
             </Link>
           </Button>
         </CardFooter>

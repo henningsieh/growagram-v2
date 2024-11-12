@@ -1,22 +1,21 @@
 "use client";
 
-import { useIntersection } from "@mantine/hooks";
-import { Loader2 } from "lucide-react";
-import { useEffect, useRef } from "react";
+// src/app/[locale]/(protected)/plants/page.tsx:
+import { useCallback, useEffect, useRef } from "react";
+import InfiniteScrollLoader from "~/components/Layouts/InfiniteScrollLoader";
 import PageHeader from "~/components/Layouts/page-header";
+import ResponsiveGrid from "~/components/Layouts/responsive-grid";
 import PlantCard from "~/components/features/Plants/plant-card";
 import { api } from "~/lib/trpc/react";
 
 export default function PlantsPage() {
-  // getOwnPlants from tRPC
   const {
     data,
-    isFetching,
-    isPending,
     isLoading,
+    isFetching,
+    hasNextPage,
     fetchNextPage,
     isFetchingNextPage,
-    hasNextPage,
   } = api.plant.getOwnPlants.useInfiniteQuery(
     { limit: 1 },
     {
@@ -25,44 +24,60 @@ export default function PlantsPage() {
   );
   const plants = data?.pages.flatMap((page) => page.plants) ?? [];
 
-  // infinite refetching and scrolling
-  const lastPlantRef = useRef<HTMLDivElement>(null);
-  const { ref, entry } = useIntersection({
-    root: lastPlantRef.current,
-    threshold: 1,
-  });
-  useEffect(() => {
-    if (entry?.isIntersecting && hasNextPage) {
-      void fetchNextPage();
-    }
-  }, [entry, fetchNextPage, hasNextPage]);
+  // Intersection Observer callback
+  const onIntersect = useCallback(
+    (entries: IntersectionObserverEntry[]) => {
+      const firstEntry = entries[0];
+      if (firstEntry.isIntersecting && hasNextPage && !isFetchingNextPage) {
+        void fetchNextPage();
+      }
+    },
+    [fetchNextPage, hasNextPage, isFetchingNextPage],
+  );
 
+  // Set up intersection observer
+  const loadingRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const observer = new IntersectionObserver(onIntersect, {
+      root: null, // Use viewport as root
+      rootMargin: "0px",
+      threshold: 0.01, // Trigger when even 10% of the element is visible
+    });
+    if (loadingRef.current) {
+      observer.observe(loadingRef.current);
+    }
+    return () => observer.disconnect();
+  }, [onIntersect]);
+
+  // Handling case if user hasn't uploaded any images
+  if (!isFetching && plants.length === 0) {
+    return (
+      <p className="mt-8 text-center text-muted-foreground">
+        You haven&apos;t added any plants yet.
+      </p>
+    );
+  }
   return (
-    <PageHeader title="My Plants" subtitle="View and manage your plants">
-      <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
+    <PageHeader
+      title="My Plants"
+      subtitle="View and manage your plants"
+      buttonLink="/plants/add"
+      buttonLabel="Add New Plant"
+    >
+      <ResponsiveGrid>
         {plants.map((plant, index) => (
-          <PlantCard
-            plant={plant}
-            key={index}
-            ref={index === plants.length - 1 ? ref : undefined}
-          />
+          <PlantCard plant={plant} key={index} />
         ))}
-      </div>
-      {(isLoading || isFetchingNextPage) && (
-        <div className="mt-8 flex justify-center">
-          <Loader2 className="h-8 w-8 animate-spin" />
-        </div>
-      )}
-      {!hasNextPage && plants.length > 0 && (
-        <p className="mt-8 text-center text-muted-foreground">
-          No more plants to load.
-        </p>
-      )}
-      {!isPending && plants.length === 0 && (
-        <p className="mt-8 text-center text-muted-foreground">
-          You haven&apos;t added any plants yet.
-        </p>
-      )}
+      </ResponsiveGrid>
+
+      <InfiniteScrollLoader
+        ref={loadingRef}
+        isLoading={isLoading}
+        isFetchingNextPage={isFetchingNextPage}
+        hasNextPage={hasNextPage}
+        itemsLength={plants.length}
+        noMoreMessage="No more plants to load."
+      />
     </PageHeader>
   );
 }
