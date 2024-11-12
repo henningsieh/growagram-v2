@@ -118,9 +118,9 @@ export default function ImageCard({ image }: ImageCardProps) {
 
   return (
     <>
-      <Card>
+      <Card className="overflow-hidden">
         <div
-          className="relative aspect-video cursor-pointer"
+          className="relative aspect-video cursor-pointer overflow-hidden"
           onClick={handleImageClick}
         >
           <Image
@@ -132,7 +132,7 @@ export default function ImageCard({ image }: ImageCardProps) {
             priority
           />
         </div>
-        <CardTitle className="overflow-hidden p-2">
+        <CardTitle className="overflow-hidden p-3 font-mono">
           {image.originalFilename}
         </CardTitle>
         <CardContent className="flex flex-col gap-2 py-2">
@@ -177,14 +177,13 @@ export default function ImageCard({ image }: ImageCardProps) {
             {deleteMutation.isPending ? (
               <>
                 <Loader2 className="mr-1 h-4 w-4 animate-spin" />
-                Deleting...
               </>
             ) : (
               <>
                 <Trash2 className="mr-1 h-4 w-4" />
-                Delete
               </>
             )}
+            Delete
           </Button>
           <Button asChild size={"sm"} className="w-2/3 text-base font-semibold">
             <Link href={`images/edit/${image.id}`}>
