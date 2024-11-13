@@ -3,12 +3,13 @@
 // src/app/[locale]/(protected)/images/upload/page.tsx:
 import { UploadApiResponse } from "cloudinary";
 import { CloudUpload, Loader2, Upload, X } from "lucide-react";
-import { type Session, User } from "next-auth";
+import { type User } from "next-auth";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardFooter } from "~/components/ui/card";
 import { Label } from "~/components/ui/label";
+import { Progress as ProgressBar } from "~/components/ui/progress";
 import { useToast } from "~/hooks/use-toast";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
@@ -18,6 +19,7 @@ import { CreateImageInput } from "~/server/api/root";
 interface FilePreview {
   file: File;
   preview: string;
+  progress: number;
 }
 
 interface CloudinarySignature {
@@ -32,28 +34,41 @@ interface CloudinarySignature {
 async function uploadToCloudinary(
   file: File,
   signature: CloudinarySignature,
+  onProgress: (progress: number) => void,
 ): Promise<UploadApiResponse> {
-  const formData = new FormData();
-  formData.append("file", file);
-  formData.append("api_key", signature.api_key);
-  formData.append("timestamp", signature.timestamp.toString());
-  formData.append("signature", signature.signature);
-  formData.append("folder", signature.folder);
-  formData.append("transformation", signature.transformation);
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("api_key", signature.api_key);
+    formData.append("timestamp", signature.timestamp.toString());
+    formData.append("signature", signature.signature);
+    formData.append("folder", signature.folder);
+    formData.append("transformation", signature.transformation);
 
-  const response = await fetch(
-    `https://api.cloudinary.com/v1_1/${signature.cloud_name}/image/upload`,
-    {
-      method: "POST",
-      body: formData,
-    },
-  );
-
-  if (!response.ok) {
-    throw new Error("Upload failed");
-  }
-
-  return response.json();
+    xhr.open(
+      "POST",
+      `https://api.cloudinary.com/v1_1/${signature.cloud_name}/image/upload`,
+      true,
+    );
+    xhr.onload = () => {
+      if (xhr.status === 200) {
+        resolve(JSON.parse(xhr.responseText));
+      } else {
+        reject(new Error("Upload failed"));
+      }
+    };
+    xhr.onerror = () => {
+      reject(new Error("Upload failed"));
+    };
+    xhr.upload.onprogress = (event) => {
+      if (event.lengthComputable) {
+        const progress = Math.round((event.loaded * 100) / event.total);
+        onProgress(progress);
+      }
+    };
+    xhr.send(formData);
+  });
 }
 
 const MAX_FILE_SIZE = 10000000; // 10MB
@@ -111,6 +126,13 @@ export default function ImageUpload({ user }: { user: User }) {
           const cloudinaryResponse = await uploadToCloudinary(
             preview.file,
             signature,
+            (progress) => {
+              setPreviews((current) =>
+                current.map((p) =>
+                  p.file === preview.file ? { ...p, progress } : p,
+                ),
+              );
+            },
           );
 
           // Save to your database using your tRPC mutation
@@ -119,7 +141,7 @@ export default function ImageUpload({ user }: { user: User }) {
             cloudinaryAssetId: cloudinaryResponse.asset_id,
             cloudinaryPublicId: cloudinaryResponse.public_id,
             captureDate: new Date(),
-            originalFilename: cloudinaryResponse.original_filename,
+            originalFilename: preview.file.name,
           } satisfies CreateImageInput);
 
           return savedImage;
@@ -225,6 +247,7 @@ export default function ImageUpload({ user }: { user: User }) {
     const newPreviews = validFiles.map((file) => ({
       file,
       preview: URL.createObjectURL(file),
+      progress: 0,
     }));
 
     setPreviews((current) => [...current, ...newPreviews]);
@@ -249,7 +272,7 @@ export default function ImageUpload({ user }: { user: User }) {
               onDragLeave={handleDragOut}
               onDrop={handleDrop}
               className={cn(
-                "cursor-pointer rounded-lg border-2 border-dashed bg-muted p-8 text-center transition-colors duration-200",
+                "cursor-pointer rounded-lg border-2 border-dashed bg-muted/20 p-8 text-center transition-colors duration-200",
                 isDragging
                   ? "border-primary bg-primary/5"
                   : "border-muted-foreground/25",
@@ -258,10 +281,12 @@ export default function ImageUpload({ user }: { user: User }) {
             >
               <div className="flex flex-col items-center gap-2">
                 <CloudUpload className="h-10 w-10 text-muted-foreground" />
+
                 <div className="text-lg text-muted-foreground">
                   <span className="font-semibold">Click to upload</span> or drag
                   and drop
                 </div>
+
                 <div className="text-xs text-muted-foreground">
                   Images (JPG, PNG, WebP up to 10MB)
                 </div>
@@ -271,6 +296,7 @@ export default function ImageUpload({ user }: { user: User }) {
             <input
               ref={fileInputRef}
               type="file"
+              id="files"
               name="files"
               accept={ACCEPTED_IMAGE_TYPES.join(", ")}
               onChange={handleFileChange}
@@ -282,23 +308,43 @@ export default function ImageUpload({ user }: { user: User }) {
           {previews.length > 0 && (
             <div className="grid grid-cols-2 gap-4">
               {previews.map((preview, index) => (
-                <div key={preview.preview} className="relative">
-                  <Image
-                    src={preview.preview}
-                    alt={`Preview ${index + 1}`}
-                    className="h-40 w-full rounded-md object-cover"
-                    width={320}
-                    height={160}
-                  />
-                  <Button
-                    type="button"
-                    variant="destructive"
-                    size="icon"
-                    className="absolute right-2 top-2"
-                    onClick={() => handleRemoveFile(index)}
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
+                <div key={preview.preview}>
+                  <div className="relative">
+                    <Image
+                      src={preview.preview}
+                      alt={`Preview ${index + 1}`}
+                      className="h-40 w-full rounded-md object-cover"
+                      width={320}
+                      height={160}
+                    />
+                    <div className="absolute bottom-1 left-1 right-1 mt-2 flex flex-col rounded-sm bg-accent p-1 text-xs font-medium text-accent-foreground">
+                      <div className="flex justify-between gap-2">
+                        <span>Filename: </span>
+                        <span className="overflow-x-hidden whitespace-nowrap">
+                          {" "}
+                          {preview.file.name}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Filesize: </span>
+                        <span className="overflow-hidden">
+                          {(preview.file.size / 1024 / 1024).toFixed(2)} MB
+                        </span>
+                      </div>
+                    </div>
+                    <div className="absolute -bottom-3 left-0 right-0">
+                      <ProgressBar value={preview.progress} />
+                    </div>
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      size="icon"
+                      className="absolute right-2 top-2"
+                      onClick={() => handleRemoveFile(index)}
+                    >
+                      <X />
+                    </Button>
+                  </div>
                 </div>
               ))}
             </div>
