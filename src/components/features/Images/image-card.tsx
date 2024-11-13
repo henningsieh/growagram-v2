@@ -116,29 +116,36 @@ export default function ImageCard({ image }: ImageCardProps) {
     e.stopPropagation();
   };
 
+  const [isImageHovered, setIsImageHovered] = useState(false);
+
   return (
     <>
       <Card className="overflow-hidden">
         <div
-          className="relative aspect-video cursor-pointer overflow-hidden"
+          className="relative aspect-video cursor-pointer"
           onClick={handleImageClick}
+          onMouseEnter={() => setIsImageHovered(true)}
+          onMouseLeave={() => setIsImageHovered(false)}
         >
           <Image
             src={image.imageUrl}
             alt=""
             fill
-            className="object-cover"
-            sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"
             priority
+            className="object-contain transition-transform duration-300"
+            sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"
+            style={{
+              transform: isImageHovered ? "scale(1.05)" : "scale(1)",
+            }}
           />
         </div>
-        <CardTitle className="overflow-hidden p-3 font-mono">
+        <CardTitle className="overflow-x-hidden whitespace-nowrap p-3 font-mono">
           {image.originalFilename}
         </CardTitle>
-        <CardContent className="flex flex-col gap-2 py-2">
+        <CardContent className="flex flex-col p-2 py-2 text-sm text-muted-foreground">
           <Tooltip>
             <TooltipTrigger asChild>
-              <p className="flex items-center gap-2 text-sm text-accent-foreground">
+              <p className="flex items-center gap-2 px-1">
                 <UploadCloud size={18} />
                 {formatDate(image.createdAt, locale)}
                 {locale !== "en" ? " um " : " at "}
@@ -153,7 +160,7 @@ export default function ImageCard({ image }: ImageCardProps) {
 
           <Tooltip>
             <TooltipTrigger asChild>
-              <p className="flex items-center gap-2 text-sm text-accent-foreground">
+              <p className="flex items-center gap-2 px-1">
                 <Camera size={18} />
                 {formatDate(image.captureDate, locale)}
                 {locale !== "en" ? " um " : " at "}
