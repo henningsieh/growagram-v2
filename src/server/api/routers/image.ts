@@ -112,6 +112,9 @@ export const imageRouter = createTRPCRouter({
     .input(imageSchema)
     .mutation(async ({ ctx, input }) => {
       // Save image record to database
+
+      console.debug("captureDate: ", input.captureDate);
+
       const newImage = await ctx.db
         .insert(images)
         .values({

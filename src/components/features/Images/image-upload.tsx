@@ -1,9 +1,9 @@
 "use client";
 
-// src/app/[locale]/(protected)/images/upload/page.tsx:
 import { UploadApiResponse } from "cloudinary";
 import { CloudUpload, Loader2, Upload, X } from "lucide-react";
 import { type User } from "next-auth";
+import { useLocale } from "next-intl";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "~/components/ui/button";
@@ -13,13 +13,24 @@ import { Progress as ProgressBar } from "~/components/ui/progress";
 import { useToast } from "~/hooks/use-toast";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
-import { cn } from "~/lib/utils";
+import { cn, formatDate, formatTime } from "~/lib/utils";
+import { readExif } from "~/lib/utils/readExif";
 import { CreateImageInput } from "~/server/api/root";
 
 interface FilePreview {
   file: File;
   preview: string;
   progress: number;
+  exifData: {
+    make?: string;
+    model?: string;
+    captureDate?: Date;
+    gpsLocation?: {
+      latitude: number;
+      longitude: number;
+      altitude?: number;
+    };
+  } | null;
 }
 
 interface CloudinarySignature {
@@ -80,6 +91,7 @@ const ACCEPTED_IMAGE_TYPES = [
 ];
 
 export default function ImageUpload({ user }: { user: User }) {
+  const locale = useLocale();
   const [uploading, setUploading] = useState(false);
   const [previews, setPreviews] = useState<FilePreview[]>([]);
   const [isDragging, setIsDragging] = useState(false);
@@ -140,8 +152,9 @@ export default function ImageUpload({ user }: { user: User }) {
             imageUrl: cloudinaryResponse.secure_url,
             cloudinaryAssetId: cloudinaryResponse.asset_id,
             cloudinaryPublicId: cloudinaryResponse.public_id,
-            captureDate: new Date(),
+            captureDate: preview.exifData?.captureDate || new Date(),
             originalFilename: preview.file.name,
+            // exif: preview.exifData, // Save EXIF data
           } satisfies CreateImageInput);
 
           return savedImage;
@@ -221,7 +234,7 @@ export default function ImageUpload({ user }: { user: User }) {
     }
   };
 
-  const handleFiles = (files: File[]) => {
+  const handleFiles = async (files: File[]) => {
     const validFiles = files.filter((file) => {
       const isValid = ACCEPTED_IMAGE_TYPES.includes(file.type);
       const isValidSize = file.size <= MAX_FILE_SIZE;
@@ -244,11 +257,19 @@ export default function ImageUpload({ user }: { user: User }) {
       return isValid && isValidSize;
     });
 
-    const newPreviews = validFiles.map((file) => ({
-      file,
-      preview: URL.createObjectURL(file),
-      progress: 0,
-    }));
+    const newPreviews = await Promise.all(
+      validFiles.map(async (file) => {
+        const buffer = await file.arrayBuffer();
+        const exifData = await readExif(Buffer.from(buffer));
+        // console.debug({ exifData });
+        return {
+          file,
+          preview: URL.createObjectURL(file),
+          progress: 0,
+          exifData,
+        };
+      }),
+    );
 
     setPreviews((current) => [...current, ...newPreviews]);
   };
@@ -317,7 +338,7 @@ export default function ImageUpload({ user }: { user: User }) {
                       width={320}
                       height={160}
                     />
-                    <div className="absolute bottom-1 left-1 right-1 mt-2 flex flex-col rounded-sm bg-accent p-1 text-xs font-medium text-accent-foreground">
+                    <div className="absolute bottom-1 left-1 right-1 mt-2 flex flex-col rounded-sm bg-accent p-1 text-xs font-semibold text-foreground">
                       <div className="flex justify-between gap-2">
                         <span>Filename: </span>
                         <span className="overflow-x-hidden whitespace-nowrap">
@@ -331,14 +352,36 @@ export default function ImageUpload({ user }: { user: User }) {
                           {(preview.file.size / 1024 / 1024).toFixed(2)} MB
                         </span>
                       </div>
+                      {/* EXIF Data Display */}
+                      {preview.exifData?.captureDate && (
+                        <div className="flex justify-between">
+                          {/* <div>
+                            Camera: {preview.exifData.make}{" "}
+                            {preview.exifData.model}
+                          </div> */}
+                          <span>Capture date: </span>
+                          <span>
+                            {formatDate(preview.exifData.captureDate, locale)}
+                            {", "}
+                            {formatTime(preview.exifData.captureDate, locale)}
+                          </span>
+                          {/* {preview.exifData.gpsLocation && (
+                            <div>
+                              GPS: {preview.exifData.gpsLocation.latitude},{" "}
+                              {preview.exifData.gpsLocation.longitude}
+                            </div>
+                          )} */}
+                        </div>
+                      )}
                     </div>
                     <div className="absolute -bottom-3 left-0 right-0">
                       <ProgressBar value={preview.progress} />
                     </div>
                     <Button
-                      type="button"
-                      variant="destructive"
                       size="icon"
+                      type="button"
+                      disabled={uploading}
+                      variant="destructive"
                       className="absolute right-2 top-2"
                       onClick={() => handleRemoveFile(index)}
                     >
@@ -357,17 +400,11 @@ export default function ImageUpload({ user }: { user: User }) {
             className="w-full"
           >
             {uploading ? (
-              <>
-                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                Uploading...
-              </>
+              <Loader2 className="mr-2 h-5 w-5 animate-spin" />
             ) : (
-              <>
-                <Upload className="mr-2 h-5 w-5" />
-                Upload{" "}
-                {previews.length > 0 ? ` (${previews.length} files)` : ""}
-              </>
+              <Upload className="mr-2 h-5 w-5" />
             )}
+            Upload ({previews.length} files)
           </Button>
         </CardFooter>
       </form>
