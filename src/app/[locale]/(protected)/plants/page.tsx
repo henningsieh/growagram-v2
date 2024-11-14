@@ -49,14 +49,6 @@ export default function PlantsPage() {
     return () => observer.disconnect();
   }, [onIntersect]);
 
-  // Handling case if user hasn't uploaded any images
-  if (!isFetching && plants.length === 0) {
-    return (
-      <p className="mt-8 text-center text-muted-foreground">
-        You haven&apos;t added any plants yet.
-      </p>
-    );
-  }
   return (
     <PageHeader
       title="My Plants"
@@ -64,20 +56,29 @@ export default function PlantsPage() {
       buttonLink="/plants/add"
       buttonLabel="Add New Plant"
     >
-      <ResponsiveGrid>
-        {plants.map((plant, index) => (
-          <PlantCard plant={plant} key={index} />
-        ))}
-      </ResponsiveGrid>
+      {/* Handling case if user hasn't uploaded any plants */}
+      {!isFetching && plants.length === 0 ? (
+        <p className="mt-8 text-center text-muted-foreground">
+          You haven&apos;t uploaded any images yet.
+        </p>
+      ) : (
+        <>
+          <ResponsiveGrid>
+            {plants.map((plant, index) => (
+              <PlantCard plant={plant} key={index} />
+            ))}
+          </ResponsiveGrid>
 
-      <InfiniteScrollLoader
-        ref={loadingRef}
-        isLoading={isLoading}
-        isFetchingNextPage={isFetchingNextPage}
-        hasNextPage={hasNextPage}
-        itemsLength={plants.length}
-        noMoreMessage="No more plants to load."
-      />
+          <InfiniteScrollLoader
+            ref={loadingRef}
+            isLoading={isLoading}
+            isFetchingNextPage={isFetchingNextPage}
+            hasNextPage={hasNextPage}
+            itemsLength={plants.length}
+            noMoreMessage="No more plants to load."
+          />
+        </>
+      )}
     </PageHeader>
   );
 }

@@ -51,14 +51,6 @@ export default function ImagesPage() {
     return () => observer.disconnect();
   }, [onIntersect]);
 
-  // Handling case if user hasn't uploaded any images
-  if (!isFetching && userImages.length === 0) {
-    return (
-      <p className="mt-8 text-center text-muted-foreground">
-        You haven&apos;t uploaded any images yet.
-      </p>
-    );
-  }
   return (
     <PageHeader
       title="My Images"
@@ -66,20 +58,29 @@ export default function ImagesPage() {
       buttonLink="/images/upload"
       buttonLabel="Upload Images"
     >
-      <ResponsiveGrid>
-        {userImages.map((image, key) => (
-          <ImageCard image={image} key={key} />
-        ))}
-      </ResponsiveGrid>
+      {/* Handling case if user hasn't uploaded any images */}
+      {!isFetching && userImages.length === 0 ? (
+        <p className="mt-8 text-center text-muted-foreground">
+          You haven&apos;t uploaded any images yet.
+        </p>
+      ) : (
+        <>
+          <ResponsiveGrid>
+            {userImages.map((image, key) => (
+              <ImageCard image={image} key={key} />
+            ))}
+          </ResponsiveGrid>
 
-      <InfiniteScrollLoader
-        ref={loadingRef}
-        isLoading={isLoading}
-        isFetchingNextPage={isFetchingNextPage}
-        hasNextPage={hasNextPage}
-        itemsLength={userImages.length || 0}
-        noMoreMessage="No more images to load."
-      />
+          <InfiniteScrollLoader
+            ref={loadingRef}
+            isLoading={isLoading}
+            isFetchingNextPage={isFetchingNextPage}
+            hasNextPage={hasNextPage}
+            itemsLength={userImages.length || 0}
+            noMoreMessage="No more images to load."
+          />
+        </>
+      )}
     </PageHeader>
   );
 }
