@@ -11,6 +11,13 @@ const { auth } = NextAuth(authConfig);
 
 const languages = routing.locales;
 
+// Define exact protected paths
+const PROTECTED_PATHS = [
+  "/images", // matches exactly /images
+  "/images/", // matches /images/ with trailing slash
+  "/images/view", // add other specific image-related paths you want to protect
+];
+
 export default async function middleware(request: NextRequest) {
   // Get the current session (user's authentication status)
   const session = await auth();
@@ -36,10 +43,15 @@ export default async function middleware(request: NextRequest) {
 
   console.debug("currentLocale: ", currentLocale);
 
-  // Check if the requested path is a localized protected path (like /en/images or /de/images)
+  // Extract the path without locale for comparison
+  const pathWithoutLocale = currentLocale
+    ? pathname.replace(new RegExp(`^/${currentLocale}`), "")
+    : pathname;
+
+  // Check if the requested path (without locale) exactly matches any protected path
   const isLocalePath = localeMatch !== null;
   const isProtectedPath =
-    isLocalePath && request.nextUrl.pathname.includes("/images");
+    isLocalePath && PROTECTED_PATHS.includes(pathWithoutLocale);
 
   // If the path is protected and the user is not logged in, redirect to the sign-in page
   if (isProtectedPath && !session?.user) {
