@@ -281,7 +281,7 @@ export default function ImageUpload({ user }: { user: User }) {
   }, [previews]);
 
   return (
-    <Card className="mx-auto max-w-xl">
+    <Card>
       <form ref={formRef} onSubmit={onSubmit}>
         <CardContent className="space-y-4">
           <div className="space-y-2">
@@ -327,7 +327,7 @@ export default function ImageUpload({ user }: { user: User }) {
           </div>
 
           {previews.length > 0 && (
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               {previews.map((preview, index) => (
                 <div key={preview.preview}>
                   <div className="relative">

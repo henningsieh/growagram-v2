@@ -104,7 +104,7 @@ export default function ConnectPlants({ image }: EditImageProps) {
   };
 
   return (
-    <Card className="w-full">
+    <Card>
       <CardHeader>
         <CardTitle>Connect Plants to Image</CardTitle>
         <CardDescription>Select all plants seen in this image</CardDescription>

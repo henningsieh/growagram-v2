@@ -38,10 +38,10 @@ export default function PlantCard({ plant }: PlantCardProps) {
   );
 
   return (
-    <Card>
+    <Card className="overflow-hidden">
       <CardHeader className="p-0">
         <div
-          className="relative aspect-video overflow-hidden"
+          className="relative aspect-video"
           onMouseEnter={() => setIsImageHovered(true)}
           onMouseLeave={() => setIsImageHovered(false)}
         >
@@ -67,12 +67,15 @@ export default function PlantCard({ plant }: PlantCardProps) {
         <div className="mt-4 space-y-2">
           <div className="flex h-4 items-center">
             <Tooltip>
-              <TooltipTrigger className="flex items-center font-mono text-sm font-semibold tracking-tighter">
+              <TooltipTrigger className="flex cursor-default items-center font-mono text-sm font-semibold tracking-tighter">
                 <Nut className="mr-2 h-4 w-4 text-planting" />
                 {formatDate(plant.startDate, locale)}
               </TooltipTrigger>
               <TooltipContent side="right">
-                <Badge className="ml-2 bg-planting text-sm">
+                <Badge
+                  variant={"outline"}
+                  className="whitespace-nowrap border-0 bg-planting text-sm"
+                >
                   Seed planting date
                 </Badge>
               </TooltipContent>
@@ -81,13 +84,16 @@ export default function PlantCard({ plant }: PlantCardProps) {
 
           <div className="flex h-4 items-center">
             <Tooltip>
-              <TooltipTrigger className="flex items-center font-mono text-sm font-semibold tracking-tighter">
+              <TooltipTrigger className="flex cursor-default items-center font-mono text-sm font-semibold tracking-tighter">
                 <Sprout className="mr-2 h-4 w-4 text-seedling" />
                 {plant.seedlingPhaseStart &&
                   formatDate(plant.seedlingPhaseStart, locale)}
               </TooltipTrigger>
               <TooltipContent side="right">
-                <Badge className="whitespace-nowrap bg-seedling text-sm">
+                <Badge
+                  variant={"outline"}
+                  className="whitespace-nowrap border-0 bg-seedling text-sm"
+                >
                   Germination date
                 </Badge>
               </TooltipContent>
@@ -95,13 +101,16 @@ export default function PlantCard({ plant }: PlantCardProps) {
           </div>
           <div className="flex h-4 items-center">
             <Tooltip>
-              <TooltipTrigger className="flex items-center font-mono text-sm font-semibold tracking-tighter">
+              <TooltipTrigger className="flex cursor-default items-center font-mono text-sm font-semibold tracking-tighter">
                 <Leaf className="mr-2 h-4 w-4 text-vegetation" />
                 {plant.vegetationPhaseStart &&
                   formatDate(plant.vegetationPhaseStart, locale)}
               </TooltipTrigger>
               <TooltipContent side="right">
-                <Badge className="whitespace-nowrap bg-vegetation text-sm">
+                <Badge
+                  variant={"outline"}
+                  className="whitespace-nowrap border-0 bg-vegetation text-sm"
+                >
                   Veg. start date
                 </Badge>
               </TooltipContent>
@@ -109,13 +118,16 @@ export default function PlantCard({ plant }: PlantCardProps) {
           </div>
           <div className="flex h-4 items-center">
             <Tooltip>
-              <TooltipTrigger className="flex items-center font-mono text-sm font-semibold tracking-tighter">
+              <TooltipTrigger className="flex cursor-default items-center font-mono text-sm font-semibold tracking-tighter">
                 <Flower2 className="mr-2 h-4 w-4 text-flowering" />
                 {plant.floweringPhaseStart &&
                   formatDate(plant.floweringPhaseStart, locale)}
               </TooltipTrigger>
               <TooltipContent side="right">
-                <Badge className="whitespace-nowrap bg-flowering text-sm">
+                <Badge
+                  variant={"outline"}
+                  className="whitespace-nowrap border-0 bg-flowering text-sm"
+                >
                   Flowering start date
                 </Badge>
               </TooltipContent>
@@ -123,12 +135,15 @@ export default function PlantCard({ plant }: PlantCardProps) {
           </div>
           <div className="flex h-4 items-center">
             <Tooltip>
-              <TooltipTrigger className="flex items-center font-mono text-sm font-semibold tracking-tighter">
+              <TooltipTrigger className="flex cursor-default items-center font-mono text-sm font-semibold tracking-tighter">
                 <Wheat className="mr-2 h-4 w-4 text-harvest" />
                 {plant.harvestDate && formatDate(plant.harvestDate, locale)}
               </TooltipTrigger>
               <TooltipContent side="right">
-                <Badge className="whitespace-nowrap bg-harvest text-sm">
+                <Badge
+                  variant={"outline"}
+                  className="whitespace-nowrap bg-harvest text-sm"
+                >
                   Harvest date
                 </Badge>
               </TooltipContent>

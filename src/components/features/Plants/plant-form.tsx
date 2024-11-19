@@ -83,7 +83,7 @@ export default function PlantForm({ plant }: { plant?: Plant }) {
   }
 
   return (
-    <Card className="mx-auto max-w-3xl">
+    <Card>
       <CardHeader>
         <CardTitle>Plant Details</CardTitle>
         <CardDescription>

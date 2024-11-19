@@ -71,8 +71,25 @@ export const plantRouter = createTRPCRouter({
       // Logic to fetch a single image by ID
       return await ctx.db.query.plants.findFirst({
         where: eq(plants.id, input.id),
+        with: {
+          plantImages: {
+            with: {
+              image: true,
+            },
+          },
+        },
       });
     }),
+
+  // Get single plant
+  // getById: protectedProcedure
+  //   .input(z.object({ id: z.string() }))
+  //   .query(async ({ ctx, input }) => {
+  //     // Logic to fetch a single image by ID
+  //     return await ctx.db.query.plants.findFirst({
+  //       where: eq(plants.id, input.id),
+  //     });
+  //   }),
 
   // Connect an image to plant
   connectImage: connectPlant__imported_from_imageRouter,
