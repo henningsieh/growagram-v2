@@ -8,10 +8,12 @@ export default async function Page({
   params: Promise<{ id: string }>;
 }) {
   const imageId = (await params).id;
+
+  // Get the image data
   const image = await api.image.getById({ id: imageId });
 
-  // Prefetch the plants data on the server
-  void api.plant.getOwnPlants.prefetch({});
+  // Prefetch the plants query - this will populate the cache
+  await api.plant.getOwnPlants.prefetch({});
 
   return (
     <HydrateClient>

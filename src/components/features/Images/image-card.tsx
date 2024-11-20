@@ -134,7 +134,8 @@ export default function ImageCard({ image, sortField }: ImageCardProps) {
             alt=""
             fill
             priority
-            className="object-contain transition-transform duration-300"
+            objectFit="contain"
+            className="transition-transform duration-300"
             sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"
             style={{
               transform: isImageHovered ? "scale(1.05)" : "scale(1)",

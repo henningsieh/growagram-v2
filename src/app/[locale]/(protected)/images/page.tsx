@@ -79,7 +79,7 @@ export default function ImagesPage() {
 
   return (
     <PageHeader
-      title="My Images"
+      title="All Images"
       subtitle="View and manage your current images"
       buttonLink="/images/upload"
       buttonLabel="Upload Images"

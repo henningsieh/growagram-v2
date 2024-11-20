@@ -1,7 +1,9 @@
 "use client";
 
+import { CheckedState } from "@radix-ui/react-checkbox";
+import { TRPCClientError } from "@trpc/client";
 import Image from "next/image";
-import * as React from "react";
+import { memo, useCallback, useState } from "react";
 import headerImagePlaceholder from "~/assets/landscape-placeholdersvg.svg";
 import { Button } from "~/components/ui/button";
 import {
@@ -26,59 +28,43 @@ export default function ConnectPlants({ image }: ConnectPlantsProps) {
   const { toast } = useToast();
   const utils = api.useUtils();
 
-  const [selectedPlantIds, setSelectedPlantIds] = React.useState<string[]>(
+  // Initialize with connected plants
+  const [selectedPlantIds, setSelectedPlantIds] = useState<string[]>(() =>
     image.plantImages.map((plantImage) => plantImage.plant.id),
   );
 
-  const { data, isLoading, isFetching, refetch } =
-    api.plant.getOwnPlants.useQuery(
-      {
-        // limit: 100,
-      } satisfies GetOwnPlantsInput,
-      {
-        initialData: utils.plant.getOwnPlants.getData(),
-      },
-    );
-  const plants = data?.plants as OwnPlant[];
+  // The prefetched data will be available in the cache
+  const {
+    data: plantsData,
+    isLoading,
+    isFetching,
+    isPending,
+  } = api.plant.getOwnPlants.useQuery({} satisfies GetOwnPlantsInput, {
+    // Use the data that was prefetched on the server
+    initialData: utils.plant.getOwnPlants.getData(),
+  });
+
+  const plants = plantsData?.plants || [];
 
   const connectPlantMutation = api.image.connectPlant.useMutation({
-    onSuccess: () => {
-      toast({
-        title: "Success",
-        description: "Plants connected to image successfully",
-      });
-    },
-    onError: (error) => {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to connect plants to image",
-        variant: "destructive",
-      });
+    onSuccess: async () => {
+      await utils.image.getById.invalidate({ id: image.id });
     },
   });
 
   const disconnectPlantMutation = api.image.disconnectPlant.useMutation({
-    onSuccess: () => {
-      toast({
-        title: "Success",
-        description: "Plants connected to image successfully",
-      });
-    },
-    onError: (error) => {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to connect plants to image",
-        variant: "destructive",
-      });
+    onSuccess: async () => {
+      await utils.image.getById.invalidate({ id: image.id });
     },
   });
 
-  const handleConnectPlants = async () => {
+  const handleConnectPlants = useCallback(async () => {
     if (!image.id) return;
 
     const currentConnectedPlants = new Set(
       image.plantImages.map((pi) => pi.plant.id),
     );
+
     const plantsToConnect = selectedPlantIds.filter(
       (id) => !currentConnectedPlants.has(id),
     );
@@ -86,29 +72,54 @@ export default function ConnectPlants({ image }: ConnectPlantsProps) {
       (id) => !selectedPlantIds.includes(id),
     );
 
-    for (const plantId of plantsToConnect) {
-      await connectPlantMutation.mutateAsync({
-        imageId: image.id,
-        plantId: plantId,
+    try {
+      await Promise.all([
+        ...plantsToConnect.map((plantId) =>
+          connectPlantMutation.mutateAsync({
+            imageId: image.id,
+            plantId,
+          }),
+        ),
+        ...plantsToDisconnect.map((plantId) =>
+          disconnectPlantMutation.mutateAsync({
+            imageId: image.id,
+            plantId,
+          }),
+        ),
+      ]);
+
+      // Show success toast only after all operations complete successfully
+      toast({
+        title: "Success",
+        description: "Plants updated successfully",
+      });
+    } catch (error) {
+      // Show error toast when any operation fails
+      toast({
+        title: "Error",
+        description:
+          error instanceof TRPCClientError
+            ? error.message
+            : "Failed to update connected plants",
+        variant: "destructive",
       });
     }
+  }, [
+    image.id,
+    selectedPlantIds,
+    image.plantImages,
+    connectPlantMutation,
+    disconnectPlantMutation,
+    toast,
+  ]);
 
-    for (const plantId of plantsToDisconnect) {
-      // Assuming you have a disconnectPlant mutation
-      await disconnectPlantMutation.mutateAsync({
-        imageId: image.id,
-        plantId: plantId,
-      });
-    }
-  };
-
-  const togglePlantSelection = (plantId: string) => {
+  const togglePlantSelection = useCallback((plantId: string) => {
     setSelectedPlantIds((prev) =>
       prev.includes(plantId)
         ? prev.filter((id) => id !== plantId)
         : [...prev, plantId],
     );
-  };
+  }, []);
 
   return (
     <Card>
@@ -119,20 +130,15 @@ export default function ConnectPlants({ image }: ConnectPlantsProps) {
       <CardContent>
         <ScrollArea className="h-[calc(50vh)] w-full rounded-md border p-4">
           <div className="grid grid-cols-1 gap-4 p-1 sm:grid-cols-2 lg:grid-cols-3">
-            {isLoading ? (
-              <div className="col-span-full flex h-full items-center justify-center">
-                <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-              </div>
-            ) : plants && plants.length > 0 ? (
-              plants.map((plant) => (
-                <PlantCard
-                  key={plant.id}
-                  plant={plant}
-                  isSelected={selectedPlantIds.includes(plant.id)}
-                  onToggle={() => togglePlantSelection(plant.id)}
-                />
-              ))
-            ) : (
+            {plants.map((plant) => (
+              <PlantCard
+                key={plant.id}
+                plant={plant}
+                isSelected={selectedPlantIds.includes(plant.id)}
+                onToggle={() => togglePlantSelection(plant.id)}
+              />
+            ))}
+            {plants.length === 0 && (
               <div className="col-span-full text-center text-sm text-muted-foreground">
                 No plants available
               </div>
@@ -159,14 +165,14 @@ export default function ConnectPlants({ image }: ConnectPlantsProps) {
   );
 }
 
-function PlantCard({
+const PlantCard = memo(function PlantCard({
   plant,
   isSelected,
   onToggle,
 }: {
   plant: OwnPlant;
   isSelected: boolean;
-  onToggle: () => void;
+  onToggle: (checked: CheckedState) => void;
 }) {
   return (
     <Card
@@ -181,7 +187,7 @@ function PlantCard({
             <Image
               src={plant.headerImage?.imageUrl || headerImagePlaceholder}
               alt={plant.name}
-              layout="fill"
+              fill
               objectFit="cover"
               className="rounded-tl"
             />
@@ -208,4 +214,4 @@ function PlantCard({
       </CardContent>
     </Card>
   );
-}
+});
