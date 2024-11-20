@@ -7,12 +7,26 @@ import { images, plantImages } from "~/lib/db/schema";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { imageSchema } from "~/types/zodSchema";
 
+export enum ImageSortField {
+  CREATED_AT = "createdAt",
+  CAPTURE_DATE = "captureDate",
+}
+
+export enum SortOrder {
+  ASC = "asc",
+  DESC = "desc",
+}
+
 export const imageRouter = createTRPCRouter({
   getOwnImages: protectedProcedure
     .input(
       z.object({
         limit: z.number().min(1).max(100).default(9),
         cursor: z.number().nullish(), // Cursor-based pagination
+        sortField: z
+          .nativeEnum(ImageSortField)
+          .default(ImageSortField.CREATED_AT),
+        sortOrder: z.nativeEnum(SortOrder).default(SortOrder.DESC),
       }),
     )
     .query(async ({ ctx, input }) => {
@@ -21,7 +35,11 @@ export const imageRouter = createTRPCRouter({
       // Query the database for images owned by the user, ordered by creation date
       const imagesList = await ctx.db.query.images.findMany({
         where: eq(images.ownerId, userId),
-        orderBy: (images, { desc }) => [desc(images.createdAt)],
+        orderBy: (images, { desc, asc }) => [
+          input.sortOrder === SortOrder.DESC
+            ? desc(images[input.sortField])
+            : asc(images[input.sortField]),
+        ],
         limit: input.limit + 1, // Fetch one extra item to check if there's a next page
         offset: input.cursor ?? 0,
       });
