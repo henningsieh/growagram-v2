@@ -5,17 +5,8 @@ import { z } from "zod";
 import cloudinary from "~/lib/cloudinary";
 import { images, plantImages } from "~/lib/db/schema";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { ImageSortField, SortOrder } from "~/types/image";
 import { imageSchema } from "~/types/zodSchema";
-
-export enum ImageSortField {
-  CREATED_AT = "createdAt",
-  CAPTURE_DATE = "captureDate",
-}
-
-export enum SortOrder {
-  ASC = "asc",
-  DESC = "desc",
-}
 
 export const imageRouter = createTRPCRouter({
   getOwnImages: protectedProcedure
@@ -30,7 +21,8 @@ export const imageRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx, input }) => {
-      const userId = ctx.session.user.id as string; // Access the user ID from session
+      // Access the user ID from session
+      const userId = ctx.session.user.id as string;
 
       // Query the database for images owned by the user, ordered by creation date
       const imagesList = await ctx.db.query.images.findMany({

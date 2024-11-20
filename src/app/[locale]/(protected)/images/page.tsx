@@ -15,7 +15,7 @@ import {
 } from "~/components/ui/select";
 import { api } from "~/lib/trpc/react";
 import { GetUserImagesInput, UserImage } from "~/server/api/root";
-import { ImageSortField, SortOrder } from "~/server/api/routers/image";
+import { ImageSortField, SortOrder } from "~/types/image";
 
 export default function ImagesPage() {
   const [sortField, setSortField] = useState<ImageSortField>(
@@ -36,7 +36,7 @@ export default function ImagesPage() {
       limit: 2,
       sortField,
       sortOrder,
-    },
+    } satisfies GetUserImagesInput, // Strictly validated input
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
     },
@@ -87,7 +87,7 @@ export default function ImagesPage() {
       buttonLink="/images/upload"
       buttonLabel="Upload Images"
     >
-      {/* Add sorting controls */}
+      {/* Sorting controls */}
       <div className="mb-6 flex items-center gap-4">
         <Select
           value={sortField}
@@ -124,7 +124,6 @@ export default function ImagesPage() {
         </Select>
       </div>
 
-      {/* Rest of the component remains the same */}
       {!isFetching && userImages.length === 0 ? (
         <p className="mt-8 text-center text-muted-foreground">
           You haven&apos;t uploaded any images yet.
