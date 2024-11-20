@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import * as React from "react";
+import headerImagePlaceholder from "~/assets/landscape-placeholdersvg.svg";
 import { Button } from "~/components/ui/button";
 import {
   Card,
@@ -15,23 +16,29 @@ import { ScrollArea } from "~/components/ui/scroll-area";
 import { useToast } from "~/hooks/use-toast";
 import { api } from "~/lib/trpc/react";
 import { cn } from "~/lib/utils";
-import { ImageById, OwnPlant } from "~/server/api/root";
+import { GetOwnPlantsInput, ImageById, OwnPlant } from "~/server/api/root";
 
-interface EditImageProps {
+interface ConnectPlantsProps {
   image: ImageById;
 }
 
-export default function ConnectPlants({ image }: EditImageProps) {
+export default function ConnectPlants({ image }: ConnectPlantsProps) {
   const { toast } = useToast();
+  const utils = api.useUtils();
 
   const [selectedPlantIds, setSelectedPlantIds] = React.useState<string[]>(
-    image.plantImages.map((pi) => pi.plant.id),
+    image.plantImages.map((plantImage) => plantImage.plant.id),
   );
 
-  const { data, isLoading } = api.plant.getOwnPlants.useQuery({
-    limit: 100,
-    cursor: null,
-  });
+  const { data, isLoading, isFetching, refetch } =
+    api.plant.getOwnPlants.useQuery(
+      {
+        // limit: 100,
+      } satisfies GetOwnPlantsInput,
+      {
+        initialData: utils.plant.getOwnPlants.getData(),
+      },
+    );
   const plants = data?.plants as OwnPlant[];
 
   const connectPlantMutation = api.image.connectPlant.useMutation({
@@ -110,8 +117,8 @@ export default function ConnectPlants({ image }: EditImageProps) {
         <CardDescription>Select all plants seen in this image</CardDescription>
       </CardHeader>
       <CardContent>
-        <ScrollArea className="h-[calc(40vh)] w-full rounded-md border p-4">
-          <div className="grid grid-cols-1 gap-4 p-1 md:grid-cols-2 lg:grid-cols-3">
+        <ScrollArea className="h-[calc(50vh)] w-full rounded-md border p-4">
+          <div className="grid grid-cols-1 gap-4 p-1 sm:grid-cols-2 lg:grid-cols-3">
             {isLoading ? (
               <div className="col-span-full flex h-full items-center justify-center">
                 <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
@@ -164,38 +171,40 @@ function PlantCard({
   return (
     <Card
       className={cn(
-        "overflow-hidden rounded-sm p-0 p-1 transition-all",
+        "overflow-hidden rounded-sm p-1 transition-all",
         isSelected && "ring-2 ring-secondary",
       )}
     >
-      <CardContent className="p-1">
-        <div className="flex items-start space-x-4">
-          <div className="relative h-24 w-24 flex-shrink-0">
+      <CardContent className="flex h-full flex-col p-1">
+        <div className="flex flex-grow items-stretch space-x-4">
+          <div className="relative aspect-video w-2/3 flex-shrink-0">
             <Image
-              src={plant.headerImage?.imageUrl || "/placeholder.svg"}
+              src={plant.headerImage?.imageUrl || headerImagePlaceholder}
               alt={plant.name}
               layout="fill"
               objectFit="cover"
               className="rounded-tl"
             />
           </div>
-          <div className="flex-grow p-4">
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold">{plant.name}</h3>
-              <Checkbox checked={isSelected} onCheckedChange={onToggle} />
-            </div>
-            {plant.strain && (
+          <div className="flex flex-grow items-center justify-center">
+            <Checkbox
+              className="h-12 w-12"
+              checked={isSelected}
+              onCheckedChange={onToggle}
+            />
+          </div>
+          {/* {plant.strain && (
               <p className="text-sm text-muted-foreground">
                 {plant.strain.name}
               </p>
             )}
-            {/* {plant.phase && (
+            {plant.phase && (
               <p className="mt-1 text-sm">
                 Phase: {plant.phase} {plant.daysInPhase && `(Day ${plant.daysInPhase})`}
               </p>
             )} */}
-          </div>
         </div>
+        <h3 className="mt-2 text-lg font-semibold">{plant.name}</h3>
       </CardContent>
     </Card>
   );

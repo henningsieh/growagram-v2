@@ -28,7 +28,7 @@ export default function Component({
         </div>
         <div className="flex items-end">
           {buttonLink && (
-            <Button asChild variant="secondary">
+            <Button asChild variant="primary">
               <Link href={buttonLink}>{buttonLabel}</Link>
             </Button>
           )}

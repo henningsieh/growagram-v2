@@ -14,7 +14,7 @@ export const plantRouter = createTRPCRouter({
   getOwnPlants: protectedProcedure
     .input(
       z.object({
-        limit: z.number().min(1).max(100).default(9),
+        limit: z.number().min(1).max(100).default(12),
         cursor: z.number().nullish().default(null), // Cursor-based pagination
       }),
     )

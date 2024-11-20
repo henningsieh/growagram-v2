@@ -6,13 +6,7 @@ import InfiniteScrollLoader from "~/components/Layouts/InfiniteScrollLoader";
 import PageHeader from "~/components/Layouts/page-header";
 import ResponsiveGrid from "~/components/Layouts/responsive-grid";
 import ImageCard from "~/components/features/Images/image-card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "~/components/ui/select";
+import ImageSortControls from "~/components/features/Images/sort-controls";
 import { api } from "~/lib/trpc/react";
 import { GetUserImagesInput, UserImage } from "~/server/api/root";
 import { ImageSortField, SortOrder } from "~/types/image";
@@ -33,12 +27,15 @@ export default function ImagesPage() {
     refetch,
   } = api.image.getOwnImages.useInfiniteQuery(
     {
-      limit: 2,
+      limit: 12,
       sortField,
       sortOrder,
     } satisfies GetUserImagesInput, // Strictly validated input
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
+      refetchOnMount: true,
+      refetchOnReconnect: true,
+      refetchOnWindowFocus: true,
     },
   );
 
@@ -88,41 +85,11 @@ export default function ImagesPage() {
       buttonLabel="Upload Images"
     >
       {/* Sorting controls */}
-      <div className="mb-6 flex items-center gap-4">
-        <Select
-          value={sortField}
-          onValueChange={(value: ImageSortField) =>
-            handleSortChange(value, sortOrder)
-          }
-        >
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Sort by" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value={ImageSortField.CREATED_AT}>
-              Upload Date
-            </SelectItem>
-            <SelectItem value={ImageSortField.CAPTURE_DATE}>
-              Capture Date
-            </SelectItem>
-          </SelectContent>
-        </Select>
-
-        <Select
-          value={sortOrder}
-          onValueChange={(value: SortOrder) =>
-            handleSortChange(sortField, value)
-          }
-        >
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Order" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value={SortOrder.DESC}>Newest First</SelectItem>
-            <SelectItem value={SortOrder.ASC}>Oldest First</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
+      <ImageSortControls
+        sortField={sortField}
+        sortOrder={sortOrder}
+        onSortChange={handleSortChange}
+      />
 
       {!isFetching && userImages.length === 0 ? (
         <p className="mt-8 text-center text-muted-foreground">
@@ -132,7 +99,7 @@ export default function ImagesPage() {
         <>
           <ResponsiveGrid>
             {userImages.map((image, key) => (
-              <ImageCard image={image} key={key} />
+              <ImageCard image={image} key={key} sortField={sortField} />
             ))}
           </ResponsiveGrid>
           <InfiniteScrollLoader

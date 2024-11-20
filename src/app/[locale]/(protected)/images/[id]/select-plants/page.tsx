@@ -8,15 +8,18 @@ export default async function Page({
   params: Promise<{ id: string }>;
 }) {
   const imageId = (await params).id;
-
   const image = await api.image.getById({ id: imageId });
+
+  // Prefetch the plants data on the server
   void api.plant.getOwnPlants.prefetch({});
 
   return (
     <HydrateClient>
       <PageHeader
-        title={"Edit Image"}
-        subtitle={"Select the plants on this image"}
+        title="Select Plants"
+        subtitle="Select the plants on this image"
+        buttonLabel="Back"
+        buttonLink="/images"
       >
         <ConnectPlants image={image} />
       </PageHeader>
