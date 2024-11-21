@@ -71,7 +71,7 @@ export default function PlantCard({ plant }: PlantCardProps) {
                 <Nut className="mr-2 h-4 w-4 text-planting" />
                 {formatDate(plant.startDate, locale)}
               </TooltipTrigger>
-              <TooltipContent side="right">
+              <TooltipContent side="right" className="bg-transparent">
                 <Badge
                   variant={"outline"}
                   className="whitespace-nowrap border-0 bg-planting text-sm"
@@ -89,7 +89,7 @@ export default function PlantCard({ plant }: PlantCardProps) {
                 {plant.seedlingPhaseStart &&
                   formatDate(plant.seedlingPhaseStart, locale)}
               </TooltipTrigger>
-              <TooltipContent side="right">
+              <TooltipContent side="right" className="bg-transparent">
                 <Badge
                   variant={"outline"}
                   className="whitespace-nowrap border-0 bg-seedling text-sm"
@@ -106,7 +106,7 @@ export default function PlantCard({ plant }: PlantCardProps) {
                 {plant.vegetationPhaseStart &&
                   formatDate(plant.vegetationPhaseStart, locale)}
               </TooltipTrigger>
-              <TooltipContent side="right">
+              <TooltipContent side="right" className="bg-transparent">
                 <Badge
                   variant={"outline"}
                   className="whitespace-nowrap border-0 bg-vegetation text-sm"
@@ -123,7 +123,7 @@ export default function PlantCard({ plant }: PlantCardProps) {
                 {plant.floweringPhaseStart &&
                   formatDate(plant.floweringPhaseStart, locale)}
               </TooltipTrigger>
-              <TooltipContent side="right">
+              <TooltipContent side="right" className="bg-transparent">
                 <Badge
                   variant={"outline"}
                   className="whitespace-nowrap border-0 bg-flowering text-sm"
@@ -139,7 +139,7 @@ export default function PlantCard({ plant }: PlantCardProps) {
                 <Wheat className="mr-2 h-4 w-4 text-harvest" />
                 {plant.harvestDate && formatDate(plant.harvestDate, locale)}
               </TooltipTrigger>
-              <TooltipContent side="right">
+              <TooltipContent side="right" className="bg-transparent">
                 <Badge
                   variant={"outline"}
                   className="whitespace-nowrap bg-harvest text-sm"
@@ -156,7 +156,7 @@ export default function PlantCard({ plant }: PlantCardProps) {
                 {plant.curingPhaseStart &&
                   formatDate(plant.curingPhaseStart, locale)}
               </TooltipTrigger>
-              <TooltipContent side="right">
+              <TooltipContent side="right" className="bg-transparent">
                 <Badge
                   variant={"outline"}
                   className="whitespace-nowrap bg-curing text-sm"
