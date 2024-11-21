@@ -34,6 +34,11 @@ export const imageRouter = createTRPCRouter({
         ],
         limit: input.limit + 1, // Fetch one extra item to check if there's a next page
         offset: input.cursor ?? 0,
+        with: {
+          plantImages: {
+            columns: { imageId: false, plantId: true },
+          },
+        },
       });
 
       // Check if there is a next page

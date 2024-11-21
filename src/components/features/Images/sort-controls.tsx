@@ -1,3 +1,4 @@
+// src/components/features/Images/sort-controls.tsx:
 import {
   ArrowDownWideNarrow,
   ArrowUpNarrowWide,

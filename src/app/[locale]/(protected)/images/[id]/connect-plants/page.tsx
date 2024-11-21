@@ -1,6 +1,7 @@
 import PageHeader from "~/components/Layouts/page-header";
 import ConnectPlants from "~/components/features/Images/connect-plants";
 import { HydrateClient, api } from "~/lib/trpc/server";
+import { GetOwnPlantsInput } from "~/server/api/root";
 
 export default async function Page({
   params,
@@ -13,7 +14,7 @@ export default async function Page({
   const image = await api.image.getById({ id: imageId });
 
   // Prefetch the plants query - this will populate the cache
-  await api.plant.getOwnPlants.prefetch({});
+  void api.plant.getOwnPlants.prefetch();
 
   return (
     <HydrateClient>

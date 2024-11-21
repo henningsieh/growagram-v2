@@ -1,3 +1,4 @@
+import FormContent from "~/components/Layouts/form-content";
 import PageHeader from "~/components/Layouts/page-header";
 import PlantForm from "~/components/features/Plants/plant-form";
 import { api } from "~/lib/trpc/server";
@@ -16,7 +17,9 @@ export default async function EditPlantPage({
       title={"Edit Plant"}
       subtitle={"Edit a plant of your collection"}
     >
-      <PlantForm plant={plant} />
+      <FormContent>
+        <PlantForm plant={plant} />
+      </FormContent>
     </PageHeader>
   );
 }

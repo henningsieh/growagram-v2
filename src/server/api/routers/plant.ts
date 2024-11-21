@@ -13,19 +13,25 @@ export const plantRouter = createTRPCRouter({
   // Get paginated plants for the current user
   getOwnPlants: protectedProcedure
     .input(
-      z.object({
-        limit: z.number().min(1).max(100).default(12),
-        cursor: z.number().nullish().default(null), // Cursor-based pagination
-      }),
+      z
+        .object({
+          limit: z.number().min(1).max(100).default(12).optional(),
+          cursor: z.number().nullish().default(null).optional(), // Cursor-based pagination
+        })
+        .optional(),
     )
     .query(async ({ ctx, input }) => {
-      const userId = ctx.session.user.id as string; // Access the user ID from session
+      const userId = ctx.session.user.id as string;
+
+      // Use default values if input is not provided
+      const limit = input?.limit ?? 12;
+      const cursor = input?.cursor ?? null;
 
       const userPlants = await ctx.db.query.plants.findMany({
         where: eq(plants.ownerId, userId),
         orderBy: (plants, { desc }) => [desc(plants.createdAt)],
-        limit: input.limit + 1, // Fetch extra item to check for next page
-        offset: input.cursor ?? 0, // Use cursor for offset
+        limit: limit + 1, // Fetch extra item to check for next page
+        offset: cursor ?? 0, // Use cursor for offset
         with: {
           strain: {
             columns: {
@@ -53,8 +59,8 @@ export const plantRouter = createTRPCRouter({
 
       // Check if there is a next page
       let nextCursor: number | null = null;
-      if (userPlants.length > input.limit) {
-        nextCursor = (input.cursor ?? 0) + input.limit;
+      if (userPlants.length > limit) {
+        nextCursor = (cursor ?? 0) + limit;
         userPlants.pop(); // Remove the extra item
       }
 

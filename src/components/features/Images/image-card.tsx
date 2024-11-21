@@ -152,7 +152,7 @@ export default function ImageCard({ image, sortField }: ImageCardProps) {
                 className={cn(
                   "flex items-center gap-2 px-1",
                   sortField === ImageSortField.CREATED_AT
-                    ? "text-secondary"
+                    ? "text-foreground"
                     : "text-muted-foreground",
                 )}
               >
@@ -174,7 +174,7 @@ export default function ImageCard({ image, sortField }: ImageCardProps) {
                 className={cn(
                   "flex items-center gap-2 px-1",
                   sortField === ImageSortField.CAPTURE_DATE
-                    ? "text-secondary"
+                    ? "text-foreground"
                     : "text-muted-foreground",
                 )}
               >
@@ -210,7 +210,7 @@ export default function ImageCard({ image, sortField }: ImageCardProps) {
             Delete
           </Button>
           <Button asChild size={"sm"} className="w-2/3 text-base font-semibold">
-            <Link href={`images/${image.id}/select-plants`}>
+            <Link href={`images/${image.id}/connect-plants`}>
               <Flower2 strokeWidth={1.8} className="h-4 w-4" />
               Select plants
             </Link>

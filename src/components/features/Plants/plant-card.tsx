@@ -149,6 +149,23 @@ export default function PlantCard({ plant }: PlantCardProps) {
               </TooltipContent>
             </Tooltip>
           </div>
+          <div className="flex h-4 items-center">
+            <Tooltip>
+              <TooltipTrigger className="flex cursor-default items-center font-mono text-sm font-semibold tracking-tighter">
+                <Wheat className="mr-2 h-4 w-4 text-curing" />
+                {plant.curingPhaseStart &&
+                  formatDate(plant.curingPhaseStart, locale)}
+              </TooltipTrigger>
+              <TooltipContent side="right">
+                <Badge
+                  variant={"outline"}
+                  className="whitespace-nowrap bg-curing text-sm"
+                >
+                  Harvest date
+                </Badge>
+              </TooltipContent>
+            </Tooltip>
+          </div>
         </div>
         <div className="mt-4">
           <div className="mb-1 flex justify-between text-sm">

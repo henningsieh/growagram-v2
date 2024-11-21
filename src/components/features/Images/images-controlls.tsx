@@ -1,0 +1,101 @@
+import {
+  ArrowDownWideNarrow,
+  ArrowUpNarrowWide,
+  Camera,
+  UploadCloud,
+} from "lucide-react";
+import { Button } from "~/components/ui/button";
+import { Label } from "~/components/ui/label";
+import { Switch } from "~/components/ui/switch";
+import { cn } from "~/lib/utils";
+import { ImageSortField, SortOrder } from "~/types/image";
+
+interface ImagesControlsProps {
+  sortField: ImageSortField;
+  sortOrder: SortOrder;
+  filterNotConnected: boolean;
+  onSortChange: (field: ImageSortField, order: SortOrder) => Promise<void>;
+  onFilterChange: (checked: boolean) => void;
+}
+
+export default function ImagesControls({
+  sortField,
+  sortOrder,
+  filterNotConnected,
+  onSortChange,
+  onFilterChange,
+}: ImagesControlsProps) {
+  const toggleOrder = async (field: ImageSortField) => {
+    if (sortField === field) {
+      await onSortChange(
+        field,
+        sortOrder === SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC,
+      );
+    } else {
+      await onSortChange(field, SortOrder.DESC);
+    }
+  };
+
+  return (
+    <div className="mb-4 flex flex-col items-center justify-between gap-2 rounded-sm sm:flex-row">
+      <div className="flex h-8 w-full items-center justify-start gap-2 text-nowrap rounded-sm border-[1px] border-input bg-muted px-1 sm:w-44">
+        <Switch
+          size={"big"}
+          variant={"secondary"}
+          id="filter-not-connected"
+          checked={filterNotConnected}
+          onCheckedChange={onFilterChange}
+        />
+        <Label className="text-base" htmlFor="filter-not-connected">
+          New only
+        </Label>
+      </div>
+      <div className="flex w-full items-center space-x-2 sm:justify-end">
+        <Button
+          variant="outline"
+          size="sm"
+          className={cn(
+            "flex w-full items-center justify-between gap-1 p-2 sm:w-44",
+            sortField === ImageSortField.CREATED_AT &&
+              "border-[1px] border-secondary text-foreground",
+          )}
+          onClick={() => toggleOrder(ImageSortField.CREATED_AT)}
+        >
+          <div className="flex gap-2">
+            <UploadCloud className="h-6 w-5" />
+            Upload Date
+          </div>
+          {sortField === ImageSortField.CREATED_AT &&
+            (sortOrder === SortOrder.DESC ? (
+              <ArrowDownWideNarrow className="h-6 w-5 text-secondary" />
+            ) : (
+              <ArrowUpNarrowWide className="h-6 w-5 text-secondary" />
+            ))}
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          className={cn(
+            "flex w-full items-center justify-between gap-1 p-2 sm:w-44",
+            sortField === ImageSortField.CAPTURE_DATE &&
+              "border-[1px] border-secondary text-foreground",
+          )}
+          onClick={() => toggleOrder(ImageSortField.CAPTURE_DATE)}
+        >
+          <div className="flex gap-2">
+            <Camera className="h-6 w-5" />
+            Capture Date
+          </div>
+          {/* <div className=""> */}
+          {sortField === ImageSortField.CAPTURE_DATE &&
+            (sortOrder === SortOrder.DESC ? (
+              <ArrowDownWideNarrow className="h-6 w-5 text-secondary" />
+            ) : (
+              <ArrowUpNarrowWide className="h-6 w-5 text-secondary" />
+            ))}
+          {/* </div> */}
+        </Button>
+      </div>
+    </div>
+  );
+}
