@@ -131,11 +131,10 @@ export default function ImageCard({ image, sortField }: ImageCardProps) {
         >
           <Image
             src={image.imageUrl}
-            alt=""
+            alt={image.originalFilename}
             fill
             priority
-            objectFit="contain"
-            className="transition-transform duration-300"
+            className="object-contain transition-transform duration-300"
             sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"
             style={{
               transform: isImageHovered ? "scale(1.05)" : "scale(1)",
@@ -212,7 +211,7 @@ export default function ImageCard({ image, sortField }: ImageCardProps) {
           <Button asChild size={"sm"} className="w-2/3 text-base font-semibold">
             <Link href={`images/${image.id}/connect-plants`}>
               <Flower2 strokeWidth={1.8} className="h-4 w-4" />
-              Select plants
+              Identify Plants
             </Link>
           </Button>
         </CardFooter>

@@ -1,5 +1,6 @@
 "use client";
 
+// src/components/features/Images/connect-plants.tsx:
 import { CheckedState } from "@radix-ui/react-checkbox";
 import { TRPCClientError } from "@trpc/client";
 import Image from "next/image";
@@ -157,16 +158,27 @@ export default function ConnectPlants({ image }: ConnectPlantsProps) {
     <Card>
       <CardHeader>
         <CardTitle>Connect Plants to Image</CardTitle>
-        <CardDescription>Select all plants seen in this image</CardDescription>
+        <CardDescription>
+          Choose all the plants you can spot in this picture
+        </CardDescription>
       </CardHeader>
+      <CardContent className="relative aspect-square w-full">
+        <Image
+          priority
+          alt="Plant image"
+          src={image.imageUrl}
+          fill
+          sizes="(max-width: 767px) 100vw, 800px"
+          className="object-contain"
+        />
+      </CardContent>
       <CardContent>
         <ScrollArea className="h-[calc(50vh)] w-full rounded-md border p-4">
           {isLoading || !plantsData || !plants.length ? (
             <SpinningLoader />
           ) : (
-            <div className="grid grid-cols-1 gap-4 p-1 sm:grid-cols-2 lg:grid-cols-3">
-              {
-                // plants.length &&
+            <div className="grid grid-cols-1 gap-4 p-1 sm:grid-cols-3">
+              {plants.length &&
                 plants.map((plant) => (
                   <PlantCard
                     key={plant.id}
@@ -174,8 +186,7 @@ export default function ConnectPlants({ image }: ConnectPlantsProps) {
                     isSelected={selectedPlantIds.includes(plant.id)}
                     onToggle={() => togglePlantSelection(plant.id)}
                   />
-                ))
-              }
+                ))}
               {!isLoading && plants.length === 0 && (
                 <div className="col-span-full text-center text-sm text-muted-foreground">
                   No plants available
@@ -224,11 +235,13 @@ const PlantCard = memo(function PlantCard({
         <div className="flex flex-grow items-stretch space-x-4">
           <div className="relative aspect-video w-2/3 flex-shrink-0">
             <Image
-              src={plant.headerImage?.imageUrl || headerImagePlaceholder}
               alt={plant.name}
+              src={plant.headerImage?.imageUrl || headerImagePlaceholder}
+              sizes="(max-width: 639px) 100vw, 33vw" // matches parent grid: cols-1 or sm:cols-3
               fill
-              objectFit="cover"
+              style={{ objectFit: "cover" }}
               className="rounded-tl"
+              priority
             />
           </div>
           <div className="flex flex-grow items-center justify-center">

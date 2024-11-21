@@ -1,3 +1,4 @@
+import FormContent from "~/components/Layouts/form-content";
 import PageHeader from "~/components/Layouts/page-header";
 import ConnectPlants from "~/components/features/Images/connect-plants";
 import { HydrateClient, api } from "~/lib/trpc/server";
@@ -19,12 +20,14 @@ export default async function Page({
   return (
     <HydrateClient>
       <PageHeader
-        title="Select Plants"
-        subtitle="Select the plants on this image"
+        title="Identify Plants"
+        subtitle="Tag the plants you see in this image"
         buttonLabel="Back"
         buttonLink="/images"
       >
-        <ConnectPlants image={image} />
+        <FormContent>
+          <ConnectPlants image={image} />
+        </FormContent>
       </PageHeader>
     </HydrateClient>
   );
