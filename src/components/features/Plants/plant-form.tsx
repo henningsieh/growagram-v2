@@ -85,7 +85,7 @@ export default function PlantForm({ plant }: { plant?: Plant }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Plant Details</CardTitle>
+        <CardTitle>Plant Journey</CardTitle>
         <CardDescription>
           Edit the plant&apos;s name and relevant dates.
         </CardDescription>
@@ -98,13 +98,14 @@ export default function PlantForm({ plant }: { plant?: Plant }) {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-semibold">Plant Name</FormLabel>
+                  <FormLabel className="font-semibold">
+                    Plant Nickname
+                  </FormLabel>
                   <FormControl>
                     <Input placeholder="Enter plant name" {...field} />
                   </FormControl>
                   <FormDescription>
-                    This is the name of your plant so that you can easily
-                    remember it.
+                    Give your plant a memorable name.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -119,7 +120,7 @@ export default function PlantForm({ plant }: { plant?: Plant }) {
                   render={({ field }) => (
                     <FormItem className="flex flex-col">
                       <FormLabel className="font-semibold">
-                        Seed planting date
+                        Seed Planted
                       </FormLabel>
                       <Popover>
                         <PopoverTrigger asChild>
@@ -152,7 +153,7 @@ export default function PlantForm({ plant }: { plant?: Plant }) {
                         </PopoverContent>
                       </Popover>
                       <FormDescription>
-                        Select the date on which you planted the seed.
+                        When did you plant the seed?
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -164,7 +165,7 @@ export default function PlantForm({ plant }: { plant?: Plant }) {
                   render={({ field }) => (
                     <FormItem className="flex flex-col">
                       <FormLabel className="font-semibold">
-                        Seedling Phase
+                        First Sprout
                       </FormLabel>
                       <Popover>
                         <PopoverTrigger asChild>
@@ -195,7 +196,7 @@ export default function PlantForm({ plant }: { plant?: Plant }) {
                         </PopoverContent>
                       </Popover>
                       <FormDescription>
-                        Select the date on which the seedling has sprouted.
+                        When did you see the seedling for the first time?
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -210,7 +211,7 @@ export default function PlantForm({ plant }: { plant?: Plant }) {
                   render={({ field }) => (
                     <FormItem className="flex flex-col">
                       <FormLabel className="font-semibold">
-                        Vegetation Phase
+                        Entered Veg Stage
                       </FormLabel>
                       <Popover>
                         <PopoverTrigger asChild>
@@ -241,7 +242,7 @@ export default function PlantForm({ plant }: { plant?: Plant }) {
                         </PopoverContent>
                       </Popover>
                       <FormDescription>
-                        Select the date on which the vegetation phase began.
+                        When did rapid leaf growth start?
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -253,7 +254,7 @@ export default function PlantForm({ plant }: { plant?: Plant }) {
                   render={({ field }) => (
                     <FormItem className="flex flex-col">
                       <FormLabel className="font-semibold">
-                        Flowering Phase
+                        Started Flowering
                       </FormLabel>
                       <Popover>
                         <PopoverTrigger asChild>
@@ -284,7 +285,7 @@ export default function PlantForm({ plant }: { plant?: Plant }) {
                         </PopoverContent>
                       </Popover>
                       <FormDescription>
-                        Select the date on which the flowering phase began.
+                        When did you see the first buds?
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -299,7 +300,7 @@ export default function PlantForm({ plant }: { plant?: Plant }) {
                   render={({ field }) => (
                     <FormItem className="flex flex-col">
                       <FormLabel className="font-semibold">
-                        Harvest Date
+                        Harvest Day
                       </FormLabel>
                       <Popover>
                         <PopoverTrigger asChild>
@@ -330,8 +331,7 @@ export default function PlantForm({ plant }: { plant?: Plant }) {
                         </PopoverContent>
                       </Popover>
                       <FormDescription>
-                        Select the date on which you&apos;ve harvested your
-                        plant.
+                        When did you cut down your plant?
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -343,7 +343,7 @@ export default function PlantForm({ plant }: { plant?: Plant }) {
                   render={({ field }) => (
                     <FormItem className="flex flex-col">
                       <FormLabel className="font-semibold">
-                        Curing Phase
+                        Started Curing
                       </FormLabel>
                       <Popover>
                         <PopoverTrigger asChild>
@@ -374,7 +374,7 @@ export default function PlantForm({ plant }: { plant?: Plant }) {
                         </PopoverContent>
                       </Popover>
                       <FormDescription>
-                        Select the date on which the curing phase began.
+                        When did you start the curing process?
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -394,11 +394,9 @@ export default function PlantForm({ plant }: { plant?: Plant }) {
               </Button>
               <Button type="submit" className="w-full" disabled={isSubmitting}>
                 {isSubmitting
-                  ? plant?.id
-                    ? "Editing..."
-                    : "Creating..."
+                  ? "Saving..."
                   : plant?.id
-                    ? "Edit Plant"
+                    ? "Save Changes"
                     : "Create Plant"}
               </Button>
             </div>
