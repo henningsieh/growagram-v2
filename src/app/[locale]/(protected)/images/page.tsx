@@ -1,15 +1,23 @@
 "use client";
 
 // src/app/[locale]/(protected)/images/page.tsx
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import InfiniteScrollLoader from "~/components/Layouts/InfiniteScrollLoader";
 import PageHeader from "~/components/Layouts/page-header";
 import ResponsiveGrid from "~/components/Layouts/responsive-grid";
 import ImageCard from "~/components/features/Images/image-card";
+import ImagesControls from "~/components/features/Images/images-controlls";
 import { api } from "~/lib/trpc/react";
 import { GetUserImagesInput, UserImage } from "~/server/api/root";
+import { ImageSortField, SortOrder } from "~/types/image";
 
 export default function ImagesPage() {
+  const [sortField, setSortField] = useState<ImageSortField>(
+    ImageSortField.CREATED_AT,
+  );
+  const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.DESC);
+  const [filterNotConnected, setFilterNotConnected] = useState(false);
+
   const {
     data,
     isLoading,
@@ -17,16 +25,29 @@ export default function ImagesPage() {
     hasNextPage,
     fetchNextPage,
     isFetchingNextPage,
+    refetch,
   } = api.image.getOwnImages.useInfiniteQuery(
-    { limit: 2 } satisfies GetUserImagesInput, // Strictly validated input
+    {
+      limit: 12,
+      sortField,
+      sortOrder,
+    } satisfies GetUserImagesInput, // Strictly validated input
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
+      refetchOnMount: true,
+      refetchOnReconnect: true,
+      refetchOnWindowFocus: true,
     },
   );
+
   const userImages: UserImage[] =
     data?.pages.flatMap((page) => page.images) ?? [];
 
-  // Intersection Observer callback
+  const filteredUserImages = filterNotConnected
+    ? userImages.filter((image) => image.plantImages.length === 0)
+    : userImages;
+
+  // Intersection Observer callback remains the same
   const onIntersect = useCallback(
     (entries: IntersectionObserverEntry[]) => {
       const firstEntry = entries[0];
@@ -37,13 +58,13 @@ export default function ImagesPage() {
     [fetchNextPage, hasNextPage, isFetchingNextPage],
   );
 
-  // Set up intersection observer
+  // Set up intersection observer (remains the same)
   const loadingRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const observer = new IntersectionObserver(onIntersect, {
-      root: null, // Use viewport as root
+      root: null,
       rootMargin: "0px",
-      threshold: 0.01, // Trigger when even 10% of the element is visible
+      threshold: 0.01,
     });
     if (loadingRef.current) {
       observer.observe(loadingRef.current);
@@ -51,32 +72,54 @@ export default function ImagesPage() {
     return () => observer.disconnect();
   }, [onIntersect]);
 
+  // Handle sort changes
+  const handleSortChange = useCallback(
+    async (field: ImageSortField, order: SortOrder) => {
+      setSortField(field);
+      setSortOrder(order);
+      await refetch();
+    },
+    [refetch],
+  );
+
+  const handleFilterChange = (checked: boolean) => {
+    setFilterNotConnected(checked);
+  };
+
   return (
     <PageHeader
-      title="My Images"
+      title="All Images"
       subtitle="View and manage your current images"
       buttonLink="/images/upload"
       buttonLabel="Upload Images"
     >
-      {/* Handling case if user hasn't uploaded any images */}
-      {!isFetching && userImages.length === 0 ? (
+      <ImagesControls
+        sortField={sortField}
+        sortOrder={sortOrder}
+        filterNotConnected={filterNotConnected}
+        onSortChange={handleSortChange}
+        onFilterChange={handleFilterChange}
+      />
+
+      {!isFetching && filteredUserImages.length === 0 ? (
         <p className="mt-8 text-center text-muted-foreground">
-          You haven&apos;t uploaded any images yet.
+          {filterNotConnected
+            ? "No unconnected images found."
+            : "You haven't uploaded any images yet."}
         </p>
       ) : (
         <>
           <ResponsiveGrid>
-            {userImages.map((image, key) => (
-              <ImageCard image={image} key={key} />
+            {filteredUserImages.map((image, key) => (
+              <ImageCard image={image} key={key} sortField={sortField} />
             ))}
           </ResponsiveGrid>
-
           <InfiniteScrollLoader
             ref={loadingRef}
             isLoading={isLoading}
             isFetchingNextPage={isFetchingNextPage}
             hasNextPage={hasNextPage}
-            itemsLength={userImages.length || 0}
+            itemsLength={filteredUserImages.length || 0}
             noMoreMessage="No more images to load."
           />
         </>

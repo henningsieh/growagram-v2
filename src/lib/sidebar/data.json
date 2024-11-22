@@ -59,7 +59,7 @@
       "icon": "Camera",
       "items": [
         {
-          "title": "My Images",
+          "title": "All Images",
           "url": "/images"
         },
         {

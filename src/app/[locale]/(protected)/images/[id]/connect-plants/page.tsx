@@ -1,6 +1,8 @@
+import FormContent from "~/components/Layouts/form-content";
 import PageHeader from "~/components/Layouts/page-header";
 import ConnectPlants from "~/components/features/Images/connect-plants";
 import { HydrateClient, api } from "~/lib/trpc/server";
+import { GetOwnPlantsInput } from "~/server/api/root";
 
 export default async function Page({
   params,
@@ -9,16 +11,23 @@ export default async function Page({
 }) {
   const imageId = (await params).id;
 
+  // Get the image data
   const image = await api.image.getById({ id: imageId });
-  void api.plant.getOwnPlants.prefetch({});
+
+  // Prefetch the plants query - this will populate the cache
+  void api.plant.getOwnPlants.prefetch();
 
   return (
     <HydrateClient>
       <PageHeader
-        title={"Edit Image"}
-        subtitle={"Select the plants on this image"}
+        title="Identify Plants"
+        subtitle="Tag the plants you see in this image"
+        buttonLabel="Back"
+        buttonLink="/images"
       >
-        <ConnectPlants image={image} />
+        <FormContent>
+          <ConnectPlants image={image} />
+        </FormContent>
       </PageHeader>
     </HydrateClient>
   );

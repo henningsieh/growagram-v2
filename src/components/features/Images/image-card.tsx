@@ -34,14 +34,16 @@ import { useToast } from "~/hooks/use-toast";
 import { Link } from "~/lib/i18n/routing";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
-import { formatDate, formatTime } from "~/lib/utils";
+import { cn, formatDate, formatTime } from "~/lib/utils";
 import { UserImage } from "~/server/api/root";
+import { ImageSortField } from "~/types/image";
 
 interface ImageCardProps {
   image: UserImage;
+  sortField: ImageSortField;
 }
 
-export default function ImageCard({ image }: ImageCardProps) {
+export default function ImageCard({ image, sortField }: ImageCardProps) {
   const locale = useLocale();
   const router = useRouter();
   const utils = api.useUtils();
@@ -129,7 +131,7 @@ export default function ImageCard({ image }: ImageCardProps) {
         >
           <Image
             src={image.imageUrl}
-            alt=""
+            alt={image.originalFilename}
             fill
             priority
             className="object-contain transition-transform duration-300"
@@ -142,10 +144,17 @@ export default function ImageCard({ image }: ImageCardProps) {
         <CardTitle className="overflow-x-hidden whitespace-nowrap p-3 font-mono">
           {image.originalFilename}
         </CardTitle>
-        <CardContent className="flex flex-col p-2 py-2 text-sm text-muted-foreground">
+        <CardContent className="flex flex-col p-2 py-2 text-sm">
           <Tooltip>
             <TooltipTrigger asChild>
-              <p className="flex items-center gap-2 px-1">
+              <p
+                className={cn(
+                  "flex items-center gap-2 px-1",
+                  sortField === ImageSortField.CREATED_AT
+                    ? "text-foreground"
+                    : "text-muted-foreground",
+                )}
+              >
                 <UploadCloud size={18} />
                 {formatDate(image.createdAt, locale)}
                 {locale !== "en" ? " um " : " at "}
@@ -160,7 +169,14 @@ export default function ImageCard({ image }: ImageCardProps) {
 
           <Tooltip>
             <TooltipTrigger asChild>
-              <p className="flex items-center gap-2 px-1">
+              <p
+                className={cn(
+                  "flex items-center gap-2 px-1",
+                  sortField === ImageSortField.CAPTURE_DATE
+                    ? "text-foreground"
+                    : "text-muted-foreground",
+                )}
+              >
                 <Camera size={18} />
                 {formatDate(image.captureDate, locale)}
                 {locale !== "en" ? " um " : " at "}
@@ -193,9 +209,9 @@ export default function ImageCard({ image }: ImageCardProps) {
             Delete
           </Button>
           <Button asChild size={"sm"} className="w-2/3 text-base font-semibold">
-            <Link href={`images/edit/${image.id}`}>
+            <Link href={`images/${image.id}/connect-plants`}>
               <Flower2 strokeWidth={1.8} className="h-4 w-4" />
-              Select plants
+              Identify Plants
             </Link>
           </Button>
         </CardFooter>
