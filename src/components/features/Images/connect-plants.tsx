@@ -21,10 +21,10 @@ import { ScrollArea } from "~/components/ui/scroll-area";
 import { useToast } from "~/hooks/use-toast";
 import { api } from "~/lib/trpc/react";
 import { cn, formatDate, formatTime } from "~/lib/utils";
-import { ImageById, OwnPlant } from "~/server/api/root";
+import { ImageWithPlantsById, PlantWithImages } from "~/server/api/root";
 
 interface ConnectPlantsProps {
-  image: ImageById;
+  image: ImageWithPlantsById;
 }
 
 export default function ConnectPlants({ image }: ConnectPlantsProps) {
@@ -283,7 +283,7 @@ export default function ConnectPlants({ image }: ConnectPlantsProps) {
 }
 
 interface PlantCardProps {
-  plant: OwnPlant;
+  plant: PlantWithImages;
   isSelected: boolean;
   onToggle: () => void;
 }

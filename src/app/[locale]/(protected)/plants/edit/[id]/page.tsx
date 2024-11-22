@@ -2,6 +2,7 @@ import FormContent from "~/components/Layouts/form-content";
 import PageHeader from "~/components/Layouts/page-header";
 import PlantForm from "~/components/features/Plants/plant-form";
 import { api } from "~/lib/trpc/server";
+import { PlantWithImagesById } from "~/server/api/root";
 
 export default async function EditPlantPage({
   params,
@@ -10,7 +11,9 @@ export default async function EditPlantPage({
 }) {
   const plantId = (await params).id;
 
-  const plant = await api.plant.getById({ id: plantId });
+  const plant = (await api.plant.getById({
+    id: plantId,
+  })) satisfies PlantWithImagesById;
 
   return (
     <PageHeader

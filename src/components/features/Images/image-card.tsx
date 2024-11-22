@@ -35,11 +35,11 @@ import { Link } from "~/lib/i18n/routing";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import { cn, formatDate, formatTime } from "~/lib/utils";
-import { UserImage } from "~/server/api/root";
+import { ImageWithPlants } from "~/server/api/root";
 import { ImageSortField } from "~/types/image";
 
 interface ImageCardProps {
-  image: UserImage;
+  image: ImageWithPlants;
   sortField: ImageSortField;
 }
 
@@ -150,7 +150,7 @@ export default function ImageCard({ image, sortField }: ImageCardProps) {
               <p
                 className={cn(
                   "flex items-center gap-2 px-1",
-                  sortField === ImageSortField.CREATED_AT
+                  sortField === ImageSortField.UPLOAD_DATE
                     ? "text-foreground"
                     : "text-muted-foreground",
                 )}

@@ -20,18 +20,22 @@ export const appRouter = createTRPCRouter({
 });
 
 // imageRouter
-       type GetUserImagesOutput = RouterOutput["image"]["getOwnImages"];
-export type GetUserImagesInput = inferRouterInputs<AppRouter>["image"]["getOwnImages"];
-export type UserImage = GetUserImagesOutput["images"][number];
-export type ImageById = RouterOutput["image"]["getById"];
+       type GetOwnImagesOutput = RouterOutput["image"]["getOwnImages"];
+export type GetOwnImagesInput = inferRouterInputs<AppRouter>["image"]["getOwnImages"];
+
+export type ImageWithPlants = GetOwnImagesOutput["images"][number];
+export type ImageWithPlantsById = RouterOutput["image"]["getById"];
 
 export type CreateImageInput = inferRouterInputs<AppRouter>["image"]["createImage"];
 
 // plantRouter
-export type GetOwnPlantsInput =
-  inferRouterInputs<AppRouter>["plant"]["getOwnPlants"];
-export type GetOwnPlantsOutput = RouterOutput["plant"]["getOwnPlants"];
-export type OwnPlant = GetOwnPlantsOutput["plants"][number];
+       type GetOwnPlantsOutput = RouterOutput["plant"]["getOwnPlants"];
+export type GetOwnPlantsInput = inferRouterInputs<AppRouter>["plant"]["getOwnPlants"];
+
+export type PlantWithImages = GetOwnPlantsOutput["plants"][number];
+export type PlantWithImagesById = RouterOutput["plant"]["getById"];
+
+export type CreatePlantInput = inferRouterInputs<AppRouter>["plant"]["createOrEdit"];
 
 /**
  * Create a server-side caller for the tRPC API.

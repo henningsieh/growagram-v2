@@ -11,29 +11,40 @@ import { imageSchema } from "~/types/zodSchema";
 export const imageRouter = createTRPCRouter({
   getOwnImages: protectedProcedure
     .input(
-      z.object({
-        limit: z.number().min(1).max(100).default(9),
-        cursor: z.number().nullish(), // Cursor-based pagination
-        sortField: z
-          .nativeEnum(ImageSortField)
-          .default(ImageSortField.CREATED_AT),
-        sortOrder: z.nativeEnum(SortOrder).default(SortOrder.DESC),
-      }),
+      z
+        .object({
+          limit: z.number().min(1).max(100).default(9).optional(),
+          cursor: z.number().nullish(), // Cursor-based pagination
+          sortField: z
+            .nativeEnum(ImageSortField)
+            .default(ImageSortField.UPLOAD_DATE)
+            .optional(),
+          sortOrder: z.nativeEnum(SortOrder).default(SortOrder.DESC).optional(),
+        })
+        .default({}), // Make the entire input object optional
     )
     .query(async ({ ctx, input }) => {
       // Access the user ID from session
       const userId = ctx.session.user.id as string;
 
+      // Destructure input with defaults
+      const {
+        limit = 12, // good default for every screen and grid size
+        cursor = null,
+        sortField = ImageSortField.UPLOAD_DATE,
+        sortOrder = SortOrder.DESC,
+      } = input;
+
       // Query the database for images owned by the user, ordered by creation date
       const imagesList = await ctx.db.query.images.findMany({
         where: eq(images.ownerId, userId),
         orderBy: (images, { desc, asc }) => [
-          input.sortOrder === SortOrder.DESC
-            ? desc(images[input.sortField])
-            : asc(images[input.sortField]),
+          sortOrder === SortOrder.DESC
+            ? desc(images[sortField])
+            : asc(images[sortField]),
         ],
-        limit: input.limit + 1, // Fetch one extra item to check if there's a next page
-        offset: input.cursor ?? 0,
+        limit: limit + 1, // Fetch one extra item to check if there's a next page
+        offset: cursor ?? 0,
         with: {
           plantImages: {
             columns: { imageId: false, plantId: true },
@@ -43,8 +54,8 @@ export const imageRouter = createTRPCRouter({
 
       // Check if there is a next page
       let nextCursor: number | null = null;
-      if (imagesList.length > input.limit) {
-        nextCursor = (input.cursor ?? 0) + input.limit;
+      if (imagesList.length > limit) {
+        nextCursor = (cursor ?? 0) + limit;
         imagesList.pop(); // Remove the extra item
       }
 

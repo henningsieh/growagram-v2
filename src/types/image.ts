@@ -1,5 +1,5 @@
 export enum ImageSortField {
-  CREATED_AT = "createdAt",
+  UPLOAD_DATE = "createdAt",
   CAPTURE_DATE = "captureDate",
 }
 

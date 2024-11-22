@@ -154,7 +154,6 @@ export default function ImageUpload({ user }: { user: User }) {
             cloudinaryPublicId: cloudinaryResponse.public_id,
             captureDate: preview.exifData?.captureDate || new Date(),
             originalFilename: preview.file.name,
-            // exif: preview.exifData, // Save EXIF data
           } satisfies CreateImageInput);
 
           return savedImage;
