@@ -57,15 +57,13 @@ export default function ConnectPlants({ image }: ConnectPlantsProps) {
   // The prefetched data will be available in the cache
   const initialData = utils.plant.getOwnPlants.getData();
 
-  const {
-    data: plantsData,
-    isLoading,
-    isFetching,
-    isPending,
-  } = api.plant.getOwnPlants.useQuery(undefined, {
-    // Use the data that was prefetched on the server
-    initialData: initialData,
-  });
+  const { data: plantsData, isLoading } = api.plant.getOwnPlants.useQuery(
+    undefined,
+    {
+      // Use the data that was prefetched on the server
+      initialData: initialData,
+    },
+  );
   const plants = plantsData?.plants || [];
 
   // Initialize with connected plants
