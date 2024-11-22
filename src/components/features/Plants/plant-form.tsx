@@ -26,6 +26,7 @@ import { Input } from "~/components/ui/input";
 import { useToast } from "~/hooks/use-toast";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
+import { CreatePlantInput } from "~/server/api/root";
 import { Plant } from "~/types/db";
 import { plantSchema } from "~/types/zodSchema";
 
@@ -55,7 +56,7 @@ export default function PlantForm({ plant }: { plant?: Plant }) {
     },
   });
 
-  const createOrEditPlant = api.plant.createOrEdit.useMutation({
+  const createOrEditPlantMutation = api.plant.createOrEdit.useMutation({
     onSuccess: async (_, values) => {
       console.debug("values: ", values);
       toast({
@@ -66,7 +67,7 @@ export default function PlantForm({ plant }: { plant?: Plant }) {
       // Reset and prefetch the infinite query
       await utils.plant.getOwnPlants.reset();
       await utils.plant.getOwnPlants.prefetchInfinite(
-        { limit: 12 }, // match the limit from your PlantsPage
+        { limit: 12 }, // match the limit from /plants/page.tsx
       );
       // Now navigate
       router.push("/plants");
@@ -81,10 +82,12 @@ export default function PlantForm({ plant }: { plant?: Plant }) {
     },
   });
 
-  function onSubmit(values: FormValues) {
+  async function onSubmit(values: FormValues) {
     console.debug(values);
     setIsSubmitting(true);
-    createOrEditPlant.mutate(values);
+    await createOrEditPlantMutation.mutateAsync(
+      values satisfies CreatePlantInput,
+    );
   }
 
   return (

@@ -8,7 +8,7 @@ import ResponsiveGrid from "~/components/Layouts/responsive-grid";
 import ImageCard from "~/components/features/Images/image-card";
 import ImagesControls from "~/components/features/Images/images-controlls";
 import { api } from "~/lib/trpc/react";
-import { GetOwnImagesInput, UserImage } from "~/server/api/root";
+import { GetOwnImagesInput, ImageWithPlants } from "~/server/api/root";
 import { ImageSortField, SortOrder } from "~/types/image";
 
 export default function ImagesContent() {
@@ -50,7 +50,7 @@ export default function ImagesContent() {
     },
   );
 
-  const userImages: UserImage[] =
+  const userImages: ImageWithPlants[] =
     data?.pages.flatMap((page) => page.images) ?? [];
 
   const filteredUserImages = filterNotConnected

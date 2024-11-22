@@ -35,11 +35,11 @@ import { Link } from "~/lib/i18n/routing";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import { cn, formatDate, formatTime } from "~/lib/utils";
-import { UserImage } from "~/server/api/root";
+import { ImageWithPlants } from "~/server/api/root";
 import { ImageSortField } from "~/types/image";
 
 interface ImageCardProps {
-  image: UserImage;
+  image: ImageWithPlants;
   sortField: ImageSortField;
 }
 
