@@ -1,12 +1,14 @@
 "use client";
 
 // src/components/features/Images/connect-plants.tsx:
-import { CheckedState } from "@radix-ui/react-checkbox";
 import { TRPCClientError } from "@trpc/client";
+import { Camera, FileIcon, UploadCloud } from "lucide-react";
+import { useLocale } from "next-intl";
 import Image from "next/image";
 import { memo, useCallback, useMemo, useState } from "react";
 import headerImagePlaceholder from "~/assets/landscape-placeholdersvg.svg";
 import SpinningLoader from "~/components/Layouts/loader";
+import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import {
   Card,
@@ -15,12 +17,11 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
-import { Checkbox } from "~/components/ui/checkbox";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { useToast } from "~/hooks/use-toast";
 import { api } from "~/lib/trpc/react";
-import { cn } from "~/lib/utils";
-import { GetOwnPlantsInput, ImageById, OwnPlant } from "~/server/api/root";
+import { cn, formatDate, formatTime } from "~/lib/utils";
+import { ImageById, OwnPlant } from "~/server/api/root";
 
 interface ConnectPlantsProps {
   image: ImageById;
@@ -28,6 +29,7 @@ interface ConnectPlantsProps {
 
 export default function ConnectPlants({ image }: ConnectPlantsProps) {
   const { toast } = useToast();
+  const locale = useLocale();
   const utils = api.useUtils();
 
   /**
@@ -162,17 +164,78 @@ export default function ConnectPlants({ image }: ConnectPlantsProps) {
           Choose all the plants you can spot in this picture
         </CardDescription>
       </CardHeader>
-      <CardContent className="relative aspect-square w-full">
-        <Image
-          priority
-          alt="Plant image"
-          src={image.imageUrl}
-          fill
-          sizes="(max-width: 767px) 100vw, 800px"
-          className="object-contain"
-        />
+      <CardContent className="p-0">
+        <div className="mx-6 flex flex-col gap-2 sm:flex-row">
+          <div className="relative h-[300px] w-full sm:w-2/5">
+            <Image
+              priority
+              alt="Plant image"
+              src={image.imageUrl}
+              fill
+              sizes="(max-width: 767px) 100vw, 50vw"
+              className="object-cover"
+            />
+          </div>
+          <Card className="w-full rounded-sm bg-muted/30 sm:w-3/5 sm:pt-0">
+            <CardHeader className="p-4">
+              <CardTitle>
+                <div className="mb-4 text-2xl font-semibold">Image Details</div>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="flex items-center space-x-2">
+                <FileIcon className="h-5 w-5 shrink-0 text-muted-foreground" />
+                <span className="text-sm font-medium">Filename:</span>
+                <div className="flex-1 overflow-hidden">
+                  <span className="truncate text-sm text-muted-foreground">
+                    {image.originalFilename}
+                  </span>
+                </div>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Camera className="h-5 w-5 shrink-0 text-muted-foreground" />
+                <span className="text-sm font-medium">Capture Date:</span>
+                <span className="text-sm text-muted-foreground">
+                  {formatDate(image.captureDate, locale)}
+                  <span className="hidden sm:inline-block">
+                    {locale !== "en" ? " um " : " at "}
+                    {formatTime(image.captureDate, locale)}
+                    {locale !== "en" && " Uhr"}
+                  </span>
+                </span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <UploadCloud className="h-5 w-5 shrink-0 text-muted-foreground" />
+                <span className="whitespace-nowrap text-sm font-medium">
+                  Upload Date:
+                </span>
+                <span className="text-sm text-muted-foreground">
+                  {formatDate(image.createdAt, locale)}
+                  <span className="hidden sm:inline-block">
+                    {locale !== "en" ? " um " : " at "}
+                    {formatTime(image.createdAt, locale)}
+                    {locale !== "en" && " Uhr"}
+                  </span>
+                </span>
+              </div>
+
+              <div className="mt-4 flex flex-col gap-2">
+                <div>
+                  <Badge variant="outline">
+                    Image-ID: {image.id.slice(0, 16)}...
+                  </Badge>
+                </div>
+                <div>
+                  <Badge variant="outline">
+                    Owner-ID: {image.ownerId.slice(0, 16)}...
+                  </Badge>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </CardContent>
-      <CardContent>
+      <CardContent className="p-6">
         <ScrollArea className="h-[calc(50vh)] w-full rounded-md border p-4">
           {isLoading || !plantsData || !plants.length ? (
             <SpinningLoader />
@@ -215,43 +278,41 @@ export default function ConnectPlants({ image }: ConnectPlantsProps) {
   );
 }
 
+interface PlantCardProps {
+  plant: OwnPlant;
+  isSelected: boolean;
+  onToggle: () => void;
+}
+
 const PlantCard = memo(function PlantCard({
   plant,
   isSelected,
   onToggle,
-}: {
-  plant: OwnPlant;
-  isSelected: boolean;
-  onToggle: (checked: CheckedState) => void;
-}) {
+}: PlantCardProps) {
   return (
     <Card
+      onClick={onToggle}
       className={cn(
-        "overflow-hidden rounded-sm p-1 transition-all",
-        isSelected && "ring-2 ring-secondary",
+        "cursor-pointer overflow-hidden rounded-lg p-2 transition-all",
+        isSelected
+          ? "bg-secondary/10 ring-2 ring-secondary"
+          : "hover:bg-muted/10",
       )}
     >
-      <CardContent className="flex h-full flex-col p-1">
-        <div className="flex flex-grow items-stretch space-x-4">
-          <div className="relative aspect-video w-2/3 flex-shrink-0">
-            <Image
-              alt={plant.name}
-              src={plant.headerImage?.imageUrl || headerImagePlaceholder}
-              sizes="(max-width: 639px) 100vw, 33vw" // matches parent grid: cols-1 or sm:cols-3
-              fill
-              style={{ objectFit: "cover" }}
-              className="rounded-tl"
-              priority
-            />
-          </div>
-          <div className="flex flex-grow items-center justify-center">
-            <Checkbox
-              className="h-12 w-12"
-              checked={isSelected}
-              onCheckedChange={onToggle}
-            />
-          </div>
-          {/* {plant.strain && (
+      <CardContent className="flex flex-col items-center">
+        <div className="relative mb-2 aspect-video w-full">
+          <Image
+            alt={plant.name}
+            src={plant.headerImage?.imageUrl || headerImagePlaceholder}
+            sizes="(max-width: 639px) 100vw, 33vw"
+            fill
+            className="rounded-md object-cover"
+            priority
+          />
+        </div>
+        <h3 className="text-center text-lg font-semibold">{plant.name}</h3>
+
+        {/* {plant.strain && (
               <p className="text-sm text-muted-foreground">
                 {plant.strain.name}
               </p>
@@ -261,8 +322,6 @@ const PlantCard = memo(function PlantCard({
                 Phase: {plant.phase} {plant.daysInPhase && `(Day ${plant.daysInPhase})`}
               </p>
             )} */}
-        </div>
-        <h3 className="mt-2 text-lg font-semibold">{plant.name}</h3>
       </CardContent>
     </Card>
   );

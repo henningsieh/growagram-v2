@@ -38,24 +38,29 @@ export default function ImagesControls({
 
   return (
     <div className="mb-4 flex flex-col items-center justify-between gap-2 rounded-sm sm:flex-row">
-      <div className="flex h-8 w-full items-center justify-start gap-2 text-nowrap rounded-sm border-[1px] border-input bg-muted px-1 sm:w-44">
-        <Switch
-          size={"big"}
-          variant={"secondary"}
-          id="filter-not-connected"
-          checked={filterNotConnected}
-          onCheckedChange={onFilterChange}
-        />
-        <Label className="text-base" htmlFor="filter-not-connected">
-          New only
-        </Label>
+      <div className="flex w-full items-center space-x-2 sm:justify-start">
+        <div className="flex h-8 w-full items-center justify-start gap-2 text-nowrap rounded-sm border-[1px] border-input bg-muted px-1 hover:bg-transparent sm:w-[154px]">
+          <Switch
+            size={"big"}
+            variant={"secondary"}
+            id="filter-not-connected"
+            checked={filterNotConnected}
+            onCheckedChange={onFilterChange}
+          />
+          <Label
+            className="cursor-pointer text-base"
+            htmlFor="filter-not-connected"
+          >
+            New only
+          </Label>
+        </div>
       </div>
       <div className="flex w-full items-center space-x-2 sm:justify-end">
         <Button
           variant="outline"
           size="sm"
           className={cn(
-            "flex w-full items-center justify-between gap-1 p-2 sm:w-44",
+            "flex w-full items-center justify-between gap-1 p-2 sm:w-[154px]",
             sortField === ImageSortField.CREATED_AT &&
               "border-[1px] border-secondary text-foreground",
           )}
@@ -76,7 +81,7 @@ export default function ImagesControls({
           variant="outline"
           size="sm"
           className={cn(
-            "flex w-full items-center justify-between gap-1 p-2 sm:w-44",
+            "flex w-full items-center justify-between gap-1 p-2 sm:w-[154px]",
             sortField === ImageSortField.CAPTURE_DATE &&
               "border-[1px] border-secondary text-foreground",
           )}

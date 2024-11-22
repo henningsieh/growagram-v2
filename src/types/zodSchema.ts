@@ -6,14 +6,25 @@ export const plantSchema = z.object({
   name: z.string().min(2, {
     message: "Plant name must be at least 2 characters.",
   }),
-  startDate: z.date({
-    required_error: "Start date is required.",
-  }),
-  seedlingPhaseStart: z.date().optional(),
-  vegetationPhaseStart: z.date().optional(),
-  floweringPhaseStart: z.date().optional(),
-  harvestDate: z.date().optional(),
-  curingPhaseStart: z.date().optional(),
+  startDate: z.union([
+    z.date({
+      required_error: "Start date is required.",
+    }),
+    z.literal(null).transform(() => {
+      throw new z.ZodError([
+        {
+          code: "custom",
+          message: "Start date is required.",
+          path: ["startDate"],
+        },
+      ]);
+    }),
+  ]),
+  seedlingPhaseStart: z.date().nullable().optional(),
+  vegetationPhaseStart: z.date().nullable().optional(),
+  floweringPhaseStart: z.date().nullable().optional(),
+  harvestDate: z.date().nullable().optional(),
+  curingPhaseStart: z.date().nullable().optional(),
 });
 
 export const imageSchema = z.object({
