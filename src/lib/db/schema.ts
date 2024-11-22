@@ -179,12 +179,16 @@ export const plants = pgTable("plant", {
     .$defaultFn(() => crypto.randomUUID()),
   name: text("name").notNull(),
   ownerId: text("owner_id")
-    .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
+    .references(() => users.id, {
+      onDelete: "restrict",
+    })
+    .notNull(),
   headerImageId: text("header_image_id").references(() => images.id, {
     onDelete: "set null",
   }),
-  growId: text("grow_id").references(() => grows.id, { onDelete: "cascade" }),
+  growId: text("grow_id").references(() => grows.id, {
+    onDelete: "set null",
+  }),
   strainId: text("strain_id").references(() => cannabisStrains.id, {
     onDelete: "restrict",
   }),
