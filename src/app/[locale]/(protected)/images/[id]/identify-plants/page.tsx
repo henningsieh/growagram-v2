@@ -2,7 +2,6 @@ import FormContent from "~/components/Layouts/form-content";
 import PageHeader from "~/components/Layouts/page-header";
 import ConnectPlants from "~/components/features/Images/connect-plants";
 import { HydrateClient, api } from "~/lib/trpc/server";
-import { GetOwnPlantsInput } from "~/server/api/root";
 
 export default async function Page({
   params,

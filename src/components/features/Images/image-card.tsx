@@ -209,7 +209,7 @@ export default function ImageCard({ image, sortField }: ImageCardProps) {
             Delete
           </Button>
           <Button asChild size={"sm"} className="w-2/3 text-base font-semibold">
-            <Link href={`images/${image.id}/connect-plants`}>
+            <Link href={`images/${image.id}/identify-plants`}>
               <Flower2 strokeWidth={1.8} className="h-4 w-4" />
               Identify Plants
             </Link>
