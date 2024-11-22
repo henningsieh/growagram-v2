@@ -56,13 +56,19 @@ export default function PlantForm({ plant }: { plant?: Plant }) {
   });
 
   const createOrEditPlant = api.plant.createOrEdit.useMutation({
-    onSuccess: async () => {
+    onSuccess: async (_, values) => {
+      console.debug("values: ", values);
       toast({
         title: "Success",
         description: "Your plant has been created.",
       });
-      await utils.plant.getOwnPlants.invalidate();
-      utils.plant.getOwnPlants.getData();
+
+      // Reset and prefetch the infinite query
+      await utils.plant.getOwnPlants.reset();
+      await utils.plant.getOwnPlants.prefetchInfinite(
+        { limit: 12 }, // match the limit from your PlantsPage
+      );
+      // Now navigate
       router.push("/plants");
     },
     onError: (error) => {

@@ -17,7 +17,7 @@ export default function PlantsPage() {
     fetchNextPage,
     isFetchingNextPage,
   } = api.plant.getOwnPlants.useInfiniteQuery(
-    { limit: 1 },
+    { limit: 12 },
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
     },
