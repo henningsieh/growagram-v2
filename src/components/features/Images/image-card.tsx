@@ -150,7 +150,7 @@ export default function ImageCard({ image, sortField }: ImageCardProps) {
               <p
                 className={cn(
                   "flex items-center gap-2 px-1",
-                  sortField === ImageSortField.CREATED_AT
+                  sortField === ImageSortField.UPLOAD_DATE
                     ? "text-foreground"
                     : "text-muted-foreground",
                 )}

@@ -40,13 +40,13 @@ export default function ImageSortControls({
         size="sm"
         className={cn(
           "flex w-32 items-center justify-start gap-1 p-2 hover:bg-secondary",
-          sortField === ImageSortField.CREATED_AT && "text-secondary",
+          sortField === ImageSortField.UPLOAD_DATE && "text-secondary",
         )}
-        onClick={() => toggleOrder(ImageSortField.CREATED_AT)}
+        onClick={() => toggleOrder(ImageSortField.UPLOAD_DATE)}
       >
         <UploadCloud className="h-4 w-4" />
         Upload Date
-        {sortField === ImageSortField.CREATED_AT &&
+        {sortField === ImageSortField.UPLOAD_DATE &&
           (sortOrder === SortOrder.DESC ? (
             <ArrowDownWideNarrow className="h-4 w-4" />
           ) : (

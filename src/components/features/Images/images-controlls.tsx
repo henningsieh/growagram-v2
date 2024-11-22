@@ -61,16 +61,16 @@ export default function ImagesControls({
           size="sm"
           className={cn(
             "flex w-full items-center justify-between gap-1 p-2 sm:w-[154px]",
-            sortField === ImageSortField.CREATED_AT &&
+            sortField === ImageSortField.UPLOAD_DATE &&
               "border-[1px] border-secondary text-foreground",
           )}
-          onClick={() => toggleOrder(ImageSortField.CREATED_AT)}
+          onClick={() => toggleOrder(ImageSortField.UPLOAD_DATE)}
         >
           <div className="flex gap-2">
             <UploadCloud className="h-6 w-5" />
             Upload Date
           </div>
-          {sortField === ImageSortField.CREATED_AT &&
+          {sortField === ImageSortField.UPLOAD_DATE &&
             (sortOrder === SortOrder.DESC ? (
               <ArrowDownWideNarrow className="h-6 w-5 text-secondary" />
             ) : (
