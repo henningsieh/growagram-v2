@@ -45,13 +45,13 @@ export default function PlantForm({ plant }: { plant?: Plant }) {
     resolver: zodResolver(plantSchema),
     defaultValues: {
       id: plant?.id,
-      name: plant?.name,
+      name: plant?.name || "",
       startDate: plant?.startDate,
-      seedlingPhaseStart: plant?.seedlingPhaseStart || undefined,
-      vegetationPhaseStart: plant?.vegetationPhaseStart || undefined,
-      floweringPhaseStart: plant?.floweringPhaseStart || undefined,
-      harvestDate: plant?.harvestDate || undefined,
-      curingPhaseStart: plant?.curingPhaseStart || undefined,
+      seedlingPhaseStart: plant?.seedlingPhaseStart || null,
+      vegetationPhaseStart: plant?.vegetationPhaseStart || null,
+      floweringPhaseStart: plant?.floweringPhaseStart || null,
+      harvestDate: plant?.harvestDate || null,
+      curingPhaseStart: plant?.curingPhaseStart || null,
     },
   });
 
@@ -125,7 +125,7 @@ export default function PlantForm({ plant }: { plant?: Plant }) {
                   render={({ field }) => (
                     <PlantFormDateField
                       field={field}
-                      label="Seed Planted"
+                      label="Seed Planted (Start date)"
                       description="When did you plant the seed?"
                       icon={Sprout}
                       iconClassName="text-planting"
