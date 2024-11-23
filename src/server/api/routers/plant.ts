@@ -18,9 +18,10 @@ export const plantRouter = createTRPCRouter({
           limit: z.number().min(1).max(100).default(12).optional(),
           cursor: z.number().nullish().default(null).optional(), // Cursor-based pagination
         })
-        .optional(),
+        .optional(), // Make the entire input object optional
     )
     .query(async ({ ctx, input }) => {
+      // Access the user ID from session
       const userId = ctx.session.user.id as string;
 
       // Use default values if input is not provided

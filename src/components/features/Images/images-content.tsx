@@ -44,9 +44,6 @@ export default function ImagesContent() {
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
       initialData, // Use the prefetched data
-      refetchOnMount: true,
-      refetchOnReconnect: true,
-      refetchOnWindowFocus: true,
     },
   );
 
@@ -72,7 +69,7 @@ export default function ImagesContent() {
   const loadingRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const observer = new IntersectionObserver(onIntersect, {
-      root: null,
+      root: null, // Use viewport as root
       rootMargin: "0px",
       threshold: 0.01,
     });
@@ -92,6 +89,7 @@ export default function ImagesContent() {
     [refetch],
   );
 
+  // Handle filter changes
   const handleFilterChange = (checked: boolean) => {
     setFilterNotConnected(checked);
   };
@@ -113,7 +111,7 @@ export default function ImagesContent() {
       {!isFetching && filteredUserImages.length === 0 ? (
         <p className="mt-8 text-center text-muted-foreground">
           {filterNotConnected
-            ? "No unconnected images found."
+            ? "No images without connected plants have been found."
             : "You haven't uploaded any images yet."}
         </p>
       ) : (

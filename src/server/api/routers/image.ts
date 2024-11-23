@@ -27,13 +27,11 @@ export const imageRouter = createTRPCRouter({
       // Access the user ID from session
       const userId = ctx.session.user.id as string;
 
-      // Destructure input with defaults
-      const {
-        limit = 12, // good default for every screen and grid size
-        cursor = null,
-        sortField = ImageSortField.UPLOAD_DATE,
-        sortOrder = SortOrder.DESC,
-      } = input;
+      // Use default values if input is not provided
+      const limit = input?.limit ?? 12;
+      const cursor = input?.cursor ?? null;
+      const sortField = input?.sortField ?? ImageSortField.UPLOAD_DATE;
+      const sortOrder = input?.sortOrder ?? SortOrder.DESC;
 
       // Query the database for images owned by the user, ordered by creation date
       const imagesList = await ctx.db.query.images.findMany({
