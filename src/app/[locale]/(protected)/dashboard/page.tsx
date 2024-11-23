@@ -1,24 +1,17 @@
-import PageHeader from "~/components/Layouts/page-header";
-import { UserProfile } from "~/components/features/UserProfile";
+// src/app/[locale]/(protected)/dashboard/layout.tsx:
+import { DashboardContent } from "~/components/features/Dashboard/dashboard-content";
 import { auth } from "~/lib/auth";
-import { User } from "~/types/db";
+import { type User } from "~/types/db";
+
+export const metadata = {
+  title: "Grower's dashboard",
+  description: "Grower's dashboard",
+};
 
 export default async function Dashboard() {
+  // auth() MUST be async
   const session = await auth();
-
   const user = session?.user as User;
-  if (!user) return null;
 
-  return (
-    <>
-      <PageHeader
-        title={"Platform"}
-        subtitle={"Welcome to manage all your Plants and Grows"}
-      >
-        <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center gap-16 p-8 pb-20">
-          <UserProfile user={user} />
-        </div>
-      </PageHeader>
-    </>
-  );
+  return <DashboardContent user={user} />;
 }

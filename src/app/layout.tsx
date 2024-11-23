@@ -14,13 +14,13 @@ import { TRPCReactProvider } from "~/lib/trpc/react";
 import "~/styles/globals.css";
 
 const geistSans = localFont({
-  src: "../../lib/fonts/GeistVF.woff",
+  src: "../lib/fonts/GeistMonoVF.woff",
   variable: "--font-geist-sans",
   weight: "100 900",
 });
 
 const geistMono = localFont({
-  src: "../../lib/fonts/GeistMonoVF.woff",
+  src: "../lib/fonts/GeistMonoVF.woff",
   variable: "--font-geist-mono",
   weight: "100 900",
 });
@@ -50,7 +50,8 @@ export default async function RootLayout(props: LayoutProps) {
 
   // Ensure that the incoming `locale` is valid
   if (!routing.locales.includes(locale as never)) {
-    notFound();
+    // notFound();
+    console.debug("LOCALE NOT FOUND");
   }
 
   // Providing all messages to the client
