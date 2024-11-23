@@ -1,13 +1,8 @@
-import { useTranslations } from "next-intl";
-import { Link } from "~/lib/i18n/routing";
+import { useLocale } from "next-intl";
+import { redirect } from "~/lib/i18n/routing";
 
 export default function HomePage() {
-  const t = useTranslations("HomePage");
-  return (
-    <div>
-      <h1 className="m-4 text-4xl">{t("title")}</h1>
+  const locale = useLocale();
 
-      <Link href="/timeline"> -- {t("about")}</Link>
-    </div>
-  );
+  redirect({ href: "/timeline", locale });
 }

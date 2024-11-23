@@ -44,6 +44,10 @@
     "timelline-description": "Eine Social-Media-artike Zeitleiste mit Beiträgen und Updates von Growern.",
     "toggle-menu": "Menü umschalten"
   },
+  "Platform": {
+    "Dashboard-title": "GrowAGram – Die Grower-Plattform",
+    "welcome-to-platform-subttitle": "Willkommen bei der Verwaltung deiner Grows und Pflanzen"
+  },
   "ThemeToggler": {
     "dark": "Dunkel",
     "light": "Hell",

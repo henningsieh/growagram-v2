@@ -44,6 +44,10 @@
     "timelline-description": "A Social Media like Stream of Posts and Updates from the Growers.",
     "toggle-menu": "Toggle menu"
   },
+  "Platform": {
+    "Dashboard-title": "GrowAGram - The Grower's Platform",
+    "welcome-to-platform-subttitle": "Welcome to manage all your Grows and Plants"
+  },
   "ThemeToggler": {
     "dark": "Dark",
     "light": "Light",
