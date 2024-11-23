@@ -53,6 +53,7 @@ export function LanguageToggle() {
   const handleLanguageChange = (newLocale: string) => {
     const newPath = { pathname, params };
     router.replace(newPath, { locale: newLocale });
+    router.refresh();
   };
 
   return (
