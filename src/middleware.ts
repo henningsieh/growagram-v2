@@ -12,7 +12,13 @@ const { auth } = NextAuth(authConfig);
 const languages = routing.locales;
 
 // Define base protected paths
-const PROTECTED_PATHS = ["/images"];
+const PROTECTED_PATHS = [
+  "/dashboard",
+  "/grows",
+  "/plants",
+  "/images",
+  "/inventory",
+];
 
 // Helper function to check if a path should be protected
 function isPathProtected(path: string): boolean {
