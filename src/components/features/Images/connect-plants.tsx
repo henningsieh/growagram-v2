@@ -1,12 +1,10 @@
 "use client";
 
-// src/components/features/Images/identify-plants.tsx:
 import { TRPCClientError } from "@trpc/client";
-import { Camera, FileIcon, UploadCloud } from "lucide-react";
+import { Camera, Check, FileIcon, Flower2, UploadCloud } from "lucide-react";
 import { useLocale } from "next-intl";
 import Image from "next/image";
-import { memo, useCallback, useMemo, useState } from "react";
-import headerImagePlaceholder from "~/assets/landscape-placeholdersvg.svg";
+import { useCallback, useMemo, useState } from "react";
 import SpinningLoader from "~/components/Layouts/loader";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
@@ -17,11 +15,19 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "~/components/ui/command";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { useToast } from "~/hooks/use-toast";
 import { api } from "~/lib/trpc/react";
-import { cn, formatDate, formatTime } from "~/lib/utils";
-import { ImageWithPlantsById, PlantWithImages } from "~/server/api/root";
+import { formatDate, formatTime } from "~/lib/utils";
+import { ImageWithPlantsById } from "~/server/api/root";
 
 interface ConnectPlantsProps {
   image: ImageWithPlantsById;
@@ -75,6 +81,7 @@ export default function ConnectPlants({ image }: ConnectPlantsProps) {
   const [selectedPlantIds, setSelectedPlantIds] = useState<string[]>(
     initialSelectedPlantIds,
   );
+  const [searchQuery, setSearchQuery] = useState("");
 
   /**
    * Handles connecting and disconnecting plants to an image.
@@ -244,22 +251,56 @@ export default function ConnectPlants({ image }: ConnectPlantsProps) {
           {isLoading || !plantsData || !plants.length ? (
             <SpinningLoader />
           ) : (
-            <div className="grid grid-cols-1 gap-4 p-1 sm:grid-cols-3">
-              {plants.length &&
-                plants.map((plant) => (
-                  <PlantCard
-                    key={plant.id}
-                    plant={plant}
-                    isSelected={selectedPlantIds.includes(plant.id)}
-                    onToggle={() => togglePlantSelection(plant.id)}
-                  />
-                ))}
-              {!isLoading && plants.length === 0 && (
-                <div className="col-span-full text-center text-sm text-muted-foreground">
-                  No plants available
-                </div>
-              )}
-            </div>
+            <Command className="rounded-lg border shadow-md">
+              <CommandInput
+                placeholder="Search plants..."
+                value={searchQuery}
+                onValueChange={setSearchQuery}
+              />
+              <CommandList>
+                <CommandEmpty>No plants found.</CommandEmpty>
+                <CommandGroup>
+                  {plants.length &&
+                    plants
+                      .filter(
+                        (p) =>
+                          searchQuery === "" ||
+                          p.name
+                            .toLowerCase()
+                            .includes(searchQuery.toLowerCase()),
+                      )
+                      .map((plant) => (
+                        <CommandItem
+                          key={plant.id}
+                          onSelect={() => togglePlantSelection(plant.id)}
+                          className="cursor-pointer"
+                        >
+                          <div
+                            className={`mr-2 flex h-4 w-4 items-center justify-center rounded-sm border ${
+                              selectedPlantIds.includes(plant.id)
+                                ? "border-primary bg-primary"
+                                : "border-primary"
+                            }`}
+                          >
+                            {selectedPlantIds.includes(plant.id) && (
+                              <Check className="h-3 w-3 text-primary-foreground" />
+                            )}
+                          </div>
+                          <Flower2 className="mr-2 h-4 w-4" />
+                          <span>{plant.name}</span>
+                          {plant.strain?.name && (
+                            <Badge
+                              variant="secondary"
+                              className="ml-auto uppercase"
+                            >
+                              {plant.strain?.name}
+                            </Badge>
+                          )}
+                        </CommandItem>
+                      ))}
+                </CommandGroup>
+              </CommandList>
+            </Command>
           )}
         </ScrollArea>
 
@@ -281,52 +322,3 @@ export default function ConnectPlants({ image }: ConnectPlantsProps) {
     </Card>
   );
 }
-
-interface PlantCardProps {
-  plant: PlantWithImages;
-  isSelected: boolean;
-  onToggle: () => void;
-}
-
-const PlantCard = memo(function PlantCard({
-  plant,
-  isSelected,
-  onToggle,
-}: PlantCardProps) {
-  return (
-    <Card
-      onClick={onToggle}
-      className={cn(
-        "cursor-pointer overflow-hidden rounded-lg p-2 transition-all",
-        isSelected
-          ? "bg-secondary/10 ring-2 ring-secondary"
-          : "hover:bg-muted/10",
-      )}
-    >
-      <CardContent className="flex flex-col items-center">
-        <div className="relative mb-2 aspect-video w-full">
-          <Image
-            alt={plant.name}
-            src={plant.headerImage?.imageUrl || headerImagePlaceholder}
-            sizes="(max-width: 639px) 100vw, 33vw"
-            fill
-            className="rounded-md object-cover"
-            priority
-          />
-        </div>
-        <h3 className="text-center text-lg font-semibold">{plant.name}</h3>
-
-        {/* {plant.strain && (
-              <p className="text-sm text-muted-foreground">
-                {plant.strain.name}
-              </p>
-            )}
-            {plant.phase && (
-              <p className="mt-1 text-sm">
-                Phase: {plant.phase} {plant.daysInPhase && `(Day ${plant.daysInPhase})`}
-              </p>
-            )} */}
-      </CardContent>
-    </Card>
-  );
-});
