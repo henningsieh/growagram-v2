@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import PageHeader from "~/components/Layouts/page-header";
+import ResponsiveGrid from "~/components/Layouts/responsive-grid";
 import { GrowCard } from "~/components/features/Grows/grow-card";
 import { Grow } from "~/components/features/Timeline/post";
 
@@ -38,11 +39,11 @@ export default function MyGrowsPage() {
 
   return (
     <PageHeader title="My Grows" subtitle="View and manage your current grows">
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <ResponsiveGrid>
         {grows.map((grow) => (
           <GrowCard key={grow.id} grow={grow} showUnassignButton={false} />
         ))}
-      </div>
+      </ResponsiveGrid>
     </PageHeader>
   );
 }
