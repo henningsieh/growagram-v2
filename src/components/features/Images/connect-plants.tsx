@@ -4,7 +4,7 @@ import { TRPCClientError } from "@trpc/client";
 import { Camera, Check, FileIcon, Flower2, UploadCloud } from "lucide-react";
 import { useLocale } from "next-intl";
 import Image from "next/image";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import SpinningLoader from "~/components/Layouts/loader";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
@@ -161,6 +161,10 @@ export default function ConnectPlants({ image }: ConnectPlantsProps) {
     );
   }, []);
 
+  useEffect(() => {
+    console.debug("searchQuery:", searchQuery);
+  }, [searchQuery]);
+
   return (
     <Card>
       <CardHeader>
@@ -171,7 +175,7 @@ export default function ConnectPlants({ image }: ConnectPlantsProps) {
       </CardHeader>
       <CardContent className="p-0">
         <div className="mx-6 flex flex-col gap-2 sm:flex-row">
-          <div className="relative h-[300px] w-full sm:w-2/5">
+          <div className="relative max-h-min w-full sm:w-2/5">
             <Image
               priority
               alt="Plant image"
@@ -247,62 +251,67 @@ export default function ConnectPlants({ image }: ConnectPlantsProps) {
         </div>
       </CardContent>
       <CardContent className="p-6">
-        <ScrollArea className="h-[calc(50vh)] w-full rounded-md border p-4">
-          {isLoading || !plantsData || !plants.length ? (
-            <SpinningLoader />
-          ) : (
-            <Command className="rounded-lg border shadow-md">
-              <CommandInput
-                placeholder="Search plants..."
-                value={searchQuery}
-                onValueChange={setSearchQuery}
-              />
-              <CommandList>
-                <CommandEmpty>No plants found.</CommandEmpty>
-                <CommandGroup>
-                  {plants.length &&
-                    plants
-                      .filter(
-                        (p) =>
-                          searchQuery === "" ||
-                          p.name
-                            .toLowerCase()
-                            .includes(searchQuery.toLowerCase()),
-                      )
-                      .map((plant) => (
-                        <CommandItem
-                          key={plant.id}
-                          onSelect={() => togglePlantSelection(plant.id)}
-                          className="cursor-pointer"
+        {/* <ScrollArea className="max-h-max w-full rounded-md border p-4"> */}
+
+        <Command className="rounded-lg border shadow-md">
+          <CommandInput
+            placeholder="Search plants..."
+            value={searchQuery}
+            onValueChange={(value) => {
+              console.debug("value:", value);
+
+              setSearchQuery(value);
+            }}
+          />
+          <CommandList>
+            <CommandEmpty>No plants found.</CommandEmpty>
+            {isLoading || !plantsData || !plants.length ? (
+              <SpinningLoader />
+            ) : (
+              <CommandGroup>
+                {plants.length &&
+                  plants
+                    .filter(
+                      (p) =>
+                        searchQuery === "" ||
+                        p.name
+                          .toLowerCase()
+                          .includes(searchQuery.toLowerCase()),
+                    )
+                    .map((plant) => (
+                      <CommandItem
+                        key={plant.id}
+                        onSelect={() => togglePlantSelection(plant.id)}
+                        className="cursor-pointer"
+                      >
+                        <div
+                          className={`mr-2 flex h-4 w-4 items-center justify-center rounded-sm border ${
+                            selectedPlantIds.includes(plant.id)
+                              ? "border-primary bg-primary"
+                              : "border-primary"
+                          }`}
                         >
-                          <div
-                            className={`mr-2 flex h-4 w-4 items-center justify-center rounded-sm border ${
-                              selectedPlantIds.includes(plant.id)
-                                ? "border-primary bg-primary"
-                                : "border-primary"
-                            }`}
-                          >
-                            {selectedPlantIds.includes(plant.id) && (
-                              <Check className="h-3 w-3 text-primary-foreground" />
-                            )}
-                          </div>
-                          <Flower2 className="mr-2 h-4 w-4" />
-                          <span>{plant.name}</span>
-                          {plant.strain?.name && (
-                            <Badge
-                              variant="secondary"
-                              className="ml-auto uppercase"
-                            >
-                              {plant.strain?.name}
-                            </Badge>
+                          {selectedPlantIds.includes(plant.id) && (
+                            <Check className="h-3 w-3 text-primary-foreground" />
                           )}
-                        </CommandItem>
-                      ))}
-                </CommandGroup>
-              </CommandList>
-            </Command>
-          )}
-        </ScrollArea>
+                        </div>
+                        <Flower2 className="mr-2 h-4 w-4" />
+                        <span>{plant.name}</span>
+                        {plant.strain?.name && (
+                          <Badge
+                            variant="secondary"
+                            className="ml-auto uppercase"
+                          >
+                            {plant.strain?.name}
+                          </Badge>
+                        )}
+                      </CommandItem>
+                    ))}
+              </CommandGroup>
+            )}
+          </CommandList>
+        </Command>
+        {/* </ScrollArea> */}
 
         <Button
           onClick={handleConnectPlants}
