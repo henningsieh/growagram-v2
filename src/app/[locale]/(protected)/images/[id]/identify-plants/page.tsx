@@ -1,6 +1,6 @@
 import FormContent from "~/components/Layouts/form-content";
 import PageHeader from "~/components/Layouts/page-header";
-import ConnectPlants from "~/components/features/Images/connect-plants";
+import ImageConnectPlants from "~/components/features/Images/image-connect-plants";
 import { HydrateClient, api } from "~/lib/trpc/server";
 
 export default async function Page({
@@ -25,7 +25,7 @@ export default async function Page({
         buttonLink="/images"
       >
         <FormContent>
-          <ConnectPlants image={image} />
+          <ImageConnectPlants image={image} />
         </FormContent>
       </PageHeader>
     </HydrateClient>

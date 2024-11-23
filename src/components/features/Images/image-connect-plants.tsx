@@ -23,17 +23,16 @@ import {
   CommandItem,
   CommandList,
 } from "~/components/ui/command";
-import { ScrollArea } from "~/components/ui/scroll-area";
 import { useToast } from "~/hooks/use-toast";
 import { api } from "~/lib/trpc/react";
 import { formatDate, formatTime } from "~/lib/utils";
 import { ImageWithPlantsById } from "~/server/api/root";
 
-interface ConnectPlantsProps {
+interface ImageConnectPlantsProps {
   image: ImageWithPlantsById;
 }
 
-export default function ConnectPlants({ image }: ConnectPlantsProps) {
+export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
   const { toast } = useToast();
   const locale = useLocale();
   const utils = api.useUtils();
@@ -70,7 +69,9 @@ export default function ConnectPlants({ image }: ConnectPlantsProps) {
       initialData: initialData,
     },
   );
-  const plants = plantsData?.plants || [];
+
+  // Move plants array into useMemo to ensure stable reference
+  const plants = useMemo(() => plantsData?.plants || [], [plantsData]);
 
   // Initialize with connected plants
   const initialSelectedPlantIds = useMemo(
@@ -82,6 +83,15 @@ export default function ConnectPlants({ image }: ConnectPlantsProps) {
     initialSelectedPlantIds,
   );
   const [searchQuery, setSearchQuery] = useState("");
+
+  // Create filtered plants list using useMemo
+  const filteredPlants = useMemo(() => {
+    return plants.filter(
+      (p) =>
+        searchQuery === "" ||
+        p.name.toLowerCase().includes(searchQuery.toLowerCase()),
+    );
+  }, [plants, searchQuery]);
 
   /**
    * Handles connecting and disconnecting plants to an image.
@@ -175,7 +185,7 @@ export default function ConnectPlants({ image }: ConnectPlantsProps) {
       </CardHeader>
       <CardContent className="p-0">
         <div className="mx-6 flex flex-col gap-2 sm:flex-row">
-          <div className="relative max-h-min w-full sm:w-2/5">
+          <div className="relative aspect-square w-full shrink-0 sm:w-2/5">
             <Image
               priority
               alt="Plant image"
@@ -207,16 +217,20 @@ export default function ConnectPlants({ image }: ConnectPlantsProps) {
               <div className="flex items-center justify-between">
                 <div className="flex gap-2">
                   <Camera className="h-5 w-5 shrink-0 text-muted-foreground" />
-                  <span className="text-sm font-medium">Capture Date:</span>
-                </div>
-                <span className="text-sm text-muted-foreground">
-                  {formatDate(image.captureDate, locale)}
-                  <span className="hidden sm:inline-block">
-                    {locale !== "en" ? " um " : " at "}
-                    {formatTime(image.captureDate, locale)}
-                    {locale !== "en" && " Uhr"}
+                  <span className="whitespace-nowrap text-sm font-medium">
+                    Capture Date:
                   </span>
-                </span>
+                </div>
+                <div className="flex w-full items-center justify-end space-x-1">
+                  <span className="text-right text-sm text-muted-foreground">
+                    {formatDate(image.captureDate, locale)}
+                    <span className="hidden sm:inline-block">
+                      {locale !== "en" ? " um " : " at "}
+                      {formatTime(image.captureDate, locale)}
+                      {locale !== "en" && " Uhr"}
+                    </span>
+                  </span>
+                </div>
               </div>
               <div className="flex items-center justify-between">
                 <div className="flex gap-2">
@@ -225,14 +239,16 @@ export default function ConnectPlants({ image }: ConnectPlantsProps) {
                     Upload Date:
                   </span>
                 </div>
-                <span className="text-sm text-muted-foreground">
-                  {formatDate(image.createdAt, locale)}
-                  <span className="hidden sm:inline-block">
-                    {locale !== "en" ? " um " : " at "}
-                    {formatTime(image.createdAt, locale)}
-                    {locale !== "en" && " Uhr"}
+                <div className="flex w-full items-center justify-end space-x-1">
+                  <span className="text-right text-sm text-muted-foreground">
+                    {formatDate(image.createdAt, locale)}
+                    <span className="hidden sm:inline-block">
+                      {locale !== "en" ? " um " : " at "}
+                      {formatTime(image.createdAt, locale)}
+                      {locale !== "en" && " Uhr"}
+                    </span>
                   </span>
-                </span>
+                </div>
               </div>
 
               <div className="mt-4 flex flex-col gap-2">
@@ -251,8 +267,6 @@ export default function ConnectPlants({ image }: ConnectPlantsProps) {
         </div>
       </CardContent>
       <CardContent className="p-6">
-        {/* <ScrollArea className="max-h-max w-full rounded-md border p-4"> */}
-
         <Command className="rounded-lg border shadow-md">
           <CommandInput
             placeholder="Search plants..."
@@ -265,53 +279,40 @@ export default function ConnectPlants({ image }: ConnectPlantsProps) {
           />
           <CommandList>
             <CommandEmpty>No plants found.</CommandEmpty>
-            {isLoading || !plantsData || !plants.length ? (
+            {isLoading || !plantsData ? (
               <SpinningLoader />
             ) : (
               <CommandGroup>
-                {plants.length &&
-                  plants
-                    .filter(
-                      (p) =>
-                        searchQuery === "" ||
-                        p.name
-                          .toLowerCase()
-                          .includes(searchQuery.toLowerCase()),
-                    )
-                    .map((plant) => (
-                      <CommandItem
-                        key={plant.id}
-                        onSelect={() => togglePlantSelection(plant.id)}
-                        className="cursor-pointer"
-                      >
-                        <div
-                          className={`mr-2 flex h-4 w-4 items-center justify-center rounded-sm border ${
-                            selectedPlantIds.includes(plant.id)
-                              ? "border-primary bg-primary"
-                              : "border-primary"
-                          }`}
-                        >
-                          {selectedPlantIds.includes(plant.id) && (
-                            <Check className="h-3 w-3 text-primary-foreground" />
-                          )}
-                        </div>
-                        <Flower2 className="mr-2 h-4 w-4" />
-                        <span>{plant.name}</span>
-                        {plant.strain?.name && (
-                          <Badge
-                            variant="secondary"
-                            className="ml-auto uppercase"
-                          >
-                            {plant.strain?.name}
-                          </Badge>
-                        )}
-                      </CommandItem>
-                    ))}
+                {filteredPlants.map((plant) => (
+                  <CommandItem
+                    key={plant.id}
+                    onSelect={() => togglePlantSelection(plant.id)}
+                    className="cursor-pointer"
+                  >
+                    <div
+                      className={`mr-2 flex h-4 w-4 items-center justify-center rounded-sm border ${
+                        selectedPlantIds.includes(plant.id)
+                          ? "border-primary bg-primary"
+                          : "border-primary"
+                      }`}
+                    >
+                      {selectedPlantIds.includes(plant.id) && (
+                        <Check className="h-3 w-3 text-primary-foreground" />
+                      )}
+                    </div>
+                    <Flower2 className="mr-2 h-4 w-4" />
+                    <span>{plant.name}</span>
+                    {plant.strain?.name && (
+                      <Badge variant="secondary" className="ml-auto uppercase">
+                        {plant.strain?.name}
+                      </Badge>
+                    )}
+                  </CommandItem>
+                ))}
               </CommandGroup>
             )}
           </CommandList>
         </Command>
-        {/* </ScrollArea> */}
 
         <Button
           onClick={handleConnectPlants}
