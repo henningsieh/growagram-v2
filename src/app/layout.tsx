@@ -85,7 +85,7 @@ export default async function RootLayout(props: LayoutProps) {
                       <MainNavigationBar />
                     </div>
                   </header>
-                  <main className="flex-1">{props.children}</main>
+                  <div className="flex-1">{props.children}</div>
                 </div>
 
                 <Toaster />

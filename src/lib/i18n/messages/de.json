@@ -45,7 +45,7 @@
     "toggle-menu": "Menü umschalten"
   },
   "Platform": {
-    "Dashboard-title": "GrowAGram – Die Grower-Plattform",
+    "Dashboard-title": "Grower Dashboard",
     "welcome-to-platform-subttitle": "Willkommen bei der Verwaltung deiner Grows und Pflanzen"
   },
   "ThemeToggler": {
@@ -53,5 +53,23 @@
     "light": "Hell",
     "system": "System",
     "toggle-theme": "Designthema umschalten"
+  },
+  "Images": {
+    "title": "Pflanzen identifizieren",
+    "subtitle": "Welche Pflanzen siehst du auf diesem Foto?",
+    "buttonLabel": "Zurück",
+    "plantSelection": {
+      "title": "Pflanzenauswahl",
+      "description": "Wähle jede Pflanze aus, die du auf dem Foto sehen kannst!"
+    },
+    "search": {
+      "placeholder": "Pflanzen suchen...",
+      "noResults": "Keine Ergebnisse gefunden."
+    },
+    "button": {
+      "connecting": "Pflanzen werden verbunden...",
+      "removeAll": "Alle Pflanzen entfernen",
+      "save": "Pflanzenauswahl speichern ({count})"
+    }
   }
 }

@@ -1,19 +1,18 @@
-"use client";
-
-// src/app/not-found.tsx
-import { usePathname } from "next/navigation";
+// src/app/[locale]/not-found.tsx
+import { headers } from "next/headers";
 import { routing } from "~/lib/i18n/routing";
 
-export default function NotFound() {
-  const pathname = usePathname();
+export default async function LocalizedNotFound() {
+  // Get pathname from headers (server-side)
+  // Get pathname from headers (server-side)
+  const pathname = (await headers()).get("x-invoke-path") || "";
 
-  // Extract locale from pathname if it exists
+  // Extract locale from pathname
   const localeMatch = pathname?.match(
     new RegExp(`^/(${routing.locales.join("|")})/`),
   );
   const currentLocale = localeMatch ? localeMatch[1] : routing.defaultLocale;
 
-  // Basic translations for the 404 page
   const translations: Record<string, { title: string; message: string }> = {
     en: {
       title: "404 - Page Not Found",
@@ -23,32 +22,16 @@ export default function NotFound() {
       title: "404 - Seite nicht gefunden",
       message: "Die gesuchte Seite existiert nicht.",
     },
-    // Add other languages as needed
   };
 
   const { title, message } =
     translations[currentLocale] || translations[routing.defaultLocale];
 
   return (
-    <html lang={currentLocale}>
-      <body>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            minHeight: "100vh",
-            fontFamily: "system-ui, -apple-system, sans-serif",
-            textAlign: "center",
-            padding: "20px",
-          }}
-        >
-          <h2>{title}</h2>
-          <h3>Path: {pathname}</h3>
-          <p>{message}</p>
-        </div>
-      </body>
-    </html>
+    <div className="flex min-h-screen flex-col items-center justify-center p-5 text-center font-sans">
+      <h2 className="mb-4 text-2xl font-bold">{title}</h2>
+      <h3 className="mb-2 text-gray-600">Path: {pathname}</h3>
+      <p>{message}</p>
+    </div>
   );
 }

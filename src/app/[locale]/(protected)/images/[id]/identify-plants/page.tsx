@@ -1,6 +1,5 @@
-import FormContent from "~/components/Layouts/form-content";
-import PageHeader from "~/components/Layouts/page-header";
-import ConnectPlants from "~/components/features/Images/connect-plants";
+// src/app/[locale]/(protected)/images/[id]/identify-plants/page.tsx:
+import ImageConnectPlants from "~/components/features/Images/image-connect-plants";
 import { HydrateClient, api } from "~/lib/trpc/server";
 
 export default async function Page({
@@ -18,16 +17,7 @@ export default async function Page({
 
   return (
     <HydrateClient>
-      <PageHeader
-        title="Identify Plants"
-        subtitle="Tag the plants you see in this image"
-        buttonLabel="Back"
-        buttonLink="/images"
-      >
-        <FormContent>
-          <ConnectPlants image={image} />
-        </FormContent>
-      </PageHeader>
+      <ImageConnectPlants image={image} />
     </HydrateClient>
   );
 }

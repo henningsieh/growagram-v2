@@ -1,8 +1,9 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { Check, Flower2, FolderInput, SquarePlus } from "lucide-react";
-import { useState } from "react";
+import { Check, Flower2, SquarePlus } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import FormContent from "~/components/Layouts/form-content";
 import PageHeader from "~/components/Layouts/page-header";
 import { GrowCard } from "~/components/features/Grows/grow-card";
 import { Grow, Plant } from "~/components/features/Timeline/post";
@@ -55,25 +56,36 @@ export default function ConnectPlantsPage() {
   );
   const [searchQuery, setSearchQuery] = useState("");
 
+  // Updated filtering logic that will respond to all search query changes
+  const filteredPlants = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+    return availablePlants.filter(
+      (p) =>
+        !grow.plants.some((gp) => gp.id === p.id) &&
+        p.strain.toLowerCase().includes(query),
+    );
+  }, [availablePlants, grow.plants, searchQuery]);
+
   const handleTogglePlant = (plantId: string) => {
-    const newSelected = new Set(selectedPlants);
-    if (newSelected.has(plantId)) {
-      newSelected.delete(plantId);
-    } else {
-      newSelected.add(plantId);
-    }
-    setSelectedPlants(newSelected);
+    setSelectedPlants((prev) => {
+      const newSelected = new Set(prev);
+      if (newSelected.has(plantId)) {
+        newSelected.delete(plantId);
+      } else {
+        newSelected.add(plantId);
+      }
+      return newSelected;
+    });
   };
 
   const handleConnectPlants = () => {
     const plantsToConnect = availablePlants.filter((p) =>
       selectedPlants.has(p.id),
     );
-    const updatedGrow = {
-      ...grow,
-      plants: [...grow.plants, ...plantsToConnect],
-    };
-    setGrow(updatedGrow);
+    setGrow((prevGrow) => ({
+      ...prevGrow,
+      plants: [...prevGrow.plants, ...plantsToConnect],
+    }));
     setAvailablePlants((prevAvailable) =>
       prevAvailable.filter((p) => !selectedPlants.has(p.id)),
     );
@@ -87,11 +99,10 @@ export default function ConnectPlantsPage() {
   const handleRemovePlant = (plantId: string) => {
     const plantToRemove = grow.plants.find((p) => p.id === plantId);
     if (plantToRemove) {
-      const updatedGrow = {
-        ...grow,
-        plants: grow.plants.filter((p) => p.id !== plantId),
-      };
-      setGrow(updatedGrow);
+      setGrow((prevGrow) => ({
+        ...prevGrow,
+        plants: prevGrow.plants.filter((p) => p.id !== plantId),
+      }));
       setAvailablePlants((prevAvailable) => [...prevAvailable, plantToRemove]);
       toast({
         title: "Plant Unassigned",
@@ -100,40 +111,50 @@ export default function ConnectPlantsPage() {
     }
   };
 
+  // Reset selected plants when filtered plants change
+  useEffect(() => {
+    setSelectedPlants((prev) => {
+      const newSelected = new Set(prev);
+      for (const id of newSelected) {
+        if (!filteredPlants.some((p) => p.id === id)) {
+          newSelected.delete(id);
+        }
+      }
+      return newSelected;
+    });
+  }, [filteredPlants]);
+
+  // Handle search input changes
+  const handleSearchChange = (value: string) => {
+    setSearchQuery(value);
+  };
+
   return (
     <PageHeader
       title={"Assign Plants to your Grow"}
       subtitle={`Assign or unassign plants to/from ${grow.name}`}
     >
-      <div className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>Available Plants (unassigned)</CardTitle>
-            <CardDescription>
-              Select plants to assign to this Grow
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <Command className="rounded-lg border shadow-md">
-              <CommandInput
-                placeholder="Search plants..."
-                value={searchQuery}
-                onValueChange={setSearchQuery}
-              />
-              <CommandList>
-                <CommandEmpty>No plants found.</CommandEmpty>
-                <CommandGroup>
-                  <AnimatePresence>
-                    {availablePlants
-                      .filter(
-                        (p) =>
-                          !grow.plants.some((gp) => gp.id === p.id) &&
-                          (searchQuery === "" ||
-                            p.strain
-                              .toLowerCase()
-                              .includes(searchQuery.toLowerCase())),
-                      )
-                      .map((plant) => (
+      <FormContent>
+        <div className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-2">
+          <Card>
+            <CardHeader>
+              <CardTitle>Available Plants (unassigned)</CardTitle>
+              <CardDescription>
+                Select plants to assign to this Grow
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Command className="rounded-lg border shadow-md">
+                <CommandInput
+                  placeholder="Search plants..."
+                  value={searchQuery}
+                  onValueChange={handleSearchChange}
+                />
+                <CommandList>
+                  <CommandEmpty>No plants found.</CommandEmpty>
+                  <CommandGroup>
+                    <AnimatePresence>
+                      {filteredPlants.map((plant) => (
                         <motion.div
                           key={plant.id}
                           initial={{ opacity: 0, x: -20 }}
@@ -167,23 +188,24 @@ export default function ConnectPlantsPage() {
                           </CommandItem>
                         </motion.div>
                       ))}
-                  </AnimatePresence>
-                </CommandGroup>
-              </CommandList>
-            </Command>
-            <Button
-              onClick={handleConnectPlants}
-              disabled={selectedPlants.size === 0}
-              className="w-full"
-            >
-              <SquarePlus />
-              Assign Selected Plants to Grow
-            </Button>
-          </CardContent>
-        </Card>
+                    </AnimatePresence>
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+              <Button
+                onClick={handleConnectPlants}
+                disabled={selectedPlants.size === 0}
+                className="w-full"
+              >
+                <SquarePlus className="mr-2 h-4 w-4" />
+                Assign Selected Plants to Grow
+              </Button>
+            </CardContent>
+          </Card>
 
-        <GrowCard grow={grow} onUnassignPlant={handleRemovePlant} />
-      </div>
+          <GrowCard grow={grow} onUnassignPlant={handleRemovePlant} />
+        </div>
+      </FormContent>
     </PageHeader>
   );
 }
