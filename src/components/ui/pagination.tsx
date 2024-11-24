@@ -1,8 +1,7 @@
-import * as React from "react"
 import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react"
-
-import { cn } from "~/lib/utils"
+import * as React from "react"
 import { ButtonProps, buttonVariants } from "~/components/ui/button"
+import { cn } from "~/lib/utils"
 
 const Pagination = ({ className, ...props }: React.ComponentProps<"nav">) => (
   <nav
@@ -30,18 +29,20 @@ const PaginationItem = React.forwardRef<
   HTMLLIElement,
   React.ComponentProps<"li">
 >(({ className, ...props }, ref) => (
-  <li ref={ref} className={cn("", className)} {...props} />
+  <li ref={ref} className={cn("cursor-default", className)} {...props} />
 ))
 PaginationItem.displayName = "PaginationItem"
 
 type PaginationLinkProps = {
   isActive?: boolean
+  disabled?: boolean
 } & Pick<ButtonProps, "size"> &
   React.ComponentProps<"a">
 
 const PaginationLink = ({
   className,
   isActive,
+  disabled,
   size = "icon",
   ...props
 }: PaginationLinkProps) => (
@@ -49,10 +50,12 @@ const PaginationLink = ({
     aria-current={isActive ? "page" : undefined}
     className={cn(
       buttonVariants({
-        variant: isActive ? "outline" : "ghost",
+        variant: isActive ? "primary" : "outline",
         size,
       }),
-      className
+      disabled && "pointer-events-none opacity-40",
+      !isActive && "cursor-pointer",
+      className,
     )}
     {...props}
   />
@@ -61,12 +64,14 @@ PaginationLink.displayName = "PaginationLink"
 
 const PaginationPrevious = ({
   className,
+  disabled,
   ...props
 }: React.ComponentProps<typeof PaginationLink>) => (
   <PaginationLink
     aria-label="Go to previous page"
-    size="default"
+    size="sm"
     className={cn("gap-1 pl-2.5", className)}
+    disabled={disabled}
     {...props}
   >
     <ChevronLeft className="h-4 w-4" />
@@ -77,12 +82,14 @@ PaginationPrevious.displayName = "PaginationPrevious"
 
 const PaginationNext = ({
   className,
+  disabled,
   ...props
 }: React.ComponentProps<typeof PaginationLink>) => (
   <PaginationLink
     aria-label="Go to next page"
-    size="default"
+    size="sm"
     className={cn("gap-1 pr-2.5", className)}
+    disabled={disabled}
     {...props}
   >
     <span>Next</span>
