@@ -21,9 +21,9 @@ export default function Component({
     <div className="mx-auto space-y-8">
       <div className="flex justify-between xl:px-8">
         <div className="flex flex-col space-y-2">
-          <div className="text-2xl font-bold sm:text-3xl md:text-4xl lg:text-5xl">
+          <h2 className="text-2xl font-bold sm:text-3xl md:text-4xl lg:text-5xl">
             {title}
-          </div>
+          </h2>
           <p className="text-muted-foreground">{subtitle}</p>
         </div>
         <div className="flex items-start">
