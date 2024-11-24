@@ -34,6 +34,16 @@ export function ImageDetailsCard({ image, locale }: ImageDetailsProps) {
     // <div className="overflow-hidden bg-card">
     //   <div className="bg-muted p-0">
     <Card className="flex flex-col bg-muted md:flex-row">
+      <div className="relative aspect-square w-full md:w-2/5">
+        <Image
+          priority
+          alt={image.originalFilename}
+          src={image.imageUrl}
+          fill
+          sizes="(max-width: 767px) 100vw, 40vw"
+          className="object-cover"
+        />
+      </div>
       <div className="w-full p-0 md:w-3/5 md:px-0">
         <CardHeader>
           <CardTitle className="text-xl font-semibold">Image Details</CardTitle>
@@ -51,16 +61,6 @@ export function ImageDetailsCard({ image, locale }: ImageDetailsProps) {
             </div>
           ))}
         </CardContent>
-      </div>
-      <div className="relative aspect-square w-full md:w-2/5">
-        <Image
-          priority
-          alt={image.originalFilename}
-          src={image.imageUrl}
-          fill
-          sizes="(max-width: 767px) 100vw, 40vw"
-          className="object-cover"
-        />
       </div>
     </Card>
     //   </div>

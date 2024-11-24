@@ -195,7 +195,7 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
           </CardHeader>
           <CardContent className="p-2 md:p-6">
             <Command
-              className="rounded-lg border shadow-md"
+              className="rounded-md border shadow-md"
               shouldFilter={false}
             >
               <CommandInput
@@ -249,25 +249,27 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
                 </CommandList>
               )}
             </Command>
-            <Button
-              variant={"secondary"}
-              onClick={handleConnectPlants}
-              disabled={connectPlantMutation.isPending}
-              className="mt-4 w-full"
-            >
-              {connectPlantMutation.isPending ? (
-                <div className="flex items-center gap-2">
-                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                  {t("button.connecting")}
-                </div>
-              ) : selectedPlantIds.length === 0 ? (
-                t("button.removeAll")
-              ) : (
-                t("button.save", { count: selectedPlantIds.length })
-              )}
-            </Button>
+            <div className="pt-2">
+              <Button
+                variant={"secondary"}
+                onClick={handleConnectPlants}
+                disabled={connectPlantMutation.isPending}
+                className="w-full"
+              >
+                {connectPlantMutation.isPending ? (
+                  <div className="flex items-center gap-2">
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                    {t("button.connecting")}
+                  </div>
+                ) : selectedPlantIds.length === 0 ? (
+                  t("button.removeAll")
+                ) : (
+                  t("button.save", { count: selectedPlantIds.length })
+                )}
+              </Button>
+            </div>
           </CardContent>
-          <hr />
+          <hr className="my-4" />
           <CardContent className="p-2 md:p-6">
             <ImageDetailsCard image={image} locale={locale} />
           </CardContent>
