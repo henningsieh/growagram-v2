@@ -41,6 +41,7 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
   const router = useRouter();
   const locale = useLocale();
   const utils = api.useUtils();
+  const t = useTranslations("Images");
 
   /**
    * Mutation to connect a plant to an image.
@@ -179,27 +180,18 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
     );
   }, []);
 
-  useEffect(() => {
-    console.debug("searchQuery:", searchQuery);
-  }, [searchQuery]);
-
-  // useTranslations() MUST NOT to be async
-  const t = useTranslations("Platform");
-
   return (
     <PageHeader
-      title="Identify Plants"
-      subtitle="Which plants did you spot in this photo?"
-      buttonLabel="Back"
+      title={t("title")}
+      subtitle={t("subtitle")}
+      buttonLabel={t("buttonLabel")}
       buttonLink="/images"
     >
       <FormContent>
         <Card>
           <CardHeader>
-            <CardTitle level="h2">Plant Selection</CardTitle>
-            <CardDescription>
-              Select each plant you can see in the photo
-            </CardDescription>
+            <CardTitle level="h2">{t("plantSelection.title")}</CardTitle>
+            <CardDescription>{t("plantSelection.description")}</CardDescription>
           </CardHeader>
           <CardContent className="p-2 md:p-6">
             <Command
@@ -207,7 +199,7 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
               shouldFilter={false}
             >
               <CommandInput
-                placeholder="Search plants..."
+                placeholder={t("search.placeholder")}
                 value={searchQuery}
                 onValueChange={(value) => {
                   console.debug("value:", value);
@@ -218,19 +210,23 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
                 <SpinningLoader />
               ) : (
                 <CommandList className="min-h-24">
-                  <CommandEmpty>No results found.</CommandEmpty>
+                  <CommandEmpty>{t("search.noResults")}</CommandEmpty>
                   <CommandGroup>
                     {filteredPlants.map((plant) => (
                       <CommandItem
                         key={plant.id}
                         onSelect={() => togglePlantSelection(plant.id)}
-                        className="cursor-pointer text-foreground data-[selected=true]:text-foreground"
+                        className={`data[] cursor-pointer data-[selected=true]:font-bold ${
+                          selectedPlantIds.includes(plant.id)
+                            ? "font-bold text-secondary data-[selected=true]:text-secondary"
+                            : "data-[selected=true]:text-foreground"
+                        }`}
                       >
                         <div
                           className={`mr-2 flex h-4 w-4 items-center justify-center rounded-sm border ${
                             selectedPlantIds.includes(plant.id)
-                              ? "border-primary bg-primary"
-                              : "border-primary"
+                              ? "border-secondary bg-secondary"
+                              : "border-secondary"
                           }`}
                         >
                           {selectedPlantIds.includes(plant.id) && (
@@ -241,8 +237,8 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
                         <span>{plant.name}</span>
                         {plant.strain?.name && (
                           <Badge
-                            variant="secondary"
-                            className="ml-auto uppercase"
+                            variant="outline"
+                            className="ml-auto bg-seedling uppercase text-white"
                           >
                             {plant.strain?.name}
                           </Badge>
@@ -254,6 +250,7 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
               )}
             </Command>
             <Button
+              variant={"secondary"}
               onClick={handleConnectPlants}
               disabled={connectPlantMutation.isPending}
               className="mt-4 w-full"
@@ -261,20 +258,18 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
               {connectPlantMutation.isPending ? (
                 <div className="flex items-center gap-2">
                   <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                  Connecting plants...
+                  {t("button.connecting")}
                 </div>
               ) : selectedPlantIds.length === 0 ? (
-                "Remove All Plants"
+                t("button.removeAll")
               ) : (
-                `Save Plant Selection (${selectedPlantIds.length})`
+                t("button.save", { count: selectedPlantIds.length })
               )}
             </Button>
           </CardContent>
           <hr />
           <CardContent className="p-2 md:p-6">
-            {/* <div className="container mx-auto p-0"> */}
             <ImageDetailsCard image={image} locale={locale} />
-            {/* </div> */}
           </CardContent>
         </Card>
       </FormContent>

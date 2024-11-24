@@ -53,5 +53,23 @@
     "light": "Light",
     "system": "System",
     "toggle-theme": "Toggle theme"
+  },
+  "Images": {
+    "title": "Identify Plants",
+    "subtitle": "Which plants did you spot in this photo?",
+    "buttonLabel": "Back",
+    "plantSelection": {
+      "title": "Plant Selection",
+      "description": "Select each plant you can see in the photo!"
+    },
+    "search": {
+      "placeholder": "Search plants...",
+      "noResults": "No results found."
+    },
+    "button": {
+      "connecting": "Connecting plants...",
+      "removeAll": "Remove All Plants",
+      "save": "Save Plant Selection ({count})"
+    }
   }
 }
