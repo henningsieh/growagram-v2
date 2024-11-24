@@ -54,17 +54,17 @@
       ]
     },
     {
-      "title": "Images",
+      "title": "Photos",
       "url": "#",
       "icon": "Camera",
       "items": [
         {
-          "title": "All Images",
-          "url": "/images"
+          "title": "All Photos",
+          "url": "/photos"
         },
         {
-          "title": "Upload Images",
-          "url": "/images/upload"
+          "title": "Upload new Photos",
+          "url": "/photos/upload"
         }
       ]
     },

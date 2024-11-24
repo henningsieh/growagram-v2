@@ -18,7 +18,7 @@ interface ImagesControlsProps {
   onFilterChange: (checked: boolean) => void;
 }
 
-export default function ImagesControls({
+export default function ImagesSortFilterControlls({
   sortField,
   sortOrder,
   filterNotConnected,

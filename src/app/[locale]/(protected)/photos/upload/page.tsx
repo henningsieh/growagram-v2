@@ -1,16 +1,16 @@
-// src/app/[locale]/(protected)/images/upload/page.tsx:
+// src/app/[locale]/(protected)/photos/upload/page.tsx:
 import FormContent from "~/components/Layouts/form-content";
 import PageHeader from "~/components/Layouts/page-header";
-import ImageUpload from "~/components/features/Images/image-upload";
+import PhotoUpload from "~/components/features/Photos/image-upload";
 import { auth } from "~/lib/auth";
 
 export default async function ImageUploadPage() {
   const session = await auth();
   return (
-    <PageHeader title="Image Upload" subtitle="Upload new images">
+    <PageHeader title="Photo Upload" subtitle="Upload new photos  ">
       {session && session.user && (
         <FormContent>
-          <ImageUpload user={session.user} />
+          <PhotoUpload user={session.user} />
         </FormContent>
       )}
     </PageHeader>

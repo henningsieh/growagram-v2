@@ -5,9 +5,6 @@ import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 
 import { plantRouter } from "./routers/plant";
 
-// export type definition of API
-export type AppRouter = typeof appRouter;
-type RouterOutput = inferRouterOutputs<AppRouter>;
 
 /**
  * This is the primary router for your server.
@@ -19,23 +16,29 @@ export const appRouter = createTRPCRouter({
   plant: plantRouter,
 });
 
+// export type definition of API
+export type AppRouter = typeof appRouter;
+type RouterOutput = inferRouterOutputs<AppRouter>;
+type RouterInput = inferRouterInputs<AppRouter>
+
 // imageRouter
-       type GetOwnImagesOutput = RouterOutput["image"]["getOwnImages"];
-export type GetOwnImagesInput = inferRouterInputs<AppRouter>["image"]["getOwnImages"];
+//  OUTPUTS
+export type GetOwnImagesOutput = RouterOutput["image"]["getOwnImages"]["images"];
+export type GetOwnImageOutput = RouterOutput["image"]["getOwnImages"]["images"][number];
+export type GetImageByIdOutput = RouterOutput["image"]["getById"];
+//  INPUTS:
+export type GetOwnImagesInput = RouterInput["image"]["getOwnImages"];
+export type CreateImageInput = RouterInput["image"]["createImage"];
 
-export type ImageWithPlants = GetOwnImagesOutput["images"][number];
-export type ImageWithPlantsById = RouterOutput["image"]["getById"];
-
-export type CreateImageInput = inferRouterInputs<AppRouter>["image"]["createImage"];
 
 // plantRouter
-       type GetOwnPlantsOutput = RouterOutput["plant"]["getOwnPlants"];
-export type GetOwnPlantsInput = inferRouterInputs<AppRouter>["plant"]["getOwnPlants"];
-
-export type PlantWithImages = GetOwnPlantsOutput["plants"][number];
-export type PlantWithImagesById = RouterOutput["plant"]["getById"];
-
-export type CreatePlantInput = inferRouterInputs<AppRouter>["plant"]["createOrEdit"];
+//  OUTPUTS
+export type GetOwnPlantsOutput = RouterOutput["plant"]["getOwnPlants"]["plants"];
+export type GetOwnPlantOutput = RouterOutput["plant"]["getOwnPlants"]["plants"][number];
+export type GetPlantByIdOutput = RouterOutput["plant"]["getById"];
+//  INPUTS:
+export type GetOwnPlantsInput = RouterInput["plant"]["getOwnPlants"];
+export type CreateOrEditPlantInput = RouterInput["plant"]["createOrEdit"];
 
 /**
  * Create a server-side caller for the tRPC API.

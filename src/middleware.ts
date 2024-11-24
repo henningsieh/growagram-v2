@@ -16,7 +16,7 @@ const PROTECTED_PATHS = [
   "/dashboard",
   "/grows",
   "/plants",
-  "/images",
+  "/photos",
   "/inventory",
 ];
 
@@ -38,7 +38,7 @@ export default async function middleware(request: NextRequest) {
   // Get the pathname
   const pathname = request.nextUrl.pathname;
 
-  // Extract the locale from the path. Example: /de/images or /en/images
+  // Extract the locale from the path. Example: /de/photos or /en/photos
   const localeMatch = request.nextUrl.pathname.match(
     new RegExp(`^\/(${languages.join("|")})\/`),
   );

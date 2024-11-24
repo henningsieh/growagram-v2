@@ -21,10 +21,10 @@ import {
 } from "~/components/ui/tooltip";
 import { Link } from "~/lib/i18n/routing";
 import { calculateGrowthProgress, formatDate } from "~/lib/utils";
-import { PlantWithImages } from "~/server/api/root";
+import { GetOwnPlantOutput } from "~/server/api/root";
 
 interface PlantCardProps {
-  plant: PlantWithImages;
+  plant: GetOwnPlantOutput;
 }
 
 export default function PlantCard({ plant }: PlantCardProps) {

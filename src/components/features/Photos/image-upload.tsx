@@ -90,7 +90,7 @@ const ACCEPTED_IMAGE_TYPES = [
   "image/webp",
 ];
 
-export default function ImageUpload({ user }: { user: User }) {
+export default function PhotoUpload({ user }: { user: User }) {
   const locale = useLocale();
   const [uploading, setUploading] = useState(false);
   const [previews, setPreviews] = useState<FilePreview[]>([]);
@@ -308,7 +308,7 @@ export default function ImageUpload({ user }: { user: User }) {
                 </div>
 
                 <div className="text-xs text-muted-foreground">
-                  Images (JPG, PNG, WebP up to 10MB)
+                  Imagefiles (JPG, PNG, WebP up to 10MB)
                 </div>
               </div>
             </div>

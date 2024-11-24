@@ -1,5 +1,5 @@
-// src/app/[locale]/(protected)/images/[id]/identify-plants/page.tsx:
-import ImageConnectPlants from "~/components/features/Images/image-connect-plants";
+// src/app/[locale]/(protected)/photos/[id]/identify-plants/page.tsx:
+import ImageConnectPlants from "~/components/features/Photos/image-connect-plants";
 import { HydrateClient, api } from "~/lib/trpc/server";
 
 export default async function Page({

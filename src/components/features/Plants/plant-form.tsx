@@ -26,7 +26,7 @@ import { Input } from "~/components/ui/input";
 import { useToast } from "~/hooks/use-toast";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
-import { CreatePlantInput } from "~/server/api/root";
+import { CreateOrEditPlantInput } from "~/server/api/root";
 import { Plant } from "~/types/db";
 import { plantSchema } from "~/types/zodSchema";
 
@@ -86,14 +86,14 @@ export default function PlantForm({ plant }: { plant?: Plant }) {
     console.debug(values);
     setIsSubmitting(true);
     await createOrEditPlantMutation.mutateAsync(
-      values satisfies CreatePlantInput,
+      values satisfies CreateOrEditPlantInput,
     );
   }
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Plant Journey</CardTitle>
+        <CardTitle level="h2">Plant Journey</CardTitle>
         <CardDescription>
           Edit the plant&apos;s name and relevant dates.
         </CardDescription>

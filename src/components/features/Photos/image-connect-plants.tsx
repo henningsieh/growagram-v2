@@ -28,12 +28,12 @@ import {
 import { useToast } from "~/hooks/use-toast";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
-import { ImageWithPlantsById } from "~/server/api/root";
+import { GetImageByIdOutput } from "~/server/api/root";
 
 import { ImageDetailsCard } from "./image-details-card";
 
 interface ImageConnectPlantsProps {
-  image: ImageWithPlantsById;
+  image: GetImageByIdOutput;
 }
 
 export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
@@ -149,7 +149,7 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
         description: "Plants updated successfully",
       });
       await utils.image.getOwnImages.invalidate();
-      router.push("/images");
+      router.push("/photos");
     } catch (error) {
       // Show error toast when any operation fails
       toast({
@@ -185,7 +185,7 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
       title={t("title")}
       subtitle={t("subtitle")}
       buttonLabel={t("buttonLabel")}
-      buttonLink="/images"
+      buttonLink="/photos"
     >
       <FormContent>
         <Card>

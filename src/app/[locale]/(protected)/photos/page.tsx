@@ -1,17 +1,17 @@
 "use client";
 
-// src/components/features/Images/images-content.tsx
+// src/app/[locale]/(protected)/photos/page.tsx:
 import { useCallback, useEffect, useRef, useState } from "react";
 import InfiniteScrollLoader from "~/components/Layouts/InfiniteScrollLoader";
 import PageHeader from "~/components/Layouts/page-header";
 import ResponsiveGrid from "~/components/Layouts/responsive-grid";
-import ImageCard from "~/components/features/Images/image-card";
-import ImagesControls from "~/components/features/Images/images-controlls";
+import PhotoCard from "~/components/features/Photos/photo-card";
+import ImagesSortFilterControlls from "~/components/features/Photos/sort-filter-controlls";
 import { api } from "~/lib/trpc/react";
-import { GetOwnImagesInput, ImageWithPlants } from "~/server/api/root";
+import { GetOwnImagesInput, GetOwnImagesOutput } from "~/server/api/root";
 import { ImageSortField, SortOrder } from "~/types/image";
 
-export default function ImagesContent() {
+export default function AllImagesPage() {
   const [sortField, setSortField] = useState<ImageSortField>(
     ImageSortField.UPLOAD_DATE,
   );
@@ -47,7 +47,7 @@ export default function ImagesContent() {
     },
   );
 
-  const userImages: ImageWithPlants[] =
+  const userImages: GetOwnImagesOutput =
     data?.pages.flatMap((page) => page.images) ?? [];
 
   const filteredUserImages = filterNotConnected
@@ -96,12 +96,12 @@ export default function ImagesContent() {
 
   return (
     <PageHeader
-      title="All Images"
-      subtitle="View and manage your current images"
-      buttonLink="/images/upload"
-      buttonLabel="Upload Images"
+      title="All Photos"
+      subtitle="View and manage your current photos"
+      buttonLink="/photos/upload"
+      buttonLabel="Upload new photos"
     >
-      <ImagesControls
+      <ImagesSortFilterControlls
         sortField={sortField}
         sortOrder={sortOrder}
         filterNotConnected={filterNotConnected}
@@ -118,7 +118,7 @@ export default function ImagesContent() {
         <>
           <ResponsiveGrid>
             {filteredUserImages.map((image, key) => (
-              <ImageCard image={image} key={key} sortField={sortField} />
+              <PhotoCard image={image} key={key} sortField={sortField} />
             ))}
           </ResponsiveGrid>
           <InfiniteScrollLoader

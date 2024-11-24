@@ -45,7 +45,10 @@ export const imageRouter = createTRPCRouter({
         offset: cursor ?? 0,
         with: {
           plantImages: {
-            columns: { imageId: false, plantId: true },
+            columns: { imageId: false, plantId: false },
+            with: {
+              plant: true,
+            },
           },
         },
       });

@@ -35,15 +35,15 @@ import { Link } from "~/lib/i18n/routing";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import { cn, formatDate, formatTime } from "~/lib/utils";
-import { ImageWithPlants } from "~/server/api/root";
+import { GetOwnImageOutput } from "~/server/api/root";
 import { ImageSortField } from "~/types/image";
 
-interface ImageCardProps {
-  image: ImageWithPlants;
+interface PhotoCardProps {
+  image: GetOwnImageOutput;
   sortField: ImageSortField;
 }
 
-export default function ImageCard({ image, sortField }: ImageCardProps) {
+export default function PhotoCard({ image, sortField }: PhotoCardProps) {
   const locale = useLocale();
   const router = useRouter();
   const utils = api.useUtils();
