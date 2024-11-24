@@ -1,4 +1,4 @@
-import React from "react";
+// src/components/Layouts/page-header.tsx:
 import { Button } from "~/components/ui/button";
 import { Link } from "~/lib/i18n/routing";
 
@@ -21,10 +21,10 @@ export default function Component({
     <div className="mx-auto space-y-8">
       <div className="flex justify-between xl:px-8">
         <div className="flex flex-col space-y-2">
-          <h2 className="text-2xl font-bold sm:text-3xl md:text-4xl lg:text-5xl">
+          <h1 className="text-2xl font-bold sm:text-3xl md:text-4xl lg:text-5xl">
             {title}
-          </h2>
-          <p className="text-muted-foreground">{subtitle}</p>
+          </h1>
+          <p className="text-muted-foreground md:text-lg">{subtitle}</p>
         </div>
         <div className="flex items-start">
           {buttonLink && (
