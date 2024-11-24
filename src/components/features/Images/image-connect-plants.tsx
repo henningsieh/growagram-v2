@@ -202,15 +202,15 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
             </CardDescription>
           </CardHeader>
           <CardContent className="p-2 md:p-6">
-            <Command className="rounded-lg border shadow-md">
+            <Command
+              className="rounded-lg border shadow-md"
+              shouldFilter={false}
+            >
               <CommandInput
                 placeholder="Search plants..."
                 value={searchQuery}
                 onValueChange={(value) => {
                   console.debug("value:", value);
-
-                  setSearchQuery("");
-
                   setSearchQuery(value);
                 }}
               />
@@ -220,40 +220,35 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
                 <CommandList className="min-h-24">
                   <CommandEmpty>No results found.</CommandEmpty>
                   <CommandGroup>
-                    {!!!filteredPlants.length ? (
-                      // <CommandItem disabled>No plants found.</CommandItem>
-                      <CommandEmpty>No results found.</CommandEmpty>
-                    ) : (
-                      filteredPlants.map((plant) => (
-                        <CommandItem
-                          key={plant.id}
-                          onSelect={() => togglePlantSelection(plant.id)}
-                          className="cursor-pointer text-foreground data-[selected=true]:text-foreground"
+                    {filteredPlants.map((plant) => (
+                      <CommandItem
+                        key={plant.id}
+                        onSelect={() => togglePlantSelection(plant.id)}
+                        className="cursor-pointer text-foreground data-[selected=true]:text-foreground"
+                      >
+                        <div
+                          className={`mr-2 flex h-4 w-4 items-center justify-center rounded-sm border ${
+                            selectedPlantIds.includes(plant.id)
+                              ? "border-primary bg-primary"
+                              : "border-primary"
+                          }`}
                         >
-                          <div
-                            className={`mr-2 flex h-4 w-4 items-center justify-center rounded-sm border ${
-                              selectedPlantIds.includes(plant.id)
-                                ? "border-primary bg-primary"
-                                : "border-primary"
-                            }`}
-                          >
-                            {selectedPlantIds.includes(plant.id) && (
-                              <Check className="h-3 w-3 text-primary-foreground" />
-                            )}
-                          </div>
-                          <Flower2 className="mr-2 h-4 w-4" />
-                          <span>{plant.name}</span>
-                          {plant.strain?.name && (
-                            <Badge
-                              variant="secondary"
-                              className="ml-auto uppercase"
-                            >
-                              {plant.strain?.name}
-                            </Badge>
+                          {selectedPlantIds.includes(plant.id) && (
+                            <Check className="h-3 w-3 text-primary-foreground" />
                           )}
-                        </CommandItem>
-                      ))
-                    )}
+                        </div>
+                        <Flower2 className="mr-2 h-4 w-4" />
+                        <span>{plant.name}</span>
+                        {plant.strain?.name && (
+                          <Badge
+                            variant="secondary"
+                            className="ml-auto uppercase"
+                          >
+                            {plant.strain?.name}
+                          </Badge>
+                        )}
+                      </CommandItem>
+                    ))}
                   </CommandGroup>
                 </CommandList>
               )}
