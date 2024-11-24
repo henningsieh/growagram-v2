@@ -2,6 +2,7 @@ import {
   ArrowDownWideNarrow,
   ArrowUpNarrowWide,
   Camera,
+  Loader2,
   UploadCloud,
 } from "lucide-react";
 import { Button } from "~/components/ui/button";
@@ -10,10 +11,11 @@ import { Switch } from "~/components/ui/switch";
 import { cn } from "~/lib/utils";
 import { ImageSortField, SortOrder } from "~/types/image";
 
-interface ImagesControlsProps {
+interface ImagesSortFilterControllsProps {
   sortField: ImageSortField;
   sortOrder: SortOrder;
   filterNotConnected: boolean;
+  isFetching: boolean;
   onSortChange: (field: ImageSortField, order: SortOrder) => Promise<void>;
   onFilterChange: (checked: boolean) => void;
 }
@@ -22,9 +24,10 @@ export default function ImagesSortFilterControlls({
   sortField,
   sortOrder,
   filterNotConnected,
+  isFetching,
   onSortChange,
   onFilterChange,
-}: ImagesControlsProps) {
+}: ImagesSortFilterControllsProps) {
   const toggleOrder = async (field: ImageSortField) => {
     if (sortField === field) {
       await onSortChange(
@@ -57,6 +60,7 @@ export default function ImagesSortFilterControlls({
       </div>
       <div className="flex w-full items-center space-x-2 sm:justify-end">
         <Button
+          disabled={isFetching}
           variant="outline"
           size="sm"
           className={cn(
@@ -67,7 +71,11 @@ export default function ImagesSortFilterControlls({
           onClick={() => toggleOrder(ImageSortField.UPLOAD_DATE)}
         >
           <div className="flex gap-2">
-            <UploadCloud className="h-6 w-5" />
+            {isFetching && sortField === ImageSortField.UPLOAD_DATE ? (
+              <Loader2 className="h-6 w-5 animate-spin" />
+            ) : (
+              <UploadCloud className="h-6 w-5" />
+            )}
             Upload Date
           </div>
           {sortField === ImageSortField.UPLOAD_DATE &&
@@ -78,6 +86,7 @@ export default function ImagesSortFilterControlls({
             ))}
         </Button>
         <Button
+          disabled={isFetching}
           variant="outline"
           size="sm"
           className={cn(
@@ -88,17 +97,19 @@ export default function ImagesSortFilterControlls({
           onClick={() => toggleOrder(ImageSortField.CAPTURE_DATE)}
         >
           <div className="flex gap-2">
-            <Camera className="h-6 w-5" />
+            {isFetching && sortField === ImageSortField.CAPTURE_DATE ? (
+              <Loader2 className="h-6 w-5 animate-spin" />
+            ) : (
+              <Camera className="h-6 w-5" />
+            )}
             Capture Date
           </div>
-          {/* <div className=""> */}
           {sortField === ImageSortField.CAPTURE_DATE &&
             (sortOrder === SortOrder.DESC ? (
               <ArrowDownWideNarrow className="h-6 w-5 text-secondary" />
             ) : (
               <ArrowUpNarrowWide className="h-6 w-5 text-secondary" />
             ))}
-          {/* </div> */}
         </Button>
       </div>
     </div>
