@@ -4,7 +4,6 @@ import { SessionProvider } from "next-auth/react";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import localFont from "next/font/local";
-import { notFound } from "next/navigation";
 import NextTopLoader from "nextjs-toploader";
 import { MainNavigationBar } from "~/components/Layouts/navigation";
 import { ThemeProvider } from "~/components/Layouts/theme-provider";
@@ -75,7 +74,7 @@ export default async function RootLayout(props: LayoutProps) {
             <SessionProvider>
               <ThemeProvider
                 attribute="class"
-                defaultTheme="system"
+                defaultTheme="dark"
                 enableSystem
                 disableTransitionOnChange
               >
