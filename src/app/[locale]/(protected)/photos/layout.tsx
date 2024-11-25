@@ -19,6 +19,7 @@ export default async function PhotosLayout({
     page: 1,
     sortField: ImageSortField.UPLOAD_DATE,
     sortOrder: SortOrder.DESC,
+    filterNotConnected: false,
   } satisfies GetOwnImagesInput);
 
   return <HydrateClient>{children}</HydrateClient>;

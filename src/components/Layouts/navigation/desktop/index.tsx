@@ -53,7 +53,7 @@ function DesktopNavigationMenu() {
   };
 
   const ListItem = forwardRef<
-    React.ElementRef<"a">,
+    React.ComponentRef<"a">,
     React.ComponentPropsWithoutRef<"a">
   >(({ className, title, children, ...props }, ref) => {
     return (
