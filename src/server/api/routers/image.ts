@@ -1,6 +1,6 @@
 // src/server/api/routers/image.ts:
 import { TRPCError } from "@trpc/server";
-import { and, count, eq, exists, not } from "drizzle-orm";
+import { SQL, and, count, eq, exists, not, sql } from "drizzle-orm";
 import { z } from "zod";
 import cloudinary from "~/lib/cloudinary";
 import { images, plantImages } from "~/lib/db/schema";
@@ -38,32 +38,35 @@ export const imageRouter = createTRPCRouter({
       const offset = (page - 1) * limit;
 
       // Base condition for both queries
-      const baseCondition = eq(images.ownerId, userId);
+      const isOwnImageCondition = eq(images.ownerId, userId);
 
-      // Instead of using undefined, always return a condition
-      const conditions = [baseCondition];
-      if (filterNotConnected) {
-        conditions.push(
-          not(
+      // Additional condition for filtering unconnected images
+      const isNewImageCondition = filterNotConnected
+        ? not(
             exists(
               ctx.db
                 .select()
                 .from(plantImages)
                 .where(eq(plantImages.imageId, images.id)),
             ),
-          ),
-        );
-      }
+          )
+        : undefined;
 
       // Get total count using Drizzle query builder
       const totalCountResult = await ctx.db
         .select({ count: count() })
         .from(images)
-        .where(and(...conditions));
+        .where(
+          isNewImageCondition
+            ? and(isOwnImageCondition, isNewImageCondition)
+            : isOwnImageCondition,
+        );
+      const totalCount = Number(totalCountResult[0].count);
 
+      // Get the images with pagination, sorting, and filtering
       const imagesList = await ctx.db.query.images.findMany({
         where: (images, { eq, and, not, exists }) => {
-          const conditions = [baseCondition];
+          const conditions = [isOwnImageCondition];
 
           if (filterNotConnected) {
             conditions.push(
@@ -96,8 +99,6 @@ export const imageRouter = createTRPCRouter({
           },
         },
       });
-
-      const totalCount = Number(totalCountResult[0].count);
 
       return {
         images: imagesList,
