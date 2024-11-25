@@ -146,7 +146,7 @@ export default function AllImagesPage() {
             ))}
           </ResponsiveGrid>
 
-          {totalPages > 1 && (
+          {
             <div className="mt-8 flex justify-center">
               <Pagination>
                 <PaginationContent>
@@ -184,7 +184,7 @@ export default function AllImagesPage() {
                 </PaginationContent>
               </Pagination>
             </div>
-          )}
+          }
         </>
       )}
     </PageHeader>

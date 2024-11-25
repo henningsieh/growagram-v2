@@ -42,6 +42,49 @@ async function getPosts() {
   ];
 }
 
+const samplePost = {
+  id: "1",
+  user: {
+    id: "user1",
+    name: "Django ElRey 🌱",
+    avatar: "/images/XYUV-dwm_400x400.jpg",
+  },
+  grow: {
+    id: "grow1",
+    name: "Summer Grow 2023",
+    startDate: new Date("2023-06-01"),
+    type: "outdoor" as const,
+  },
+  plants: [
+    {
+      id: "plant1",
+      name: "Blue Dream",
+      strain: "Blue Dream",
+      growPhase: "Vegetative",
+    },
+    {
+      id: "plant2",
+      name: "OG Kush",
+      strain: "OG Kush",
+      growPhase: "Flowering",
+    },
+  ],
+  images: [
+    {
+      id: "img1",
+      url: "/images/IMG_20241005_062601~2.jpg",
+      captureDate: new Date(),
+    },
+    {
+      id: "img2",
+      url: "/images/IMG_20241020_102123.jpg",
+      captureDate: new Date(),
+    },
+  ],
+  createdAt: new Date(),
+  trigger: "new_plant" as const,
+};
+
 export default async function TimelinePage() {
   const posts = await getPosts();
 
@@ -49,7 +92,8 @@ export default async function TimelinePage() {
     <div className="container mx-auto px-4 py-8">
       <h1 className="mb-6 text-3xl font-bold">Grow Timeline</h1>
       {posts.map((post) => (
-        <PostComponent key={post.id} post={post} />
+        // <PostComponent key={post.id} post={post} />
+        <PostComponent key={post.id} post={samplePost} />
       ))}
     </div>
   );
