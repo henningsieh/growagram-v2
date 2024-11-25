@@ -1,5 +1,6 @@
 "use client";
 
+// src/components/features/Timeline/post.tsx
 import {
   AlertCircle,
   Calendar,
@@ -11,11 +12,10 @@ import {
 } from "lucide-react";
 import { useLocale } from "next-intl";
 import Image from "next/image";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
-import { Card, CardHeader, CardTitle } from "~/components/ui/card";
 import {
   Carousel,
   CarouselContent,
@@ -29,11 +29,12 @@ import {
   PopoverTrigger,
 } from "~/components/ui/popover";
 import { Separator } from "~/components/ui/separator";
+import { api } from "~/lib/trpc/react";
 import { formatDate } from "~/lib/utils";
 import {
+  GetOwnImagesInput,
   GetOwnImagesOutput,
   GetOwnPlantOutput,
-  GetOwnPlantsOutput,
 } from "~/server/api/root";
 
 import PlantCard from "../Plants/plant-card";
@@ -51,18 +52,12 @@ interface Grow {
   type: "indoor" | "outdoor";
 }
 
-interface Image {
-  id: string;
-  url: string;
-  captureDate: Date;
-}
-
 interface Post {
   id: string;
   user: User;
   grow?: Grow;
   plants?: GetOwnPlantOutput[];
-  images?: Image[];
+  images?: GetOwnImagesOutput;
   createdAt: Date;
   message?: string;
   trigger:
@@ -76,7 +71,7 @@ interface Post {
   shares?: number;
 }
 
-export default function PostComponent({ post }: { post: Post }) {
+export default function PostComponent({ id }: { id: string }) {
   const locale = useLocale();
   const [open, setOpen] = useState(false);
   const [liked, setLiked] = useState(false);
@@ -84,36 +79,160 @@ export default function PostComponent({ post }: { post: Post }) {
   const handleMouseEnter = () => setOpen(true);
   const handleMouseLeave = () => setOpen(false);
 
+  // Load own images from database
+  const { data, isLoading, isFetching } = api.image.getOwnImages.useQuery(
+    {
+      limit: 3,
+    } satisfies GetOwnImagesInput,
+    // {
+    //   initialData: prefetchedFromCache,
+    //   staleTime: STALE_TIME,
+    // },
+  );
+  const userImages = data?.images ?? [];
+
+  const { data: plantsData, isLoading: isPlantsLoading } =
+    api.plant.getOwnPlants.useQuery({ limit: 2 });
+
+  // Move plants array into useMemo to ensure stable reference
+  const plants = useMemo(() => plantsData?.plants || [], [plantsData]);
+
+  const samplePost = {
+    id: "1",
+    user: {
+      id: "user1",
+      name: "Django ElRey 🌱",
+      avatar: "/images/XYUV-dwm_400x400.jpg",
+    },
+    grow: {
+      id: "grow1",
+      name: "Summer Grow 2023",
+      startDate: new Date("2023-06-01"),
+      type: "indoor" as const,
+    },
+    images: userImages,
+    plants,
+    // plants: [
+    //   {
+    //     id: "plant1",
+    //     name: "Blue Dream",
+    //     createdAt: new Date("2023-06-10"),
+    //     updatedAt: new Date("2023-07-01"),
+    //     ownerId: "user1",
+    //     headerImageId: "img1",
+    //     growId: "grow1",
+    //     strainId: "strain1", // Assuming you have a strain ID for this plant
+    //     startDate: new Date("2023-06-10"),
+    //     seedlingPhaseStart: new Date("2023-06-10"),
+    //     vegetationPhaseStart: new Date("2023-06-20"),
+    //     floweringPhaseStart: new Date("2023-07-01"),
+    //     harvestDate: null, // Assuming it hasn't been harvested yet
+    //     curingPhaseStart: null, // Assuming it's not yet in the curing phase
+    //     plantImages: [
+    //       {
+    //         image: {
+    //           id: "img1",
+    //           imageUrl: "/images/IMG_20241005_062601~2.jpg",
+    //         },
+    //       },
+    //     ],
+    //     strain: {
+    //       id: "strain1",
+    //       name: "Blue Dream",
+    //       thcContent: 20, // Mock THC content
+    //       cbdContent: 0.1, // Mock CBD content
+    //       breeder: {
+    //         id: "breeder1",
+    //         name: "Breeder X",
+    //       },
+    //     },
+    //     headerImage: {
+    //       id: "img1",
+    //       imageUrl: "/images/IMG_20241005_062601~2.jpg",
+    //     },
+    //   },
+    //   {
+    //     id: "plant2",
+    //     name: "OG Kush",
+    //     createdAt: new Date("2023-07-15"),
+    //     updatedAt: new Date("2023-08-01"),
+    //     ownerId: "user1",
+    //     headerImageId: "img2",
+    //     growId: "grow1",
+    //     strainId: "strain2", // Assuming you have a strain ID for this plant
+    //     startDate: new Date("2023-07-15"),
+    //     seedlingPhaseStart: new Date("2023-07-15"),
+    //     vegetationPhaseStart: new Date("2023-07-20"),
+    //     floweringPhaseStart: new Date("2023-08-01"),
+    //     harvestDate: null, // Assuming it hasn't been harvested yet
+    //     curingPhaseStart: null, // Assuming it's not yet in the curing phase
+    //     plantImages: [
+    //       {
+    //         image: {
+    //           id: "img2",
+    //           imageUrl: "/images/IMG_20241020_102123.jpg",
+    //         },
+    //       },
+    //     ],
+    //     strain: {
+    //       id: "strain2",
+    //       name: "OG Kush",
+    //       thcContent: 18, // Mock THC content
+    //       cbdContent: 0.2, // Mock CBD content
+    //       breeder: {
+    //         id: "breeder2",
+    //         name: "Breeder Y",
+    //       },
+    //     },
+    //     headerImage: {
+    //       id: "img2",
+    //       imageUrl: "/images/IMG_20241020_102123.jpg",
+    //     },
+    //   },
+    // ],
+    createdAt: new Date(),
+    trigger: "plant_update",
+    message: "yolo",
+  };
+
   const renderTriggerMessage = () => {
-    switch (post.trigger) {
+    switch (samplePost.trigger) {
       case "new_grow":
-        return `${post.user.name} started a new grow: ${post.grow?.name}`;
+        return `${samplePost.user.name} started a new grow: ${samplePost.grow?.name}`;
       case "new_plant":
-        return `${post.user.name} added ${post.plants?.length} new plant${post.plants!.length > 1 ? "s" : ""} to ${post.grow ? `the grow ${post.grow.name}` : "their collection"}`;
+        return `${samplePost.user.name} added ${samplePost.plants?.length} new plant${
+          samplePost.plants!.length > 1 ? "s" : ""
+        } to ${samplePost.grow ? `the grow ${samplePost.grow.name}` : "their collection"}`;
       case "plant_update":
-        return `${post.user.name} updated ${post.plants?.length} plant${post.plants!.length > 1 ? "s" : ""}`;
+        return `${samplePost.user.name} updated ${samplePost.plants?.length} plant${
+          samplePost.plants!.length > 1 ? "s" : ""
+        }`;
       case "image_upload":
-        return `${post.user.name} added ${post.images?.length} new image${post.images!.length > 1 ? "s" : ""}`;
+        return `${samplePost.user.name} added ${samplePost.images?.length} new image${
+          samplePost.images!.length > 1 ? "s" : ""
+        }`;
       default:
-        return post.message || "";
+        return samplePost.message || "";
     }
   };
 
   return (
-    <Card className="space-y-2 overflow-hidden rounded-none p-4">
-      <div className="flex items-center gap-4 pl-0">
-        {/* the following 3 elements must be in a horizontal row! */}
-
+    <div className="w-full border-b border-l border-r border-border p-2 sm:p-4">
+      <div className="flex gap-1">
+        {/* Avatar */}
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger
             asChild
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           >
-            <Avatar className="h-16 w-16 cursor-pointer ring-2 ring-transparent transition-all hover:ring-primary">
-              <AvatarImage src={post.user.avatar} alt={post.user.name} />
+            <Avatar className="h-9 w-9 cursor-pointer ring-2 ring-transparent transition-all hover:ring-primary sm:h-11 sm:w-11">
+              <AvatarImage
+                src={samplePost.user.avatar}
+                alt={samplePost.user.name}
+              />
               <AvatarFallback>
-                {post.user.name.slice(0, 2).toUpperCase()}
+                {samplePost.user.name.slice(0, 2).toUpperCase()}
               </AvatarFallback>
             </Avatar>
           </PopoverTrigger>
@@ -124,13 +243,18 @@ export default function PostComponent({ post }: { post: Post }) {
           >
             <div className="flex items-center gap-3">
               <Avatar className="h-14 w-14">
-                <AvatarImage src={post.user.avatar} alt={post.user.name} />
+                <AvatarImage
+                  src={samplePost.user.avatar}
+                  alt={samplePost.user.name}
+                />
                 <AvatarFallback>
-                  {post.user.name.slice(0, 2).toUpperCase()}
+                  {samplePost.user.name.slice(0, 2).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
               <div className="flex flex-col">
-                <span className="text-lg font-medium">{post.user.name}</span>
+                <span className="text-lg font-medium">
+                  {samplePost.user.name}
+                </span>
                 <span className="text-sm text-muted-foreground">
                   Member since 2023
                 </span>
@@ -139,41 +263,39 @@ export default function PostComponent({ post }: { post: Post }) {
           </PopoverContent>
         </Popover>
 
-        <div className="flex w-full items-start justify-between">
-          <div className="flex flex-col">
-            <span className="font-semibold">{post.user.name}</span>
-            <span className="text-sm text-muted-foreground">
-              {formatDate(post.createdAt, locale, {
-                month: "short",
-                weekday: "short",
-                includeYear: true,
-              })}
-            </span>
+        {/* Post Content */}
+        <div className="flex-1">
+          {/* Header */}
+          <div className="mb-2 flex items-start justify-between">
+            <div className="flex flex-col">
+              <span className="font-semibold">{samplePost.user.name}</span>
+              <span className="text-xs text-muted-foreground sm:text-sm">
+                {formatDate(samplePost.createdAt, locale, {
+                  month: "short",
+                  weekday: "short",
+                  includeYear: true,
+                })}
+              </span>
+            </div>
+            <Button variant="ghost" size="icon" className="-mt-2">
+              <MoreHorizontal className="h-5 w-5" />
+            </Button>
           </div>
-          <Button variant="ghost" size="icon">
-            <MoreHorizontal className="h-5 w-5" />
-          </Button>
-        </div>
-      </div>
-      <div className="flex gap-4 pl-20">
-        <div className="w-full">
-          <Card className="flex-grow">
-            <CardHeader className="m-1 rounded-t-sm bg-accent">
-              <CardTitle className="flex w-full items-center gap-2">
-                <AlertCircle className="h-7 w-7" />
-                <p className="p-0">{renderTriggerMessage()}</p>
-              </CardTitle>
-            </CardHeader>
 
-            {post.images && post.images.length > 0 && (
+          {/* Message */}
+          <p className="mb-3 text-sm">{renderTriggerMessage()}</p>
+
+          {/* Images */}
+          {samplePost.images && samplePost.images.length > 0 && (
+            <div className="mb-3 overflow-hidden rounded-lg">
               <Carousel className="w-full">
                 <CarouselContent>
-                  {post.images.map((image, index) => (
+                  {samplePost.images.map((image, index) => (
                     <CarouselItem key={image.id}>
-                      <div className="relative aspect-video w-full overflow-hidden">
+                      <div className="relative aspect-video w-full sm:aspect-square">
                         <Image
-                          fill={true}
-                          src={image.url}
+                          fill
+                          src={image.imageUrl}
                           alt={`Image ${index + 1}`}
                           className="object-cover"
                         />
@@ -184,86 +306,73 @@ export default function PostComponent({ post }: { post: Post }) {
                 <CarouselPrevious className="left-2" />
                 <CarouselNext className="right-2" />
               </Carousel>
-            )}
+            </div>
+          )}
 
-            {post.grow && (
-              <div className="border-t p-4">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-semibold">{post.grow.name}</h3>
-                  <Badge>
-                    <span className="flex items-center gap-2">
-                      <Sun className="h-4 w-4" />
-                      {post.grow.type}
-                    </span>
-                  </Badge>
-                </div>
-                <div className="mt-2 flex items-center gap-1.5 text-sm text-muted-foreground">
-                  <Calendar className="h-4 w-4" />
-                  {formatDate(post.grow.startDate, locale, {
-                    includeYear: true,
-                  })}
-                </div>
-              </div>
-            )}
-
-            {post.plants && post.plants.length > 0 && (
-              <>
-                <Separator />
-                <div className="p-4">
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    {post.plants.map((plant) => (
-                      <div key={plant.id}>
-                        <PlantCard plant={plant} />
-                        {/* <div
-                          key={plant.id}
-                          className="rounded-lg bg-muted p-3 text-sm"
-                        >
-                          <p className="font-bold">{plant.name}</p>
-                          <p>Strain: {plant.strain?.name}</p>
-                        </div> */}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </>
-            )}
-
-            <div className="border-t p-4">
+          {/* Grow Info */}
+          {samplePost.grow && (
+            <div className="mb-3 rounded-lg bg-muted p-3">
               <div className="flex items-center justify-between">
-                <div className="flex gap-4">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="flex items-center gap-2"
-                    onClick={() => setLiked(!liked)}
-                  >
-                    <Heart
-                      className={`h-5 w-5 ${liked ? "fill-current text-red-500" : ""}`}
-                    />
-                    <span>{post.likes || 0}</span>
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="flex items-center gap-2"
-                  >
-                    <MessageCircle className="h-5 w-5" />
-                    <span>{post.comments || 0}</span>
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="flex items-center gap-2"
-                  >
-                    <Share2 className="h-5 w-5" />
-                    <span>{post.shares || 0}</span>
-                  </Button>
-                </div>
+                <h3 className="text-sm font-semibold">
+                  {samplePost.grow.name}
+                </h3>
+                <Badge variant="secondary" className="text-xs">
+                  <Sun className="mr-1 h-3 w-3" />
+                  {samplePost.grow.type}
+                </Badge>
+              </div>
+              <div className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground">
+                <Calendar className="h-3 w-3" />
+                {formatDate(samplePost.grow.startDate, locale, {
+                  includeYear: true,
+                })}
               </div>
             </div>
-          </Card>
+          )}
+
+          {/* Plants Grid */}
+          {samplePost.plants && samplePost.plants.length > 0 && (
+            <div className="mb-3 grid grid-cols-2 gap-2">
+              {samplePost.plants.map((plant) => (
+                <>
+                  <PlantCard plant={plant} />
+                  {/* <div key={plant.id} className="rounded-lg bg-muted p-2 text-xs">
+                  <p className="font-medium">{plant.name}</p>
+                  <p className="text-muted-foreground">
+                    Strain: {plant.strain?.name}
+                  </p>
+                </div> */}
+                </>
+              ))}
+            </div>
+          )}
+
+          {/* Actions */}
+          <div className="flex gap-6 pt-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-auto p-0"
+              onClick={() => setLiked(!liked)}
+            >
+              <Heart
+                className={`mr-2 h-4 w-4 ${
+                  liked ? "fill-current text-red-500" : ""
+                }`}
+              />
+              <span className="text-xs">{0}</span>
+            </Button>
+            <Button variant="ghost" size="sm" className="h-auto p-0">
+              <MessageCircle className="mr-2 h-4 w-4" />
+              <span className="text-xs">{0}</span>
+            </Button>
+            <Button variant="ghost" size="sm" className="h-auto p-0">
+              <Share2 className="mr-2 h-4 w-4" />
+              <span className="text-xs">{0}</span>
+            </Button>
+          </div>
         </div>
       </div>
-    </Card>
+    </div>
   );
 }
