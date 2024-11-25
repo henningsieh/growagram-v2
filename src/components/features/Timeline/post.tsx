@@ -30,7 +30,11 @@ import {
 } from "~/components/ui/popover";
 import { Separator } from "~/components/ui/separator";
 import { formatDate } from "~/lib/utils";
-import { GetOwnImagesOutput, GetOwnPlantsOutput } from "~/server/api/root";
+import {
+  GetOwnImagesOutput,
+  GetOwnPlantOutput,
+  GetOwnPlantsOutput,
+} from "~/server/api/root";
 
 import PlantCard from "../Plants/plant-card";
 
@@ -47,13 +51,6 @@ interface Grow {
   type: "indoor" | "outdoor";
 }
 
-interface Plant {
-  id: string;
-  name: string;
-  strain: string;
-  growPhase: string;
-}
-
 interface Image {
   id: string;
   url: string;
@@ -64,7 +61,7 @@ interface Post {
   id: string;
   user: User;
   grow?: Grow;
-  plants?: Plant[];
+  plants?: GetOwnPlantOutput[];
   images?: Image[];
   createdAt: Date;
   message?: string;
@@ -106,6 +103,7 @@ export default function PostComponent({ post }: { post: Post }) {
     <Card className="space-y-2 overflow-hidden rounded-none p-4">
       <div className="flex items-center gap-4 pl-0">
         {/* the following 3 elements must be in a horizontal row! */}
+
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger
             asChild
@@ -160,9 +158,9 @@ export default function PostComponent({ post }: { post: Post }) {
       <div className="flex gap-4 pl-20">
         <div className="w-full">
           <Card className="flex-grow">
-            <CardHeader className="m-1 rounded-sm bg-accent">
+            <CardHeader className="m-1 rounded-t-sm bg-accent">
               <CardTitle className="flex w-full items-center gap-2">
-                <AlertCircle className="h-10 w-10" />
+                <AlertCircle className="h-7 w-7" />
                 <p className="p-0">{renderTriggerMessage()}</p>
               </CardTitle>
             </CardHeader>
@@ -214,15 +212,16 @@ export default function PostComponent({ post }: { post: Post }) {
                 <div className="p-4">
                   <div className="grid gap-4 sm:grid-cols-2">
                     {post.plants.map((plant) => (
-                      <PlantCard key={plant.id} plant={plant} />
-                      // <div
-                      //   key={plant.id}
-                      //   className="rounded-lg bg-muted p-3 text-sm"
-                      // >
-                      //   <p className="font-bold">{plant.name}</p>
-                      //   <p>Strain: {plant.strain}</p>
-                      //   <p>Growth Phase: {plant.growPhase}</p>
-                      // </div>
+                      <div key={plant.id}>
+                        <PlantCard plant={plant} />
+                        {/* <div
+                          key={plant.id}
+                          className="rounded-lg bg-muted p-3 text-sm"
+                        >
+                          <p className="font-bold">{plant.name}</p>
+                          <p>Strain: {plant.strain?.name}</p>
+                        </div> */}
+                      </div>
                     ))}
                   </div>
                 </div>

@@ -1,4 +1,5 @@
 // src/app/[locale]/(public)/timeline/page.tsx:
+import PageHeader from "~/components/Layouts/page-header";
 import PostComponent from "~/components/features/Timeline/post";
 
 // This is a mock function to simulate fetching posts
@@ -59,26 +60,78 @@ const samplePost = {
     {
       id: "plant1",
       name: "Blue Dream",
-      strain: "Blue Dream",
-      growPhase: "Vegetative",
+      createdAt: new Date("2023-06-10"),
+      updatedAt: new Date("2023-07-01"),
+      ownerId: "user1",
+      headerImageId: "img1",
+      growId: "grow1",
+      strainId: "strain1", // Assuming you have a strain ID for this plant
+      startDate: new Date("2023-06-10"),
+      seedlingPhaseStart: new Date("2023-06-10"),
+      vegetationPhaseStart: new Date("2023-06-20"),
+      floweringPhaseStart: new Date("2023-07-01"),
+      harvestDate: null, // Assuming it hasn't been harvested yet
+      curingPhaseStart: null, // Assuming it's not yet in the curing phase
+      plantImages: [
+        {
+          image: {
+            id: "img1",
+            imageUrl: "/images/IMG_20241005_062601~2.jpg",
+          },
+        },
+      ],
+      strain: {
+        id: "strain1",
+        name: "Blue Dream",
+        thcContent: 20, // Mock THC content
+        cbdContent: 0.1, // Mock CBD content
+        breeder: {
+          id: "breeder1",
+          name: "Breeder X",
+        },
+      },
+      headerImage: {
+        id: "img1",
+        imageUrl: "/images/IMG_20241005_062601~2.jpg",
+      },
     },
     {
       id: "plant2",
       name: "OG Kush",
-      strain: "OG Kush",
-      growPhase: "Flowering",
-    },
-  ],
-  images: [
-    {
-      id: "img1",
-      url: "/images/IMG_20241005_062601~2.jpg",
-      captureDate: new Date(),
-    },
-    {
-      id: "img2",
-      url: "/images/IMG_20241020_102123.jpg",
-      captureDate: new Date(),
+      createdAt: new Date("2023-07-15"),
+      updatedAt: new Date("2023-08-01"),
+      ownerId: "user1",
+      headerImageId: "img2",
+      growId: "grow1",
+      strainId: "strain2", // Assuming you have a strain ID for this plant
+      startDate: new Date("2023-07-15"),
+      seedlingPhaseStart: new Date("2023-07-15"),
+      vegetationPhaseStart: new Date("2023-07-20"),
+      floweringPhaseStart: new Date("2023-08-01"),
+      harvestDate: null, // Assuming it hasn't been harvested yet
+      curingPhaseStart: null, // Assuming it's not yet in the curing phase
+      plantImages: [
+        {
+          image: {
+            id: "img2",
+            imageUrl: "/images/IMG_20241020_102123.jpg",
+          },
+        },
+      ],
+      strain: {
+        id: "strain2",
+        name: "OG Kush",
+        thcContent: 18, // Mock THC content
+        cbdContent: 0.2, // Mock CBD content
+        breeder: {
+          id: "breeder2",
+          name: "Breeder Y",
+        },
+      },
+      headerImage: {
+        id: "img2",
+        imageUrl: "/images/IMG_20241020_102123.jpg",
+      },
     },
   ],
   createdAt: new Date(),
@@ -89,12 +142,11 @@ export default async function TimelinePage() {
   const posts = await getPosts();
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="mb-6 text-3xl font-bold">Grow Timeline</h1>
+    <>
       {posts.map((post) => (
         // <PostComponent key={post.id} post={post} />
         <PostComponent key={post.id} post={samplePost} />
       ))}
-    </div>
+    </>
   );
 }
