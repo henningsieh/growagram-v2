@@ -151,8 +151,8 @@ export default function PhotoCard({ image, sortField }: PhotoCardProps) {
                 className={cn(
                   "flex items-center gap-2 px-1",
                   sortField === ImageSortField.UPLOAD_DATE
-                    ? "text-foreground"
-                    : "text-muted-foreground",
+                    ? "text-secondary"
+                    : "text-accent-foreground",
                 )}
               >
                 <UploadCloud size={18} />
@@ -173,8 +173,8 @@ export default function PhotoCard({ image, sortField }: PhotoCardProps) {
                 className={cn(
                   "flex items-center gap-2 px-1",
                   sortField === ImageSortField.CAPTURE_DATE
-                    ? "text-foreground"
-                    : "text-muted-foreground",
+                    ? "text-secondary"
+                    : "text-accent-foreground",
                 )}
               >
                 <Camera size={18} />
