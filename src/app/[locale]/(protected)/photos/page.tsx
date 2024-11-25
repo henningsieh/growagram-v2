@@ -20,64 +20,64 @@ import { GetOwnImagesInput } from "~/server/api/root";
 import { ImageSortField, SortOrder } from "~/types/image";
 
 const ITEMS_PER_PAGE = 4;
+const STALE_TIME = 30000; // 30s
 
 export default function AllImagesPage() {
+  const [currentPage, setCurrentPage] = useState(1);
   const [sortField, setSortField] = useState<ImageSortField>(
     ImageSortField.UPLOAD_DATE,
   );
   const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.DESC);
   const [filterNotConnected, setFilterNotConnected] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
 
   // Get the utils for accessing the cache
   const utils = api.useUtils();
 
   // Get the prefetched data from the cache
-  const initialData = utils.image.getOwnImages.getData({
+  const prefetchedFromCache = utils.image.getOwnImages.getData({
     limit: ITEMS_PER_PAGE,
     page: currentPage,
+    sortField,
+    sortOrder,
+    filterNotConnected,
   } satisfies GetOwnImagesInput);
 
-  const { data, isLoading, isFetching, refetch } =
-    api.image.getOwnImages.useQuery(
-      {
-        limit: ITEMS_PER_PAGE,
-        page: currentPage,
-        sortField,
-        sortOrder,
-      } satisfies GetOwnImagesInput,
-      {
-        initialData, // Use the prefetched data
-        // The time in milliseconds after data is considered stale.
-        // If the data is old it will refetched and  not be returned from the cache.
-        staleTime: 10000, // 10 seconds
-      },
-    );
+  // Load own images from database
+  const { data, isLoading, isFetching } = api.image.getOwnImages.useQuery(
+    {
+      limit: ITEMS_PER_PAGE,
+      page: currentPage,
+      sortField,
+      sortOrder,
+      filterNotConnected,
+    } satisfies GetOwnImagesInput,
+    {
+      initialData: prefetchedFromCache,
+      staleTime: STALE_TIME,
+    },
+  );
 
   const userImages = data?.images ?? [];
   const totalPages = data?.totalPages ?? 1;
 
-  const filteredUserImages = filterNotConnected
-    ? userImages.filter((image) => image.plantImages.length === 0)
-    : userImages;
-
   // Handle sort changes
   const handleSortChange = async (field: ImageSortField, order: SortOrder) => {
-    // First invalidate the cache for all queries
-    // await utils.image.getOwnImages.invalidate();
-
     // Update the state
     setSortField(field);
     setSortOrder(order);
+
     // setCurrentPage(1);
-    await refetch();
+    // await refetch();
   };
 
   // Handle filter changes
   const handleFilterChange = async (checked: boolean) => {
+    // First invalidate the cache for all queries
+    // await utils.image.getOwnImages.invalidate();
     setFilterNotConnected(checked);
-    await utils.image.getOwnImages.invalidate();
+
     setCurrentPage(1);
+    // await refetch();
   };
 
   // Handle page changes
@@ -130,7 +130,7 @@ export default function AllImagesPage() {
         onSortChange={handleSortChange}
         onFilterChange={handleFilterChange}
       />
-      {!isFetching && filteredUserImages.length === 0 ? (
+      {!isFetching && userImages.length === 0 ? (
         <p className="mt-8 text-center text-muted-foreground">
           {filterNotConnected
             ? "No images without connected plants have been found."
@@ -141,48 +141,50 @@ export default function AllImagesPage() {
       ) : (
         <>
           <ResponsiveGrid>
-            {filteredUserImages.map((image) => (
+            {userImages.map((image) => (
               <PhotoCard image={image} key={image.id} sortField={sortField} />
             ))}
           </ResponsiveGrid>
 
-          <div className="mt-8 flex justify-center">
-            <Pagination>
-              <PaginationContent>
-                <PaginationItem>
-                  <PaginationPrevious
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 1 || isFetching}
-                  />
-                </PaginationItem>
+          {totalPages > 1 && (
+            <div className="mt-8 flex justify-center">
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      disabled={currentPage === 1 || isFetching}
+                    />
+                  </PaginationItem>
 
-                {getPaginationNumbers().map((page, index) =>
-                  page === "..." ? (
-                    <PaginationItem key={`ellipsis-${index}`}>
-                      <PaginationEllipsis />
-                    </PaginationItem>
-                  ) : (
-                    <PaginationItem key={page}>
-                      <PaginationLink
-                        onClick={() => handlePageChange(page as number)}
-                        isActive={currentPage === page}
-                        disabled={isFetching}
-                      >
-                        <p>{page}</p>
-                      </PaginationLink>
-                    </PaginationItem>
-                  ),
-                )}
+                  {getPaginationNumbers().map((page, index) =>
+                    page === "..." ? (
+                      <PaginationItem key={`ellipsis-${index}`}>
+                        <PaginationEllipsis />
+                      </PaginationItem>
+                    ) : (
+                      <PaginationItem key={page}>
+                        <PaginationLink
+                          onClick={() => handlePageChange(page as number)}
+                          isActive={currentPage === page}
+                          disabled={isFetching}
+                        >
+                          <p>{page}</p>
+                        </PaginationLink>
+                      </PaginationItem>
+                    ),
+                  )}
 
-                <PaginationItem>
-                  <PaginationNext
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === totalPages || isFetching}
-                  />
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
-          </div>
+                  <PaginationItem>
+                    <PaginationNext
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      disabled={currentPage === totalPages || isFetching}
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            </div>
+          )}
         </>
       )}
     </PageHeader>

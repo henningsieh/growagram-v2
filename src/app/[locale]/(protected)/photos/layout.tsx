@@ -14,11 +14,12 @@ export default async function PhotosLayout({
   children: React.ReactNode;
 }) {
   // Prefetch initial data with default sorting for the first page
-  void api.image.getOwnImages.prefetch({
+  await api.image.getOwnImages.prefetch({
     limit: 4,
     page: 1,
     sortField: ImageSortField.UPLOAD_DATE,
     sortOrder: SortOrder.DESC,
+    filterNotConnected: false,
   } satisfies GetOwnImagesInput);
 
   return <HydrateClient>{children}</HydrateClient>;
