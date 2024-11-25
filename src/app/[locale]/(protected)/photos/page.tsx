@@ -1,15 +1,25 @@
 "use client";
 
-// src/app/[locale]/(protected)/photos/page.tsx:
-import { useCallback, useEffect, useRef, useState } from "react";
-import InfiniteScrollLoader from "~/components/Layouts/InfiniteScrollLoader";
+import { useEffect, useState } from "react";
+import SpinningLoader from "~/components/Layouts/loader";
 import PageHeader from "~/components/Layouts/page-header";
 import ResponsiveGrid from "~/components/Layouts/responsive-grid";
 import PhotoCard from "~/components/features/Photos/photo-card";
 import ImagesSortFilterControlls from "~/components/features/Photos/sort-filter-controlls";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "~/components/ui/pagination";
 import { api } from "~/lib/trpc/react";
-import { GetOwnImagesInput, GetOwnImagesOutput } from "~/server/api/root";
+import { GetOwnImagesInput } from "~/server/api/root";
 import { ImageSortField, SortOrder } from "~/types/image";
+
+const ITEMS_PER_PAGE = 4;
 
 export default function AllImagesPage() {
   const [sortField, setSortField] = useState<ImageSortField>(
@@ -17,82 +27,93 @@ export default function AllImagesPage() {
   );
   const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.DESC);
   const [filterNotConnected, setFilterNotConnected] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
 
   // Get the utils for accessing the cache
   const utils = api.useUtils();
 
   // Get the prefetched data from the cache
-  const initialData = utils.image.getOwnImages.getInfiniteData({
-    // the input must match the server-side `prefetchInfinite`
-    limit: 2,
+  const initialData = utils.image.getOwnImages.getData({
+    limit: ITEMS_PER_PAGE,
+    page: currentPage,
   } satisfies GetOwnImagesInput);
 
-  const {
-    data,
-    isLoading,
-    isFetching,
-    hasNextPage,
-    fetchNextPage,
-    isFetchingNextPage,
-    refetch,
-  } = api.image.getOwnImages.useInfiniteQuery(
-    {
-      limit: 2, // for DEV mode and testing, 12 in PRODUCTION mode
-      sortField,
-      sortOrder,
-    } satisfies GetOwnImagesInput,
-    {
-      getNextPageParam: (lastPage) => lastPage.nextCursor,
-      initialData, // Use the prefetched data
-    },
-  );
+  const { data, isLoading, isFetching, refetch } =
+    api.image.getOwnImages.useQuery(
+      {
+        limit: ITEMS_PER_PAGE,
+        page: currentPage,
+        sortField,
+        sortOrder,
+      } satisfies GetOwnImagesInput,
+      {
+        initialData, // Use the prefetched data
+        // The time in milliseconds after data is considered stale.
+        // If the data is old it will refetched and  not be returned from the cache.
+        staleTime: 10000, // 10 seconds
+      },
+    );
 
-  const userImages: GetOwnImagesOutput =
-    data?.pages.flatMap((page) => page.images) ?? [];
+  const userImages = data?.images ?? [];
+  const totalPages = data?.totalPages ?? 1;
 
   const filteredUserImages = filterNotConnected
     ? userImages.filter((image) => image.plantImages.length === 0)
     : userImages;
 
-  // Intersection Observer callback
-  const onIntersect = useCallback(
-    (entries: IntersectionObserverEntry[]) => {
-      const firstEntry = entries[0];
-      if (firstEntry.isIntersecting && hasNextPage && !isFetchingNextPage) {
-        void fetchNextPage();
-      }
-    },
-    [fetchNextPage, hasNextPage, isFetchingNextPage],
-  );
-
-  // Set up intersection observer
-  const loadingRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const observer = new IntersectionObserver(onIntersect, {
-      root: null, // Use viewport as root
-      rootMargin: "0px",
-      threshold: 0.01,
-    });
-    if (loadingRef.current) {
-      observer.observe(loadingRef.current);
-    }
-    return () => observer.disconnect();
-  }, [onIntersect]);
-
   // Handle sort changes
-  const handleSortChange = useCallback(
-    async (field: ImageSortField, order: SortOrder) => {
-      setSortField(field);
-      setSortOrder(order);
-      await refetch();
-    },
-    [refetch],
-  );
+  const handleSortChange = async (field: ImageSortField, order: SortOrder) => {
+    // First invalidate the cache for all queries
+    // await utils.image.getOwnImages.invalidate();
+
+    // Update the state
+    setSortField(field);
+    setSortOrder(order);
+    // setCurrentPage(1);
+    await refetch();
+  };
 
   // Handle filter changes
-  const handleFilterChange = (checked: boolean) => {
+  const handleFilterChange = async (checked: boolean) => {
     setFilterNotConnected(checked);
+    await utils.image.getOwnImages.invalidate();
+    setCurrentPage(1);
   };
+
+  // Handle page changes
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  // Generate pagination numbers
+  const getPaginationNumbers = () => {
+    const pages: number[] = [];
+    const showAroundCurrent = 2;
+
+    for (let i = 1; i <= totalPages; i++) {
+      if (
+        i === 1 ||
+        i === totalPages ||
+        (i >= currentPage - showAroundCurrent &&
+          i <= currentPage + showAroundCurrent)
+      ) {
+        pages.push(i);
+      }
+    }
+
+    return pages.reduce((acc: (number | string)[], page, index, array) => {
+      if (index > 0 && array[index - 1] !== page - 1) {
+        acc.push("...");
+      }
+      acc.push(page);
+      return acc;
+    }, []);
+  };
+
+  useEffect(() => {
+    console.debug("currentPage: ", currentPage);
+    console.debug("totalPages: ", totalPages);
+  }, [currentPage, totalPages]);
 
   return (
     <PageHeader
@@ -104,6 +125,7 @@ export default function AllImagesPage() {
       <ImagesSortFilterControlls
         sortField={sortField}
         sortOrder={sortOrder}
+        isFetching={isFetching}
         filterNotConnected={filterNotConnected}
         onSortChange={handleSortChange}
         onFilterChange={handleFilterChange}
@@ -114,21 +136,53 @@ export default function AllImagesPage() {
             ? "No images without connected plants have been found."
             : "You haven't uploaded any images yet."}
         </p>
+      ) : isLoading ? (
+        <SpinningLoader />
       ) : (
         <>
           <ResponsiveGrid>
-            {filteredUserImages.map((image, key) => (
-              <PhotoCard image={image} key={key} sortField={sortField} />
+            {filteredUserImages.map((image) => (
+              <PhotoCard image={image} key={image.id} sortField={sortField} />
             ))}
           </ResponsiveGrid>
-          <InfiniteScrollLoader
-            ref={loadingRef}
-            isLoading={isLoading}
-            isFetchingNextPage={isFetchingNextPage}
-            hasNextPage={hasNextPage}
-            itemsLength={filteredUserImages.length || 0}
-            noMoreMessage="No more images to load."
-          />
+
+          <div className="mt-8 flex justify-center">
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1 || isFetching}
+                  />
+                </PaginationItem>
+
+                {getPaginationNumbers().map((page, index) =>
+                  page === "..." ? (
+                    <PaginationItem key={`ellipsis-${index}`}>
+                      <PaginationEllipsis />
+                    </PaginationItem>
+                  ) : (
+                    <PaginationItem key={page}>
+                      <PaginationLink
+                        onClick={() => handlePageChange(page as number)}
+                        isActive={currentPage === page}
+                        disabled={isFetching}
+                      >
+                        <p>{page}</p>
+                      </PaginationLink>
+                    </PaginationItem>
+                  ),
+                )}
+
+                <PaginationItem>
+                  <PaginationNext
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages || isFetching}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </div>
         </>
       )}
     </PageHeader>

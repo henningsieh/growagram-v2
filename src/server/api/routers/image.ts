@@ -1,6 +1,6 @@
 // src/server/api/routers/image.ts:
 import { TRPCError } from "@trpc/server";
-import { and, eq } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { z } from "zod";
 import cloudinary from "~/lib/cloudinary";
 import { images, plantImages } from "~/lib/db/schema";
@@ -13,15 +13,15 @@ export const imageRouter = createTRPCRouter({
     .input(
       z
         .object({
-          limit: z.number().min(1).max(100).default(9).optional(),
-          cursor: z.number().nullish(), // Cursor-based pagination
+          limit: z.number().min(1).max(100).default(12).optional(),
+          page: z.number().min(1).default(1).optional(),
           sortField: z
             .nativeEnum(ImageSortField)
             .default(ImageSortField.UPLOAD_DATE)
             .optional(),
           sortOrder: z.nativeEnum(SortOrder).default(SortOrder.DESC).optional(),
         })
-        .default({}), // Make the entire input object optional
+        .default({}),
     )
     .query(async ({ ctx, input }) => {
       // Access the user ID from session
@@ -29,11 +29,22 @@ export const imageRouter = createTRPCRouter({
 
       // Use default values if input is not provided
       const limit = input?.limit ?? 12;
-      const cursor = input?.cursor ?? null;
+      const page = input?.page ?? 1;
       const sortField = input?.sortField ?? ImageSortField.UPLOAD_DATE;
       const sortOrder = input?.sortOrder ?? SortOrder.DESC;
 
-      // Query the database for images owned by the user, ordered by creation date
+      // Calculate offset based on page number
+      const offset = (page - 1) * limit;
+
+      // First, get total count of images for pagination
+      const totalCountResult = await ctx.db
+        .select({ count: sql<number>`count(*)` })
+        .from(images)
+        .where(eq(images.ownerId, userId));
+
+      const totalCount = Number(totalCountResult[0].count);
+
+      // Query the database for images owned by the user
       const imagesList = await ctx.db.query.images.findMany({
         where: eq(images.ownerId, userId),
         orderBy: (images, { desc, asc }) => [
@@ -41,8 +52,8 @@ export const imageRouter = createTRPCRouter({
             ? desc(images[sortField])
             : asc(images[sortField]),
         ],
-        limit: limit + 1, // Fetch one extra item to check if there's a next page
-        offset: cursor ?? 0,
+        limit: limit,
+        offset: offset,
         with: {
           plantImages: {
             columns: { imageId: false, plantId: false },
@@ -53,16 +64,11 @@ export const imageRouter = createTRPCRouter({
         },
       });
 
-      // Check if there is a next page
-      let nextCursor: number | null = null;
-      if (imagesList.length > limit) {
-        nextCursor = (cursor ?? 0) + limit;
-        imagesList.pop(); // Remove the extra item
-      }
-
       return {
         images: imagesList,
-        nextCursor,
+        total: totalCount,
+        currentPage: page,
+        totalPages: Math.ceil(totalCount / limit),
       };
     }),
 
