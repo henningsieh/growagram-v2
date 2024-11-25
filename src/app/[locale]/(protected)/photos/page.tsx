@@ -51,10 +51,10 @@ export default function AllImagesPage() {
         filterNotConnected,
       } satisfies GetOwnImagesInput,
       {
+        // keepPreviousData: false,
         initialData: initialData,
         staleTime: 10000,
         // Add this to ensure we update the UI when the query parameters change
-        keepPreviousData: false,
       },
     );
 
@@ -65,17 +65,17 @@ export default function AllImagesPage() {
   const handleSortChange = async (field: ImageSortField, order: SortOrder) => {
     setSortField(field);
     setSortOrder(order);
-    await refetch();
+    // await refetch();
   };
 
   // Handle filter changes
   const handleFilterChange = async (checked: boolean) => {
     setFilterNotConnected(checked);
-    setCurrentPage(1); // Reset to first page
+    // setCurrentPage(1); // Reset to first page
 
     // Invalidate and refetch to ensure we get fresh data with new filter
-    await utils.image.getOwnImages.invalidate();
-    await refetch();
+    // await utils.image.getOwnImages.invalidate();
+    // await refetch();
   };
 
   // Add an effect to handle page changes when total pages changes

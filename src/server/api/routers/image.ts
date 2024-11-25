@@ -40,29 +40,27 @@ export const imageRouter = createTRPCRouter({
       // Base condition for both queries
       const baseCondition = eq(images.ownerId, userId);
 
-      // Additional condition for filtering unconnected images
-      const notConnectedCondition = filterNotConnected
-        ? not(
+      // Instead of using undefined, always return a condition
+      const conditions = [baseCondition];
+      if (filterNotConnected) {
+        conditions.push(
+          not(
             exists(
               ctx.db
                 .select()
                 .from(plantImages)
                 .where(eq(plantImages.imageId, images.id)),
             ),
-          )
-        : undefined;
+          ),
+        );
+      }
 
       // Get total count using Drizzle query builder
       const totalCountResult = await ctx.db
         .select({ count: count() })
         .from(images)
-        .where(
-          notConnectedCondition
-            ? and(baseCondition, notConnectedCondition)
-            : baseCondition,
-        );
+        .where(and(...conditions));
 
-      // Get the images with pagination, sorting, and filtering
       const imagesList = await ctx.db.query.images.findMany({
         where: (images, { eq, and, not, exists }) => {
           const conditions = [baseCondition];
