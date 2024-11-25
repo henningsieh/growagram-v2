@@ -4,6 +4,7 @@
 import {
   AlertCircle,
   Calendar,
+  Calendar1,
   Heart,
   MessageCircle,
   MoreHorizontal,
@@ -217,8 +218,8 @@ export default function PostComponent({ id }: { id: string }) {
   };
 
   return (
-    <div className="w-full border-b border-l border-r border-border p-2 sm:p-4">
-      <div className="flex gap-1">
+    <div className="border-b border-l border-r border-border p-2 sm:p-3">
+      <div className="flex gap-2 sm:gap-3">
         {/* Avatar */}
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger
@@ -226,7 +227,7 @@ export default function PostComponent({ id }: { id: string }) {
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           >
-            <Avatar className="h-9 w-9 cursor-pointer ring-2 ring-transparent transition-all hover:ring-primary sm:h-11 sm:w-11">
+            <Avatar className="h-9 w-9 cursor-pointer ring-2 ring-accent transition-all hover:ring-primary sm:h-11 sm:w-11">
               <AvatarImage
                 src={samplePost.user.avatar}
                 alt={samplePost.user.name}
@@ -267,13 +268,17 @@ export default function PostComponent({ id }: { id: string }) {
         <div className="flex-1">
           {/* Header */}
           <div className="mb-2 flex items-start justify-between">
-            <div className="flex flex-col">
+            <div className="flex flex-row items-center gap-2">
               <span className="font-semibold">{samplePost.user.name}</span>
+              <span className="text-accent-foreground">
+                @{samplePost.user.id}
+              </span>
+              <span className="">·</span>
               <span className="text-xs text-muted-foreground sm:text-sm">
                 {formatDate(samplePost.createdAt, locale, {
                   month: "short",
                   weekday: "short",
-                  includeYear: true,
+                  includeYear: false,
                 })}
               </span>
             </div>
@@ -292,7 +297,7 @@ export default function PostComponent({ id }: { id: string }) {
                 <CarouselContent>
                   {samplePost.images.map((image, index) => (
                     <CarouselItem key={image.id}>
-                      <div className="relative aspect-video w-full sm:aspect-square">
+                      <div className="relative aspect-video w-full md:aspect-square">
                         <Image
                           fill
                           src={image.imageUrl}
@@ -303,15 +308,15 @@ export default function PostComponent({ id }: { id: string }) {
                     </CarouselItem>
                   ))}
                 </CarouselContent>
-                <CarouselPrevious className="left-2" />
-                <CarouselNext className="right-2" />
+                <CarouselPrevious variant={"secondary"} className="left-2" />
+                <CarouselNext variant={"secondary"} className="right-2" />
               </Carousel>
             </div>
           )}
 
           {/* Grow Info */}
           {samplePost.grow && (
-            <div className="mb-3 rounded-lg bg-muted p-3">
+            <div className="mb-3 rounded-lg bg-accent p-3">
               <div className="flex items-center justify-between">
                 <h3 className="text-sm font-semibold">
                   {samplePost.grow.name}
@@ -321,8 +326,8 @@ export default function PostComponent({ id }: { id: string }) {
                   {samplePost.grow.type}
                 </Badge>
               </div>
-              <div className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground">
-                <Calendar className="h-3 w-3" />
+              <div className="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground">
+                <Calendar1 className="h-5 w-5" />
                 {formatDate(samplePost.grow.startDate, locale, {
                   includeYear: true,
                 })}

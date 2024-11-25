@@ -60,7 +60,7 @@ export default async function RootLayout(props: LayoutProps) {
   return (
     <html lang={locale} suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-background font-sans antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} mx-auto min-h-screen max-w-7xl bg-background font-sans antialiased`}
       >
         <NextTopLoader
           color="hsl(var(--primary))"
@@ -78,7 +78,7 @@ export default async function RootLayout(props: LayoutProps) {
                 enableSystem
                 disableTransitionOnChange
               >
-                <div className="relative flex flex-col">
+                <div className="relative flex shrink-0 flex-col">
                   <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur">
                     <div className="relative flex h-14 items-center justify-center">
                       <MainNavigationBar />

@@ -65,7 +65,7 @@ export default function ProtectedSidebar({
 }>) {
   return (
     <SidebarProvider>
-      <Sidebar collapsible="icon" variant="floating" className="top-14">
+      <Sidebar collapsible="icon" variant="floating">
         <SidebarHeader>
           <TeamSwitcher teams={sidebarItems.teams} />
         </SidebarHeader>
@@ -184,7 +184,7 @@ export default function ProtectedSidebar({
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
                   className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
-                  side="bottom"
+                  side="right"
                   align="end"
                   sideOffset={4}
                 >
@@ -249,7 +249,7 @@ export default function ProtectedSidebar({
         <SidebarRail />
       </Sidebar>
       <SidebarInset>
-        <header className="flex h-14 shrink-0 items-center justify-between gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-14">
+        <header className="sticky top-14 flex h-14 shrink-0 items-center justify-between gap-2">
           <div className="flex items-center gap-2 px-4">
             <SidebarTrigger className="-ml-1" />
             <Separator orientation="vertical" className="mr-2 h-4" />
