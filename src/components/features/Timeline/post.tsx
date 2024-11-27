@@ -4,10 +4,10 @@
 import {
   Calendar1,
   Heart,
+  Lightbulb,
   MessageCircle,
   MoreHorizontal,
   Share2,
-  Sun,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useLocale } from "next-intl";
@@ -182,7 +182,7 @@ export default function PostComponent({ id }: { id: string }) {
   if (session?.user === undefined) return null;
 
   return (
-    <div className="border-b border-l border-r border-border p-2 sm:p-3">
+    <div className="border-b border-l border-r border-border p-2 sm:pr-3">
       <div className="flex gap-2 sm:gap-3">
         {/* Avatar */}
         <Popover open={open} onOpenChange={setOpen}>
@@ -278,11 +278,11 @@ export default function PostComponent({ id }: { id: string }) {
           </div>
 
           {/* Message */}
-          <p className="mb-3 text-sm">{renderTriggerMessage()}</p>
+          <p className="mb-2 bg-muted p-2 text-sm">{renderTriggerMessage()}</p>
 
           {/* Images */}
           {samplePost.images && samplePost.images.length > 0 && (
-            <div className="mb-3 overflow-hidden rounded-sm">
+            <div className="mb-2 overflow-hidden rounded-sm">
               <Carousel className="w-full">
                 <CarouselContent>
                   {samplePost.images.map((image, index) => (
@@ -307,18 +307,18 @@ export default function PostComponent({ id }: { id: string }) {
 
           {/* Grow Info */}
           {samplePost.grow && (
-            <div className="mb-3 rounded-sm bg-accent p-3">
+            <div className="mb-2 flex flex-col gap-0 rounded-sm bg-accent p-2">
               <div className="flex items-center justify-between">
                 <h3 className="text-sm font-semibold">
                   {samplePost.grow.name}
                 </h3>
                 <Badge variant="secondary" className="text-xs">
-                  <Sun className="mr-1 h-3 w-3" />
+                  <Lightbulb className="mr-1 h-3 w-3" />
                   {samplePost.grow.type}
                 </Badge>
               </div>
-              <div className="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground">
-                <Calendar1 className="h-5 w-5" />
+              <div className="mt-1 flex items-center gap-1.5 text-sm text-accent-foreground">
+                <Calendar1 className="h-4 w-4" />
                 {formatDate(samplePost.grow.startDate, locale, {
                   includeYear: true,
                 })}
@@ -327,20 +327,20 @@ export default function PostComponent({ id }: { id: string }) {
           )}
 
           {/* Plants Grid */}
-          {samplePost.plants && samplePost.plants.length > 0 && (
-            <div className="mb-3 grid grid-cols-2 gap-2">
+          {/* {samplePost.plants && samplePost.plants.length > 0 && (
+            <div className="mb-2 grid grid-cols-2 gap-2">
               {samplePost.plants.map((plant) => (
                 <PlantCard key={plant.id} plant={plant} />
               ))}
             </div>
-          )}
+          )} */}
 
           {/* Actions */}
           <div className="flex gap-6 pt-2">
             <Button
               variant="ghost"
               size="sm"
-              className="h-auto p-0"
+              className="h-auto"
               onClick={() => setLiked(!liked)}
             >
               <Heart
@@ -350,11 +350,11 @@ export default function PostComponent({ id }: { id: string }) {
               />
               <span className="text-xs">{0}</span>
             </Button>
-            <Button variant="ghost" size="sm" className="h-auto p-0">
+            <Button variant="ghost" size="sm" className="h-auto">
               <MessageCircle className="mr-2 h-4 w-4" />
               <span className="text-xs">{0}</span>
             </Button>
-            <Button variant="ghost" size="sm" className="h-auto p-0">
+            <Button variant="outline" size="sm" className="h-auto">
               <Share2 className="mr-2 h-4 w-4" />
               <span className="text-xs">{0}</span>
             </Button>
