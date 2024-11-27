@@ -6,7 +6,7 @@
         "items": [
           {
             "title": "timeline",
-            "href": "/timeline",
+            "href": "/public/timeline",
             "description": "timelline-description"
           }
         ]

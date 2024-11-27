@@ -9,12 +9,16 @@ import {
 import { Link, usePathname } from "~/lib/i18n/routing";
 import { findCurrentNavItem, sidebarItems } from "~/lib/sidebar";
 
-export function NavigationBreadcrumb() {
+interface NavigationBreadcrumbProps {
+  className?: string;
+}
+
+export function NavigationBreadcrumb({ className }: NavigationBreadcrumbProps) {
   const pathname = usePathname();
   const currentNav = findCurrentNavItem(pathname, sidebarItems.navMain);
 
   return (
-    <Breadcrumb>
+    <Breadcrumb className={className}>
       <BreadcrumbList>
         <BreadcrumbItem className="hidden md:block">
           <BreadcrumbLink asChild>

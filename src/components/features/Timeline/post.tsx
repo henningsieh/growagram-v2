@@ -36,6 +36,7 @@ import {
   GetOwnImagesInput,
   GetOwnImagesOutput,
   GetOwnPlantOutput,
+  GetOwnPlantsInput,
 } from "~/server/api/root";
 
 import PlantCard from "../Plants/plant-card";
@@ -80,23 +81,21 @@ export default function PostComponent({ id }: { id: string }) {
   const handleMouseEnter = () => setOpen(true);
   const handleMouseLeave = () => setOpen(false);
 
-  // Load own images from database
-  const { data, isLoading, isFetching } = api.image.getOwnImages.useQuery(
-    {
-      limit: 3,
-    } satisfies GetOwnImagesInput,
-    // {
-    //   initialData: prefetchedFromCache,
-    //   staleTime: STALE_TIME,
-    // },
-  );
-  const userImages = data?.images ?? [];
+  const {
+    data: imagesData,
+    isLoading: isImagesLoading,
+    isFetching: isImagesFetching,
+  } = api.image.getOwnImages.useQuery({
+    limit: 3,
+  } satisfies GetOwnImagesInput);
 
-  const { data: plantsData, isLoading: isPlantsLoading } =
-    api.plant.getOwnPlants.useQuery({ limit: 2 });
-
-  // Move plants array into useMemo to ensure stable reference
-  const plants = useMemo(() => plantsData?.plants || [], [plantsData]);
+  const {
+    data: plantsData,
+    isLoading: isPlantsLoading,
+    isFetching: isPlantsFetching,
+  } = api.plant.getOwnPlants.useQuery({
+    limit: 2,
+  } satisfies GetOwnPlantsInput);
 
   const samplePost = {
     id: "1",
@@ -111,9 +110,9 @@ export default function PostComponent({ id }: { id: string }) {
       startDate: new Date("2023-06-01"),
       type: "indoor" as const,
     },
-    images: userImages,
-    plants,
-    // plants: [
+    // Move plants and images useMemo into ensure stable reference
+    images: useMemo(() => imagesData?.images ?? [], [imagesData]),
+    plants: useMemo(() => plantsData?.plants || [], [plantsData]),
     //   {
     //     id: "plant1",
     //     name: "Blue Dream",
@@ -339,15 +338,7 @@ export default function PostComponent({ id }: { id: string }) {
           {samplePost.plants && samplePost.plants.length > 0 && (
             <div className="mb-3 grid grid-cols-2 gap-2">
               {samplePost.plants.map((plant) => (
-                <>
-                  <PlantCard plant={plant} />
-                  {/* <div key={plant.id} className="rounded-lg bg-muted p-2 text-xs">
-                  <p className="font-medium">{plant.name}</p>
-                  <p className="text-muted-foreground">
-                    Strain: {plant.strain?.name}
-                  </p>
-                </div> */}
-                </>
+                <PlantCard key={plant.id} plant={plant} />
               ))}
             </div>
           )}

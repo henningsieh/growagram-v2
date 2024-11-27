@@ -65,7 +65,11 @@ export default function ProtectedSidebar({
 }>) {
   return (
     <SidebarProvider>
-      <Sidebar collapsible="icon" variant="floating">
+      <Sidebar
+        collapsible="icon"
+        variant="floating"
+        className="sticky top-14 h-[calc(100vh-4rem)] flex-shrink-0"
+      >
         <SidebarHeader>
           <TeamSwitcher teams={sidebarItems.teams} />
         </SidebarHeader>
@@ -249,22 +253,20 @@ export default function ProtectedSidebar({
         <SidebarRail />
       </Sidebar>
       <SidebarInset>
-        <header className="sticky top-14 flex h-14 shrink-0 items-center justify-between gap-2">
-          <div className="flex items-center gap-2 px-4">
+        <header className="sticky top-14 flex h-14 shrink-0 items-center justify-between gap-2 bg-background/90 backdrop-blur">
+          <div className="flex items-center gap-2 pl-4 xl:pl-6">
             <SidebarTrigger className="-ml-1" />
             <Separator orientation="vertical" className="mr-2 h-4" />
             <NavigationBreadcrumb />
           </div>
         </header>
-        <div className="flex flex-1 flex-col gap-2 p-4 pt-0">
+        <div className="flex flex-1 flex-col gap-2 pt-0">
           {/* <div className="grid auto-rows-min gap-2 md:grid-cols-3">
             <div className="aspect-video rounded-md bg-muted/50" />
             <div className="aspect-video rounded-lg bg-muted/50" />
             <div className="aspect-video rounded-xl bg-muted/50" />
           </div> */}
-          <div className="min-h-[100vh] flex-1 rounded-lg md:min-h-min">
-            {children}
-          </div>
+          <div className="flex-1 rounded-lg">{children}</div>
         </div>
       </SidebarInset>
     </SidebarProvider>
