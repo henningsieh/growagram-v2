@@ -6,7 +6,6 @@ import { useEffect, useMemo, useState } from "react";
 import FormContent from "~/components/Layouts/form-content";
 import PageHeader from "~/components/Layouts/page-header";
 import { GrowCard } from "~/components/features/Grows/grow-card";
-import { Grow, Plant } from "~/components/features/Timeline/post";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import {
@@ -25,45 +24,78 @@ import {
   CommandList,
 } from "~/components/ui/command";
 import { useToast } from "~/hooks/use-toast";
+import { api } from "~/lib/trpc/react";
+import { GetOwnPlantsInput, GetOwnPlantsOutput } from "~/server/api/root";
 
-// Mock data (unchanged)
-const mockGrow: Grow = {
-  id: "1",
-  name: "Indoor Grow 2024",
-  image: "/images/IMG_20241005_062601~2.jpg",
-  startDate: new Date("2024-01-01"),
-  updatedAt: new Date("2024-09-16"),
-  type: "indoor",
-  plants: [
-    { id: "p1", strain: "Northern Lights", growPhase: "vegetation" },
-    { id: "p2", strain: "White Widow", growPhase: "flowering" },
-  ],
-};
-
-const initialAvailablePlants: Plant[] = [
-  { id: "p3", strain: "Blue Dream", growPhase: "seedling" },
-  { id: "p4", strain: "Girl Scout Cookies", growPhase: "vegetation" },
-  { id: "p5", strain: "Purple Haze", growPhase: "vegetation" },
-  { id: "p6", strain: "OG Kush", growPhase: "flowering" },
-];
+interface Grow {
+  id: string;
+  name: string;
+  image: string;
+  plants: GetOwnPlantsOutput;
+  startDate: Date;
+  updatedAt: Date;
+  type: "indoor" | "outdoor";
+}
 
 export default function ConnectPlantsPage() {
+  // Mock data (unchanged)
+  const mockGrow: Grow = {
+    id: "1",
+    name: "Indoor Grow 2024",
+    image: "/images/IMG_20241005_062601~2.jpg",
+    startDate: new Date("2024-01-01"),
+    updatedAt: new Date("2024-09-16"),
+    type: "indoor",
+    plants: [] as GetOwnPlantsOutput,
+  };
+
   const { toast } = useToast();
   const [grow, setGrow] = useState<Grow>(mockGrow);
   const [selectedPlants, setSelectedPlants] = useState<Set<string>>(new Set());
-  const [availablePlants, setAvailablePlants] = useState<Plant[]>(
-    initialAvailablePlants,
-  );
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Updated filtering logic that will respond to all search query changes
+  // Fetch plants query
+  const {
+    data: plantsData,
+    isLoading: isPlantsLoading,
+    isError: isPlantsError,
+    error: plantsError,
+  } = api.plant.getOwnPlants.useQuery({
+    // limit: 2,
+  } satisfies GetOwnPlantsInput);
+
+  // Log the entire plants data for debugging
+  useEffect(() => {
+    console.log("Full Plants Data:", plantsData);
+    console.log("Is Loading:", isPlantsLoading);
+    console.log("Is Error:", isPlantsError);
+    if (isPlantsError) {
+      console.error("Plants Error:", plantsError);
+    }
+  }, [plantsData, isPlantsLoading, isPlantsError, plantsError]);
+
+  // Manage available plants state
+  const [availablePlants, setAvailablePlants] = useState<GetOwnPlantsOutput>(
+    [],
+  );
+
+  // Update available plants when data is fetched
+  useEffect(() => {
+    if (plantsData?.plants) {
+      setAvailablePlants(plantsData.plants);
+    }
+  }, [plantsData]);
+
+  // Filtering plants
   const filteredPlants = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
-    return availablePlants.filter(
+    const filtered = availablePlants.filter(
       (p) =>
         !grow.plants.some((gp) => gp.id === p.id) &&
-        p.strain.toLowerCase().includes(query),
+        p.name.toLowerCase().includes(query),
     );
+    console.log("Filtered Plants:", filtered);
+    return filtered;
   }, [availablePlants, grow.plants, searchQuery]);
 
   const handleTogglePlant = (plantId: string) => {
@@ -129,6 +161,16 @@ export default function ConnectPlantsPage() {
     setSearchQuery(value);
   };
 
+  // Loading state
+  if (isPlantsLoading) {
+    return <div>Loading plants...</div>;
+  }
+
+  // Error state
+  if (isPlantsError) {
+    return <div>Error loading plants: {plantsError?.message}</div>;
+  }
+
   return (
     <PageHeader
       title={"Assign Plants to your Grow"}
@@ -144,7 +186,7 @@ export default function ConnectPlantsPage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <Command className="rounded-lg border shadow-md">
+              <Command className="rounded-sm border shadow-md">
                 <CommandInput
                   placeholder="Search plants..."
                   value={searchQuery}
@@ -178,12 +220,12 @@ export default function ConnectPlantsPage() {
                               )}
                             </div>
                             <Flower2 className="mr-2 h-4 w-4" />
-                            <span>{plant.strain}</span>
+                            <span>{plant.name}</span>
                             <Badge
                               variant="secondary"
                               className="ml-auto uppercase"
                             >
-                              {plant.growPhase}
+                              {plant.strain?.name || "No Strain"}
                             </Badge>
                           </CommandItem>
                         </motion.div>

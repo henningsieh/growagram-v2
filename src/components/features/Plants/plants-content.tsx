@@ -7,7 +7,7 @@ import PageHeader from "~/components/Layouts/page-header";
 import ResponsiveGrid from "~/components/Layouts/responsive-grid";
 import PlantCard from "~/components/features/Plants/plant-card";
 import { api } from "~/lib/trpc/react";
-import { GetOwnPlantOutput, GetOwnPlantsInput } from "~/server/api/root";
+import { GetOwnPlantsInput, GetOwnPlantsOutput } from "~/server/api/root";
 
 export default function PlantsContent() {
   // Get the utils for accessing the cache
@@ -36,7 +36,7 @@ export default function PlantsContent() {
     },
   );
 
-  const plants: GetOwnPlantOutput[] =
+  const plants: GetOwnPlantsOutput =
     data?.pages.flatMap((page) => page.plants) ?? [];
 
   // Intersection Observer callback

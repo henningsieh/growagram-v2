@@ -89,13 +89,66 @@ export default function TimelineLayout({ children }: PropsWithChildren) {
         </aside>
 
         {/* Main content and right sidebar remain unchanged */}
-        <main className="flex max-w-2xl flex-1 shrink-0 pr-2 sm:pl-2">
+        <div className="flex max-w-2xl flex-1 shrink-0 pr-2 sm:pl-2">
           <div className="w-full">{children}</div>
-        </main>
+        </div>
 
         <aside className="hidden w-64 lg:block">
           <div className="sticky top-16 px-4">
             <ScrollArea className="h-[calc(100vh-5rem)]">
+              <p>text</p>
+              <p>text</p>
+              <p>text</p>
+              <p>text</p>
+              <p>text</p>
+              <p>text</p>
+              <p>text</p>
+              <p>text</p>
+              <p>text</p>
+              <p>text</p>
+              <p>text</p>
+              <p>text</p>
+              <p>text</p>
+              <p>text</p>
+              <p>text</p>
+              <p>text</p>
+              <p>text</p>
+              <p>text</p>
+              <p>text</p>
+              <p>text</p>
+              <p>text</p>
+              <p>text</p>
+              <p>text</p>
+              <p>text</p>
+              <p>text</p>
+              <p>text</p>
+              <p>text</p>
+              <p>text</p>
+              <p>text</p>
+              <p>text</p>
+              <p>text</p>
+              <p>text</p>
+              <p>text</p>
+              <p>text</p>
+              <p>text</p>
+              <p>text</p>
+              <p>text</p>
+              <p>text</p>
+              <p>text</p>
+              <p>text</p>
+              <p>text</p>
+              <p>text</p>
+              <p>text</p>
+              <p>text</p>
+              <p>text</p>
+              <p>text</p>
+              <p>text</p>
+              <p>text</p>
+              <p>text</p>
+              <p>text</p>
+              <p>text</p>
+              <p>text</p>
+              <p>text</p>
               <p>text</p>
             </ScrollArea>
           </div>
