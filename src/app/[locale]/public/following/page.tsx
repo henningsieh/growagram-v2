@@ -1,6 +1,6 @@
 "use client";
 
-// src/app/[locale]/(public)/timeline/page.tsx:
+// src/app/[locale]/(public)/public/timeline/page.tsx:
 import PostComponent from "~/components/features/Timeline/post";
 
 // This is a mock function to simulate fetching posts
