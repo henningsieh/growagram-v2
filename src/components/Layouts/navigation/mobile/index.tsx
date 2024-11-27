@@ -34,7 +34,7 @@ export default function MobileNavigationMenu() {
         {content.featured && (
           <Link
             href={content.featured.href}
-            className="rounded-md bg-gradient-to-b from-secondary/20 to-secondary/60 p-3"
+            className="rounded-sm bg-gradient-to-b from-secondary/20 to-secondary/60 p-3"
             onClick={() => setOpen(false)}
           >
             <div className="font-bold">{t(content.featured.title)}</div>
@@ -47,7 +47,7 @@ export default function MobileNavigationMenu() {
           <Link
             key={item.title}
             href={item.href}
-            className="rounded-md p-2 text-sm hover:bg-accent"
+            className="rounded-sm p-2 text-sm hover:bg-accent"
             onClick={() => setOpen(false)}
           >
             <div className="font-medium">{t(item.title)}</div>
@@ -87,7 +87,7 @@ export default function MobileNavigationMenu() {
                   <Link
                     key={item.title}
                     href={item.href!}
-                    className="flex h-10 w-full items-center rounded-md px-3 text-sm hover:bg-accent"
+                    className="flex h-10 w-full items-center rounded-sm px-3 text-sm hover:bg-accent"
                     onClick={() => setOpen(false)}
                   >
                     {t(item.title)}

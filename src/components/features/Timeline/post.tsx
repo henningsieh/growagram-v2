@@ -2,8 +2,6 @@
 
 // src/components/features/Timeline/post.tsx
 import {
-  AlertCircle,
-  Calendar,
   Calendar1,
   Heart,
   MessageCircle,
@@ -11,6 +9,7 @@ import {
   Share2,
   Sun,
 } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { useLocale } from "next-intl";
 import Image from "next/image";
 import { useMemo, useState } from "react";
@@ -29,51 +28,20 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "~/components/ui/popover";
-import { Separator } from "~/components/ui/separator";
-import { api } from "~/lib/trpc/react";
-import { formatDate } from "~/lib/utils";
 import {
-  GetOwnImagesInput,
-  GetOwnImagesOutput,
-  GetOwnPlantOutput,
-  GetOwnPlantsInput,
-} from "~/server/api/root";
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "~/components/ui/tooltip";
+import { api } from "~/lib/trpc/react";
+import { formatDate, formatTime } from "~/lib/utils";
+import { GetOwnImagesInput, GetOwnPlantsInput } from "~/server/api/root";
 
 import PlantCard from "../Plants/plant-card";
 
-interface User {
-  id: string;
-  name: string;
-  avatar?: string;
-}
-
-interface Grow {
-  id: string;
-  name: string;
-  startDate: Date;
-  type: "indoor" | "outdoor";
-}
-
-interface Post {
-  id: string;
-  user: User;
-  grow?: Grow;
-  plants?: GetOwnPlantOutput[];
-  images?: GetOwnImagesOutput;
-  createdAt: Date;
-  message?: string;
-  trigger:
-    | "new_grow"
-    | "new_plant"
-    | "plant_update"
-    | "image_upload"
-    | "custom";
-  likes?: number;
-  comments?: number;
-  shares?: number;
-}
-
 export default function PostComponent({ id }: { id: string }) {
+  const { data: session } = useSession();
   const locale = useLocale();
   const [open, setOpen] = useState(false);
   const [liked, setLiked] = useState(false);
@@ -99,11 +67,7 @@ export default function PostComponent({ id }: { id: string }) {
 
   const samplePost = {
     id: "1",
-    user: {
-      id: "user1",
-      name: "Django ElRey 🌱",
-      avatar: "/images/XYUV-dwm_400x400.jpg",
-    },
+    user: session?.user,
     grow: {
       id: "grow1",
       name: "Summer Grow 2023",
@@ -113,7 +77,6 @@ export default function PostComponent({ id }: { id: string }) {
     // Move plants and images useMemo into ensure stable reference
     images: useMemo(() => imagesData?.images ?? [], [imagesData]),
     plants: useMemo(() => plantsData?.plants || [], [plantsData]),
-    //   {
     //     id: "plant1",
     //     name: "Blue Dream",
     //     createdAt: new Date("2023-06-10"),
@@ -198,23 +161,25 @@ export default function PostComponent({ id }: { id: string }) {
   const renderTriggerMessage = () => {
     switch (samplePost.trigger) {
       case "new_grow":
-        return `${samplePost.user.name} started a new grow: ${samplePost.grow?.name}`;
+        return `${samplePost.user && samplePost.user.name} started a new grow: ${samplePost.grow?.name}`;
       case "new_plant":
-        return `${samplePost.user.name} added ${samplePost.plants?.length} new plant${
+        return `${samplePost.user && samplePost.user.name} added ${samplePost.plants?.length} new plant${
           samplePost.plants!.length > 1 ? "s" : ""
         } to ${samplePost.grow ? `the grow ${samplePost.grow.name}` : "their collection"}`;
       case "plant_update":
-        return `${samplePost.user.name} updated ${samplePost.plants?.length} plant${
+        return `${samplePost.user && samplePost.user.name} updated ${samplePost.plants?.length} plant${
           samplePost.plants!.length > 1 ? "s" : ""
         }`;
       case "image_upload":
-        return `${samplePost.user.name} added ${samplePost.images?.length} new image${
+        return `${samplePost.user && samplePost.user.name} added ${samplePost.images?.length} new image${
           samplePost.images!.length > 1 ? "s" : ""
         }`;
       default:
         return samplePost.message || "";
     }
   };
+
+  if (session?.user === undefined) return null;
 
   return (
     <div className="border-b border-l border-r border-border p-2 sm:p-3">
@@ -228,11 +193,11 @@ export default function PostComponent({ id }: { id: string }) {
           >
             <Avatar className="h-9 w-9 cursor-pointer ring-2 ring-accent transition-all hover:ring-primary sm:h-11 sm:w-11">
               <AvatarImage
-                src={samplePost.user.avatar}
-                alt={samplePost.user.name}
+                src={samplePost.user?.image as string}
+                alt={samplePost.user?.name as string}
               />
               <AvatarFallback>
-                {samplePost.user.name.slice(0, 2).toUpperCase()}
+                {(samplePost.user?.name as string).slice(0, 2).toUpperCase()}
               </AvatarFallback>
             </Avatar>
           </PopoverTrigger>
@@ -244,16 +209,16 @@ export default function PostComponent({ id }: { id: string }) {
             <div className="flex items-center gap-3">
               <Avatar className="h-14 w-14">
                 <AvatarImage
-                  src={samplePost.user.avatar}
-                  alt={samplePost.user.name}
+                  src={samplePost.user?.image as string}
+                  alt={samplePost.user?.name as string}
                 />
                 <AvatarFallback>
-                  {samplePost.user.name.slice(0, 2).toUpperCase()}
+                  {(samplePost.user?.name as string).slice(0, 2).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
               <div className="flex flex-col">
                 <span className="text-lg font-medium">
-                  {samplePost.user.name}
+                  {samplePost.user?.name as string}
                 </span>
                 <span className="text-sm text-muted-foreground">
                   Member since 2023
@@ -267,19 +232,45 @@ export default function PostComponent({ id }: { id: string }) {
         <div className="flex-1">
           {/* Header */}
           <div className="mb-2 flex items-start justify-between">
-            <div className="flex flex-row items-center gap-2">
-              <span className="font-semibold">{samplePost.user.name}</span>
-              <span className="text-accent-foreground">
-                @{samplePost.user.id}
+            <div className="flex flex-row items-center gap-[6px]">
+              <span className="whitespace-nowrap text-sm font-semibold">
+                @{samplePost.user?.name as string}
               </span>
+              {/* <span className="overflow-hidden truncate text-accent-foreground">
+                @{samplePost.user?.id}
+              </span> */}
               <span className="">·</span>
-              <span className="text-xs text-muted-foreground sm:text-sm">
-                {formatDate(samplePost.createdAt, locale, {
-                  month: "short",
-                  weekday: "short",
-                  includeYear: false,
-                })}
-              </span>
+
+              <TooltipProvider>
+                <Tooltip delayDuration={0}>
+                  <TooltipTrigger asChild>
+                    <span className="cursor-default text-sm text-muted-foreground sm:text-sm">
+                      {formatDate(samplePost.createdAt, locale, {
+                        month: "short",
+                        // weekday: "short",
+                        includeYear: false,
+                      })}
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <div className="flex flex-row items-center gap-1">
+                      <span>
+                        {formatDate(samplePost.createdAt, locale, {
+                          month: "short",
+                          weekday: "short",
+                          includeYear: true,
+                        })}
+                      </span>
+                      <span>
+                        {formatTime(samplePost.createdAt, locale, {
+                          includeMinutes: true,
+                          includeSeconds: true,
+                        })}
+                      </span>
+                    </div>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
             <Button variant="ghost" size="icon" className="-mt-2">
               <MoreHorizontal className="h-5 w-5" />
@@ -291,7 +282,7 @@ export default function PostComponent({ id }: { id: string }) {
 
           {/* Images */}
           {samplePost.images && samplePost.images.length > 0 && (
-            <div className="mb-3 overflow-hidden rounded-lg">
+            <div className="mb-3 overflow-hidden rounded-sm">
               <Carousel className="w-full">
                 <CarouselContent>
                   {samplePost.images.map((image, index) => (
@@ -299,8 +290,9 @@ export default function PostComponent({ id }: { id: string }) {
                       <div className="relative aspect-video w-full md:aspect-square">
                         <Image
                           fill
+                          sizes="640px"
                           src={image.imageUrl}
-                          alt={`Image ${index + 1}`}
+                          alt={image.originalFilename}
                           className="object-cover"
                         />
                       </div>
@@ -315,7 +307,7 @@ export default function PostComponent({ id }: { id: string }) {
 
           {/* Grow Info */}
           {samplePost.grow && (
-            <div className="mb-3 rounded-lg bg-accent p-3">
+            <div className="mb-3 rounded-sm bg-accent p-3">
               <div className="flex items-center justify-between">
                 <h3 className="text-sm font-semibold">
                   {samplePost.grow.name}

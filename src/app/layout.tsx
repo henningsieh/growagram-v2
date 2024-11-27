@@ -7,7 +7,7 @@ import localFont from "next/font/local";
 import NextTopLoader from "nextjs-toploader";
 import { MainNavigationBar } from "~/components/Layouts/navigation";
 import { ThemeProvider } from "~/components/Layouts/theme-provider";
-import { Toaster } from "~/components/ui/toaster";
+import { Toaster } from "~/components/Layouts/toaster";
 import { routing } from "~/lib/i18n/routing";
 import { TRPCReactProvider } from "~/lib/trpc/react";
 import "~/styles/globals.css";
@@ -53,45 +53,36 @@ export default async function RootLayout(props: LayoutProps) {
     console.debug("LOCALE NOT FOUND");
   }
 
-  // Providing all messages to the client
-  // side is the easiest way to get started
-  const messages = await getMessages();
-
   return (
-    <html lang={locale} suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning className="dark">
       <body
         className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-background font-sans antialiased`}
       >
-        <NextTopLoader
-          color="hsl(var(--primary))"
-          speed={900}
-          showSpinner={false}
-          initialPosition={0.28}
-        />
-
-        <TRPCReactProvider>
-          <NextIntlClientProvider messages={messages}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange={false}
+        >
+          <NextTopLoader
+            color="hsl(var(--primary))"
+            speed={900}
+            showSpinner={false}
+            initialPosition={0.28}
+          />
+          {/* Providing all messages to the client */}
+          <NextIntlClientProvider messages={await getMessages()}>
             <SessionProvider>
-              <ThemeProvider
-                attribute="class"
-                defaultTheme="dark"
-                enableSystem
-                disableTransitionOnChange
-              >
+              <TRPCReactProvider>
+                <Toaster />
                 <div className="relative mx-auto flex max-w-7xl flex-col">
-                  <header className="sticky top-0 z-50 w-full border-b bg-background/90 backdrop-blur">
-                    <div className="relative flex h-14 items-center justify-center">
-                      <MainNavigationBar />
-                    </div>
-                  </header>
+                  <MainNavigationBar />
                   <div className="flex-1">{props.children}</div>
                 </div>
-
-                <Toaster />
-              </ThemeProvider>
+              </TRPCReactProvider>
             </SessionProvider>
           </NextIntlClientProvider>
-        </TRPCReactProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

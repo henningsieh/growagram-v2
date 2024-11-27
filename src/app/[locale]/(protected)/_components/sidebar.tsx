@@ -129,7 +129,7 @@ export default function ProtectedSidebar({
                       </SidebarMenuAction>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent
-                      className="w-48 rounded-lg"
+                      className="w-48 rounded-sm"
                       side="bottom"
                       align="end"
                     >
@@ -168,12 +168,12 @@ export default function ProtectedSidebar({
                     size="lg"
                     className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                   >
-                    <Avatar className="h-8 w-8 rounded-lg">
+                    <Avatar className="h-8 w-8 rounded-sm">
                       <AvatarImage
                         src={sidebarItems.user.avatar}
                         alt={sidebarItems.user.name}
                       />
-                      <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                      <AvatarFallback className="rounded-sm">CN</AvatarFallback>
                     </Avatar>
                     <div className="grid flex-1 text-left text-sm leading-tight">
                       <span className="truncate font-semibold">
@@ -187,19 +187,19 @@ export default function ProtectedSidebar({
                   </SidebarMenuButton>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
-                  className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+                  className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-sm"
                   side="right"
                   align="end"
                   sideOffset={4}
                 >
                   <DropdownMenuLabel className="p-0 font-normal">
                     <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                      <Avatar className="h-8 w-8 rounded-lg">
+                      <Avatar className="h-8 w-8 rounded-sm">
                         <AvatarImage
                           src={sidebarItems.user.avatar}
                           alt={sidebarItems.user.name}
                         />
-                        <AvatarFallback className="rounded-lg">
+                        <AvatarFallback className="rounded-sm">
                           CN
                         </AvatarFallback>
                       </Avatar>
@@ -262,11 +262,11 @@ export default function ProtectedSidebar({
         </header>
         <div className="flex flex-1 flex-col gap-2 pt-0">
           {/* <div className="grid auto-rows-min gap-2 md:grid-cols-3">
-            <div className="aspect-video rounded-md bg-muted/50" />
-            <div className="aspect-video rounded-lg bg-muted/50" />
-            <div className="aspect-video rounded-xl bg-muted/50" />
+            <div className="aspect-video rounded-sm bg-muted/50" />
+            <div className="aspect-video rounded-sm bg-muted/50" />
+            <div className="aspect-video rounded-sm bg-muted/50" />
           </div> */}
-          <div className="flex-1 rounded-lg">{children}</div>
+          <div className="flex-1 rounded-sm">{children}</div>
         </div>
       </SidebarInset>
     </SidebarProvider>
@@ -294,7 +294,7 @@ function TeamSwitcher({
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+              <div className="flex aspect-square size-8 items-center justify-center rounded-sm bg-sidebar-primary text-sidebar-primary-foreground">
                 <activeTeam.logo className="size-4" />
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
@@ -307,7 +307,7 @@ function TeamSwitcher({
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+            className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-sm"
             align="start"
             side={isMobile ? "bottom" : "right"}
             sideOffset={4}
@@ -330,7 +330,7 @@ function TeamSwitcher({
             ))}
             <DropdownMenuSeparator />
             <DropdownMenuItem className="gap-2 p-2">
-              <div className="flex size-6 items-center justify-center rounded-md border bg-background">
+              <div className="flex size-6 items-center justify-center rounded-sm border bg-background">
                 <Plus className="size-4" />
               </div>
               <div className="font-medium text-muted-foreground">Add team</div>

@@ -195,7 +195,7 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
           </CardHeader>
           <CardContent className="p-2 md:p-6">
             <Command
-              className="rounded-md border shadow-md"
+              className="rounded-sm border shadow-md"
               shouldFilter={false}
             >
               <CommandInput
