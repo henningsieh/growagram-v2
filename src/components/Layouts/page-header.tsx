@@ -18,10 +18,10 @@ export default function Component({
   buttonLabel = "Upload New Image",
 }: IPageHeader) {
   return (
-    <div className="mx-auto space-y-8">
-      <div className="flex justify-between xl:px-8">
+    <div className="mx-auto space-y-8 pl-3 pr-4 md:pl-2 lg:pl-4 xl:pl-6">
+      <div className="flex justify-between">
         <div className="flex flex-col space-y-2">
-          <h1 className="text-2xl font-bold sm:text-3xl md:text-4xl lg:text-5xl">
+          <h1 className="text-3xl font-bold sm:text-3xl md:text-4xl lg:text-5xl">
             {title}
           </h1>
           <p className="text-muted-foreground md:text-lg">{subtitle}</p>
@@ -34,7 +34,7 @@ export default function Component({
           )}
         </div>
       </div>
-      <div className="mx-auto xl:px-8">{children}</div>
+      <div className="mx-auto">{children}</div>
     </div>
   );
 }
