@@ -1,14 +1,17 @@
+import { useLocale, useTranslations } from "next-intl";
 import React from "react";
 import PageHeader from "~/components/Layouts/page-header";
 import GrowForm from "~/components/features/Grows/grow-form";
+import { HydrateClient, api } from "~/lib/trpc/server";
 
 export default function CreatePlantPage() {
+  const t = useTranslations("Grows");
+
   return (
-    <PageHeader
-      title={"Create New Grow"}
-      subtitle={"Add a new grow to your collection"}
-    >
-      <GrowForm />
-    </PageHeader>
+    <HydrateClient>
+      <PageHeader title={t("page-title")} subtitle={t("page-subtitle")}>
+        <GrowForm />
+      </PageHeader>
+    </HydrateClient>
   );
 }

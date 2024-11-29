@@ -4,9 +4,32 @@
       "your-grows": "Deine Grows"
     }
   },
+  "Grows": {
+    "create-new-grow": "",
+    "page-subtitle": "Füge Deiner Sammlung einen neuen Grow hinzu",
+    "page-title": "Neuen Grow erstellen"
+  },
   "HomePage": {
     "about": "gehe zur Zeitleiste",
     "title": "Hallo Welt!"
+  },
+  "Images": {
+    "button": {
+      "connecting": "Pflanzen werden verbunden...",
+      "removeAll": "Alle Pflanzen entfernen",
+      "save": "Pflanzenauswahl speichern ({count})"
+    },
+    "buttonLabel": "Zurück",
+    "plantSelection": {
+      "description": "Wähle jede Pflanze aus, die du auf dem Foto sehen kannst!",
+      "title": "Pflanzenauswahl"
+    },
+    "search": {
+      "noResults": "Keine Ergebnisse gefunden.",
+      "placeholder": "Pflanzen suchen..."
+    },
+    "subtitle": "Welche Pflanzen siehst du auf diesem Foto?",
+    "title": "Pflanzen identifizieren"
   },
   "LanguageToggle": {
     "toggle-language": "Sprache wechseln"
@@ -54,22 +77,6 @@
     "system": "System",
     "toggle-theme": "Designthema umschalten"
   },
-  "Images": {
-    "title": "Pflanzen identifizieren",
-    "subtitle": "Welche Pflanzen siehst du auf diesem Foto?",
-    "buttonLabel": "Zurück",
-    "plantSelection": {
-      "title": "Pflanzenauswahl",
-      "description": "Wähle jede Pflanze aus, die du auf dem Foto sehen kannst!"
-    },
-    "search": {
-      "placeholder": "Pflanzen suchen...",
-      "noResults": "Keine Ergebnisse gefunden."
-    },
-    "button": {
-      "connecting": "Pflanzen werden verbunden...",
-      "removeAll": "Alle Pflanzen entfernen",
-      "save": "Pflanzenauswahl speichern ({count})"
-    }
-  }
+  "page-subtitle": "",
+  "page-title": ""
 }
