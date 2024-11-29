@@ -28,12 +28,12 @@ import {
 import { useToast } from "~/hooks/use-toast";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
-import { GetImageByIdOutput } from "~/server/api/root";
+import { GetImageByIdType } from "~/server/api/root";
 
 import { ImageDetailsCard } from "./image-details-card";
 
 interface ImageConnectPlantsProps {
-  image: GetImageByIdOutput;
+  image: GetImageByIdType;
 }
 
 export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {

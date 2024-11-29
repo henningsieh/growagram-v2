@@ -1,13 +1,9 @@
 // src/server/api/routers/image.ts:
 import { eq } from "drizzle-orm";
 import { z } from "zod";
-import { plants } from "~/lib/db/schema";
+import { plantImages, plants } from "~/lib/db/schema";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { plantSchema } from "~/types/zodSchema";
-
-import { imageRouter } from "./image";
-
-const connectPlant__imported_from_imageRouter = imageRouter.connectPlant;
 
 export const plantRouter = createTRPCRouter({
   // Get paginated plants for the current user
@@ -89,7 +85,22 @@ export const plantRouter = createTRPCRouter({
     }),
 
   // Connect an image to plant
-  connectImage: connectPlant__imported_from_imageRouter,
+  connectImage: protectedProcedure
+    .input(
+      z.object({
+        imageId: z.string(),
+        plantId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.db
+        .insert(plantImages)
+        .values({
+          imageId: input.imageId,
+          plantId: input.plantId,
+        })
+        .onConflictDoNothing();
+    }),
 
   // Create a plant
   createOrEdit: protectedProcedure
