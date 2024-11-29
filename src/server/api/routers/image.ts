@@ -151,7 +151,7 @@ export const imageRouter = createTRPCRouter({
         .onConflictDoNothing();
     }),
 
-  // Disonnect a plant to this image
+  // Disonnect a plant from this image
   disconnectPlant: protectedProcedure
     .input(
       z.object({

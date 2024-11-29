@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Sprout } from "lucide-react";
+import { Check, Flower2 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -13,6 +13,14 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "~/components/ui/command";
 import {
   Form,
   FormControl,
@@ -30,14 +38,10 @@ import {
   CreateOrEditGrowInput,
   GetOwnGrowType,
   GetOwnPlantsInput,
-  GetOwnPlantsOutput,
+  GrowConnectPlantInput,
+  GrowDisconnectPlantInput,
 } from "~/server/api/root";
-
-// Define the schema for grow form validation
-const growSchema = z.object({
-  id: z.string().optional(),
-  name: z.string().min(1, "Grow name is required"),
-});
+import { growSchema } from "~/types/zodSchema";
 
 type FormValues = z.infer<typeof growSchema>;
 
@@ -47,10 +51,32 @@ export default function GrowForm({ grow }: { grow?: GetOwnGrowType }) {
   const { toast } = useToast();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
+  /**
+   * Mutation to connect a plant to an image.
+   *
+   * On success, invalidates the cache for the image to ensure updated data.
+   */
+  const connectPlantMutation = api.grow.connectPlant.useMutation({
+    onSuccess: async () => {
+      // await utils.image.getById.invalidate({ id: image.id });
+    },
+  });
+
+  /**
+   * Mutation to disconnect a plant from an image.
+   *
+   * On success, invalidates the cache for the image to ensure updated data.
+   */
+  const disconnectPlantMutation = api.grow.disconnectPlant.useMutation({
+    onSuccess: async () => {
+      // await utils.image.getById.invalidate({ id: image.id });
+    },
+  });
+
+  // The prefetched data will be available in the cache
   const initialData = utils.plant.getOwnPlants.getData();
-  console.debug("initialData: ", initialData);
-
   const { data: plantsData, isLoading } = api.plant.getOwnPlants.useQuery(
     { limit: 100 } satisfies GetOwnPlantsInput,
     {
@@ -58,27 +84,27 @@ export default function GrowForm({ grow }: { grow?: GetOwnGrowType }) {
       initialData: initialData,
     },
   );
-
   // Move plants array into useMemo to ensure stable reference
-  const plants = useMemo(
-    () => (plantsData satisfies GetOwnPlantsOutput | undefined)?.plants || [],
-    [plantsData],
+  const plants = useMemo(() => plantsData?.plants || [], [plantsData]);
+
+  // Initialize with connected plants from existing grow
+  const initialConnectedPlantIds = useMemo(
+    () => grow?.plants?.map((plant) => plant.id) || [],
+    [grow?.plants],
+  );
+  const [selectedPlantIds, setSelectedPlantIds] = useState<string[]>(
+    initialConnectedPlantIds,
   );
 
-  console.debug("plants: ", plants);
-  //   browser console output:
-  //   plants:
-  //     Array(4) [ {…}, {…}, {…}, {…} ]
-  //     ​
-  //     0: Object { id: "be3531f2-a01f-42dc-8aa9-9fd08cd34696", name: "test 33", ownerId: "bb7a2666-3827-485e-a1ed-836981451a95", … }
-  //     ​
-  //     1: Object { id: "68acee7d-7d21-47e4-8723-29291c4ce998", name: "test", ownerId: "bb7a2666-3827-485e-a1ed-836981451a95", … }
-  //     ​
-  //     2: Object { id: "4763f983-8341-445e-bc88-676e9d911ce1", name: "n/a", ownerId: "bb7a2666-3827-485e-a1ed-836981451a95", … }
-  //     ​
-  //     3: Object { id: "89d028ca-b24c-49ef-98a1-8c05a633c6fb", name: "Cheesy Cheese", ownerId: "bb7a2666-3827-485e-a1ed-836981451a95", … }
-  //     ​
-  //     length: 4
+  // Create filtered plants list using useMemo
+  const filteredPlants = useMemo(() => {
+    if (!plants.length) return [];
+    return plants.filter(
+      (p) =>
+        searchQuery === "" ||
+        p.name.toLowerCase().includes(searchQuery.toLowerCase()),
+    );
+  }, [plants, searchQuery]);
 
   const form = useForm<FormValues>({
     mode: "onBlur",
@@ -90,20 +116,54 @@ export default function GrowForm({ grow }: { grow?: GetOwnGrowType }) {
   });
 
   const createOrEditGrowMutation = api.grow.createOrEdit.useMutation({
-    onSuccess: async (_, values) => {
-      toast({
-        title: "Success",
-        description: "Your grow has been created.",
-      });
+    onSuccess: async (_, newGrow) => {
+      // Connect/disconnect plants after grow is created/updated
+      try {
+        // Find plants to connect and disconnect
+        const currentPlantIds = grow?.plants?.map((p) => p.id) || [];
+        const plantsToConnect = selectedPlantIds.filter(
+          (id) => !currentPlantIds.includes(id),
+        );
+        const plantsToDisconnect = currentPlantIds.filter(
+          (id) => !selectedPlantIds.includes(id),
+        );
 
-      // Reset and prefetch the infinite query
-      await utils.grow.getOwnGrows.reset();
-      await utils.grow.getOwnGrows.prefetchInfinite(
-        { limit: 12 }, // match the limit from grows page
-      );
+        // Perform connection/disconnection operations
+        await Promise.all([
+          ...plantsToConnect.map((plantId) =>
+            connectPlantMutation.mutateAsync({
+              growId: newGrow.id,
+              plantId: plantId,
+            } satisfies GrowConnectPlantInput),
+          ),
+          ...plantsToDisconnect.map((plantId) =>
+            disconnectPlantMutation.mutateAsync({
+              growId: newGrow.id,
+              plantId: plantId,
+            } satisfies GrowDisconnectPlantInput),
+          ),
+        ]);
 
-      // Navigate to grows page
-      router.push("/grows");
+        toast({
+          title: "Success",
+          description: "Your grow has been created and plants updated.",
+        });
+
+        // Reset and prefetch the infinite query
+        await utils.grow.getOwnGrows.reset();
+        await utils.grow.getOwnGrows.prefetchInfinite(
+          { limit: 12 }, // match the limit from grows page
+        );
+
+        // Navigate to grows page
+        router.push("/grows");
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: "Failed to update plants for the grow",
+          variant: "destructive",
+        });
+      }
     },
     onError: (error) => {
       toast({
@@ -121,6 +181,14 @@ export default function GrowForm({ grow }: { grow?: GetOwnGrowType }) {
       values satisfies CreateOrEditGrowInput,
     );
   }
+
+  const togglePlantSelection = (plantId: string) => {
+    setSelectedPlantIds((prev) =>
+      prev.includes(plantId)
+        ? prev.filter((id) => id !== plantId)
+        : [...prev, plantId],
+    );
+  };
 
   return (
     <Card>
@@ -151,12 +219,76 @@ export default function GrowForm({ grow }: { grow?: GetOwnGrowType }) {
               )}
             />
 
+            <div>
+              <FormLabel className="mb-2 block font-semibold">
+                Select Plants for this Grow
+              </FormLabel>
+              <Command
+                className="rounded-sm border shadow-md"
+                shouldFilter={false}
+              >
+                <CommandInput
+                  placeholder="Search plants..."
+                  value={searchQuery}
+                  onValueChange={(value) => {
+                    console.debug("value:", value);
+                    setSearchQuery(value);
+                  }}
+                />
+                {isLoading ? (
+                  <div className="flex justify-center p-4">
+                    <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-300 border-t-primary" />
+                  </div>
+                ) : (
+                  <CommandList className="min-h-24">
+                    <CommandEmpty>No plants found</CommandEmpty>
+                    <CommandGroup>
+                      {filteredPlants.map((plant) => (
+                        <CommandItem
+                          key={plant.id}
+                          onSelect={() => togglePlantSelection(plant.id)}
+                          className={`cursor-pointer ${
+                            selectedPlantIds.includes(plant.id)
+                              ? "font-bold text-secondary"
+                              : ""
+                          }`}
+                        >
+                          <div
+                            className={`mr-2 flex h-4 w-4 items-center justify-center rounded-sm border ${
+                              selectedPlantIds.includes(plant.id)
+                                ? "border-secondary bg-secondary"
+                                : "border-secondary"
+                            }`}
+                          >
+                            {selectedPlantIds.includes(plant.id) && (
+                              <Check className="h-3 w-3 text-primary-foreground" />
+                            )}
+                          </div>
+                          <Flower2 className="mr-2 h-4 w-4" />
+                          <span>{plant.name}</span>
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </CommandList>
+                )}
+              </Command>
+              <FormDescription className="mt-2">
+                {selectedPlantIds.length > 0
+                  ? `${selectedPlantIds.length} plant(s) selected`
+                  : "Optional: Select plants for this grow"}
+              </FormDescription>
+            </div>
+
             <div className="flex gap-4">
               <Button
                 type="button"
                 title="Reset"
                 variant="outline"
-                onClick={() => form.reset()}
+                onClick={() => {
+                  form.reset();
+                  setSelectedPlantIds([]);
+                  setSearchQuery("");
+                }}
                 className="w-full"
               >
                 Reset

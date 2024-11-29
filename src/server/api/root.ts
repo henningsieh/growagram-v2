@@ -56,6 +56,8 @@ export type GetGrowByIdType = RouterOutput["grow"]["getById"];
 export type GetOwnGrowsInput = RouterInput["grow"]["getOwnGrows"];
 export type GetGrowByIdInput = RouterInput["grow"]["getById"];
 export type CreateOrEditGrowInput = RouterInput["grow"]["createOrEdit"];
+export type GrowConnectPlantInput = RouterInput["grow"]["connectPlant"];
+export type GrowDisconnectPlantInput = RouterInput["grow"]["disconnectPlant"];
 
 /**
  * Create a server-side caller for the tRPC API.

@@ -1,14 +1,9 @@
 // src/server/api/routers/grow.ts:
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { z } from "zod";
 import { grows, plants } from "~/lib/db/schema";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
-
-// Define a Zod schema for grow input validation
-const growSchema = z.object({
-  id: z.string().optional(),
-  name: z.string().min(1, "Name is required"),
-});
+import { growSchema } from "~/types/zodSchema";
 
 export const growRouter = createTRPCRouter({
   // Get paginated grows for the current user
@@ -96,6 +91,20 @@ export const growRouter = createTRPCRouter({
         .update(plants)
         .set({ growId: input.growId })
         .where(eq(plants.id, input.plantId));
+    }),
+
+  // Disonnect a plant from a grow
+  disconnectPlant: protectedProcedure
+    .input(
+      z.object({
+        plantId: z.string(),
+        growId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.db
+        .delete(plants)
+        .where(and(eq(plants.id, input.plantId), eq(grows.id, input.growId)));
     }),
 
   // Create or edit a grow
