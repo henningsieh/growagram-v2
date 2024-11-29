@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Sprout } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "~/components/ui/button";
@@ -26,7 +26,12 @@ import { Input } from "~/components/ui/input";
 import { useToast } from "~/hooks/use-toast";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
-import { CreateOrEditGrowInput, GetOwnGrowType } from "~/server/api/root";
+import {
+  CreateOrEditGrowInput,
+  GetOwnGrowType,
+  GetOwnPlantsInput,
+  GetOwnPlantsOutput,
+} from "~/server/api/root";
 
 // Define the schema for grow form validation
 const growSchema = z.object({
@@ -42,6 +47,38 @@ export default function GrowForm({ grow }: { grow?: GetOwnGrowType }) {
   const { toast } = useToast();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const initialData = utils.plant.getOwnPlants.getData();
+  console.debug("initialData: ", initialData);
+
+  const { data: plantsData, isLoading } = api.plant.getOwnPlants.useQuery(
+    { limit: 100 } satisfies GetOwnPlantsInput,
+    {
+      // Use the data that was prefetched on the server
+      initialData: initialData,
+    },
+  );
+
+  // Move plants array into useMemo to ensure stable reference
+  const plants = useMemo(
+    () => (plantsData satisfies GetOwnPlantsOutput | undefined)?.plants || [],
+    [plantsData],
+  );
+
+  console.debug("plants: ", plants);
+  //   browser console output:
+  //   plants:
+  //     Array(4) [ {…}, {…}, {…}, {…} ]
+  //     ​
+  //     0: Object { id: "be3531f2-a01f-42dc-8aa9-9fd08cd34696", name: "test 33", ownerId: "bb7a2666-3827-485e-a1ed-836981451a95", … }
+  //     ​
+  //     1: Object { id: "68acee7d-7d21-47e4-8723-29291c4ce998", name: "test", ownerId: "bb7a2666-3827-485e-a1ed-836981451a95", … }
+  //     ​
+  //     2: Object { id: "4763f983-8341-445e-bc88-676e9d911ce1", name: "n/a", ownerId: "bb7a2666-3827-485e-a1ed-836981451a95", … }
+  //     ​
+  //     3: Object { id: "89d028ca-b24c-49ef-98a1-8c05a633c6fb", name: "Cheesy Cheese", ownerId: "bb7a2666-3827-485e-a1ed-836981451a95", … }
+  //     ​
+  //     length: 4
 
   const form = useForm<FormValues>({
     mode: "onBlur",
