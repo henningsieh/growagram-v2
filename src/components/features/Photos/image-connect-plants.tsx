@@ -28,7 +28,7 @@ import {
 import { useToast } from "~/hooks/use-toast";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
-import { GetImageByIdType } from "~/server/api/root";
+import { GetImageByIdType, GetOwnPlantsInput } from "~/server/api/root";
 
 import { ImageDetailsCard } from "./image-details-card";
 
@@ -69,7 +69,7 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
   const initialData = utils.plant.getOwnPlants.getData();
 
   const { data: plantsData, isLoading } = api.plant.getOwnPlants.useQuery(
-    undefined,
+    { limit: 100 } satisfies GetOwnPlantsInput,
     {
       // Use the data that was prefetched on the server
       initialData: initialData,
