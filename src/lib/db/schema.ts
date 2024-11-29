@@ -223,6 +223,9 @@ export const plantImages = pgTable(
     imageId: text("image_id")
       .notNull()
       .references(() => images.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
   },
   (t) => ({
     pk: primaryKey({ columns: [t.plantId, t.imageId] }),

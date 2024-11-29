@@ -57,6 +57,13 @@
       "when": 1732278764290,
       "tag": "0007_regular_hellfire_club",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1732803744558,
+      "tag": "0008_massive_scourge",
+      "breakpoints": true
     }
   ]
 }

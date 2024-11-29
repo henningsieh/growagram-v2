@@ -1,0 +1,1 @@
+ALTER TABLE "plant_images" ADD COLUMN "created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL;
