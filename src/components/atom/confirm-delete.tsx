@@ -1,5 +1,12 @@
 // src/components/ui/delete-confirmation-dialog.tsx
-import { InfoIcon, Loader2, Trash2 } from "lucide-react";
+import {
+  AlertCircle,
+  Flower2,
+  InfoIcon,
+  Loader2,
+  Trash2,
+  X,
+} from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
 import { Button } from "~/components/ui/button";
 import {
@@ -26,32 +33,43 @@ export function DeleteConfirmationDialog({
   onOpenChange,
   onConfirmDelete,
   isDeleting,
-  title = "Are you sure you want to delete this item?",
-  description = "This action cannot be undone. This will permanently delete the item from our servers.",
-  importantInfo,
+  title = "Are you sure you want to remove this plant?",
+  description = "This action will also permanently delete all references to this plant in your photos. This cannot be undone.",
+  importantInfo = "No photo will be deleted by this action!",
 }: DeleteConfirmationDialogProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>{description}</DialogDescription>
+          <Flower2 className="mr-2 h-4 w-4 text-secondary" />
+
+          <DialogTitle className="text-xl font-semibold">{title}</DialogTitle>
+          <DialogDescription className="mt-2 text-sm text-muted-foreground">
+            {description}
+          </DialogDescription>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute right-4 top-4"
+            onClick={() => onOpenChange(false)}
+          >
+            <X className="h-4 w-4" />
+            <span className="sr-only">Close</span>
+          </Button>
         </DialogHeader>
 
         {importantInfo && (
-          <Alert className="p-4">
-            <InfoIcon className="h-5 w-5" />
-            <AlertTitle>Important!</AlertTitle>
-            <AlertDescription>{importantInfo}</AlertDescription>
+          <Alert variant="default" className="border-primary bg-primary/10 p-4">
+            <AlertTitle className="items-gap-1 center flex gap-1 font-semibold text-primary">
+              <InfoIcon className="h-4 w-4 text-primary" /> Important!
+            </AlertTitle>
+            <AlertDescription className="text-primary">
+              {importantInfo}
+            </AlertDescription>
           </Alert>
-
-          //   <div className="flex items-center rounded-md border border-primary/20 bg-primary/10 p-3 text-primary">
-          //     <InfoIcon className="mr-3 h-5 w-5 flex-shrink-0 text-primary" />
-          //     <span className="text-sm">{additionalInfo}</span>
-          //   </div>
         )}
 
-        <DialogFooter>
+        <DialogFooter className="gap-3 sm:gap-0">
           <Button
             variant="outline"
             onClick={() => onOpenChange(false)}
@@ -65,9 +83,9 @@ export function DeleteConfirmationDialog({
             disabled={isDeleting}
           >
             {isDeleting ? (
-              <Loader2 className="mr-1 h-4 w-4 animate-spin" />
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             ) : (
-              <Trash2 className="mr-1 h-4 w-4" />
+              <Trash2 className="mr-2 h-4 w-4" />
             )}
             Delete
           </Button>
