@@ -253,7 +253,7 @@ export default function ProtectedSidebar({
         <SidebarRail />
       </Sidebar>
       <SidebarInset>
-        <header className="sticky top-14 flex h-14 shrink-0 items-center justify-between gap-2 bg-background/90 backdrop-blur">
+        <header className="sticky top-14 z-10 flex h-14 shrink-0 items-center justify-between gap-2 bg-background/90 backdrop-blur">
           <div className="flex items-center gap-2 pl-4 xl:pl-6">
             <SidebarTrigger className="-ml-1" />
             <Separator orientation="vertical" className="mr-2 h-4" />

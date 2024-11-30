@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import SpinningLoader from "~/components/Layouts/loader";
 import PageHeader from "~/components/Layouts/page-header";
@@ -23,6 +24,7 @@ const ITEMS_PER_PAGE = 4;
 const STALE_TIME = 30000; // 30s
 
 export default function AllImagesPage() {
+  const t = useTranslations("Photos");
   const [currentPage, setCurrentPage] = useState(1);
   const [sortField, setSortField] = useState<ImageSortField>(
     ImageSortField.UPLOAD_DATE,
@@ -116,6 +118,7 @@ export default function AllImagesPage() {
   }, [currentPage, totalPages]);
 
   return (
+    // TODO: translations!
     <PageHeader
       title="All Photos"
       subtitle="View and manage your current photos"
