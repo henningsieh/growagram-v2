@@ -4,7 +4,8 @@
 import { TRPCClientError } from "@trpc/client";
 import { Check, Flower2 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { useCallback, useMemo, useState } from "react";
 import FormContent from "~/components/Layouts/form-content";
 import SpinningLoader from "~/components/Layouts/loader";
 import PageHeader from "~/components/Layouts/page-header";
@@ -28,12 +29,12 @@ import {
 import { useToast } from "~/hooks/use-toast";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
-import { GetImageByIdOutput } from "~/server/api/root";
+import { GetImageByIdType, GetOwnPlantsInput } from "~/server/api/root";
 
 import { ImageDetailsCard } from "./image-details-card";
 
 interface ImageConnectPlantsProps {
-  image: GetImageByIdOutput;
+  image: GetImageByIdType;
 }
 
 export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
@@ -41,35 +42,40 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
   const router = useRouter();
   const locale = useLocale();
   const utils = api.useUtils();
+
   const t = useTranslations("Images");
 
+  const allPhotosQuery = useSearchParams();
+
   /**
-   * Mutation to connect a plant to an image.
+   * Mutation to connect an image to a plant.
    *
    * On success, invalidates the cache for the image to ensure updated data.
    */
-  const connectPlantMutation = api.image.connectPlant.useMutation({
+  const connectToPlantMutation = api.image.connectToPlant.useMutation({
     onSuccess: async () => {
       await utils.image.getById.invalidate({ id: image.id });
     },
   });
 
   /**
-   * Mutation to disconnect a plant from an image.
+   * Mutation to disconnect an image from a plant.
    *
    * On success, invalidates the cache for the image to ensure updated data.
    */
-  const disconnectPlantMutation = api.image.disconnectPlant.useMutation({
-    onSuccess: async () => {
-      await utils.image.getById.invalidate({ id: image.id });
+  const disconnectFromPlantMutation = api.image.disconnectFromPlant.useMutation(
+    {
+      onSuccess: async () => {
+        await utils.image.getById.invalidate({ id: image.id });
+      },
     },
-  });
+  );
 
   // The prefetched data will be available in the cache
   const initialData = utils.plant.getOwnPlants.getData();
 
   const { data: plantsData, isLoading } = api.plant.getOwnPlants.useQuery(
-    undefined,
+    { limit: 100 } satisfies GetOwnPlantsInput,
     {
       // Use the data that was prefetched on the server
       initialData: initialData,
@@ -130,13 +136,13 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
     try {
       await Promise.all([
         ...plantsToConnect.map((plantId) =>
-          connectPlantMutation.mutateAsync({
+          connectToPlantMutation.mutateAsync({
             imageId: image.id,
             plantId: plantId,
           }),
         ),
         ...plantsToDisconnect.map((plantId) =>
-          disconnectPlantMutation.mutateAsync({
+          disconnectFromPlantMutation.mutateAsync({
             imageId: image.id,
             plantId: plantId,
           }),
@@ -165,8 +171,8 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
     image.id,
     image.plantImages,
     selectedPlantIds,
-    connectPlantMutation,
-    disconnectPlantMutation,
+    connectToPlantMutation,
+    disconnectFromPlantMutation,
     toast,
     router,
     utils.image.getOwnImages,
@@ -186,10 +192,11 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
       subtitle={t("subtitle")}
       buttonLabel={t("buttonLabel")}
       buttonLink="/photos"
+      searchParams={allPhotosQuery}
     >
       <FormContent>
         <Card>
-          <CardHeader>
+          <CardHeader className="p-3 pb-0 md:p-7 md:pb-0">
             <CardTitle level="h2">{t("plantSelection.title")}</CardTitle>
             <CardDescription>{t("plantSelection.description")}</CardDescription>
           </CardHeader>
@@ -211,7 +218,7 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
               ) : (
                 <CommandList className="min-h-24">
                   <CommandEmpty>{t("search.noResults")}</CommandEmpty>
-                  <CommandGroup>
+                  <CommandGroup className="max-h-32 overflow-y-scroll md:max-h-44">
                     {filteredPlants.map((plant) => (
                       <CommandItem
                         key={plant.id}
@@ -253,10 +260,10 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
               <Button
                 variant={"secondary"}
                 onClick={handleConnectPlants}
-                disabled={connectPlantMutation.isPending}
+                disabled={connectToPlantMutation.isPending}
                 className="w-full"
               >
-                {connectPlantMutation.isPending ? (
+                {connectToPlantMutation.isPending ? (
                   <div className="flex items-center gap-2">
                     <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
                     {t("button.connecting")}

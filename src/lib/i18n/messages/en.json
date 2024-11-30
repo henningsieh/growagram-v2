@@ -4,9 +4,32 @@
       "your-grows": "Your Grows"
     }
   },
+  "Grows": {
+    "create-new-grow": "Create New Grow",
+    "page-subtitle": "Add a new grow to your collection",
+    "page-title": ""
+  },
   "HomePage": {
     "about": "go to Timeline",
     "title": "Hello world!"
+  },
+  "Images": {
+    "button": {
+      "connecting": "Connecting plants...",
+      "removeAll": "Remove All Plants",
+      "save": "Save Plant Selection ({count})"
+    },
+    "buttonLabel": "Back",
+    "plantSelection": {
+      "description": "Select each plant you can see in the photo!",
+      "title": "Plant Selection"
+    },
+    "search": {
+      "noResults": "No results found.",
+      "placeholder": "Search plants..."
+    },
+    "subtitle": "Which plants did you spot in this photo?",
+    "title": "Identify Plants"
   },
   "LanguageToggle": {
     "toggle-language": "Change language"
@@ -54,22 +77,6 @@
     "system": "System",
     "toggle-theme": "Toggle theme"
   },
-  "Images": {
-    "title": "Identify Plants",
-    "subtitle": "Which plants did you spot in this photo?",
-    "buttonLabel": "Back",
-    "plantSelection": {
-      "title": "Plant Selection",
-      "description": "Select each plant you can see in the photo!"
-    },
-    "search": {
-      "placeholder": "Search plants...",
-      "noResults": "No results found."
-    },
-    "button": {
-      "connecting": "Connecting plants...",
-      "removeAll": "Remove All Plants",
-      "save": "Save Plant Selection ({count})"
-    }
-  }
+  "page-subtitle": "",
+  "page-title": ""
 }

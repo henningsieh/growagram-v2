@@ -4,10 +4,10 @@ import Image from "next/image";
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { formatDate, formatTime } from "~/lib/utils";
-import { GetOwnImageOutput } from "~/server/api/root";
+import { GetOwnImageType } from "~/server/api/root";
 
 interface ImageDetailsProps {
-  image: GetOwnImageOutput;
+  image: GetOwnImageType;
   locale: string;
 }
 

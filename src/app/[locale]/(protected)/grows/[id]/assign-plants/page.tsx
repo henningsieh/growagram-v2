@@ -25,13 +25,13 @@ import {
 } from "~/components/ui/command";
 import { useToast } from "~/hooks/use-toast";
 import { api } from "~/lib/trpc/react";
-import { GetOwnPlantsInput, GetOwnPlantsOutput } from "~/server/api/root";
+import { GetOwnPlantsInput, GetOwnPlantsType } from "~/server/api/root";
 
 interface Grow {
   id: string;
   name: string;
   image: string;
-  plants: GetOwnPlantsOutput;
+  plants: GetOwnPlantsType;
   startDate: Date;
   updatedAt: Date;
   type: "indoor" | "outdoor";
@@ -46,7 +46,7 @@ export default function ConnectPlantsPage() {
     startDate: new Date("2024-01-01"),
     updatedAt: new Date("2024-09-16"),
     type: "indoor",
-    plants: [] as GetOwnPlantsOutput,
+    plants: [] as GetOwnPlantsType,
   };
 
   const { toast } = useToast();
@@ -75,9 +75,7 @@ export default function ConnectPlantsPage() {
   }, [plantsData, isPlantsLoading, isPlantsError, plantsError]);
 
   // Manage available plants state
-  const [availablePlants, setAvailablePlants] = useState<GetOwnPlantsOutput>(
-    [],
-  );
+  const [availablePlants, setAvailablePlants] = useState<GetOwnPlantsType>([]);
 
   // Update available plants when data is fetched
   useEffect(() => {

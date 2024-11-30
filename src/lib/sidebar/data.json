@@ -29,8 +29,8 @@
           "url": "/grows"
         },
         {
-          "title": "Assign Plants",
-          "url": "/grows/123/assign-plants"
+          "title": "Create New Grow",
+          "url": "/grows/add"
         },
         {
           "title": "Grow Archive",
@@ -48,7 +48,7 @@
           "url": "/plants"
         },
         {
-          "title": "Add New Plant",
+          "title": " Create New Plant",
           "url": "/plants/add"
         }
       ]

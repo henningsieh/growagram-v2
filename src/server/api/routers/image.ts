@@ -25,8 +25,6 @@ export const imageRouter = createTRPCRouter({
         .default({}),
     )
     .query(async ({ ctx, input }) => {
-      // Access the user ID from session
-      const userId = ctx.session.user.id as string;
       // Use default values if input is not provided
       const limit = input?.limit ?? 12;
       const page = input?.page ?? 1;
@@ -38,7 +36,7 @@ export const imageRouter = createTRPCRouter({
       const offset = (page - 1) * limit;
 
       // Base condition for both queries
-      const isOwnImageCondition = eq(images.ownerId, userId);
+      const isOwnImageCondition = eq(images.ownerId, ctx.session.user.id);
 
       // Additional condition for filtering unconnected images
       const isNewImageCondition = filterNotConnected
@@ -133,8 +131,8 @@ export const imageRouter = createTRPCRouter({
       return image;
     }),
 
-  // Connect a plant to this image
-  connectPlant: protectedProcedure
+  // Connect image to a plant
+  connectToPlant: protectedProcedure
     .input(
       z.object({
         imageId: z.string(),
@@ -151,8 +149,8 @@ export const imageRouter = createTRPCRouter({
         .onConflictDoNothing();
     }),
 
-  // Disonnect a plant to this image
-  disconnectPlant: protectedProcedure
+  // Disonnect image from a plant
+  disconnectFromPlant: protectedProcedure
     .input(
       z.object({
         imageId: z.string(),
@@ -188,7 +186,7 @@ export const imageRouter = createTRPCRouter({
         .insert(images)
         .values({
           id: input.id,
-          ownerId: ctx.session.user.id as string,
+          ownerId: ctx.session.user.id,
           imageUrl: input.imageUrl,
           cloudinaryAssetId: input.cloudinaryAssetId,
           cloudinaryPublicId: input.cloudinaryPublicId,

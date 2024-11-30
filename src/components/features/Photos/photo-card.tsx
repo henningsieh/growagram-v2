@@ -1,11 +1,12 @@
-"use client";
-
+// src/components/features/Photos/photo-card.tsx:
 import {
   Camera,
+  Edit,
   Flower2,
   Loader2,
   Maximize,
   Minimize,
+  Search,
   Trash2,
   UploadCloud,
   X,
@@ -14,6 +15,7 @@ import { useLocale } from "next-intl";
 import Image from "next/image";
 import React, { useCallback, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardFooter, CardTitle } from "~/components/ui/card";
 import {
@@ -35,15 +37,25 @@ import { Link } from "~/lib/i18n/routing";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import { cn, formatDate, formatTime } from "~/lib/utils";
-import { GetOwnImageOutput } from "~/server/api/root";
-import { ImageSortField } from "~/types/image";
+import { GetOwnImageType } from "~/server/api/root";
+import { ImageSortField, SortOrder } from "~/types/image";
 
 interface PhotoCardProps {
-  image: GetOwnImageOutput;
+  image: GetOwnImageType;
   sortField: ImageSortField;
+  currentQuery: {
+    page: number;
+    sortField: ImageSortField;
+    sortOrder: SortOrder;
+    filterNotConnected: boolean;
+  };
 }
 
-export default function PhotoCard({ image, sortField }: PhotoCardProps) {
+export default function PhotoCard({
+  image,
+  sortField,
+  currentQuery,
+}: PhotoCardProps) {
   const locale = useLocale();
   const router = useRouter();
   const utils = api.useUtils();
@@ -56,14 +68,15 @@ export default function PhotoCard({ image, sortField }: PhotoCardProps) {
 
   // Initialize delete mutation
   const deleteMutation = api.image.deleteImage.useMutation({
-    onSuccess: () => {
+    onSuccess: async () => {
       toast({
         title: "Success",
         description: "Image deleted successfully",
       });
-      // Invalidate the images query to refresh the list
-      utils.image.getOwnImages.invalidate();
-      // Optionally redirect or refresh the page
+      // Invalidate and prefetch the images query to refresh the list
+      await utils.image.getOwnImages.invalidate();
+      await utils.image.getOwnImages.prefetch();
+
       router.refresh();
     },
     onError: (error) => {
@@ -79,8 +92,8 @@ export default function PhotoCard({ image, sortField }: PhotoCardProps) {
     setIsDeleteDialogOpen(true);
   };
 
-  const confirmDelete = () => {
-    deleteMutation.mutate({ id: image.id });
+  const confirmDelete = async () => {
+    await deleteMutation.mutateAsync({ id: image.id });
     setIsDeleteDialogOpen(false);
   };
 
@@ -122,7 +135,12 @@ export default function PhotoCard({ image, sortField }: PhotoCardProps) {
 
   return (
     <>
-      <Card className="overflow-hidden">
+      <Card className="relative overflow-hidden">
+        {!!!image.plantImages.length && (
+          <div className="absolute right-[-40px] top-[15px] z-10 w-[120px] rotate-[45deg] cursor-default bg-primary px-[40px] py-[1px] text-[12px] font-semibold tracking-widest text-white">
+            NEW
+          </div>
+        )}
         <div
           className="relative aspect-video cursor-pointer"
           onClick={handleImageClick}
@@ -189,29 +207,39 @@ export default function PhotoCard({ image, sortField }: PhotoCardProps) {
             </TooltipContent>
           </Tooltip>
         </CardContent>
-        <CardFooter className="gap-2 p-3">
+
+        <CardFooter className="flex w-full gap-1 p-2">
           <Button
             variant="destructive"
-            size="sm"
-            className="w-1/3 gap-0 text-sm font-bold"
+            size={"sm"}
+            className="w-14"
             onClick={handleDelete}
             disabled={deleteMutation.isPending}
           >
             {deleteMutation.isPending ? (
-              <>
-                <Loader2 className="mr-1 h-4 w-4 animate-spin" />
-              </>
+              <Loader2 size={20} className="animate-spin" />
             ) : (
-              <>
-                <Trash2 className="mr-1 h-4 w-4" />
-              </>
+              <Trash2 size={20} />
             )}
-            Delete
           </Button>
-          <Button asChild size={"sm"} className="w-2/3 text-base font-semibold">
-            <Link href={`/photos/${image.id}/identify-plants`}>
-              <Flower2 strokeWidth={1.8} className="h-4 w-4" />
-              Identify Plants
+          <Button
+            asChild
+            size={"sm"}
+            className="w-full"
+            variant={!!!image.plantImages.length ? "primary" : "outline"}
+          >
+            <Link
+              href={{
+                pathname: `/photos/${image.id}/identify-plants`,
+                query: currentQuery,
+              }}
+            >
+              {!!!image.plantImages.length ? (
+                <Search size={20} />
+              ) : (
+                <Flower2 size={20} />
+              )}
+              {!!!image.plantImages.length ? "Identify Plants" : "Edit Plants"}
             </Link>
           </Button>
         </CardFooter>
@@ -273,30 +301,15 @@ export default function PhotoCard({ image, sortField }: PhotoCardProps) {
           document.body,
         )}
 
-      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>
-              Are you sure you want to delete this image?
-            </DialogTitle>
-            <DialogDescription>
-              This action cannot be undone. This will permanently delete the
-              image from our servers.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setIsDeleteDialogOpen(false)}
-            >
-              Cancel
-            </Button>
-            <Button variant="destructive" onClick={confirmDelete}>
-              Delete
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      {/* Delete Confirmation Dialog */}
+      <DeleteConfirmationDialog
+        isOpen={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        onConfirmDelete={confirmDelete}
+        isDeleting={deleteMutation.isPending}
+        title="Are you sure you want to delete this image?"
+        description="This action cannot be undone. This will permanently delete the image from our servers."
+      />
     </>
   );
 }

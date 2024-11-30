@@ -1,13 +1,10 @@
 // src/server/api/routers/image.ts:
+import { TRPCError } from "@trpc/server";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
-import { plants } from "~/lib/db/schema";
+import { plantImages, plants } from "~/lib/db/schema";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { plantSchema } from "~/types/zodSchema";
-
-import { imageRouter } from "./image";
-
-const connectPlant__imported_from_imageRouter = imageRouter.connectPlant;
 
 export const plantRouter = createTRPCRouter({
   // Get paginated plants for the current user
@@ -21,15 +18,12 @@ export const plantRouter = createTRPCRouter({
         .optional(), // Make the entire input object optional
     )
     .query(async ({ ctx, input }) => {
-      // Access the user ID from session
-      const userId = ctx.session.user.id as string;
-
       // Use default values if input is not provided
       const limit = input?.limit ?? 12;
       const cursor = input?.cursor ?? null;
 
       const userPlants = await ctx.db.query.plants.findMany({
-        where: eq(plants.ownerId, userId),
+        where: eq(plants.ownerId, ctx.session.user.id),
         orderBy: (plants, { desc }) => [desc(plants.createdAt)],
         limit: limit + 1, // Fetch extra item to check for next page
         offset: cursor ?? 0, // Use cursor for offset
@@ -88,20 +82,60 @@ export const plantRouter = createTRPCRouter({
       });
     }),
 
-  // Connect an image to plant
-  connectImage: connectPlant__imported_from_imageRouter,
+  // Connect plant to an image
+  connectToImage: protectedProcedure
+    .input(
+      z.object({
+        imageId: z.string(),
+        plantId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.db
+        .insert(plantImages)
+        .values({
+          imageId: input.imageId,
+          plantId: input.plantId,
+        })
+        .onConflictDoNothing();
+    }),
 
-  // Create a plant
+  // Create or edit a plant
   createOrEdit: protectedProcedure
     .input(plantSchema)
     .mutation(async ({ ctx, input }) => {
+      // If an existing plant ID is specified, check the existence
+      // of the plant and the ownership of the current user
+      if (input.id !== undefined && typeof input.id === "string") {
+        const owenerid = input.id;
+        const existingPlant = await ctx.db.query.plants.findFirst({
+          where: (plants, { eq }) => eq(plants.id, owenerid),
+        });
+
+        // Throw a TRPC not found error if the plant doesn't exist
+        if (!existingPlant) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "Plant not found",
+          });
+        }
+
+        // Throw a TRPC unauthorized error if the current user is not the owner
+        if (existingPlant.ownerId !== ctx.session.user.id) {
+          throw new TRPCError({
+            code: "UNAUTHORIZED",
+            message: "Session user does not own this plant",
+          });
+        }
+      }
+
       // Logic to handle image creation
       const newPlant = await ctx.db
         .insert(plants)
         .values({
-          id: input.id,
+          id: input.id || crypto.randomUUID(),
           name: input.name,
-          ownerId: ctx.session.user.id as string,
+          ownerId: ctx.session.user.id,
           startDate: input.startDate,
           seedlingPhaseStart: input.seedlingPhaseStart,
           vegetationPhaseStart: input.vegetationPhaseStart,
@@ -113,7 +147,7 @@ export const plantRouter = createTRPCRouter({
           target: plants.id,
           set: {
             name: input.name,
-            // ownerId: ctx.session.user.id as string,
+            // ownerId: ctx.session.user.id, // no owner change onUpdate!
             startDate: input.startDate,
             seedlingPhaseStart: input.seedlingPhaseStart,
             vegetationPhaseStart: input.vegetationPhaseStart,
