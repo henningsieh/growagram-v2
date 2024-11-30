@@ -1,5 +1,4 @@
-"use client";
-
+// src/components/features/Photos/photo-card.tsx:
 import {
   Camera,
   Flower2,
@@ -14,6 +13,7 @@ import { useLocale } from "next-intl";
 import Image from "next/image";
 import React, { useCallback, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardFooter, CardTitle } from "~/components/ui/card";
 import {
@@ -274,39 +274,15 @@ export default function PhotoCard({ image, sortField }: PhotoCardProps) {
           document.body,
         )}
 
-      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>
-              Are you sure you want to delete this image?
-            </DialogTitle>
-            <DialogDescription>
-              This action cannot be undone. This will permanently delete the
-              image from our servers.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setIsDeleteDialogOpen(false)}
-            >
-              Cancel
-            </Button>
-            <Button variant="destructive" onClick={confirmDelete}>
-              {deleteMutation.isPending ? (
-                <>
-                  <Loader2 className="mr-1 h-4 w-4 animate-spin" />
-                </>
-              ) : (
-                <>
-                  <Trash2 className="mr-1 h-4 w-4" />
-                </>
-              )}
-              Delete
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      {/* Delete Confirmation Dialog */}
+      <DeleteConfirmationDialog
+        isOpen={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        onConfirmDelete={confirmDelete}
+        isDeleting={deleteMutation.isPending}
+        title="Are you sure you want to delete this image?"
+        description="This action cannot be undone. This will permanently delete the image from our servers."
+      />
     </>
   );
 }
