@@ -125,7 +125,12 @@ export default function PhotoCard({ image, sortField }: PhotoCardProps) {
 
   return (
     <>
-      <Card className="overflow-hidden">
+      <Card className="relative overflow-hidden">
+        {!!!image.plantImages.length && (
+          <div className="absolute right-[-40px] top-[15px] z-10 w-[120px] rotate-[45deg] cursor-default bg-primary px-[40px] py-[1px] text-[12px] font-semibold tracking-widest text-white">
+            NEW
+          </div>
+        )}
         <div
           className="relative aspect-video cursor-pointer"
           onClick={handleImageClick}
@@ -293,3 +298,21 @@ export default function PhotoCard({ image, sortField }: PhotoCardProps) {
     </>
   );
 }
+
+const style = document.createElement("style");
+style.innerHTML = `
+.new-banner {
+  width: 120px;
+  position: absolute;
+  top: 15px;
+  right: -35px;
+  background-color: #ff4081;
+  color: white;
+  padding: 5px 40px;
+  font-size: 12px;
+  font-weight: bold;
+  transform: rotate(45deg);
+  z-index: 10;
+}
+`;
+document.head.appendChild(style);
