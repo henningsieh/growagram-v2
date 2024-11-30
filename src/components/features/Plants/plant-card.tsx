@@ -245,37 +245,26 @@ export default function PlantCard({ plant }: PlantCardProps) {
           </div>
         </CardContent>
 
-        <CardFooter className="bg-muted/50 p-2">
-          {/* <Link href={`/plants/edit/${plant.id}`}>edit</Link>
-        <div className="flex w-full items-center justify-between">
-          <span className="text-sm text-muted-foreground">
-            THC: {plant.strain?.thcContent ?? "N/A"}%
-          </span>
-          <span className="text-sm text-muted-foreground">
-            CBD: {plant.strain?.cbdContent ?? "N/A"}%
-          </span>
-        </div> */}
-          <div className="flex w-full gap-1">
-            <Button
-              variant="destructive"
-              className="w-1/3 font-normal"
-              onClick={handleDelete}
-              disabled={deleteMutation.isPending}
-            >
-              {deleteMutation.isPending ? (
-                <Loader2 className="mr-1 h-4 w-4 animate-spin" />
-              ) : (
-                <Trash2 />
-              )}
-              Delete
-            </Button>
-            <Button asChild variant="primary" className="w-2/3">
-              <Link href={`/plants/edit/${plant.id}`}>
-                <Edit />
-                Edit Plant
-              </Link>
-            </Button>
-          </div>
+        <CardFooter className="flex w-full gap-1 p-2">
+          <Button
+            variant="destructive"
+            size={"sm"}
+            className="w-14"
+            onClick={handleDelete}
+            disabled={deleteMutation.isPending}
+          >
+            {deleteMutation.isPending ? (
+              <Loader2 size={20} className="animate-spin" />
+            ) : (
+              <Trash2 size={20} />
+            )}
+          </Button>
+          <Button asChild size={"sm"} variant="primary" className="w-full">
+            <Link href={`/plants/edit/${plant.id}`}>
+              <Edit size={20} />
+              Edit Plant
+            </Link>
+          </Button>
         </CardFooter>
       </Card>
 

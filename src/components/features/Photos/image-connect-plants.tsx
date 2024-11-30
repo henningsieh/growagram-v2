@@ -191,7 +191,7 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
     >
       <FormContent>
         <Card>
-          <CardHeader>
+          <CardHeader className="p-3 pb-0 md:p-7 md:pb-0">
             <CardTitle level="h2">{t("plantSelection.title")}</CardTitle>
             <CardDescription>{t("plantSelection.description")}</CardDescription>
           </CardHeader>
@@ -213,7 +213,7 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
               ) : (
                 <CommandList className="min-h-24">
                   <CommandEmpty>{t("search.noResults")}</CommandEmpty>
-                  <CommandGroup>
+                  <CommandGroup className="max-h-32 overflow-y-scroll md:max-h-44">
                     {filteredPlants.map((plant) => (
                       <CommandItem
                         key={plant.id}

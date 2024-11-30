@@ -19,20 +19,22 @@ export default function Component({
 }: IPageHeader) {
   return (
     <div className="mx-auto space-y-8 pl-3 pr-4 md:pl-2 lg:pl-4 xl:pl-6">
-      <div className="flex justify-between">
-        <div className="flex flex-col space-y-2">
-          <h1 className="text-3xl font-bold sm:text-3xl md:text-4xl lg:text-5xl">
-            {title}
-          </h1>
-          <p className="text-muted-foreground md:text-lg">{subtitle}</p>
+      <div className="space-y-2">
+        <div className="flex justify-between">
+          <div className="flex flex-col space-y-2">
+            <h1 className="text-3xl font-bold sm:text-3xl md:text-4xl lg:text-5xl">
+              {title}
+            </h1>
+          </div>
+          <div className="flex items-end">
+            {buttonLink && (
+              <Button asChild size="sm" variant="primary">
+                <Link href={buttonLink}>{buttonLabel}</Link>
+              </Button>
+            )}
+          </div>
         </div>
-        <div className="flex items-start">
-          {buttonLink && (
-            <Button asChild size="sm" variant="primary">
-              <Link href={buttonLink}>{buttonLabel}</Link>
-            </Button>
-          )}
-        </div>
+        <p className="text-muted-foreground md:text-lg">{subtitle}</p>
       </div>
       <div className="mx-auto">{children}</div>
     </div>

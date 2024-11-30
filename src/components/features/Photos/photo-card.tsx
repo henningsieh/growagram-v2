@@ -1,10 +1,12 @@
 // src/components/features/Photos/photo-card.tsx:
 import {
   Camera,
+  Edit,
   Flower2,
   Loader2,
   Maximize,
   Minimize,
+  Search,
   Trash2,
   UploadCloud,
   X,
@@ -190,29 +192,34 @@ export default function PhotoCard({ image, sortField }: PhotoCardProps) {
             </TooltipContent>
           </Tooltip>
         </CardContent>
-        <CardFooter className="gap-2 p-3">
+
+        <CardFooter className="flex w-full gap-1 p-2">
           <Button
             variant="destructive"
-            size="sm"
-            className="w-1/3 gap-0 text-sm font-bold"
+            size={"sm"}
+            className="w-14"
             onClick={handleDelete}
             disabled={deleteMutation.isPending}
           >
             {deleteMutation.isPending ? (
-              <>
-                <Loader2 className="mr-1 h-4 w-4 animate-spin" />
-              </>
+              <Loader2 size={20} className="animate-spin" />
             ) : (
-              <>
-                <Trash2 className="mr-1 h-4 w-4" />
-              </>
+              <Trash2 size={20} />
             )}
-            Delete
           </Button>
-          <Button asChild size={"sm"} className="w-2/3 text-base font-semibold">
+          <Button
+            asChild
+            size={"sm"}
+            className="w-full"
+            variant={!!!image.plantImages.length ? "primary" : "outline"}
+          >
             <Link href={`/photos/${image.id}/identify-plants`}>
-              <Flower2 strokeWidth={1.8} className="h-4 w-4" />
-              Identify Plants
+              {!!!image.plantImages.length ? (
+                <Search size={20} />
+              ) : (
+                <Flower2 size={20} />
+              )}
+              {!!!image.plantImages.length ? "Identify Plants" : "Edit Plants"}
             </Link>
           </Button>
         </CardFooter>
