@@ -298,21 +298,3 @@ export default function PhotoCard({ image, sortField }: PhotoCardProps) {
     </>
   );
 }
-
-const style = document.createElement("style");
-style.innerHTML = `
-.new-banner {
-  width: 120px;
-  position: absolute;
-  top: 15px;
-  right: -35px;
-  background-color: #ff4081;
-  color: white;
-  padding: 5px 40px;
-  font-size: 12px;
-  font-weight: bold;
-  transform: rotate(45deg);
-  z-index: 10;
-}
-`;
-document.head.appendChild(style);
