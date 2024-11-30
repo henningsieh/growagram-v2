@@ -57,11 +57,11 @@ export default function PlantForm({ plant }: { plant?: Plant }) {
   });
 
   const createOrEditPlantMutation = api.plant.createOrEdit.useMutation({
-    onSuccess: async (_, values) => {
-      console.debug("values: ", values);
+    onSuccess: async (_, plant) => {
+      console.debug("new or edited plant: ", { plant }); // log the plant values
       toast({
         title: "Success",
-        description: "Your plant has been created.",
+        description: "Your plant has been saved.",
       });
 
       // Reset and prefetch the infinite query

@@ -1,11 +1,12 @@
 // src/components/features/plant/plant-card.tsx:
 import { TooltipProvider } from "@radix-ui/react-tooltip";
-import { Flower2, Leaf, Nut, Sprout, Wheat } from "lucide-react";
+import { Edit, Flower2, Leaf, Nut, Sprout, Trash2, Wheat } from "lucide-react";
 import { useLocale } from "next-intl";
 import Image from "next/image";
 import { useState } from "react";
 import headerImagePlaceholder from "~/assets/landscape-placeholdersvg.svg";
 import { Badge } from "~/components/ui/badge";
+import { Button } from "~/components/ui/button";
 import {
   Card,
   CardContent,
@@ -189,8 +190,8 @@ export default function PlantCard({ plant }: PlantCardProps) {
         </div>
       </CardContent>
 
-      <CardFooter className="bg-muted/50 p-4">
-        <Link href={`/plants/edit/${plant.id}`}>edit</Link>
+      <CardFooter className="bg-muted/50 p-2">
+        {/* <Link href={`/plants/edit/${plant.id}`}>edit</Link>
         <div className="flex w-full items-center justify-between">
           <span className="text-sm text-muted-foreground">
             THC: {plant.strain?.thcContent ?? "N/A"}%
@@ -198,6 +199,18 @@ export default function PlantCard({ plant }: PlantCardProps) {
           <span className="text-sm text-muted-foreground">
             CBD: {plant.strain?.cbdContent ?? "N/A"}%
           </span>
+        </div> */}
+        <div className="flex w-full gap-1">
+          <Button variant={"destructive"} className="w-1/3 font-normal">
+            <Trash2 />
+            Delete
+          </Button>
+          <Button asChild variant={"primary"} className="w-2/3">
+            <Link href={`/plants/edit/${plant.id}`}>
+              <Edit />
+              Edit Plant
+            </Link>
+          </Button>
         </div>
       </CardFooter>
     </Card>
