@@ -44,26 +44,28 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
   const t = useTranslations("Images");
 
   /**
-   * Mutation to connect a plant to an image.
+   * Mutation to connect an image to a plant.
    *
    * On success, invalidates the cache for the image to ensure updated data.
    */
-  const connectPlantMutation = api.image.connectPlant.useMutation({
+  const connectToPlantMutation = api.image.connectToPlant.useMutation({
     onSuccess: async () => {
       await utils.image.getById.invalidate({ id: image.id });
     },
   });
 
   /**
-   * Mutation to disconnect a plant from an image.
+   * Mutation to disconnect an image from a plant.
    *
    * On success, invalidates the cache for the image to ensure updated data.
    */
-  const disconnectPlantMutation = api.image.disconnectPlant.useMutation({
-    onSuccess: async () => {
-      await utils.image.getById.invalidate({ id: image.id });
+  const disconnectFromPlantMutation = api.image.disconnectFromPlant.useMutation(
+    {
+      onSuccess: async () => {
+        await utils.image.getById.invalidate({ id: image.id });
+      },
     },
-  });
+  );
 
   // The prefetched data will be available in the cache
   const initialData = utils.plant.getOwnPlants.getData();
@@ -130,13 +132,13 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
     try {
       await Promise.all([
         ...plantsToConnect.map((plantId) =>
-          connectPlantMutation.mutateAsync({
+          connectToPlantMutation.mutateAsync({
             imageId: image.id,
             plantId: plantId,
           }),
         ),
         ...plantsToDisconnect.map((plantId) =>
-          disconnectPlantMutation.mutateAsync({
+          disconnectFromPlantMutation.mutateAsync({
             imageId: image.id,
             plantId: plantId,
           }),
@@ -165,8 +167,8 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
     image.id,
     image.plantImages,
     selectedPlantIds,
-    connectPlantMutation,
-    disconnectPlantMutation,
+    connectToPlantMutation,
+    disconnectFromPlantMutation,
     toast,
     router,
     utils.image.getOwnImages,
@@ -253,10 +255,10 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
               <Button
                 variant={"secondary"}
                 onClick={handleConnectPlants}
-                disabled={connectPlantMutation.isPending}
+                disabled={connectToPlantMutation.isPending}
                 className="w-full"
               >
-                {connectPlantMutation.isPending ? (
+                {connectToPlantMutation.isPending ? (
                   <div className="flex items-center gap-2">
                     <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
                     {t("button.connecting")}
