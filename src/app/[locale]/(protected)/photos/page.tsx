@@ -24,7 +24,7 @@ const ITEMS_PER_PAGE = 4;
 const STALE_TIME = 30000; // 30s
 
 export default function AllImagesPage() {
-  const t = useTranslations("Photos");
+  // const t = useTranslations("Photos");
   const [currentPage, setCurrentPage] = useState(1);
   const [sortField, setSortField] = useState<ImageSortField>(
     ImageSortField.UPLOAD_DATE,

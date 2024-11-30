@@ -56,14 +56,15 @@ export default function PhotoCard({ image, sortField }: PhotoCardProps) {
 
   // Initialize delete mutation
   const deleteMutation = api.image.deleteImage.useMutation({
-    onSuccess: () => {
+    onSuccess: async () => {
       toast({
         title: "Success",
         description: "Image deleted successfully",
       });
-      // Invalidate the images query to refresh the list
-      utils.image.getOwnImages.invalidate();
-      // Optionally redirect or refresh the page
+      // Invalidate and prefetch the images query to refresh the list
+      await utils.image.getOwnImages.invalidate();
+      await utils.image.getOwnImages.prefetch();
+
       router.refresh();
     },
     onError: (error) => {
@@ -79,8 +80,8 @@ export default function PhotoCard({ image, sortField }: PhotoCardProps) {
     setIsDeleteDialogOpen(true);
   };
 
-  const confirmDelete = () => {
-    deleteMutation.mutate({ id: image.id });
+  const confirmDelete = async () => {
+    await deleteMutation.mutateAsync({ id: image.id });
     setIsDeleteDialogOpen(false);
   };
 
@@ -292,6 +293,15 @@ export default function PhotoCard({ image, sortField }: PhotoCardProps) {
               Cancel
             </Button>
             <Button variant="destructive" onClick={confirmDelete}>
+              {deleteMutation.isPending ? (
+                <>
+                  <Loader2 className="mr-1 h-4 w-4 animate-spin" />
+                </>
+              ) : (
+                <>
+                  <Trash2 className="mr-1 h-4 w-4" />
+                </>
+              )}
               Delete
             </Button>
           </DialogFooter>

@@ -21,7 +21,9 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "~/components/ui/tooltip";
-import { Link } from "~/lib/i18n/routing";
+import { useToast } from "~/hooks/use-toast";
+import { Link, useRouter } from "~/lib/i18n/routing";
+import { api } from "~/lib/trpc/react";
 import { calculateGrowthProgress, formatDate } from "~/lib/utils";
 import { GetOwnPlantType } from "~/server/api/root";
 
@@ -31,8 +33,32 @@ interface PlantCardProps {
 
 export default function PlantCard({ plant }: PlantCardProps) {
   const locale = useLocale();
+  const router = useRouter();
+  const utils = api.useUtils();
+  const { toast } = useToast();
 
   const [isImageHovered, setIsImageHovered] = useState(false);
+
+  // Initialize delete mutation
+  const deleteMutation = api.plant.deleteById.useMutation({
+    onSuccess: async () => {
+      toast({
+        title: "Success",
+        description: "Plant deleted successfully",
+      });
+      // Invalidate and prefetch the images query to refresh the list
+      await utils.plant.getOwnPlants.invalidate();
+      await utils.plant.getOwnPlants.prefetch();
+      router.refresh();
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to delete plant",
+        variant: "destructive",
+      });
+    },
+  });
 
   const progress = calculateGrowthProgress(
     plant.startDate,
