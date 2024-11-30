@@ -1,4 +1,5 @@
 // src/components/Layouts/page-header.tsx:
+import { ReadonlyURLSearchParams } from "next/navigation";
 import { Button } from "~/components/ui/button";
 import { Link } from "~/lib/i18n/routing";
 
@@ -8,6 +9,7 @@ interface IPageHeader {
   children: React.ReactNode;
   buttonLink?: string | null;
   buttonLabel?: string;
+  searchParams?: ReadonlyURLSearchParams;
 }
 
 export default function Component({
@@ -16,7 +18,12 @@ export default function Component({
   children,
   buttonLink,
   buttonLabel = "Upload New Image",
+  searchParams,
 }: IPageHeader) {
+  const queryObject = searchParams
+    ? Object.fromEntries(searchParams.entries())
+    : undefined;
+
   return (
     <div className="mx-auto space-y-8 pl-3 pr-4 md:pl-2 lg:pl-4 xl:pl-6">
       <div className="space-y-2">
@@ -29,7 +36,14 @@ export default function Component({
           <div className="flex items-end">
             {buttonLink && (
               <Button asChild size="sm" variant="primary">
-                <Link href={buttonLink}>{buttonLabel}</Link>
+                <Link
+                  href={{
+                    pathname: buttonLink,
+                    query: queryObject,
+                  }}
+                >
+                  {buttonLabel}
+                </Link>
               </Button>
             )}
           </div>

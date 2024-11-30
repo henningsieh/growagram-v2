@@ -38,14 +38,24 @@ import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import { cn, formatDate, formatTime } from "~/lib/utils";
 import { GetOwnImageType } from "~/server/api/root";
-import { ImageSortField } from "~/types/image";
+import { ImageSortField, SortOrder } from "~/types/image";
 
 interface PhotoCardProps {
   image: GetOwnImageType;
   sortField: ImageSortField;
+  currentQuery: {
+    page: number;
+    sortField: ImageSortField;
+    sortOrder: SortOrder;
+    filterNotConnected: boolean;
+  };
 }
 
-export default function PhotoCard({ image, sortField }: PhotoCardProps) {
+export default function PhotoCard({
+  image,
+  sortField,
+  currentQuery,
+}: PhotoCardProps) {
   const locale = useLocale();
   const router = useRouter();
   const utils = api.useUtils();
@@ -218,7 +228,12 @@ export default function PhotoCard({ image, sortField }: PhotoCardProps) {
             className="w-full"
             variant={!!!image.plantImages.length ? "primary" : "outline"}
           >
-            <Link href={`/photos/${image.id}/identify-plants`}>
+            <Link
+              href={{
+                pathname: `/photos/${image.id}/identify-plants`,
+                query: currentQuery,
+              }}
+            >
               {!!!image.plantImages.length ? (
                 <Search size={20} />
               ) : (

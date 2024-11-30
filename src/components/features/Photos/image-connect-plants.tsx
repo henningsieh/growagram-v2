@@ -4,7 +4,8 @@
 import { TRPCClientError } from "@trpc/client";
 import { Check, Flower2 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { useCallback, useMemo, useState } from "react";
 import FormContent from "~/components/Layouts/form-content";
 import SpinningLoader from "~/components/Layouts/loader";
 import PageHeader from "~/components/Layouts/page-header";
@@ -41,7 +42,10 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
   const router = useRouter();
   const locale = useLocale();
   const utils = api.useUtils();
+
   const t = useTranslations("Images");
+
+  const allPhotosQuery = useSearchParams();
 
   /**
    * Mutation to connect an image to a plant.
@@ -188,6 +192,7 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
       subtitle={t("subtitle")}
       buttonLabel={t("buttonLabel")}
       buttonLink="/photos"
+      searchParams={allPhotosQuery}
     >
       <FormContent>
         <Card>
