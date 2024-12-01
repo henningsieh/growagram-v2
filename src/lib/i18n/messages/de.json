@@ -1,12 +1,12 @@
 {
   "Dashboard": {
     "Grows": {
-      "your-grows": "Deine Grows"
+      "your-grows": "deine Grows"
     }
   },
   "Grows": {
     "create-new-grow": "",
-    "page-subtitle": "Füge Deiner Sammlung einen neuen Grow hinzu",
+    "page-subtitle": "Füge deiner Sammlung einen neuen Grow hinzu",
     "page-title": "Neuen Grow erstellen"
   },
   "HomePage": {
@@ -60,7 +60,7 @@
     "dashboard-description": "Erfasse deine Grows und deine Pflanzen, einschließlich Umgebungen und Werkzeuge.",
     "grower-menu": "Für Grower",
     "login": "Login",
-    "manage-your-grows": "Organisiere Deine Ihre Pflanzen, indem Du sie in Gruppen zusammenstellst.",
+    "manage-your-grows": "Organisiere deine Ihre Pflanzen, indem Du sie in Gruppen zusammenstellst.",
     "my-grows": "Meine Grows",
     "navigation": "Navigation",
     "timeline": "Zeitleiste",
@@ -73,22 +73,22 @@
     "form-button-reset": "Zurücksetzen",
     "form-button-save-changes": "Speichern",
     "form-button-save-new": "Pflanze erstellen",
-    "form-heading": "Stammdaten Deiner Pflanzen",
+    "form-heading": "Stammdaten deiner Pflanzen",
     "form-heading-description": "Bearbeite den Namen der Pflanze und die relevanten Datumsangaben.",
     "form-nickname": "Spitzname der Pflanze",
-    "form-nickname-description": "Gib Deiner Pflanze einen einprägsamen Namen.",
+    "form-nickname-description": "Gib deiner Pflanze einen einprägsamen Namen.",
     "form-pageheader-backButtonLabel": "Zurück",
-    "form-pagerheader-edit-subtitle": "Bearbeite eine Pflanze aus Deiner Sammlung",
+    "form-pagerheader-edit-subtitle": "Bearbeite eine Pflanze aus deiner Sammlung",
     "form-pagerheader-edit-title": "Pflanze bearbeiten",
-    "form-pagerheader-new-subtitle": "",
-    "form-pagerheader-new-title": "",
-    "form-pagerheader-subtitle": "Füge Deiner Sammlung eine neue Pflanze hinzu",
+    "form-pagerheader-new-subtitle": "Füge deiner Sammlung eine neue Pflanze hinzu",
+    "form-pagerheader-new-title": "Neue Pflanze anlegen",
+    "form-pagerheader-subtitle": "Füge deiner Sammlung eine neue Pflanze hinzu",
     "form-pagerheader-title": "Neue Pflanze erstellen",
     "germination-date": "Datum der Keimung",
     "harvest-date": "Datum der Ernte",
-    "linkUploadButtonLabel": "Neue Pflanze hinzufügen",
+    "linkUploadButtonLabel": "Neue Pflanze anlegen",
     "planting-date": "Datum der Aussaat",
-    "subtitle": "Verwalte Deine Pflanzen",
+    "subtitle": "Verwalte deine Pflanzen",
     "title": "Meine Pflanzen",
     "user-has-no-plants": "Du hast bisher keine Pflanzen hinzugefügt.",
     "vegetation-start-date": "Startdatum der Wachstumsphase"

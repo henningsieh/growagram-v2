@@ -96,13 +96,13 @@ export default function PlantForm({ plant }: { plant?: Plant }) {
 
   return (
     <Card>
-      <CardHeader className="p-2 sm:p-3 lg:p-4 xl:p-6">
-        <CardTitle level="h2">{t("form-heading")}</CardTitle>
-        <CardDescription>{t("form-heading-description")}</CardDescription>
-      </CardHeader>
-      <CardContent className="p-2 sm:p-3 lg:p-4 xl:p-6">
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        <CardHeader className="p-2 sm:p-3 lg:p-4 xl:p-6">
+          <CardTitle level="h2">{t("form-heading")}</CardTitle>
+          <CardDescription>{t("form-heading-description")}</CardDescription>
+        </CardHeader>
+        <CardContent className="p-2 sm:p-3 lg:p-4 xl:p-6">
+          <Form {...form}>
             <FormField
               control={form.control}
               name="name"
@@ -212,11 +212,10 @@ export default function PlantForm({ plant }: { plant?: Plant }) {
                 />
               </div>
             </div>
-          </form>
-        </Form>
-      </CardContent>
-      <CardFooter className="p-2 sm:p-3 lg:p-4 xl:p-6">
-        <div className="flex w-full gap-1">
+          </Form>
+        </CardContent>
+
+        <CardFooter className="flex w-full gap-2 p-2 sm:p-3 md:gap-6 lg:p-4 xl:p-6">
           <Button
             size="sm"
             type="button"
@@ -238,8 +237,8 @@ export default function PlantForm({ plant }: { plant?: Plant }) {
               ? t("form-button-save-changes")
               : t("form-button-save-new")}
           </Button>
-        </div>
-      </CardFooter>
+        </CardFooter>
+      </form>
     </Card>
   );
 }

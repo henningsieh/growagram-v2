@@ -256,7 +256,7 @@ export default function ProtectedSidebar({
       </Sidebar>
       <SidebarInset>
         <header className="sticky top-14 z-10 flex h-14 shrink-0 items-center justify-between gap-2 bg-background/90 backdrop-blur">
-          <div className="flex items-center gap-2 pl-3 xl:pl-5">
+          <div className="flex items-center gap-2 pl-2 md:pl-1 lg:pl-3 xl:pl-5">
             <SidebarTrigger className="" />
             <Separator orientation="vertical" className="h-5" />
             <NavigationBreadcrumb />
