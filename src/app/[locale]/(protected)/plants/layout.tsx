@@ -3,8 +3,8 @@ import { HydrateClient, api } from "~/lib/trpc/server";
 import { GetOwnPlantsInput } from "~/server/api/root";
 
 export const metadata = {
-  title: "Grower's Dashboard | Plants",
-  description: "Grower's Dashboard | Plants",
+  title: "Grower's Plattform | Plants",
+  description: "Grower's Plattform | Plants",
 };
 
 export default async function PlantsLayout({

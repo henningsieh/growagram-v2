@@ -60,8 +60,12 @@
     "dashboard-description": "Erfasse deine Grows und deine Pflanzen, einschließlich Umgebungen und Werkzeuge.",
     "grower-menu": "Für Grower",
     "login": "Login",
-    "manage-your-grows": "Organisiere deine Ihre Pflanzen, indem Du sie in Gruppen zusammenstellst.",
     "my-grows": "Meine Grows",
+    "my-grows-subline": "Verwalte und gruppiere deine Pflanzen in Grows.",
+    "my-plants": "Meine Pflanzen",
+    "my-plants-subline": "Verwalte und bearbeite deine Pflanzen.",
+    "my-photos": "Meine Fotos",
+    "my-photos-subline": "Verwalte deine Fotos und verbinde sie mit Pflanzen.",
     "navigation": "Navigation",
     "timeline": "Zeitleiste",
     "timelline-description": "Eine Social-Media-artike Zeitleiste mit Beiträgen und Updates von Growern.",
@@ -86,7 +90,7 @@
     "form-pagerheader-title": "Neue Pflanze erstellen",
     "germination-date": "Datum der Keimung",
     "harvest-date": "Datum der Ernte",
-    "linkUploadButtonLabel": "Neue Pflanze anlegen",
+    "linkUploadButtonLabel": "Neue anlegen",
     "planting-date": "Datum der Aussaat",
     "subtitle": "Verwalte deine Pflanzen",
     "title": "Meine Pflanzen",
@@ -94,7 +98,7 @@
     "vegetation-start-date": "Startdatum der Wachstumsphase"
   },
   "Platform": {
-    "Dashboard-title": "Grower Dashboard",
+    "Dashboard-title": "Grower Plattform",
     "welcome-to-platform-subttitle": "Willkommen bei der Verwaltung deiner Grows und Pflanzen"
   },
   "ThemeToggler": {

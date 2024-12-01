@@ -2,8 +2,8 @@ import { useTranslations } from "next-intl";
 import PageHeader from "~/components/Layouts/page-header";
 
 export const metadata = {
-  title: "Grower's Dashboard | Edit Plant",
-  description: "Grower's Dashboard | Edit Plant",
+  title: "Grower's Plattform | Edit Plant",
+  description: "Grower's Plattform | Edit Plant",
 };
 
 export default function PlantsLayout({

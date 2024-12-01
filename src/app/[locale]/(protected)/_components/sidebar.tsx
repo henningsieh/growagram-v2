@@ -14,6 +14,7 @@ import {
   Sparkles,
   Trash2,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import {
@@ -63,6 +64,7 @@ export default function ProtectedSidebar({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const t = useTranslations();
   return (
     <SidebarProvider className="relative">
       <Sidebar collapsible="icon" variant="floating" className="flex-shrink-0">
@@ -72,7 +74,7 @@ export default function ProtectedSidebar({
         <SidebarContent>
           <SidebarGroup>
             <SidebarGroupLabel>
-              <Link href="/dashboard">Grower Dashboard</Link>
+              <Link href="/dashboard">{t("Platform.Dashboard-title")}</Link>
             </SidebarGroupLabel>
             <SidebarMenu>
               {sidebarItems.navMain.map((item) => (

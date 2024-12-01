@@ -3,8 +3,8 @@ import PageHeader from "~/components/Layouts/page-header";
 import { HydrateClient } from "~/lib/trpc/server";
 
 export const metadata = {
-  title: "Grower's Dashboard | Add Plant",
-  description: "Grower's Dashboard | Add Plant",
+  title: "Grower's Plattform | Add Plant",
+  description: "Grower's Plattform | Add Plant",
 };
 
 export default function PlantsLayout({

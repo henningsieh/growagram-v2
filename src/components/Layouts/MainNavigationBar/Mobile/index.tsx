@@ -34,23 +34,21 @@ export default function MobileNavigationMenu() {
         {content.featured && (
           <Link
             href={content.featured.href}
-            className="rounded-sm bg-gradient-to-b from-secondary/20 to-secondary/60 p-3"
+            className="rounded-sm bg-gradient-to-b from-secondary/45 to-secondary/20 p-3 text-accent-foreground hover:from-secondary/55 hover:to-secondary/30 hover:text-foreground"
             onClick={() => setOpen(false)}
           >
             <div className="font-bold">{t(content.featured.title)}</div>
-            <p className="text-sm text-muted-foreground">
-              {t(content.featured.description)}
-            </p>
+            <p className="text-sm">{t(content.featured.description)}</p>
           </Link>
         )}
         {content.items?.map((item) => (
           <Link
             key={item.title}
             href={item.href}
-            className="rounded-sm p-2 text-sm hover:bg-accent"
+            className="rounded-sm bg-muted p-2 text-sm text-accent-foreground hover:bg-accent hover:text-foreground"
             onClick={() => setOpen(false)}
           >
-            <div className="font-medium">{t(item.title)}</div>
+            <div className="font-bold">{t(item.title)}</div>
             <p className="text-xs text-muted-foreground">
               {t(item.description)}
             </p>
@@ -84,14 +82,11 @@ export default function MobileNavigationMenu() {
             <Accordion type="single" collapsible className="w-full">
               {navigationData.navigationItems.map((item) =>
                 item.type === "link" ? (
-                  <Link
-                    key={item.title}
-                    href={item.href!}
-                    className="flex h-10 w-full items-center rounded-sm px-3 text-sm hover:bg-accent"
-                    onClick={() => setOpen(false)}
-                  >
-                    {t(item.title)}
-                  </Link>
+                  <Button key={item.title} variant={"link"} className="p-0">
+                    <Link href={item.href!} onClick={() => setOpen(false)}>
+                      {t(item.title)}
+                    </Link>
+                  </Button>
                 ) : (
                   <AccordionItem key={item.title} value={item.title}>
                     <AccordionTrigger className="py-2">

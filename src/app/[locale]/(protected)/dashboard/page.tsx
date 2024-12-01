@@ -4,8 +4,8 @@ import { auth } from "~/lib/auth";
 import { type User } from "~/types/db";
 
 export const metadata = {
-  title: "Grower's dashboard",
-  description: "Grower's dashboard",
+  title: "Grower's Plattform",
+  description: "Grower's Plattform",
 };
 
 export default async function Dashboard() {

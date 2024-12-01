@@ -35,7 +35,12 @@ export default function Component({
           </div>
           <div className="flex items-end">
             {buttonLink && (
-              <Button asChild size="sm" variant="primary">
+              <Button
+                asChild
+                size="sm"
+                className="sm:w-[154px]"
+                variant="primary"
+              >
                 <Link
                   href={{
                     pathname: buttonLink,

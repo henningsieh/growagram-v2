@@ -24,7 +24,17 @@
           {
             "title": "my-grows",
             "href": "/grows",
-            "description": "manage-your-grows"
+            "description": "my-grows-subline"
+          },
+          {
+            "title": "my-plants",
+            "href": "/plants",
+            "description": "my-plants-subline"
+          },
+          {
+            "title": "my-photos",
+            "href": "/photos",
+            "description": "my-photos-subline"
           }
         ]
       }

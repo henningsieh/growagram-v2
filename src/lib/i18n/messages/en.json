@@ -60,8 +60,12 @@
     "dashboard-description": "Track your Grows and Plants including environments and tools. ",
     "grower-menu": "For Growers",
     "login": "Login",
-    "manage-your-grows": "Organise your plants by grouping them into Grows.",
     "my-grows": "My Grows",
+    "my-grows-subline": "Manage and group your plants in Grows.",
+    "my-plants": "My Plants",
+    "my-plants-subline": "Manage and edit your plants.",
+    "my-photos": "My Photos",
+    "my-photos-subline": "Manage your photos and connect them with plants.",
     "navigation": "Navigation",
     "timeline": "Timeline",
     "timelline-description": "A Social Media like Stream of Posts and Updates from the Growers.",
@@ -94,7 +98,7 @@
     "vegetation-start-date": "Vegetation Start Date"
   },
   "Platform": {
-    "Dashboard-title": "Grower's Dashboard",
+    "Dashboard-title": "Grower's Plattform",
     "welcome-to-platform-subttitle": "Welcome to manage all your Grows and Plants"
   },
   "ThemeToggler": {
