@@ -1,3 +1,4 @@
+import { PaginationItemsPerPage } from "~/assets/constants";
 import { api } from "~/lib/trpc/server";
 import { HydrateClient } from "~/lib/trpc/server";
 import { GetOwnImagesInput } from "~/server/api/root";
@@ -15,8 +16,7 @@ export default async function PhotosLayout({
 }) {
   // Prefetch initial data with default sorting for the first page
   await api.image.getOwnImages.prefetch({
-    limit: 4,
-    page: 1,
+    limit: PaginationItemsPerPage.PHOTOS_PER_PAGE,
     sortField: ImageSortField.UPLOAD_DATE,
     sortOrder: SortOrder.DESC,
     filterNotConnected: false,

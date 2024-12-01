@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 // src/app/[locale]/(protected)/plants/page.tsx
 import { useCallback, useEffect, useRef } from "react";
+import { PaginationItemsPerPage } from "~/assets/constants";
 import InfiniteScrollLoader from "~/components/Layouts/InfiniteScrollLoader";
 import PageHeader from "~/components/Layouts/page-header";
 import ResponsiveGrid from "~/components/Layouts/responsive-grid";
@@ -17,7 +18,7 @@ export default function PlantsPage() {
   // Get the prefetched data from the cache
   const initialData = utils.plant.getOwnPlants.getInfiniteData({
     // the input must match the server-side `prefetchInfinite`
-    limit: 12,
+    limit: PaginationItemsPerPage.PLANTS_PER_PAGE,
   });
 
   const {
@@ -29,7 +30,7 @@ export default function PlantsPage() {
     isFetchingNextPage,
   } = api.plant.getOwnPlants.useInfiniteQuery(
     {
-      limit: 12, // for DEV mode and testing, 12 in PRODUCTION mode
+      limit: PaginationItemsPerPage.PLANTS_PER_PAGE,
     } satisfies GetOwnPlantsInput,
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor,

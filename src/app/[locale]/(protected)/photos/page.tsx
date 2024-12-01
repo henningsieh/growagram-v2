@@ -3,6 +3,7 @@
 // src/app/[locale]/(protected)/photos/page.tsx:
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
+import { PaginationItemsPerPage } from "~/assets/constants";
 import SpinningLoader from "~/components/Layouts/loader";
 import PageHeader from "~/components/Layouts/page-header";
 import ResponsiveGrid from "~/components/Layouts/responsive-grid";
@@ -21,9 +22,6 @@ import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import { GetOwnImagesInput } from "~/server/api/root";
 import { ImageSortField, SortOrder } from "~/types/image";
-
-const ITEMS_PER_PAGE = 4;
-const STALE_TIME = 30000; // 30s
 
 export default function AllImagesPage() {
   const router = useRouter();
@@ -48,7 +46,7 @@ export default function AllImagesPage() {
 
   // Get the prefetched data from the cache
   const prefetchedFromCache = utils.image.getOwnImages.getData({
-    limit: ITEMS_PER_PAGE,
+    limit: PaginationItemsPerPage.PHOTOS_PER_PAGE,
     page: currentPage,
     sortField,
     sortOrder,
@@ -58,7 +56,7 @@ export default function AllImagesPage() {
   // Load own images from database
   const { data, isLoading, isFetching } = api.image.getOwnImages.useQuery(
     {
-      limit: ITEMS_PER_PAGE,
+      limit: PaginationItemsPerPage.PHOTOS_PER_PAGE,
       page: currentPage,
       sortField,
       sortOrder,
@@ -66,7 +64,6 @@ export default function AllImagesPage() {
     } satisfies GetOwnImagesInput,
     {
       initialData: prefetchedFromCache,
-      staleTime: STALE_TIME,
     },
   );
 
