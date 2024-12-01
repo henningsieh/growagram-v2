@@ -161,7 +161,7 @@ export default function AllImagesPage() {
             : "You haven't uploaded any images yet."}
         </p>
       ) : isLoading ? (
-        <SpinningLoader />
+        <SpinningLoader className="text-secondary" />
       ) : (
         <>
           <ResponsiveGrid>

@@ -71,19 +71,19 @@ export default function ImagesSortFilterControlls({
           onClick={() => toggleOrder(ImageSortField.UPLOAD_DATE)}
         >
           <div className="flex gap-2">
-            {isFetching && sortField === ImageSortField.UPLOAD_DATE ? (
-              <Loader2 className="h-6 w-5 animate-spin" />
-            ) : (
-              <UploadCloud className="h-6 w-5" />
-            )}
+            <UploadCloud className="h-6 w-5" />
             Upload Date
           </div>
-          {sortField === ImageSortField.UPLOAD_DATE &&
+          {isFetching && sortField === ImageSortField.UPLOAD_DATE ? (
+            <Loader2 className="h-6 w-5 animate-spin text-secondary" />
+          ) : (
+            sortField === ImageSortField.UPLOAD_DATE &&
             (sortOrder === SortOrder.DESC ? (
               <ArrowDownWideNarrow className="h-6 w-5 text-secondary" />
             ) : (
               <ArrowUpNarrowWide className="h-6 w-5 text-secondary" />
-            ))}
+            ))
+          )}
         </Button>
         <Button
           disabled={isFetching}
@@ -97,19 +97,19 @@ export default function ImagesSortFilterControlls({
           onClick={() => toggleOrder(ImageSortField.CAPTURE_DATE)}
         >
           <div className="flex gap-2">
-            {isFetching && sortField === ImageSortField.CAPTURE_DATE ? (
-              <Loader2 className="h-6 w-5 animate-spin" />
-            ) : (
-              <Camera className="h-6 w-5" />
-            )}
+            <Camera className="h-6 w-5" />
             Capture Date
           </div>
-          {sortField === ImageSortField.CAPTURE_DATE &&
+          {isFetching && sortField === ImageSortField.CAPTURE_DATE ? (
+            <Loader2 className="h-6 w-5 animate-spin text-secondary" />
+          ) : (
+            sortField === ImageSortField.CAPTURE_DATE &&
             (sortOrder === SortOrder.DESC ? (
               <ArrowDownWideNarrow className="h-6 w-5 text-secondary" />
             ) : (
               <ArrowUpNarrowWide className="h-6 w-5 text-secondary" />
-            ))}
+            ))
+          )}
         </Button>
       </div>
     </div>
