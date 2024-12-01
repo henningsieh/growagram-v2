@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 // src/app/[locale]/(protected)/plants/page.tsx
 import { useCallback, useEffect, useRef } from "react";
 import InfiniteScrollLoader from "~/components/Layouts/InfiniteScrollLoader";
@@ -64,23 +65,24 @@ export default function PlantsPage() {
     return () => observer.disconnect();
   }, [onIntersect]);
 
+  const t = useTranslations("Plants");
+
   return (
-    // TODO: translations!
     <PageHeader
-      title="My Plants"
-      subtitle="View and manage your plants"
+      title={t("title")}
+      subtitle={t("subtitle")}
       buttonLink="/plants/add"
-      buttonLabel="Add New Plant"
+      buttonLabel={t("linkUploadButtonLabel")}
     >
       {/* Handling case if user hasn't uploaded any plants */}
       {!isFetching && plants.length === 0 ? (
         <p className="mt-8 text-center text-muted-foreground">
-          You haven&apos;t added any plants yet.
+          {t("user-has-no-plants")}
         </p>
       ) : (
         <>
           <ResponsiveGrid>
-            {plants.map((plant, index) => (
+            {plants.map((plant) => (
               <PlantCard plant={plant} key={plant.id} />
             ))}
           </ResponsiveGrid>

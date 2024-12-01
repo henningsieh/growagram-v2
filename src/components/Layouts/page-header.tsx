@@ -29,7 +29,7 @@ export default function Component({
       <div className="space-y-2">
         <div className="flex justify-between">
           <div className="flex flex-col space-y-2">
-            <h1 className="text-3xl font-bold sm:text-3xl md:text-4xl lg:text-5xl">
+            <h1 className="text-2xl font-bold sm:text-3xl md:text-4xl lg:text-5xl">
               {title}
             </h1>
           </div>

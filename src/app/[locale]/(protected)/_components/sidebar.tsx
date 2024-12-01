@@ -75,7 +75,9 @@ export default function ProtectedSidebar({
         </SidebarHeader>
         <SidebarContent>
           <SidebarGroup>
-            <SidebarGroupLabel>Platform</SidebarGroupLabel>
+            <SidebarGroupLabel>
+              <Link href="/dashboard">Grower Dashboard</Link>
+            </SidebarGroupLabel>
             <SidebarMenu>
               {sidebarItems.navMain.map((item) => (
                 <Collapsible
@@ -254,18 +256,13 @@ export default function ProtectedSidebar({
       </Sidebar>
       <SidebarInset>
         <header className="sticky top-14 z-10 flex h-14 shrink-0 items-center justify-between gap-2 bg-background/90 backdrop-blur">
-          <div className="flex items-center gap-2 pl-4 xl:pl-6">
-            <SidebarTrigger className="-ml-1" />
-            <Separator orientation="vertical" className="mr-2 h-4" />
+          <div className="flex items-center gap-2 pl-3 xl:pl-5">
+            <SidebarTrigger className="" />
+            <Separator orientation="vertical" className="h-5" />
             <NavigationBreadcrumb />
           </div>
         </header>
         <div className="flex flex-1 flex-col gap-2 pt-0">
-          {/* <div className="grid auto-rows-min gap-2 md:grid-cols-3">
-            <div className="aspect-video rounded-sm bg-muted/50" />
-            <div className="aspect-video rounded-sm bg-muted/50" />
-            <div className="aspect-video rounded-sm bg-muted/50" />
-          </div> */}
           <div className="flex-1 rounded-sm">{children}</div>
         </div>
       </SidebarInset>

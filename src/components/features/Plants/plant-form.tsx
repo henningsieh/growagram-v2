@@ -1,7 +1,8 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Sprout } from "lucide-react";
+import { Loader2, Sprout } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -10,6 +11,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
@@ -38,6 +40,8 @@ export default function PlantForm({ plant }: { plant?: Plant }) {
   const utils = api.useUtils();
   const router = useRouter();
   const { toast } = useToast();
+
+  const t = useTranslations("Plants");
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -92,13 +96,11 @@ export default function PlantForm({ plant }: { plant?: Plant }) {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle level="h2">Plant Journey</CardTitle>
-        <CardDescription>
-          Edit the plant&apos;s name and relevant dates.
-        </CardDescription>
+      <CardHeader className="p-2 sm:p-3 lg:p-4 xl:p-6">
+        <CardTitle level="h2">{t("form-heading")}</CardTitle>
+        <CardDescription>{t("form-heading-description")}</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-2 sm:p-3 lg:p-4 xl:p-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <FormField
@@ -107,13 +109,13 @@ export default function PlantForm({ plant }: { plant?: Plant }) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="font-semibold">
-                    Plant Nickname
+                    {t("form-nickname")}
                   </FormLabel>
                   <FormControl>
                     <Input placeholder="Enter plant name" {...field} />
                   </FormControl>
                   <FormDescription>
-                    Give your plant a memorable name.
+                    {t("form-nickname-description")}
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -128,7 +130,7 @@ export default function PlantForm({ plant }: { plant?: Plant }) {
                   render={({ field }) => (
                     <PlantFormDateField
                       field={field}
-                      label="Seed Planted (Start date)"
+                      label={t("planting-date")}
                       description="When did you plant the seed?"
                       icon={Sprout}
                       iconClassName="text-planting"
@@ -142,7 +144,7 @@ export default function PlantForm({ plant }: { plant?: Plant }) {
                   render={({ field }) => (
                     <PlantFormDateField
                       field={field}
-                      label="First Sprout"
+                      label={t("germination-date")}
                       description="When did you see the seedling for the first time?"
                       icon={Sprout}
                       iconClassName="text-seedling"
@@ -158,7 +160,7 @@ export default function PlantForm({ plant }: { plant?: Plant }) {
                   render={({ field }) => (
                     <PlantFormDateField
                       field={field}
-                      label="Entered Veg Stage"
+                      label={t("vegetation-start-date")}
                       description="When did rapid leaf growth start?"
                       icon={Sprout}
                       iconClassName="text-vegetation"
@@ -172,7 +174,7 @@ export default function PlantForm({ plant }: { plant?: Plant }) {
                   render={({ field }) => (
                     <PlantFormDateField
                       field={field}
-                      label="Started Flowering"
+                      label={t("flowering-start-date")}
                       description="When did you see the first buds?"
                       icon={Sprout}
                       iconClassName="text-flowering"
@@ -188,7 +190,7 @@ export default function PlantForm({ plant }: { plant?: Plant }) {
                   render={({ field }) => (
                     <PlantFormDateField
                       field={field}
-                      label="Harvest Day"
+                      label={t("harvest-date")}
                       description="When did you cut down your plant?"
                       icon={Sprout}
                       iconClassName="text-harvest"
@@ -201,7 +203,7 @@ export default function PlantForm({ plant }: { plant?: Plant }) {
                   render={({ field }) => (
                     <PlantFormDateField
                       field={field}
-                      label="Started Curing"
+                      label={t("curing-start-date")}
                       description="When did you start the curing process?"
                       icon={Sprout}
                       iconClassName="text-curing"
@@ -210,28 +212,34 @@ export default function PlantForm({ plant }: { plant?: Plant }) {
                 />
               </div>
             </div>
-
-            <div className="flex gap-4">
-              <Button
-                type="button"
-                title="Reset"
-                variant="outline"
-                onClick={() => form.reset()}
-                className="w-full"
-              >
-                Reset
-              </Button>
-              <Button type="submit" className="w-full" disabled={isSubmitting}>
-                {isSubmitting
-                  ? "Saving..."
-                  : plant?.id
-                    ? "Save Changes"
-                    : "Create Plant"}
-              </Button>
-            </div>
           </form>
         </Form>
       </CardContent>
+      <CardFooter className="p-2 sm:p-3 lg:p-4 xl:p-6">
+        <div className="flex w-full gap-1">
+          <Button
+            size="sm"
+            type="button"
+            title="Reset"
+            variant="outline"
+            onClick={() => form.reset()}
+            className="w-full"
+          >
+            {t("form-button-reset")}
+          </Button>
+          <Button
+            size="sm"
+            type="submit"
+            className="w-full"
+            disabled={isSubmitting}
+          >
+            {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {plant?.id
+              ? t("form-button-save-changes")
+              : t("form-button-save-new")}
+          </Button>
+        </div>
+      </CardFooter>
     </Card>
   );
 }

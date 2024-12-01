@@ -10,7 +10,7 @@ import {
   Trash2,
   Wheat,
 } from "lucide-react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useState } from "react";
 import headerImagePlaceholder from "~/assets/landscape-placeholdersvg.svg";
@@ -25,14 +25,6 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "~/components/ui/dialog";
 import { Progress } from "~/components/ui/progress";
 import {
   Tooltip,
@@ -93,6 +85,8 @@ export default function PlantCard({ plant }: PlantCardProps) {
     plant.floweringPhaseStart,
   );
 
+  const t = useTranslations("Plants");
+
   return (
     <>
       <Card className="overflow-hidden">
@@ -134,7 +128,7 @@ export default function PlantCard({ plant }: PlantCardProps) {
                       variant={"outline"}
                       className="whitespace-nowrap border-0 bg-planting text-sm"
                     >
-                      Seed planting date
+                      {t("planting-date")}
                     </Badge>
                   </TooltipContent>
                 </Tooltip>
@@ -154,7 +148,7 @@ export default function PlantCard({ plant }: PlantCardProps) {
                       variant={"outline"}
                       className="whitespace-nowrap border-0 bg-seedling text-sm"
                     >
-                      Germination date
+                      {t("germination-date")}
                     </Badge>
                   </TooltipContent>
                 </Tooltip>
@@ -173,7 +167,7 @@ export default function PlantCard({ plant }: PlantCardProps) {
                       variant={"outline"}
                       className="whitespace-nowrap border-0 bg-vegetation text-sm"
                     >
-                      Veg. start date
+                      {t("vegetation-start-date")}
                     </Badge>
                   </TooltipContent>
                 </Tooltip>
@@ -192,7 +186,7 @@ export default function PlantCard({ plant }: PlantCardProps) {
                       variant={"outline"}
                       className="whitespace-nowrap border-0 bg-flowering text-sm"
                     >
-                      Flowering start date
+                      {t("flowering-start-date")}
                     </Badge>
                   </TooltipContent>
                 </Tooltip>
@@ -210,7 +204,7 @@ export default function PlantCard({ plant }: PlantCardProps) {
                       variant={"outline"}
                       className="whitespace-nowrap bg-harvest text-sm"
                     >
-                      Harvest date
+                      {t("harvest-date")}
                     </Badge>
                   </TooltipContent>
                 </Tooltip>
@@ -229,7 +223,7 @@ export default function PlantCard({ plant }: PlantCardProps) {
                       variant={"outline"}
                       className="whitespace-nowrap bg-curing text-sm"
                     >
-                      Harvest date
+                      {t("curing-start-date")}
                     </Badge>
                   </TooltipContent>
                 </Tooltip>

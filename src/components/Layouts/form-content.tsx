@@ -5,5 +5,5 @@ export default function FormContent({
 }: {
   children: React.ReactNode;
 }) {
-  return <div className="mx-auto max-w-4xl">{children}</div>;
+  return <div className="mx-auto max-w-3xl">{children}</div>;
 }

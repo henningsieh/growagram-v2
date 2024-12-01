@@ -67,6 +67,32 @@
     "timelline-description": "Eine Social-Media-artike Zeitleiste mit Beiträgen und Updates von Growern.",
     "toggle-menu": "Menü umschalten"
   },
+  "Plants": {
+    "curing-start-date": "Startdatum der Aushärtephase",
+    "flowering-start-date": "Startdatum der Blüte",
+    "form-button-reset": "Zurücksetzen",
+    "form-button-save-changes": "Speichern",
+    "form-button-save-new": "Pflanze erstellen",
+    "form-heading": "Stammdaten Deiner Pflanzen",
+    "form-heading-description": "Bearbeite den Namen der Pflanze und die relevanten Datumsangaben.",
+    "form-nickname": "Spitzname der Pflanze",
+    "form-nickname-description": "Gib Deiner Pflanze einen einprägsamen Namen.",
+    "form-pageheader-backButtonLabel": "Zurück",
+    "form-pagerheader-edit-subtitle": "Bearbeite eine Pflanze aus Deiner Sammlung",
+    "form-pagerheader-edit-title": "Pflanze bearbeiten",
+    "form-pagerheader-new-subtitle": "",
+    "form-pagerheader-new-title": "",
+    "form-pagerheader-subtitle": "Füge Deiner Sammlung eine neue Pflanze hinzu",
+    "form-pagerheader-title": "Neue Pflanze erstellen",
+    "germination-date": "Datum der Keimung",
+    "harvest-date": "Datum der Ernte",
+    "linkUploadButtonLabel": "Neue Pflanze hinzufügen",
+    "planting-date": "Datum der Aussaat",
+    "subtitle": "Verwalte Deine Pflanzen",
+    "title": "Meine Pflanzen",
+    "user-has-no-plants": "Du hast bisher keine Pflanzen hinzugefügt.",
+    "vegetation-start-date": "Startdatum der Wachstumsphase"
+  },
   "Platform": {
     "Dashboard-title": "Grower Dashboard",
     "welcome-to-platform-subttitle": "Willkommen bei der Verwaltung deiner Grows und Pflanzen"
@@ -76,7 +102,5 @@
     "light": "Hell",
     "system": "System",
     "toggle-theme": "Designthema umschalten"
-  },
-  "page-subtitle": "",
-  "page-title": ""
+  }
 }

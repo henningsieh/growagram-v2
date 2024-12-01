@@ -5,7 +5,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import localFont from "next/font/local";
 import NextTopLoader from "nextjs-toploader";
-import { MainNavigationBar } from "~/components/Layouts/navigation";
+import { MainNavigationBar } from "~/components/Layouts/MainNavigationBar";
 import { ThemeProvider } from "~/components/Layouts/theme-provider";
 import { Toaster } from "~/components/Layouts/toaster";
 import { routing } from "~/lib/i18n/routing";

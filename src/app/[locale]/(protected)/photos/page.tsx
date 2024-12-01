@@ -145,9 +145,9 @@ export default function AllImagesPage() {
   return (
     <PageHeader
       title="All Photos"
-      subtitle="View and manage your current photos"
+      subtitle="View and manage your photos"
       buttonLink="/photos/upload"
-      buttonLabel="Upload new photos"
+      buttonLabel="Upload New photos"
     >
       <ImagesSortFilterControlls
         sortField={sortField}

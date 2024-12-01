@@ -67,6 +67,32 @@
     "timelline-description": "A Social Media like Stream of Posts and Updates from the Growers.",
     "toggle-menu": "Toggle menu"
   },
+  "Plants": {
+    "curing-start-date": "Curing phase start date",
+    "flowering-start-date": "Flowering Start Date",
+    "form-button-reset": "Reset",
+    "form-button-save-changes": "Save Changes",
+    "form-button-save-new": "Create Plant",
+    "form-heading": "Plant's basic data",
+    "form-heading-description": "Edit the plant's nickname and relevant dates.",
+    "form-nickname": "Plant Nickname",
+    "form-nickname-description": "Give your plant a memorable name.",
+    "form-pageheader-backButtonLabel": "Back",
+    "form-pagerheader-edit-subtitle": "Edit a new plant from your collection",
+    "form-pagerheader-edit-title": "Edit Plant",
+    "form-pagerheader-new-subtitle": "Add a new plant to your collection",
+    "form-pagerheader-new-title": "Create New Plant",
+    "form-pagerheader-subtitle": "",
+    "form-pagerheader-title": "",
+    "germination-date": "Germination Date",
+    "harvest-date": "Harvest date",
+    "linkUploadButtonLabel": "Add New Plant",
+    "planting-date": "Seed planting date",
+    "subtitle": "Manage your plants",
+    "title": "My Plants",
+    "user-has-no-plants": "You haven&apos;t added any plants yet.",
+    "vegetation-start-date": "Vegetation Start Date"
+  },
   "Platform": {
     "Dashboard-title": "Grower's Dashboard",
     "welcome-to-platform-subttitle": "Welcome to manage all your Grows and Plants"
@@ -76,7 +102,5 @@
     "light": "Light",
     "system": "System",
     "toggle-theme": "Toggle theme"
-  },
-  "page-subtitle": "",
-  "page-title": ""
+  }
 }

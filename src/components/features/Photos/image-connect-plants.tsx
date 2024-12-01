@@ -18,6 +18,7 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
+import { Checkbox } from "~/components/ui/checkbox";
 import {
   Command,
   CommandEmpty,
@@ -105,6 +106,15 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
         p.name.toLowerCase().includes(searchQuery.toLowerCase()),
     );
   }, [plants, searchQuery]);
+
+  const [selectAll, setSelectAll] = useState(false);
+
+  const handleSelectAll = useCallback(() => {
+    setSelectAll(!selectAll);
+    setSelectedPlantIds(
+      selectAll ? [] : filteredPlants.map((plant) => plant.id),
+    );
+  }, [selectAll, filteredPlants]);
 
   /**
    * Handles connecting and disconnecting plants to an image.
@@ -205,14 +215,20 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
               className="rounded-sm border shadow-md"
               shouldFilter={false}
             >
-              <CommandInput
-                placeholder={t("search.placeholder")}
-                value={searchQuery}
-                onValueChange={(value) => {
-                  console.debug("value:", value);
-                  setSearchQuery(value);
-                }}
-              />
+              <div className="flex w-full items-center border-b pl-1">
+                <Checkbox
+                  className="m-2 border-secondary data-[state=checked]:bg-secondary data-[state=checked]:text-secondary-foreground"
+                  onCheckedChange={handleSelectAll}
+                />
+                <CommandInput
+                  placeholder={t("search.placeholder")}
+                  value={searchQuery}
+                  onValueChange={(value) => {
+                    console.debug("value:", value);
+                    setSearchQuery(value);
+                  }}
+                />
+              </div>
               {isLoading ? (
                 <SpinningLoader />
               ) : (

@@ -2,16 +2,16 @@
 
 // src/components/navbar/index.tsx:
 import Image from "next/image";
-import { ThemeToggle } from "~/components/Layouts/navigation/theme-toggler";
+import { ThemeToggle } from "~/components/Layouts/MainNavigationBar/theme-toggler";
 import { Link } from "~/lib/i18n/routing";
 
-import DesktopNavigationManu from "./desktop";
+import DesktopNavigationManu from "./Desktop";
+import MobileNavigationMenu from "./Mobile";
 import { LanguageToggle } from "./language-toggler";
-import MobileNavigationMenu from "./mobile";
 
 export function MainNavigationBar() {
   return (
-    <header className="sticky top-0 z-10 w-full border-b bg-background/90 backdrop-blur">
+    <header className="sticky top-0 z-20 w-full border-b bg-background/90 backdrop-blur">
       <div className="relative flex h-14 items-center justify-center">
         {/* Navigation Left:  Main Logo */}
         <div className="absolute left-4 top-1/2 flex -translate-y-1/2 items-center">

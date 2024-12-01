@@ -1,11 +1,9 @@
-import { api } from "~/lib/trpc/server";
-import { HydrateClient } from "~/lib/trpc/server";
-import { GetOwnImagesInput, GetOwnPlantsInput } from "~/server/api/root";
-import { ImageSortField, SortOrder } from "~/types/image";
+import { HydrateClient, api } from "~/lib/trpc/server";
+import { GetOwnPlantsInput } from "~/server/api/root";
 
 export const metadata = {
-  title: "App Plants",
-  description: "App Plants",
+  title: "Grower's Dashboard | Plants",
+  description: "Grower's Dashboard | Plants",
 };
 export default async function PlantsLayout({
   children,
