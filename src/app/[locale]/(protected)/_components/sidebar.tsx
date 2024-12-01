@@ -64,12 +64,8 @@ export default function ProtectedSidebar({
   children: React.ReactNode;
 }>) {
   return (
-    <SidebarProvider>
-      <Sidebar
-        collapsible="icon"
-        variant="floating"
-        className="sticky top-14 h-[calc(100vh-4rem)] flex-shrink-0"
-      >
+    <SidebarProvider className="relative">
+      <Sidebar collapsible="icon" variant="floating" className="flex-shrink-0">
         <SidebarHeader>
           <TeamSwitcher teams={sidebarItems.teams} />
         </SidebarHeader>
