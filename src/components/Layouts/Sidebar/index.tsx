@@ -59,7 +59,7 @@ import { Link } from "~/lib/i18n/routing";
 import { sidebarItems } from "~/lib/sidebar";
 import { handleSignOut } from "~/server/actions/authActions";
 
-import { NavigationBreadcrumb } from "./breadcrumbs";
+import { NavigationBreadcrumb } from "../Breadcrumbs";
 
 export default function ProtectedSidebar({
   children,
@@ -68,12 +68,7 @@ export default function ProtectedSidebar({
 }>) {
   const t = useTranslations();
 
-  const session = useSession();
-
-  console.debug("session: ", session);
-  console.debug("session.data: ", session.data);
-
-  const user = session.data?.user as User;
+  const user = useSession().data?.user as User;
 
   return (
     <SidebarProvider className="relative">

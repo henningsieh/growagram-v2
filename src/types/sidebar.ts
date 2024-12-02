@@ -1,8 +1,6 @@
 // types/sidebar.ts:
 import * as Icons from "lucide-react";
 
-// import { User } from "next-auth";
-
 // Use string for icon names in the config
 export interface Team {
   name: string;
@@ -48,16 +46,15 @@ export interface ProcessedNavItem {
   }[];
 }
 
+// Updated SidebarItems without User reference
 export interface SidebarItems {
-  // user: User; // User is not needed anymore within the sidebar data
   teams: Team[];
   navMain: NavItem[];
   projects: Project[];
 }
 
-// Define the complete processed sidebar items type
-export interface ProcessedSidebarItems
-  extends Omit<SidebarItems, "teams" | "navMain" | "projects"> {
+// Updated ProcessedSidebarItems without User reference
+export interface ProcessedSidebarItems {
   teams: Array<{
     name: string;
     logo: IconComponent;
