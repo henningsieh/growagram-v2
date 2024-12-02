@@ -7,7 +7,7 @@ import { auth } from "~/lib/auth";
 export default async function ImageUploadPage() {
   const session = await auth();
   return (
-    <PageHeader title="Photo Upload" subtitle="Upload new photos  ">
+    <PageHeader title="Photo Upload" subtitle="Upload new Photos">
       {session && session.user && (
         <FormContent>
           <PhotoUpload user={session.user} />

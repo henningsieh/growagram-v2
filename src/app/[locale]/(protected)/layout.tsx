@@ -1,7 +1,7 @@
 // src/app/[locale]/(protected)/layout.tsx
 import { routing } from "~/lib/i18n/routing";
 
-import ProtectedSidebar from "./_components/sidebar";
+import ProtectedSidebar from "../../../components/Layouts/Sidebar";
 
 type LayoutProps = {
   children: React.ReactNode;
