@@ -77,7 +77,7 @@ export const growRouter = createTRPCRouter({
       });
     }),
 
-  // Connect a plant to a grow
+  // Revised connectPlant mutation with additional validation
   connectPlant: protectedProcedure
     .input(
       z.object({
@@ -86,14 +86,33 @@ export const growRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      // Update the plant with the grow ID
+      // Verify user ownership of both grow and plant
+      const grow = await ctx.db.query.grows.findFirst({
+        where: and(
+          eq(grows.id, input.growId),
+          eq(grows.ownerId, ctx.session.user.id as string),
+        ),
+      });
+
+      const plant = await ctx.db.query.plants.findFirst({
+        where: and(
+          eq(plants.id, input.plantId),
+          eq(plants.ownerId, ctx.session.user.id as string),
+        ),
+      });
+
+      if (!grow || !plant) {
+        throw new Error("Unauthorized or invalid plant/grow");
+      }
+
+      // Connect plant to grow
       return await ctx.db
         .update(plants)
         .set({ growId: input.growId })
         .where(eq(plants.id, input.plantId));
     }),
 
-  // Disonnect a plant from a grow
+  // Revised disconnectPlant mutation
   disconnectPlant: protectedProcedure
     .input(
       z.object({
@@ -102,9 +121,25 @@ export const growRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      // Verify user ownership
+      const grow = await ctx.db.query.grows.findFirst({
+        where: and(
+          eq(grows.id, input.growId),
+          eq(grows.ownerId, ctx.session.user.id as string),
+        ),
+      });
+
+      if (!grow) {
+        throw new Error("Unauthorized or invalid grow");
+      }
+
+      // Disconnect plant from grow
       return await ctx.db
-        .delete(plants)
-        .where(and(eq(plants.id, input.plantId), eq(grows.id, input.growId)));
+        .update(plants)
+        .set({ growId: null })
+        .where(
+          and(eq(plants.id, input.plantId), eq(plants.growId, input.growId)),
+        );
     }),
 
   // Create or edit a grow
@@ -114,7 +149,7 @@ export const growRouter = createTRPCRouter({
       const newGrow = await ctx.db
         .insert(grows)
         .values({
-          id: input.id,
+          id: input.id || crypto.randomUUID(),
           name: input.name,
           ownerId: ctx.session.user.id as string,
         })
@@ -123,9 +158,10 @@ export const growRouter = createTRPCRouter({
           set: {
             name: input.name,
           },
-        });
+        })
+        .returning();
 
-      return newGrow;
+      return newGrow[0];
     }),
 
   // Delete grow by ID

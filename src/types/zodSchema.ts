@@ -36,6 +36,6 @@ export const imageSchema = z.object({
 
 // Define the schema for grow form validation
 export const growSchema = z.object({
-  id: z.string(),
+  id: z.string().optional(),
   name: z.string().min(1, "Grow name is required"),
 });

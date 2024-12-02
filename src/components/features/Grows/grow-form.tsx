@@ -1,5 +1,6 @@
 "use client";
 
+// src/components/features/Grows/grow-form.tsx:
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Check, Flower2 } from "lucide-react";
 import { useMemo, useState } from "react";
@@ -116,7 +117,7 @@ export default function GrowForm({ grow }: { grow?: GetOwnGrowType }) {
   });
 
   const createOrEditGrowMutation = api.grow.createOrEdit.useMutation({
-    onSuccess: async (_, newGrow) => {
+    onSuccess: async (savedGrow) => {
       // Connect/disconnect plants after grow is created/updated
       try {
         // Find plants to connect and disconnect
@@ -132,13 +133,13 @@ export default function GrowForm({ grow }: { grow?: GetOwnGrowType }) {
         await Promise.all([
           ...plantsToConnect.map((plantId) =>
             connectPlantMutation.mutateAsync({
-              growId: newGrow.id,
+              growId: savedGrow.id,
               plantId: plantId,
             } satisfies GrowConnectPlantInput),
           ),
           ...plantsToDisconnect.map((plantId) =>
             disconnectPlantMutation.mutateAsync({
-              growId: newGrow.id,
+              growId: savedGrow.id,
               plantId: plantId,
             } satisfies GrowDisconnectPlantInput),
           ),
