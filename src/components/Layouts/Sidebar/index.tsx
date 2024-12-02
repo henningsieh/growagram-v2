@@ -61,6 +61,10 @@ import { handleSignOut } from "~/server/actions/authActions";
 
 import { NavigationBreadcrumb } from "../Breadcrumbs";
 
+/**
+ * ProtectedSidebar: Main sidebar component for authenticated users
+ * Provides navigation, team switching, and user profile management
+ */
 export default function ProtectedSidebar({
   children,
 }: Readonly<{
@@ -72,15 +76,20 @@ export default function ProtectedSidebar({
 
   return (
     <SidebarProvider className="relative">
+      {/* Main sidebar with floating, collapsible design */}
       <Sidebar collapsible="icon" variant="floating" className="flex-shrink-0">
+        {/* Sidebar Header: Team Switcher */}
         <SidebarHeader>
           <TeamSwitcher teams={sidebarItems.teams} />
         </SidebarHeader>
+        {/* Main Navigation Content */}
         <SidebarContent>
+          {/* Dashboard Group */}
           <SidebarGroup>
             <SidebarGroupLabel>
               <Link href="/dashboard">{t("Platform.Dashboard-title")}</Link>
             </SidebarGroupLabel>
+            {/* Main Navigation Menu with Collapsible Items */}
             <SidebarMenu>
               {sidebarItems.navMain.map((item) => (
                 <Collapsible
@@ -115,9 +124,12 @@ export default function ProtectedSidebar({
               ))}
             </SidebarMenu>
           </SidebarGroup>
+
+          {/* Projects Group */}
           <SidebarGroup className="group-data-[collapsible=icon]:hidden">
             <SidebarGroupLabel>Projects</SidebarGroupLabel>
             <SidebarMenu>
+              {/* Project Items with Dropdown Actions */}
               {sidebarItems.projects.map((item) => (
                 <SidebarMenuItem key={item.name}>
                   <SidebarMenuButton asChild>
@@ -138,6 +150,7 @@ export default function ProtectedSidebar({
                       side="bottom"
                       align="end"
                     >
+                      {/* Project Action Items */}
                       <DropdownMenuItem>
                         <Folder className="text-muted-foreground" />
                         <span>View Project</span>
@@ -155,6 +168,8 @@ export default function ProtectedSidebar({
                   </DropdownMenu>
                 </SidebarMenuItem>
               ))}
+
+              {/* Additional Projects Option */}
               <SidebarMenuItem>
                 <SidebarMenuButton className="text-sidebar-foreground/70">
                   <MoreHorizontal className="text-sidebar-foreground/70" />
@@ -164,15 +179,19 @@ export default function ProtectedSidebar({
             </SidebarMenu>
           </SidebarGroup>
         </SidebarContent>
+
+        {/* User Profile Footer */}
         <SidebarFooter>
           <SidebarMenu>
             <SidebarMenuItem>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
+                  {/* User Profile Trigger */}
                   <SidebarMenuButton
                     size="lg"
                     className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                   >
+                    {/* User Avatar and Details */}
                     <Avatar className="h-8 w-8 rounded-sm">
                       <AvatarImage
                         src={user && (user.image as string)}
@@ -191,12 +210,15 @@ export default function ProtectedSidebar({
                     <ChevronsUpDown className="ml-auto size-4" />
                   </SidebarMenuButton>
                 </DropdownMenuTrigger>
+
+                {/* User Profile Dropdown Content */}
                 <DropdownMenuContent
                   className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-sm"
                   side="right"
                   align="end"
                   sideOffset={4}
                 >
+                  {/* Repeated User Profile Header */}
                   <DropdownMenuLabel className="p-0 font-normal">
                     <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                       <Avatar className="h-8 w-8 rounded-sm">
@@ -218,6 +240,8 @@ export default function ProtectedSidebar({
                       </div>
                     </div>
                   </DropdownMenuLabel>
+
+                  {/* User Account Actions */}
                   <DropdownMenuSeparator />
                   <DropdownMenuGroup>
                     <DropdownMenuItem>
@@ -225,6 +249,7 @@ export default function ProtectedSidebar({
                       Upgrade to Pro
                     </DropdownMenuItem>
                   </DropdownMenuGroup>
+
                   <DropdownMenuSeparator />
                   <DropdownMenuGroup>
                     <DropdownMenuItem>
@@ -240,13 +265,11 @@ export default function ProtectedSidebar({
                       Notifications
                     </DropdownMenuItem>
                   </DropdownMenuGroup>
+
                   <DropdownMenuSeparator />
 
-                  <DropdownMenuItem
-                    onClick={async () => {
-                      await handleSignOut();
-                    }}
-                  >
+                  {/* Sign Out Action */}
+                  <DropdownMenuItem onClick={async () => await handleSignOut()}>
                     <LogOut />
                     Log out
                   </DropdownMenuItem>
@@ -255,9 +278,14 @@ export default function ProtectedSidebar({
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarFooter>
+
+        {/* Sidebar Rail for Additional Navigation */}
         <SidebarRail />
       </Sidebar>
+
+      {/* Sidebar Inset: Content Area */}
       <SidebarInset>
+        {/* Sticky Header with Sidebar Toggle and Breadcrumbs */}
         <header className="sticky top-14 z-10 flex h-14 shrink-0 items-center justify-between gap-2 bg-background/90 backdrop-blur">
           <div className="flex items-center gap-2 pl-2 md:pl-1 lg:pl-3 xl:pl-5">
             <SidebarTrigger className="" />
@@ -265,6 +293,8 @@ export default function ProtectedSidebar({
             <NavigationBreadcrumb />
           </div>
         </header>
+
+        {/* Main Content Area */}
         <div className="flex flex-1 flex-col gap-2 pt-0">
           <div className="flex-1 rounded-sm">{children}</div>
         </div>
@@ -273,6 +303,10 @@ export default function ProtectedSidebar({
   );
 }
 
+/**
+ * TeamSwitcher Component: Manages team selection and display
+ * Renders a dropdown menu for switching between different teams
+ */
 function TeamSwitcher({
   teams,
 }: {
@@ -289,11 +323,13 @@ function TeamSwitcher({
     <SidebarMenu>
       <SidebarMenuItem>
         <DropdownMenu>
+          {/* Team switcher trigger with active team information */}
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
+              {/* Active team logo and details */}
               <div className="flex aspect-square size-8 items-center justify-center rounded-sm bg-sidebar-primary text-sidebar-primary-foreground">
                 <activeTeam.logo className="size-4" />
               </div>
@@ -306,6 +342,8 @@ function TeamSwitcher({
               <ChevronsUpDown className="ml-auto" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
+
+          {/* Team selection dropdown content */}
           <DropdownMenuContent
             className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-sm"
             align="start"
@@ -315,6 +353,8 @@ function TeamSwitcher({
             <DropdownMenuLabel className="text-xs text-muted-foreground">
               Teams
             </DropdownMenuLabel>
+
+            {/* Render team selection items */}
             {teams.map((team, index) => (
               <DropdownMenuItem
                 key={team.name}
@@ -328,6 +368,8 @@ function TeamSwitcher({
                 <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
               </DropdownMenuItem>
             ))}
+
+            {/* Add team option */}
             <DropdownMenuSeparator />
             <DropdownMenuItem className="gap-2 p-2">
               <div className="flex size-6 items-center justify-center rounded-sm border bg-background">
