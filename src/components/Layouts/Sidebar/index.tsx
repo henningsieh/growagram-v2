@@ -15,7 +15,6 @@ import {
   Sparkles,
   Trash2,
 } from "lucide-react";
-import { User } from "next-auth";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
@@ -69,7 +68,7 @@ export default function ProtectedSidebar({
 }>) {
   const t = useTranslations();
 
-  const user = useSession().data?.user as User;
+  const user = useSession().data?.user;
 
   return (
     <SidebarProvider className="relative">
@@ -176,16 +175,18 @@ export default function ProtectedSidebar({
                   >
                     <Avatar className="h-8 w-8 rounded-sm">
                       <AvatarImage
-                        src={user.image as string}
-                        alt={user.name as string}
+                        src={user && (user.image as string)}
+                        alt={user && (user.name as string)}
                       />
                       <AvatarFallback className="rounded-sm">CN</AvatarFallback>
                     </Avatar>
                     <div className="grid flex-1 text-left text-sm leading-tight">
                       <span className="truncate font-semibold">
-                        {user.name}
+                        {user && (user.name as string)}
                       </span>
-                      <span className="truncate text-xs">{user.email}</span>
+                      <span className="truncate text-xs">
+                        {user && (user.email as string)}
+                      </span>
                     </div>
                     <ChevronsUpDown className="ml-auto size-4" />
                   </SidebarMenuButton>
@@ -200,8 +201,8 @@ export default function ProtectedSidebar({
                     <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                       <Avatar className="h-8 w-8 rounded-sm">
                         <AvatarImage
-                          src={user.image as string}
-                          alt={user.name as string}
+                          src={user && (user.image as string)}
+                          alt={user && (user.name as string)}
                         />
                         <AvatarFallback className="rounded-sm">
                           CN
@@ -209,9 +210,11 @@ export default function ProtectedSidebar({
                       </Avatar>
                       <div className="grid flex-1 text-left text-sm leading-tight">
                         <span className="truncate font-semibold">
-                          {user.name}
+                          {user && (user.name as string)}
                         </span>
-                        <span className="truncate text-xs">{user.email}</span>
+                        <span className="truncate text-xs">
+                          {user && (user.email as string)}
+                        </span>
                       </div>
                     </div>
                   </DropdownMenuLabel>
