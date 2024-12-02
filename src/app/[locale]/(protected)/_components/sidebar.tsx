@@ -14,6 +14,8 @@ import {
   Sparkles,
   Trash2,
 } from "lucide-react";
+import { User } from "next-auth";
+import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
@@ -65,6 +67,14 @@ export default function ProtectedSidebar({
   children: React.ReactNode;
 }>) {
   const t = useTranslations();
+
+  const session = useSession();
+
+  console.debug("session: ", session);
+  console.debug("session.data: ", session.data);
+
+  const user = session.data?.user as User;
+
   return (
     <SidebarProvider className="relative">
       <Sidebar collapsible="icon" variant="floating" className="flex-shrink-0">
@@ -170,18 +180,16 @@ export default function ProtectedSidebar({
                   >
                     <Avatar className="h-8 w-8 rounded-sm">
                       <AvatarImage
-                        src={sidebarItems.user.avatar}
-                        alt={sidebarItems.user.name}
+                        src={user.image as string}
+                        alt={user.name as string}
                       />
                       <AvatarFallback className="rounded-sm">CN</AvatarFallback>
                     </Avatar>
                     <div className="grid flex-1 text-left text-sm leading-tight">
                       <span className="truncate font-semibold">
-                        {sidebarItems.user.name}
+                        {user.name}
                       </span>
-                      <span className="truncate text-xs">
-                        {sidebarItems.user.email}
-                      </span>
+                      <span className="truncate text-xs">{user.email}</span>
                     </div>
                     <ChevronsUpDown className="ml-auto size-4" />
                   </SidebarMenuButton>
@@ -196,8 +204,8 @@ export default function ProtectedSidebar({
                     <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                       <Avatar className="h-8 w-8 rounded-sm">
                         <AvatarImage
-                          src={sidebarItems.user.avatar}
-                          alt={sidebarItems.user.name}
+                          src={user.image as string}
+                          alt={user.name as string}
                         />
                         <AvatarFallback className="rounded-sm">
                           CN
@@ -205,11 +213,9 @@ export default function ProtectedSidebar({
                       </Avatar>
                       <div className="grid flex-1 text-left text-sm leading-tight">
                         <span className="truncate font-semibold">
-                          {sidebarItems.user.name}
+                          {user.name}
                         </span>
-                        <span className="truncate text-xs">
-                          {sidebarItems.user.email}
-                        </span>
+                        <span className="truncate text-xs">{user.email}</span>
                       </div>
                     </div>
                   </DropdownMenuLabel>
