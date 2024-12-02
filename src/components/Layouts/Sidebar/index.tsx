@@ -1,5 +1,6 @@
 "use client";
 
+// src/components/Layouts/Sidebar/index.tsx:
 import {
   BadgeCheck,
   Bell,
