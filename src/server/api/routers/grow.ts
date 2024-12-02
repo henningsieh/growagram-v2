@@ -1,4 +1,5 @@
 // src/server/api/routers/grow.ts:
+import { TRPCError } from "@trpc/server";
 import { and, eq } from "drizzle-orm";
 import { z } from "zod";
 import { grows, plants } from "~/lib/db/schema";
@@ -77,7 +78,7 @@ export const growRouter = createTRPCRouter({
       });
     }),
 
-  // Revised connectPlant mutation with additional validation
+  // connectPlant mutation with additional validation
   connectPlant: protectedProcedure
     .input(
       z.object({
@@ -86,33 +87,81 @@ export const growRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      // Verify user ownership of both grow and plant
-      const grow = await ctx.db.query.grows.findFirst({
-        where: and(
-          eq(grows.id, input.growId),
-          eq(grows.ownerId, ctx.session.user.id as string),
-        ),
-      });
+      try {
+        const grow = await ctx.db.query.grows.findFirst({
+          where: eq(grows.id, input.growId),
+        });
+        // Verify that the grow exists
+        if (!grow) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "Grow environment was not found.",
+          });
+        }
+        // Verify user ownership of grow
+        if (grow.ownerId !== ctx.session.user.id) {
+          throw new TRPCError({
+            code: "UNAUTHORIZED",
+            message: "User is not owner of this Grow environment.",
+          });
+        }
 
-      const plant = await ctx.db.query.plants.findFirst({
-        where: and(
-          eq(plants.id, input.plantId),
-          eq(plants.ownerId, ctx.session.user.id as string),
-        ),
-      });
+        const plant = await ctx.db.query.plants.findFirst({
+          where: eq(plants.id, input.plantId),
+        });
+        // Verify that the plant exists
+        if (!plant) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "This Plant was not found.",
+          });
+        }
+        // Verify user ownership of plant
+        if (plant.ownerId !== ctx.session.user.id) {
+          throw new TRPCError({
+            code: "UNAUTHORIZED",
+            message: "User is not owner of this Plant.",
+          });
+        }
 
-      if (!grow || !plant) {
-        throw new Error("Unauthorized or invalid plant/grow");
+        // Check if plant is already connected to another grow
+        const existingPlantInGrow = await ctx.db.query.plants.findFirst({
+          where: and(
+            eq(plants.id, input.plantId),
+            eq(plants.growId, input.growId),
+          ),
+        });
+
+        if (existingPlantInGrow) {
+          throw new TRPCError({
+            code: "CONFLICT",
+            message: "Plant is already connected to this grow environment.",
+          });
+        }
+
+        // Connect plant to grow
+        const updatedPlant = await ctx.db
+          .update(plants)
+          .set({ growId: input.growId })
+          .where(eq(plants.id, input.plantId))
+          .returning();
+
+        return updatedPlant[0];
+      } catch (error) {
+        if (error instanceof TRPCError) {
+          throw error;
+        }
+
+        // Catch any unexpected errors
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "An unexpected error occurred while connecting the plant.",
+          cause: error,
+        });
       }
-
-      // Connect plant to grow
-      return await ctx.db
-        .update(plants)
-        .set({ growId: input.growId })
-        .where(eq(plants.id, input.plantId));
     }),
 
-  // Revised disconnectPlant mutation
+  //  disconnectPlant mutation with additional validation
   disconnectPlant: protectedProcedure
     .input(
       z.object({
@@ -121,47 +170,124 @@ export const growRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      // Verify user ownership
-      const grow = await ctx.db.query.grows.findFirst({
-        where: and(
-          eq(grows.id, input.growId),
-          eq(grows.ownerId, ctx.session.user.id as string),
-        ),
-      });
+      try {
+        const grow = await ctx.db.query.grows.findFirst({
+          where: eq(grows.id, input.growId),
+        });
+        // Verify that the grow exists
+        if (!grow) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "Grow environment was not found.",
+          });
+        }
+        // Verify user ownership of grow
+        if (grow.ownerId !== ctx.session.user.id) {
+          throw new TRPCError({
+            code: "UNAUTHORIZED",
+            message: "User is not owner of this Grow environment.",
+          });
+        }
 
-      if (!grow) {
-        throw new Error("Unauthorized or invalid grow");
+        const plant = await ctx.db.query.plants.findFirst({
+          where: and(
+            eq(plants.id, input.plantId),
+            eq(plants.growId, input.growId),
+          ),
+        });
+        // Verify plant is connected to this specific grow
+        if (!plant) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "Plant is not connected to this grow environment.",
+          });
+        }
+
+        // Disconnect plant from grow
+        const disconnectedPlant = await ctx.db
+          .update(plants)
+          .set({ growId: null })
+          .where(
+            and(eq(plants.id, input.plantId), eq(plants.growId, input.growId)),
+          )
+          .returning();
+
+        return disconnectedPlant[0];
+      } catch (error) {
+        if (error instanceof TRPCError) {
+          throw error;
+        }
+
+        // Catch any unexpected errors
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message:
+            "An unexpected error occurred while disconnecting the plant.",
+          cause: error,
+        });
       }
-
-      // Disconnect plant from grow
-      return await ctx.db
-        .update(plants)
-        .set({ growId: null })
-        .where(
-          and(eq(plants.id, input.plantId), eq(plants.growId, input.growId)),
-        );
     }),
 
-  // Create or edit a grow
   createOrEdit: protectedProcedure
     .input(growSchema)
     .mutation(async ({ ctx, input }) => {
-      const newGrow = await ctx.db
-        .insert(grows)
-        .values({
-          id: input.id || crypto.randomUUID(),
-          name: input.name,
-          ownerId: ctx.session.user.id as string,
-        })
-        .onConflictDoUpdate({
-          target: grows.id,
-          set: {
-            name: input.name,
-          },
-        })
-        .returning();
+      try {
+        // Validate input (though Zod schema already does this)
+        if (!input.name.trim()) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "Grow name cannot be empty.",
+          });
+        }
 
-      return newGrow[0];
+        // Check for existing grow if editing
+        if (input.id) {
+          const existingGrow = await ctx.db.query.grows.findFirst({
+            where: and(
+              eq(grows.id, input.id),
+              eq(grows.ownerId, ctx.session.user.id as string),
+            ),
+          });
+
+          if (!existingGrow) {
+            throw new TRPCError({
+              code: "NOT_FOUND",
+              message:
+                "Grow environment not found or you do not have permission to edit.",
+            });
+          }
+        }
+
+        // Create or update grow
+        const newGrow = await ctx.db
+          .insert(grows)
+          .values({
+            id: input.id || crypto.randomUUID(),
+            name: input.name,
+            ownerId: ctx.session.user.id as string,
+          })
+          .onConflictDoUpdate({
+            target: grows.id,
+            set: {
+              name: input.name,
+            },
+          })
+          .returning();
+
+        return newGrow[0];
+      } catch (error) {
+        if (error instanceof TRPCError) {
+          throw error;
+        }
+
+        // Catch any unexpected errors
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message:
+            "An unexpected error occurred while creating or editing the grow.",
+          cause: error,
+        });
+      }
     }),
 
   // Delete grow by ID

@@ -1,7 +1,7 @@
 "use client";
 
-// src/components/features/Grows/grow-form.tsx:
 import { zodResolver } from "@hookform/resolvers/zod";
+import { TRPCClientError } from "@trpc/client";
 import { Check, Flower2 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -55,40 +55,67 @@ export default function GrowForm({ grow }: { grow?: GetOwnGrowType }) {
   const [searchQuery, setSearchQuery] = useState("");
 
   /**
-   * Mutation to connect a plant to an image.
-   *
-   * On success, invalidates the cache for the image to ensure updated data.
+   * Handle TRPC errors and display appropriate toast messages
+   */
+  const handleTRPCError = (error: unknown) => {
+    if (error instanceof TRPCClientError) {
+      // Extract the error message, defaulting to a generic error
+      const errorMessage = error.message || "An unexpected error occurred";
+
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive",
+      });
+    } else {
+      // Handle any other unexpected errors
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  /**
+   * Mutation to connect a plant to a grow environment.
    */
   const connectPlantMutation = api.grow.connectPlant.useMutation({
     onSuccess: async () => {
-      // await utils.image.getById.invalidate({ id: image.id });
+      // Invalidate and refetch relevant queries
+      await utils.grow.getOwnGrows.invalidate();
+      await utils.plant.getOwnPlants.invalidate();
+    },
+    onError: (error) => {
+      handleTRPCError(error);
     },
   });
 
   /**
-   * Mutation to disconnect a plant from an image.
-   *
-   * On success, invalidates the cache for the image to ensure updated data.
+   * Mutation to disconnect a plant from a grow environment.
    */
   const disconnectPlantMutation = api.grow.disconnectPlant.useMutation({
     onSuccess: async () => {
-      // await utils.image.getById.invalidate({ id: image.id });
+      // Invalidate and refetch relevant queries
+      await utils.grow.getOwnGrows.invalidate();
+      await utils.plant.getOwnPlants.invalidate();
+    },
+    onError: (error) => {
+      handleTRPCError(error);
     },
   });
 
-  // The prefetched data will be available in the cache
+  // Existing code for data fetching and form initialization...
   const initialData = utils.plant.getOwnPlants.getData();
   const { data: plantsData, isLoading } = api.plant.getOwnPlants.useQuery(
     { limit: 100 } satisfies GetOwnPlantsInput,
     {
-      // Use the data that was prefetched on the server
       initialData: initialData,
     },
   );
-  // Move plants array into useMemo to ensure stable reference
+
   const plants = useMemo(() => plantsData?.plants || [], [plantsData]);
 
-  // Initialize with connected plants from existing grow
   const initialConnectedPlantIds = useMemo(
     () => grow?.plants?.map((plant) => plant.id) || [],
     [grow?.plants],
@@ -97,7 +124,6 @@ export default function GrowForm({ grow }: { grow?: GetOwnGrowType }) {
     initialConnectedPlantIds,
   );
 
-  // Create filtered plants list using useMemo
   const filteredPlants = useMemo(() => {
     if (!plants.length) return [];
     return plants.filter(
@@ -116,9 +142,11 @@ export default function GrowForm({ grow }: { grow?: GetOwnGrowType }) {
     },
   });
 
+  /**
+   * Mutation to create or edit a grow environment.
+   */
   const createOrEditGrowMutation = api.grow.createOrEdit.useMutation({
     onSuccess: async (savedGrow) => {
-      // Connect/disconnect plants after grow is created/updated
       try {
         // Find plants to connect and disconnect
         const currentPlantIds = grow?.plants?.map((p) => p.id) || [];
@@ -129,58 +157,82 @@ export default function GrowForm({ grow }: { grow?: GetOwnGrowType }) {
           (id) => !selectedPlantIds.includes(id),
         );
 
-        // Perform connection/disconnection operations
-        await Promise.all([
-          ...plantsToConnect.map((plantId) =>
+        // Perform connection/disconnection operations with error tracking
+        const connectResults = await Promise.allSettled(
+          plantsToConnect.map((plantId) =>
             connectPlantMutation.mutateAsync({
               growId: savedGrow.id,
               plantId: plantId,
             } satisfies GrowConnectPlantInput),
           ),
-          ...plantsToDisconnect.map((plantId) =>
+        );
+
+        const disconnectResults = await Promise.allSettled(
+          plantsToDisconnect.map((plantId) =>
             disconnectPlantMutation.mutateAsync({
               growId: savedGrow.id,
               plantId: plantId,
             } satisfies GrowDisconnectPlantInput),
           ),
-        ]);
+        );
+
+        // Check for any connection/disconnection errors
+        const connectionErrors = connectResults
+          .filter((result) => result.status === "rejected")
+          .map((result) => (result as PromiseRejectedResult).reason);
+
+        const disconnectionErrors = disconnectResults
+          .filter((result) => result.status === "rejected")
+          .map((result) => (result as PromiseRejectedResult).reason);
+
+        if (connectionErrors.length > 0 || disconnectionErrors.length > 0) {
+          const errorMessages = [
+            ...connectionErrors.map((err) => `Connect error: ${err}`),
+            ...disconnectionErrors.map((err) => `Disconnect error: ${err}`),
+          ];
+
+          throw new Error(errorMessages.join("; "));
+        }
 
         toast({
           title: "Success",
           description: "Your grow has been created and plants updated.",
         });
 
-        // Reset and prefetch the infinite query
-        await utils.grow.getOwnGrows.reset();
-        await utils.grow.getOwnGrows.prefetchInfinite(
-          { limit: 12 }, // match the limit from grows page
-        );
+        // Reset and prefetch queries
+        await Promise.all([
+          utils.grow.getOwnGrows.reset(),
+          utils.grow.getOwnGrows.prefetchInfinite({ limit: 12 }),
+        ]);
 
         // Navigate to grows page
         router.push("/grows");
       } catch (error) {
-        toast({
-          title: "Error",
-          description: "Failed to update plants for the grow",
-          variant: "destructive",
-        });
+        // Handle specific error types
+        handleTRPCError(error);
+      } finally {
+        setIsSubmitting(false);
       }
     },
     onError: (error) => {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
+      // Handle mutation creation/edit errors
+      handleTRPCError(error);
       setIsSubmitting(false);
     },
   });
 
   async function onSubmit(values: FormValues) {
     setIsSubmitting(true);
-    await createOrEditGrowMutation.mutateAsync(
-      values satisfies CreateOrEditGrowInput,
-    );
+
+    try {
+      await createOrEditGrowMutation.mutateAsync(
+        values satisfies CreateOrEditGrowInput,
+      );
+    } catch (error) {
+      // Catch any unexpected errors during submission
+      handleTRPCError(error);
+      setIsSubmitting(false);
+    }
   }
 
   const togglePlantSelection = (plantId: string) => {
