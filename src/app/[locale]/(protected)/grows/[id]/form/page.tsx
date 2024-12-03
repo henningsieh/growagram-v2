@@ -12,7 +12,7 @@ import {
 export default async function CreatePlantPage({
   params,
 }: {
-  params: Promise<GetGrowByIdInput>;
+  params: GetGrowByIdInput;
 }) {
   // Prefetch the plants query - this will populate the cache
   void api.plant.getOwnPlants.prefetch({
@@ -20,16 +20,17 @@ export default async function CreatePlantPage({
   } satisfies GetOwnPlantsInput);
 
   // Fetch the grow details only if growId is not "new"
-  const growId = (await params).id;
-  const grow =
-    growId !== "new" ? await api.grow.getById({ id: growId }) : undefined;
+  const growId = params.id;
+  const grow = (
+    growId !== "new" ? await api.grow.getById({ id: growId }) : undefined
+  ) satisfies GetOwnGrowType | undefined;
 
   if (growId !== "new" && grow === undefined) notFound();
 
   return (
     <HydrateClient>
       <FormContent>
-        <GrowForm grow={grow satisfies GetOwnGrowType | undefined} />
+        <GrowForm grow={grow} />
       </FormContent>
     </HydrateClient>
   );

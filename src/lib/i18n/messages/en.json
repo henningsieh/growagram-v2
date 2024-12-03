@@ -5,8 +5,10 @@
     }
   },
   "Grows": {
-    "page-title": "Create new grow",
-    "page-subtitle": "Add a new grow to your collection",
+    "page-title-new": "Create new grow",
+    "page-subtitle-new": "Add a new grow to your collection",
+    "page-title-edit": "Edit a grow",
+    "page-subtitle-edit": "Edit this grow from your collection",
     "form-title-create-new-grow": "Grow's basic data",
     "form-description-create-new-grow": "Edit the name and further details of the grow",
     "form-title-edit-grow": "Edit Grow Environment",

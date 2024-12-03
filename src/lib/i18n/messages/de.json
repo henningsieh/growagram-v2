@@ -5,8 +5,10 @@
     }
   },
   "Grows": {
-    "page-title": "Neuen Grow erstellen",
-    "page-subtitle": "Füge deiner Sammlung einen neuen Grow hinzu",
+    "page-title-new": "Neuen Grow erstellen",
+    "page-subtitle-new": "Füge deiner Sammlung einen neuen Grow hinzu",
+    "page-title-edit": "Grow bearbeiten",
+    "page-subtitle-edit": "Bearbeite einen Grow aus deiner Sammlung",
     "form-title-create-new-grow": "Stammdaten deines Grows",
     "form-description-create-new-grow": "Bearbeite den Namen und weitere Details des Grows",
     "form-title-edit-grow": "Grow-Umgebung bearbeiten",
