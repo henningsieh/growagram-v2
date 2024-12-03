@@ -1,6 +1,6 @@
 // src/server/api/routers/image.ts:
 import { TRPCError } from "@trpc/server";
-import { SQL, and, count, eq, exists, not, sql } from "drizzle-orm";
+import { and, count, eq, exists, not } from "drizzle-orm";
 import { z } from "zod";
 import cloudinary from "~/lib/cloudinary";
 import { images, plantImages } from "~/lib/db/schema";

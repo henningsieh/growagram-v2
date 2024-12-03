@@ -1,4 +1,4 @@
-import { relations, sql } from "drizzle-orm";
+import { eq, relations, sql } from "drizzle-orm";
 import {
   boolean,
   integer,
@@ -7,6 +7,7 @@ import {
   primaryKey,
   text,
   timestamp,
+  uniqueIndex,
 } from "drizzle-orm/pg-core";
 import type { AdapterAccountType } from "next-auth/adapters";
 
@@ -232,6 +233,31 @@ export const plantImages = pgTable(
   }),
 );
 
+export const likes = pgTable(
+  "like",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    entityId: text("entity_id").notNull(),
+    entityType: text("entity_type").$type<"plant" | "image">().notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+  },
+  (table) => ({
+    // Prevent duplicate likes from the same user on the same entity
+    uniqueLike: uniqueIndex("unique_like").on(
+      table.userId,
+      table.entityId,
+      table.entityType,
+    ),
+  }),
+);
+
 // Drizzle ORM Relations
 
 export const breedersRelations = relations(breeders, ({ many }) => ({
@@ -257,6 +283,23 @@ export const growsRelations = relations(grows, ({ one, many }) => ({
   plants: many(plants),
 }));
 
+export const likesRelations = relations(likes, ({ one }) => ({
+  user: one(users, {
+    fields: [likes.userId],
+    references: [users.id],
+  }),
+  plant: one(plants, {
+    fields: [likes.entityId],
+    references: [plants.id],
+    // condition: eq(likes.entityType, 'plant')
+  }),
+  image: one(images, {
+    fields: [likes.entityId],
+    references: [images.id],
+    // condition: eq(likes.entityType, 'image')
+  }),
+}));
+
 export const plantsRelations = relations(plants, ({ one, many }) => ({
   // A plant has one grow
   grow: one(grows, {
@@ -278,10 +321,14 @@ export const plantsRelations = relations(plants, ({ one, many }) => ({
     fields: [plants.headerImageId],
     references: [images.id],
   }),
+  // A plant has many images
   plantImages: many(plantImages),
+  // A plant has many likes
+  likes: many(likes),
 }));
 
 export const imagesRelations = relations(images, ({ many }) => ({
+  likes: many(likes),
   plantImages: many(plantImages),
   plantsAsHeader: many(plants),
 }));

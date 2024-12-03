@@ -1,4 +1,4 @@
-// src/server/api/routers/image.ts:
+// src/server/api/routers/plant.ts:
 import { TRPCError } from "@trpc/server";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
