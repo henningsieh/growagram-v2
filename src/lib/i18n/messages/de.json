@@ -5,9 +5,30 @@
     }
   },
   "Grows": {
-    "create-new-grow": "",
-    "page-subtitle": "Füge deiner Sammlung einen neuen Grow hinzu",
-    "page-title": "Neuen Grow erstellen"
+    "create-new-grow": "Neuen Grow erstellen",
+    "edit-grow-environment": "Grow-Umgebung bearbeiten",
+    "add-new-grow": "Füge deiner Sammlung einen neuen Grow hinzu",
+    "modify-grow-environment": "Bearbeite deine Grow-Umgebung",
+    "buttonLabel-save-changes": "Änderungen speichern",
+    "buttonLabel-create-grow": "Grow erstellen",
+    "success-title": "Erfolg!",
+    "success-description-create": "Die Grow-Umgebung wurde erfolgreich erstellt.",
+    "success-description-edit": "Die Grow-Umgebung wurde erfolgreich aktualisiert.",
+    "error-title": "Ein Fehler ist aufgetreten",
+    "error-default": "Etwas ist schiefgelaufen. Bitte versuche es später erneut.",
+    "unexpected-error": "Ein unerwarteter Fehler ist aufgetreten.",
+    "grow-name": "Grow-Name",
+    "grow-name-placeholder": "Gib den Grow-Namen ein",
+    "grow-name-description": "Gib deinem Grow einen beschreibenden Namen.",
+    "select-plants": "Pflanzen auswählen",
+    "search-plants": "Pflanzen suchen...",
+    "no-plants-found": "Keine Pflanzen gefunden.",
+    "plants-selected": "{count} Pflanze(n) ausgewählt.",
+    "select-plants-optional": "Die Auswahl von Pflanzen ist optional.",
+    "reset": "Zurücksetzen",
+    "saving": "Speichern...",
+    "connect-error": "Fehler beim Verbinden der Pflanze",
+    "disconnect-error": "Fehler beim Trennen der Pflanze"
   },
   "HomePage": {
     "about": "gehe zur Zeitleiste",
