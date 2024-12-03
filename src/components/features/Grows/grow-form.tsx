@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TRPCClientError } from "@trpc/client";
 import { Check, Flower2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -47,6 +48,30 @@ import { growSchema } from "~/types/zodSchema";
 type FormValues = z.infer<typeof growSchema>;
 
 export default function GrowForm({ grow }: { grow?: GetOwnGrowType }) {
+  const t = useTranslations("Grows");
+
+  // Determine the mode based on the presence of grow
+  const isEditMode = !!grow;
+
+  // Dynamic texts based on mode
+  const pageTexts = {
+    formTitle: isEditMode
+      ? t("form-title-edit-grow")
+      : t("form-title-create-new-grow"),
+    formDescription: isEditMode
+      ? t("form-description-edit-grow")
+      : t("form-description-create-new-grow"),
+    submitButtonText: isEditMode
+      ? t("buttonLabel-save-changes")
+      : t("buttonLabel-create-grow"),
+    successToast: {
+      title: t("success-title"),
+      description: isEditMode
+        ? t("success-description-edit")
+        : t("success-description-create"),
+    },
+  };
+
   const utils = api.useUtils();
   const router = useRouter();
   const { toast } = useToast();
@@ -60,18 +85,18 @@ export default function GrowForm({ grow }: { grow?: GetOwnGrowType }) {
   const handleTRPCError = (error: unknown) => {
     if (error instanceof TRPCClientError) {
       // Extract the error message, defaulting to a generic error
-      const errorMessage = error.message || "An unexpected error occurred";
+      const errorMessage = error.message || t("error-default");
 
       toast({
-        title: "Error",
+        title: t("error-title"),
         description: errorMessage,
         variant: "destructive",
       });
     } else {
       // Handle any other unexpected errors
       toast({
-        title: "Error",
-        description: "An unexpected error occurred. Please try again.",
+        title: t("error-title"),
+        description: t("unexpected-error"),
         variant: "destructive",
       });
     }
@@ -105,15 +130,17 @@ export default function GrowForm({ grow }: { grow?: GetOwnGrowType }) {
     },
   });
 
-  // Existing code for data fetching and form initialization...
-  const initialData = utils.plant.getOwnPlants.getData();
+  // Data fetching and form initialization...
+  const initialData = utils.plant.getOwnPlants.getData({
+    limit: 100,
+    // cursor?: number | null | undefined
+  } satisfies GetOwnPlantsInput);
   const { data: plantsData, isLoading } = api.plant.getOwnPlants.useQuery(
     { limit: 100 } satisfies GetOwnPlantsInput,
     {
       initialData: initialData,
     },
   );
-
   const plants = useMemo(() => plantsData?.plants || [], [plantsData]);
 
   const initialConnectedPlantIds = useMemo(
@@ -187,16 +214,18 @@ export default function GrowForm({ grow }: { grow?: GetOwnGrowType }) {
 
         if (connectionErrors.length > 0 || disconnectionErrors.length > 0) {
           const errorMessages = [
-            ...connectionErrors.map((err) => `Connect error: ${err}`),
-            ...disconnectionErrors.map((err) => `Disconnect error: ${err}`),
+            ...connectionErrors.map((err) => `${t("connect-error")}: ${err}`),
+            ...disconnectionErrors.map(
+              (err) => `${t("disconnect-error")}: ${err}`,
+            ),
           ];
 
           throw new Error(errorMessages.join("; "));
         }
 
         toast({
-          title: "Success",
-          description: "Your grow has been created and plants updated.",
+          title: pageTexts.successToast.title,
+          description: pageTexts.successToast.description,
         });
 
         // Reset and prefetch queries
@@ -246,10 +275,8 @@ export default function GrowForm({ grow }: { grow?: GetOwnGrowType }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle level="h2">Grow Setup</CardTitle>
-        <CardDescription>
-          Create and name your new grow environment.
-        </CardDescription>
+        <CardTitle level="h2">{pageTexts.formTitle}</CardTitle>
+        <CardDescription>{pageTexts.formDescription}</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -259,13 +286,17 @@ export default function GrowForm({ grow }: { grow?: GetOwnGrowType }) {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-semibold">Grow Name</FormLabel>
+                  <FormLabel className="font-semibold">
+                    {t("grow-name")}
+                  </FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter grow name" {...field} />
+                    <Input
+                      placeholder={t("grow-name-placeholder")}
+                      {...field}
+                    />
                   </FormControl>
                   <FormDescription>
-                    Give your grow a descriptive name, like &quot;Summer Indoor
-                    Grow&quot; or &quot;Backyard Greenhouse&quot;.
+                    {t("grow-name-description")}
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -274,19 +305,16 @@ export default function GrowForm({ grow }: { grow?: GetOwnGrowType }) {
 
             <div>
               <FormLabel className="mb-2 block font-semibold">
-                Select Plants for this Grow
+                {t("select-plants")}
               </FormLabel>
               <Command
                 className="rounded-sm border shadow-md"
                 shouldFilter={false}
               >
                 <CommandInput
-                  placeholder="Search plants..."
+                  placeholder={t("search-plants")}
                   value={searchQuery}
-                  onValueChange={(value) => {
-                    console.debug("value:", value);
-                    setSearchQuery(value);
-                  }}
+                  onValueChange={(value) => setSearchQuery(value)}
                 />
                 {isLoading ? (
                   <div className="flex justify-center p-4">
@@ -294,7 +322,7 @@ export default function GrowForm({ grow }: { grow?: GetOwnGrowType }) {
                   </div>
                 ) : (
                   <CommandList className="min-h-24">
-                    <CommandEmpty>No plants found</CommandEmpty>
+                    <CommandEmpty>{t("no-plants-found")}</CommandEmpty>
                     <CommandGroup>
                       {filteredPlants.map((plant) => (
                         <CommandItem
@@ -327,31 +355,27 @@ export default function GrowForm({ grow }: { grow?: GetOwnGrowType }) {
               </Command>
               <FormDescription className="mt-2">
                 {selectedPlantIds.length > 0
-                  ? `${selectedPlantIds.length} plant(s) selected`
-                  : "Optional: Select plants for this grow"}
+                  ? t("plants-selected", { count: selectedPlantIds.length })
+                  : t("select-plants-optional")}
               </FormDescription>
             </div>
 
             <div className="flex gap-4">
               <Button
                 type="button"
-                title="Reset"
+                title={t("reset")}
                 variant="outline"
                 onClick={() => {
                   form.reset();
-                  setSelectedPlantIds([]);
+                  setSelectedPlantIds(initialConnectedPlantIds);
                   setSearchQuery("");
                 }}
                 className="w-full"
               >
-                Reset
+                {t("reset")}
               </Button>
               <Button type="submit" className="w-full" disabled={isSubmitting}>
-                {isSubmitting
-                  ? "Saving..."
-                  : grow?.id
-                    ? "Save Changes"
-                    : "Create Grow"}
+                {isSubmitting ? t("saving") : pageTexts.submitButtonText}
               </Button>
             </div>
           </form>
