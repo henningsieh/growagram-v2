@@ -24,7 +24,7 @@
         },
         {
           "title": "Create New Grow",
-          "url": "/grows/add"
+          "url": "/grows/new/form"
         },
         {
           "title": "Grow Archive",

@@ -47,6 +47,23 @@ import { growSchema } from "~/types/zodSchema";
 type FormValues = z.infer<typeof growSchema>;
 
 export default function GrowForm({ grow }: { grow?: GetOwnGrowType }) {
+  // Determine the mode based on the presence of grow
+  const isEditMode = !!grow;
+
+  // Dynamic texts based on mode
+  const pageTexts = {
+    title: isEditMode ? "Edit Grow Environment" : "Create New Grow",
+    description: isEditMode
+      ? "Modify details of your existing grow environment."
+      : "Create and name your new grow environment.",
+    submitButtonText: isEditMode ? "Save Changes" : "Create Grow",
+    successToast: {
+      title: "Success",
+      description: isEditMode
+        ? "Your grow environment has been updated."
+        : "Your new grow environment has been created.",
+    },
+  };
   const utils = api.useUtils();
   const router = useRouter();
   const { toast } = useToast();
@@ -197,8 +214,8 @@ export default function GrowForm({ grow }: { grow?: GetOwnGrowType }) {
         }
 
         toast({
-          title: "Success",
-          description: "Your grow has been created and plants updated.",
+          title: pageTexts.successToast.title,
+          description: pageTexts.successToast.description,
         });
 
         // Reset and prefetch queries
@@ -248,10 +265,8 @@ export default function GrowForm({ grow }: { grow?: GetOwnGrowType }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle level="h2">Grow Setup</CardTitle>
-        <CardDescription>
-          Create and name your new grow environment.
-        </CardDescription>
+        <CardTitle level="h2">{pageTexts.title}</CardTitle>
+        <CardDescription>{pageTexts.description}</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -341,7 +356,7 @@ export default function GrowForm({ grow }: { grow?: GetOwnGrowType }) {
                 variant="outline"
                 onClick={() => {
                   form.reset();
-                  setSelectedPlantIds([]);
+                  setSelectedPlantIds(initialConnectedPlantIds);
                   setSearchQuery("");
                 }}
                 className="w-full"
@@ -349,11 +364,7 @@ export default function GrowForm({ grow }: { grow?: GetOwnGrowType }) {
                 Reset
               </Button>
               <Button type="submit" className="w-full" disabled={isSubmitting}>
-                {isSubmitting
-                  ? "Saving..."
-                  : grow?.id
-                    ? "Save Changes"
-                    : "Create Grow"}
+                {isSubmitting ? "Saving..." : pageTexts.submitButtonText}
               </Button>
             </div>
           </form>
