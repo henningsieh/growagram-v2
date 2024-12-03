@@ -105,15 +105,17 @@ export default function GrowForm({ grow }: { grow?: GetOwnGrowType }) {
     },
   });
 
-  // Existing code for data fetching and form initialization...
-  const initialData = utils.plant.getOwnPlants.getData();
+  // Data fetching and form initialization...
+  const initialData = utils.plant.getOwnPlants.getData({
+    limit: 100,
+    // cursor?: number | null | undefined
+  } satisfies GetOwnPlantsInput);
   const { data: plantsData, isLoading } = api.plant.getOwnPlants.useQuery(
     { limit: 100 } satisfies GetOwnPlantsInput,
     {
       initialData: initialData,
     },
   );
-
   const plants = useMemo(() => plantsData?.plants || [], [plantsData]);
 
   const initialConnectedPlantIds = useMemo(

@@ -1,4 +1,5 @@
-import { api } from "~/lib/trpc/server";
+import { HydrateClient, api } from "~/lib/trpc/server";
+import { GetOwnPlantsInput } from "~/server/api/root";
 
 export const metadata = {
   title: "SEO Title",
@@ -10,7 +11,10 @@ export default async function AddGrowLayout({
   children: React.ReactNode;
 }) {
   // Prefetch the plants query - this will populate the cache
-  await api.plant.getOwnPlants.prefetch();
+  await api.plant.getOwnPlants.prefetch({
+    limit: 100,
+    // cursor?: number | null | undefined
+  } satisfies GetOwnPlantsInput);
 
-  return <>{children}</>;
+  return <HydrateClient>{children}</HydrateClient>;
 }
