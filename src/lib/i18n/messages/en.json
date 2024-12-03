@@ -5,10 +5,12 @@
     }
   },
   "Grows": {
-    "create-new-grow": "Create New Grow",
-    "edit-grow-environment": "Edit Grow Environment",
-    "add-new-grow": "Add a new grow to your collection",
-    "modify-grow-environment": "Modify your grow environment",
+    "page-title": "Create new grow",
+    "page-subtitle": "Add a new grow to your collection",
+    "form-title-create-new-grow": "Grow's basic data",
+    "form-description-create-new-grow": "Edit the name and further details of the grow",
+    "form-title-edit-grow": "Edit Grow Environment",
+    "form-description-edit-grow": "Modify your grow Environment",
     "buttonLabel-save-changes": "Save Changes",
     "buttonLabel-create-grow": "Create Grow",
     "success-title": "Success!",
@@ -78,7 +80,7 @@
   "Navigation": {
     "components": "Components",
     "dashboard": "Dashboard",
-    "dashboard-description": "Track your Grows and Plants including environments and tools. ",
+    "dashboard-description": "Track your grows and your plants, including inventory and tools.",
     "grower-menu": "For Growers",
     "login": "Login",
     "my-grows": "My Grows",

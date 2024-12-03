@@ -55,8 +55,12 @@ export default function GrowForm({ grow }: { grow?: GetOwnGrowType }) {
 
   // Dynamic texts based on mode
   const pageTexts = {
-    title: isEditMode ? t("edit-grow-environment") : t("create-new-grow"),
-    description: isEditMode ? t("modify-grow-environment") : t("add-new-grow"),
+    formTitle: isEditMode
+      ? t("form-title-edit-grow")
+      : t("form-title-create-new-grow"),
+    formDescription: isEditMode
+      ? t("form-description-edit-grow")
+      : t("form-description-create-new-grow"),
     submitButtonText: isEditMode
       ? t("buttonLabel-save-changes")
       : t("buttonLabel-create-grow"),
@@ -271,8 +275,8 @@ export default function GrowForm({ grow }: { grow?: GetOwnGrowType }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle level="h2">{pageTexts.title}</CardTitle>
-        <CardDescription>{pageTexts.description}</CardDescription>
+        <CardTitle level="h2">{pageTexts.formTitle}</CardTitle>
+        <CardDescription>{pageTexts.formDescription}</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>

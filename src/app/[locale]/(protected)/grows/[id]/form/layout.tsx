@@ -4,8 +4,8 @@ import React from "react";
 import PageHeader from "~/components/Layouts/page-header";
 
 export const metadata = {
-  title: "SEO Title",
-  description: "SEO Title",
+  title: "Grower's Plattform | Grows",
+  description: "Grower's Plattform | Grows",
 };
 
 export default function AddGrowLayout({

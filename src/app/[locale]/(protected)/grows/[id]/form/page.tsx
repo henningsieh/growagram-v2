@@ -1,5 +1,6 @@
 // src/app/[locale]/(protected)/grows/[id]/form/page.tsx:
 import { notFound } from "next/navigation";
+import FormContent from "~/components/Layouts/form-content";
 import GrowForm from "~/components/features/Grows/grow-form";
 import { HydrateClient, api } from "~/lib/trpc/server";
 import {
@@ -27,7 +28,9 @@ export default async function CreatePlantPage({
 
   return (
     <HydrateClient>
-      <GrowForm grow={grow satisfies GetOwnGrowType | undefined} />
+      <FormContent>
+        <GrowForm grow={grow satisfies GetOwnGrowType | undefined} />
+      </FormContent>
     </HydrateClient>
   );
 }
