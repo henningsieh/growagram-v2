@@ -1,5 +1,9 @@
 "use client";
 
+import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
+import { User } from "next-auth";
+import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { PaginationItemsPerPage } from "~/assets/constants";
@@ -7,6 +11,7 @@ import SpinningLoader from "~/components/Layouts/loader";
 import PageHeader from "~/components/Layouts/page-header";
 import ResponsiveGrid from "~/components/Layouts/responsive-grid";
 import { GrowCard } from "~/components/features/Grows/grow-card";
+import { Button } from "~/components/ui/button";
 import {
   Pagination,
   PaginationContent,
@@ -18,6 +23,13 @@ import {
 } from "~/components/ui/pagination";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
+import { GrowSortField, SortOrder } from "~/types/grow";
+
+// Define sorting options to match backend
+export const SORT_OPTIONS = [
+  { field: GrowSortField.NAME, label: "Name" },
+  { field: GrowSortField.CREATED_AT, label: "Created Date" },
+] as const;
 
 export default function MyGrowsPage() {
   const router = useRouter();
@@ -28,20 +40,27 @@ export default function MyGrowsPage() {
     parseInt(searchParams.get("page") || "1"),
   );
 
+  // State for sorting
+  const [sortField, setSortField] = useState<GrowSortField>(
+    GrowSortField.CREATED_AT,
+  );
+  const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.DESC);
+
   const utils = api.useUtils();
 
-  // Get the prefetched data from the cache
-  const prefetchedFromCache = utils.grow.getOwnGrows.getData({
+  const queryObject = {
     page: currentPage,
     limit: PaginationItemsPerPage.GROWS_PER_PAGE,
-  });
+    sortField,
+    sortOrder,
+  };
+
+  // Get the prefetched data from the cache
+  const prefetchedFromCache = utils.grow.getOwnGrows.getData(queryObject);
 
   // Load own grows from database
   const { data, isLoading, isFetching } = api.grow.getOwnGrows.useQuery(
-    {
-      page: currentPage,
-      limit: PaginationItemsPerPage.GROWS_PER_PAGE,
-    },
+    queryObject,
     {
       initialData: prefetchedFromCache,
     },
@@ -54,13 +73,61 @@ export default function MyGrowsPage() {
   const updateUrlParams = useCallback(() => {
     const params = new URLSearchParams();
     params.set("page", currentPage.toString());
+    params.set("sortField", sortField);
+    params.set("sortOrder", sortOrder);
     router.push(`?${params.toString()}`);
-  }, [currentPage, router]);
+  }, [currentPage, router, sortField, sortOrder]);
 
   // Sync state with URL
   useEffect(() => {
     updateUrlParams();
-  }, [currentPage, updateUrlParams]);
+  }, [currentPage, sortField, sortOrder, updateUrlParams]);
+
+  // Handle sorting changes
+  const handleSortChange = (field: GrowSortField) => {
+    // If clicking the same field, toggle sort order
+    if (field === sortField) {
+      setSortOrder(
+        sortOrder === SortOrder.DESC ? SortOrder.ASC : SortOrder.DESC,
+      );
+    } else {
+      // If changing field, default to descending
+      setSortField(field);
+      setSortOrder(
+        field === GrowSortField.NAME ? SortOrder.ASC : SortOrder.DESC,
+      );
+    }
+    // Reset to first page when sorting changes
+    setCurrentPage(1);
+  };
+
+  // Render sorting buttons
+  const renderSortButton = (
+    field: GrowSortField,
+    label: string,
+    index: number,
+  ) => {
+    return (
+      <Button
+        key={index}
+        variant={sortField === field ? "secondary" : "outline"}
+        size="sm"
+        onClick={() => handleSortChange(field)}
+        className="flex items-center gap-2 sm:w-[154px]"
+      >
+        {label}
+        {sortField === field ? (
+          sortOrder === "desc" ? (
+            <ArrowDown size={16} />
+          ) : (
+            <ArrowUp size={16} />
+          )
+        ) : (
+          <ArrowUpDown size={16} />
+        )}
+      </Button>
+    );
+  };
 
   // Handle page changes
   const handlePageChange = (page: number) => {
@@ -92,6 +159,10 @@ export default function MyGrowsPage() {
     }, []);
   };
 
+  const t = useTranslations("Grows");
+
+  const user = useSession().data?.user as User;
+
   return (
     <PageHeader
       title="My Grows"
@@ -99,9 +170,19 @@ export default function MyGrowsPage() {
       buttonLink="/grows/create"
       buttonLabel="Create New Grow"
     >
+      {/* Sorting controls */}
+      <div className="mb-4 flex justify-end gap-2">
+        <span className="mr-2 self-center text-sm font-medium">
+          {t("sort-label")}
+        </span>
+        {SORT_OPTIONS.map((option, index) =>
+          renderSortButton(option.field, option.label, index),
+        )}
+      </div>
+
       {!isFetching && userGrows.length === 0 ? (
         <p className="mt-8 text-center text-muted-foreground">
-          You haven&apos;t created any grow environments yet.
+          {t("no-grows-yet")}
         </p>
       ) : isLoading ? (
         <SpinningLoader className="text-secondary" />
@@ -109,7 +190,12 @@ export default function MyGrowsPage() {
         <>
           <ResponsiveGrid>
             {userGrows.map((grow) => (
-              <GrowCard key={grow.id} grow={grow} showUnassignButton={false} />
+              <GrowCard
+                key={grow.id}
+                grow={grow}
+                grower={user}
+                showUnassignButton={true}
+              />
             ))}
           </ResponsiveGrid>
 

@@ -9,8 +9,10 @@ import {
   MessageCircle,
   MinusSquare,
   Share,
+  Trash2,
   User2,
 } from "lucide-react";
+import { User } from "next-auth";
 import Image from "next/image";
 import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
@@ -20,21 +22,18 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
 } from "~/components/ui/card";
 import { Separator } from "~/components/ui/separator";
+import { Link } from "~/lib/i18n/routing";
 import { GetOwnGrowType } from "~/server/api/root";
 
 interface GrowCardProps {
   grow: GetOwnGrowType;
   onUnassignPlant?: (plantId: string) => void;
   showUnassignButton?: boolean;
-  grower?: {
-    name: string;
-    username: string;
-    email: string;
-    avatar?: string;
-  };
+  grower?: User;
   stats?: {
     comments: number;
     views: number;
@@ -48,9 +47,8 @@ export function GrowCard({
   showUnassignButton = true,
   grower = {
     name: "Django ElRey 🌱",
-    username: "django",
     email: "django@growagram.com",
-    avatar: "/images/XYUV-dwm_400x400.jpg",
+    image: "/images/XYUV-dwm_400x400.jpg",
   },
   stats = {
     comments: 0,
@@ -67,16 +65,14 @@ export function GrowCard({
         <div className="flex items-start justify-between">
           <div className="flex gap-3">
             <Avatar className="h-10 w-10">
-              <AvatarImage src={grower.avatar} />
+              <AvatarImage src={grower.image as string | undefined} />
               <AvatarFallback>
                 <User2 className="h-5 w-5" />
               </AvatarFallback>
             </Avatar>
             <div className="flex flex-col">
               <p className="text-sm font-semibold">{grower.name}</p>
-              <p className="text-sm text-muted-foreground">
-                @{grower.username}
-              </p>
+              <p className="text-sm text-muted-foreground">@{grower.name}</p>
             </div>
           </div>
           {/* You might want to add a type field to your grow schema or remove this */}
@@ -196,6 +192,17 @@ export function GrowCard({
           </Button>
         </div>
       </CardContent>
+      <Separator />
+      <CardFooter className="p-1">
+        <div className="flex w-full justify-between gap-1">
+          <Button variant={"destructive"} size={"sm"}>
+            <Trash2 />
+          </Button>
+          <Button asChild size={"sm"} className="w-full">
+            <Link href={`/grows/${grow.id}/form`}>edit</Link>
+          </Button>
+        </div>
+      </CardFooter>
     </Card>
   );
 }
