@@ -28,39 +28,38 @@ export default function AllImagesPage() {
   const searchParams = useSearchParams();
 
   // Initialize state from URL query params
-  const [currentPage, setCurrentPage] = useState(
-    parseInt(searchParams.get("page") || "1"),
-  );
-  const [sortField, setSortField] = useState<ImageSortField>(
-    (searchParams.get("sortField") as ImageSortField) ||
+  const [state, setState] = useState({
+    currentPage: parseInt(searchParams.get("page") || "1"),
+    sortField:
+      (searchParams.get("sortField") as ImageSortField) ||
       ImageSortField.UPLOAD_DATE,
-  );
-  const [sortOrder, setSortOrder] = useState<SortOrder>(
-    (searchParams.get("sortOrder") as SortOrder) || SortOrder.DESC,
-  );
-  const [filterNotConnected, setFilterNotConnected] = useState(
-    searchParams.get("filterNotConnected") === "true",
-  );
+    sortOrder: (searchParams.get("sortOrder") as SortOrder) || SortOrder.DESC,
+    filterNotConnected: searchParams.get("filterNotConnected") === "true",
+  });
+
+  const updateState = useCallback((newState: Partial<typeof state>) => {
+    setState((prev) => ({ ...prev, ...newState }));
+  }, []);
 
   const utils = api.useUtils();
 
   // Get the prefetched data from the cache
   const prefetchedFromCache = utils.image.getOwnImages.getData({
     limit: PaginationItemsPerPage.PHOTOS_PER_PAGE,
-    page: currentPage,
-    sortField,
-    sortOrder,
-    filterNotConnected,
+    page: state.currentPage,
+    sortField: state.sortField,
+    sortOrder: state.sortOrder,
+    filterNotConnected: state.filterNotConnected,
   } satisfies GetOwnImagesInput);
 
   // Load own images from database
   const { data, isLoading, isFetching } = api.image.getOwnImages.useQuery(
     {
       limit: PaginationItemsPerPage.PHOTOS_PER_PAGE,
-      page: currentPage,
-      sortField,
-      sortOrder,
-      filterNotConnected,
+      page: state.currentPage,
+      sortField: state.sortField,
+      sortOrder: state.sortOrder,
+      filterNotConnected: state.filterNotConnected,
     } satisfies GetOwnImagesInput,
     {
       initialData: prefetchedFromCache,
@@ -70,48 +69,37 @@ export default function AllImagesPage() {
   const userImages = data?.images ?? [];
   const totalPages = data?.totalPages ?? 1;
 
-  // Update URL parameters
-  const updateUrlParams = useCallback(() => {
+  useEffect(() => {
+    // Update URL parameters
     const params = new URLSearchParams();
-    params.set("page", currentPage.toString());
-    params.set("sortField", sortField);
-    params.set("sortOrder", sortOrder);
-    if (filterNotConnected) {
+    params.set("page", state.currentPage.toString());
+    params.set("sortField", state.sortField);
+    params.set("sortOrder", state.sortOrder);
+    if (state.filterNotConnected) {
       params.set("filterNotConnected", "true");
     } else {
       params.delete("filterNotConnected");
     }
     router.push(`?${params.toString()}`);
-  }, [currentPage, sortField, sortOrder, filterNotConnected, router]);
+  }, [state, router]);
 
-  // Sync state with URL
-  useEffect(() => {
-    updateUrlParams();
-  }, [currentPage, sortField, sortOrder, filterNotConnected, updateUrlParams]);
+  const memoizedSortChange = useCallback(
+    async (field: ImageSortField, order: SortOrder) => {
+      updateState({ sortField: field, sortOrder: order });
+    },
+    [updateState],
+  );
 
-  // Handle sort changes
-  const handleSortChange = async (field: ImageSortField, order: SortOrder) => {
-    // Update the state
-    setSortField(field);
-    setSortOrder(order);
-
-    // setCurrentPage(1);
-    // await refetch();
-  };
-
-  // Handle filter changes
-  const handleFilterChange = async (checked: boolean) => {
-    // First invalidate the cache for all queries
-    // await utils.image.getOwnImages.invalidate();
-    setFilterNotConnected(checked);
-
-    setCurrentPage(1);
-    // await refetch();
-  };
+  const memoizedFilterChange = useCallback(
+    (checked: boolean) => {
+      updateState({ filterNotConnected: checked, currentPage: 1 });
+    },
+    [updateState],
+  );
 
   // Handle page changes
   const handlePageChange = (page: number) => {
-    setCurrentPage(page);
+    updateState({ currentPage: page });
   };
 
   // Generate pagination numbers
@@ -123,8 +111,8 @@ export default function AllImagesPage() {
       if (
         i === 1 ||
         i === totalPages ||
-        (i >= currentPage - showAroundCurrent &&
-          i <= currentPage + showAroundCurrent)
+        (i >= state.currentPage - showAroundCurrent &&
+          i <= state.currentPage + showAroundCurrent)
       ) {
         pages.push(i);
       }
@@ -147,16 +135,16 @@ export default function AllImagesPage() {
       buttonLabel="Upload new Photos"
     >
       <ImagesSortFilterControlls
-        sortField={sortField}
-        sortOrder={sortOrder}
+        sortField={state.sortField}
+        sortOrder={state.sortOrder}
         isFetching={isFetching}
-        filterNotConnected={filterNotConnected}
-        onSortChange={handleSortChange}
-        onFilterChange={handleFilterChange}
+        filterNotConnected={state.filterNotConnected}
+        onSortChange={memoizedSortChange}
+        onFilterChange={memoizedFilterChange}
       />
       {!isFetching && userImages.length === 0 ? (
         <p className="mt-8 text-center text-muted-foreground">
-          {filterNotConnected
+          {state.filterNotConnected
             ? "No images without connected plants have been found."
             : "You haven't uploaded any images yet."}
         </p>
@@ -169,12 +157,12 @@ export default function AllImagesPage() {
               <PhotoCard
                 image={image}
                 key={image.id}
-                sortField={sortField}
+                sortField={state.sortField}
                 currentQuery={{
-                  page: currentPage,
-                  sortField,
-                  sortOrder,
-                  filterNotConnected,
+                  page: state.currentPage,
+                  sortField: state.sortField,
+                  sortOrder: state.sortOrder,
+                  filterNotConnected: state.filterNotConnected,
                 }}
               />
             ))}
@@ -185,8 +173,8 @@ export default function AllImagesPage() {
               <PaginationContent>
                 <PaginationItem>
                   <PaginationPrevious
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 1 || isFetching}
+                    onClick={() => handlePageChange(state.currentPage - 1)}
+                    disabled={state.currentPage === 1 || isFetching}
                   />
                 </PaginationItem>
 
@@ -199,7 +187,7 @@ export default function AllImagesPage() {
                     <PaginationItem key={page}>
                       <PaginationLink
                         onClick={() => handlePageChange(page as number)}
-                        isActive={currentPage === page}
+                        isActive={state.currentPage === page}
                         disabled={isFetching}
                       >
                         <p>{page}</p>
@@ -210,8 +198,8 @@ export default function AllImagesPage() {
 
                 <PaginationItem>
                   <PaginationNext
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === totalPages || isFetching}
+                    onClick={() => handlePageChange(state.currentPage + 1)}
+                    disabled={state.currentPage === totalPages || isFetching}
                   />
                 </PaginationItem>
               </PaginationContent>
