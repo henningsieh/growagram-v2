@@ -55,6 +55,7 @@ import {
   SidebarTrigger,
   useSidebar,
 } from "~/components/ui/sidebar";
+import { useIsMobile } from "~/hooks/use-mobile";
 import { Link } from "~/lib/i18n/routing";
 import { sidebarItems } from "~/lib/sidebar";
 import { handleSignOut } from "~/server/actions/authActions";
@@ -71,6 +72,7 @@ export default function ProtectedSidebar({
   children: React.ReactNode;
 }>) {
   const t = useTranslations();
+  const isMobile = useIsMobile();
 
   const user = useSession().data?.user;
 
@@ -214,7 +216,8 @@ export default function ProtectedSidebar({
                 {/* User Profile Dropdown Content */}
                 <DropdownMenuContent
                   className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-sm"
-                  side="right"
+                  // side="right"
+                  side={isMobile ? "bottom" : "right"}
                   align="end"
                   sideOffset={4}
                 >
