@@ -15,6 +15,7 @@ import {
 import { User } from "next-auth";
 import Image from "next/image";
 import { useState } from "react";
+import headerImagePlaceholder from "~/assets/landscape-placeholdersvg.svg";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
@@ -61,7 +62,7 @@ export function GrowCard({
 
   return (
     <Card className="overflow-hidden">
-      <CardHeader className="space-y-0 pb-4">
+      <CardHeader className="space-y-0 p-4">
         <div className="flex items-start justify-between">
           <div className="flex gap-3">
             <Avatar className="h-10 w-10">
@@ -91,18 +92,18 @@ export function GrowCard({
         onMouseLeave={() => setIsImageHovered(false)}
       >
         <Image
-          src="/images/IMG_20241020_102123.jpg?height=400&width=800"
+          src={headerImagePlaceholder}
           alt={grow.name}
+          fill
           className="object-cover transition-transform duration-300"
+          sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
           style={{
             transform: isImageHovered ? "scale(1.05)" : "scale(1)",
           }}
-          width={800}
-          height={400}
         />
       </div>
 
-      <CardContent className="space-y-4 pt-4">
+      <CardContent className="space-y-4 p-4">
         <div>
           <h3 className="text-xl font-bold">{grow.name}</h3>
           <CardDescription>
@@ -133,7 +134,7 @@ export function GrowCard({
                       <Flower2 strokeWidth={0.9} className="h-12 w-12" />
                       <div>
                         <p className="text-base font-semibold">
-                          {plant.strain && plant.strain.name}
+                          {plant.strain ? plant.strain.name : plant.name}
                         </p>
                         {/* You might want to add a growPhase to your plant schema */}
                         {/* <Badge variant="secondary" className="uppercase">
@@ -195,7 +196,7 @@ export function GrowCard({
       <Separator />
       <CardFooter className="p-1">
         <div className="flex w-full justify-between gap-1">
-          <Button variant={"destructive"} size={"sm"}>
+          <Button variant={"destructive"} size={"sm"} className="w-20">
             <Trash2 />
           </Button>
           <Button asChild size={"sm"} className="w-full">
