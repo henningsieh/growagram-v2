@@ -65,24 +65,28 @@ export const LikeButton: React.FC<LikeProps> = ({
   };
 
   return (
-    <div className={cn(className, `flex items-center space-x-2`)}>
+    <div className={cn(`flex items-center space-x-1`)}>
       <Button
         variant="ghost"
         size="icon"
         onClick={handleLikeToggle}
         disabled={toggleLikeMutation.isPending}
-        className={"hover:bg-transparent"}
+        className={cn(
+          className,
+          isLikeStatusLoading ? "cursor-wait" : "cursor-default",
+          "hover:bg-transparent",
+        )}
       >
         <Heart
           className={`${
             isLiked
               ? "fill-red-500 text-red-500"
               : "text-gray-500 hover:text-red-500"
-          } transition-colors duration-500 ease-in-out`}
+          } h-5 w-5 transition-colors duration-500 ease-in-out`}
           strokeWidth={1.5}
         />
       </Button>
-      <span className="text-sm text-muted-foreground">{likeCount}</span>
+      <span className={cn("text-base text-muted-foreground")}>{likeCount}</span>
     </div>
   );
 };

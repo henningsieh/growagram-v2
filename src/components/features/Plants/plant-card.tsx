@@ -16,6 +16,7 @@ import { useState } from "react";
 import headerImagePlaceholder from "~/assets/landscape-placeholdersvg.svg";
 import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
 import { LikeButton } from "~/components/atom/like";
+import { SocialCardFooter } from "~/components/atom/social-card-footer";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import {
@@ -242,14 +243,6 @@ export default function PlantCard({ plant }: PlantCardProps) {
               </div>
               <Progress value={progress} className="w-full" />
             </div>
-            <LikeButton
-              entityId={plant.id}
-              entityType="plant"
-              initialLiked={isLiked}
-              initialLikeCount={likeCount}
-              isLikeStatusLoading={isLoading}
-              className={isLoading ? "cursor-wait" : "cursor-default"}
-            />
           </div>
         </CardContent>
 
@@ -274,6 +267,17 @@ export default function PlantCard({ plant }: PlantCardProps) {
             </Link>
           </Button>
         </CardFooter>
+        <SocialCardFooter
+          entityId={plant.id}
+          entityType={"plant"}
+          initialLiked={isLiked}
+          isLikeStatusLoading={isLoading}
+          stats={{
+            comments: 0,
+            views: 0,
+            likes: likeCount,
+          }}
+        />
       </Card>
 
       {/* Delete Confirmation Dialog */}
