@@ -1,4 +1,3 @@
-// src/components/features/Photos/sort-filter-controlls.tsx:
 import {
   ArrowDownWideNarrow,
   ArrowUpNarrowWide,
@@ -6,7 +5,6 @@ import {
   Loader2,
   UploadCloud,
 } from "lucide-react";
-import { useCallback } from "react";
 import { Button } from "~/components/ui/button";
 import { Label } from "~/components/ui/label";
 import { Switch } from "~/components/ui/switch";
@@ -30,19 +28,16 @@ export default function ImagesSortFilterControlls({
   onSortChange,
   onFilterChange,
 }: ImagesSortFilterControllsProps) {
-  const toggleOrder = useCallback(
-    async (field: ImageSortField) => {
-      if (sortField === field) {
-        await onSortChange(
-          field,
-          sortOrder === SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC,
-        );
-      } else {
-        await onSortChange(field, SortOrder.DESC);
-      }
-    },
-    [sortField, sortOrder, onSortChange],
-  );
+  const toggleOrder = async (field: ImageSortField) => {
+    if (sortField === field) {
+      await onSortChange(
+        field,
+        sortOrder === SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC,
+      );
+    } else {
+      await onSortChange(field, SortOrder.DESC);
+    }
+  };
 
   return (
     <div className="mb-4 flex flex-col items-center justify-between gap-2 rounded-sm sm:flex-row">

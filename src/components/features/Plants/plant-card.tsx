@@ -15,6 +15,8 @@ import Image from "next/image";
 import { useState } from "react";
 import headerImagePlaceholder from "~/assets/landscape-placeholdersvg.svg";
 import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
+import { LikeButton } from "~/components/atom/like";
+import { SocialCardFooter } from "~/components/atom/social-card-footer";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import {
@@ -31,6 +33,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "~/components/ui/tooltip";
+import { useLikeStatus } from "~/hooks/use-likes";
 import { useToast } from "~/hooks/use-toast";
 import { Link, useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
@@ -49,6 +52,8 @@ export default function PlantCard({ plant }: PlantCardProps) {
 
   const [isImageHovered, setIsImageHovered] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+
+  const { isLiked, likeCount, isLoading } = useLikeStatus(plant.id, "plant");
 
   // Initialize delete mutation
   const deleteMutation = api.plant.deleteById.useMutation({
@@ -230,12 +235,14 @@ export default function PlantCard({ plant }: PlantCardProps) {
               </TooltipProvider>
             </div>
           </div>
-          <div className="mt-4">
-            <div className="mb-1 flex justify-between text-sm">
-              <span>Growth Progress</span>
-              <span>{progress}%</span>
+          <div className="mt-4 flex justify-between">
+            <div className="w-full">
+              <div className="mb-1 flex justify-between text-sm">
+                <span>Growth Progress</span>
+                <span>{progress}%</span>
+              </div>
+              <Progress value={progress} className="w-full" />
             </div>
-            <Progress value={progress} className="w-full" />
           </div>
         </CardContent>
 
@@ -260,6 +267,17 @@ export default function PlantCard({ plant }: PlantCardProps) {
             </Link>
           </Button>
         </CardFooter>
+        <SocialCardFooter
+          entityId={plant.id}
+          entityType={"plant"}
+          initialLiked={isLiked}
+          isLikeStatusLoading={isLoading}
+          stats={{
+            comments: 0,
+            views: 0,
+            likes: likeCount,
+          }}
+        />
       </Card>
 
       {/* Delete Confirmation Dialog */}

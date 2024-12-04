@@ -5,6 +5,7 @@ import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 
 import { plantRouter } from "./routers/plant";
 import { growRouter } from "./routers/grow";
+import { likeRouter } from "./routers/likes";
 
 
 /**
@@ -16,6 +17,7 @@ export const appRouter = createTRPCRouter({
   image: imageRouter,
   plant: plantRouter,
   grow: growRouter,
+  likes: likeRouter,
 });
 
 // export type definition of API
