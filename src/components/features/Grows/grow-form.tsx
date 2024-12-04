@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { PaginationItemsPerPage } from "~/assets/constants";
 import { Button } from "~/components/ui/button";
 import {
   Card,
@@ -231,7 +232,10 @@ export default function GrowForm({ grow }: { grow?: GetOwnGrowType }) {
         // Reset and prefetch queries
         await Promise.all([
           utils.grow.getOwnGrows.reset(),
-          utils.grow.getOwnGrows.prefetchInfinite({ limit: 12 }),
+          utils.grow.getOwnGrows.prefetch({
+            page: 1,
+            limit: PaginationItemsPerPage.GROWS_PER_PAGE,
+          }),
         ]);
 
         // Navigate to grows page

@@ -5,7 +5,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import {
   ChartColumn,
   Flower2,
-  FolderOutput,
   Heart,
   MessageCircle,
   MinusSquare,
@@ -14,7 +13,6 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
-import { Grow } from "~/components/features/Timeline/post";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
@@ -25,9 +23,10 @@ import {
   CardHeader,
 } from "~/components/ui/card";
 import { Separator } from "~/components/ui/separator";
+import { GetOwnGrowType } from "~/server/api/root";
 
 interface GrowCardProps {
-  grow: Grow;
+  grow: GetOwnGrowType;
   onUnassignPlant?: (plantId: string) => void;
   showUnassignButton?: boolean;
   grower?: {
@@ -80,12 +79,13 @@ export function GrowCard({
               </p>
             </div>
           </div>
-          <Badge
+          {/* You might want to add a type field to your grow schema or remove this */}
+          {/* <Badge
             variant={grow.type === "indoor" ? "default" : "secondary"}
             className="uppercase"
           >
             {grow.type}
-          </Badge>
+          </Badge> */}
         </div>
       </CardHeader>
 
@@ -111,7 +111,7 @@ export function GrowCard({
           <h3 className="text-xl font-bold">{grow.name}</h3>
           <CardDescription>
             <span className="block">
-              Started on {format(grow.startDate, "PPP")}
+              Started on {format(grow.createdAt, "PPP")}
             </span>
             {grow.updatedAt && (
               <span className="block">
@@ -137,11 +137,12 @@ export function GrowCard({
                       <Flower2 strokeWidth={0.9} className="h-12 w-12" />
                       <div>
                         <p className="text-base font-semibold">
-                          {plant.strain}
+                          {plant.strain && plant.strain.name}
                         </p>
-                        <Badge variant="secondary" className="uppercase">
+                        {/* You might want to add a growPhase to your plant schema */}
+                        {/* <Badge variant="secondary" className="uppercase">
                           {plant.growPhase}
-                        </Badge>
+                        </Badge> */}
                       </div>
                     </div>
                     {showUnassignButton && onUnassignPlant && (
