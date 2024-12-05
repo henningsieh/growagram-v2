@@ -133,7 +133,7 @@ export default function PlantForm({ plant }: { plant?: Plant }) {
                       label={t("planting-date")}
                       description="When did you plant the seed?"
                       icon={Sprout}
-                      iconClassName="text-planting"
+                      iconClassName="text-planted"
                     />
                   )}
                 />

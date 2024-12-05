@@ -190,12 +190,7 @@ export default function MyGrowsPage() {
         <>
           <ResponsiveGrid>
             {userGrows.map((grow) => (
-              <GrowCard
-                key={grow.id}
-                grow={grow}
-                grower={user}
-                showUnassignButton={true}
-              />
+              <GrowCard key={grow.id} grow={grow} grower={user} />
             ))}
           </ResponsiveGrid>
 

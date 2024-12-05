@@ -39,7 +39,7 @@ const config: Config = {
         "9xl": ["8rem", { lineHeight: "1" }],
       },
       colors: {
-        planting: "hsl(var(--planting))",
+        planted: "hsl(var(--planted))",
         seedling: "hsl(var(--seedling))",
         vegetation: "hsl(var(--vegetation))",
         flowering: "hsl(var(--flowering))",

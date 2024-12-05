@@ -125,13 +125,13 @@ export default function PlantCard({ plant }: PlantCardProps) {
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger className="flex cursor-default items-center font-mono text-sm font-semibold tracking-tighter">
-                    <Nut className="mr-2 h-4 w-4 text-planting" />
+                    <Nut className="text-planted mr-2 h-4 w-4" />
                     {formatDate(plant.startDate, locale)}
                   </TooltipTrigger>
                   <TooltipContent side="right" className="bg-transparent">
                     <Badge
                       variant={"outline"}
-                      className="whitespace-nowrap border-0 bg-planting text-sm"
+                      className="bg-planted whitespace-nowrap border-0 text-sm"
                     >
                       {t("planting-date")}
                     </Badge>
