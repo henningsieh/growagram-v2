@@ -31,8 +31,6 @@ import { GrowPlantCard } from "./grow-plant-card";
 
 interface GrowCardProps {
   grow: GetOwnGrowType;
-
-  grower?: User;
   stats?: {
     comments: number;
     views: number;
@@ -42,11 +40,6 @@ interface GrowCardProps {
 
 export function GrowCard({
   grow,
-  grower = {
-    name: "Django ElRey 🌱",
-    email: "django@growagram.com",
-    image: "/images/XYUV-dwm_400x400.jpg",
-  },
   stats = {
     comments: 0,
     views: 0,
@@ -62,14 +55,16 @@ export function GrowCard({
         <div className="flex items-start justify-between">
           <div className="flex gap-3">
             <Avatar className="h-10 w-10">
-              <AvatarImage src={grower.image as string | undefined} />
+              <AvatarImage src={grow.owner.image as string | undefined} />
               <AvatarFallback>
                 <User2 className="h-5 w-5" />
               </AvatarFallback>
             </Avatar>
             <div className="flex flex-col">
-              <p className="text-sm font-semibold">{grower.name}</p>
-              <p className="text-sm text-muted-foreground">@{grower.name}</p>
+              <p className="text-sm font-semibold">{grow.owner.name}</p>
+              <p className="text-sm text-muted-foreground">
+                @{grow.owner.name}
+              </p>
             </div>
           </div>
           {/* You might want to add a type field to your grow schema or remove this */}

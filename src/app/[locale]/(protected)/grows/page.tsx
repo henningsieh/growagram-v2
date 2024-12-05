@@ -161,8 +161,6 @@ export default function MyGrowsPage() {
 
   const t = useTranslations("Grows");
 
-  const user = useSession().data?.user as User;
-
   return (
     <PageHeader
       title="My Grows"
@@ -190,7 +188,7 @@ export default function MyGrowsPage() {
         <>
           <ResponsiveGrid>
             {userGrows.map((grow) => (
-              <GrowCard key={grow.id} grow={grow} grower={user} />
+              <GrowCard key={grow.id} grow={grow} />
             ))}
           </ResponsiveGrid>
 

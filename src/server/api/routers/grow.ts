@@ -59,6 +59,7 @@ export const growRouter = createTRPCRouter({
         limit: limit,
         offset: offset,
         with: {
+          owner: true,
           plants: {
             with: {
               strain: {
