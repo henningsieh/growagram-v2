@@ -3,8 +3,10 @@
 import { format } from "date-fns";
 import { AnimatePresence, motion } from "framer-motion";
 import { Calendar1, Dna, FlaskConical, Leaf } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
-import { Card, CardContent } from "~/components/ui/card";
+import { Button } from "~/components/ui/button";
+import { Card, CardContent, CardFooter } from "~/components/ui/card";
 import { Progress } from "~/components/ui/progress";
 import {
   Tooltip,
@@ -13,7 +15,12 @@ import {
   TooltipTrigger,
 } from "~/components/ui/tooltip";
 import { useIsMobile } from "~/hooks/use-mobile";
-import { determineGrowthStage } from "~/lib/utils";
+import { Link } from "~/lib/i18n/routing";
+import {
+  DateFormatOptions,
+  determineGrowthStage,
+  formatDate,
+} from "~/lib/utils";
 import { GetOwnPlantType } from "~/server/api/root";
 
 interface PlantCardProps {
@@ -37,6 +44,9 @@ export function GrowPlantCard({ plant }: PlantCardProps) {
   const { name: stageName, color } = growthStages[growthStageIndex];
   const progress = ((growthStageIndex + 1) / growthStages.length) * 100;
 
+  const locale = useLocale();
+  const t = useTranslations("Grows");
+
   return (
     <TooltipProvider>
       <Card
@@ -54,7 +64,9 @@ export function GrowPlantCard({ plant }: PlantCardProps) {
                 <div className={`h-3 w-3 rounded-full bg-${color}`} />
               </TooltipTrigger>
               <TooltipContent>
-                <p>Growth Stage: {stageName}</p>
+                <p>
+                  {t("growth-stage")}: {stageName}
+                </p>
               </TooltipContent>
             </Tooltip>
           </div>
@@ -71,7 +83,9 @@ export function GrowPlantCard({ plant }: PlantCardProps) {
                   <TooltipTrigger className="flex items-center gap-2">
                     <Calendar1 className="h-4 w-4 text-gray-500" />
                     <span className="text-sm">
-                      {format(plant.startDate, "MMM d, yyyy")}
+                      {formatDate(plant.startDate, locale, {
+                        // weekday: "short",
+                      } as DateFormatOptions)}
                     </span>
                   </TooltipTrigger>
                   <TooltipContent>
@@ -117,6 +131,13 @@ export function GrowPlantCard({ plant }: PlantCardProps) {
             </motion.div>
           </AnimatePresence>
         </CardContent>
+        <CardFooter className="flex w-full justify-end p-0">
+          <Link href={`/plants/${plant.id}/edit`}>
+            <Button size={"sm"} variant={"link"}>
+              edit plant
+            </Button>
+          </Link>
+        </CardFooter>
       </Card>
     </TooltipProvider>
   );

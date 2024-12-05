@@ -6,7 +6,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-type DateFormatOptions = {
+export type DateFormatOptions = {
   month?: "long" | "short" | "2-digit";
   weekday?: "long" | "short";
   includeYear?: boolean;

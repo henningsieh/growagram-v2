@@ -11,6 +11,7 @@ import {
   User2,
 } from "lucide-react";
 import { User } from "next-auth";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useState } from "react";
 import headerImagePlaceholder from "~/assets/landscape-placeholdersvg.svg";
@@ -48,6 +49,8 @@ export function GrowCard({
 }: GrowCardProps) {
   const [isImageHovered, setIsImageHovered] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
+
+  const t = useTranslations("Grows");
 
   return (
     <Card className="flex flex-col overflow-hidden">
@@ -125,7 +128,7 @@ export function GrowCard({
           </AnimatePresence>
           {grow.plants.length === 0 && (
             <div className="py-8 text-center text-muted-foreground">
-              No plants assigned yet
+              {t("no-plants-found")}
             </div>
           )}
         </div>
@@ -166,7 +169,7 @@ export function GrowCard({
             <Trash2 />
           </Button>
           <Button asChild size={"sm"} className="w-full">
-            <Link href={`/grows/${grow.id}/form`}>edit</Link>
+            <Link href={`/grows/${grow.id}/form`}>Edit Grow</Link>
           </Button>
         </div>
       </CardFooter>

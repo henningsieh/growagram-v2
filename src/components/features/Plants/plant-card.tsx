@@ -238,7 +238,7 @@ export default function PlantCard({ plant }: PlantCardProps) {
           <div className="mt-4 flex justify-between">
             <div className="w-full">
               <div className="mb-1 flex justify-between text-sm">
-                <span>Growth Progress</span>
+                <span>{t("growth-progress")}</span>
                 <span>{progress}%</span>
               </div>
               <Progress value={progress} className="w-full" />
@@ -261,9 +261,9 @@ export default function PlantCard({ plant }: PlantCardProps) {
             )}
           </Button>
           <Button asChild size={"sm"} variant="primary" className="w-full">
-            <Link href={`/plants/edit/${plant.id}`}>
+            <Link href={`/plants/${plant.id}/edit`}>
               <Edit size={20} />
-              Edit Plant
+              {t("edit-plant-button-label")}
             </Link>
           </Button>
         </CardFooter>
