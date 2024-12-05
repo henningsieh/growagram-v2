@@ -2,8 +2,9 @@
 
 // Grouped Constants
 export const PaginationItemsPerPage = {
-  PHOTOS_PER_PAGE: 12,
-  PLANTS_PER_PAGE: 12,
+  PHOTOS_PER_PAGE: 4,
+  PLANTS_PER_PAGE: 4,
+  GROWS_PER_PAGE: 4,
 };
 
 // Example of other constant groups

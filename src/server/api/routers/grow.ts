@@ -60,16 +60,26 @@ export const growRouter = createTRPCRouter({
         offset: offset,
         with: {
           plants: {
-            columns: {
-              id: true,
-              name: true,
-              startDate: true,
-              harvestDate: true,
-            },
             with: {
               strain: {
                 columns: {
+                  id: true,
                   name: true,
+                  thcContent: true,
+                  cbdContent: true,
+                },
+                with: { breeder: { columns: { id: true, name: true } } },
+              },
+              headerImage: { columns: { id: true, imageUrl: true } },
+              plantImages: {
+                columns: { imageId: false, plantId: false },
+                with: {
+                  image: {
+                    columns: {
+                      id: true,
+                      imageUrl: true,
+                    },
+                  },
                 },
               },
             },

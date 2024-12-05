@@ -1,20 +1,23 @@
 "use client";
 
 import { format } from "date-fns";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, HTMLMotionProps, motion } from "framer-motion";
 import {
+  Calendar,
   ChartColumn,
+  Dna,
+  FlaskConical,
   Flower2,
   Heart,
   MessageCircle,
-  MinusSquare,
   Share,
   Trash2,
   User2,
 } from "lucide-react";
+import { Droplet, Leaf, Sun, Thermometer } from "lucide-react";
 import { User } from "next-auth";
 import Image from "next/image";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import headerImagePlaceholder from "~/assets/landscape-placeholdersvg.svg";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Badge } from "~/components/ui/badge";
@@ -26,9 +29,16 @@ import {
   CardFooter,
   CardHeader,
 } from "~/components/ui/card";
+import { Progress } from "~/components/ui/progress";
 import { Separator } from "~/components/ui/separator";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "~/components/ui/tooltip";
 import { Link } from "~/lib/i18n/routing";
-import { GetOwnGrowType } from "~/server/api/root";
+import { GetOwnGrowType, GetOwnPlantType } from "~/server/api/root";
 
 interface GrowCardProps {
   grow: GetOwnGrowType;
@@ -123,37 +133,12 @@ export function GrowCard({
             {grow.plants.map((plant) => (
               <motion.div
                 key={plant.id}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 20 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.3 }}
               >
-                <Card className="border-primary/40 bg-card text-card-foreground shadow-sm">
-                  <CardContent className="flex items-center justify-between p-4">
-                    <div className="flex items-center gap-3">
-                      <Flower2 strokeWidth={0.9} className="h-12 w-12" />
-                      <div>
-                        <p className="text-base font-semibold">
-                          {plant.strain ? plant.strain.name : plant.name}
-                        </p>
-                        {/* You might want to add a growPhase to your plant schema */}
-                        {/* <Badge variant="secondary" className="uppercase">
-                          {plant.growPhase}
-                        </Badge> */}
-                      </div>
-                    </div>
-                    {showUnassignButton && onUnassignPlant && (
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => onUnassignPlant(plant.id)}
-                      >
-                        <MinusSquare strokeWidth={3} size={14} />
-                        Unassign
-                      </Button>
-                    )}
-                  </CardContent>
-                </Card>
+                <PlantCard plant={plant} />
               </motion.div>
             ))}
           </AnimatePresence>
@@ -205,5 +190,118 @@ export function GrowCard({
         </div>
       </CardFooter>
     </Card>
+  );
+}
+
+interface PlantCardProps {
+  plant: GetOwnPlantType;
+}
+
+const growthStages = [
+  { name: "seedling", color: "bg-blue-500" },
+  { name: "vegetation", color: "bg-green-500" },
+  { name: "flowering", color: "bg-purple-500" },
+  { name: "harvest", color: "bg-yellow-500" },
+  { name: "curing", color: "bg-orange-500" },
+];
+
+function determineGrowthStage(plant: GetOwnPlantType) {
+  const now = new Date();
+  if (plant.curingPhaseStart && now >= plant.curingPhaseStart) return 4;
+  if (plant.harvestDate && now >= plant.harvestDate) return 3;
+  if (plant.floweringPhaseStart && now >= plant.floweringPhaseStart) return 2;
+  if (plant.vegetationPhaseStart && now >= plant.vegetationPhaseStart) return 1;
+  if (plant.seedlingPhaseStart && now >= plant.seedlingPhaseStart) return 0;
+  return 0; // Default to seedling if no dates are set
+}
+
+export function PlantCard({ plant }: PlantCardProps) {
+  const [isHovered, setIsHovered] = useState(false);
+
+  const growthStageIndex = useMemo(() => determineGrowthStage(plant), [plant]);
+  const { name: stageName, color } = growthStages[growthStageIndex];
+  const progress = ((growthStageIndex + 1) / growthStages.length) * 100;
+
+  return (
+    <TooltipProvider>
+      <Card
+        className="overflow-hidden transition-all hover:shadow-lg"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        <CardContent className="p-4">
+          <div className="mb-2 flex items-center justify-between">
+            <h4 className="text-lg font-semibold">
+              {plant.strain ? plant.strain.name : plant.name}
+            </h4>
+            <Tooltip>
+              <TooltipTrigger>
+                <div className={`h-3 w-3 rounded-full ${color}`} />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Growth Stage: {stageName}</p>
+              </TooltipContent>
+            </Tooltip>
+          </div>
+          <Progress value={progress} className="mb-4 h-2" />
+
+          <AnimatePresence>
+            <motion.div
+              // className="grid grid-cols-2 gap-2"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: isHovered ? 1 : 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <Tooltip>
+                <TooltipTrigger className="flex items-center gap-2">
+                  <Calendar className="h-4 w-4 text-gray-500" />
+                  <span className="text-sm">
+                    {format(plant.startDate, "MMM d, yyyy")}
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Start Date</p>
+                </TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger className="flex items-center gap-2">
+                  <Leaf className="h-4 w-4 text-green-500" />
+                  <span className="text-sm">{stageName}</span>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Current Growth Stage</p>
+                </TooltipContent>
+              </Tooltip>
+              {plant.strain && (
+                <>
+                  <Tooltip>
+                    <TooltipTrigger className="flex items-center gap-2">
+                      <FlaskConical className="h-4 w-4 text-purple-500" />
+                      <span className="text-sm">
+                        THC: {plant.strain.thcContent ?? "N/A"}%
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>THC Content</p>
+                    </TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger className="flex items-center gap-2">
+                      <Dna className="h-4 w-4 text-blue-500" />
+                      <span className="text-sm">
+                        {plant.strain.breeder.name}
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Breeder</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </>
+              )}
+            </motion.div>
+          </AnimatePresence>
+        </CardContent>
+      </Card>
+    </TooltipProvider>
   );
 }
