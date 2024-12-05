@@ -6,9 +6,9 @@ import { GetPlantByIdInput, GetPlantByIdType } from "~/server/api/root";
 export default async function EditPlantPage({
   params,
 }: {
-  params: Promise<GetPlantByIdInput>;
+  params: GetPlantByIdInput;
 }) {
-  const { id: plantId } = await params;
+  const plantId = params.id;
 
   const plant = (await api.plant.getById({
     id: plantId,

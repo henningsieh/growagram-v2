@@ -43,7 +43,7 @@
         },
         {
           "title": " Create New Plant",
-          "url": "/plants/add"
+          "url": "/plants/new/form"
         }
       ]
     },

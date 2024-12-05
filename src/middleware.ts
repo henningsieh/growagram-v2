@@ -4,21 +4,13 @@ import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
 import authConfig from "~/lib/auth/auth.config";
 
+import { PROTECTED_PATHS } from "./assets/constants";
 import { routing } from "./lib/i18n/routing";
 
 // Initialize NextAuth's middleware (edge-compatible)
 const { auth } = NextAuth(authConfig);
 
 const languages = routing.locales;
-
-// Define base protected paths
-const PROTECTED_PATHS = [
-  "/dashboard",
-  "/grows",
-  "/plants",
-  "/photos",
-  "/inventory",
-];
 
 // Helper function to check if a path should be protected
 function isPathProtected(path: string): boolean {

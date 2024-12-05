@@ -2,7 +2,7 @@
 import { notFound } from "next/navigation";
 import FormContent from "~/components/Layouts/form-content";
 import GrowForm from "~/components/features/Grows/grow-form";
-import { HydrateClient, api } from "~/lib/trpc/server";
+import { api } from "~/lib/trpc/server";
 import {
   GetGrowByIdInput,
   GetOwnGrowType,
@@ -28,10 +28,8 @@ export default async function CreatePlantPage({
   if (growId !== "new" && grow === undefined) notFound();
 
   return (
-    <HydrateClient>
-      <FormContent>
-        <GrowForm grow={grow} />
-      </FormContent>
-    </HydrateClient>
+    <FormContent>
+      <GrowForm grow={grow} />
+    </FormContent>
   );
 }

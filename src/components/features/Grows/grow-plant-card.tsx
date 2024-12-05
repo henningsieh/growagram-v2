@@ -1,6 +1,5 @@
 "use client";
 
-import { format } from "date-fns";
 import { AnimatePresence, motion } from "framer-motion";
 import { Calendar1, Dna, FlaskConical, Leaf } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
@@ -50,7 +49,7 @@ export function GrowPlantCard({ plant }: PlantCardProps) {
   return (
     <TooltipProvider>
       <Card
-        className="overflow-hidden transition-all hover:shadow-lg"
+        className="overflow-hidden p-0 transition-all hover:shadow-lg"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
@@ -85,6 +84,7 @@ export function GrowPlantCard({ plant }: PlantCardProps) {
                     <span className="text-sm">
                       {formatDate(plant.startDate, locale, {
                         // weekday: "short",
+                        includeYear: false,
                       } as DateFormatOptions)}
                     </span>
                   </TooltipTrigger>
@@ -132,7 +132,7 @@ export function GrowPlantCard({ plant }: PlantCardProps) {
           </AnimatePresence>
         </CardContent>
         <CardFooter className="flex w-full justify-end p-0">
-          <Link href={`/plants/${plant.id}/edit`}>
+          <Link href={`/plants/${plant.id}/form`}>
             <Button size={"sm"} variant={"link"}>
               edit plant
             </Button>

@@ -103,9 +103,30 @@ export const growRouter = createTRPCRouter({
       return await ctx.db.query.grows.findFirst({
         where: eq(grows.id, input.id),
         with: {
+          owner: true,
           plants: {
             with: {
-              strain: true,
+              strain: {
+                columns: {
+                  id: true,
+                  name: true,
+                  thcContent: true,
+                  cbdContent: true,
+                },
+                with: { breeder: { columns: { id: true, name: true } } },
+              },
+              headerImage: { columns: { id: true, imageUrl: true } },
+              plantImages: {
+                columns: { imageId: false, plantId: false },
+                with: {
+                  image: {
+                    columns: {
+                      id: true,
+                      imageUrl: true,
+                    },
+                  },
+                },
+              },
             },
           },
         },

@@ -13,7 +13,9 @@ export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
   }, []);
 
   if (!mounted) {
-    return <>{children}</>;
+    // return <>{children}</>;
+    // return <>LOADING</>;
+    return null; // no flicker!
   }
 
   return <NextThemesProvider {...props}>{children}</NextThemesProvider>;

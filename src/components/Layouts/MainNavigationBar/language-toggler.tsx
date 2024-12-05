@@ -1,11 +1,11 @@
 "use client";
 
+// src/components/Layouts/MainNavigationBar/language-toggler.tsx:
 import { LanguagesIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import DEFlag from "~/assets/flags/germany-svgrepo-com.svg";
-import USFlag from "~/assets/flags/united-states-svgrepo-com.svg";
+import { APP_SETTINGS } from "~/assets/constants";
 import { Button } from "~/components/ui/button";
 import {
   DropdownMenu,
@@ -21,34 +21,18 @@ export function LanguageToggle() {
   const params = useParams();
   const t = useTranslations("LanguageToggle");
 
-  const languages = [
-    {
-      code: "de",
-      label: "Deutsch",
-      flag: (
-        <Image
-          width={24}
-          height={20}
-          className="h-5 w-6"
-          src={DEFlag}
-          alt="German flag"
-        />
-      ),
-    },
-    {
-      code: "en",
-      label: "English",
-      flag: (
-        <Image
-          width={24}
-          height={20}
-          className="h-5 w-6"
-          src={USFlag}
-          alt="UK flag"
-        />
-      ),
-    },
-  ];
+  const languages = APP_SETTINGS.LANGUAGES.map((language) => ({
+    ...language,
+    flag: (
+      <Image
+        width={24}
+        height={20}
+        className="h-5 w-6"
+        src={language.flag}
+        alt={`${language.label} flag`}
+      />
+    ),
+  }));
 
   const handleLanguageChange = (newLocale: string) => {
     const newPath = { pathname, params };

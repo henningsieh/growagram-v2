@@ -5,6 +5,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import localFont from "next/font/local";
 import NextTopLoader from "nextjs-toploader";
+import { APP_SETTINGS } from "~/assets/constants";
 import { MainNavigationBar } from "~/components/Layouts/MainNavigationBar";
 import { ThemeProvider } from "~/components/Layouts/theme-provider";
 import { Toaster } from "~/components/Layouts/toaster";
@@ -54,13 +55,17 @@ export default async function RootLayout(props: LayoutProps) {
   }
 
   return (
-    <html lang={locale} suppressHydrationWarning className="dark">
+    <html
+      lang={locale}
+      suppressHydrationWarning
+      className={APP_SETTINGS.DEFAULT_THEME === "dark" ? "dark" : ""}
+    >
       <body
         className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-background font-sans antialiased`}
       >
         <ThemeProvider
           attribute="class"
-          defaultTheme="dark"
+          defaultTheme={APP_SETTINGS.DEFAULT_THEME}
           enableSystem
           disableTransitionOnChange={false}
         >

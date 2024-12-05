@@ -72,7 +72,7 @@ export default function PlantsPage() {
     <PageHeader
       title={t("title")}
       subtitle={t("subtitle")}
-      buttonLink="/plants/add"
+      buttonLink="/plants/new/form"
       buttonLabel={t("linkUploadButtonLabel")}
     >
       {/* Handling case if user hasn't uploaded any plants */}

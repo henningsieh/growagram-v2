@@ -165,7 +165,7 @@ export default function MyGrowsPage() {
     <PageHeader
       title="My Grows"
       subtitle="View and manage your current grows"
-      buttonLink="/grows/create"
+      buttonLink="/grows/new/form"
       buttonLabel="Create New Grow"
     >
       {/* Sorting controls */}

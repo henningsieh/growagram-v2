@@ -261,7 +261,7 @@ export default function PlantCard({ plant }: PlantCardProps) {
             )}
           </Button>
           <Button asChild size={"sm"} variant="primary" className="w-full">
-            <Link href={`/plants/${plant.id}/edit`}>
+            <Link href={`/plants/${plant.id}/form`}>
               <Edit size={20} />
               {t("edit-plant-button-label")}
             </Link>

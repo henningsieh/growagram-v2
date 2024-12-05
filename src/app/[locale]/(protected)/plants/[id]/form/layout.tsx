@@ -1,5 +1,6 @@
 import { useTranslations } from "next-intl";
 import PageHeader from "~/components/Layouts/page-header";
+import { GetPlantByIdInput } from "~/server/api/root";
 
 export const metadata = {
   title: "Grower's Plattform | Edit Plant",
@@ -8,15 +9,27 @@ export const metadata = {
 
 export default function PlantsLayout({
   children,
+  params,
 }: {
   children: React.ReactNode;
+  params: GetPlantByIdInput;
 }) {
+  const plantId = params.id;
+
   const t = useTranslations("Plants");
 
   return (
     <PageHeader
-      title={t("form-pagerheader-edit-title")}
-      subtitle={t("form-pagerheader-edit-subtitle")}
+      title={
+        plantId !== "new"
+          ? t("form-pagerheader-edit-title")
+          : t("form-pagerheader-new-title")
+      }
+      subtitle={
+        plantId !== "new"
+          ? t("form-pagerheader-edit-subtitle")
+          : t("form-pagerheader-new-subtitle")
+      }
       buttonLabel={t("form-pageheader-backButtonLabel")}
       buttonLink={"/plants"}
     >

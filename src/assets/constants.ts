@@ -1,20 +1,53 @@
 // src/assets/constants.ts:
+import DEFlag from "~/assets/flags/germany-svgrepo-com.svg";
+import USFlag from "~/assets/flags/united-states-svgrepo-com.svg";
 
-// Grouped Constants
 export const PaginationItemsPerPage = {
-  PHOTOS_PER_PAGE: 4,
-  PLANTS_PER_PAGE: 4,
-  GROWS_PER_PAGE: 4,
+  PHOTOS_PER_PAGE: 2,
+  PLANTS_PER_PAGE: 2,
+  GROWS_PER_PAGE: 3,
 };
 
-// Example of other constant groups
-export const APIEndpoints = {
-  BASE_URL: "https://api.example.com",
-  PHOTOS_ENDPOINT: "/photos",
-  PLANTS_ENDPOINT: "/plants",
+const modulePaths = {
+  DASHBOARD: {
+    name: "Dashboard",
+    path: "/dashboard",
+    protected: true,
+  },
+  GROWS: {
+    name: "Grows",
+    path: "/grows",
+    protected: true,
+  },
+  PLANTS: {
+    name: "Plants",
+    path: "/plants",
+    protected: true,
+  },
+  PHOTOS: {
+    name: "Photos",
+    path: "/photos",
+    protected: true,
+  },
 };
 
-export const AppSettings = {
-  THEME: "dark",
-  DEFAULT_LANGUAGE: "de",
+export const PROTECTED_PATHS = Object.values(modulePaths)
+  .filter((module) => module.protected)
+  .map((module) => module.path);
+
+export const APP_SETTINGS = {
+  DEFAULT_THEME: "light",
+  DEFAULT_LOCALE: "de" as const,
+  LANGUAGES: [
+    {
+      code: "de",
+      label: "Deutsch",
+      flag: DEFlag,
+    },
+    {
+      code: "en",
+      label: "English",
+      flag: USFlag,
+    },
+  ] as const, // Ensures immutability and type inference
 };
