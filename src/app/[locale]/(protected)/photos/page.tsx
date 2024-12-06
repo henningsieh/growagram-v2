@@ -2,40 +2,28 @@
 
 // src/app/[locale]/(protected)/photos/page.tsx:
 import { useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { PaginationItemsPerPage } from "~/assets/constants";
+import InfiniteScrollLoader from "~/components/Layouts/InfiniteScrollLoader";
 import SpinningLoader from "~/components/Layouts/loader";
 import PageHeader from "~/components/Layouts/page-header";
 import ResponsiveGrid from "~/components/Layouts/responsive-grid";
 import PhotoCard from "~/components/features/Photos/photo-card";
 import ImagesSortFilterControlls from "~/components/features/Photos/sort-filter-controlls";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "~/components/ui/pagination";
-import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import {
   GetOwnImageType,
   GetOwnImagesInput,
   GetOwnImagesOutput,
+  GetOwnImagesType,
 } from "~/server/api/root";
 import { ImageSortField, ImageSortOrder } from "~/types/image";
 
 export default function AllImagesPage() {
   const searchParams = useSearchParams();
-  const router = useRouter();
+  // const router = useRouter();
   const utils = api.useUtils();
 
-  // Initialize state from URL query params
-  const [cursor, setCurrentPage] = useState(
-    parseInt(searchParams.get("page") || "1"),
-  );
   const [sortField, setSortField] = useState<ImageSortField>(
     (searchParams.get("sortField") as ImageSortField) ||
       ImageSortField.UPLOAD_DATE,
@@ -48,51 +36,63 @@ export default function AllImagesPage() {
   );
 
   // Get the prefetched data from the cache
-  const prefetchedImagesFromCache = utils.image.getOwnImages.getData({
+  const initialData = utils.image.getOwnImages.getInfiniteData({
+    // the input must match the server-side `prefetchInfinite`
     limit: PaginationItemsPerPage.PHOTOS_PER_PAGE,
-    cursor,
     sortField,
     sortOrder,
     filterNotConnected,
   } satisfies GetOwnImagesInput);
 
   // Load own images from database
-  const { data, isLoading, isFetching } = api.image.getOwnImages.useQuery(
+  const {
+    data,
+    isLoading,
+    isFetching,
+    hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage,
+  } = api.image.getOwnImages.useInfiniteQuery(
     {
       limit: PaginationItemsPerPage.PHOTOS_PER_PAGE,
-      cursor,
       sortField,
       sortOrder,
       filterNotConnected,
     } satisfies GetOwnImagesInput,
     {
-      initialData: prefetchedImagesFromCache,
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
+      initialData,
     },
   );
 
-  const userImages =
-    (data satisfies GetOwnImagesOutput | undefined)?.images ?? [];
-  const totalPages =
-    (data satisfies GetOwnImagesOutput | undefined)?.total ?? 1;
+  const photos: GetOwnImagesType =
+    data?.pages?.flatMap((page) => page.images satisfies GetOwnImagesType) ??
+    [];
 
-  // Function to update URL query params
-  const updateUrlParams = useCallback(() => {
-    const params = new URLSearchParams();
-    params.set("page", cursor.toString());
-    params.set("sortField", sortField);
-    params.set("sortOrder", sortOrder);
-    if (filterNotConnected) {
-      params.set("filterNotConnected", "true");
-    } else {
-      params.delete("filterNotConnected");
-    }
-    router.push(`?${params.toString()}`);
-  }, [cursor, sortField, sortOrder, filterNotConnected, router]);
+  // Intersection Observer callback
+  const onIntersect = useCallback(
+    (entries: IntersectionObserverEntry[]) => {
+      const firstEntry = entries[0];
+      if (firstEntry.isIntersecting && hasNextPage && !isFetchingNextPage) {
+        void fetchNextPage();
+      }
+    },
+    [fetchNextPage, hasNextPage, isFetchingNextPage],
+  );
 
-  // Sync state with URL query params
+  // Set up intersection observer
+  const loadingRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    updateUrlParams();
-  }, [cursor, sortField, sortOrder, filterNotConnected, updateUrlParams]);
+    const observer = new IntersectionObserver(onIntersect, {
+      root: null, // Use viewport as root
+      rootMargin: "0px",
+      threshold: 0.01, // Trigger when even 10% of the element is visible
+    });
+    if (loadingRef.current) {
+      observer.observe(loadingRef.current);
+    }
+    return () => observer.disconnect();
+  }, [onIntersect]);
 
   // Handle sort changes
   const handleSortChange = async (
@@ -102,9 +102,6 @@ export default function AllImagesPage() {
     // Update the state
     setSortField(field);
     setSortOrder(order);
-
-    // setCurrentPage(1);
-    // await refetch();
   };
 
   // Handle filter changes
@@ -113,37 +110,7 @@ export default function AllImagesPage() {
     // await utils.image.getOwnImages.invalidate();
     setFilterNotConnected(checked);
 
-    setCurrentPage(1);
     // await refetch();
-  };
-
-  // Handle page changes
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
-
-  // Generate pagination numbers
-  const getPaginationNumbers = () => {
-    const pages: number[] = [];
-    const showAroundCurrent = 1;
-
-    for (let i = 1; i <= totalPages; i++) {
-      if (
-        i === 1 ||
-        i === totalPages ||
-        (i >= cursor - showAroundCurrent && i <= cursor + showAroundCurrent)
-      ) {
-        pages.push(i);
-      }
-    }
-
-    return pages.reduce((acc: (number | string)[], page, index, array) => {
-      if (index > 0 && array[index - 1] !== page - 1) {
-        acc.push("...");
-      }
-      acc.push(page);
-      return acc;
-    }, []);
   };
 
   return (
@@ -161,7 +128,7 @@ export default function AllImagesPage() {
         onSortChange={handleSortChange}
         onFilterChange={handleFilterChange}
       />
-      {!isFetching && userImages.length === 0 ? (
+      {!isFetching && photos.length === 0 ? (
         <p className="mt-8 text-center text-muted-foreground">
           {filterNotConnected
             ? "No images without connected plants have been found."
@@ -172,13 +139,13 @@ export default function AllImagesPage() {
       ) : (
         <>
           <ResponsiveGrid>
-            {userImages.map((image) => (
+            {photos.map((image) => (
               <PhotoCard
                 image={image satisfies GetOwnImageType}
                 key={image.id}
                 sortField={sortField satisfies ImageSortField}
                 currentQuery={{
-                  page: cursor,
+                  page: 1,
                   sortField,
                   sortOrder,
                   filterNotConnected,
@@ -186,44 +153,14 @@ export default function AllImagesPage() {
               />
             ))}
           </ResponsiveGrid>
-
-          <div className="mt-8 flex justify-center">
-            <Pagination>
-              <PaginationContent>
-                <PaginationItem>
-                  <PaginationPrevious
-                    onClick={() => handlePageChange(cursor - 1)}
-                    disabled={cursor === 1 || isFetching}
-                  />
-                </PaginationItem>
-
-                {getPaginationNumbers().map((page, index) =>
-                  page === "..." ? (
-                    <PaginationItem key={`ellipsis-${index}`}>
-                      <PaginationEllipsis />
-                    </PaginationItem>
-                  ) : (
-                    <PaginationItem key={page}>
-                      <PaginationLink
-                        onClick={() => handlePageChange(page as number)}
-                        isActive={cursor === page}
-                        disabled={isFetching}
-                      >
-                        <p>{page}</p>
-                      </PaginationLink>
-                    </PaginationItem>
-                  ),
-                )}
-
-                <PaginationItem>
-                  <PaginationNext
-                    onClick={() => handlePageChange(cursor + 1)}
-                    disabled={cursor === totalPages || isFetching}
-                  />
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
-          </div>
+          <InfiniteScrollLoader
+            ref={loadingRef}
+            isLoading={isLoading}
+            isFetchingNextPage={isFetchingNextPage}
+            hasNextPage={hasNextPage}
+            itemsLength={photos.length}
+            noMoreMessage="No more plants to load."
+          />
         </>
       )}
     </PageHeader>
