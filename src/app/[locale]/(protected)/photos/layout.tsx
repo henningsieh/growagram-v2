@@ -15,6 +15,12 @@ export default async function PhotosLayout({
   children: React.ReactNode;
 }) {
   // Prefetch initial data with default sorting for the first page
+  await api.image.getOwnImages.prefetchInfinite({
+    limit: PaginationItemsPerPage.PHOTOS_PER_PAGE,
+    sortField: ImageSortField.UPLOAD_DATE,
+    sortOrder: ImageSortOrder.DESC,
+    filterNotConnected: false,
+  } satisfies GetOwnImagesInput);
   await api.image.getOwnImages.prefetch({
     limit: PaginationItemsPerPage.PHOTOS_PER_PAGE,
     sortField: ImageSortField.UPLOAD_DATE,

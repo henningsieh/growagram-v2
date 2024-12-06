@@ -101,9 +101,12 @@ export const imageRouter = createTRPCRouter({
         },
       });
 
+      const nextCursor = imagesList.length === limit ? cursor + 1 : undefined;
+
       return {
         images: imagesList,
         cursor: cursor,
+        nextCursor: nextCursor,
         total: Math.ceil(totalCount / limit),
         count: totalCount,
       };
