@@ -28,7 +28,7 @@ interface ImagesSortFilterControllsProps {
   ) => Promise<void>;
   onFilterChange: (checked: boolean) => void;
   toggleViewMode: () => void;
-  viewMode: PhotosViewMode;
+  viewMode?: PhotosViewMode;
 }
 
 export default function ImagesSortFilterControlls({
@@ -57,23 +57,25 @@ export default function ImagesSortFilterControlls({
   return (
     <div className="mb-4 flex flex-col items-center justify-between gap-2 rounded-sm sm:flex-row">
       <div className="flex w-full items-center space-x-2 sm:justify-start">
-        <div className="flex h-8 w-full items-center justify-start gap-2 text-nowrap rounded-sm border-[1px] border-input bg-muted px-1 hover:bg-transparent sm:w-[154px]">
-          <Switch
-            size={"default"}
-            id="view-mode"
-            checked={viewMode === PhotosViewMode.INFINITE_SCROLL}
-            onCheckedChange={toggleViewMode}
-          />
-          <Label
-            htmlFor="view-mode"
-            className="text-base font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-          >
-            <div className="flex items-center">
-              <Infinity className="mr-2 h-4 w-4" />
-              Scroll
-            </div>
-          </Label>
-        </div>
+        {viewMode && (
+          <div className="flex h-8 w-full items-center justify-start gap-2 text-nowrap rounded-sm border-[1px] border-input bg-muted px-1 hover:bg-transparent sm:w-[154px]">
+            <Switch
+              size={"default"}
+              id="view-mode"
+              checked={viewMode === PhotosViewMode.INFINITE_SCROLL}
+              onCheckedChange={toggleViewMode}
+            />
+            <Label
+              htmlFor="view-mode"
+              className="text-base font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            >
+              <div className="flex items-center">
+                <Infinity className="mr-2 h-4 w-4" />
+                Scroll
+              </div>
+            </Label>
+          </div>
+        )}
         <div className="flex h-8 w-full items-center justify-start gap-2 text-nowrap rounded-sm border-[1px] border-input bg-muted px-1 hover:bg-transparent sm:w-[154px]">
           <Switch
             size={"default"}

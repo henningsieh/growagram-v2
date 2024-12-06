@@ -1,8 +1,16 @@
 "use client";
 
+import { boolean } from "drizzle-orm/pg-core";
 // src/app/[locale]/(protected)/photos/page.tsx:
 import { useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { PaginationItemsPerPage, modulePaths } from "~/assets/constants";
 import InfiniteScrollLoader from "~/components/Layouts/InfiniteScrollLoader";
 import SpinningLoader from "~/components/Layouts/loader";
@@ -53,6 +61,8 @@ export default function AllImagesPage() {
     searchParams.get("filterNotConnected") === "true",
   );
 
+  // Centralize isFetching state in the parent component
+
   // Toggle view mode function
   const toggleViewMode = () => {
     const newMode =
@@ -65,10 +75,6 @@ export default function AllImagesPage() {
   };
 
   // Shared handler for sort changes
-  // const handleSortChange = (field: ImageSortField, order: ImageSortOrder) => {
-  //   setSortField(field);
-  //   setSortOrder(order);
-  // };
   const handleSortChange = async (
     field: PhotosSortField,
     order: PhotosSortOrder,
@@ -85,6 +91,11 @@ export default function AllImagesPage() {
     setFilterNotConnected(checked);
   };
 
+  const [isFetching, setIsFetching] = useState<boolean>(false);
+
+  // Important: Remove the console.debug useEffect
+  // If you want to log, use the prop directly in ImagesSortFilterControlls
+
   return (
     <PageHeader
       title="My Photos"
@@ -98,7 +109,7 @@ export default function AllImagesPage() {
         filterNotConnected={filterNotConnected}
         onSortChange={handleSortChange}
         onFilterChange={handleFilterChange}
-        isFetching={false}
+        isFetching={isFetching} // Direct state usage
         toggleViewMode={toggleViewMode}
         viewMode={viewMode}
       />
@@ -108,12 +119,14 @@ export default function AllImagesPage() {
           sortField={sortField}
           sortOrder={sortOrder}
           filterNotConnected={filterNotConnected}
+          setIsFetching={setIsFetching}
         />
       ) : (
         <InfiniteScrollView
           sortField={sortField}
           sortOrder={sortOrder}
           filterNotConnected={filterNotConnected}
+          setIsFetching={setIsFetching}
         />
       )}
     </PageHeader>
@@ -125,10 +138,12 @@ function PaginatedView({
   sortField,
   sortOrder,
   filterNotConnected,
+  setIsFetching,
 }: {
   sortField: PhotosSortField;
   sortOrder: PhotosSortOrder;
   filterNotConnected: boolean;
+  setIsFetching: Dispatch<SetStateAction<boolean>>;
 }) {
   const router = useRouter();
   const utils = api.useUtils();
@@ -153,8 +168,8 @@ function PaginatedView({
     updateUrlParams();
   }, [page, sortField, sortOrder, filterNotConnected, updateUrlParams]);
 
-  // Prefetch data
-  const prefetchedImagesFromCache = utils.image.getOwnImages.getData({
+  // Get initial data from cache
+  const initialData = utils.image.getOwnImages.getData({
     limit: PaginationItemsPerPage.PHOTOS_PER_PAGE,
     cursor: page,
     sortField,
@@ -172,9 +187,13 @@ function PaginatedView({
       filterNotConnected,
     } satisfies GetOwnImagesInput,
     {
-      initialData: prefetchedImagesFromCache,
+      initialData,
     },
   );
+  // Directly update the parent's isFetching state
+  useEffect(() => {
+    setIsFetching(isFetching);
+  }, [isFetching, setIsFetching]);
 
   const userImages = data?.images ?? [];
   const totalPages = data?.total ?? 1;
@@ -284,10 +303,12 @@ function InfiniteScrollView({
   sortField,
   sortOrder,
   filterNotConnected,
+  setIsFetching,
 }: {
   sortField: PhotosSortField;
   sortOrder: PhotosSortOrder;
   filterNotConnected: boolean;
+  setIsFetching: Dispatch<SetStateAction<boolean>>;
 }) {
   const router = useRouter();
   const utils = api.useUtils();
@@ -327,6 +348,10 @@ function InfiniteScrollView({
       initialData,
     },
   );
+  // Directly update the parent's isFetching state
+  useEffect(() => {
+    setIsFetching(isFetching);
+  }, [isFetching, setIsFetching]);
 
   // Extract photos from pages
   const photos: GetOwnImagesType =
