@@ -128,8 +128,8 @@
     "vegetation-start-date": "Vegetation Start Date"
   },
   "Platform": {
-    "Dashboard-title": "Grower's Plattform",
-    "welcome-to-platform-subttitle": "Welcome to manage all your Grows and Plants"
+    "Dashboard-title": "Dashboard",
+    "welcome-to-platform-subttitle": "Welcome to the Grower's platform where you can manage all your Grows and Plants"
   },
   "ThemeToggler": {
     "dark": "Dark",

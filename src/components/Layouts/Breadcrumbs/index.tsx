@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -14,15 +15,15 @@ interface NavigationBreadcrumbProps {
 }
 
 export function NavigationBreadcrumb({ className }: NavigationBreadcrumbProps) {
+  const t = useTranslations();
   const pathname = usePathname();
   const currentNav = findCurrentNavItem(pathname, sidebarItems.navMain);
-
   return (
     <Breadcrumb className={className}>
       <BreadcrumbList>
         <BreadcrumbItem className="hidden md:block">
           <BreadcrumbLink asChild>
-            <Link href="/dashboard">Platform</Link>
+            <Link href="/dashboard">{t("Platform.Dashboard-title")}abc</Link>
           </BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator className="hidden md:block" />

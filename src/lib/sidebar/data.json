@@ -34,7 +34,7 @@
     },
     {
       "title": "Plants",
-      "url": "#",
+      "url": "/plants",
       "icon": "Flower2",
       "items": [
         {
@@ -53,7 +53,7 @@
       "icon": "Camera",
       "items": [
         {
-          "title": "All Photos",
+          "title": "My Photos",
           "url": "/photos"
         },
         {
