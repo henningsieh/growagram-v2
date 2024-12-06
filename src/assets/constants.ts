@@ -3,9 +3,9 @@ import DEFlag from "~/assets/flags/germany-svgrepo-com.svg";
 import USFlag from "~/assets/flags/united-states-svgrepo-com.svg";
 
 export const PaginationItemsPerPage = {
-  PHOTOS_PER_PAGE: 2,
-  PLANTS_PER_PAGE: 2,
-  GROWS_PER_PAGE: 3,
+  PHOTOS_PER_PAGE: 6,
+  PLANTS_PER_PAGE: 6,
+  GROWS_PER_PAGE: 6,
 };
 
 const modulePaths = {
