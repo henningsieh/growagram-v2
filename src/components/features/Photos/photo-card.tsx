@@ -137,7 +137,7 @@ export default function PhotoCard({
     <>
       <Card className="relative overflow-hidden">
         {!!!image.plantImages.length && (
-          <div className="absolute right-[-40px] top-[15px] z-10 w-[120px] rotate-[45deg] cursor-default bg-primary px-[40px] py-[1px] text-[12px] font-semibold tracking-widest text-white">
+          <div className="absolute right-[-40px] top-[15px] z-10 w-[120px] rotate-[45deg] cursor-default bg-secondary px-[40px] py-[1px] text-[12px] font-semibold tracking-widest text-white">
             NEW
           </div>
         )}

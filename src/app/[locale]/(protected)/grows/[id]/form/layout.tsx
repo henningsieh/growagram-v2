@@ -1,32 +1,41 @@
 // src/app/[locale]/(protected)/grows/[id]/form/layout.tsx:
 import { useTranslations } from "next-intl";
 import React from "react";
-import PageHeader from "~/components/Layouts/page-header";
-import { GetGrowByIdInput } from "~/server/api/root";
+import { HydrateClient, api } from "~/lib/trpc/server";
+import {
+  GetGrowByIdInput,
+  GetOwnGrowType,
+  GetOwnPlantsInput,
+} from "~/server/api/root";
 
 export const metadata = {
   title: "Grower's Plattform | Grows",
   description: "Grower's Plattform | Grows",
 };
 
-export default function AddGrowLayout({
+export default async function AddGrowLayout({
   children,
   params,
 }: {
   children: React.ReactNode;
-  params: GetGrowByIdInput;
+  params: Promise<GetGrowByIdInput>;
 }) {
-  const t = useTranslations("Grows");
-  const growId = params.id;
+  const growId = (await params).id;
 
-  return (
-    <PageHeader
-      title={growId === "new" ? t("page-title-new") : t("page-title-edit")}
-      subtitle={
-        growId === "new" ? t("page-subtitle-new") : t("page-subtitle-edit")
-      }
-    >
-      {children}
-    </PageHeader>
-  );
+  if (growId !== "new") {
+    await api.grow.getById.prefetch({
+      id: growId,
+    } satisfies GetGrowByIdInput);
+
+    //TODO: only prefetch "connectable" plants!
+    void api.plant.getOwnPlants.prefetch(
+      {
+        limit: 100,
+        // cursor?: number | null | undefined
+      } satisfies GetOwnPlantsInput,
+      { staleTime: 0 },
+    );
+  }
+
+  return <HydrateClient>{children}</HydrateClient>;
 }

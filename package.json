@@ -50,7 +50,7 @@
     "embla-carousel-react": "^8.5.1",
     "exif-reader": "^2.0.1",
     "exifreader": "^4.25.0",
-    "framer-motion": "^11.11.17",
+    "framer-motion": "^11.13.1",
     "lucide-react": "^0.464.0",
     "next": "15.0.3",
     "next-auth": "^5.0.0-beta.25",

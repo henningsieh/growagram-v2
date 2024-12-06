@@ -125,13 +125,13 @@ export default function PlantCard({ plant }: PlantCardProps) {
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger className="flex cursor-default items-center font-mono text-sm font-semibold tracking-tighter">
-                    <Nut className="mr-2 h-4 w-4 text-planting" />
+                    <Nut className="text-planted mr-2 h-4 w-4" />
                     {formatDate(plant.startDate, locale)}
                   </TooltipTrigger>
                   <TooltipContent side="right" className="bg-transparent">
                     <Badge
                       variant={"outline"}
-                      className="whitespace-nowrap border-0 bg-planting text-sm"
+                      className="bg-planted whitespace-nowrap border-0 text-sm"
                     >
                       {t("planting-date")}
                     </Badge>
@@ -238,7 +238,7 @@ export default function PlantCard({ plant }: PlantCardProps) {
           <div className="mt-4 flex justify-between">
             <div className="w-full">
               <div className="mb-1 flex justify-between text-sm">
-                <span>Growth Progress</span>
+                <span>{t("growth-progress")}</span>
                 <span>{progress}%</span>
               </div>
               <Progress value={progress} className="w-full" />
@@ -261,9 +261,9 @@ export default function PlantCard({ plant }: PlantCardProps) {
             )}
           </Button>
           <Button asChild size={"sm"} variant="primary" className="w-full">
-            <Link href={`/plants/edit/${plant.id}`}>
+            <Link href={`/plants/${plant.id}/form`}>
               <Edit size={20} />
-              Edit Plant
+              {t("edit-plant-button-label")}
             </Link>
           </Button>
         </CardFooter>

@@ -4,38 +4,34 @@ import { format } from "date-fns";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ChartColumn,
-  Flower2,
-  FolderOutput,
   Heart,
   MessageCircle,
-  MinusSquare,
   Share,
+  Trash2,
   User2,
 } from "lucide-react";
+import { User } from "next-auth";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useState } from "react";
-import { Grow } from "~/components/features/Timeline/post";
+import headerImagePlaceholder from "~/assets/landscape-placeholdersvg.svg";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
-import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
 } from "~/components/ui/card";
 import { Separator } from "~/components/ui/separator";
+import { Link } from "~/lib/i18n/routing";
+import { GetOwnGrowType } from "~/server/api/root";
+
+import { GrowPlantCard } from "./grow-plant-card";
 
 interface GrowCardProps {
-  grow: Grow;
-  onUnassignPlant?: (plantId: string) => void;
-  showUnassignButton?: boolean;
-  grower?: {
-    name: string;
-    username: string;
-    email: string;
-    avatar?: string;
-  };
+  grow: GetOwnGrowType;
   stats?: {
     comments: number;
     views: number;
@@ -45,14 +41,6 @@ interface GrowCardProps {
 
 export function GrowCard({
   grow,
-  onUnassignPlant,
-  showUnassignButton = true,
-  grower = {
-    name: "Django ElRey 🌱",
-    username: "django",
-    email: "django@growagram.com",
-    avatar: "/images/XYUV-dwm_400x400.jpg",
-  },
   stats = {
     comments: 0,
     views: 0,
@@ -62,30 +50,33 @@ export function GrowCard({
   const [isImageHovered, setIsImageHovered] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
 
+  const t = useTranslations("Grows");
+
   return (
-    <Card className="overflow-hidden">
-      <CardHeader className="space-y-0 pb-4">
+    <Card className="flex flex-col overflow-hidden">
+      <CardHeader className="space-y-0 p-4">
         <div className="flex items-start justify-between">
           <div className="flex gap-3">
             <Avatar className="h-10 w-10">
-              <AvatarImage src={grower.avatar} />
+              <AvatarImage src={grow.owner.image as string | undefined} />
               <AvatarFallback>
                 <User2 className="h-5 w-5" />
               </AvatarFallback>
             </Avatar>
             <div className="flex flex-col">
-              <p className="text-sm font-semibold">{grower.name}</p>
+              <p className="text-sm font-semibold">{grow.owner.name}</p>
               <p className="text-sm text-muted-foreground">
-                @{grower.username}
+                @{grow.owner.name}
               </p>
             </div>
           </div>
-          <Badge
+          {/* You might want to add a type field to your grow schema or remove this */}
+          {/* <Badge
             variant={grow.type === "indoor" ? "default" : "secondary"}
             className="uppercase"
           >
             {grow.type}
-          </Badge>
+          </Badge> */}
         </div>
       </CardHeader>
 
@@ -95,23 +86,23 @@ export function GrowCard({
         onMouseLeave={() => setIsImageHovered(false)}
       >
         <Image
-          src="/images/IMG_20241020_102123.jpg?height=400&width=800"
+          src={headerImagePlaceholder}
           alt={grow.name}
+          fill
           className="object-cover transition-transform duration-300"
+          sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
           style={{
             transform: isImageHovered ? "scale(1.05)" : "scale(1)",
           }}
-          width={800}
-          height={400}
         />
       </div>
 
-      <CardContent className="space-y-4 pt-4">
+      <CardContent className="grid flex-grow grid-rows-[auto,1fr,auto] gap-4 p-4">
         <div>
           <h3 className="text-xl font-bold">{grow.name}</h3>
           <CardDescription>
             <span className="block">
-              Started on {format(grow.startDate, "PPP")}
+              Started on {format(grow.createdAt, "PPP")}
             </span>
             {grow.updatedAt && (
               <span className="block">
@@ -126,42 +117,18 @@ export function GrowCard({
             {grow.plants.map((plant) => (
               <motion.div
                 key={plant.id}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 20 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.3 }}
               >
-                <Card className="border-primary/40 bg-card text-card-foreground shadow-sm">
-                  <CardContent className="flex items-center justify-between p-4">
-                    <div className="flex items-center gap-3">
-                      <Flower2 strokeWidth={0.9} className="h-12 w-12" />
-                      <div>
-                        <p className="text-base font-semibold">
-                          {plant.strain}
-                        </p>
-                        <Badge variant="secondary" className="uppercase">
-                          {plant.growPhase}
-                        </Badge>
-                      </div>
-                    </div>
-                    {showUnassignButton && onUnassignPlant && (
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => onUnassignPlant(plant.id)}
-                      >
-                        <MinusSquare strokeWidth={3} size={14} />
-                        Unassign
-                      </Button>
-                    )}
-                  </CardContent>
-                </Card>
+                <GrowPlantCard plant={plant} />
               </motion.div>
             ))}
           </AnimatePresence>
           {grow.plants.length === 0 && (
             <div className="py-8 text-center text-muted-foreground">
-              No plants assigned yet
+              {t("no-plants-found")}
             </div>
           )}
         </div>
@@ -195,6 +162,17 @@ export function GrowCard({
           </Button>
         </div>
       </CardContent>
+      <Separator />
+      <CardFooter className="p-1">
+        <div className="flex w-full justify-between gap-1">
+          <Button variant={"destructive"} size={"sm"} className="w-20">
+            <Trash2 />
+          </Button>
+          <Button asChild size={"sm"} className="w-full">
+            <Link href={`/grows/${grow.id}/form`}>Edit Grow</Link>
+          </Button>
+        </div>
+      </CardFooter>
     </Card>
   );
 }

@@ -5,7 +5,7 @@ import ProtectedSidebar from "../../../components/Layouts/Sidebar";
 
 type LayoutProps = {
   children: React.ReactNode;
-  params: Promise<{ locale: "en" | "de" }>;
+  params: Promise<{ locale: string }>;
 };
 
 export default async function ProtectedLayout({

@@ -1,11 +1,12 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { GetOwnPlantType } from "~/server/api/root";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-type DateFormatOptions = {
+export type DateFormatOptions = {
   month?: "long" | "short" | "2-digit";
   weekday?: "long" | "short";
   includeYear?: boolean;
@@ -94,4 +95,14 @@ export function calculateGrowthProgress(
     const overallProgress = (weeksFromPlanted / totalGrowthWeeks) * 100;
     return Math.min(Math.max(Math.round(overallProgress), 0), 100);
   }
+}
+
+export function determineGrowthStage(plant: GetOwnPlantType) {
+  const now = new Date();
+  if (plant.curingPhaseStart && now >= plant.curingPhaseStart) return 5;
+  if (plant.harvestDate && now >= plant.harvestDate) return 4;
+  if (plant.floweringPhaseStart && now >= plant.floweringPhaseStart) return 3;
+  if (plant.vegetationPhaseStart && now >= plant.vegetationPhaseStart) return 2;
+  if (plant.seedlingPhaseStart && now >= plant.seedlingPhaseStart) return 1;
+  return 0; // Default to "planted"
 }

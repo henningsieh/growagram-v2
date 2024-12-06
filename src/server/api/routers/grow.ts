@@ -1,47 +1,86 @@
 // src/server/api/routers/grow.ts:
 import { TRPCError } from "@trpc/server";
-import { and, eq } from "drizzle-orm";
+import { and, count, eq } from "drizzle-orm";
 import { z } from "zod";
+import { PaginationItemsPerPage } from "~/assets/constants";
 import { grows, plants } from "~/lib/db/schema";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { GrowSortField, SortOrder } from "~/types/grow";
 import { growSchema } from "~/types/zodSchema";
 
 export const growRouter = createTRPCRouter({
   // Get paginated grows for the current user
+
   getOwnGrows: protectedProcedure
     .input(
       z
         .object({
-          limit: z.number().min(1).max(100).default(12).optional(),
-          cursor: z.number().nullish().default(null).optional(), // Cursor-based pagination
+          limit: z
+            .number()
+            .min(1)
+            .max(100)
+            .default(PaginationItemsPerPage.GROWS_PER_PAGE)
+            .optional(),
+          page: z.number().min(1).default(1).optional(),
+          sortField: z
+            .nativeEnum(GrowSortField)
+            .default(GrowSortField.CREATED_AT)
+            .optional(),
+          sortOrder: z.nativeEnum(SortOrder).default(SortOrder.DESC).optional(),
         })
-        .optional(),
+        .default({}),
     )
     .query(async ({ ctx, input }) => {
-      // Access the user ID from session
-      const userId = ctx.session.user.id as string;
-
       // Use default values if input is not provided
-      const limit = input?.limit ?? 12;
-      const cursor = input?.cursor ?? null;
+      const limit = input?.limit ?? PaginationItemsPerPage.GROWS_PER_PAGE;
+      const page = input?.page ?? 1;
+      const sortField = input?.sortField ?? GrowSortField.CREATED_AT;
+      const sortOrder = input?.sortOrder ?? SortOrder.DESC;
 
+      // Calculate offset based on page number
+      const offset = (page - 1) * limit;
+
+      // Get total count of user's grows
+      const totalCountResult = await ctx.db
+        .select({ count: count() })
+        .from(grows)
+        .where(eq(grows.ownerId, ctx.session.user.id));
+
+      const totalCount = Number(totalCountResult[0].count);
+
+      // Get the grows with pagination and sorting
       const userGrows = await ctx.db.query.grows.findMany({
-        where: eq(grows.ownerId, userId),
-        orderBy: (grows, { desc }) => [desc(grows.createdAt)],
-        limit: limit + 1, // Fetch extra item to check for next page
-        offset: cursor ?? 0, // Use cursor for offset
+        where: eq(grows.ownerId, ctx.session.user.id),
+        orderBy: (grows, { desc, asc }) => [
+          sortOrder === SortOrder.DESC
+            ? desc(grows[sortField])
+            : asc(grows[sortField]),
+        ],
+        limit: limit,
+        offset: offset,
         with: {
+          owner: true,
           plants: {
-            columns: {
-              id: true,
-              name: true,
-              startDate: true,
-              harvestDate: true,
-            },
             with: {
               strain: {
                 columns: {
+                  id: true,
                   name: true,
+                  thcContent: true,
+                  cbdContent: true,
+                },
+                with: { breeder: { columns: { id: true, name: true } } },
+              },
+              headerImage: { columns: { id: true, imageUrl: true } },
+              plantImages: {
+                columns: { imageId: false, plantId: false },
+                with: {
+                  image: {
+                    columns: {
+                      id: true,
+                      imageUrl: true,
+                    },
+                  },
                 },
               },
             },
@@ -49,16 +88,11 @@ export const growRouter = createTRPCRouter({
         },
       });
 
-      // Check if there is a next page
-      let nextCursor: number | null = null;
-      if (userGrows.length > limit) {
-        nextCursor = (cursor ?? 0) + limit;
-        userGrows.pop(); // Remove the extra item
-      }
-
       return {
         grows: userGrows,
-        nextCursor,
+        total: totalCount,
+        currentPage: page,
+        totalPages: Math.ceil(totalCount / limit),
       };
     }),
 
@@ -69,9 +103,30 @@ export const growRouter = createTRPCRouter({
       return await ctx.db.query.grows.findFirst({
         where: eq(grows.id, input.id),
         with: {
+          owner: true,
           plants: {
             with: {
-              strain: true,
+              strain: {
+                columns: {
+                  id: true,
+                  name: true,
+                  thcContent: true,
+                  cbdContent: true,
+                },
+                with: { breeder: { columns: { id: true, name: true } } },
+              },
+              headerImage: { columns: { id: true, imageUrl: true } },
+              plantImages: {
+                columns: { imageId: false, plantId: false },
+                with: {
+                  image: {
+                    columns: {
+                      id: true,
+                      imageUrl: true,
+                    },
+                  },
+                },
+              },
             },
           },
         },
