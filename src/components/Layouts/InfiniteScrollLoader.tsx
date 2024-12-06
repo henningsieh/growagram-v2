@@ -1,3 +1,4 @@
+// src/components/Layouts/InfiniteScrollLoader.tsx:
 import { Loader2 } from "lucide-react";
 import React, { forwardRef } from "react";
 
