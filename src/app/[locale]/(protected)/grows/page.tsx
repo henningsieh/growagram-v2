@@ -1,7 +1,16 @@
 "use client";
 
 // src/app/[locale]/(protected)/grows/page.tsx:
-import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
+import {
+  Infinity,
+  ArrowDown01,
+  ArrowDown10,
+  ArrowDownAZ,
+  ArrowDownZA,
+  Calendar,
+  Tag,
+  Text,
+} from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
@@ -9,8 +18,11 @@ import { PaginationItemsPerPage } from "~/assets/constants";
 import SpinningLoader from "~/components/Layouts/loader";
 import PageHeader from "~/components/Layouts/page-header";
 import ResponsiveGrid from "~/components/Layouts/responsive-grid";
+import {
+  SortFilterControls,
+  SortOrder,
+} from "~/components/atom/sort-filter-controls";
 import { GrowCard } from "~/components/features/Grows/grow-card";
-import { Button } from "~/components/ui/button";
 import {
   Pagination,
   PaginationContent,
@@ -22,13 +34,7 @@ import {
 } from "~/components/ui/pagination";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
-import { GrowSortField, SortOrder } from "~/types/grow";
-
-// Define sorting options to match backend
-export const SORT_OPTIONS = [
-  { field: GrowSortField.NAME, label: "Name" },
-  { field: GrowSortField.CREATED_AT, label: "Created Date" },
-] as const;
+import { GrowSortField } from "~/types/grow";
 
 export default function MyGrowsPage() {
   const router = useRouter();
@@ -40,10 +46,9 @@ export default function MyGrowsPage() {
   );
 
   // State for sorting
-  const [sortField, setSortField] = useState<GrowSortField>(
-    GrowSortField.CREATED_AT,
-  );
-  const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.DESC);
+  const [sortField, setSortField] = useState<GrowSortField>(GrowSortField.NAME);
+  const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.ASC);
+  const [viewMode, setViewMode] = useState<string>("paginated");
 
   const utils = api.useUtils();
 
@@ -83,50 +88,29 @@ export default function MyGrowsPage() {
   }, [currentPage, sortField, sortOrder, updateUrlParams]);
 
   // Handle sorting changes
-  const handleSortChange = (field: GrowSortField) => {
-    // If clicking the same field, toggle sort order
-    if (field === sortField) {
-      setSortOrder(
-        sortOrder === SortOrder.DESC ? SortOrder.ASC : SortOrder.DESC,
-      );
-    } else {
-      // If changing field, default to descending
-      setSortField(field);
-      setSortOrder(
-        field === GrowSortField.NAME ? SortOrder.ASC : SortOrder.DESC,
-      );
-    }
+  const handleSortChange = (field: GrowSortField, order: SortOrder) => {
+    setSortField(field);
+    setSortOrder(order);
     // Reset to first page when sorting changes
     setCurrentPage(1);
   };
 
-  // Render sorting buttons
-  const renderSortButton = (
-    field: GrowSortField,
-    label: string,
-    index: number,
-  ) => {
-    return (
-      <Button
-        key={index}
-        variant={sortField === field ? "secondary" : "outline"}
-        size="sm"
-        onClick={() => handleSortChange(field)}
-        className="flex items-center gap-2 sm:w-[154px]"
-      >
-        {label}
-        {sortField === field ? (
-          sortOrder === "desc" ? (
-            <ArrowDown size={16} />
-          ) : (
-            <ArrowUp size={16} />
-          )
-        ) : (
-          <ArrowUpDown size={16} />
-        )}
-      </Button>
-    );
-  };
+  const sortOptions = [
+    {
+      field: GrowSortField.NAME,
+      label: "Name",
+      icon: <Tag className="h-6 w-5" />,
+      sortIconAsc: ArrowDownAZ,
+      sortIconDesc: ArrowDownZA,
+    },
+    {
+      field: GrowSortField.CREATED_AT,
+      label: "Created Date",
+      icon: <Calendar className="h-6 w-5" />,
+      sortIconAsc: ArrowDown01,
+      sortIconDesc: ArrowDown10,
+    },
+  ];
 
   // Handle page changes
   const handlePageChange = (page: number) => {
@@ -168,14 +152,22 @@ export default function MyGrowsPage() {
       buttonLabel="Create New Grow"
     >
       {/* Sorting controls */}
-      <div className="mb-4 flex justify-end gap-2">
-        <span className="mr-2 self-center text-sm font-medium">
-          {t("sort-label")}
-        </span>
-        {SORT_OPTIONS.map((option, index) =>
-          renderSortButton(option.field, option.label, index),
-        )}
-      </div>
+      <SortFilterControls
+        sortField={sortField}
+        sortOrder={sortOrder}
+        sortOptions={sortOptions}
+        isFetching={isFetching}
+        onSortChange={handleSortChange}
+        viewMode={{
+          current: viewMode,
+          options: ["paginated", "infinite"],
+          label: "Scroll",
+          icon: <Infinity className="mr-2 h-4 w-4" />,
+        }}
+        onViewModeToggle={() =>
+          setViewMode(viewMode === "paginated" ? "infinite" : "paginated")
+        }
+      />
 
       {!isFetching && userGrows.length === 0 ? (
         <p className="mt-8 text-center text-muted-foreground">
