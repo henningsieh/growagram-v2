@@ -88,9 +88,9 @@ export default function ProtectedSidebar({
         <SidebarContent>
           {/* Dashboard Group */}
           <SidebarGroup>
-            <SidebarGroupLabel>
+            <SidebarMenuButton>
               <Link href="/dashboard">{t("Platform.Dashboard-title")}</Link>
-            </SidebarGroupLabel>
+            </SidebarMenuButton>
             {/* Main Navigation Menu with Collapsible Items */}
             <SidebarMenu>
               {sidebarItems.navMain.map((item) => (
