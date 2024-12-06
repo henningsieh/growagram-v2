@@ -140,13 +140,7 @@ export default function GrowForm({ grow }: { grow?: GetOwnGrowType }) {
 
   // Data fetching and form initialization...
   //TODO: only fetch "connectable" plants!
-  const {
-    data: plantsData,
-    isLoading,
-    isRefetching,
-    isFetching,
-    isPending,
-  } = api.plant.getOwnPlants.useQuery(
+  const { data: plantsData, isLoading } = api.plant.getOwnPlants.useQuery(
     { limit: 100 } satisfies GetOwnPlantsInput,
     {
       initialData: initialData,
@@ -324,12 +318,6 @@ export default function GrowForm({ grow }: { grow?: GetOwnGrowType }) {
               />
 
               <div>
-                <div>
-                  {isPending && "isPending"}test
-                  {isLoading && "isLoading"}
-                  {isFetching && "isFetching"}
-                  {isRefetching && "isRefetching"}
-                </div>
                 <FormLabel className="mb-2 block font-semibold">
                   {t("select-plants")}
                 </FormLabel>

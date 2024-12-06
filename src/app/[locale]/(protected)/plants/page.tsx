@@ -1,7 +1,7 @@
 "use client";
 
-import { useTranslations } from "next-intl";
 // src/app/[locale]/(protected)/plants/page.tsx
+import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef } from "react";
 import { PaginationItemsPerPage } from "~/assets/constants";
 import InfiniteScrollLoader from "~/components/Layouts/InfiniteScrollLoader";
@@ -12,7 +12,6 @@ import { api } from "~/lib/trpc/react";
 import { GetOwnPlantsInput, GetOwnPlantsType } from "~/server/api/root";
 
 export default function PlantsPage() {
-  // Get the utils for accessing the cache
   const utils = api.useUtils();
 
   // Get the prefetched data from the cache

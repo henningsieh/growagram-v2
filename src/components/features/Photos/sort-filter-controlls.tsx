@@ -9,14 +9,14 @@ import { Button } from "~/components/ui/button";
 import { Label } from "~/components/ui/label";
 import { Switch } from "~/components/ui/switch";
 import { cn } from "~/lib/utils";
-import { ImageSortField, SortOrder } from "~/types/image";
+import { ImageSortField, ImageSortOrder } from "~/types/image";
 
 interface ImagesSortFilterControllsProps {
   sortField: ImageSortField;
-  sortOrder: SortOrder;
+  sortOrder: ImageSortOrder;
   filterNotConnected: boolean;
   isFetching: boolean;
-  onSortChange: (field: ImageSortField, order: SortOrder) => Promise<void>;
+  onSortChange: (field: ImageSortField, order: ImageSortOrder) => Promise<void>;
   onFilterChange: (checked: boolean) => void;
 }
 
@@ -32,10 +32,12 @@ export default function ImagesSortFilterControlls({
     if (sortField === field) {
       await onSortChange(
         field,
-        sortOrder === SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC,
+        sortOrder === ImageSortOrder.ASC
+          ? ImageSortOrder.DESC
+          : ImageSortOrder.ASC,
       );
     } else {
-      await onSortChange(field, SortOrder.DESC);
+      await onSortChange(field, ImageSortOrder.DESC);
     }
   };
 
@@ -78,7 +80,7 @@ export default function ImagesSortFilterControlls({
             <Loader2 className="h-6 w-5 animate-spin text-secondary" />
           ) : (
             sortField === ImageSortField.UPLOAD_DATE &&
-            (sortOrder === SortOrder.DESC ? (
+            (sortOrder === ImageSortOrder.DESC ? (
               <ArrowDownWideNarrow className="h-6 w-5 text-secondary" />
             ) : (
               <ArrowUpNarrowWide className="h-6 w-5 text-secondary" />
@@ -104,7 +106,7 @@ export default function ImagesSortFilterControlls({
             <Loader2 className="h-6 w-5 animate-spin text-secondary" />
           ) : (
             sortField === ImageSortField.CAPTURE_DATE &&
-            (sortOrder === SortOrder.DESC ? (
+            (sortOrder === ImageSortOrder.DESC ? (
               <ArrowDownWideNarrow className="h-6 w-5 text-secondary" />
             ) : (
               <ArrowUpNarrowWide className="h-6 w-5 text-secondary" />

@@ -20,34 +20,37 @@ import {
 } from "~/components/ui/pagination";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
-import { GetOwnImagesInput } from "~/server/api/root";
-import { ImageSortField, SortOrder } from "~/types/image";
+import {
+  GetOwnImageType,
+  GetOwnImagesInput,
+  GetOwnImagesOutput,
+} from "~/server/api/root";
+import { ImageSortField, ImageSortOrder } from "~/types/image";
 
 export default function AllImagesPage() {
-  const router = useRouter();
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const utils = api.useUtils();
 
   // Initialize state from URL query params
-  const [currentPage, setCurrentPage] = useState(
+  const [cursor, setCurrentPage] = useState(
     parseInt(searchParams.get("page") || "1"),
   );
   const [sortField, setSortField] = useState<ImageSortField>(
     (searchParams.get("sortField") as ImageSortField) ||
       ImageSortField.UPLOAD_DATE,
   );
-  const [sortOrder, setSortOrder] = useState<SortOrder>(
-    (searchParams.get("sortOrder") as SortOrder) || SortOrder.DESC,
+  const [sortOrder, setSortOrder] = useState<ImageSortOrder>(
+    (searchParams.get("sortOrder") as ImageSortOrder) || ImageSortOrder.DESC,
   );
   const [filterNotConnected, setFilterNotConnected] = useState(
     searchParams.get("filterNotConnected") === "true",
   );
 
-  const utils = api.useUtils();
-
   // Get the prefetched data from the cache
-  const prefetchedFromCache = utils.image.getOwnImages.getData({
+  const prefetchedImagesFromCache = utils.image.getOwnImages.getData({
     limit: PaginationItemsPerPage.PHOTOS_PER_PAGE,
-    page: currentPage,
+    cursor,
     sortField,
     sortOrder,
     filterNotConnected,
@@ -57,23 +60,25 @@ export default function AllImagesPage() {
   const { data, isLoading, isFetching } = api.image.getOwnImages.useQuery(
     {
       limit: PaginationItemsPerPage.PHOTOS_PER_PAGE,
-      page: currentPage,
+      cursor,
       sortField,
       sortOrder,
       filterNotConnected,
     } satisfies GetOwnImagesInput,
     {
-      initialData: prefetchedFromCache,
+      initialData: prefetchedImagesFromCache,
     },
   );
 
-  const userImages = data?.images ?? [];
-  const totalPages = data?.totalPages ?? 1;
+  const userImages =
+    (data satisfies GetOwnImagesOutput | undefined)?.images ?? [];
+  const totalPages =
+    (data satisfies GetOwnImagesOutput | undefined)?.total ?? 1;
 
-  // Update URL parameters
+  // Function to update URL query params
   const updateUrlParams = useCallback(() => {
     const params = new URLSearchParams();
-    params.set("page", currentPage.toString());
+    params.set("page", cursor.toString());
     params.set("sortField", sortField);
     params.set("sortOrder", sortOrder);
     if (filterNotConnected) {
@@ -82,15 +87,18 @@ export default function AllImagesPage() {
       params.delete("filterNotConnected");
     }
     router.push(`?${params.toString()}`);
-  }, [currentPage, sortField, sortOrder, filterNotConnected, router]);
+  }, [cursor, sortField, sortOrder, filterNotConnected, router]);
 
-  // Sync state with URL
+  // Sync state with URL query params
   useEffect(() => {
     updateUrlParams();
-  }, [currentPage, sortField, sortOrder, filterNotConnected, updateUrlParams]);
+  }, [cursor, sortField, sortOrder, filterNotConnected, updateUrlParams]);
 
   // Handle sort changes
-  const handleSortChange = async (field: ImageSortField, order: SortOrder) => {
+  const handleSortChange = async (
+    field: ImageSortField,
+    order: ImageSortOrder,
+  ) => {
     // Update the state
     setSortField(field);
     setSortOrder(order);
@@ -117,14 +125,13 @@ export default function AllImagesPage() {
   // Generate pagination numbers
   const getPaginationNumbers = () => {
     const pages: number[] = [];
-    const showAroundCurrent = 2;
+    const showAroundCurrent = 1;
 
     for (let i = 1; i <= totalPages; i++) {
       if (
         i === 1 ||
         i === totalPages ||
-        (i >= currentPage - showAroundCurrent &&
-          i <= currentPage + showAroundCurrent)
+        (i >= cursor - showAroundCurrent && i <= cursor + showAroundCurrent)
       ) {
         pages.push(i);
       }
@@ -141,7 +148,7 @@ export default function AllImagesPage() {
 
   return (
     <PageHeader
-      title="All Photos"
+      title="My Photos"
       subtitle="View and manage your photos"
       buttonLink="/photos/upload"
       buttonLabel="Upload new Photos"
@@ -167,11 +174,11 @@ export default function AllImagesPage() {
           <ResponsiveGrid>
             {userImages.map((image) => (
               <PhotoCard
-                image={image}
+                image={image satisfies GetOwnImageType}
                 key={image.id}
-                sortField={sortField}
+                sortField={sortField satisfies ImageSortField}
                 currentQuery={{
-                  page: currentPage,
+                  page: cursor,
                   sortField,
                   sortOrder,
                   filterNotConnected,
@@ -185,8 +192,8 @@ export default function AllImagesPage() {
               <PaginationContent>
                 <PaginationItem>
                   <PaginationPrevious
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 1 || isFetching}
+                    onClick={() => handlePageChange(cursor - 1)}
+                    disabled={cursor === 1 || isFetching}
                   />
                 </PaginationItem>
 
@@ -199,7 +206,7 @@ export default function AllImagesPage() {
                     <PaginationItem key={page}>
                       <PaginationLink
                         onClick={() => handlePageChange(page as number)}
-                        isActive={currentPage === page}
+                        isActive={cursor === page}
                         disabled={isFetching}
                       >
                         <p>{page}</p>
@@ -210,8 +217,8 @@ export default function AllImagesPage() {
 
                 <PaginationItem>
                   <PaginationNext
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === totalPages || isFetching}
+                    onClick={() => handlePageChange(cursor + 1)}
+                    disabled={cursor === totalPages || isFetching}
                   />
                 </PaginationItem>
               </PaginationContent>

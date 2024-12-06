@@ -2,7 +2,7 @@ import { PaginationItemsPerPage } from "~/assets/constants";
 import { api } from "~/lib/trpc/server";
 import { HydrateClient } from "~/lib/trpc/server";
 import { GetOwnImagesInput } from "~/server/api/root";
-import { ImageSortField, SortOrder } from "~/types/image";
+import { ImageSortField, ImageSortOrder } from "~/types/image";
 
 export const metadata = {
   title: "All Photos",
@@ -18,7 +18,7 @@ export default async function PhotosLayout({
   await api.image.getOwnImages.prefetch({
     limit: PaginationItemsPerPage.PHOTOS_PER_PAGE,
     sortField: ImageSortField.UPLOAD_DATE,
-    sortOrder: SortOrder.DESC,
+    sortOrder: ImageSortOrder.DESC,
     filterNotConnected: false,
   } satisfies GetOwnImagesInput);
 

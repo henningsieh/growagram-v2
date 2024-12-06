@@ -38,7 +38,7 @@ import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import { cn, formatDate, formatTime } from "~/lib/utils";
 import { GetOwnImageType } from "~/server/api/root";
-import { ImageSortField, SortOrder } from "~/types/image";
+import { ImageSortField, ImageSortOrder } from "~/types/image";
 
 interface PhotoCardProps {
   image: GetOwnImageType;
@@ -46,7 +46,7 @@ interface PhotoCardProps {
   currentQuery: {
     page: number;
     sortField: ImageSortField;
-    sortOrder: SortOrder;
+    sortOrder: ImageSortOrder;
     filterNotConnected: boolean;
   };
 }

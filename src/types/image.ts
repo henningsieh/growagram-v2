@@ -3,7 +3,7 @@ export enum ImageSortField {
   CAPTURE_DATE = "captureDate",
 }
 
-export enum SortOrder {
+export enum ImageSortOrder {
   ASC = "asc",
   DESC = "desc",
 }

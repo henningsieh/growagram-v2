@@ -5,7 +5,7 @@ import { z } from "zod";
 import cloudinary from "~/lib/cloudinary";
 import { images, plantImages } from "~/lib/db/schema";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
-import { ImageSortField, SortOrder } from "~/types/image";
+import { ImageSortField, ImageSortOrder } from "~/types/image";
 import { imageSchema } from "~/types/zodSchema";
 
 export const imageRouter = createTRPCRouter({
@@ -14,12 +14,15 @@ export const imageRouter = createTRPCRouter({
       z
         .object({
           limit: z.number().min(1).max(100).default(12).optional(),
-          page: z.number().min(1).default(1).optional(),
+          cursor: z.number().min(1).default(1).optional(),
           sortField: z
             .nativeEnum(ImageSortField)
             .default(ImageSortField.UPLOAD_DATE)
             .optional(),
-          sortOrder: z.nativeEnum(SortOrder).default(SortOrder.DESC).optional(),
+          sortOrder: z
+            .nativeEnum(ImageSortOrder)
+            .default(ImageSortOrder.DESC)
+            .optional(),
           filterNotConnected: z.boolean().default(false).optional(),
         })
         .default({}),
@@ -27,13 +30,13 @@ export const imageRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       // Use default values if input is not provided
       const limit = input?.limit ?? 12;
-      const page = input?.page ?? 1;
+      const cursor = input?.cursor ?? 1;
       const sortField = input?.sortField ?? ImageSortField.UPLOAD_DATE;
-      const sortOrder = input?.sortOrder ?? SortOrder.DESC;
+      const sortOrder = input?.sortOrder ?? ImageSortOrder.DESC;
       const filterNotConnected = input?.filterNotConnected ?? false;
 
       // Calculate offset based on page number
-      const offset = (page - 1) * limit;
+      const offset = (cursor - 1) * limit;
 
       // Base condition for both queries
       const isOwnImageCondition = eq(images.ownerId, ctx.session.user.id);
@@ -82,7 +85,7 @@ export const imageRouter = createTRPCRouter({
           return and(...conditions);
         },
         orderBy: (images, { desc, asc }) => [
-          sortOrder === SortOrder.DESC
+          sortOrder === ImageSortOrder.DESC
             ? desc(images[sortField])
             : asc(images[sortField]),
         ],
@@ -100,9 +103,9 @@ export const imageRouter = createTRPCRouter({
 
       return {
         images: imagesList,
-        total: totalCount,
-        currentPage: page,
-        totalPages: Math.ceil(totalCount / limit),
+        cursor: cursor,
+        total: Math.ceil(totalCount / limit),
+        count: totalCount,
       };
     }),
 
