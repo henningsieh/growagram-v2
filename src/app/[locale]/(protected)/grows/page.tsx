@@ -1,8 +1,7 @@
 "use client";
 
+// src/app/[locale]/(protected)/grows/page.tsx:
 import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
-import { User } from "next-auth";
-import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
