@@ -16,6 +16,7 @@ import Image from "next/image";
 import React, { useCallback, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
+import { SortOrder } from "~/components/atom/sort-filter-controls";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardFooter, CardTitle } from "~/components/ui/card";
 import {
@@ -38,7 +39,7 @@ import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import { cn, formatDate, formatTime } from "~/lib/utils";
 import { GetOwnImageType } from "~/server/api/root";
-import { PhotosSortField, PhotosSortOrder } from "~/types/image";
+import { PhotosSortField } from "~/types/image";
 
 interface PhotoCardProps {
   image: GetOwnImageType;
@@ -46,7 +47,7 @@ interface PhotoCardProps {
   currentQuery: {
     page: number;
     sortField: PhotosSortField;
-    sortOrder: PhotosSortOrder;
+    sortOrder: SortOrder;
     filterNotConnected: boolean;
   };
 }

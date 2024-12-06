@@ -1,7 +1,12 @@
 "use client";
 
-import { boolean } from "drizzle-orm/pg-core";
-// src/app/[locale]/(protected)/photos/page.tsx:
+import {
+  Infinity,
+  ArrowDown01,
+  ArrowDown10,
+  Camera,
+  UploadCloud,
+} from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import {
   Dispatch,
@@ -16,8 +21,11 @@ import InfiniteScrollLoader from "~/components/Layouts/InfiniteScrollLoader";
 import SpinningLoader from "~/components/Layouts/loader";
 import PageHeader from "~/components/Layouts/page-header";
 import ResponsiveGrid from "~/components/Layouts/responsive-grid";
+import {
+  SortFilterControls,
+  SortOrder,
+} from "~/components/atom/sort-filter-controls";
 import PhotoCard from "~/components/features/Photos/photo-card";
-import ImagesSortFilterControlls from "~/components/features/Photos/sort-filter-controlls";
 import {
   Pagination,
   PaginationContent,
@@ -34,17 +42,14 @@ import {
   GetOwnImagesInput,
   GetOwnImagesType,
 } from "~/server/api/root";
-import {
-  PhotosSortField,
-  PhotosSortOrder,
-  PhotosViewMode,
-} from "~/types/image";
+import { PhotosSortField, PhotosViewMode } from "~/types/image";
 
 export default function AllImagesPage() {
   const searchParams = useSearchParams();
+  const router = useRouter();
 
   // Manage view mode state
-  const [viewMode, setViewMode] = useState<PhotosViewMode>(
+  const [viewMode, setViewMode] = useState<string>(
     (localStorage.getItem("photoViewMode") as PhotosViewMode) ||
       PhotosViewMode.PAGINATION,
   );
@@ -54,14 +59,28 @@ export default function AllImagesPage() {
     (searchParams.get("sortField") as PhotosSortField) ||
       PhotosSortField.UPLOAD_DATE,
   );
-  const [sortOrder, setSortOrder] = useState<PhotosSortOrder>(
-    (searchParams.get("sortOrder") as PhotosSortOrder) || PhotosSortOrder.DESC,
+  const [sortOrder, setSortOrder] = useState<SortOrder>(
+    (searchParams.get("sortOrder") as SortOrder) || SortOrder.DESC,
   );
   const [filterNotConnected, setFilterNotConnected] = useState(
     searchParams.get("filterNotConnected") === "true",
   );
+  const [isFetching, setIsFetching] = useState<boolean>(false);
 
-  // Centralize isFetching state in the parent component
+  // Update URL parameters
+  const updateUrlParams = useCallback(() => {
+    const params = new URLSearchParams();
+    params.set("page", searchParams.get("page") || "1");
+    params.set("sortField", sortField);
+    params.set("sortOrder", sortOrder);
+    params.set("filterNotConnected", filterNotConnected.toString());
+    router.push(`?${params.toString()}`);
+  }, [searchParams, sortField, sortOrder, filterNotConnected, router]);
+
+  // Sync state with URL
+  useEffect(() => {
+    updateUrlParams();
+  }, [sortField, sortOrder, filterNotConnected, updateUrlParams]);
 
   // Toggle view mode function
   const toggleViewMode = () => {
@@ -69,21 +88,14 @@ export default function AllImagesPage() {
       viewMode === PhotosViewMode.PAGINATION
         ? PhotosViewMode.INFINITE_SCROLL
         : PhotosViewMode.PAGINATION;
-
     localStorage.setItem("photoViewMode", newMode);
     setViewMode(newMode);
   };
 
   // Shared handler for sort changes
-  const handleSortChange = async (
-    field: PhotosSortField,
-    order: PhotosSortOrder,
-  ) => {
+  const handleSortChange = (field: PhotosSortField, order: SortOrder) => {
     setSortField(field);
     setSortOrder(order);
-    // If you need to perform any async operations, do them here
-    // Otherwise, you can simply return a resolved promise
-    return Promise.resolve();
   };
 
   // Shared handler for filter changes
@@ -91,10 +103,23 @@ export default function AllImagesPage() {
     setFilterNotConnected(checked);
   };
 
-  const [isFetching, setIsFetching] = useState<boolean>(false);
-
-  // Important: Remove the console.debug useEffect
-  // If you want to log, use the prop directly in ImagesSortFilterControlls
+  // Define sort options
+  const sortOptions = [
+    {
+      field: PhotosSortField.UPLOAD_DATE,
+      label: "Upload Date",
+      icon: <UploadCloud className="h-6 w-5" />,
+      sortIconAsc: ArrowDown01,
+      sortIconDesc: ArrowDown10,
+    },
+    {
+      field: PhotosSortField.CAPTURE_DATE,
+      label: "Capture Date",
+      icon: <Camera className="h-6 w-5" />,
+      sortIconAsc: ArrowDown01,
+      sortIconDesc: ArrowDown10,
+    },
+  ];
 
   return (
     <PageHeader
@@ -103,15 +128,22 @@ export default function AllImagesPage() {
       buttonLink="/photos/upload"
       buttonLabel="Upload new Photos"
     >
-      <ImagesSortFilterControlls
+      <SortFilterControls
         sortField={sortField}
         sortOrder={sortOrder}
-        filterNotConnected={filterNotConnected}
+        sortOptions={sortOptions}
+        filterEnabled={filterNotConnected}
+        filterLabel="New only"
+        isFetching={isFetching}
         onSortChange={handleSortChange}
         onFilterChange={handleFilterChange}
-        isFetching={isFetching} // Direct state usage
-        toggleViewMode={toggleViewMode}
-        viewMode={viewMode}
+        viewMode={{
+          current: viewMode,
+          options: [PhotosViewMode.PAGINATION, PhotosViewMode.INFINITE_SCROLL],
+          label: "Scroll",
+          icon: <Infinity className="mr-2 h-4 w-4" />,
+        }}
+        onViewModeToggle={toggleViewMode}
       />
 
       {viewMode === PhotosViewMode.PAGINATION ? (
@@ -141,37 +173,37 @@ function PaginatedView({
   setIsFetching,
 }: {
   sortField: PhotosSortField;
-  sortOrder: PhotosSortOrder;
+  sortOrder: SortOrder;
   filterNotConnected: boolean;
   setIsFetching: Dispatch<SetStateAction<boolean>>;
 }) {
+  const searchParams = useSearchParams();
   const router = useRouter();
   const utils = api.useUtils();
-  const [page, setCurrentPage] = useState(1);
+
+  const [currentPage, setCurrentPage] = useState(
+    parseInt(searchParams.get("page") || "1"),
+  );
 
   // Function to update URL query params
   const updateUrlParams = useCallback(() => {
     const params = new URLSearchParams();
-    params.set("page", page.toString());
+    params.set("page", currentPage.toString());
     params.set("sortField", sortField);
     params.set("sortOrder", sortOrder);
-    if (filterNotConnected) {
-      params.set("filterNotConnected", "true");
-    } else {
-      params.delete("filterNotConnected");
-    }
+    params.set("filterNotConnected", filterNotConnected.toString());
     router.push(`?${params.toString()}`);
-  }, [page, sortField, sortOrder, filterNotConnected, router]);
+  }, [currentPage, sortField, sortOrder, filterNotConnected, router]);
 
   // Sync state with URL query params
   useEffect(() => {
     updateUrlParams();
-  }, [page, sortField, sortOrder, filterNotConnected, updateUrlParams]);
+  }, [currentPage, sortField, sortOrder, filterNotConnected, updateUrlParams]);
 
   // Get initial data from cache
   const initialData = utils.image.getOwnImages.getData({
     limit: PaginationItemsPerPage.PHOTOS_PER_PAGE,
-    cursor: page,
+    cursor: currentPage,
     sortField,
     sortOrder,
     filterNotConnected,
@@ -181,7 +213,7 @@ function PaginatedView({
   const { data, isLoading, isFetching } = api.image.getOwnImages.useQuery(
     {
       limit: PaginationItemsPerPage.PHOTOS_PER_PAGE,
-      cursor: page,
+      cursor: currentPage,
       sortField,
       sortOrder,
       filterNotConnected,
@@ -212,7 +244,8 @@ function PaginatedView({
       if (
         i === 1 ||
         i === totalPages ||
-        (i >= page - showAroundCurrent && i <= page + showAroundCurrent)
+        (i >= currentPage - showAroundCurrent &&
+          i <= currentPage + showAroundCurrent)
       ) {
         pages.push(i);
       }
@@ -246,7 +279,7 @@ function PaginatedView({
                 image={image satisfies GetOwnImageType}
                 sortField={sortField}
                 currentQuery={{
-                  page: page,
+                  page: currentPage,
                   sortField,
                   sortOrder,
                   filterNotConnected,
@@ -260,8 +293,8 @@ function PaginatedView({
               <PaginationContent>
                 <PaginationItem>
                   <PaginationPrevious
-                    onClick={() => handlePageChange(page - 1)}
-                    disabled={page === 1 || isFetching}
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1 || isFetching}
                   />
                 </PaginationItem>
 
@@ -274,7 +307,7 @@ function PaginatedView({
                     <PaginationItem key={pageNumber}>
                       <PaginationLink
                         onClick={() => handlePageChange(pageNumber as number)}
-                        isActive={pageNumber === page} // Changed to compare with the current page
+                        isActive={pageNumber === currentPage} // Changed to compare with the current page
                         disabled={isFetching}
                       >
                         <p>{pageNumber}</p>
@@ -285,8 +318,8 @@ function PaginatedView({
 
                 <PaginationItem>
                   <PaginationNext
-                    onClick={() => handlePageChange(page + 1)}
-                    disabled={page === totalPages || isFetching}
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages || isFetching}
                   />
                 </PaginationItem>
               </PaginationContent>
@@ -306,7 +339,7 @@ function InfiniteScrollView({
   setIsFetching,
 }: {
   sortField: PhotosSortField;
-  sortOrder: PhotosSortOrder;
+  sortOrder: SortOrder;
   filterNotConnected: boolean;
   setIsFetching: Dispatch<SetStateAction<boolean>>;
 }) {

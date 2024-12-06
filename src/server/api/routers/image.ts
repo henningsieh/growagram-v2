@@ -2,10 +2,11 @@
 import { TRPCError } from "@trpc/server";
 import { and, count, eq, exists, not } from "drizzle-orm";
 import { z } from "zod";
+import { SortOrder } from "~/components/atom/sort-filter-controls";
 import cloudinary from "~/lib/cloudinary";
 import { images, plantImages } from "~/lib/db/schema";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
-import { PhotosSortField, PhotosSortOrder } from "~/types/image";
+import { PhotosSortField } from "~/types/image";
 import { imageSchema } from "~/types/zodSchema";
 
 export const imageRouter = createTRPCRouter({
@@ -19,10 +20,7 @@ export const imageRouter = createTRPCRouter({
             .nativeEnum(PhotosSortField)
             .default(PhotosSortField.UPLOAD_DATE)
             .optional(),
-          sortOrder: z
-            .nativeEnum(PhotosSortOrder)
-            .default(PhotosSortOrder.DESC)
-            .optional(),
+          sortOrder: z.nativeEnum(SortOrder).default(SortOrder.DESC).optional(),
           filterNotConnected: z.boolean().default(false).optional(),
         })
         .default({}),
@@ -32,7 +30,7 @@ export const imageRouter = createTRPCRouter({
       const limit = input?.limit ?? 12;
       const cursor = input?.cursor ?? 1;
       const sortField = input?.sortField ?? PhotosSortField.UPLOAD_DATE;
-      const sortOrder = input?.sortOrder ?? PhotosSortOrder.DESC;
+      const sortOrder = input?.sortOrder ?? SortOrder.DESC;
       const filterNotConnected = input?.filterNotConnected ?? false;
 
       // Calculate offset based on page number
@@ -85,7 +83,7 @@ export const imageRouter = createTRPCRouter({
           return and(...conditions);
         },
         orderBy: (images, { desc, asc }) => [
-          sortOrder === PhotosSortOrder.DESC
+          sortOrder === SortOrder.DESC
             ? desc(images[sortField])
             : asc(images[sortField]),
         ],
