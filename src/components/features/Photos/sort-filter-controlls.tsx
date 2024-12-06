@@ -1,5 +1,6 @@
 // src/components/features/Photos/sort-filter-controlls.tsx:
 import {
+  Infinity,
   ArrowDownWideNarrow,
   ArrowUpNarrowWide,
   Camera,
@@ -10,15 +11,24 @@ import { Button } from "~/components/ui/button";
 import { Label } from "~/components/ui/label";
 import { Switch } from "~/components/ui/switch";
 import { cn } from "~/lib/utils";
-import { ImageSortField, ImageSortOrder } from "~/types/image";
+import {
+  PhotosSortField,
+  PhotosSortOrder,
+  PhotosViewMode,
+} from "~/types/image";
 
 interface ImagesSortFilterControllsProps {
-  sortField: ImageSortField;
-  sortOrder: ImageSortOrder;
+  sortField: PhotosSortField;
+  sortOrder: PhotosSortOrder;
   filterNotConnected: boolean;
   isFetching: boolean;
-  onSortChange: (field: ImageSortField, order: ImageSortOrder) => Promise<void>;
+  onSortChange: (
+    field: PhotosSortField,
+    order: PhotosSortOrder,
+  ) => Promise<void>;
   onFilterChange: (checked: boolean) => void;
+  toggleViewMode: () => void;
+  viewMode: PhotosViewMode;
 }
 
 export default function ImagesSortFilterControlls({
@@ -28,17 +38,19 @@ export default function ImagesSortFilterControlls({
   isFetching,
   onSortChange,
   onFilterChange,
+  toggleViewMode,
+  viewMode,
 }: ImagesSortFilterControllsProps) {
-  const toggleOrder = async (field: ImageSortField) => {
+  const toggleOrder = async (field: PhotosSortField) => {
     if (sortField === field) {
       await onSortChange(
         field,
-        sortOrder === ImageSortOrder.ASC
-          ? ImageSortOrder.DESC
-          : ImageSortOrder.ASC,
+        sortOrder === PhotosSortOrder.ASC
+          ? PhotosSortOrder.DESC
+          : PhotosSortOrder.ASC,
       );
     } else {
-      await onSortChange(field, ImageSortOrder.DESC);
+      await onSortChange(field, PhotosSortOrder.DESC);
     }
   };
 
@@ -47,15 +59,32 @@ export default function ImagesSortFilterControlls({
       <div className="flex w-full items-center space-x-2 sm:justify-start">
         <div className="flex h-8 w-full items-center justify-start gap-2 text-nowrap rounded-sm border-[1px] border-input bg-muted px-1 hover:bg-transparent sm:w-[154px]">
           <Switch
-            size={"big"}
+            size={"default"}
+            id="view-mode"
+            checked={viewMode === PhotosViewMode.INFINITE_SCROLL}
+            onCheckedChange={toggleViewMode}
+          />
+          <Label
+            htmlFor="view-mode"
+            className="text-base font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+          >
+            <div className="flex items-center">
+              <Infinity className="mr-2 h-4 w-4" />
+              Scroll
+            </div>
+          </Label>
+        </div>
+        <div className="flex h-8 w-full items-center justify-start gap-2 text-nowrap rounded-sm border-[1px] border-input bg-muted px-1 hover:bg-transparent sm:w-[154px]">
+          <Switch
+            size={"default"}
             variant={"secondary"}
             id="filter-not-connected"
             checked={filterNotConnected}
             onCheckedChange={onFilterChange}
           />
           <Label
-            className="cursor-pointer text-base"
             htmlFor="filter-not-connected"
+            className="cursor-pointer text-base"
           >
             New only
           </Label>
@@ -68,20 +97,20 @@ export default function ImagesSortFilterControlls({
           size="sm"
           className={cn(
             "flex w-full items-center justify-between gap-1 p-2 sm:w-[154px]",
-            sortField === ImageSortField.UPLOAD_DATE &&
+            sortField === PhotosSortField.UPLOAD_DATE &&
               "border-[1px] border-secondary text-foreground",
           )}
-          onClick={() => toggleOrder(ImageSortField.UPLOAD_DATE)}
+          onClick={() => toggleOrder(PhotosSortField.UPLOAD_DATE)}
         >
           <div className="flex gap-2">
             <UploadCloud className="h-6 w-5" />
             Upload Date
           </div>
-          {isFetching && sortField === ImageSortField.UPLOAD_DATE ? (
+          {isFetching && sortField === PhotosSortField.UPLOAD_DATE ? (
             <Loader2 className="h-6 w-5 animate-spin text-secondary" />
           ) : (
-            sortField === ImageSortField.UPLOAD_DATE &&
-            (sortOrder === ImageSortOrder.DESC ? (
+            sortField === PhotosSortField.UPLOAD_DATE &&
+            (sortOrder === PhotosSortOrder.DESC ? (
               <ArrowDownWideNarrow className="h-6 w-5 text-secondary" />
             ) : (
               <ArrowUpNarrowWide className="h-6 w-5 text-secondary" />
@@ -94,20 +123,20 @@ export default function ImagesSortFilterControlls({
           size="sm"
           className={cn(
             "flex w-full items-center justify-between gap-1 p-2 sm:w-[154px]",
-            sortField === ImageSortField.CAPTURE_DATE &&
+            sortField === PhotosSortField.CAPTURE_DATE &&
               "border-[1px] border-secondary text-foreground",
           )}
-          onClick={() => toggleOrder(ImageSortField.CAPTURE_DATE)}
+          onClick={() => toggleOrder(PhotosSortField.CAPTURE_DATE)}
         >
           <div className="flex gap-2">
             <Camera className="h-6 w-5" />
             Capture Date
           </div>
-          {isFetching && sortField === ImageSortField.CAPTURE_DATE ? (
+          {isFetching && sortField === PhotosSortField.CAPTURE_DATE ? (
             <Loader2 className="h-6 w-5 animate-spin text-secondary" />
           ) : (
-            sortField === ImageSortField.CAPTURE_DATE &&
-            (sortOrder === ImageSortOrder.DESC ? (
+            sortField === PhotosSortField.CAPTURE_DATE &&
+            (sortOrder === PhotosSortOrder.DESC ? (
               <ArrowDownWideNarrow className="h-6 w-5 text-secondary" />
             ) : (
               <ArrowUpNarrowWide className="h-6 w-5 text-secondary" />

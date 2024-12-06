@@ -5,7 +5,7 @@ import { z } from "zod";
 import cloudinary from "~/lib/cloudinary";
 import { images, plantImages } from "~/lib/db/schema";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
-import { ImageSortField, ImageSortOrder } from "~/types/image";
+import { PhotosSortField, PhotosSortOrder } from "~/types/image";
 import { imageSchema } from "~/types/zodSchema";
 
 export const imageRouter = createTRPCRouter({
@@ -16,12 +16,12 @@ export const imageRouter = createTRPCRouter({
           limit: z.number().min(1).max(100).default(12).optional(),
           cursor: z.number().min(1).default(1).optional(),
           sortField: z
-            .nativeEnum(ImageSortField)
-            .default(ImageSortField.UPLOAD_DATE)
+            .nativeEnum(PhotosSortField)
+            .default(PhotosSortField.UPLOAD_DATE)
             .optional(),
           sortOrder: z
-            .nativeEnum(ImageSortOrder)
-            .default(ImageSortOrder.DESC)
+            .nativeEnum(PhotosSortOrder)
+            .default(PhotosSortOrder.DESC)
             .optional(),
           filterNotConnected: z.boolean().default(false).optional(),
         })
@@ -31,8 +31,8 @@ export const imageRouter = createTRPCRouter({
       // Use default values if input is not provided
       const limit = input?.limit ?? 12;
       const cursor = input?.cursor ?? 1;
-      const sortField = input?.sortField ?? ImageSortField.UPLOAD_DATE;
-      const sortOrder = input?.sortOrder ?? ImageSortOrder.DESC;
+      const sortField = input?.sortField ?? PhotosSortField.UPLOAD_DATE;
+      const sortOrder = input?.sortOrder ?? PhotosSortOrder.DESC;
       const filterNotConnected = input?.filterNotConnected ?? false;
 
       // Calculate offset based on page number
@@ -85,7 +85,7 @@ export const imageRouter = createTRPCRouter({
           return and(...conditions);
         },
         orderBy: (images, { desc, asc }) => [
-          sortOrder === ImageSortOrder.DESC
+          sortOrder === PhotosSortOrder.DESC
             ? desc(images[sortField])
             : asc(images[sortField]),
         ],

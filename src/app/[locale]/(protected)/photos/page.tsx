@@ -3,14 +3,13 @@
 // src/app/[locale]/(protected)/photos/page.tsx:
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { PaginationItemsPerPage } from "~/assets/constants";
+import { PaginationItemsPerPage, modulePaths } from "~/assets/constants";
 import InfiniteScrollLoader from "~/components/Layouts/InfiniteScrollLoader";
 import SpinningLoader from "~/components/Layouts/loader";
 import PageHeader from "~/components/Layouts/page-header";
 import ResponsiveGrid from "~/components/Layouts/responsive-grid";
 import PhotoCard from "~/components/features/Photos/photo-card";
 import ImagesSortFilterControlls from "~/components/features/Photos/sort-filter-controlls";
-import { Button } from "~/components/ui/button";
 import {
   Pagination,
   PaginationContent,
@@ -20,35 +19,35 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "~/components/ui/pagination";
+import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import {
   GetOwnImageType,
   GetOwnImagesInput,
   GetOwnImagesType,
 } from "~/server/api/root";
-import { ImageSortField, ImageSortOrder } from "~/types/image";
-
-// Define view mode enum
-enum ViewMode {
-  PAGINATION = "pagination",
-  INFINITE_SCROLL = "infinite-scroll",
-}
+import {
+  PhotosSortField,
+  PhotosSortOrder,
+  PhotosViewMode,
+} from "~/types/image";
 
 export default function AllImagesPage() {
   const searchParams = useSearchParams();
 
   // Manage view mode state
-  const [viewMode, setViewMode] = useState<ViewMode>(
-    (localStorage.getItem("photoViewMode") as ViewMode) || ViewMode.PAGINATION,
+  const [viewMode, setViewMode] = useState<PhotosViewMode>(
+    (localStorage.getItem("photoViewMode") as PhotosViewMode) ||
+      PhotosViewMode.PAGINATION,
   );
 
   // Shared state for sorting and filtering
-  const [sortField, setSortField] = useState<ImageSortField>(
-    (searchParams.get("sortField") as ImageSortField) ||
-      ImageSortField.UPLOAD_DATE,
+  const [sortField, setSortField] = useState<PhotosSortField>(
+    (searchParams.get("sortField") as PhotosSortField) ||
+      PhotosSortField.UPLOAD_DATE,
   );
-  const [sortOrder, setSortOrder] = useState<ImageSortOrder>(
-    (searchParams.get("sortOrder") as ImageSortOrder) || ImageSortOrder.DESC,
+  const [sortOrder, setSortOrder] = useState<PhotosSortOrder>(
+    (searchParams.get("sortOrder") as PhotosSortOrder) || PhotosSortOrder.DESC,
   );
   const [filterNotConnected, setFilterNotConnected] = useState(
     searchParams.get("filterNotConnected") === "true",
@@ -57,9 +56,9 @@ export default function AllImagesPage() {
   // Toggle view mode function
   const toggleViewMode = () => {
     const newMode =
-      viewMode === ViewMode.PAGINATION
-        ? ViewMode.INFINITE_SCROLL
-        : ViewMode.PAGINATION;
+      viewMode === PhotosViewMode.PAGINATION
+        ? PhotosViewMode.INFINITE_SCROLL
+        : PhotosViewMode.PAGINATION;
 
     localStorage.setItem("photoViewMode", newMode);
     setViewMode(newMode);
@@ -71,8 +70,8 @@ export default function AllImagesPage() {
   //   setSortOrder(order);
   // };
   const handleSortChange = async (
-    field: ImageSortField,
-    order: ImageSortOrder,
+    field: PhotosSortField,
+    order: PhotosSortOrder,
   ) => {
     setSortField(field);
     setSortOrder(order);
@@ -100,14 +99,11 @@ export default function AllImagesPage() {
         onSortChange={handleSortChange}
         onFilterChange={handleFilterChange}
         isFetching={false}
+        toggleViewMode={toggleViewMode}
+        viewMode={viewMode}
       />
 
-      <Button onClick={toggleViewMode} className="btn btn-secondary">
-        Switch to{" "}
-        {viewMode === ViewMode.PAGINATION ? "Infinite Scroll" : "Pagination"}
-      </Button>
-
-      {viewMode === ViewMode.PAGINATION ? (
+      {viewMode === PhotosViewMode.PAGINATION ? (
         <PaginatedView
           sortField={sortField}
           sortOrder={sortOrder}
@@ -130,17 +126,37 @@ function PaginatedView({
   sortOrder,
   filterNotConnected,
 }: {
-  sortField: ImageSortField;
-  sortOrder: ImageSortOrder;
+  sortField: PhotosSortField;
+  sortOrder: PhotosSortOrder;
   filterNotConnected: boolean;
 }) {
-  const [cursor, setCurrentPage] = useState(1);
+  const router = useRouter();
   const utils = api.useUtils();
+  const [page, setCurrentPage] = useState(1);
+
+  // Function to update URL query params
+  const updateUrlParams = useCallback(() => {
+    const params = new URLSearchParams();
+    params.set("page", page.toString());
+    params.set("sortField", sortField);
+    params.set("sortOrder", sortOrder);
+    if (filterNotConnected) {
+      params.set("filterNotConnected", "true");
+    } else {
+      params.delete("filterNotConnected");
+    }
+    router.push(`?${params.toString()}`);
+  }, [page, sortField, sortOrder, filterNotConnected, router]);
+
+  // Sync state with URL query params
+  useEffect(() => {
+    updateUrlParams();
+  }, [page, sortField, sortOrder, filterNotConnected, updateUrlParams]);
 
   // Prefetch data
   const prefetchedImagesFromCache = utils.image.getOwnImages.getData({
     limit: PaginationItemsPerPage.PHOTOS_PER_PAGE,
-    cursor,
+    cursor: page,
     sortField,
     sortOrder,
     filterNotConnected,
@@ -150,7 +166,7 @@ function PaginatedView({
   const { data, isLoading, isFetching } = api.image.getOwnImages.useQuery(
     {
       limit: PaginationItemsPerPage.PHOTOS_PER_PAGE,
-      cursor,
+      cursor: page,
       sortField,
       sortOrder,
       filterNotConnected,
@@ -177,7 +193,7 @@ function PaginatedView({
       if (
         i === 1 ||
         i === totalPages ||
-        (i >= cursor - showAroundCurrent && i <= cursor + showAroundCurrent)
+        (i >= page - showAroundCurrent && i <= page + showAroundCurrent)
       ) {
         pages.push(i);
       }
@@ -211,7 +227,7 @@ function PaginatedView({
                 image={image satisfies GetOwnImageType}
                 sortField={sortField}
                 currentQuery={{
-                  page: cursor,
+                  page: page,
                   sortField,
                   sortOrder,
                   filterNotConnected,
@@ -225,24 +241,24 @@ function PaginatedView({
               <PaginationContent>
                 <PaginationItem>
                   <PaginationPrevious
-                    onClick={() => handlePageChange(cursor - 1)}
-                    disabled={cursor === 1 || isFetching}
+                    onClick={() => handlePageChange(page - 1)}
+                    disabled={page === 1 || isFetching}
                   />
                 </PaginationItem>
 
-                {getPaginationNumbers().map((page, index) =>
-                  page === "..." ? (
+                {getPaginationNumbers().map((pageNumber, index) =>
+                  pageNumber === "..." ? (
                     <PaginationItem key={`ellipsis-${index}`}>
                       <PaginationEllipsis />
                     </PaginationItem>
                   ) : (
-                    <PaginationItem key={page}>
+                    <PaginationItem key={pageNumber}>
                       <PaginationLink
-                        onClick={() => handlePageChange(page as number)}
-                        isActive={cursor === page}
+                        onClick={() => handlePageChange(pageNumber as number)}
+                        isActive={pageNumber === page} // Changed to compare with the current page
                         disabled={isFetching}
                       >
-                        <p>{page}</p>
+                        <p>{pageNumber}</p>
                       </PaginationLink>
                     </PaginationItem>
                   ),
@@ -250,8 +266,8 @@ function PaginatedView({
 
                 <PaginationItem>
                   <PaginationNext
-                    onClick={() => handlePageChange(cursor + 1)}
-                    disabled={cursor === totalPages || isFetching}
+                    onClick={() => handlePageChange(page + 1)}
+                    disabled={page === totalPages || isFetching}
                   />
                 </PaginationItem>
               </PaginationContent>
@@ -269,11 +285,18 @@ function InfiniteScrollView({
   sortOrder,
   filterNotConnected,
 }: {
-  sortField: ImageSortField;
-  sortOrder: ImageSortOrder;
+  sortField: PhotosSortField;
+  sortOrder: PhotosSortOrder;
   filterNotConnected: boolean;
 }) {
+  const router = useRouter();
   const utils = api.useUtils();
+
+  useEffect(() => {
+    router.replace(
+      modulePaths.PHOTOS.path, // Use only the base path
+    );
+  }, [router]);
 
   // Get initial data from cache
   const initialData = utils.image.getOwnImages.getInfiniteData({

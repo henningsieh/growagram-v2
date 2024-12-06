@@ -38,15 +38,15 @@ import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import { cn, formatDate, formatTime } from "~/lib/utils";
 import { GetOwnImageType } from "~/server/api/root";
-import { ImageSortField, ImageSortOrder } from "~/types/image";
+import { PhotosSortField, PhotosSortOrder } from "~/types/image";
 
 interface PhotoCardProps {
   image: GetOwnImageType;
-  sortField: ImageSortField;
+  sortField: PhotosSortField;
   currentQuery: {
     page: number;
-    sortField: ImageSortField;
-    sortOrder: ImageSortOrder;
+    sortField: PhotosSortField;
+    sortOrder: PhotosSortOrder;
     filterNotConnected: boolean;
   };
 }
@@ -168,7 +168,7 @@ export default function PhotoCard({
               <p
                 className={cn(
                   "flex items-center gap-2 px-1",
-                  sortField === ImageSortField.UPLOAD_DATE
+                  sortField === PhotosSortField.UPLOAD_DATE
                     ? "text-secondary"
                     : "text-accent-foreground",
                 )}
@@ -190,7 +190,7 @@ export default function PhotoCard({
               <p
                 className={cn(
                   "flex items-center gap-2 px-1",
-                  sortField === ImageSortField.CAPTURE_DATE
+                  sortField === PhotosSortField.CAPTURE_DATE
                     ? "text-secondary"
                     : "text-accent-foreground",
                 )}
@@ -239,7 +239,7 @@ export default function PhotoCard({
               ) : (
                 <Flower2 size={20} />
               )}
-              {!!!image.plantImages.length ? "Identify Plants" : "Edit Plants"}
+              {!!!image.plantImages.length ? "Select Plants" : "Edit Plants"}
             </Link>
           </Button>
         </CardFooter>
