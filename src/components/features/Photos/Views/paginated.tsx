@@ -1,5 +1,6 @@
 "use client";
 
+// src/components/features/Photos/Views/paginated.tsx:
 import { useSearchParams } from "next/navigation";
 import {
   Dispatch,

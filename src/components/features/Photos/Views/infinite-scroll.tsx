@@ -1,5 +1,6 @@
 "use client";
 
+// src/components/features/Photos/Views/infinite-scroll.tsx:
 import {
   Dispatch,
   SetStateAction,
