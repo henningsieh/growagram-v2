@@ -2,6 +2,7 @@
 import { TRPCError } from "@trpc/server";
 import { and, count, eq, exists, not } from "drizzle-orm";
 import { z } from "zod";
+import { PaginationItemsPerPage } from "~/assets/constants";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
 import cloudinary from "~/lib/cloudinary";
 import { images, plantImages } from "~/lib/db/schema";
@@ -14,8 +15,13 @@ export const imageRouter = createTRPCRouter({
     .input(
       z
         .object({
-          limit: z.number().min(1).max(100).default(12).optional(),
           cursor: z.number().min(1).default(1).optional(),
+          limit: z
+            .number()
+            .min(1)
+            .max(100)
+            .default(PaginationItemsPerPage.PHOTOS_PER_PAGE)
+            .optional(),
           sortField: z
             .nativeEnum(PhotosSortField)
             .default(PhotosSortField.UPLOAD_DATE)
@@ -197,7 +203,7 @@ export const imageRouter = createTRPCRouter({
           captureDate: input.captureDate,
           originalFilename: input.originalFilename,
         })
-        // .onConflictDoUpdate() // ToDo!!!
+        // .onConflictDoUpdate() // TODO: ?
         .returning();
 
       if (!newImage) {

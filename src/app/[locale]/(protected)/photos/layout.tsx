@@ -18,6 +18,7 @@ export default async function PhotosLayout({
   // Prefetch initial data with default sorting for the first page
 
   await api.image.getOwnImages.prefetchInfinite({
+    cursor: 1,
     limit: PaginationItemsPerPage.PHOTOS_PER_PAGE,
     sortField: PhotosSortField.UPLOAD_DATE,
     sortOrder: SortOrder.DESC,
@@ -25,6 +26,7 @@ export default async function PhotosLayout({
   } satisfies GetOwnImagesInput);
 
   await api.image.getOwnImages.prefetch({
+    cursor: 1,
     limit: PaginationItemsPerPage.PHOTOS_PER_PAGE,
     sortField: PhotosSortField.UPLOAD_DATE,
     sortOrder: SortOrder.DESC,
