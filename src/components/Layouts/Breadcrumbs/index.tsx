@@ -23,7 +23,7 @@ export function NavigationBreadcrumb({ className }: NavigationBreadcrumbProps) {
       <BreadcrumbList>
         <BreadcrumbItem className="hidden md:block">
           <BreadcrumbLink asChild>
-            <Link href="/dashboard">{t("Platform.Dashboard-title")}abc</Link>
+            <Link href="/dashboard">{t("Platform.Dashboard-title")}</Link>
           </BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator className="hidden md:block" />
