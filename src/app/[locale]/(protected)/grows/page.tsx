@@ -13,149 +13,102 @@ import {
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import { PaginationItemsPerPage } from "~/assets/constants";
-import SpinningLoader from "~/components/Layouts/loader";
 import PageHeader from "~/components/Layouts/page-header";
-import ResponsiveGrid from "~/components/Layouts/responsive-grid";
 import {
   SortFilterControls,
   SortOrder,
 } from "~/components/atom/sort-filter-controls";
-import { GrowCard } from "~/components/features/Grows/grow-card";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "~/components/ui/pagination";
+import InfiniteScrollGrowsView from "~/components/features/Grows/Views/infinite-scroll";
+import PaginatedGrowsView from "~/components/features/Grows/Views/paginated";
 import { useRouter } from "~/lib/i18n/routing";
-import { api } from "~/lib/trpc/react";
-import { GetOwnGrowsInput } from "~/server/api/root";
 import { GrowsSortField, GrowsViewMode } from "~/types/grow";
 
 export default function MyGrowsPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const t = useTranslations("Grows");
 
-  // Initialize state from URL query params
-  const [currentPage, setCurrentPage] = useState(
-    parseInt(searchParams.get("page") || "1"),
-  );
-
-  // State for sorting
-  const [sortField, setSortField] = useState<GrowsSortField>(
-    GrowsSortField.NAME,
-  );
-  const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.ASC);
+  // Manage view mode state
   const [viewMode, setViewMode] = useState<GrowsViewMode>(
-    GrowsViewMode.PAGINATION,
+    (localStorage.getItem("growViewMode") as GrowsViewMode) ||
+      GrowsViewMode.PAGINATION,
   );
 
-  const utils = api.useUtils();
-
-  const queryObject = {
-    cursor: currentPage,
-    limit: PaginationItemsPerPage.GROWS_PER_PAGE,
-    sortField,
-    sortOrder,
-  } satisfies GetOwnGrowsInput;
-
-  // Get the prefetched data from the cache
-  const initialData = utils.grow.getOwnGrows.getData(queryObject);
-
-  // Load own grows from database
-  const { data, isLoading, isFetching } = api.grow.getOwnGrows.useQuery(
-    queryObject,
-    {
-      initialData,
-    },
+  // Shared state for sorting
+  const [sortField, setSortField] = useState<GrowsSortField>(
+    (searchParams.get("sortField") as GrowsSortField) || GrowsSortField.NAME,
   );
-
-  const userGrows = data?.grows ?? [];
-  const totalPages = data?.totalPages ?? 1;
+  const [sortOrder, setSortOrder] = useState<SortOrder>(
+    (searchParams.get("sortOrder") as SortOrder) || SortOrder.ASC,
+  );
+  const [isFetching, setIsFetching] = useState<boolean>(false);
 
   // Update URL parameters
   const updateUrlParams = useCallback(() => {
-    const params = new URLSearchParams();
-    params.set("page", currentPage.toString());
+    const params = new URLSearchParams(searchParams.toString());
+
+    // Only include page parameter for pagination mode
+    if (viewMode === GrowsViewMode.PAGINATION) {
+      params.set("page", searchParams.get("page") || "1");
+    } else {
+      // Remove page parameter for infinite scroll
+      params.delete("page");
+    }
+
     params.set("sortField", sortField);
     params.set("sortOrder", sortOrder);
-    router.push(`?${params.toString()}`);
-  }, [currentPage, router, sortField, sortOrder]);
+
+    // Only push to URL if there are parameters
+    const paramsString = params.toString();
+    router.push(paramsString ? `?${paramsString}` : "");
+  }, [searchParams, sortField, sortOrder, router, viewMode]);
 
   // Sync state with URL
   useEffect(() => {
     updateUrlParams();
-  }, [currentPage, sortField, sortOrder, updateUrlParams]);
+  }, [sortField, sortOrder, viewMode, updateUrlParams]);
 
-  // Handle sorting changes
+  // Toggle view mode function
+  const toggleViewMode = () => {
+    const newMode =
+      viewMode === GrowsViewMode.PAGINATION
+        ? GrowsViewMode.INFINITE_SCROLL
+        : GrowsViewMode.PAGINATION;
+    localStorage.setItem("growViewMode", newMode);
+    setViewMode(newMode);
+  };
+
+  // Shared handler for sort changes
   const handleSortChange = (field: GrowsSortField, order: SortOrder) => {
     setSortField(field);
     setSortOrder(order);
-    // Reset to first page when sorting changes
-    setCurrentPage(1);
   };
 
+  // Define sort options
   const sortOptions = [
     {
       field: GrowsSortField.NAME,
       label: "Name",
-      icon: <Tag className="h-6 w-5" />,
+      icon: <Tag className="h-5 w-5" />,
       sortIconAsc: ArrowDownAZ,
       sortIconDesc: ArrowDownZA,
     },
     {
       field: GrowsSortField.CREATED_AT,
-      label: "Created Date",
-      icon: <Calendar className="h-6 w-5" />,
+      label: t("sort-grows-createdAt"),
+      icon: <Calendar className="h-5 w-5" />,
       sortIconAsc: ArrowDown01,
       sortIconDesc: ArrowDown10,
     },
   ];
 
-  // Handle page changes
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
-
-  // Generate pagination numbers
-  const getPaginationNumbers = () => {
-    const pages: number[] = [];
-    const showAroundCurrent = 2;
-
-    for (let i = 1; i <= totalPages; i++) {
-      if (
-        i === 1 ||
-        i === totalPages ||
-        (i >= currentPage - showAroundCurrent &&
-          i <= currentPage + showAroundCurrent)
-      ) {
-        pages.push(i);
-      }
-    }
-
-    return pages.reduce((acc: (number | string)[], page, index, array) => {
-      if (index > 0 && array[index - 1] !== page - 1) {
-        acc.push("...");
-      }
-      acc.push(page);
-      return acc;
-    }, []);
-  };
-
-  const t = useTranslations("Grows");
-
   return (
     <PageHeader
-      title="My Grows"
-      subtitle="View and manage your current grows"
+      title={t("mygrows-page-title")}
+      subtitle={t("mygrows-page-subtitle")}
       buttonLink="/grows/new/form"
-      buttonLabel="Create New Grow"
+      buttonLabel={t("buttonLabel-create-grow")}
     >
-      {/* Sorting controls */}
       <SortFilterControls
         isFetching={isFetching}
         sortField={sortField}
@@ -171,67 +124,21 @@ export default function MyGrowsPage() {
           label: "Scroll",
           icon: <Infinity className="mr-2 h-4 w-4" />,
         }}
-        onViewModeToggle={() =>
-          setViewMode(
-            viewMode === GrowsViewMode.PAGINATION
-              ? GrowsViewMode.INFINITE_SCROLL
-              : GrowsViewMode.PAGINATION,
-          )
-        }
+        onViewModeToggle={toggleViewMode}
       />
 
-      {!isFetching && userGrows.length === 0 ? (
-        <p className="mt-8 text-center text-muted-foreground">
-          {t("no-grows-yet")}
-        </p>
-      ) : isLoading ? (
-        <SpinningLoader className="text-secondary" />
+      {viewMode === GrowsViewMode.PAGINATION ? (
+        <PaginatedGrowsView
+          sortField={sortField}
+          sortOrder={sortOrder}
+          setIsFetching={setIsFetching}
+        />
       ) : (
-        <>
-          <ResponsiveGrid>
-            {userGrows.map((grow) => (
-              <GrowCard key={grow.id} grow={grow} />
-            ))}
-          </ResponsiveGrid>
-
-          <div className="mt-8 flex justify-center">
-            <Pagination>
-              <PaginationContent>
-                <PaginationItem>
-                  <PaginationPrevious
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 1 || isFetching}
-                  />
-                </PaginationItem>
-
-                {getPaginationNumbers().map((page, index) =>
-                  page === "..." ? (
-                    <PaginationItem key={`ellipsis-${index}`}>
-                      <PaginationEllipsis />
-                    </PaginationItem>
-                  ) : (
-                    <PaginationItem key={page}>
-                      <PaginationLink
-                        onClick={() => handlePageChange(page as number)}
-                        isActive={currentPage === page}
-                        disabled={isFetching}
-                      >
-                        <p>{page}</p>
-                      </PaginationLink>
-                    </PaginationItem>
-                  ),
-                )}
-
-                <PaginationItem>
-                  <PaginationNext
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === totalPages || isFetching}
-                  />
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
-          </div>
-        </>
+        <InfiniteScrollGrowsView
+          sortField={sortField}
+          sortOrder={sortOrder}
+          setIsFetching={setIsFetching}
+        />
       )}
     </PageHeader>
   );
