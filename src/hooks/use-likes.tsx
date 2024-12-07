@@ -5,7 +5,7 @@ export const useLikeStatus = (
   entityId: string,
   entityType: "plant" | "image",
 ) => {
-  const [isLiked, setIsLiked] = useState(false);
+  const [userHasLiked, setUserHasLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
 
   const likeCountQuery = api.likes.getLikeCount.useQuery({
@@ -25,14 +25,12 @@ export const useLikeStatus = (
         (like) => like.entityId === entityId,
       );
 
-      setIsLiked(!!userLikedEntity);
+      setUserHasLiked(!!userLikedEntity);
     }
   }, [likeCountQuery.data, userLikesQuery.data, entityId, entityType]);
 
-  console.debug(isLiked, likeCount);
-
   return {
-    isLiked,
+    isLiked: userHasLiked,
     likeCount,
     isLoading: likeCountQuery.isLoading || userLikesQuery.isLoading,
   };
