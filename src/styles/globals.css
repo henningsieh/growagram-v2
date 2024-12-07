@@ -15,12 +15,12 @@ body {
 
 @layer base {
   :root {
-    --planted: 45 93.4% 47.5%; /* yello-500 */
-    --seedling: 293 69.5% 48.8%; /* fuchsia-600 */
-    --vegetation: 142 71.8% 29.2%; /* green-700 */
-    --flowering: 350 89.2% 60.2%; /* rose-600 */
-    --harvest: 25 95% 53.1%; /* orange-500 */
-    --curing: 221 83.2% 53.3%; /* blue-600 */
+    --planted: 40.6 96.1% 40.4%; /* yellow-600 */
+    --seedling: 293.4 69.5% 48.8%; /* fuchsia-600 */
+    --vegetation: 142.4 71.8% 29.2%; /* green-700 */
+    --flowering: 349.7 89.2% 60.2%; /* rose-500 */
+    --harvest: 24.6 95% 53.1%; /* orange-500 */
+    --curing: 221.2 83.2% 53.3%; /* blue-600 */
 
     --background: 0 0% 95%;
     --foreground: 240 10% 20%;
@@ -53,12 +53,12 @@ body {
     --sidebar-ring: 120 61% 34%;
   }
   .dark {
-    --planted: 41 96.1% 40.4%; /* yello-600 */
-    --seedling: 292 84.1% 60.6%; /* fuchsia-500 */
-    --vegetation: 142 71.8% 29.2%; /* green-700 */
-    --flowering: 350 89.2% 60.2%; /* rose-500 */
-    --harvest: 25 95% 53.1%; /* orange-500 */
-    --curing: 217 91.2% 59.8%; /* blue-500 */
+    --planted: 47.9 95.8% 53.1%; /* yellow-400 */
+    --seedling: 292 91.4% 72.5%; /* fuchsia-400 */
+    --vegetation: 142.1 70.6% 45.3%; /* green-500 */
+    --flowering: 349.7 89.2% 60.2%; /* rose-500 */
+    --harvest: 24.6 95% 53.1%; /* orange-500 */
+    --curing: 217.2 91.2% 59.8%; /* blue-500 */
 
     --background: 240 5.9% 10%;
     --foreground: 0 0% 98%;

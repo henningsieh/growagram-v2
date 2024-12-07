@@ -1,7 +1,8 @@
 // src/components/features/Photos/photo-card.tsx:
 import {
   Camera,
-  Flower2,
+  Edit,
+  Edit2,
   Loader2,
   Maximize,
   Minimize,
@@ -206,7 +207,7 @@ export default function PhotoCard({
           <Button
             variant="destructive"
             size={"sm"}
-            className="w-20"
+            className="w-16"
             onClick={handleDelete}
             disabled={deleteMutation.isPending}
           >
@@ -219,7 +220,7 @@ export default function PhotoCard({
           <Button
             asChild
             size={"sm"}
-            className="w-full"
+            className="w-full text-base"
             variant={!!!image.plantImages.length ? "primary" : "outline"}
           >
             <Link
@@ -231,7 +232,7 @@ export default function PhotoCard({
               {!!!image.plantImages.length ? (
                 <Search size={20} />
               ) : (
-                <Flower2 size={20} />
+                <Edit size={20} />
               )}
               {!!!image.plantImages.length ? "Select Plants" : "Edit Plants"}
             </Link>
