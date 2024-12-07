@@ -53,7 +53,7 @@ export function GrowPlantCard({ plant }: PlantCardProps) {
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <CardContent className="p-4">
+        <CardContent className="px-4 py-2">
           <div className="mb-2 flex items-center justify-between">
             <h4 className="text-lg font-semibold">
               {plant.strain ? plant.strain.name : plant.name}
@@ -134,7 +134,7 @@ export function GrowPlantCard({ plant }: PlantCardProps) {
         <CardFooter className="flex w-full justify-end p-0">
           <Link href={`/plants/${plant.id}/form`}>
             <Button size={"sm"} variant={"link"}>
-              edit plant
+              edit
             </Button>
           </Link>
         </CardFooter>

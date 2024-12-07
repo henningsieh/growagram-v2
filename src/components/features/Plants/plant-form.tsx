@@ -1,11 +1,20 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, Sprout } from "lucide-react";
+import {
+  Flower2,
+  Leaf,
+  Loader2,
+  Nut,
+  PillBottle,
+  Sprout,
+  Wheat,
+} from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { PaginationItemsPerPage } from "~/assets/constants";
 import FormContent from "~/components/Layouts/form-content";
 import PageHeader from "~/components/Layouts/page-header";
 import { Button } from "~/components/ui/button";
@@ -30,7 +39,7 @@ import { Input } from "~/components/ui/input";
 import { useToast } from "~/hooks/use-toast";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
-import { CreateOrEditPlantInput } from "~/server/api/root";
+import { CreateOrEditPlantInput, GetOwnPlantsInput } from "~/server/api/root";
 import { Plant } from "~/types/db";
 import { plantSchema } from "~/types/zodSchema";
 
@@ -70,11 +79,13 @@ export default function PlantFormPage({ plant }: { plant?: Plant }) {
         description: "Your plant has been saved.",
       });
 
-      // Reset and prefetch the infinite query
+      // Reset the infinite query
       await utils.plant.getOwnPlants.reset();
-      await utils.plant.getOwnPlants.prefetchInfinite(
-        { limit: 12 }, // match the limit from /plants/page.tsx
-      );
+      // Prefetch initial OwnPlants infinite query into cache
+      await utils.plant.getOwnPlants.prefetchInfinite({
+        limit: PaginationItemsPerPage.PLANTS_PER_PAGE,
+      } satisfies GetOwnPlantsInput);
+
       // Now navigate
       router.push("/plants");
     },
@@ -149,7 +160,7 @@ export default function PlantFormPage({ plant }: { plant?: Plant }) {
                           field={field}
                           label={t("planting-date")}
                           description="When did you plant the seed?"
-                          icon={Sprout}
+                          icon={Nut}
                           iconClassName="text-planted"
                         />
                       )}
@@ -179,7 +190,7 @@ export default function PlantFormPage({ plant }: { plant?: Plant }) {
                           field={field}
                           label={t("vegetation-start-date")}
                           description="When did rapid leaf growth start?"
-                          icon={Sprout}
+                          icon={Leaf}
                           iconClassName="text-vegetation"
                         />
                       )}
@@ -193,7 +204,7 @@ export default function PlantFormPage({ plant }: { plant?: Plant }) {
                           field={field}
                           label={t("flowering-start-date")}
                           description="When did you see the first buds?"
-                          icon={Sprout}
+                          icon={Flower2}
                           iconClassName="text-flowering"
                         />
                       )}
@@ -209,7 +220,7 @@ export default function PlantFormPage({ plant }: { plant?: Plant }) {
                           field={field}
                           label={t("harvest-date")}
                           description="When did you cut down your plant?"
-                          icon={Sprout}
+                          icon={Wheat}
                           iconClassName="text-harvest"
                         />
                       )}
@@ -222,7 +233,7 @@ export default function PlantFormPage({ plant }: { plant?: Plant }) {
                           field={field}
                           label={t("curing-start-date")}
                           description="When did you start the curing process?"
-                          icon={Sprout}
+                          icon={PillBottle}
                           iconClassName="text-curing"
                         />
                       )}

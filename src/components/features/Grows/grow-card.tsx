@@ -1,19 +1,17 @@
 "use client";
 
-import { format } from "date-fns";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ChartColumn,
   Edit,
-  Edit2,
   Heart,
   MessageCircle,
   Share,
+  Tag,
   Trash2,
   User2,
 } from "lucide-react";
-import { User } from "next-auth";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useState } from "react";
 import headerImagePlaceholder from "~/assets/landscape-placeholdersvg.svg";
@@ -25,9 +23,11 @@ import {
   CardDescription,
   CardFooter,
   CardHeader,
+  CardTitle,
 } from "~/components/ui/card";
 import { Separator } from "~/components/ui/separator";
 import { Link } from "~/lib/i18n/routing";
+import { DateFormatOptions, formatDate } from "~/lib/utils";
 import { GetOwnGrowType } from "~/server/api/root";
 
 import { GrowPlantCard } from "./grow-plant-card";
@@ -52,6 +52,7 @@ export function GrowCard({
   const [isImageHovered, setIsImageHovered] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
 
+  const locale = useLocale();
   const t = useTranslations("Grows");
 
   return (
@@ -101,17 +102,32 @@ export function GrowCard({
 
       <CardContent className="grid flex-grow grid-rows-[auto,1fr,auto] gap-4 p-4">
         <div>
-          <h3 className="text-xl font-bold">{grow.name}</h3>
-          <CardDescription>
-            <span className="block">
-              Started on {format(grow.createdAt, "PPP")}
-            </span>
-            {grow.updatedAt && (
+          <CardHeader className="p-0">
+            <CardTitle level="h3">
+              <div className="flex w-full items-center gap-2">
+                <Tag size={20} />
+                <h3 className="text-xl font-bold">{grow.name}</h3>
+              </div>
+            </CardTitle>
+            <CardDescription>
               <span className="block">
-                Last updated {format(grow.updatedAt, "PPP")}
+                {t("grow-card-createdAt")}:{" "}
+                {formatDate(grow.createdAt, locale, {
+                  weekday: "short",
+                  month: "long",
+                } as DateFormatOptions)}
               </span>
-            )}
-          </CardDescription>
+              {grow.updatedAt && (
+                <span className="block">
+                  {t("grow-card-updatedAt")}:{" "}
+                  {formatDate(grow.updatedAt, locale, {
+                    weekday: "short",
+                    month: "long",
+                  } as DateFormatOptions)}
+                </span>
+              )}
+            </CardDescription>
+          </CardHeader>
         </div>
 
         <div className="space-y-4">

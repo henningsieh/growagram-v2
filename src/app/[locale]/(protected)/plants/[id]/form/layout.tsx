@@ -17,7 +17,7 @@ export default async function PlantsLayout({
 
   if (plantId !== "new") {
     //prefetch Grow to cache
-    await api.grow.getById.prefetch({
+    await api.plant.getById.prefetch({
       id: plantId,
     } satisfies GetPlantByIdInput);
   }

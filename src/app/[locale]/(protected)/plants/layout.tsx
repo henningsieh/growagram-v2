@@ -12,7 +12,7 @@ export default async function PlantsLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // Prefetch initial own plants data
+  // Prefetch initial own plants data server-side
   await api.plant.getOwnPlants.prefetchInfinite({
     limit: PaginationItemsPerPage.PLANTS_PER_PAGE,
   } satisfies GetOwnPlantsInput);

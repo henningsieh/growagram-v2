@@ -6,6 +6,7 @@ import {
   Leaf,
   Loader2,
   Nut,
+  PillBottle,
   Sprout,
   Trash2,
   Wheat,
@@ -219,7 +220,7 @@ export default function PlantCard({ plant }: PlantCardProps) {
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger className="flex cursor-default items-center font-mono text-sm font-semibold tracking-tighter">
-                    <Wheat className="mr-2 h-4 w-4 text-curing" />
+                    <PillBottle className="mr-2 h-4 w-4 text-curing" />
                     {plant.curingPhaseStart &&
                       formatDate(plant.curingPhaseStart, locale)}
                   </TooltipTrigger>

@@ -291,9 +291,15 @@ export default function GrowFormPage({ grow }: { grow?: GetOwnGrowType }) {
 
   return (
     <PageHeader
-      title={grow === undefined ? t("page-title-new") : t("page-title-edit")}
+      title={
+        grow === undefined
+          ? t("form-page-title-new")
+          : t("form-page-title-edit")
+      }
       subtitle={
-        grow === undefined ? t("page-subtitle-new") : t("page-subtitle-edit")
+        grow === undefined
+          ? t("form-page-subtitle-new")
+          : t("form-page-subtitle-edit")
       }
     >
       <FormContent>
