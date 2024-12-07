@@ -6,7 +6,7 @@ import { PaginationItemsPerPage } from "~/assets/constants";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
 import { grows, plants } from "~/lib/db/schema";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
-import { GrowSortField } from "~/types/grow";
+import { GrowsSortField } from "~/types/grow";
 import { growSchema } from "~/types/zodSchema";
 
 export const growRouter = createTRPCRouter({
@@ -24,8 +24,8 @@ export const growRouter = createTRPCRouter({
             .default(PaginationItemsPerPage.GROWS_PER_PAGE)
             .optional(),
           sortField: z
-            .nativeEnum(GrowSortField)
-            .default(GrowSortField.CREATED_AT)
+            .nativeEnum(GrowsSortField)
+            .default(GrowsSortField.CREATED_AT)
             .optional(),
           sortOrder: z.nativeEnum(SortOrder).default(SortOrder.DESC).optional(),
         })
@@ -35,7 +35,7 @@ export const growRouter = createTRPCRouter({
       // Use default values if input is not provided
       const limit = input?.limit ?? PaginationItemsPerPage.GROWS_PER_PAGE;
       const cursor = input?.cursor ?? 1;
-      const sortField = input?.sortField ?? GrowSortField.CREATED_AT;
+      const sortField = input?.sortField ?? GrowsSortField.CREATED_AT;
       const sortOrder = input?.sortOrder ?? SortOrder.DESC;
 
       // Calculate offset based on page number

@@ -48,7 +48,7 @@ import {
   GrowConnectPlantInput,
   GrowDisconnectPlantInput,
 } from "~/server/api/root";
-import { GrowSortField } from "~/types/grow";
+import { GrowsSortField } from "~/types/grow";
 import { growSchema } from "~/types/zodSchema";
 
 type FormValues = z.infer<typeof growSchema>;
@@ -240,7 +240,7 @@ export default function GrowFormPage({ grow }: { grow?: GetOwnGrowType }) {
         const queryObject = {
           cursor: 1,
           limit: PaginationItemsPerPage.GROWS_PER_PAGE,
-          sortField: GrowSortField.NAME,
+          sortField: GrowsSortField.NAME,
           sortOrder: SortOrder.ASC,
         } satisfies GetOwnGrowsInput;
 

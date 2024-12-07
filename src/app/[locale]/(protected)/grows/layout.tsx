@@ -1,8 +1,9 @@
+// src/app/[locale]/(protected)/grows/layout.tsx:
 import { PaginationItemsPerPage } from "~/assets/constants";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
 import { HydrateClient, api } from "~/lib/trpc/server";
 import { GetOwnGrowsInput } from "~/server/api/root";
-import { GrowSortField } from "~/types/grow";
+import { GrowsSortField } from "~/types/grow";
 
 export const metadata = {
   title: "My Grows",
@@ -19,14 +20,14 @@ export default async function PhotosLayout({
   await api.grow.getOwnGrows.prefetchInfinite({
     cursor: 1,
     limit: PaginationItemsPerPage.GROWS_PER_PAGE,
-    sortField: GrowSortField.NAME,
+    sortField: GrowsSortField.NAME,
     sortOrder: SortOrder.ASC,
   } satisfies GetOwnGrowsInput);
 
   await api.grow.getOwnGrows.prefetch({
     cursor: 1,
     limit: PaginationItemsPerPage.GROWS_PER_PAGE,
-    sortField: GrowSortField.NAME,
+    sortField: GrowsSortField.NAME,
     sortOrder: SortOrder.ASC,
   } satisfies GetOwnGrowsInput);
 

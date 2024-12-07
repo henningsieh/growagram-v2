@@ -34,7 +34,7 @@ import {
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import { GetOwnGrowsInput } from "~/server/api/root";
-import { GrowSortField } from "~/types/grow";
+import { GrowsSortField, GrowsViewMode } from "~/types/grow";
 
 export default function MyGrowsPage() {
   const router = useRouter();
@@ -46,9 +46,13 @@ export default function MyGrowsPage() {
   );
 
   // State for sorting
-  const [sortField, setSortField] = useState<GrowSortField>(GrowSortField.NAME);
+  const [sortField, setSortField] = useState<GrowsSortField>(
+    GrowsSortField.NAME,
+  );
   const [sortOrder, setSortOrder] = useState<SortOrder>(SortOrder.ASC);
-  const [viewMode, setViewMode] = useState<string>("paginated");
+  const [viewMode, setViewMode] = useState<GrowsViewMode>(
+    GrowsViewMode.PAGINATION,
+  );
 
   const utils = api.useUtils();
 
@@ -88,7 +92,7 @@ export default function MyGrowsPage() {
   }, [currentPage, sortField, sortOrder, updateUrlParams]);
 
   // Handle sorting changes
-  const handleSortChange = (field: GrowSortField, order: SortOrder) => {
+  const handleSortChange = (field: GrowsSortField, order: SortOrder) => {
     setSortField(field);
     setSortOrder(order);
     // Reset to first page when sorting changes
@@ -97,14 +101,14 @@ export default function MyGrowsPage() {
 
   const sortOptions = [
     {
-      field: GrowSortField.NAME,
+      field: GrowsSortField.NAME,
       label: "Name",
       icon: <Tag className="h-6 w-5" />,
       sortIconAsc: ArrowDownAZ,
       sortIconDesc: ArrowDownZA,
     },
     {
-      field: GrowSortField.CREATED_AT,
+      field: GrowsSortField.CREATED_AT,
       label: "Created Date",
       icon: <Calendar className="h-6 w-5" />,
       sortIconAsc: ArrowDown01,
@@ -153,19 +157,26 @@ export default function MyGrowsPage() {
     >
       {/* Sorting controls */}
       <SortFilterControls
+        isFetching={isFetching}
         sortField={sortField}
         sortOrder={sortOrder}
         sortOptions={sortOptions}
-        isFetching={isFetching}
         onSortChange={handleSortChange}
+        filterLabel={undefined}
+        filterEnabled={undefined}
+        onFilterChange={undefined}
         viewMode={{
           current: viewMode,
-          options: ["paginated", "infinite"],
+          options: [GrowsViewMode.PAGINATION, GrowsViewMode.INFINITE_SCROLL],
           label: "Scroll",
           icon: <Infinity className="mr-2 h-4 w-4" />,
         }}
         onViewModeToggle={() =>
-          setViewMode(viewMode === "paginated" ? "infinite" : "paginated")
+          setViewMode(
+            viewMode === GrowsViewMode.PAGINATION
+              ? GrowsViewMode.INFINITE_SCROLL
+              : GrowsViewMode.PAGINATION,
+          )
         }
       />
 
