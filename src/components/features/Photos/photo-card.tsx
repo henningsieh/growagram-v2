@@ -1,7 +1,6 @@
 // src/components/features/Photos/photo-card.tsx:
 import {
   Camera,
-  Edit,
   Flower2,
   Loader2,
   Maximize,
@@ -19,14 +18,7 @@ import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardFooter, CardTitle } from "~/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "~/components/ui/dialog";
+import { Separator } from "~/components/ui/separator";
 import { Switch } from "~/components/ui/switch";
 import {
   Tooltip,
@@ -34,8 +26,7 @@ import {
   TooltipTrigger,
 } from "~/components/ui/tooltip";
 import { useToast } from "~/hooks/use-toast";
-import { Link } from "~/lib/i18n/routing";
-import { useRouter } from "~/lib/i18n/routing";
+import { Link, useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import { cn, formatDate, formatTime } from "~/lib/utils";
 import { GetOwnImageType } from "~/server/api/root";
@@ -209,11 +200,13 @@ export default function PhotoCard({
           </Tooltip>
         </CardContent>
 
-        <CardFooter className="flex w-full gap-1 p-2">
+        <Separator />
+
+        <CardFooter className="flex w-full justify-between gap-1 p-1">
           <Button
             variant="destructive"
             size={"sm"}
-            className="w-14"
+            className="w-20"
             onClick={handleDelete}
             disabled={deleteMutation.isPending}
           >
