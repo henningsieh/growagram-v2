@@ -1,5 +1,6 @@
 "use client";
 
+// src/app/[locale]/(protected)/photos/page.tsx:
 import {
   Infinity,
   ArrowDown01,
@@ -104,13 +105,13 @@ export default function AllImagesPage() {
       buttonLabel="Upload new Photos"
     >
       <SortFilterControls
+        isFetching={isFetching}
         sortField={sortField}
         sortOrder={sortOrder}
         sortOptions={sortOptions}
-        filterEnabled={filterNotConnected}
-        filterLabel="New only"
-        isFetching={isFetching}
         onSortChange={handleSortChange}
+        filterLabel="New only"
+        filterEnabled={filterNotConnected}
         onFilterChange={handleFilterChange}
         viewMode={{
           current: viewMode,

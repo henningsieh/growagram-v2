@@ -1,3 +1,4 @@
+// src/app/[locale]/(protected)/photos/layout.tsx:
 import { PaginationItemsPerPage } from "~/assets/constants";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
 import { api } from "~/lib/trpc/server";
