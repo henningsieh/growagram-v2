@@ -125,13 +125,13 @@ export default function PlantCard({ plant }: PlantCardProps) {
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger className="flex cursor-default items-center font-mono text-sm font-semibold tracking-tighter">
-                    <Nut className="text-planted mr-2 h-4 w-4" />
+                    <Nut className="mr-2 h-4 w-4 text-planted" />
                     {formatDate(plant.startDate, locale)}
                   </TooltipTrigger>
                   <TooltipContent side="right" className="bg-transparent">
                     <Badge
                       variant={"outline"}
-                      className="bg-planted whitespace-nowrap border-0 text-sm"
+                      className="whitespace-nowrap border-0 bg-planted text-sm"
                     >
                       {t("planting-date")}
                     </Badge>
@@ -250,7 +250,7 @@ export default function PlantCard({ plant }: PlantCardProps) {
           <Button
             variant="destructive"
             size={"sm"}
-            className="w-14"
+            className="w-16"
             onClick={handleDelete}
             disabled={deleteMutation.isPending}
           >

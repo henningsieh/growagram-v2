@@ -6,6 +6,8 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import FormContent from "~/components/Layouts/form-content";
+import PageHeader from "~/components/Layouts/page-header";
 import { Button } from "~/components/ui/button";
 import {
   Card,
@@ -36,7 +38,7 @@ import PlantFormDateField from "./plant-form-date-fields";
 
 type FormValues = z.infer<typeof plantSchema>;
 
-export default function PlantForm({ plant }: { plant?: Plant }) {
+export default function PlantFormPage({ plant }: { plant?: Plant }) {
   const utils = api.useUtils();
   const router = useRouter();
   const { toast } = useToast();
@@ -95,150 +97,169 @@ export default function PlantForm({ plant }: { plant?: Plant }) {
   }
 
   return (
-    <Card>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
-        <CardHeader className="p-2 sm:p-3 lg:p-4 xl:p-6">
-          <CardTitle level="h2">{t("form-heading")}</CardTitle>
-          <CardDescription>{t("form-heading-description")}</CardDescription>
-        </CardHeader>
-        <CardContent className="p-2 sm:p-3 lg:p-4 xl:p-6">
-          <Form {...form}>
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="font-semibold">
-                    {t("form-nickname")}
-                  </FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter plant name" {...field} />
-                  </FormControl>
-                  <FormDescription>
-                    {t("form-nickname-description")}
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <div className="space-y-8">
-              <div className="grid gap-6 md:grid-cols-2">
+    <PageHeader
+      title={
+        plant !== undefined
+          ? t("form-pagerheader-edit-title")
+          : t("form-pagerheader-new-title")
+      }
+      subtitle={
+        plant !== undefined
+          ? t("form-pagerheader-edit-subtitle")
+          : t("form-pagerheader-new-subtitle")
+      }
+      buttonLabel={t("form-pageheader-backButtonLabel")}
+      buttonLink={"/plants"}
+    >
+      <FormContent>
+        <Card>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
+            <CardHeader className="p-2 sm:p-3 lg:p-4 xl:p-6">
+              <CardTitle level="h2">{t("form-heading")}</CardTitle>
+              <CardDescription>{t("form-heading-description")}</CardDescription>
+            </CardHeader>
+            <CardContent className="p-2 sm:p-3 lg:p-4 xl:p-6">
+              <Form {...form}>
                 <FormField
                   control={form.control}
-                  name="startDate"
+                  name="name"
                   render={({ field }) => (
-                    <PlantFormDateField
-                      field={field}
-                      label={t("planting-date")}
-                      description="When did you plant the seed?"
-                      icon={Sprout}
-                      iconClassName="text-planted"
-                    />
+                    <FormItem>
+                      <FormLabel className="font-semibold">
+                        {t("form-nickname")}
+                      </FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter plant name" {...field} />
+                      </FormControl>
+                      <FormDescription>
+                        {t("form-nickname-description")}
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
                   )}
                 />
 
-                <FormField
-                  control={form.control}
-                  name="seedlingPhaseStart"
-                  render={({ field }) => (
-                    <PlantFormDateField
-                      field={field}
-                      label={t("germination-date")}
-                      description="When did you see the seedling for the first time?"
-                      icon={Sprout}
-                      iconClassName="text-seedling"
+                <div className="space-y-8">
+                  <div className="grid gap-6 md:grid-cols-2">
+                    <FormField
+                      control={form.control}
+                      name="startDate"
+                      render={({ field }) => (
+                        <PlantFormDateField
+                          field={field}
+                          label={t("planting-date")}
+                          description="When did you plant the seed?"
+                          icon={Sprout}
+                          iconClassName="text-planted"
+                        />
+                      )}
                     />
-                  )}
-                />
-              </div>
 
-              <div className="grid gap-6 md:grid-cols-2">
-                <FormField
-                  control={form.control}
-                  name="vegetationPhaseStart"
-                  render={({ field }) => (
-                    <PlantFormDateField
-                      field={field}
-                      label={t("vegetation-start-date")}
-                      description="When did rapid leaf growth start?"
-                      icon={Sprout}
-                      iconClassName="text-vegetation"
+                    <FormField
+                      control={form.control}
+                      name="seedlingPhaseStart"
+                      render={({ field }) => (
+                        <PlantFormDateField
+                          field={field}
+                          label={t("germination-date")}
+                          description="When did you see the seedling for the first time?"
+                          icon={Sprout}
+                          iconClassName="text-seedling"
+                        />
+                      )}
                     />
-                  )}
-                />
+                  </div>
 
-                <FormField
-                  control={form.control}
-                  name="floweringPhaseStart"
-                  render={({ field }) => (
-                    <PlantFormDateField
-                      field={field}
-                      label={t("flowering-start-date")}
-                      description="When did you see the first buds?"
-                      icon={Sprout}
-                      iconClassName="text-flowering"
+                  <div className="grid gap-6 md:grid-cols-2">
+                    <FormField
+                      control={form.control}
+                      name="vegetationPhaseStart"
+                      render={({ field }) => (
+                        <PlantFormDateField
+                          field={field}
+                          label={t("vegetation-start-date")}
+                          description="When did rapid leaf growth start?"
+                          icon={Sprout}
+                          iconClassName="text-vegetation"
+                        />
+                      )}
                     />
-                  )}
-                />
-              </div>
 
-              <div className="grid gap-6 md:grid-cols-2">
-                <FormField
-                  control={form.control}
-                  name="harvestDate"
-                  render={({ field }) => (
-                    <PlantFormDateField
-                      field={field}
-                      label={t("harvest-date")}
-                      description="When did you cut down your plant?"
-                      icon={Sprout}
-                      iconClassName="text-harvest"
+                    <FormField
+                      control={form.control}
+                      name="floweringPhaseStart"
+                      render={({ field }) => (
+                        <PlantFormDateField
+                          field={field}
+                          label={t("flowering-start-date")}
+                          description="When did you see the first buds?"
+                          icon={Sprout}
+                          iconClassName="text-flowering"
+                        />
+                      )}
                     />
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="curingPhaseStart"
-                  render={({ field }) => (
-                    <PlantFormDateField
-                      field={field}
-                      label={t("curing-start-date")}
-                      description="When did you start the curing process?"
-                      icon={Sprout}
-                      iconClassName="text-curing"
-                    />
-                  )}
-                />
-              </div>
-            </div>
-          </Form>
-        </CardContent>
+                  </div>
 
-        <CardFooter className="flex w-full gap-2 p-2 sm:p-3 md:gap-6 lg:p-4 xl:p-6">
-          <Button
-            size="sm"
-            type="button"
-            title="Reset"
-            variant="outline"
-            onClick={() => form.reset()}
-            className="w-full"
-          >
-            {t("form-button-reset")}
-          </Button>
-          <Button
-            size="sm"
-            type="submit"
-            className="w-full"
-            disabled={isSubmitting}
-          >
-            {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            {plant?.id
-              ? t("form-button-save-changes")
-              : t("form-button-save-new")}
-          </Button>
-        </CardFooter>
-      </form>
-    </Card>
+                  <div className="grid gap-6 md:grid-cols-2">
+                    <FormField
+                      control={form.control}
+                      name="harvestDate"
+                      render={({ field }) => (
+                        <PlantFormDateField
+                          field={field}
+                          label={t("harvest-date")}
+                          description="When did you cut down your plant?"
+                          icon={Sprout}
+                          iconClassName="text-harvest"
+                        />
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="curingPhaseStart"
+                      render={({ field }) => (
+                        <PlantFormDateField
+                          field={field}
+                          label={t("curing-start-date")}
+                          description="When did you start the curing process?"
+                          icon={Sprout}
+                          iconClassName="text-curing"
+                        />
+                      )}
+                    />
+                  </div>
+                </div>
+              </Form>
+            </CardContent>
+
+            <CardFooter className="flex w-full gap-2 p-2 sm:p-3 md:gap-6 lg:p-4 xl:p-6">
+              <Button
+                size="sm"
+                type="button"
+                title="Reset"
+                variant="outline"
+                onClick={() => form.reset()}
+                className="w-full"
+              >
+                {t("form-button-reset")}
+              </Button>
+              <Button
+                size="sm"
+                type="submit"
+                className="w-full"
+                disabled={isSubmitting}
+              >
+                {isSubmitting && (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                )}
+                {plant?.id
+                  ? t("form-button-save-changes")
+                  : t("form-button-save-new")}
+              </Button>
+            </CardFooter>
+          </form>
+        </Card>
+      </FormContent>
+    </PageHeader>
   );
 }
