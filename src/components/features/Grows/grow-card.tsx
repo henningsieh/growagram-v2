@@ -4,6 +4,8 @@ import { format } from "date-fns";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ChartColumn,
+  Edit,
+  Edit2,
   Heart,
   MessageCircle,
   Share,
@@ -162,16 +164,19 @@ export function GrowCard({
           </Button>
         </div>
       </CardContent>
+
       <Separator />
-      <CardFooter className="p-1">
-        <div className="flex w-full justify-between gap-1">
-          <Button variant={"destructive"} size={"sm"} className="w-20">
-            <Trash2 />
-          </Button>
-          <Button asChild size={"sm"} className="w-full">
-            <Link href={`/grows/${grow.id}/form`}>Edit Grow</Link>
-          </Button>
-        </div>
+
+      <CardFooter className="flex w-full justify-between gap-1 p-1">
+        <Button variant={"destructive"} size={"sm"} className="w-20">
+          <Trash2 size={20} />
+        </Button>
+        <Button asChild size={"sm"} className="w-full text-base">
+          <Link href={`/grows/${grow.id}/form`}>
+            <Edit size={20} />
+            Edit Grow
+          </Link>
+        </Button>
       </CardFooter>
     </Card>
   );

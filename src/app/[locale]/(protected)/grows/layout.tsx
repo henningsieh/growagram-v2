@@ -1,0 +1,34 @@
+import { PaginationItemsPerPage } from "~/assets/constants";
+import { SortOrder } from "~/components/atom/sort-filter-controls";
+import { HydrateClient, api } from "~/lib/trpc/server";
+import { GetOwnGrowsInput } from "~/server/api/root";
+import { GrowSortField } from "~/types/grow";
+
+export const metadata = {
+  title: "My Grows",
+  description: "My Grows",
+};
+
+export default async function PhotosLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  // Prefetch initial data with default sorting for the first page
+
+  await api.grow.getOwnGrows.prefetchInfinite({
+    cursor: 1,
+    limit: PaginationItemsPerPage.GROWS_PER_PAGE,
+    sortField: GrowSortField.NAME,
+    sortOrder: SortOrder.ASC,
+  } satisfies GetOwnGrowsInput);
+
+  await api.grow.getOwnGrows.prefetch({
+    cursor: 1,
+    limit: PaginationItemsPerPage.GROWS_PER_PAGE,
+    sortField: GrowSortField.NAME,
+    sortOrder: SortOrder.ASC,
+  } satisfies GetOwnGrowsInput);
+
+  return <HydrateClient>{children}</HydrateClient>;
+}

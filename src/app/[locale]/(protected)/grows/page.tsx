@@ -9,7 +9,6 @@ import {
   ArrowDownZA,
   Calendar,
   Tag,
-  Text,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
@@ -34,6 +33,7 @@ import {
 } from "~/components/ui/pagination";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
+import { GetOwnGrowsInput } from "~/server/api/root";
 import { GrowSortField } from "~/types/grow";
 
 export default function MyGrowsPage() {
@@ -53,20 +53,20 @@ export default function MyGrowsPage() {
   const utils = api.useUtils();
 
   const queryObject = {
-    page: currentPage,
+    cursor: currentPage,
     limit: PaginationItemsPerPage.GROWS_PER_PAGE,
     sortField,
     sortOrder,
-  };
+  } satisfies GetOwnGrowsInput;
 
   // Get the prefetched data from the cache
-  const prefetchedFromCache = utils.grow.getOwnGrows.getData(queryObject);
+  const initialData = utils.grow.getOwnGrows.getData(queryObject);
 
   // Load own grows from database
   const { data, isLoading, isFetching } = api.grow.getOwnGrows.useQuery(
     queryObject,
     {
-      initialData: prefetchedFromCache,
+      initialData,
     },
   );
 

@@ -3,9 +3,10 @@ import { TRPCError } from "@trpc/server";
 import { and, count, eq } from "drizzle-orm";
 import { z } from "zod";
 import { PaginationItemsPerPage } from "~/assets/constants";
+import { SortOrder } from "~/components/atom/sort-filter-controls";
 import { grows, plants } from "~/lib/db/schema";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
-import { GrowSortField, SortOrder } from "~/types/grow";
+import { GrowSortField } from "~/types/grow";
 import { growSchema } from "~/types/zodSchema";
 
 export const growRouter = createTRPCRouter({
@@ -15,13 +16,13 @@ export const growRouter = createTRPCRouter({
     .input(
       z
         .object({
+          cursor: z.number().min(1).default(1).optional(),
           limit: z
             .number()
             .min(1)
             .max(100)
             .default(PaginationItemsPerPage.GROWS_PER_PAGE)
             .optional(),
-          page: z.number().min(1).default(1).optional(),
           sortField: z
             .nativeEnum(GrowSortField)
             .default(GrowSortField.CREATED_AT)
@@ -33,12 +34,12 @@ export const growRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       // Use default values if input is not provided
       const limit = input?.limit ?? PaginationItemsPerPage.GROWS_PER_PAGE;
-      const page = input?.page ?? 1;
+      const cursor = input?.cursor ?? 1;
       const sortField = input?.sortField ?? GrowSortField.CREATED_AT;
       const sortOrder = input?.sortOrder ?? SortOrder.DESC;
 
       // Calculate offset based on page number
-      const offset = (page - 1) * limit;
+      const offset = (cursor - 1) * limit;
 
       // Get total count of user's grows
       const totalCountResult = await ctx.db
@@ -52,9 +53,9 @@ export const growRouter = createTRPCRouter({
       const userGrows = await ctx.db.query.grows.findMany({
         where: eq(grows.ownerId, ctx.session.user.id),
         orderBy: (grows, { desc, asc }) => [
-          sortOrder === SortOrder.DESC
-            ? desc(grows[sortField])
-            : asc(grows[sortField]),
+          sortOrder === SortOrder.ASC
+            ? asc(grows[sortField])
+            : desc(grows[sortField]),
         ],
         limit: limit,
         offset: offset,
@@ -88,11 +89,14 @@ export const growRouter = createTRPCRouter({
         },
       });
 
+      const nextCursor = userGrows.length === limit ? cursor + 1 : undefined;
+
       return {
         grows: userGrows,
-        total: totalCount,
-        currentPage: page,
+        cursor: cursor,
+        nextCursor: nextCursor,
         totalPages: Math.ceil(totalCount / limit),
+        count: totalCount,
       };
     }),
 

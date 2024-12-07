@@ -1,12 +1,7 @@
 // src/app/[locale]/(protected)/grows/[id]/form/layout.tsx:
-import { useTranslations } from "next-intl";
 import React from "react";
 import { HydrateClient, api } from "~/lib/trpc/server";
-import {
-  GetGrowByIdInput,
-  GetOwnGrowType,
-  GetOwnPlantsInput,
-} from "~/server/api/root";
+import { GetGrowByIdInput, GetOwnPlantsInput } from "~/server/api/root";
 
 export const metadata = {
   title: "Grower's Plattform | Grows",
@@ -28,13 +23,10 @@ export default async function AddGrowLayout({
     } satisfies GetGrowByIdInput);
 
     //TODO: only prefetch "connectable" plants!
-    void api.plant.getOwnPlants.prefetch(
-      {
-        limit: 100,
-        // cursor?: number | null | undefined
-      } satisfies GetOwnPlantsInput,
-      { staleTime: 0 },
-    );
+    await api.plant.getOwnPlants.prefetch({
+      limit: 100,
+      // cursor?: number | null | undefined
+    } satisfies GetOwnPlantsInput);
   }
 
   return <HydrateClient>{children}</HydrateClient>;
