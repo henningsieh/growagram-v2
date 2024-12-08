@@ -1,4 +1,3 @@
-// src/components/features/Plants/plant-form-date-fields.tsx:
 import { X } from "lucide-react";
 import { useLocale } from "next-intl";
 import { ControllerRenderProps, FieldValues, Path } from "react-hook-form";
@@ -9,7 +8,6 @@ import {
   FormDescription,
   FormItem,
   FormLabel,
-  FormMessage,
 } from "~/components/ui/form";
 import {
   Popover,
@@ -34,6 +32,17 @@ export default function PlantFormDateField<TFieldValues extends FieldValues>({
   iconClassName,
 }: PlantFormDateFieldProps<TFieldValues>) {
   const locale = useLocale();
+
+  const handleDateSelect = (date: Date | undefined) => {
+    field.onChange(date);
+    // The Popover will automatically close when the date is selected
+  };
+
+  const handleResetClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    field.onChange(null);
+    // The Popover will automatically close when the reset button is clicked
+  };
 
   return (
     <FormItem className="flex flex-col">
@@ -61,30 +70,26 @@ export default function PlantFormDateField<TFieldValues extends FieldValues>({
                     type="button"
                     size="sm"
                     variant="outline"
-                    className="ml-auto w-8"
-                    onClick={(event) => {
-                      event.stopPropagation(); // prevent the click event from triggering the Popover to open
-                      field.onChange(null);
-                    }}
+                    className="ml-auto h-6 w-6"
+                    onClick={handleResetClick}
                   >
-                    <X className="h-6 w-6" />
+                    <X className="h-5 w-5" />
                   </Button>
                 )}
               </Button>
             </FormControl>
           </PopoverTrigger>
-          <PopoverContent className="w-auto p-0" align="start">
+          <PopoverContent className="w-auto border-primary p-0" align="start">
             <Calendar
               mode="single"
               selected={field.value}
-              onSelect={(date) => field.onChange(date || null)}
+              onSelect={handleDateSelect}
               initialFocus
             />
           </PopoverContent>
         </Popover>
       </div>
       <FormDescription>{description}</FormDescription>
-      <FormMessage />
     </FormItem>
   );
 }

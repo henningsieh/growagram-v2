@@ -11,12 +11,12 @@ import {
   Trash2,
   Wheat,
 } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useState } from "react";
 import headerImagePlaceholder from "~/assets/landscape-placeholdersvg.svg";
 import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
-import { LikeButton } from "~/components/atom/like";
 import { SocialCardFooter } from "~/components/atom/social-card-footer";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
@@ -43,13 +43,17 @@ import { GetOwnPlantType } from "~/server/api/root";
 
 interface PlantCardProps {
   plant: GetOwnPlantType;
+  isSocial: boolean;
 }
 
-export default function PlantCard({ plant }: PlantCardProps) {
+export default function PlantCard({ plant, isSocial }: PlantCardProps) {
   const locale = useLocale();
   const router = useRouter();
   const utils = api.useUtils();
   const { toast } = useToast();
+  const user = useSession().data?.user;
+
+  console.debug(user);
 
   const [isImageHovered, setIsImageHovered] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -132,7 +136,7 @@ export default function PlantCard({ plant }: PlantCardProps) {
                   <TooltipContent side="right" className="bg-transparent">
                     <Badge
                       variant={"outline"}
-                      className="whitespace-nowrap border-0 bg-planted text-sm"
+                      className="whitespace-nowrap border-0 bg-planted text-sm text-white"
                     >
                       {t("planting-date")}
                     </Badge>
@@ -152,7 +156,7 @@ export default function PlantCard({ plant }: PlantCardProps) {
                   <TooltipContent side="right" className="bg-transparent">
                     <Badge
                       variant={"outline"}
-                      className="whitespace-nowrap border-0 bg-seedling text-sm"
+                      className="whitespace-nowrap border-0 bg-seedling text-sm text-white"
                     >
                       {t("germination-date")}
                     </Badge>
@@ -171,7 +175,7 @@ export default function PlantCard({ plant }: PlantCardProps) {
                   <TooltipContent side="right" className="bg-transparent">
                     <Badge
                       variant={"outline"}
-                      className="whitespace-nowrap border-0 bg-vegetation text-sm"
+                      className="whitespace-nowrap border-0 bg-vegetation text-sm text-white"
                     >
                       {t("vegetation-start-date")}
                     </Badge>
@@ -190,7 +194,7 @@ export default function PlantCard({ plant }: PlantCardProps) {
                   <TooltipContent side="right" className="bg-transparent">
                     <Badge
                       variant={"outline"}
-                      className="whitespace-nowrap border-0 bg-flowering text-sm"
+                      className="whitespace-nowrap border-0 bg-flowering text-sm text-white"
                     >
                       {t("flowering-start-date")}
                     </Badge>
@@ -208,7 +212,7 @@ export default function PlantCard({ plant }: PlantCardProps) {
                   <TooltipContent side="right" className="bg-transparent">
                     <Badge
                       variant={"outline"}
-                      className="whitespace-nowrap bg-harvest text-sm"
+                      className="whitespace-nowrap bg-harvest text-sm text-white"
                     >
                       {t("harvest-date")}
                     </Badge>
@@ -227,7 +231,7 @@ export default function PlantCard({ plant }: PlantCardProps) {
                   <TooltipContent side="right" className="bg-transparent">
                     <Badge
                       variant={"outline"}
-                      className="whitespace-nowrap bg-curing text-sm"
+                      className="whitespace-nowrap bg-curing text-sm text-white"
                     >
                       {t("curing-start-date")}
                     </Badge>
@@ -247,38 +251,43 @@ export default function PlantCard({ plant }: PlantCardProps) {
           </div>
         </CardContent>
 
-        <CardFooter className="flex w-full gap-1 p-2">
-          <Button
-            variant="destructive"
-            size={"sm"}
-            className="w-16"
-            onClick={handleDelete}
-            disabled={deleteMutation.isPending}
-          >
-            {deleteMutation.isPending ? (
-              <Loader2 size={20} className="animate-spin" />
-            ) : (
-              <Trash2 size={20} />
-            )}
-          </Button>
-          <Button asChild size={"sm"} variant="primary" className="w-full">
-            <Link href={`/plants/${plant.id}/form`}>
-              <Edit size={20} />
-              {t("edit-plant-button-label")}
-            </Link>
-          </Button>
-        </CardFooter>
-        <SocialCardFooter
-          entityId={plant.id}
-          entityType={"plant"}
-          initialLiked={isLiked}
-          isLikeStatusLoading={isLoading}
-          stats={{
-            comments: 0,
-            views: 0,
-            likes: likeCount,
-          }}
-        />
+        {user && user.id === plant.ownerId && (
+          <CardFooter className="flex w-full gap-1 p-2">
+            <Button
+              variant="destructive"
+              size={"sm"}
+              className="w-16"
+              onClick={handleDelete}
+              disabled={deleteMutation.isPending}
+            >
+              {deleteMutation.isPending ? (
+                <Loader2 size={20} className="animate-spin" />
+              ) : (
+                <Trash2 size={20} />
+              )}
+            </Button>
+            <Button asChild size={"sm"} variant="primary" className="w-full">
+              <Link href={`/plants/${plant.id}/form`}>
+                <Edit size={20} />
+                {t("edit-plant-button-label")}
+              </Link>
+            </Button>
+          </CardFooter>
+        )}
+
+        {isSocial && (
+          <SocialCardFooter
+            entityId={plant.id}
+            entityType={"plant"}
+            initialLiked={isLiked}
+            isLikeStatusLoading={isLoading}
+            stats={{
+              comments: 0,
+              views: 0,
+              likes: likeCount,
+            }}
+          />
+        )}
       </Card>
 
       {/* Delete Confirmation Dialog */}
