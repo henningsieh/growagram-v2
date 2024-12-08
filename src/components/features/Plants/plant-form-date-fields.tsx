@@ -45,13 +45,31 @@ export default function PlantFormDateField<TFieldValues extends FieldValues>({
               <Button
                 variant="outline"
                 className={cn(
-                  "w-full justify-start px-2 text-left font-normal md:text-base",
+                  "w-full justify-between pl-2 pr-1 text-left font-normal md:text-base",
                   field.value && "text-foreground",
-                  "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-0",
+                  "focus-visible:outline-1 focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-0",
                 )}
               >
-                <Icon size={20} className={cn("opacity-80", iconClassName)} />
-                {field.value ? formatDate(field.value, locale) : "Pick a date"}
+                <div className="flex items-center gap-2">
+                  <Icon size={20} className={cn("opacity-80", iconClassName)} />
+                  {field.value
+                    ? formatDate(field.value, locale)
+                    : "Pick a date"}
+                </div>
+                {field.value && (
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    className="ml-auto w-8"
+                    onClick={(event) => {
+                      event.stopPropagation(); // prevent the click event from triggering the Popover to open
+                      field.onChange(null);
+                    }}
+                  >
+                    <X className="h-6 w-6" />
+                  </Button>
+                )}
               </Button>
             </FormControl>
           </PopoverTrigger>
@@ -64,16 +82,6 @@ export default function PlantFormDateField<TFieldValues extends FieldValues>({
             />
           </PopoverContent>
         </Popover>
-        {field.value && (
-          <Button
-            type="button"
-            variant="destructive"
-            className="w-10"
-            onClick={() => field.onChange(null)}
-          >
-            <X className="h-4 w-4" />
-          </Button>
-        )}
       </div>
       <FormDescription>{description}</FormDescription>
       <FormMessage />
