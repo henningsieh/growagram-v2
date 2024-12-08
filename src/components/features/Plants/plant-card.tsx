@@ -53,12 +53,10 @@ export default function PlantCard({ plant, isSocial }: PlantCardProps) {
   const { toast } = useToast();
   const user = useSession().data?.user;
 
-  console.debug(user);
+  const { isLiked, likeCount, isLoading } = useLikeStatus(plant.id, "plant");
 
   const [isImageHovered, setIsImageHovered] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-
-  const { isLiked, likeCount, isLoading } = useLikeStatus(plant.id, "plant");
 
   // Initialize delete mutation
   const deleteMutation = api.plant.deleteById.useMutation({

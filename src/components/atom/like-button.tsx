@@ -1,6 +1,6 @@
 "use client";
 
-// src/components/atom/like.tsx:
+// src/components/atom/like-button.tsx:
 import { Heart } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "~/components/ui/button";
@@ -65,28 +65,26 @@ export const LikeButton: React.FC<LikeProps> = ({
   };
 
   return (
-    <div className={cn(`flex items-center space-x-1`)}>
-      <Button
-        variant="ghost"
-        size="icon"
-        onClick={handleLikeToggle}
-        disabled={toggleLikeMutation.isPending}
-        className={cn(
-          className,
-          isLikeStatusLoading ? "cursor-wait" : "cursor-default",
-          "hover:bg-transparent",
-        )}
-      >
-        <Heart
-          className={`${
-            isLiked
-              ? "fill-red-500 text-red-500"
-              : "text-gray-500 hover:text-red-500"
-          } h-5 w-5 transition-colors duration-500 ease-in-out`}
-          strokeWidth={1.5}
-        />
-      </Button>
+    <Button
+      variant="ghost"
+      size="icon"
+      onClick={handleLikeToggle}
+      disabled={toggleLikeMutation.isPending}
+      className={cn(
+        className,
+        "flex items-center disabled:cursor-wait disabled:opacity-100",
+        isLikeStatusLoading ? "cursor-wait" : "cursor-default",
+      )}
+    >
+      <Heart
+        className={`${
+          isLiked
+            ? "fill-red-500 text-red-500"
+            : "text-gray-500 hover:text-red-500"
+        } h-5 w-5 transition-colors duration-500 ease-in-out`}
+        strokeWidth={1.5}
+      />
       <span className={cn("text-base text-muted-foreground")}>{likeCount}</span>
-    </div>
+    </Button>
   );
 };

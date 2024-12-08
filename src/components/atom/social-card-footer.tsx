@@ -1,8 +1,6 @@
-"use client";
-
 import { ChartColumn, MessageCircle, Share } from "lucide-react";
 import React from "react";
-import { LikeButton } from "~/components/atom/like";
+import { LikeButton } from "~/components/atom/like-button";
 import { Button } from "~/components/ui/button";
 import { cn } from "~/lib/utils";
 
@@ -28,24 +26,36 @@ export const SocialCardFooter: React.FC<CardFooterProps> = ({
   stats,
 }) => {
   return (
-    <div className={cn("flex items-center justify-between", className)}>
-      <Button variant="ghost" size="sm" className="flex items-center gap-1">
+    <div className={cn("flex items-center justify-between gap-2", className)}>
+      <Button
+        className="flex w-16 items-center justify-center gap-1"
+        variant="ghost"
+        size="sm"
+      >
         <MessageCircle className="h-4 w-4" />
         <span>{stats.comments}</span>
       </Button>
-      <Button variant="ghost" size="sm" className="flex items-center gap-1">
+      <Button
+        className="flex w-16 items-center justify-center gap-1"
+        variant="ghost"
+        size="sm"
+      >
         <ChartColumn className="h-4 w-4" />
         <span>{stats.views}</span>
       </Button>
       <LikeButton
+        className="flex w-16 items-center justify-center gap-1 hover:bg-transparent"
         entityId={entityId}
         entityType={entityType}
         initialLiked={initialLiked}
         initialLikeCount={stats.likes}
         isLikeStatusLoading={isLikeStatusLoading}
-        className={"disabled:cursor-wait disabled:opacity-100"}
       />
-      <Button variant="ghost" size="sm" className="flex items-center gap-1">
+      <Button
+        className="flex w-16 items-center justify-center gap-1"
+        variant="ghost"
+        size="sm"
+      >
         <Share className="h-4 w-4" />
       </Button>
     </div>

@@ -2,7 +2,6 @@
 import {
   Camera,
   Edit,
-  Edit2,
   Loader2,
   Maximize,
   Minimize,
@@ -16,6 +15,7 @@ import Image from "next/image";
 import React, { useCallback, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
+import { SocialCardFooter } from "~/components/atom/social-card-footer";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardFooter, CardTitle } from "~/components/ui/card";
@@ -26,6 +26,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "~/components/ui/tooltip";
+import { useLikeStatus } from "~/hooks/use-likes";
 import { useToast } from "~/hooks/use-toast";
 import { Link, useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
@@ -52,8 +53,9 @@ export default function PhotoCard({
   const locale = useLocale();
   const router = useRouter();
   const utils = api.useUtils();
-
   const { toast } = useToast();
+
+  const { isLiked, likeCount, isLoading } = useLikeStatus(image.id, "image");
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isUnrestrictedView, setIsUnrestrictedView] = useState(false);
@@ -238,6 +240,18 @@ export default function PhotoCard({
             </Link>
           </Button>
         </CardFooter>
+        <SocialCardFooter
+          className="p-1"
+          entityId={image.id}
+          entityType={"image"}
+          initialLiked={isLiked}
+          isLikeStatusLoading={isLoading}
+          stats={{
+            comments: 0,
+            views: 0,
+            likes: likeCount,
+          }}
+        />
       </Card>
 
       {isModalOpen &&
