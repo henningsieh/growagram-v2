@@ -15,12 +15,12 @@ body {
 
 @layer base {
   :root {
-    --planted: 45 93.4% 47.5%; /* yello-500 */
-    --seedling: 293 69.5% 48.8%; /* fuchsia-600 */
-    --vegetation: 142 71.8% 29.2%; /* green-700 */
-    --flowering: 350 89.2% 60.2%; /* rose-600 */
-    --harvest: 25 95% 53.1%; /* orange-500 */
-    --curing: 221 83.2% 53.3%; /* blue-600 */
+    --planted: 45.4 93.4% 47.5%; /* yellow-500 */
+    --seedling: 292.2 84.1% 60.6%; /* fuchsia-500 */
+    --vegetation: 142.1 76.2% 36.3%; /* green-600 */
+    --flowering: 349.7 89.2% 60.2%; /* rose-500 */
+    --harvest: 24.6 95% 53.1%; /* orange-500 */
+    --curing: 217.2 91.2% 59.8%; /* blue-500 */
 
     --background: 0 0% 95%;
     --foreground: 240 10% 20%;
@@ -32,15 +32,15 @@ body {
     --primary-foreground: 240 4.8% 95.9%;
     --secondary: 9 100% 56%;
     --secondary-foreground: 0 0% 98%;
-    --muted: 120 61% 24% / 0.1;
+    --muted: 120 16% 72% / 0.2;
     --muted-foreground: 240 3.8% 36.1%;
     --accent: 120 61% 34% / 0.66;
     --accent-foreground: 240 10% 20%;
     --destructive: 0 84.2% 56%;
     --destructive-foreground: 240 4.8% 95.9%;
-    --border: 120 16% 64%;
-    --input: 120 16% 64%;
-    --ring: 120 61% 24%;
+    --border: 120 16% 72%;
+    --input: 120 16% 72%;
+    --ring: 120 61% 34%;
     --radius: 0.5rem;
     --navbar-background: 0 0% 98%;
     --sidebar-background: 0 0% 98%;
@@ -53,12 +53,12 @@ body {
     --sidebar-ring: 120 61% 34%;
   }
   .dark {
-    --planted: 41 96.1% 40.4%; /* yello-600 */
-    --seedling: 292 84.1% 60.6%; /* fuchsia-500 */
-    --vegetation: 142 71.8% 29.2%; /* green-700 */
-    --flowering: 350 89.2% 60.2%; /* rose-500 */
-    --harvest: 25 95% 53.1%; /* orange-500 */
-    --curing: 217 91.2% 59.8%; /* blue-500 */
+    --planted: 45.4 93.4% 47.5%; /* yellow-500 */
+    --seedling: 292.2 84.1% 60.6%; /* fuchsia-500 */
+    --vegetation: 142.1 76.2% 36.3%; /* green-600 */
+    --flowering: 349.7 89.2% 60.2%; /* rose-500 */
+    --harvest: 24.6 95% 53.1%; /* orange-500 */
+    --curing: 217.2 91.2% 59.8%; /* blue-500 */
 
     --background: 240 5.9% 10%;
     --foreground: 0 0% 98%;

@@ -1,35 +1,21 @@
 // src/app/[locale]/(protected)/grows/[id]/form/page.tsx:
 import { notFound } from "next/navigation";
-import FormContent from "~/components/Layouts/form-content";
-import GrowForm from "~/components/features/Grows/grow-form";
+import GrowFormPage from "~/components/features/Grows/grow-form";
 import { api } from "~/lib/trpc/server";
-import {
-  GetGrowByIdInput,
-  GetOwnGrowType,
-  GetOwnPlantsInput,
-} from "~/server/api/root";
+import { GetGrowByIdInput, GetOwnGrowType } from "~/server/api/root";
 
 export default async function CreatePlantPage({
   params,
 }: {
-  params: GetGrowByIdInput;
+  params: Promise<GetGrowByIdInput>;
 }) {
-  // Prefetch the plants query - this will populate the cache
-  void api.plant.getOwnPlants.prefetch({
-    limit: 100,
-  } satisfies GetOwnPlantsInput);
+  const growId = (await params).id;
 
-  // Fetch the grow details only if growId is not "new"
-  const growId = params.id;
   const grow = (
     growId !== "new" ? await api.grow.getById({ id: growId }) : undefined
   ) satisfies GetOwnGrowType | undefined;
 
   if (growId !== "new" && grow === undefined) notFound();
 
-  return (
-    <FormContent>
-      <GrowForm grow={grow} />
-    </FormContent>
-  );
+  return <GrowFormPage grow={grow} />;
 }

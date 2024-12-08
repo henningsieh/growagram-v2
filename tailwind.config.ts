@@ -12,6 +12,9 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      screens: {
+        lg: "960px",
+      },
       container: {
         center: true,
         padding: "1rem",

@@ -25,7 +25,7 @@ export default function Component({
     : undefined;
 
   return (
-    <div className="mx-auto space-y-8 pl-3 pr-4 md:pl-2 lg:pl-4 xl:pl-6">
+    <div className="mx-auto space-y-6 pl-3 pr-4 md:pl-2 lg:pl-4 xl:pl-6">
       <div className="space-y-2">
         <div className="flex justify-between">
           <div className="flex flex-col space-y-2">

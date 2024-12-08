@@ -2,18 +2,21 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TRPCClientError } from "@trpc/client";
-import { Check, Flower2 } from "lucide-react";
+import { Check, Flower2, Tag } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { PaginationItemsPerPage } from "~/assets/constants";
+import FormContent from "~/components/Layouts/form-content";
 import PageHeader from "~/components/Layouts/page-header";
+import { SortOrder } from "~/components/atom/sort-filter-controls";
 import { Button } from "~/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
@@ -41,15 +44,17 @@ import { api } from "~/lib/trpc/react";
 import {
   CreateOrEditGrowInput,
   GetOwnGrowType,
+  GetOwnGrowsInput,
   GetOwnPlantsInput,
   GrowConnectPlantInput,
   GrowDisconnectPlantInput,
 } from "~/server/api/root";
+import { GrowsSortField } from "~/types/grow";
 import { growSchema } from "~/types/zodSchema";
 
 type FormValues = z.infer<typeof growSchema>;
 
-export default function GrowForm({ grow }: { grow?: GetOwnGrowType }) {
+export default function GrowFormPage({ grow }: { grow?: GetOwnGrowType }) {
   const t = useTranslations("Grows");
 
   // Determine the mode based on the presence of grow
@@ -233,17 +238,22 @@ export default function GrowForm({ grow }: { grow?: GetOwnGrowType }) {
           description: pageTexts.successToast.description,
         });
 
+        const queryObject = {
+          cursor: 1,
+          limit: PaginationItemsPerPage.GROWS_PER_PAGE,
+          sortField: GrowsSortField.NAME,
+          sortOrder: SortOrder.ASC,
+        } satisfies GetOwnGrowsInput;
+
         // Reset and prefetch queries
         await Promise.all([
           utils.grow.getOwnGrows.reset(),
-          utils.grow.getOwnGrows.prefetch({
-            page: 1,
-            limit: PaginationItemsPerPage.GROWS_PER_PAGE,
-          }),
+          utils.grow.getOwnGrows.prefetchInfinite(queryObject),
+          utils.grow.getOwnGrows.prefetch(queryObject),
         ]);
 
         // Navigate to grows page
-        router.push("/grows");
+        router.push("/grows"); //TODO: add paginated parameters?
       } catch (error) {
         // Handle specific error types
         handleTRPCError(error);
@@ -282,99 +292,117 @@ export default function GrowForm({ grow }: { grow?: GetOwnGrowType }) {
 
   return (
     <PageHeader
-      title={grow === undefined ? t("page-title-new") : t("page-title-edit")}
+      title={
+        grow === undefined
+          ? t("form-page-title-new")
+          : t("form-page-title-edit")
+      }
       subtitle={
-        grow === undefined ? t("page-subtitle-new") : t("page-subtitle-edit")
+        grow === undefined
+          ? t("form-page-subtitle-new")
+          : t("form-page-subtitle-edit")
       }
     >
-      <Card>
-        <CardHeader>
-          <CardTitle level="h2">{pageTexts.formTitle}</CardTitle>
-          <CardDescription>{pageTexts.formDescription}</CardDescription>
-        </CardHeader>
-        <CardContent>
+      <FormContent>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="font-semibold">
-                      {t("grow-name")}
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder={t("grow-name-placeholder")}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      {t("grow-name-description")}
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <div>
-                <FormLabel className="mb-2 block font-semibold">
-                  {t("select-plants")}
-                </FormLabel>
-                <Command
-                  className="rounded-sm border shadow-md"
-                  shouldFilter={false}
-                >
-                  <CommandInput
-                    placeholder={t("search-plants")}
-                    value={searchQuery}
-                    onValueChange={(value) => setSearchQuery(value)}
+            <Card>
+              <CardHeader className="p-2 pb-0 sm:p-3 sm:pb-0 lg:p-4 lg:pb-0 xl:p-6 xl:pb-0">
+                <CardTitle level="h2">{pageTexts.formTitle}</CardTitle>
+                <CardDescription>{pageTexts.formDescription}</CardDescription>
+              </CardHeader>
+              <CardContent className="p-2 sm:p-3 lg:p-4 xl:p-6">
+                <div className="space-y-6">
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="font-semibold">
+                          {t("grow-name")}
+                        </FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <Tag className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+                            <Input
+                              className="pl-10"
+                              placeholder={t("grow-name-placeholder")}
+                              {...field}
+                            />
+                          </div>
+                        </FormControl>
+                        <FormDescription>
+                          {t("grow-name-description")}
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                  {isLoading ? (
-                    <div className="flex justify-center p-4">
-                      <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-300 border-t-primary" />
-                    </div>
-                  ) : (
-                    <CommandList className="min-h-24">
-                      <CommandEmpty>{t("no-plants-found")}</CommandEmpty>
-                      <CommandGroup>
-                        {filteredPlants.map((plant) => (
-                          <CommandItem
-                            key={plant.id}
-                            onSelect={() => togglePlantSelection(plant.id)}
-                            className={`cursor-pointer ${
-                              selectedPlantIds.includes(plant.id)
-                                ? "font-bold text-secondary"
-                                : ""
-                            }`}
-                          >
-                            <div
-                              className={`mr-2 flex h-4 w-4 items-center justify-center rounded-sm border ${
-                                selectedPlantIds.includes(plant.id)
-                                  ? "border-secondary bg-secondary"
-                                  : "border-secondary"
-                              }`}
-                            >
-                              {selectedPlantIds.includes(plant.id) && (
-                                <Check className="h-3 w-3 text-primary-foreground" />
-                              )}
-                            </div>
-                            <Flower2 className="mr-2 h-4 w-4" />
-                            <span>{plant.name}</span>
-                          </CommandItem>
-                        ))}
-                      </CommandGroup>
-                    </CommandList>
-                  )}
-                </Command>
-                <FormDescription className="mt-2">
-                  {selectedPlantIds.length > 0
-                    ? t("plants-selected", { count: selectedPlantIds.length })
-                    : t("select-plants-optional")}
-                </FormDescription>
-              </div>
 
-              <div className="flex gap-4">
+                  <div>
+                    <FormLabel className="mb-2 block font-semibold">
+                      {t("select-plants")}
+                    </FormLabel>
+
+                    <Command
+                      className="rounded-sm border shadow-md"
+                      shouldFilter={false}
+                    >
+                      <CommandInput
+                        placeholder={t("search-plants")}
+                        value={searchQuery}
+                        onValueChange={(value) => setSearchQuery(value)}
+                      />
+                      {isLoading ? (
+                        <div className="flex justify-center p-4">
+                          <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-300 border-t-primary" />
+                        </div>
+                      ) : (
+                        <CommandList className="min-h-24">
+                          <CommandEmpty>{t("no-plants-found")}</CommandEmpty>
+                          <CommandGroup>
+                            {filteredPlants.map((plant) => (
+                              <CommandItem
+                                key={plant.id}
+                                onSelect={() => togglePlantSelection(plant.id)}
+                                className={`cursor-pointer ${
+                                  selectedPlantIds.includes(plant.id)
+                                    ? "font-bold text-secondary"
+                                    : ""
+                                }`}
+                              >
+                                <div
+                                  className={`mr-2 flex h-4 w-4 items-center justify-center rounded-sm border ${
+                                    selectedPlantIds.includes(plant.id)
+                                      ? "border-secondary bg-secondary"
+                                      : "border-secondary"
+                                  }`}
+                                >
+                                  {selectedPlantIds.includes(plant.id) && (
+                                    <Check className="h-3 w-3 text-primary-foreground" />
+                                  )}
+                                </div>
+                                <Flower2 className="mr-2 h-4 w-4" />
+                                <span>{plant.name}</span>
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      )}
+                    </Command>
+                  </div>
+
+                  <FormDescription className="mt-2">
+                    {selectedPlantIds.length > 0
+                      ? t("plants-selected", {
+                          count: selectedPlantIds.length,
+                        })
+                      : t("select-plants-optional")}
+                  </FormDescription>
+                </div>
+              </CardContent>
+
+              <CardFooter className="flex w-full gap-2 p-2 sm:p-3 md:gap-6 lg:p-4 xl:p-6">
                 <Button
                   type="button"
                   title={t("reset")}
@@ -395,11 +423,11 @@ export default function GrowForm({ grow }: { grow?: GetOwnGrowType }) {
                 >
                   {isSubmitting ? t("saving") : pageTexts.submitButtonText}
                 </Button>
-              </div>
-            </form>
+              </CardFooter>
+            </Card>
           </Form>
-        </CardContent>
-      </Card>
+        </form>
+      </FormContent>
     </PageHeader>
   );
 }

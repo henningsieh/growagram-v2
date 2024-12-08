@@ -8,7 +8,7 @@ export const PaginationItemsPerPage = {
   GROWS_PER_PAGE: 6,
 };
 
-const modulePaths = {
+export const modulePaths = {
   DASHBOARD: {
     name: "Dashboard",
     path: "/dashboard",

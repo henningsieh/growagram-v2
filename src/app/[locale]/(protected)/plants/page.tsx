@@ -14,11 +14,10 @@ import { GetOwnPlantsInput, GetOwnPlantsType } from "~/server/api/root";
 export default function PlantsPage() {
   const utils = api.useUtils();
 
-  // Get the prefetched data from the cache
+  // Get the prefetched data from cache
   const initialData = utils.plant.getOwnPlants.getInfiniteData({
-    // the input must match the server-side `prefetchInfinite`
     limit: PaginationItemsPerPage.PLANTS_PER_PAGE,
-  });
+  } satisfies GetOwnPlantsInput);
 
   const {
     data,
@@ -83,7 +82,7 @@ export default function PlantsPage() {
         <>
           <ResponsiveGrid>
             {plants.map((plant) => (
-              <PlantCard plant={plant} key={plant.id} />
+              <PlantCard plant={plant} isSocial={false} key={plant.id} />
             ))}
           </ResponsiveGrid>
           <InfiniteScrollLoader

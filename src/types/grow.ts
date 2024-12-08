@@ -1,10 +1,9 @@
-export enum GrowSortField {
+export enum GrowsSortField {
   NAME = "name",
   CREATED_AT = "createdAt",
 }
 
-// Define sort order enum
-export enum SortOrder {
-  ASC = "asc",
-  DESC = "desc",
+export enum GrowsViewMode {
+  PAGINATION = "pagination",
+  INFINITE_SCROLL = "infinite-scroll",
 }

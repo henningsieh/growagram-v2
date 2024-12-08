@@ -2,10 +2,12 @@
 import { TRPCError } from "@trpc/server";
 import { and, count, eq, exists, not } from "drizzle-orm";
 import { z } from "zod";
+import { PaginationItemsPerPage } from "~/assets/constants";
+import { SortOrder } from "~/components/atom/sort-filter-controls";
 import cloudinary from "~/lib/cloudinary";
 import { images, plantImages } from "~/lib/db/schema";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
-import { ImageSortField, ImageSortOrder } from "~/types/image";
+import { PhotosSortField } from "~/types/image";
 import { imageSchema } from "~/types/zodSchema";
 
 export const imageRouter = createTRPCRouter({
@@ -13,16 +15,18 @@ export const imageRouter = createTRPCRouter({
     .input(
       z
         .object({
-          limit: z.number().min(1).max(100).default(12).optional(),
           cursor: z.number().min(1).default(1).optional(),
+          limit: z
+            .number()
+            .min(1)
+            .max(100)
+            .default(PaginationItemsPerPage.PHOTOS_PER_PAGE)
+            .optional(),
           sortField: z
-            .nativeEnum(ImageSortField)
-            .default(ImageSortField.UPLOAD_DATE)
+            .nativeEnum(PhotosSortField)
+            .default(PhotosSortField.UPLOAD_DATE)
             .optional(),
-          sortOrder: z
-            .nativeEnum(ImageSortOrder)
-            .default(ImageSortOrder.DESC)
-            .optional(),
+          sortOrder: z.nativeEnum(SortOrder).default(SortOrder.DESC).optional(),
           filterNotConnected: z.boolean().default(false).optional(),
         })
         .default({}),
@@ -31,8 +35,8 @@ export const imageRouter = createTRPCRouter({
       // Use default values if input is not provided
       const limit = input?.limit ?? 12;
       const cursor = input?.cursor ?? 1;
-      const sortField = input?.sortField ?? ImageSortField.UPLOAD_DATE;
-      const sortOrder = input?.sortOrder ?? ImageSortOrder.DESC;
+      const sortField = input?.sortField ?? PhotosSortField.UPLOAD_DATE;
+      const sortOrder = input?.sortOrder ?? SortOrder.DESC;
       const filterNotConnected = input?.filterNotConnected ?? false;
 
       // Calculate offset based on page number
@@ -85,7 +89,7 @@ export const imageRouter = createTRPCRouter({
           return and(...conditions);
         },
         orderBy: (images, { desc, asc }) => [
-          sortOrder === ImageSortOrder.DESC
+          sortOrder === SortOrder.DESC
             ? desc(images[sortField])
             : asc(images[sortField]),
         ],
@@ -199,7 +203,7 @@ export const imageRouter = createTRPCRouter({
           captureDate: input.captureDate,
           originalFilename: input.originalFilename,
         })
-        // .onConflictDoUpdate() // ToDo!!!
+        // .onConflictDoUpdate() // TODO: ?
         .returning();
 
       if (!newImage) {

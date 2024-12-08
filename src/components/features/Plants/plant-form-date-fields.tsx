@@ -8,7 +8,6 @@ import {
   FormDescription,
   FormItem,
   FormLabel,
-  FormMessage,
 } from "~/components/ui/form";
 import {
   Popover,
@@ -34,6 +33,17 @@ export default function PlantFormDateField<TFieldValues extends FieldValues>({
 }: PlantFormDateFieldProps<TFieldValues>) {
   const locale = useLocale();
 
+  const handleDateSelect = (date: Date | undefined) => {
+    field.onChange(date);
+    // The Popover will automatically close when the date is selected
+  };
+
+  const handleResetClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    field.onChange(null);
+    // The Popover will automatically close when the reset button is clicked
+  };
+
   return (
     <FormItem className="flex flex-col">
       <FormLabel className="font-semibold">{label}</FormLabel>
@@ -42,45 +52,44 @@ export default function PlantFormDateField<TFieldValues extends FieldValues>({
           <PopoverTrigger asChild>
             <FormControl>
               <Button
-                variant={"outline"}
+                variant="outline"
                 className={cn(
-                  "w-full bg-transparent pl-3 text-left font-normal",
-                  !field.value && "text-muted-foreground",
+                  "w-full justify-between pl-2 pr-1 text-left font-normal md:text-base",
+                  field.value && "text-foreground",
+                  "focus-visible:outline-1 focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-0",
                 )}
               >
-                {field.value ? (
-                  formatDate(field.value, locale)
-                ) : (
-                  <span>Pick a date</span>
+                <div className="flex items-center gap-2">
+                  <Icon size={20} className={cn("opacity-80", iconClassName)} />
+                  {field.value
+                    ? formatDate(field.value, locale)
+                    : "Pick a date"}
+                </div>
+                {field.value && (
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    className="ml-auto h-6 w-6"
+                    onClick={handleResetClick}
+                  >
+                    <X className="h-5 w-5" />
+                  </Button>
                 )}
-                <Icon
-                  className={cn("ml-auto h-5 w-5 opacity-70", iconClassName)}
-                />
               </Button>
             </FormControl>
           </PopoverTrigger>
-          <PopoverContent className="w-auto p-0" align="start">
+          <PopoverContent className="w-auto border-primary p-0" align="start">
             <Calendar
               mode="single"
               selected={field.value}
-              onSelect={(date) => field.onChange(date || null)}
+              onSelect={handleDateSelect}
               initialFocus
             />
           </PopoverContent>
         </Popover>
-        {field.value && (
-          <Button
-            type="button"
-            variant="destructive"
-            className="w-10"
-            onClick={() => field.onChange(null)}
-          >
-            <X className="h-4 w-4" />
-          </Button>
-        )}
       </div>
       <FormDescription>{description}</FormDescription>
-      <FormMessage />
     </FormItem>
   );
 }

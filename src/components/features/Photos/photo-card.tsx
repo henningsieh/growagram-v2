@@ -2,7 +2,7 @@
 import {
   Camera,
   Edit,
-  Flower2,
+  Edit2,
   Loader2,
   Maximize,
   Minimize,
@@ -16,16 +16,10 @@ import Image from "next/image";
 import React, { useCallback, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
+import { SortOrder } from "~/components/atom/sort-filter-controls";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardFooter, CardTitle } from "~/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "~/components/ui/dialog";
+import { Separator } from "~/components/ui/separator";
 import { Switch } from "~/components/ui/switch";
 import {
   Tooltip,
@@ -33,20 +27,19 @@ import {
   TooltipTrigger,
 } from "~/components/ui/tooltip";
 import { useToast } from "~/hooks/use-toast";
-import { Link } from "~/lib/i18n/routing";
-import { useRouter } from "~/lib/i18n/routing";
+import { Link, useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import { cn, formatDate, formatTime } from "~/lib/utils";
 import { GetOwnImageType } from "~/server/api/root";
-import { ImageSortField, ImageSortOrder } from "~/types/image";
+import { PhotosSortField } from "~/types/image";
 
 interface PhotoCardProps {
   image: GetOwnImageType;
-  sortField: ImageSortField;
+  sortField: PhotosSortField;
   currentQuery: {
     page: number;
-    sortField: ImageSortField;
-    sortOrder: ImageSortOrder;
+    sortField: PhotosSortField;
+    sortOrder: SortOrder;
     filterNotConnected: boolean;
   };
 }
@@ -168,7 +161,7 @@ export default function PhotoCard({
               <p
                 className={cn(
                   "flex items-center gap-2 px-1",
-                  sortField === ImageSortField.UPLOAD_DATE
+                  sortField === PhotosSortField.UPLOAD_DATE
                     ? "text-secondary"
                     : "text-accent-foreground",
                 )}
@@ -190,7 +183,7 @@ export default function PhotoCard({
               <p
                 className={cn(
                   "flex items-center gap-2 px-1",
-                  sortField === ImageSortField.CAPTURE_DATE
+                  sortField === PhotosSortField.CAPTURE_DATE
                     ? "text-secondary"
                     : "text-accent-foreground",
                 )}
@@ -208,11 +201,13 @@ export default function PhotoCard({
           </Tooltip>
         </CardContent>
 
-        <CardFooter className="flex w-full gap-1 p-2">
+        <Separator />
+
+        <CardFooter className="flex w-full justify-between gap-1 p-1">
           <Button
             variant="destructive"
             size={"sm"}
-            className="w-14"
+            className="w-16"
             onClick={handleDelete}
             disabled={deleteMutation.isPending}
           >
@@ -225,7 +220,7 @@ export default function PhotoCard({
           <Button
             asChild
             size={"sm"}
-            className="w-full"
+            className="w-full text-base"
             variant={!!!image.plantImages.length ? "primary" : "outline"}
           >
             <Link
@@ -237,9 +232,9 @@ export default function PhotoCard({
               {!!!image.plantImages.length ? (
                 <Search size={20} />
               ) : (
-                <Flower2 size={20} />
+                <Edit size={20} />
               )}
-              {!!!image.plantImages.length ? "Identify Plants" : "Edit Plants"}
+              {!!!image.plantImages.length ? "Select Plants" : "Edit Plants"}
             </Link>
           </Button>
         </CardFooter>

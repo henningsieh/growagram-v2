@@ -1,22 +1,20 @@
-import FormContent from "~/components/Layouts/form-content";
-import PlantForm from "~/components/features/Plants/plant-form";
+import { notFound } from "next/navigation";
+import PlantFormPage from "~/components/features/Plants/plant-form";
 import { api } from "~/lib/trpc/server";
 import { GetPlantByIdInput, GetPlantByIdType } from "~/server/api/root";
 
 export default async function EditPlantPage({
   params,
 }: {
-  params: GetPlantByIdInput;
+  params: Promise<GetPlantByIdInput>;
 }) {
-  const plantId = params.id;
+  const plantId = (await params).id;
 
-  const plant = (await api.plant.getById({
-    id: plantId,
-  })) satisfies GetPlantByIdType;
+  const plant = (
+    plantId !== "new" ? await api.plant.getById({ id: plantId }) : undefined
+  ) satisfies GetPlantByIdType | undefined;
 
-  return (
-    <FormContent>
-      <PlantForm plant={plant} />
-    </FormContent>
-  );
+  if (plantId !== "new" && plant === undefined) notFound();
+
+  return <PlantFormPage plant={plant} />;
 }
