@@ -25,8 +25,19 @@ export type AppRouter = typeof appRouter;
 type RouterOutput = inferRouterOutputs<AppRouter>;
 type RouterInput = inferRouterInputs<AppRouter>
 
+// likeRouter
+//  OUTPUTS:
+export type ToggleLikeOutput = RouterOutput["likes"]["toggleLike"]
+export type GetLikeCountOutput = RouterOutput["likes"]["getLikeCount"]
+export type GetUserLikedEntitiesType = RouterOutput["likes"]["getUserLikedEntities"]
+export type GetUserLikedEntityType = RouterOutput["likes"]["getUserLikedEntities"][number]
+//  INPUTS:
+export type ToggleLikeInput = RouterInput["likes"]["toggleLike"]
+export type GetLikeCountInput = RouterInput["likes"]["getLikeCount"]
+export type GetUserLikedEntitiesInput = RouterInput["likes"]["getUserLikedEntities"]
+
 // imageRouter
-//  OUTPUTS
+//  OUTPUTS:
 export type GetOwnImagesOutput = RouterOutput["image"]["getOwnImages"];
 export type GetOwnImagesType = RouterOutput["image"]["getOwnImages"]["images"];
 export type GetOwnImageType = RouterOutput["image"]["getOwnImages"]["images"][number];
@@ -38,7 +49,7 @@ export type CreateImageInput = RouterInput["image"]["createImage"];
 
 
 // plantRouter
-//  OUTPUTS
+//  OUTPUTS:
 export type GetOwnPlantsOutput = RouterOutput["plant"]["getOwnPlants"];
 export type GetOwnPlantsType = RouterOutput["plant"]["getOwnPlants"]["plants"];
 export type GetOwnPlantType = RouterOutput["plant"]["getOwnPlants"]["plants"][number];
@@ -49,7 +60,7 @@ export type GetPlantByIdInput = RouterInput["plant"]["getById"];
 export type CreateOrEditPlantInput = RouterInput["plant"]["createOrEdit"];
 
 // growRouter
-//  OUTPUTS
+//  OUTPUTS:
 export type GetOwnGrowsOutput = RouterOutput["grow"]["getOwnGrows"];
 export type GetOwnGrowsType = RouterOutput["grow"]["getOwnGrows"]["grows"];
 export type GetOwnGrowType = RouterOutput["grow"]["getOwnGrows"]["grows"][number];

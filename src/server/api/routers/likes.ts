@@ -3,15 +3,15 @@ import { and, eq, sql } from "drizzle-orm";
 import { z } from "zod";
 import { images, likes, plants } from "~/lib/db/schema";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
-import {
-  getLikeCountInput,
-  getUserLikedEntitiesInut,
-  toggleLikeInput,
-} from "~/types/zodSchema";
 
 export const likeRouter = createTRPCRouter({
   toggleLike: protectedProcedure
-    .input(toggleLikeInput)
+    .input(
+      z.object({
+        entityId: z.string(),
+        entityType: z.enum(["plant", "image"]),
+      }),
+    )
     .mutation(async ({ ctx, input }) => {
       const { entityId, entityType } = input;
       const userId = ctx.session.user.id;
@@ -70,7 +70,12 @@ export const likeRouter = createTRPCRouter({
     }),
 
   getLikeCount: protectedProcedure
-    .input(getLikeCountInput)
+    .input(
+      z.object({
+        entityId: z.string(),
+        entityType: z.enum(["plant", "image"]),
+      }),
+    )
     .query(async ({ ctx, input }) => {
       const { entityId, entityType } = input;
 
@@ -85,7 +90,11 @@ export const likeRouter = createTRPCRouter({
     }),
 
   getUserLikedEntities: protectedProcedure
-    .input(getUserLikedEntitiesInut)
+    .input(
+      z.object({
+        entityType: z.enum(["plant", "image"]).optional(),
+      }),
+    )
     .query(async ({ ctx, input }) => {
       const userId = ctx.session.user.id;
       const { entityType } = input;

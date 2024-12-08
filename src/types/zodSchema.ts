@@ -39,16 +39,3 @@ export const growSchema = z.object({
   id: z.string().optional(),
   name: z.string().min(1, "Grow name is required"),
 });
-
-// likeRouter schemas
-export const getUserLikedEntitiesInut = z.object({
-  entityType: z.enum(["plant", "image"]).optional(),
-});
-export const getLikeCountInput = z.object({
-  entityId: z.string(),
-  entityType: z.enum(["plant", "image"]),
-});
-export const toggleLikeInput = z.object({
-  entityId: z.string(),
-  entityType: z.enum(["plant", "image"]),
-});
