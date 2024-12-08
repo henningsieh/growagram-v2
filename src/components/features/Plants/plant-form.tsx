@@ -1,5 +1,6 @@
 "use client";
 
+// src/components/features/Plants/plant-form.tsx:
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Flower2,
@@ -8,6 +9,7 @@ import {
   Nut,
   PillBottle,
   Sprout,
+  Tag,
   Wheat,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -123,35 +125,43 @@ export default function PlantFormPage({ plant }: { plant?: Plant }) {
       buttonLink={"/plants"}
     >
       <FormContent>
-        <Card>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
-            <CardHeader className="p-2 sm:p-3 lg:p-4 xl:p-6">
-              <CardTitle level="h2">{t("form-heading")}</CardTitle>
-              <CardDescription>{t("form-heading-description")}</CardDescription>
-            </CardHeader>
-            <CardContent className="p-2 sm:p-3 lg:p-4 xl:p-6">
-              <Form {...form}>
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="font-semibold">
-                        {t("form-nickname")}
-                      </FormLabel>
-                      <FormControl>
-                        <Input placeholder="Enter plant name" {...field} />
-                      </FormControl>
-                      <FormDescription>
-                        {t("form-nickname-description")}
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <div className="space-y-8">
-                  <div className="grid gap-6 md:grid-cols-2">
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <Form {...form}>
+            <Card>
+              <CardHeader className="p-2 pb-0 sm:p-3 sm:pb-0 lg:p-4 lg:pb-0 xl:p-6 xl:pb-0">
+                <CardTitle level="h2">{t("form-heading")}</CardTitle>
+                <CardDescription>
+                  {t("form-heading-description")}
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="p-2 sm:p-3 lg:p-4 xl:p-6">
+                <div className="space-y-6">
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="font-semibold">
+                          {t("form-nickname")}
+                        </FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <Tag className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-accent-foreground" />
+                            <Input
+                              className="bg-muted pl-10 text-foreground md:text-base"
+                              placeholder="Enter plant name"
+                              {...field}
+                            />
+                          </div>
+                        </FormControl>
+                        <FormDescription>
+                          {t("form-nickname-description")}
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <div className="grid md:grid-cols-2 md:gap-4 lg:gap-6 xl:gap-8">
                     <FormField
                       control={form.control}
                       name="startDate"
@@ -181,7 +191,7 @@ export default function PlantFormPage({ plant }: { plant?: Plant }) {
                     />
                   </div>
 
-                  <div className="grid gap-6 md:grid-cols-2">
+                  <div className="grid md:grid-cols-2 md:gap-4 lg:gap-6 xl:gap-8">
                     <FormField
                       control={form.control}
                       name="vegetationPhaseStart"
@@ -211,7 +221,7 @@ export default function PlantFormPage({ plant }: { plant?: Plant }) {
                     />
                   </div>
 
-                  <div className="grid gap-6 md:grid-cols-2">
+                  <div className="grid md:grid-cols-2 md:gap-4 lg:gap-6 xl:gap-8">
                     <FormField
                       control={form.control}
                       name="harvestDate"
@@ -240,36 +250,34 @@ export default function PlantFormPage({ plant }: { plant?: Plant }) {
                     />
                   </div>
                 </div>
-              </Form>
-            </CardContent>
+              </CardContent>
 
-            <CardFooter className="flex w-full gap-2 p-2 sm:p-3 md:gap-6 lg:p-4 xl:p-6">
-              <Button
-                size="sm"
-                type="button"
-                title="Reset"
-                variant="outline"
-                onClick={() => form.reset()}
-                className="w-full"
-              >
-                {t("form-button-reset")}
-              </Button>
-              <Button
-                size="sm"
-                type="submit"
-                className="w-full"
-                disabled={isSubmitting}
-              >
-                {isSubmitting && (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                )}
-                {plant?.id
-                  ? t("form-button-save-changes")
-                  : t("form-button-save-new")}
-              </Button>
-            </CardFooter>
-          </form>
-        </Card>
+              <CardFooter className="flex w-full gap-2 p-2 sm:p-3 md:gap-6 lg:p-4 xl:p-6">
+                <Button
+                  type="button"
+                  title="Reset"
+                  variant="outline"
+                  onClick={() => form.reset()}
+                  className="w-full"
+                >
+                  {t("form-button-reset")}
+                </Button>
+                <Button
+                  type="submit"
+                  className="w-full"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting && (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  )}
+                  {plant?.id
+                    ? t("form-button-save-changes")
+                    : t("form-button-save-new")}
+                </Button>
+              </CardFooter>
+            </Card>
+          </Form>
+        </form>
       </FormContent>
     </PageHeader>
   );

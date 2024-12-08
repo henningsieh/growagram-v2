@@ -43,10 +43,11 @@ export default function PlantFormDateField<TFieldValues extends FieldValues>({
           <PopoverTrigger asChild>
             <FormControl>
               <Button
-                variant={"outline"}
+                variant="outline"
                 className={cn(
-                  "w-full justify-start gap-2 bg-transparent pl-3 text-left text-base font-normal focus:border-2 md:text-sm",
+                  "w-full justify-start px-2 text-left font-normal md:text-base",
                   field.value && "text-foreground",
+                  "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-0",
                 )}
               >
                 <Icon size={20} className={cn("opacity-80", iconClassName)} />
