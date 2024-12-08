@@ -97,24 +97,33 @@ export default function PlantCard({ plant, isSocial }: PlantCardProps) {
 
   return (
     <>
+      {/* Delete Confirmation Dialog */}
+      <DeleteConfirmationDialog
+        isOpen={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        onConfirmDelete={confirmDelete}
+        isDeleting={deleteMutation.isPending}
+        title="Are you sure you want to remove this plant?"
+        description="No photo will be deleted by this action. But this will also remove all references in any photos where this plant is tagged!"
+        alertCautionText="This action also deletes all feedings and other events referring to this plant!"
+      />
+
       <Card className="overflow-hidden">
-        <CardHeader className="p-0">
-          <div
-            className="relative aspect-video"
-            onMouseEnter={() => setIsImageHovered(true)}
-            onMouseLeave={() => setIsImageHovered(false)}
-          >
-            <Image
-              src={plant.headerImage?.imageUrl ?? headerImagePlaceholder}
-              alt={plant.name}
-              fill
-              sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
-              className="object-cover transition-transform duration-300"
-              style={{
-                transform: isImageHovered ? "scale(1.05)" : "scale(1)",
-              }}
-            />
-          </div>
+        <CardHeader
+          className="relative aspect-video p-0"
+          onMouseEnter={() => setIsImageHovered(true)}
+          onMouseLeave={() => setIsImageHovered(false)}
+        >
+          <Image
+            src={plant.headerImage?.imageUrl ?? headerImagePlaceholder}
+            alt={plant.name}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
+            className="object-cover transition-transform duration-300"
+            style={{
+              transform: isImageHovered ? "scale(1.05)" : "scale(1)",
+            }}
+          />
         </CardHeader>
         <CardContent className="p-4">
           <CardTitle>{plant.name}</CardTitle>
@@ -287,17 +296,6 @@ export default function PlantCard({ plant, isSocial }: PlantCardProps) {
           />
         )}
       </Card>
-
-      {/* Delete Confirmation Dialog */}
-      <DeleteConfirmationDialog
-        isOpen={isDeleteDialogOpen}
-        onOpenChange={setIsDeleteDialogOpen}
-        onConfirmDelete={confirmDelete}
-        isDeleting={deleteMutation.isPending}
-        title="Are you sure you want to remove this plant? "
-        description="This action will also delete all references to this plant in your photos. This cannot be undone."
-        importantInfo="No photo will be deleted by this action!"
-      />
     </>
   );
 }

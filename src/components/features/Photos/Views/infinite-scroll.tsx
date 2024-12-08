@@ -123,8 +123,8 @@ export default function PhotosInfiniteScrollView({
             {photos.map((image) => (
               <PhotoCard
                 key={image.id}
-                image={image satisfies GetOwnImageType}
-                sortField={sortField}
+                image={image}
+                isSocial={false}
                 currentQuery={{
                   page: 1,
                   sortField,

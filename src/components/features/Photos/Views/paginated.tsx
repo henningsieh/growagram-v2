@@ -138,8 +138,8 @@ export default function PhotosPaginatedView({
             {userImages.map((image) => (
               <PhotoCard
                 key={image.id}
-                image={image satisfies GetOwnImageType}
-                sortField={sortField}
+                image={image}
+                isSocial={false}
                 currentQuery={{
                   page: currentPage,
                   sortField,
@@ -169,7 +169,7 @@ export default function PhotosPaginatedView({
                     <PaginationItem key={pageNumber}>
                       <PaginationLink
                         onClick={() => handlePageChange(pageNumber as number)}
-                        isActive={pageNumber === currentPage} // Changed to compare with the current page
+                        isActive={pageNumber === currentPage}
                         disabled={isFetching}
                       >
                         <p>{pageNumber}</p>

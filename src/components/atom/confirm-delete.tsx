@@ -5,6 +5,7 @@ import {
   InfoIcon,
   Loader2,
   Trash2,
+  TriangleAlert,
   X,
 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
@@ -25,7 +26,7 @@ interface DeleteConfirmationDialogProps {
   isDeleting: boolean;
   title?: string;
   description?: string;
-  importantInfo?: string;
+  alertCautionText?: string;
 }
 
 export function DeleteConfirmationDialog({
@@ -33,38 +34,30 @@ export function DeleteConfirmationDialog({
   onOpenChange,
   onConfirmDelete,
   isDeleting,
-  title = "Are you sure you want to remove this plant?",
-  description = "This action will also permanently delete all references to this plant in your photos. This cannot be undone.",
-  importantInfo = "No photo will be deleted by this action!",
+  title = "Are you sure you want to remove this item?",
+  description = "This action cannot be undone!",
+  alertCautionText,
 }: DeleteConfirmationDialogProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <Flower2 className="mr-2 h-4 w-4 text-secondary" />
-
           <DialogTitle className="text-xl font-semibold">{title}</DialogTitle>
           <DialogDescription className="mt-2 text-sm text-muted-foreground">
             {description}
           </DialogDescription>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute right-4 top-4"
-            onClick={() => onOpenChange(false)}
-          >
-            <X className="h-4 w-4" />
-            <span className="sr-only">Close</span>
-          </Button>
         </DialogHeader>
 
-        {importantInfo && (
-          <Alert variant="default" className="border-primary bg-primary/10 p-4">
-            <AlertTitle className="items-gap-1 center flex gap-1 font-semibold text-primary">
-              <InfoIcon className="h-4 w-4 text-primary" /> Important!
+        {alertCautionText && (
+          <Alert
+            variant="destructive"
+            // className="border-destructive bg-destructive/10 p-4"
+          >
+            <AlertTitle className="items-gap-1 center flex gap-1 font-semibold text-foreground">
+              <TriangleAlert className="h-4 w-4 text-yellow-400" /> Caution!
             </AlertTitle>
-            <AlertDescription className="text-primary">
-              {importantInfo}
+            <AlertDescription className="text-destructive">
+              {alertCautionText}
             </AlertDescription>
           </Alert>
         )}

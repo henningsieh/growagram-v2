@@ -36,7 +36,7 @@ import { PhotosSortField } from "~/types/image";
 
 interface PhotoCardProps {
   image: GetOwnImageType;
-  sortField: PhotosSortField;
+  isSocial: boolean;
   currentQuery: {
     page: number;
     sortField: PhotosSortField;
@@ -47,7 +47,7 @@ interface PhotoCardProps {
 
 export default function PhotoCard({
   image,
-  sortField,
+  isSocial,
   currentQuery,
 }: PhotoCardProps) {
   const locale = useLocale();
@@ -130,7 +130,18 @@ export default function PhotoCard({
 
   return (
     <>
+      {/* Delete Confirmation Dialog */}
+      <DeleteConfirmationDialog
+        isOpen={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        onConfirmDelete={confirmDelete}
+        isDeleting={deleteMutation.isPending}
+        title="Are you sure you want to delete this photo?"
+        description="No plant will be deleted by this action!"
+        alertCautionText="This action cannot be undone. This will permanently delete the photo from our cloud storage servers."
+      />
       <Card className="relative overflow-hidden">
+        {/* "NEW" Banner */}
         {!!!image.plantImages.length && (
           <div className="absolute right-[-40px] top-[15px] z-10 w-[120px] rotate-[45deg] cursor-default bg-secondary px-[40px] py-[1px] text-[12px] font-semibold tracking-widest text-white">
             NEW
@@ -163,7 +174,7 @@ export default function PhotoCard({
               <p
                 className={cn(
                   "flex items-center gap-2 px-1",
-                  sortField === PhotosSortField.UPLOAD_DATE
+                  currentQuery.sortField === PhotosSortField.UPLOAD_DATE
                     ? "text-secondary"
                     : "text-accent-foreground",
                 )}
@@ -185,7 +196,7 @@ export default function PhotoCard({
               <p
                 className={cn(
                   "flex items-center gap-2 px-1",
-                  sortField === PhotosSortField.CAPTURE_DATE
+                  currentQuery.sortField === PhotosSortField.CAPTURE_DATE
                     ? "text-secondary"
                     : "text-accent-foreground",
                 )}
@@ -240,18 +251,20 @@ export default function PhotoCard({
             </Link>
           </Button>
         </CardFooter>
-        <SocialCardFooter
-          className="p-1"
-          entityId={image.id}
-          entityType={"image"}
-          initialLiked={isLiked}
-          isLikeStatusLoading={isLoading}
-          stats={{
-            comments: 0,
-            views: 0,
-            likes: likeCount,
-          }}
-        />
+        {isSocial && (
+          <SocialCardFooter
+            className="p-1"
+            entityId={image.id}
+            entityType={"image"}
+            initialLiked={isLiked}
+            isLikeStatusLoading={isLoading}
+            stats={{
+              comments: 0,
+              views: 0,
+              likes: likeCount,
+            }}
+          />
+        )}
       </Card>
 
       {isModalOpen &&
@@ -309,16 +322,6 @@ export default function PhotoCard({
           </div>,
           document.body,
         )}
-
-      {/* Delete Confirmation Dialog */}
-      <DeleteConfirmationDialog
-        isOpen={isDeleteDialogOpen}
-        onOpenChange={setIsDeleteDialogOpen}
-        onConfirmDelete={confirmDelete}
-        isDeleting={deleteMutation.isPending}
-        title="Are you sure you want to delete this image?"
-        description="This action cannot be undone. This will permanently delete the image from our servers."
-      />
     </>
   );
 }
