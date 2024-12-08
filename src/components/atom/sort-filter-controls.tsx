@@ -69,10 +69,10 @@ export function SortFilterControls<T extends string>({
   };
 
   return (
-    <div className="mb-4 flex flex-col items-center justify-between gap-2 rounded-sm sm:flex-row">
-      <div className="flex w-full items-center space-x-2 sm:justify-start">
+    <div className="mb-6 flex flex-col items-center justify-between gap-2 rounded-sm lg:flex-row">
+      <div className="flex w-full items-center space-x-2 lg:justify-start">
         {viewMode && (
-          <div className="flex h-8 w-full items-center justify-start gap-2 text-nowrap rounded-sm border-[1px] border-input bg-muted px-1 hover:bg-transparent sm:w-[154px]">
+          <div className="flex h-8 w-full items-center justify-start gap-2 text-nowrap rounded-sm border-[1px] border-input bg-muted px-1 hover:bg-transparent lg:w-[154px]">
             <Switch
               size="default"
               id="view-mode"
@@ -91,7 +91,7 @@ export function SortFilterControls<T extends string>({
           </div>
         )}
         {onFilterChange && (
-          <div className="flex h-8 w-full items-center justify-start gap-2 text-nowrap rounded-sm border-[1px] border-input bg-muted px-1 hover:bg-transparent sm:w-[154px]">
+          <div className="flex h-8 w-full items-center justify-start gap-2 text-nowrap rounded-sm border-[1px] border-input bg-muted px-1 hover:bg-transparent lg:w-[154px]">
             <Switch
               size="default"
               variant="secondary"
@@ -105,7 +105,7 @@ export function SortFilterControls<T extends string>({
           </div>
         )}
       </div>
-      <div className="flex w-full items-center space-x-2 sm:justify-end">
+      <div className="flex w-full items-center space-x-2 lg:justify-end">
         {sortOptions.map((option, index) => (
           <Button
             key={index}
@@ -113,7 +113,7 @@ export function SortFilterControls<T extends string>({
             variant="outline"
             size="sm"
             className={cn(
-              "flex w-full items-center justify-between gap-1 p-2 sm:w-[154px]",
+              "flex w-full items-center justify-between gap-1 p-2 lg:w-[154px]",
               sortField === option.field &&
                 "border-[1px] border-secondary text-foreground",
             )}
