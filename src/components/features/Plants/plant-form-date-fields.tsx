@@ -1,3 +1,4 @@
+// src/components/features/Plants/plant-form-date-fields.tsx:
 import { X } from "lucide-react";
 import { useLocale } from "next-intl";
 import { ControllerRenderProps, FieldValues, Path } from "react-hook-form";
@@ -44,18 +45,12 @@ export default function PlantFormDateField<TFieldValues extends FieldValues>({
               <Button
                 variant={"outline"}
                 className={cn(
-                  "w-full bg-transparent pl-3 text-left font-normal",
-                  !field.value && "text-muted-foreground",
+                  "w-full justify-start gap-2 bg-transparent pl-3 text-left text-base font-normal focus:border-2 md:text-sm",
+                  field.value && "text-foreground",
                 )}
               >
-                {field.value ? (
-                  formatDate(field.value, locale)
-                ) : (
-                  <span>Pick a date</span>
-                )}
-                <Icon
-                  className={cn("ml-auto h-5 w-5 opacity-70", iconClassName)}
-                />
+                <Icon size={20} className={cn("opacity-80", iconClassName)} />
+                {field.value ? formatDate(field.value, locale) : "Pick a date"}
               </Button>
             </FormControl>
           </PopoverTrigger>
