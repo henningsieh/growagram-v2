@@ -9,6 +9,7 @@ import {
   CreditCard,
   Folder,
   Forward,
+  Gauge,
   LogOut,
   MoreHorizontal,
   Plus,
@@ -88,11 +89,24 @@ export default function ProtectedSidebar({
         <SidebarContent>
           {/* Dashboard Group */}
           <SidebarGroup>
-            <SidebarMenuButton>
-              <Link href="/dashboard">{t("Platform.Dashboard-title")}</Link>
-            </SidebarMenuButton>
             {/* Main Navigation Menu with Collapsible Items */}
             <SidebarMenu>
+              {/* Dashboard Button */}
+              <Collapsible asChild className="group/collapsible">
+                <SidebarMenuItem>
+                  <CollapsibleTrigger asChild>
+                    <Link href="/dashboard">
+                      <SidebarMenuButton
+                        tooltip={t("Platform.Dashboard-title")}
+                      >
+                        <Gauge />
+                        <span>{t("Platform.Dashboard-title")}</span>
+                        <ChevronRight className="ml-auto transition-transform duration-200" />
+                      </SidebarMenuButton>
+                    </Link>
+                  </CollapsibleTrigger>
+                </SidebarMenuItem>
+              </Collapsible>
               {sidebarItems.navMain.map((item) => (
                 <Collapsible
                   key={item.title}
@@ -102,11 +116,13 @@ export default function ProtectedSidebar({
                 >
                   <SidebarMenuItem>
                     <CollapsibleTrigger asChild>
-                      <SidebarMenuButton tooltip={item.title}>
-                        {item.icon && <item.icon />}
-                        <span>{item.title}</span>
-                        <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-                      </SidebarMenuButton>
+                      <Link href={item.url}>
+                        <SidebarMenuButton tooltip={item.title}>
+                          {item.icon && <item.icon />}
+                          <span>{item.title}</span>
+                          <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                        </SidebarMenuButton>
+                      </Link>
                     </CollapsibleTrigger>
                     <CollapsibleContent>
                       <SidebarMenuSub>

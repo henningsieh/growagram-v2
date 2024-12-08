@@ -14,7 +14,7 @@
   "navMain": [
     {
       "title": "Grows",
-      "url": "#",
+      "url": "/grows",
       "icon": "TentTree",
       "isActive": true,
       "items": [
