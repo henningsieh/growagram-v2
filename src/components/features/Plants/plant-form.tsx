@@ -43,11 +43,11 @@ import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import { CreateOrEditPlantInput, GetOwnPlantsInput } from "~/server/api/root";
 import { Plant } from "~/types/db";
-import { plantSchema } from "~/types/zodSchema";
+import { plantFormSchema } from "~/types/zodSchema";
 
 import PlantFormDateField from "./plant-form-date-fields";
 
-type FormValues = z.infer<typeof plantSchema>;
+type FormValues = z.infer<typeof plantFormSchema>;
 
 export default function PlantFormPage({ plant }: { plant?: Plant }) {
   const utils = api.useUtils();
@@ -60,7 +60,7 @@ export default function PlantFormPage({ plant }: { plant?: Plant }) {
 
   const form = useForm<FormValues>({
     mode: "onBlur",
-    resolver: zodResolver(plantSchema),
+    resolver: zodResolver(plantFormSchema),
     defaultValues: {
       id: plant?.id,
       name: plant?.name || "",

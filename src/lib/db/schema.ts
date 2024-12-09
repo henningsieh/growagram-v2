@@ -1,4 +1,4 @@
-import { eq, relations, sql } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import {
   boolean,
   integer,
@@ -10,6 +10,7 @@ import {
   uniqueIndex,
 } from "drizzle-orm/pg-core";
 import type { AdapterAccountType } from "next-auth/adapters";
+import { LikeableEntityType } from "~/types/like";
 
 // Creating table with a prefix for multi-project schema
 export const createTable = pgTableCreator((name) => `growagram.com_${name}`);
@@ -243,7 +244,7 @@ export const likes = pgTable(
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
     entityId: text("entity_id").notNull(),
-    entityType: text("entity_type").$type<"plant" | "image">().notNull(),
+    entityType: text("entity_type").$type<LikeableEntityType>().notNull(),
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
@@ -281,6 +282,7 @@ export const growsRelations = relations(grows, ({ one, many }) => ({
     references: [users.id],
   }),
   plants: many(plants),
+  likes: many(likes),
 }));
 
 export const likesRelations = relations(likes, ({ one }) => ({
@@ -291,12 +293,14 @@ export const likesRelations = relations(likes, ({ one }) => ({
   plant: one(plants, {
     fields: [likes.entityId],
     references: [plants.id],
-    // condition: eq(likes.entityType, 'plant')
   }),
   image: one(images, {
     fields: [likes.entityId],
     references: [images.id],
-    // condition: eq(likes.entityType, 'image')
+  }),
+  grow: one(grows, {
+    fields: [likes.entityId],
+    references: [grows.id],
   }),
 }));
 

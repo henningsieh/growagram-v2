@@ -1,7 +1,7 @@
 // src/types/zodSchema.ts:
 import { z } from "zod";
 
-export const plantSchema = z.object({
+export const plantFormSchema = z.object({
   id: z.string().optional(),
   name: z.string().min(2, {
     message: "Plant name must be at least 2 characters.",

@@ -7,10 +7,12 @@ import { Button } from "~/components/ui/button";
 import { useToast } from "~/hooks/use-toast";
 import { api } from "~/lib/trpc/react";
 import { cn } from "~/lib/utils";
+import { ToggleLikeInput } from "~/server/api/root";
+import { LikeableEntityType } from "~/types/like";
 
 interface LikeProps {
   entityId: string;
-  entityType: "plant" | "image";
+  entityType: LikeableEntityType;
   initialLiked?: boolean;
   initialLikeCount?: number;
   className?: string;
@@ -37,16 +39,22 @@ export const LikeButton: React.FC<LikeProps> = ({
 
   const toggleLikeMutation = api.likes.toggleLike.useMutation({
     onMutate: (variables) => {
-      // Optimistic update
+      // Do an optimistic update
       setIsLiked((prev) => !prev);
       setLikeCount((prev) => (isLiked ? prev - 1 : prev + 1));
+      console.debug("Attempting to like/unlike:", variables);
+      return { variables }; // Optional: return context for other callbacks
     },
-    onSuccess: (data) => {
+    onSuccess: (data, variables) => {
       // Log the returned boolean
-      console.debug("Like toggled:", data.liked);
+      console.debug("Like toggled successfully:", {
+        liked: data.liked,
+        entityId: variables.entityId,
+        entityType: variables.entityType,
+      });
     },
     onError: (error) => {
-      // Revert optimistic update on error
+      // Revert the optimistic update on error
       setIsLiked(initialLiked);
       setLikeCount(initialLikeCount);
       toast({
@@ -61,7 +69,7 @@ export const LikeButton: React.FC<LikeProps> = ({
     toggleLikeMutation.mutate({
       entityId,
       entityType,
-    });
+    } satisfies ToggleLikeInput);
   };
 
   return (
@@ -80,7 +88,7 @@ export const LikeButton: React.FC<LikeProps> = ({
         className={`${
           isLiked
             ? "fill-red-500 text-red-500"
-            : "text-gray-500 hover:text-red-500"
+            : "text-foreground hover:text-red-500"
         } h-5 w-5 transition-colors duration-500 ease-in-out`}
         strokeWidth={1.5}
       />

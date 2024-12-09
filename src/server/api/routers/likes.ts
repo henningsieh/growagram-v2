@@ -9,7 +9,7 @@ export const likeRouter = createTRPCRouter({
     .input(
       z.object({
         entityId: z.string(),
-        entityType: z.enum(["plant", "image"]),
+        entityType: z.enum(["plant", "image", "grow"]),
       }),
     )
     .mutation(async ({ ctx, input }) => {
