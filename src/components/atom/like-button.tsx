@@ -1,5 +1,6 @@
 "use client";
 
+import { AnimatePresence, motion } from "framer-motion";
 import { Heart } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "~/components/ui/button";
@@ -101,7 +102,20 @@ export const LikeButton: React.FC<LikeProps> = ({
         )}
         strokeWidth={1.5}
       />
-      <span className={cn("text-base text-foreground")}>{likeCount}</span>
+      <span className={cn("inline-block text-base text-foreground")}>
+        <AnimatePresence mode="wait">
+          <motion.span
+            key={likeCount}
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -20, opacity: 0 }}
+            transition={{ type: "tween", duration: 0.2 }}
+            style={{ display: "inline-block" }}
+          >
+            {likeCount}
+          </motion.span>
+        </AnimatePresence>
+      </span>
     </Button>
   );
 };
