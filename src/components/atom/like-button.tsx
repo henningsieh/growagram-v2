@@ -1,6 +1,5 @@
 "use client";
 
-// src/components/atom/like-button.tsx:
 import { Heart } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "~/components/ui/button";
@@ -30,6 +29,7 @@ export const LikeButton: React.FC<LikeProps> = ({
   const { toast } = useToast();
   const [isLiked, setIsLiked] = useState(initialLiked);
   const [likeCount, setLikeCount] = useState(initialLikeCount);
+  const [isAnimating, setIsAnimating] = useState(false);
 
   // Add useEffect to synchronize state with initial props
   useEffect(() => {
@@ -40,13 +40,20 @@ export const LikeButton: React.FC<LikeProps> = ({
   const toggleLikeMutation = api.likes.toggleLike.useMutation({
     onMutate: (variables) => {
       // Do an optimistic update
-      setIsLiked((prev) => !prev);
-      setLikeCount((prev) => (isLiked ? prev - 1 : prev + 1));
+      const newLikedState = !isLiked;
+      setIsLiked(newLikedState);
+      setLikeCount((prev) => (newLikedState ? prev + 1 : prev - 1));
+
+      // Trigger one-time animation
+      if (newLikedState) {
+        setIsAnimating(true);
+        setTimeout(() => setIsAnimating(false), 500); // Match animation duration
+      }
+
       console.debug("Attempting to like/unlike:", variables);
-      return { variables }; // Optional: return context for other callbacks
+      return { variables };
     },
     onSuccess: (data, variables) => {
-      // Log the returned boolean
       console.debug("Like toggled successfully:", {
         liked: data.liked,
         entityId: variables.entityId,
@@ -80,19 +87,21 @@ export const LikeButton: React.FC<LikeProps> = ({
       disabled={toggleLikeMutation.isPending}
       className={cn(
         className,
-        "flex items-center disabled:cursor-wait disabled:opacity-100",
-        isLikeStatusLoading ? "cursor-wait" : "cursor-default",
+        "group flex cursor-default items-center gap-1 disabled:cursor-default disabled:opacity-100",
+        isLikeStatusLoading ? "cursor-not-allowed" : "cursor-default",
       )}
     >
       <Heart
-        className={`${
-          isLiked
-            ? "fill-red-500 text-red-500"
-            : "text-foreground hover:text-red-500"
-        } h-5 w-5 transition-colors duration-500 ease-in-out`}
+        className={cn(
+          "h-5 w-5 transition-all duration-300 ease-in-out",
+          isLiked ? "fill-red-500 text-red-500" : "text-foreground",
+          isAnimating && "scale-150 animate-pulse",
+          // Ensure hover effect only applies when not animating
+          !isAnimating && "group-hover:scale-110 group-hover:text-red-500",
+        )}
         strokeWidth={1.5}
       />
-      <span className={cn("text-base text-muted-foreground")}>{likeCount}</span>
+      <span className={cn("text-base text-foreground")}>{likeCount}</span>
     </Button>
   );
 };
