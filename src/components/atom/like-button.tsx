@@ -88,7 +88,7 @@ export const LikeButton: React.FC<LikeProps> = ({
       disabled={toggleLikeMutation.isPending}
       className={cn(
         className,
-        "group flex cursor-default items-center gap-1 disabled:cursor-default disabled:opacity-100",
+        "group flex cursor-default items-center gap-1 hover:text-foreground disabled:cursor-default disabled:opacity-100",
         isLikeStatusLoading ? "cursor-not-allowed" : "cursor-default",
       )}
     >
@@ -98,24 +98,28 @@ export const LikeButton: React.FC<LikeProps> = ({
           isLiked ? "fill-red-500 text-red-500" : "text-foreground",
           isAnimating && "scale-150 animate-pulse",
           // Ensure hover effect only applies when not animating
-          !isAnimating && "group-hover:scale-110 group-hover:text-red-500",
+          !isAnimating && "group-hover:text-red-500",
         )}
         strokeWidth={1.5}
       />
-      <span className={cn("inline-block text-base text-foreground")}>
+      <div style={{ overflow: "hidden" }}>
         <AnimatePresence mode="wait">
           <motion.span
             key={likeCount}
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: -20, opacity: 0 }}
-            transition={{ type: "tween", duration: 0.2 }}
+            transition={{
+              type: "spring",
+              stiffness: 800, // Controls "springiness"
+              damping: 20, // Controls bounce and oscillation
+            }}
             style={{ display: "inline-block" }}
           >
             {likeCount}
           </motion.span>
         </AnimatePresence>
-      </span>
+      </div>
     </Button>
   );
 };
