@@ -1,7 +1,9 @@
 "use client";
 
+// src/components/atom/like-button.tsx:
 import { AnimatePresence, motion } from "framer-motion";
 import { Heart } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { Button } from "~/components/ui/button";
 import { useToast } from "~/hooks/use-toast";
@@ -27,6 +29,12 @@ export const LikeButton: React.FC<LikeProps> = ({
   className = "",
   isLikeStatusLoading = true,
 }) => {
+  const { data: session, status } = useSession();
+  // const session: Session | null
+  // const status: "authenticated" | "loading" | "unauthenticated"
+
+  const user = session?.user;
+
   const { toast } = useToast();
   const [isLiked, setIsLiked] = useState(initialLiked);
   const [likeCount, setLikeCount] = useState(initialLikeCount);

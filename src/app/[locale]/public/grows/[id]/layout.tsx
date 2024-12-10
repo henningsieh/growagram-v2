@@ -8,7 +8,7 @@ export const metadata = {
   description: "Grower's Plattform | Grows",
 };
 
-export default async function AddGrowLayout({
+export default async function PublicGrowByIdLayout({
   children,
   params,
 }: {
@@ -17,17 +17,9 @@ export default async function AddGrowLayout({
 }) {
   const growId = (await params).id;
 
-  if (growId !== "new") {
-    await api.grows.getById.prefetch({
-      id: growId,
-    } satisfies GetGrowByIdInput);
-
-    //TODO: only prefetch "connectable" plants!
-    await api.plants.getOwnPlants.prefetch({
-      limit: 100,
-      // cursor?: number | null | undefined
-    } satisfies GetOwnPlantsInput);
-  }
+  await api.grows.getById.prefetch({
+    id: growId,
+  } satisfies GetGrowByIdInput);
 
   return <HydrateClient>{children}</HydrateClient>;
 }

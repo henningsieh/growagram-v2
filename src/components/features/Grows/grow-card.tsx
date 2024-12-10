@@ -2,16 +2,7 @@
 
 // src/components/features/Grows/grow-card.tsx:
 import { AnimatePresence, motion } from "framer-motion";
-import {
-  ChartColumn,
-  Edit,
-  Heart,
-  MessageCircle,
-  Share,
-  Tag,
-  Trash2,
-  User2,
-} from "lucide-react";
+import { Edit, Tag, Trash2, User2 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useState } from "react";
@@ -100,12 +91,14 @@ export function GrowCard({ grow, isSocial = true }: GrowCardProps) {
       <CardContent className="grid flex-grow grid-rows-[auto,1fr,auto] gap-4 p-4">
         <div>
           <CardHeader className="p-0">
-            <CardTitle level="h3">
-              <div className="flex w-full items-center gap-2">
-                <Tag size={20} />
-                <h3 className="text-xl font-bold">{grow.name}</h3>
-              </div>
-            </CardTitle>
+            <Link href={`/public/grows/${grow.id}`}>
+              <CardTitle level="h3">
+                <div className="flex w-full items-center gap-2">
+                  <Tag size={20} />
+                  <h3 className="text-xl font-bold">{grow.name}</h3>
+                </div>
+              </CardTitle>
+            </Link>
             <CardDescription>
               <span className="block">
                 {t("grow-card-createdAt")}:{" "}
@@ -147,35 +140,6 @@ export function GrowCard({ grow, isSocial = true }: GrowCardProps) {
             </div>
           )}
         </div>
-
-        {/* <Separator />
-
-        <div className="flex items-center justify-between">
-          <Button variant="ghost" size="sm" className="flex items-center gap-1">
-            <MessageCircle className="h-4 w-4" />
-            <span>{stats.comments}</span>
-          </Button>
-          <Button variant="ghost" size="sm" className="flex items-center gap-1">
-            <ChartColumn className="h-4 w-4" />
-            <span>{stats.views}</span>
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="flex items-center gap-1"
-            onClick={() => setIsLiked(!isLiked)}
-          >
-            <Heart
-              className={`h-4 w-4 ${
-                isLiked ? "fill-destructive text-destructive" : ""
-              }`}
-            />
-            <span>{isLiked ? stats.likes + 1 : stats.likes}</span>
-          </Button>
-          <Button variant="ghost" size="sm" className="flex items-center gap-1">
-            <Share className="h-4 w-4" />
-          </Button>
-        </div> */}
       </CardContent>
 
       <Separator />

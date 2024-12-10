@@ -1,3 +1,4 @@
+// src/components/atom/social-card-footer.tsx
 import { ChartColumn, MessageCircle, Share } from "lucide-react";
 import React from "react";
 import { LikeButton } from "~/components/atom/like-button";

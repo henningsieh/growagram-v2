@@ -1,3 +1,5 @@
+// src/hooks/use-likes.tsx:
+import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { api } from "~/lib/trpc/react";
 import { LikeableEntityType } from "~/types/like";
@@ -6,6 +8,12 @@ export const useLikeStatus = (
   entityId: string,
   entityType: LikeableEntityType,
 ) => {
+  const { data: session, status } = useSession();
+  // const session: Session | null
+  // const status: "authenticated" | "loading" | "unauthenticated"
+
+  const user = session?.user;
+
   const [userHasLiked, setUserHasLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
 
