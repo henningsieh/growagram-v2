@@ -1,6 +1,10 @@
+// src/lib/db/schema.ts:
 import { relations, sql } from "drizzle-orm";
 import {
+  AnyPgColumn,
   boolean,
+  foreignKey,
+  index,
   integer,
   pgTable,
   pgTableCreator,
@@ -10,6 +14,7 @@ import {
   uniqueIndex,
 } from "drizzle-orm/pg-core";
 import type { AdapterAccountType } from "next-auth/adapters";
+import { CommentableEntityType } from "~/types/comment";
 import { LikeableEntityType } from "~/types/like";
 
 // Creating table with a prefix for multi-project schema
@@ -259,7 +264,89 @@ export const likes = pgTable(
   }),
 );
 
+// Define the comments table
+export const comments = pgTable(
+  "comment",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    entityId: text("entity_id").notNull(),
+    entityType: text("entity_type").$type<CommentableEntityType>().notNull(),
+    commentText: text("comment_text").notNull(),
+    parentCommentId: text("parent_comment_id").references(
+      (): AnyPgColumn => comments.id,
+      { onDelete: "set null" },
+    ),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .$onUpdate(() => new Date())
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+  },
+  (comment) => {
+    return {
+      // Define the foreign key for the parent comment reference
+      parentCommentReference: foreignKey({
+        columns: [comment.parentCommentId],
+        foreignColumns: [comment.id],
+        name: "comments_parent_comment_id_fkey",
+      }),
+      // Add an index for faster querying of comments by entity
+      entityIndex: index("comment_entity_index").on(
+        comment.entityId,
+        comment.entityType,
+      ),
+    };
+  },
+);
+
 // Drizzle ORM Relations
+
+export const commentsRelations = relations(comments, ({ one, many }) => ({
+  // Relation to the user who created the comment
+  author: one(users, {
+    fields: [comments.userId],
+    references: [users.id],
+    relationName: "comment_author",
+  }),
+
+  // Parent comment reference (self-reference)
+  parentComment: one(comments, {
+    fields: [comments.parentCommentId],
+    references: [comments.id],
+    relationName: "comment_children", // This must match the relationName in childComments below
+  }),
+
+  // Child comments (replies)
+  childComments: many(comments, {
+    relationName: "comment_children", // This must match the relationName in parentComment above
+  }),
+
+  // One-to-One Relations to <CommentableEntityType> entities with explicit names
+  plantComments: one(plants, {
+    fields: [comments.entityId],
+    references: [plants.id], // CommentableEntityType.Plant
+    relationName: "plant_comments",
+  }),
+
+  imageComments: one(images, {
+    fields: [comments.entityId],
+    references: [images.id], // CommentableEntityType.Image
+    relationName: "image_comments",
+  }),
+
+  growComments: one(grows, {
+    fields: [comments.entityId],
+    references: [grows.id], // CommentableEntityType.Grow
+    relationName: "grow_comments",
+  }),
+}));
 
 export const breedersRelations = relations(breeders, ({ many }) => ({
   strains: many(cannabisStrains),
@@ -283,6 +370,7 @@ export const growsRelations = relations(grows, ({ one, many }) => ({
   }),
   plants: many(plants),
   likes: many(likes),
+  comments: many(comments, { relationName: "grow_comments" }), // This must match the relationName in One-to-One Relation "growComments" above
 }));
 
 export const likesRelations = relations(likes, ({ one }) => ({
@@ -329,12 +417,19 @@ export const plantsRelations = relations(plants, ({ one, many }) => ({
   plantImages: many(plantImages),
   // A plant has many likes
   likes: many(likes),
+  // A plant has many comments
+  comments: many(comments, { relationName: "plant_comments" }), // This must match the relationName in One-to-One Relation "plantComments" above
 }));
 
 export const imagesRelations = relations(images, ({ many }) => ({
+  // An image has many likes
   likes: many(likes),
+  // An image may show plants
   plantImages: many(plantImages),
+  // An image may be headerImage for many plants
   plantsAsHeader: many(plants),
+  // An image has many comments
+  comments: many(comments, { relationName: "image_comments" }), // This must match the relationName in One-to-One Relation "imageComments" above
 }));
 
 export const plantImagesRelations = relations(plantImages, ({ one }) => ({
