@@ -4,7 +4,7 @@ import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { plantImages, plants } from "~/lib/db/schema";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
-import { plantSchema } from "~/types/zodSchema";
+import { plantFormSchema } from "~/types/zodSchema";
 
 export const plantRouter = createTRPCRouter({
   // Get paginated plants for the current user
@@ -102,7 +102,7 @@ export const plantRouter = createTRPCRouter({
 
   // Create or edit a plant
   createOrEdit: protectedProcedure
-    .input(plantSchema)
+    .input(plantFormSchema)
     .mutation(async ({ ctx, input }) => {
       // If an existing plant ID is specified, check the existence
       // of the plant and the ownership of the current user

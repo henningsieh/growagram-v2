@@ -1,16 +1,18 @@
 "use client";
 
-// src/components/atom/like-button.tsx:
+import { AnimatePresence, motion } from "framer-motion";
 import { Heart } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "~/components/ui/button";
 import { useToast } from "~/hooks/use-toast";
 import { api } from "~/lib/trpc/react";
 import { cn } from "~/lib/utils";
+import { ToggleLikeInput } from "~/server/api/root";
+import { LikeableEntityType } from "~/types/like";
 
 interface LikeProps {
   entityId: string;
-  entityType: "plant" | "image";
+  entityType: LikeableEntityType;
   initialLiked?: boolean;
   initialLikeCount?: number;
   className?: string;
@@ -28,6 +30,7 @@ export const LikeButton: React.FC<LikeProps> = ({
   const { toast } = useToast();
   const [isLiked, setIsLiked] = useState(initialLiked);
   const [likeCount, setLikeCount] = useState(initialLikeCount);
+  const [isAnimating, setIsAnimating] = useState(false);
 
   // Add useEffect to synchronize state with initial props
   useEffect(() => {
@@ -37,16 +40,29 @@ export const LikeButton: React.FC<LikeProps> = ({
 
   const toggleLikeMutation = api.likes.toggleLike.useMutation({
     onMutate: (variables) => {
-      // Optimistic update
-      setIsLiked((prev) => !prev);
-      setLikeCount((prev) => (isLiked ? prev - 1 : prev + 1));
+      // Do an optimistic update
+      const newLikedState = !isLiked;
+      setIsLiked(newLikedState);
+      setLikeCount((prev) => (newLikedState ? prev + 1 : prev - 1));
+
+      // Trigger one-time animation
+      if (newLikedState) {
+        setIsAnimating(true);
+        setTimeout(() => setIsAnimating(false), 500); // Match animation duration
+      }
+
+      console.debug("Attempting to like/unlike:", variables);
+      return { variables };
     },
-    onSuccess: (data) => {
-      // Log the returned boolean
-      console.debug("Like toggled:", data.liked);
+    onSuccess: (data, variables) => {
+      console.debug("Like toggled successfully:", {
+        liked: data.liked,
+        entityId: variables.entityId,
+        entityType: variables.entityType,
+      });
     },
     onError: (error) => {
-      // Revert optimistic update on error
+      // Revert the optimistic update on error
       setIsLiked(initialLiked);
       setLikeCount(initialLikeCount);
       toast({
@@ -61,7 +77,7 @@ export const LikeButton: React.FC<LikeProps> = ({
     toggleLikeMutation.mutate({
       entityId,
       entityType,
-    });
+    } satisfies ToggleLikeInput);
   };
 
   return (
@@ -72,19 +88,38 @@ export const LikeButton: React.FC<LikeProps> = ({
       disabled={toggleLikeMutation.isPending}
       className={cn(
         className,
-        "flex items-center disabled:cursor-wait disabled:opacity-100",
-        isLikeStatusLoading ? "cursor-wait" : "cursor-default",
+        "group flex cursor-default items-center gap-1 hover:text-foreground disabled:cursor-default disabled:opacity-100",
+        isLikeStatusLoading ? "cursor-not-allowed" : "cursor-default",
       )}
     >
       <Heart
-        className={`${
-          isLiked
-            ? "fill-red-500 text-red-500"
-            : "text-gray-500 hover:text-red-500"
-        } h-5 w-5 transition-colors duration-500 ease-in-out`}
+        className={cn(
+          "h-5 w-5 transition-all duration-300 ease-in-out",
+          isLiked ? "fill-red-500 text-red-500" : "text-foreground",
+          isAnimating && "scale-150 animate-pulse",
+          // Ensure hover effect only applies when not animating
+          !isAnimating && "group-hover:text-red-500",
+        )}
         strokeWidth={1.5}
       />
-      <span className={cn("text-base text-muted-foreground")}>{likeCount}</span>
+      <div style={{ overflow: "hidden" }}>
+        <AnimatePresence mode="wait">
+          <motion.span
+            key={likeCount}
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -20, opacity: 0 }}
+            transition={{
+              type: "spring",
+              stiffness: 800, // Controls "springiness"
+              damping: 20, // Controls bounce and oscillation
+            }}
+            style={{ display: "inline-block" }}
+          >
+            {likeCount}
+          </motion.span>
+        </AnimatePresence>
+      </div>
     </Button>
   );
 };

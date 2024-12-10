@@ -66,15 +66,15 @@ export default function PlantFormDateField<TFieldValues extends FieldValues>({
                     : "Pick a date"}
                 </div>
                 {field.value && (
-                  <Button
+                  <button
                     type="button"
-                    size="sm"
-                    variant="outline"
-                    className="ml-auto h-6 w-6"
+                    // size="sm"
+                    // variant="outline"
+                    className="ml-auto h-6 w-6 cursor-default"
                     onClick={handleResetClick}
                   >
                     <X className="h-5 w-5" />
-                  </Button>
+                  </button>
                 )}
               </Button>
             </FormControl>

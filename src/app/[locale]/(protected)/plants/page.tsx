@@ -82,7 +82,7 @@ export default function PlantsPage() {
         <>
           <ResponsiveGrid>
             {plants.map((plant) => (
-              <PlantCard plant={plant} isSocial={false} key={plant.id} />
+              <PlantCard plant={plant} isSocial={true} key={plant.id} />
             ))}
           </ResponsiveGrid>
           <InfiniteScrollLoader
