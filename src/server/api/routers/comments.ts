@@ -162,7 +162,7 @@ export const commentRouter = createTRPCRouter({
       z.object({
         entityId: z.string(),
         entityType: z.nativeEnum(CommentableEntityType),
-        sortOrder: z.nativeEnum(SortOrder).default(SortOrder.DESC).optional(),
+        sortOrder: z.nativeEnum(SortOrder).default(SortOrder.ASC).optional(),
       }),
     )
     .query(async ({ ctx, input }) => {
@@ -176,7 +176,7 @@ export const commentRouter = createTRPCRouter({
         ),
         orderBy: asc(comments.createdAt),
         with: {
-          replies: true, // Load replies (nested comments)
+          childComments: true, // Load replies (nested comments)
         },
       });
 
