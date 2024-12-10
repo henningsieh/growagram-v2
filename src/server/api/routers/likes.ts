@@ -1,15 +1,17 @@
+// src/server/api/routers/likes.ts:
 import { TRPCError } from "@trpc/server";
 import { and, eq, sql } from "drizzle-orm";
 import { z } from "zod";
-import { images, likes, plants } from "~/lib/db/schema";
+import { grows, images, likes, plants } from "~/lib/db/schema";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { LikeableEntityType } from "~/types/like";
 
 export const likeRouter = createTRPCRouter({
   toggleLike: protectedProcedure
     .input(
       z.object({
         entityId: z.string(),
-        entityType: z.enum(["plant", "image", "grow"]),
+        entityType: z.nativeEnum(LikeableEntityType),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -18,16 +20,21 @@ export const likeRouter = createTRPCRouter({
 
       // Validate entity exists and user has permission
       let entityExists = false;
-      if (entityType === "plant") {
+      if (entityType === LikeableEntityType.Plant) {
         const plant = await ctx.db.query.plants.findFirst({
           where: eq(plants.id, entityId),
         });
         entityExists = !!plant;
-      } else if (entityType === "image") {
+      } else if (entityType === LikeableEntityType.Image) {
         const image = await ctx.db.query.images.findFirst({
           where: eq(images.id, entityId),
         });
         entityExists = !!image;
+      } else if (entityType === LikeableEntityType.Grow) {
+        const grow = await ctx.db.query.grows.findFirst({
+          where: eq(grows.id, entityId),
+        });
+        entityExists = !!grow;
       }
 
       if (!entityExists) {
@@ -73,7 +80,7 @@ export const likeRouter = createTRPCRouter({
     .input(
       z.object({
         entityId: z.string(),
-        entityType: z.enum(["plant", "image"]),
+        entityType: z.nativeEnum(LikeableEntityType),
       }),
     )
     .query(async ({ ctx, input }) => {
@@ -92,7 +99,7 @@ export const likeRouter = createTRPCRouter({
   getUserLikedEntities: protectedProcedure
     .input(
       z.object({
-        entityType: z.enum(["plant", "image"]).optional(),
+        entityType: z.nativeEnum(LikeableEntityType).optional(),
       }),
     )
     .query(async ({ ctx, input }) => {

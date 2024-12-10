@@ -1,3 +1,7 @@
 // src/types/like.ts:
 
-export type LikeableEntityType = "plant" | "image" | "grow";
+export enum LikeableEntityType {
+  Plant = "plant",
+  Image = "image",
+  Grow = "grow",
+}
