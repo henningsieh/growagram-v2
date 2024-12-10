@@ -1,6 +1,8 @@
+// src/lib/db/schema.ts:
 import { relations, sql } from "drizzle-orm";
 import {
   boolean,
+  foreignKey,
   integer,
   pgTable,
   pgTableCreator,
@@ -10,6 +12,7 @@ import {
   uniqueIndex,
 } from "drizzle-orm/pg-core";
 import type { AdapterAccountType } from "next-auth/adapters";
+import { CommentableEntityType } from "~/types/comment";
 import { LikeableEntityType } from "~/types/like";
 
 // Creating table with a prefix for multi-project schema
@@ -259,7 +262,59 @@ export const likes = pgTable(
   }),
 );
 
+// Define the comments table
+export const comments = pgTable(
+  "comment",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    entityId: text("entity_id").notNull(),
+    entityType: text("entity_type").$type<CommentableEntityType>().notNull(),
+    commentText: text("comment_text").notNull(),
+    parentCommentId: text("parent_comment_id"),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .$onUpdate(() => new Date())
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+  },
+  (comment) => {
+    return {
+      // Define the foreign key for the parent comment reference
+      parentCommentReference: foreignKey({
+        columns: [comment.parentCommentId],
+        foreignColumns: [comment.id],
+        name: "comments_parent_comment_id_fkey",
+      }),
+    };
+  },
+);
+
 // Drizzle ORM Relations
+
+export const commentsRelations = relations(comments, ({ one, many }) => ({
+  user: one(users, {
+    fields: [comments.userId],
+    references: [users.id],
+  }),
+
+  // Parent comment reference (self-reference)
+  parentComment: one(comments, {
+    fields: [comments.parentCommentId],
+    references: [comments.id],
+  }),
+
+  // Child comments (replies)
+  // childComments: many(comments, {
+  //   relationName: "child_comments", // this name has to appear on the other side of the relation!
+  // }),
+}));
 
 export const breedersRelations = relations(breeders, ({ many }) => ({
   strains: many(cannabisStrains),
@@ -283,6 +338,7 @@ export const growsRelations = relations(grows, ({ one, many }) => ({
   }),
   plants: many(plants),
   likes: many(likes),
+  // comments: many(comments),
 }));
 
 export const likesRelations = relations(likes, ({ one }) => ({
@@ -329,12 +385,14 @@ export const plantsRelations = relations(plants, ({ one, many }) => ({
   plantImages: many(plantImages),
   // A plant has many likes
   likes: many(likes),
+  // comments: many(comments),
 }));
 
 export const imagesRelations = relations(images, ({ many }) => ({
   likes: many(likes),
   plantImages: many(plantImages),
   plantsAsHeader: many(plants),
+  // comments: many(comments),
 }));
 
 export const plantImagesRelations = relations(plantImages, ({ one }) => ({
