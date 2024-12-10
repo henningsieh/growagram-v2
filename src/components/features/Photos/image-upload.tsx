@@ -15,7 +15,7 @@ import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import { cn, formatDate, formatTime } from "~/lib/utils";
 import { readExif } from "~/lib/utils/readExif";
-import { CreateImageInput } from "~/server/api/root";
+import { CreatePhotoInput } from "~/server/api/root";
 
 interface FilePreview {
   file: File;
@@ -98,7 +98,7 @@ export default function PhotoUpload({ user }: { user: User }) {
   const router = useRouter();
   const utils = api.useUtils();
   const { toast } = useToast();
-  const saveImageMutation = api.image.createImage.useMutation();
+  const saveImageMutation = api.photos.createPhoto.useMutation();
 
   const formRef = useRef<HTMLFormElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -154,7 +154,7 @@ export default function PhotoUpload({ user }: { user: User }) {
             cloudinaryPublicId: cloudinaryResponse.public_id,
             captureDate: preview.exifData?.captureDate || new Date(),
             originalFilename: preview.file.name,
-          } satisfies CreateImageInput);
+          } satisfies CreatePhotoInput);
 
           return savedImage;
         }),
@@ -168,7 +168,7 @@ export default function PhotoUpload({ user }: { user: User }) {
       formRef.current?.reset();
       setPreviews([]);
       // Invalidate the images query to refresh the list
-      utils.image.getOwnImages.invalidate();
+      utils.photos.getOwnPhotos.invalidate();
       router.push("/images");
     } catch (error) {
       console.error("Error uploading images:", error);

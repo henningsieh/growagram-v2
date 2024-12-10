@@ -112,11 +112,11 @@ export default function GrowFormPage({ grow }: { grow?: GetOwnGrowType }) {
   /**
    * Mutation to connect a plant to a grow environment.
    */
-  const connectPlantMutation = api.grow.connectPlant.useMutation({
+  const connectPlantMutation = api.grows.connectPlant.useMutation({
     onSuccess: async () => {
       // Invalidate and refetch relevant queries
-      await utils.grow.getOwnGrows.invalidate();
-      await utils.plant.getOwnPlants.invalidate();
+      await utils.grows.getOwnGrows.invalidate();
+      await utils.plants.getOwnPlants.invalidate();
     },
     onError: (error) => {
       handleTRPCError(error);
@@ -126,11 +126,11 @@ export default function GrowFormPage({ grow }: { grow?: GetOwnGrowType }) {
   /**
    * Mutation to disconnect a plant from a grow environment.
    */
-  const disconnectPlantMutation = api.grow.disconnectPlant.useMutation({
+  const disconnectPlantMutation = api.grows.disconnectPlant.useMutation({
     onSuccess: async () => {
       // Invalidate and refetch relevant queries
-      await utils.grow.getOwnGrows.invalidate();
-      await utils.plant.getOwnPlants.invalidate();
+      await utils.grows.getOwnGrows.invalidate();
+      await utils.plants.getOwnPlants.invalidate();
     },
     onError: (error) => {
       handleTRPCError(error);
@@ -138,14 +138,14 @@ export default function GrowFormPage({ grow }: { grow?: GetOwnGrowType }) {
   });
 
   // initial Data fetching
-  const initialData = utils.plant.getOwnPlants.getData({
+  const initialData = utils.plants.getOwnPlants.getData({
     limit: 100,
     // cursor?: number | null | undefined
   } satisfies GetOwnPlantsInput);
 
   // Data fetching and form initialization...
   //TODO: only fetch "connectable" plants!
-  const { data: plantsData, isLoading } = api.plant.getOwnPlants.useQuery(
+  const { data: plantsData, isLoading } = api.plants.getOwnPlants.useQuery(
     { limit: 100 } satisfies GetOwnPlantsInput,
     {
       initialData: initialData,
@@ -182,7 +182,7 @@ export default function GrowFormPage({ grow }: { grow?: GetOwnGrowType }) {
   /**
    * Mutation to create or edit a grow environment.
    */
-  const createOrEditGrowMutation = api.grow.createOrEdit.useMutation({
+  const createOrEditGrowMutation = api.grows.createOrEdit.useMutation({
     onSuccess: async (savedGrow) => {
       try {
         // Find plants to connect and disconnect
@@ -247,9 +247,9 @@ export default function GrowFormPage({ grow }: { grow?: GetOwnGrowType }) {
 
         // Reset and prefetch queries
         await Promise.all([
-          utils.grow.getOwnGrows.reset(),
-          utils.grow.getOwnGrows.prefetchInfinite(queryObject),
-          utils.grow.getOwnGrows.prefetch(queryObject),
+          utils.grows.getOwnGrows.reset(),
+          utils.grows.getOwnGrows.prefetchInfinite(queryObject),
+          utils.grows.getOwnGrows.prefetch(queryObject),
         ]);
 
         // Navigate to grows page

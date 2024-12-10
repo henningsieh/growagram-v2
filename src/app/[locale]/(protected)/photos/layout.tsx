@@ -3,7 +3,7 @@ import { PaginationItemsPerPage } from "~/assets/constants";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
 import { api } from "~/lib/trpc/server";
 import { HydrateClient } from "~/lib/trpc/server";
-import { GetOwnImagesInput } from "~/server/api/root";
+import { GetOwnPhotosInput } from "~/server/api/root";
 import { PhotosSortField } from "~/types/image";
 
 export const metadata = {
@@ -18,21 +18,21 @@ export default async function PhotosLayout({
 }) {
   // Prefetch initial data with default sorting for the first page
 
-  await api.image.getOwnImages.prefetchInfinite({
+  await api.photos.getOwnPhotos.prefetchInfinite({
     cursor: 1,
     limit: PaginationItemsPerPage.PHOTOS_PER_PAGE,
     sortField: PhotosSortField.UPLOAD_DATE,
     sortOrder: SortOrder.DESC,
     filterNotConnected: false,
-  } satisfies GetOwnImagesInput);
+  } satisfies GetOwnPhotosInput);
 
-  await api.image.getOwnImages.prefetch({
+  await api.photos.getOwnPhotos.prefetch({
     cursor: 1,
     limit: PaginationItemsPerPage.PHOTOS_PER_PAGE,
     sortField: PhotosSortField.UPLOAD_DATE,
     sortOrder: SortOrder.DESC,
     filterNotConnected: false,
-  } satisfies GetOwnImagesInput);
+  } satisfies GetOwnPhotosInput);
 
   return <HydrateClient>{children}</HydrateClient>;
 }

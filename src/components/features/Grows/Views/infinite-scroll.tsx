@@ -38,7 +38,7 @@ export default function InfiniteScrollGrowsView({
   }, [router]);
 
   // Get initial data from cache
-  const initialData = utils.grow.getOwnGrows.getInfiniteData({
+  const initialData = utils.grows.getOwnGrows.getInfiniteData({
     limit: PaginationItemsPerPage.GROWS_PER_PAGE,
     sortField,
     sortOrder,
@@ -52,7 +52,7 @@ export default function InfiniteScrollGrowsView({
     hasNextPage,
     fetchNextPage,
     isFetchingNextPage,
-  } = api.grow.getOwnGrows.useInfiniteQuery(
+  } = api.grows.getOwnGrows.useInfiniteQuery(
     {
       limit: PaginationItemsPerPage.GROWS_PER_PAGE,
       sortField,

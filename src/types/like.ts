@@ -2,6 +2,6 @@
 
 export enum LikeableEntityType {
   Plant = "plant",
-  Image = "image",
+  Photo = "image",
   Grow = "grow",
 }

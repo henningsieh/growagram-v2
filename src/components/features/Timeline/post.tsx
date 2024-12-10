@@ -36,7 +36,7 @@ import {
 } from "~/components/ui/tooltip";
 import { api } from "~/lib/trpc/react";
 import { formatDate, formatTime } from "~/lib/utils";
-import { GetOwnImagesInput, GetOwnPlantsInput } from "~/server/api/root";
+import { GetOwnPhotosInput, GetOwnPlantsInput } from "~/server/api/root";
 
 import PlantCard from "../Plants/plant-card";
 
@@ -53,15 +53,15 @@ export default function PostComponent({ id }: { id: string }) {
     data: imagesData,
     isLoading: isImagesLoading,
     isFetching: isImagesFetching,
-  } = api.image.getOwnImages.useQuery({
+  } = api.photos.getOwnPhotos.useQuery({
     limit: 3,
-  } satisfies GetOwnImagesInput);
+  } satisfies GetOwnPhotosInput);
 
   const {
     data: plantsData,
     isLoading: isPlantsLoading,
     isFetching: isPlantsFetching,
-  } = api.plant.getOwnPlants.useQuery({
+  } = api.plants.getOwnPlants.useQuery({
     limit: 2,
   } satisfies GetOwnPlantsInput);
 

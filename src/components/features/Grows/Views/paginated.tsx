@@ -61,7 +61,7 @@ export default function PaginatedGrowsView({
   }, [currentPage, sortField, sortOrder, updateUrlParams]);
 
   // Get initial data from cache
-  const initialData = utils.grow.getOwnGrows.getData({
+  const initialData = utils.grows.getOwnGrows.getData({
     cursor: currentPage,
     limit: PaginationItemsPerPage.GROWS_PER_PAGE,
     sortField,
@@ -69,7 +69,7 @@ export default function PaginatedGrowsView({
   } satisfies GetOwnGrowsInput);
 
   // Query grows
-  const { data, isLoading, isFetching } = api.grow.getOwnGrows.useQuery(
+  const { data, isLoading, isFetching } = api.grows.getOwnGrows.useQuery(
     {
       limit: PaginationItemsPerPage.GROWS_PER_PAGE,
       cursor: currentPage,

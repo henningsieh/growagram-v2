@@ -40,6 +40,7 @@ import { Link, useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import { calculateGrowthProgress, formatDate } from "~/lib/utils";
 import { GetOwnPlantType } from "~/server/api/root";
+import { LikeableEntityType } from "~/types/like";
 
 interface PlantCardProps {
   plant: GetOwnPlantType;
@@ -53,21 +54,24 @@ export default function PlantCard({ plant, isSocial }: PlantCardProps) {
   const { toast } = useToast();
   const user = useSession().data?.user;
 
-  const { isLiked, likeCount, isLoading } = useLikeStatus(plant.id, "plant");
+  const { isLiked, likeCount, isLoading } = useLikeStatus(
+    plant.id,
+    LikeableEntityType.Plant,
+  );
 
   const [isImageHovered, setIsImageHovered] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   // Initialize delete mutation
-  const deleteMutation = api.plant.deleteById.useMutation({
+  const deleteMutation = api.plants.deleteById.useMutation({
     onSuccess: async () => {
       toast({
         title: "Success",
         description: "Plant deleted successfully",
       });
       // Invalidate and prefetch the plants query to refresh the list
-      await utils.plant.getOwnPlants.invalidate();
-      await utils.plant.getOwnPlants.prefetch();
+      await utils.plants.getOwnPlants.invalidate();
+      await utils.plants.getOwnPlants.prefetch();
       router.refresh();
     },
     onError: (error) => {
@@ -285,7 +289,7 @@ export default function PlantCard({ plant, isSocial }: PlantCardProps) {
         {isSocial && (
           <SocialCardFooter
             entityId={plant.id}
-            entityType={"plant"}
+            entityType={LikeableEntityType.Plant}
             initialLiked={isLiked}
             isLikeStatusLoading={isLoading}
             stats={{

@@ -16,6 +16,7 @@ import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useState } from "react";
 import headerImagePlaceholder from "~/assets/landscape-placeholdersvg.svg";
+import { SocialCardFooter } from "~/components/atom/social-card-footer";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
 import {
@@ -27,31 +28,26 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 import { Separator } from "~/components/ui/separator";
+import { useLikeStatus } from "~/hooks/use-likes";
 import { Link } from "~/lib/i18n/routing";
 import { DateFormatOptions, formatDate } from "~/lib/utils";
 import { GetOwnGrowType } from "~/server/api/root";
+import { LikeableEntityType } from "~/types/like";
 
 import { GrowPlantCard } from "./grow-plant-card";
 
 interface GrowCardProps {
   grow: GetOwnGrowType;
-  stats?: {
-    comments: number;
-    views: number;
-    likes: number;
-  };
+  isSocial?: boolean;
 }
 
-export function GrowCard({
-  grow,
-  stats = {
-    comments: 0,
-    views: 0,
-    likes: 0,
-  },
-}: GrowCardProps) {
+export function GrowCard({ grow, isSocial = true }: GrowCardProps) {
   const [isImageHovered, setIsImageHovered] = useState(false);
-  const [isLiked, setIsLiked] = useState(false);
+
+  const { isLiked, likeCount, isLoading } = useLikeStatus(
+    grow.id,
+    LikeableEntityType.Grow,
+  );
 
   const locale = useLocale();
   const t = useTranslations("Grows");
@@ -152,7 +148,7 @@ export function GrowCard({
           )}
         </div>
 
-        <Separator />
+        {/* <Separator />
 
         <div className="flex items-center justify-between">
           <Button variant="ghost" size="sm" className="flex items-center gap-1">
@@ -179,7 +175,7 @@ export function GrowCard({
           <Button variant="ghost" size="sm" className="flex items-center gap-1">
             <Share className="h-4 w-4" />
           </Button>
-        </div>
+        </div> */}
       </CardContent>
 
       <Separator />
@@ -195,6 +191,20 @@ export function GrowCard({
           </Link>
         </Button>
       </CardFooter>
+      {isSocial && (
+        <SocialCardFooter
+          className="p-1"
+          entityId={grow.id}
+          entityType={LikeableEntityType.Grow}
+          initialLiked={isLiked}
+          isLikeStatusLoading={isLoading}
+          stats={{
+            comments: 0,
+            views: 0,
+            likes: likeCount,
+          }}
+        />
+      )}
     </Card>
   );
 }

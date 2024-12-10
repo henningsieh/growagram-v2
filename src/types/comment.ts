@@ -2,6 +2,6 @@
 
 export enum CommentableEntityType {
   Plant = "plant",
-  Image = "image",
+  Photo = "image",
   Grow = "grow",
 }

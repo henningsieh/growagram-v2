@@ -29,7 +29,7 @@ export const commentRouter = createTRPCRouter({
           where: eq(plants.id, entityId),
         });
         entityExists = !!plant;
-      } else if (entityType === CommentableEntityType.Image) {
+      } else if (entityType === CommentableEntityType.Photo) {
         const image = await ctx.db.query.images.findFirst({
           where: eq(images.id, entityId),
         });

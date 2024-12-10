@@ -1,6 +1,6 @@
 // src/server/api/root.ts:
 import { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
-import { imageRouter } from "~/server/api/routers/image";
+import { photoRouter } from "~/server/api/routers/image";
 import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 
 import { plantRouter } from "./routers/plant";
@@ -15,9 +15,9 @@ import { commentRouter } from "./routers/comments";
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
-  image: imageRouter,
-  plant: plantRouter,
-  grow: growRouter,
+  photos: photoRouter,
+  plants: plantRouter,
+  grows: growRouter,
   likes: likeRouter,
   comments: commentRouter,
 });
@@ -40,39 +40,39 @@ export type GetUserLikedEntitiesInput = RouterInput["likes"]["getUserLikedEntiti
 
 // imageRouter
 //  OUTPUTS:
-export type GetOwnImagesOutput = RouterOutput["image"]["getOwnImages"];
-export type GetOwnImagesType = RouterOutput["image"]["getOwnImages"]["images"];
-export type GetOwnImageType = RouterOutput["image"]["getOwnImages"]["images"][number];
-export type GetImageByIdType = RouterOutput["image"]["getById"];
+export type GetOwnPhotosOutput = RouterOutput["photos"]["getOwnPhotos"];
+export type GetOwnPhotosType = RouterOutput["photos"]["getOwnPhotos"]["images"];
+export type GetOwnPhotoType = RouterOutput["photos"]["getOwnPhotos"]["images"][number];
+export type GetPhotoByIdType = RouterOutput["photos"]["getById"];
 //  INPUTS:
-export type GetOwnImagesInput = RouterInput["image"]["getOwnImages"];
-export type GetImageByIdInput = RouterInput["image"]["getById"];
-export type CreateImageInput = RouterInput["image"]["createImage"];
+export type GetOwnPhotosInput = RouterInput["photos"]["getOwnPhotos"];
+export type GetPhotoByIdInput = RouterInput["photos"]["getById"];
+export type CreatePhotoInput = RouterInput["photos"]["createPhoto"];
 
 
 // plantRouter
 //  OUTPUTS:
-export type GetOwnPlantsOutput = RouterOutput["plant"]["getOwnPlants"];
-export type GetOwnPlantsType = RouterOutput["plant"]["getOwnPlants"]["plants"];
-export type GetOwnPlantType = RouterOutput["plant"]["getOwnPlants"]["plants"][number];
-export type GetPlantByIdType = RouterOutput["plant"]["getById"];
+export type GetOwnPlantsOutput = RouterOutput["plants"]["getOwnPlants"];
+export type GetOwnPlantsType = RouterOutput["plants"]["getOwnPlants"]["plants"];
+export type GetOwnPlantType = RouterOutput["plants"]["getOwnPlants"]["plants"][number];
+export type GetPlantByIdType = RouterOutput["plants"]["getById"];
 //  INPUTS:
-export type GetOwnPlantsInput = RouterInput["plant"]["getOwnPlants"];
-export type GetPlantByIdInput = RouterInput["plant"]["getById"];
-export type CreateOrEditPlantInput = RouterInput["plant"]["createOrEdit"];
+export type GetOwnPlantsInput = RouterInput["plants"]["getOwnPlants"];
+export type GetPlantByIdInput = RouterInput["plants"]["getById"];
+export type CreateOrEditPlantInput = RouterInput["plants"]["createOrEdit"];
 
 // growRouter
 //  OUTPUTS:
-export type GetOwnGrowsOutput = RouterOutput["grow"]["getOwnGrows"];
-export type GetOwnGrowsType = RouterOutput["grow"]["getOwnGrows"]["grows"];
-export type GetOwnGrowType = RouterOutput["grow"]["getOwnGrows"]["grows"][number];
-export type GetGrowByIdType = RouterOutput["grow"]["getById"];
+export type GetOwnGrowsOutput = RouterOutput["grows"]["getOwnGrows"];
+export type GetOwnGrowsType = RouterOutput["grows"]["getOwnGrows"]["grows"];
+export type GetOwnGrowType = RouterOutput["grows"]["getOwnGrows"]["grows"][number];
+export type GetGrowByIdType = RouterOutput["grows"]["getById"];
 //  INPUTS:
-export type GetOwnGrowsInput = RouterInput["grow"]["getOwnGrows"];
-export type GetGrowByIdInput = RouterInput["grow"]["getById"];
-export type CreateOrEditGrowInput = RouterInput["grow"]["createOrEdit"];
-export type GrowConnectPlantInput = RouterInput["grow"]["connectPlant"];
-export type GrowDisconnectPlantInput = RouterInput["grow"]["disconnectPlant"];
+export type GetOwnGrowsInput = RouterInput["grows"]["getOwnGrows"];
+export type GetGrowByIdInput = RouterInput["grows"]["getById"];
+export type CreateOrEditGrowInput = RouterInput["grows"]["createOrEdit"];
+export type GrowConnectPlantInput = RouterInput["grows"]["connectPlant"];
+export type GrowDisconnectPlantInput = RouterInput["grows"]["disconnectPlant"];
 
 /**
  * Create a server-side caller for the tRPC API.

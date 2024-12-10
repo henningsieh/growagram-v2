@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { api } from "~/lib/trpc/react";
+import { LikeableEntityType } from "~/types/like";
 
 export const useLikeStatus = (
   entityId: string,
-  entityType: "plant" | "image",
+  entityType: LikeableEntityType,
 ) => {
   const [userHasLiked, setUserHasLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);

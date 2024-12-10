@@ -25,7 +25,7 @@ export const likeRouter = createTRPCRouter({
           where: eq(plants.id, entityId),
         });
         entityExists = !!plant;
-      } else if (entityType === LikeableEntityType.Image) {
+      } else if (entityType === LikeableEntityType.Photo) {
         const image = await ctx.db.query.images.findFirst({
           where: eq(images.id, entityId),
         });

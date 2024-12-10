@@ -3,10 +3,11 @@ import React from "react";
 import { LikeButton } from "~/components/atom/like-button";
 import { Button } from "~/components/ui/button";
 import { cn } from "~/lib/utils";
+import { LikeableEntityType } from "~/types/like";
 
 interface CardFooterProps {
   entityId: string;
-  entityType: "plant" | "image";
+  entityType: LikeableEntityType;
   initialLiked?: boolean;
   isLikeStatusLoading: boolean;
   className?: string;

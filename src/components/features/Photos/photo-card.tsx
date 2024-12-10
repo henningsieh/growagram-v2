@@ -31,11 +31,12 @@ import { useToast } from "~/hooks/use-toast";
 import { Link, useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import { cn, formatDate, formatTime } from "~/lib/utils";
-import { GetOwnImageType } from "~/server/api/root";
+import { GetOwnPhotoType } from "~/server/api/root";
 import { PhotosSortField } from "~/types/image";
+import { LikeableEntityType } from "~/types/like";
 
 interface PhotoCardProps {
-  image: GetOwnImageType;
+  photo: GetOwnPhotoType;
   isSocial: boolean;
   currentQuery: {
     page: number;
@@ -46,7 +47,7 @@ interface PhotoCardProps {
 }
 
 export default function PhotoCard({
-  image,
+  photo,
   isSocial,
   currentQuery,
 }: PhotoCardProps) {
@@ -55,22 +56,25 @@ export default function PhotoCard({
   const utils = api.useUtils();
   const { toast } = useToast();
 
-  const { isLiked, likeCount, isLoading } = useLikeStatus(image.id, "image");
+  const { isLiked, likeCount, isLoading } = useLikeStatus(
+    photo.id,
+    LikeableEntityType.Photo,
+  );
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isUnrestrictedView, setIsUnrestrictedView] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   // Initialize delete mutation
-  const deleteMutation = api.image.deleteImage.useMutation({
+  const deleteMutation = api.photos.deletePhoto.useMutation({
     onSuccess: async () => {
       toast({
         title: "Success",
         description: "Image deleted successfully",
       });
       // Invalidate and prefetch the images query to refresh the list
-      await utils.image.getOwnImages.invalidate();
-      await utils.image.getOwnImages.prefetch();
+      await utils.photos.getOwnPhotos.invalidate();
+      await utils.photos.getOwnPhotos.prefetch();
 
       router.refresh();
     },
@@ -88,7 +92,7 @@ export default function PhotoCard({
   };
 
   const confirmDelete = async () => {
-    await deleteMutation.mutateAsync({ id: image.id });
+    await deleteMutation.mutateAsync({ id: photo.id });
     setIsDeleteDialogOpen(false);
   };
 
@@ -142,7 +146,7 @@ export default function PhotoCard({
       />
       <Card className="relative overflow-hidden">
         {/* "NEW" Banner */}
-        {!!!image.plantImages.length && (
+        {!!!photo.plantImages.length && (
           <div className="absolute right-[-40px] top-[15px] z-10 w-[120px] rotate-[45deg] cursor-default bg-secondary px-[40px] py-[1px] text-[12px] font-semibold tracking-widest text-white">
             NEW
           </div>
@@ -154,8 +158,8 @@ export default function PhotoCard({
           onMouseLeave={() => setIsImageHovered(false)}
         >
           <Image
-            src={image.imageUrl}
-            alt={image.originalFilename}
+            src={photo.imageUrl}
+            alt={photo.originalFilename}
             fill
             priority
             className="object-contain transition-transform duration-300"
@@ -166,7 +170,7 @@ export default function PhotoCard({
           />
         </div>
         <CardTitle className="overflow-x-hidden whitespace-nowrap p-3 font-mono">
-          {image.originalFilename}
+          {photo.originalFilename}
         </CardTitle>
         <CardContent className="flex flex-col p-2 py-2 text-sm">
           <Tooltip>
@@ -180,9 +184,9 @@ export default function PhotoCard({
                 )}
               >
                 <UploadCloud size={18} />
-                {formatDate(image.createdAt, locale)}
+                {formatDate(photo.createdAt, locale)}
                 {locale !== "en" ? " um " : " at "}
-                {formatTime(image.createdAt, locale)}
+                {formatTime(photo.createdAt, locale)}
                 {locale !== "en" && " Uhr"}
               </p>
             </TooltipTrigger>
@@ -202,9 +206,9 @@ export default function PhotoCard({
                 )}
               >
                 <Camera size={18} />
-                {formatDate(image.captureDate, locale)}
+                {formatDate(photo.captureDate, locale)}
                 {locale !== "en" ? " um " : " at "}
-                {formatTime(image.captureDate, locale)}
+                {formatTime(photo.captureDate, locale)}
                 {locale !== "en" && " Uhr"}
               </p>
             </TooltipTrigger>
@@ -234,28 +238,28 @@ export default function PhotoCard({
             asChild
             size={"sm"}
             className="w-full text-base"
-            variant={!!!image.plantImages.length ? "primary" : "outline"}
+            variant={!!!photo.plantImages.length ? "primary" : "outline"}
           >
             <Link
               href={{
-                pathname: `/photos/${image.id}/identify-plants`,
+                pathname: `/photos/${photo.id}/identify-plants`,
                 query: currentQuery,
               }}
             >
-              {!!!image.plantImages.length ? (
+              {!!!photo.plantImages.length ? (
                 <Search size={20} />
               ) : (
                 <Edit size={20} />
               )}
-              {!!!image.plantImages.length ? "Select Plants" : "Edit Plants"}
+              {!!!photo.plantImages.length ? "Select Plants" : "Edit Plants"}
             </Link>
           </Button>
         </CardFooter>
         {isSocial && (
           <SocialCardFooter
             className="p-1"
-            entityId={image.id}
-            entityType={"image"}
+            entityId={photo.id}
+            entityType={LikeableEntityType.Photo}
             initialLiked={isLiked}
             isLikeStatusLoading={isLoading}
             stats={{
@@ -307,7 +311,7 @@ export default function PhotoCard({
               </div>
               <div className="relative -z-30 flex h-full items-center justify-center bg-zinc-900/95">
                 <Image
-                  src={image.imageUrl}
+                  src={photo.imageUrl}
                   alt=""
                   width={1920}
                   height={1080}
