@@ -4,4 +4,5 @@ export enum LikeableEntityType {
   Plant = "plant",
   Photo = "image",
   Grow = "grow",
+  Comment = "comment",
 }

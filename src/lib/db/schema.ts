@@ -390,6 +390,10 @@ export const likesRelations = relations(likes, ({ one }) => ({
     fields: [likes.entityId],
     references: [grows.id],
   }),
+  comment: one(comments, {
+    fields: [likes.entityId],
+    references: [comments.id],
+  }),
 }));
 
 export const plantsRelations = relations(plants, ({ one, many }) => ({

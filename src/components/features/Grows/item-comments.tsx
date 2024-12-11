@@ -5,35 +5,48 @@ import { Reply, Send } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import React, { useState } from "react";
+import { SocialCardFooter } from "~/components/atom/social-card-footer";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
+import { useLikeStatus } from "~/hooks/use-likes";
 import { api } from "~/lib/trpc/react";
 import { GetCommentType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
+import { LikeableEntityType } from "~/types/like";
 
 interface ItemCommentsProps {
-  growId: string;
+  //   growId: string;
+  entityId: string;
+  entityType: CommentableEntityType;
+  isSocial: boolean;
 }
 
 interface CommentDisplayProps {
   comment: GetCommentType;
   onReply?: (commentId: string) => void;
+  isSocial: boolean;
 }
 
 const CommentDisplay: React.FC<CommentDisplayProps> = ({
   comment,
   onReply,
+  isSocial,
 }) => {
   const { data: session } = useSession();
 
+  const { isLiked, likeCount, isLoading } = useLikeStatus(
+    comment.id,
+    LikeableEntityType.Comment,
+  );
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
+      transition={{ duration: 0.7 }}
     >
-      <div className="flex gap-3 border-b p-3">
+      <div className="flex gap-3 p-3">
         <div className="flex justify-center">
           <Avatar className="m-1 h-8 w-8">
             <AvatarImage src={comment.author.image || undefined} />
@@ -60,11 +73,27 @@ const CommentDisplay: React.FC<CommentDisplayProps> = ({
           )}
         </div>
       </div>
+      <SocialCardFooter
+        className={`pb-2 pr-2 ${isSocial && "ml-16"} border-b`}
+        entityId={comment.id}
+        entityType={LikeableEntityType.Comment}
+        initialLiked={isLiked}
+        isLikeStatusLoading={isLoading}
+        stats={{
+          comments: 0,
+          views: 0,
+          likes: likeCount,
+        }}
+      />
     </motion.div>
   );
 };
 
-export const ItemComments: React.FC<ItemCommentsProps> = ({ growId }) => {
+export const ItemComments: React.FC<ItemCommentsProps> = ({
+  entityId,
+  entityType,
+  isSocial,
+}) => {
   const [newComment, setNewComment] = useState("");
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
   const { data: session } = useSession();
@@ -72,8 +101,8 @@ export const ItemComments: React.FC<ItemCommentsProps> = ({ growId }) => {
 
   const { data: comments, refetch } = api.comments.getComments.useQuery(
     {
-      entityId: growId,
-      entityType: CommentableEntityType.Grow,
+      entityId: entityId,
+      entityType: entityType,
     },
     {
       enabled: !!session,
@@ -92,8 +121,8 @@ export const ItemComments: React.FC<ItemCommentsProps> = ({ growId }) => {
     if (!newComment.trim()) return;
 
     postCommentMutation.mutate({
-      entityId: growId,
-      entityType: CommentableEntityType.Grow,
+      entityId: entityId,
+      entityType: entityType,
       commentText: newComment,
       ...(replyingTo && { parentCommentId: replyingTo }),
     });
@@ -121,7 +150,7 @@ export const ItemComments: React.FC<ItemCommentsProps> = ({ growId }) => {
               }
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
-              className="w-full"
+              className="h-8 w-full"
             />
           </div>
           <Button
@@ -134,12 +163,13 @@ export const ItemComments: React.FC<ItemCommentsProps> = ({ growId }) => {
         </div>
       )}
 
-      <div className="max-h-60 overflow-y-auto">
+      <div className="max-h-fit overflow-y-auto">
         <AnimatePresence>
           {comments?.map((comment) => (
             <CommentDisplay
               key={comment.id}
               comment={comment}
+              isSocial={isSocial}
               onReply={(commentId) => {
                 setReplyingTo(commentId);
                 // Optional: scroll to input

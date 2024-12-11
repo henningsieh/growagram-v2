@@ -23,6 +23,7 @@ import { useLikeStatus } from "~/hooks/use-likes";
 import { Link } from "~/lib/i18n/routing";
 import { DateFormatOptions, formatDate } from "~/lib/utils";
 import { GetOwnGrowType } from "~/server/api/root";
+import { CommentableEntityType } from "~/types/comment";
 import { LikeableEntityType } from "~/types/like";
 
 import { GrowPlantCard } from "./grow-plant-card";
@@ -99,8 +100,8 @@ export function GrowCard({ grow, isSocial }: GrowCardProps) {
             <CardDescription>
               <span className="block">
                 {
-                  // eslint-disable-next-line react/jsx-no-literals
                   t("grow-card-createdAt")
+                  // eslint-disable-next-line react/jsx-no-literals
                 }
                 :{" "}
                 {formatDate(grow.createdAt, locale, {
@@ -109,17 +110,17 @@ export function GrowCard({ grow, isSocial }: GrowCardProps) {
                 } as DateFormatOptions)}
               </span>
               {grow.updatedAt && (
-                <span className="block">
+                <div className="block">
                   {
-                    // eslint-disable-next-line react/jsx-no-literals
                     t("grow-card-updatedAt")
+                    // eslint-disable-next-line react/jsx-no-literals
                   }
                   :{" "}
                   {formatDate(grow.updatedAt, locale, {
                     weekday: "short",
                     month: "long",
                   } as DateFormatOptions)}
-                </span>
+                </div>
               )}
             </CardDescription>
           </CardHeader>
@@ -176,7 +177,13 @@ export function GrowCard({ grow, isSocial }: GrowCardProps) {
           </CardFooter>
         </>
       )}
-      {isSocial && <ItemComments growId={grow.id} />}
+      {isSocial && (
+        <ItemComments
+          entityId={grow.id}
+          entityType={CommentableEntityType.Grow}
+          isSocial={isSocial}
+        />
+      )}
     </Card>
   );
 }

@@ -14,6 +14,8 @@ import {
 import { cn } from "~/lib/utils";
 import { LikeableEntityType } from "~/types/like";
 
+import { ItemComments } from "../features/Grows/item-comments";
+
 interface CardFooterProps {
   entityId: string;
   entityType: LikeableEntityType;

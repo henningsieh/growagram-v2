@@ -39,6 +39,11 @@ export const likeRouter = createTRPCRouter({
           where: eq(grows.id, entityId),
         });
         entityExists = !!grow;
+      } else if (entityType === LikeableEntityType.Comment) {
+        const comment = await ctx.db.query.comments.findFirst({
+          where: eq(grows.id, entityId),
+        });
+        entityExists = !!comment;
       }
 
       if (!entityExists) {
