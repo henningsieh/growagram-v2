@@ -26,6 +26,7 @@ import { GetOwnGrowType } from "~/server/api/root";
 import { LikeableEntityType } from "~/types/like";
 
 import { GrowPlantCard } from "./grow-plant-card";
+import { ItemComments } from "./item-comments";
 
 interface GrowCardProps {
   grow: GetOwnGrowType;
@@ -46,7 +47,7 @@ export function GrowCard({ grow, isSocial }: GrowCardProps) {
   return (
     <Card className="my-2 flex flex-col overflow-hidden">
       {isSocial && (
-        <CardHeader className="space-y-0 p-4">
+        <CardHeader className="space-y-0 p-3">
           <div className="flex items-start justify-between">
             <div className="flex gap-3">
               <Avatar className="h-10 w-10">
@@ -58,7 +59,7 @@ export function GrowCard({ grow, isSocial }: GrowCardProps) {
               <div className="flex flex-col">
                 <p className="text-sm font-semibold">{grow.owner.name}</p>
                 <p className="text-sm text-muted-foreground">
-                  @{grow.owner.name}
+                  {`@${grow.owner.name}`}
                 </p>
               </div>
             </div>
@@ -67,7 +68,7 @@ export function GrowCard({ grow, isSocial }: GrowCardProps) {
       )}
 
       <CardContent
-        className={`grid flex-grow grid-rows-[auto,1fr,auto] gap-4 ${isSocial ? "ml-[60px] p-2 pl-0" : "p-4"}`}
+        className={`grid flex-grow grid-rows-[auto,1fr,auto] gap-4 ${isSocial ? "ml-16 p-2 pl-0" : "p-4"}`}
       >
         <div
           className="relative aspect-video overflow-hidden"
@@ -97,7 +98,11 @@ export function GrowCard({ grow, isSocial }: GrowCardProps) {
             </Link>
             <CardDescription>
               <span className="block">
-                {t("grow-card-createdAt")}:{" "}
+                {
+                  // eslint-disable-next-line react/jsx-no-literals
+                  t("grow-card-createdAt")
+                }
+                :{" "}
                 {formatDate(grow.createdAt, locale, {
                   weekday: "short",
                   month: "long",
@@ -105,7 +110,11 @@ export function GrowCard({ grow, isSocial }: GrowCardProps) {
               </span>
               {grow.updatedAt && (
                 <span className="block">
-                  {t("grow-card-updatedAt")}:{" "}
+                  {
+                    // eslint-disable-next-line react/jsx-no-literals
+                    t("grow-card-updatedAt")
+                  }
+                  :{" "}
                   {formatDate(grow.updatedAt, locale, {
                     weekday: "short",
                     month: "long",
@@ -140,7 +149,7 @@ export function GrowCard({ grow, isSocial }: GrowCardProps) {
 
       {isSocial ? (
         <SocialCardFooter
-          className={`pb-2 pr-2 ${isSocial && "ml-[60px]"}`}
+          className={`pb-2 pr-2 ${isSocial && "ml-16"}`}
           entityId={grow.id}
           entityType={LikeableEntityType.Grow}
           initialLiked={isLiked}
@@ -161,12 +170,13 @@ export function GrowCard({ grow, isSocial }: GrowCardProps) {
             <Button asChild size={"sm"} className="w-full text-base">
               <Link href={`/grows/${grow.id}/form`}>
                 <Edit size={20} />
-                Edit Grow
+                {t("form-page-title-edit")}
               </Link>
             </Button>
           </CardFooter>
         </>
       )}
+      {isSocial && <ItemComments growId={grow.id} />}
     </Card>
   );
 }

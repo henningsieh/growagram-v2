@@ -176,6 +176,7 @@ export const commentRouter = createTRPCRouter({
         ),
         orderBy: asc(comments.createdAt),
         with: {
+          author: true,
           childComments: true, // Load replies (nested comments)
         },
       });

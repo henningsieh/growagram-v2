@@ -1,4 +1,9 @@
 {
+  "Comments": {
+    "add-comment-placeholder": "Write a comment",
+    "no-comments-yet": "No comments yet.",
+    "reply-to-comment-placeholder": "Write an answer"
+  },
   "Dashboard": {
     "Grows": {
       "your-grows": "Your Grows"

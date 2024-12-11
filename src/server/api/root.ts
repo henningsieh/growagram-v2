@@ -27,6 +27,21 @@ export type AppRouter = typeof appRouter;
 type RouterOutput = inferRouterOutputs<AppRouter>;
 type RouterInput = inferRouterInputs<AppRouter>
 
+// commentRouter
+//  OUTPUTS:
+export type GetCommentsType = RouterOutput["comments"]["getComments"]
+export type GetCommentType = RouterOutput["comments"]["getComments"][number]
+export type GetRepliesType = RouterOutput["comments"]["getReplies"]
+export type GetReplyType = RouterOutput["comments"]["getReplies"][number]
+export type GetCommentCountType = RouterOutput["comments"]["getCommentCount"]
+export type DeleteCommentOutput = RouterOutput["comments"]["deleteComment"]
+// INPUTS:
+export type GetCommentsInput = RouterInput["comments"]["getComments"]
+export type GetCommentCountInput = RouterInput["comments"]["getCommentCount"]
+export type DeleteCommentInput = RouterInput["comments"]["deleteComment"]
+
+
+
 // likeRouter
 //  OUTPUTS:
 export type ToggleLikeOutput = RouterOutput["likes"]["toggleLike"]

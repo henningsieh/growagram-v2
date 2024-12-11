@@ -1,6 +1,7 @@
 // src/components/atom/social-card-footer.tsx:
 import { ChartColumn, MessageCircle, Share } from "lucide-react";
 import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import React from "react";
 import { LikeButton } from "~/components/atom/like-button";
 import { Button } from "~/components/ui/button";
@@ -36,6 +37,7 @@ export const SocialCardFooter: React.FC<CardFooterProps> = ({
 }) => {
   const { data: session } = useSession();
   const user = session?.user;
+  const t = useTranslations();
 
   const renderInteractiveButton = (
     Icon: React.ElementType,
@@ -72,7 +74,7 @@ export const SocialCardFooter: React.FC<CardFooterProps> = ({
                 // For example: signIn() from next-auth
               }}
             >
-              Log In
+              {t("LoginPage.submit")}
             </Button>
           </TooltipContent>
         </Tooltip>
