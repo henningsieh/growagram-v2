@@ -32,7 +32,7 @@ interface GrowCardProps {
   isSocial?: boolean;
 }
 
-export function GrowCard({ grow, isSocial = true }: GrowCardProps) {
+export function GrowCard({ grow, isSocial }: GrowCardProps) {
   const [isImageHovered, setIsImageHovered] = useState(false);
 
   const { isLiked, likeCount, isLoading } = useLikeStatus(
@@ -44,51 +44,47 @@ export function GrowCard({ grow, isSocial = true }: GrowCardProps) {
   const t = useTranslations("Grows");
 
   return (
-    <Card className="flex flex-col overflow-hidden">
-      <CardHeader className="space-y-0 p-4">
-        <div className="flex items-start justify-between">
-          <div className="flex gap-3">
-            <Avatar className="h-10 w-10">
-              <AvatarImage src={grow.owner.image as string | undefined} />
-              <AvatarFallback>
-                <User2 className="h-5 w-5" />
-              </AvatarFallback>
-            </Avatar>
-            <div className="flex flex-col">
-              <p className="text-sm font-semibold">{grow.owner.name}</p>
-              <p className="text-sm text-muted-foreground">
-                @{grow.owner.name}
-              </p>
+    <Card className="my-2 flex flex-col overflow-hidden">
+      {isSocial && (
+        <CardHeader className="space-y-0 p-4">
+          <div className="flex items-start justify-between">
+            <div className="flex gap-3">
+              <Avatar className="h-10 w-10">
+                <AvatarImage src={grow.owner.image as string | undefined} />
+                <AvatarFallback>
+                  <User2 className="h-5 w-5" />
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex flex-col">
+                <p className="text-sm font-semibold">{grow.owner.name}</p>
+                <p className="text-sm text-muted-foreground">
+                  @{grow.owner.name}
+                </p>
+              </div>
             </div>
           </div>
-          {/* You might want to add a type field to your grow schema or remove this */}
-          {/* <Badge
-            variant={grow.type === "indoor" ? "default" : "secondary"}
-            className="uppercase"
-          >
-            {grow.type}
-          </Badge> */}
-        </div>
-      </CardHeader>
+        </CardHeader>
+      )}
 
-      <div
-        className="relative aspect-video overflow-hidden"
-        onMouseEnter={() => setIsImageHovered(true)}
-        onMouseLeave={() => setIsImageHovered(false)}
+      <CardContent
+        className={`grid flex-grow grid-rows-[auto,1fr,auto] gap-4 ${isSocial ? "ml-[60px] p-2 pl-0" : "p-4"}`}
       >
-        <Image
-          src={headerImagePlaceholder}
-          alt={grow.name}
-          fill
-          className="object-cover transition-transform duration-300"
-          sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
-          style={{
-            transform: isImageHovered ? "scale(1.05)" : "scale(1)",
-          }}
-        />
-      </div>
-
-      <CardContent className="grid flex-grow grid-rows-[auto,1fr,auto] gap-4 p-4">
+        <div
+          className="relative aspect-video overflow-hidden"
+          onMouseEnter={() => setIsImageHovered(true)}
+          onMouseLeave={() => setIsImageHovered(false)}
+        >
+          <Image
+            src={headerImagePlaceholder}
+            alt={grow.name}
+            fill
+            className="object-cover transition-transform duration-300"
+            sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
+            style={{
+              transform: isImageHovered ? "scale(1.05)" : "scale(1)",
+            }}
+          />
+        </div>
         <div>
           <CardHeader className="p-0">
             <Link href={`/public/grows/${grow.id}`}>
@@ -142,22 +138,9 @@ export function GrowCard({ grow, isSocial = true }: GrowCardProps) {
         </div>
       </CardContent>
 
-      <Separator />
-
-      <CardFooter className="flex w-full justify-between gap-1 p-1">
-        <Button variant={"destructive"} size={"sm"} className="w-20">
-          <Trash2 size={20} />
-        </Button>
-        <Button asChild size={"sm"} className="w-full text-base">
-          <Link href={`/grows/${grow.id}/form`}>
-            <Edit size={20} />
-            Edit Grow
-          </Link>
-        </Button>
-      </CardFooter>
-      {isSocial && (
+      {isSocial ? (
         <SocialCardFooter
-          className="p-1"
+          className={`pb-2 pr-2 ${isSocial && "ml-[60px]"}`}
           entityId={grow.id}
           entityType={LikeableEntityType.Grow}
           initialLiked={isLiked}
@@ -168,6 +151,21 @@ export function GrowCard({ grow, isSocial = true }: GrowCardProps) {
             likes: likeCount,
           }}
         />
+      ) : (
+        <>
+          <Separator />
+          <CardFooter className="flex w-full justify-between gap-1 p-1">
+            <Button variant={"destructive"} size={"sm"} className="w-20">
+              <Trash2 size={20} />
+            </Button>
+            <Button asChild size={"sm"} className="w-full text-base">
+              <Link href={`/grows/${grow.id}/form`}>
+                <Edit size={20} />
+                Edit Grow
+              </Link>
+            </Button>
+          </CardFooter>
+        </>
       )}
     </Card>
   );

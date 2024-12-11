@@ -9,9 +9,6 @@ export const useLikeStatus = (
   entityType: LikeableEntityType,
 ) => {
   const { data: session, status } = useSession();
-  // const session: Session | null
-  // const status: "authenticated" | "loading" | "unauthenticated"
-
   const user = session?.user;
 
   const [userHasLiked, setUserHasLiked] = useState(false);
@@ -22,21 +19,33 @@ export const useLikeStatus = (
     entityType,
   });
 
-  const userLikesQuery = api.likes.getUserLikedEntities.useQuery({
-    entityType,
-  });
+  // Only run queries if user is authenticated
+  const userLikesQuery = api.likes.getUserLikedEntities.useQuery(
+    { entityType },
+    { enabled: !!user },
+  );
+
+  //TODO: this different behavior for "getLikeCount" and "getUserLikedEntities" is not clean!!!
 
   useEffect(() => {
-    if (likeCountQuery.data && userLikesQuery.data) {
+    // Reset state if no user
+    if (!user) {
+      setUserHasLiked(false);
+      // setLikeCount(0);
+    }
+
+    console.debug(likeCountQuery.data);
+
+    if (likeCountQuery.data) {
       setLikeCount(likeCountQuery.data.count);
 
-      const userLikedEntity = userLikesQuery.data.find(
-        (like) => like.entityId === entityId,
-      );
+      const userLikedEntity =
+        userLikesQuery.data &&
+        userLikesQuery.data.find((like) => like.entityId === entityId);
 
       setUserHasLiked(!!userLikedEntity);
     }
-  }, [likeCountQuery.data, userLikesQuery.data, entityId, entityType]);
+  }, [likeCountQuery.data, userLikesQuery.data, user, entityId, entityType]);
 
   return {
     isLiked: userHasLiked,

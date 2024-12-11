@@ -19,7 +19,7 @@ export default async function PublicGrowByIdPage({
 
   return (
     <>
-      <GrowCard grow={grow} />
+      <GrowCard grow={grow} isSocial={true} />
     </>
   );
 }

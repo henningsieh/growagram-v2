@@ -89,7 +89,7 @@ export default function TimelineLayout({ children }: PropsWithChildren) {
         </div>
         {/* Main content and right sidebar remain unchanged */}
         <div className="flex max-w-2xl flex-1 shrink-0">
-          <div className="w-full">{children}</div>
+          <div className="w-full pl-1 pr-2">{children}</div>
         </div>
 
         <aside className="hidden w-64 lg:block">

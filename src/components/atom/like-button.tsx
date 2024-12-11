@@ -30,9 +30,6 @@ export const LikeButton: React.FC<LikeProps> = ({
   isLikeStatusLoading = true,
 }) => {
   const { data: session, status } = useSession();
-  // const session: Session | null
-  // const status: "authenticated" | "loading" | "unauthenticated"
-
   const user = session?.user;
 
   const { toast } = useToast();
@@ -40,7 +37,6 @@ export const LikeButton: React.FC<LikeProps> = ({
   const [likeCount, setLikeCount] = useState(initialLikeCount);
   const [isAnimating, setIsAnimating] = useState(false);
 
-  // Add useEffect to synchronize state with initial props
   useEffect(() => {
     setIsLiked(initialLiked);
     setLikeCount(initialLikeCount);
@@ -48,18 +44,25 @@ export const LikeButton: React.FC<LikeProps> = ({
 
   const toggleLikeMutation = api.likes.toggleLike.useMutation({
     onMutate: (variables) => {
-      // Do an optimistic update
+      // Prevent like actions for unauthenticated users
+      if (!user) {
+        toast({
+          title: "Login Required",
+          description: "Please log in to like content.",
+          variant: "primary",
+        });
+        return null;
+      }
+
       const newLikedState = !isLiked;
       setIsLiked(newLikedState);
       setLikeCount((prev) => (newLikedState ? prev + 1 : prev - 1));
 
-      // Trigger one-time animation
       if (newLikedState) {
         setIsAnimating(true);
-        setTimeout(() => setIsAnimating(false), 500); // Match animation duration
+        setTimeout(() => setIsAnimating(false), 500);
       }
 
-      console.debug("Attempting to like/unlike:", variables);
       return { variables };
     },
     onSuccess: (data, variables) => {
@@ -70,22 +73,30 @@ export const LikeButton: React.FC<LikeProps> = ({
       });
     },
     onError: (error) => {
-      // Revert the optimistic update on error
       setIsLiked(initialLiked);
       setLikeCount(initialLikeCount);
       toast({
         title: "Error",
-        description: "Failed to process like. Please try again.",
+        description: error.message,
         variant: "destructive",
       });
     },
   });
 
   const handleLikeToggle = () => {
+    if (!user) {
+      toast({
+        title: "Login Required",
+        description: "Please log in to like content.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     toggleLikeMutation.mutate({
       entityId,
       entityType,
-    } satisfies ToggleLikeInput);
+    });
   };
 
   return (
@@ -96,16 +107,16 @@ export const LikeButton: React.FC<LikeProps> = ({
       disabled={toggleLikeMutation.isPending}
       className={cn(
         className,
-        "group flex cursor-default items-center gap-1 hover:text-foreground disabled:cursor-default disabled:opacity-100",
-        isLikeStatusLoading ? "cursor-not-allowed" : "cursor-default",
+        "group flex cursor-default items-center gap-1 hover:text-foreground",
+        // !user ? "cursor-not-allowed opacity-50" : "cursor-pointer",
       )}
     >
       <Heart
         className={cn(
           "h-5 w-5 transition-all duration-300 ease-in-out",
+          // !user && "text-muted-foreground",
           isLiked ? "fill-red-500 text-red-500" : "text-foreground",
           isAnimating && "scale-150 animate-pulse",
-          // Ensure hover effect only applies when not animating
           !isAnimating && "group-hover:text-red-500",
         )}
         strokeWidth={1.5}
