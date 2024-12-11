@@ -34,8 +34,6 @@ export const useLikeStatus = (
       // setLikeCount(0);
     }
 
-    console.debug(likeCountQuery.data);
-
     if (likeCountQuery.data) {
       setLikeCount(likeCountQuery.data.count);
 

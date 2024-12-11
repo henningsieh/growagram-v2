@@ -14,8 +14,6 @@ import {
 import { cn } from "~/lib/utils";
 import { LikeableEntityType } from "~/types/like";
 
-import { ItemComments } from "../features/Grows/item-comments";
-
 interface CardFooterProps {
   entityId: string;
   entityType: LikeableEntityType;
@@ -27,6 +25,7 @@ interface CardFooterProps {
     views: number;
     likes: number;
   };
+  toggleComments: () => void;
 }
 
 export const SocialCardFooter: React.FC<CardFooterProps> = ({
@@ -36,6 +35,7 @@ export const SocialCardFooter: React.FC<CardFooterProps> = ({
   isLikeStatusLoading = true,
   className = "",
   stats,
+  toggleComments,
 }) => {
   const { data: session } = useSession();
   const user = session?.user;
@@ -45,12 +45,14 @@ export const SocialCardFooter: React.FC<CardFooterProps> = ({
     Icon: React.ElementType,
     count: number,
     tooltipMessage: string,
+    onClick?: () => void,
   ) => {
     const buttonContent = (
       <Button
         className="flex w-12 items-center justify-center gap-1"
         variant="ghost"
         size="sm"
+        onClick={onClick}
       >
         <Icon className="h-4 w-4" />
         <span>{count}</span>
@@ -85,29 +87,36 @@ export const SocialCardFooter: React.FC<CardFooterProps> = ({
   };
 
   return (
-    <div className={cn("flex items-center justify-between gap-2", className)}>
-      {renderInteractiveButton(
-        MessageCircle,
-        stats.comments,
-        "Sign in to view and add comments",
-      )}
+    <div>
+      <div className={cn("flex items-center justify-between gap-2", className)}>
+        {renderInteractiveButton(
+          MessageCircle,
+          stats.comments,
+          "Sign in to view and add comments",
+          toggleComments,
+        )}
 
-      {renderInteractiveButton(
-        ChartColumn,
-        stats.views,
-        "Login to see detailed view statistics",
-      )}
+        {renderInteractiveButton(
+          ChartColumn,
+          stats.views,
+          "Login to see detailed view statistics",
+        )}
 
-      <LikeButton
-        className="flex w-16 items-center justify-center gap-1 hover:bg-transparent"
-        entityId={entityId}
-        entityType={entityType}
-        initialLiked={initialLiked}
-        initialLikeCount={stats.likes}
-        isLikeStatusLoading={isLikeStatusLoading}
-      />
+        <LikeButton
+          className="flex w-16 items-center justify-center gap-1 hover:bg-transparent"
+          entityId={entityId}
+          entityType={entityType}
+          initialLiked={initialLiked}
+          initialLikeCount={stats.likes}
+          isLikeStatusLoading={isLikeStatusLoading}
+        />
 
-      {renderInteractiveButton(Share, 0, "Please log in to share this content")}
+        {renderInteractiveButton(
+          Share,
+          0,
+          "Please log in to share this content",
+        )}
+      </div>
     </div>
   );
 };

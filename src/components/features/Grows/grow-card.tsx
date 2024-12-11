@@ -19,6 +19,7 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 import { Separator } from "~/components/ui/separator";
+import { useCommentStatus } from "~/hooks/use-comments";
 import { useLikeStatus } from "~/hooks/use-likes";
 import { Link } from "~/lib/i18n/routing";
 import { DateFormatOptions, formatDate } from "~/lib/utils";
@@ -41,6 +42,12 @@ export function GrowCard({ grow, isSocial }: GrowCardProps) {
     grow.id,
     LikeableEntityType.Grow,
   );
+  const {
+    commentCount,
+    isCommentsOpen,
+    toggleComments,
+    isLoading: isCommentLoadingStatus,
+  } = useCommentStatus(grow.id, CommentableEntityType.Grow);
 
   const locale = useLocale();
   const t = useTranslations("Grows");
@@ -156,10 +163,11 @@ export function GrowCard({ grow, isSocial }: GrowCardProps) {
           initialLiked={isLiked}
           isLikeStatusLoading={isLoading}
           stats={{
-            comments: 0,
+            comments: commentCount,
             views: 0,
             likes: likeCount,
           }}
+          toggleComments={toggleComments}
         />
       ) : (
         <>
@@ -177,7 +185,7 @@ export function GrowCard({ grow, isSocial }: GrowCardProps) {
           </CardFooter>
         </>
       )}
-      {isSocial && (
+      {isSocial && isCommentsOpen && (
         <ItemComments
           entityId={grow.id}
           entityType={CommentableEntityType.Grow}

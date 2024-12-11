@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { Reply, Send } from "lucide-react";
+import { Reply, Send, X } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import React, { useState } from "react";
@@ -16,10 +16,10 @@ import { CommentableEntityType } from "~/types/comment";
 import { LikeableEntityType } from "~/types/like";
 
 interface ItemCommentsProps {
-  //   growId: string;
   entityId: string;
   entityType: CommentableEntityType;
   isSocial: boolean;
+  onClose?: () => void;
 }
 
 interface CommentDisplayProps {
@@ -80,9 +80,12 @@ const CommentDisplay: React.FC<CommentDisplayProps> = ({
         initialLiked={isLiked}
         isLikeStatusLoading={isLoading}
         stats={{
-          comments: 0,
+          comments: comment.childComments.length,
           views: 0,
           likes: likeCount,
+        }}
+        toggleComments={function (): void {
+          // throw new Error("Function not implemented.");
         }}
       />
     </motion.div>
@@ -93,6 +96,7 @@ export const ItemComments: React.FC<ItemCommentsProps> = ({
   entityId,
   entityType,
   isSocial,
+  onClose,
 }) => {
   const [newComment, setNewComment] = useState("");
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
@@ -131,7 +135,18 @@ export const ItemComments: React.FC<ItemCommentsProps> = ({
   if (!session) return null;
 
   return (
-    <div className="mt-2 border-t">
+    <div className="relative mt-2 border-t">
+      {onClose && (
+        <Button
+          variant="ghost"
+          size="icon"
+          className="absolute right-2 top-2 z-10"
+          onClick={onClose}
+        >
+          <X size={20} />
+        </Button>
+      )}
+
       {session?.user && (
         <div className="flex items-center gap-3 p-3">
           <div className="flex justify-center">

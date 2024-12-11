@@ -1,6 +1,6 @@
 // src/server/api/routers/comments.ts:
 import { TRPCError } from "@trpc/server";
-import { and, asc, eq, sql } from "drizzle-orm";
+import { SQL, and, asc, eq, isNull, sql } from "drizzle-orm";
 import { z } from "zod";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
 import { comments, grows, images, plants } from "~/lib/db/schema";
@@ -168,16 +168,17 @@ export const commentRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const { entityId, entityType } = input;
 
-      // Fetch comments for the given entity
+      // Fetch comments without answers for the given entity
       const allComments = await ctx.db.query.comments.findMany({
         where: and(
           eq(comments.entityId, entityId),
           eq(comments.entityType, entityType),
+          isNull(comments.parentCommentId), // without answers on top level
         ),
         orderBy: asc(comments.createdAt),
         with: {
           author: true,
-          childComments: true, // Load replies (nested comments)
+          childComments: true, // Load replies (nested answers are here)
         },
       });
 
