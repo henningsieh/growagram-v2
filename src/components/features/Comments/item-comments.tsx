@@ -1,12 +1,13 @@
-// src/components/features/Comments/item-comments.tsx:
 import { AnimatePresence } from "framer-motion";
 import { Send, X } from "lucide-react";
+import { User } from "next-auth";
 import { useTranslations } from "next-intl";
 import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { useComments } from "~/hooks/use-comments";
+import { GetCommentType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
 
 import { Comment } from "./comment";
@@ -16,6 +17,16 @@ interface ItemCommentsProps {
   entityType: CommentableEntityType;
   isSocial: boolean;
   onClose?: () => void;
+  // New optional props from useComments hook
+  comments?: GetCommentType[];
+  commentsLoading?: boolean;
+  newComment?: string;
+  setNewComment?: (comment: string) => void;
+  handleSubmitComment?: (parentCommentId?: string) => void;
+  handleReply?: (commentId: string) => void;
+  handleCancelReply?: () => void;
+  replyingToComment?: string | null;
+  user?: User | null;
 }
 
 export const ItemComments: React.FC<ItemCommentsProps> = ({
@@ -23,19 +34,43 @@ export const ItemComments: React.FC<ItemCommentsProps> = ({
   entityType,
   isSocial,
   onClose,
+  // New props with fallback to useComments hook
+  comments: propComments,
+  commentsLoading,
+  newComment: propNewComment,
+  setNewComment: propSetNewComment,
+  handleSubmitComment: propHandleSubmitComment,
+  handleReply: propHandleReply,
+  handleCancelReply: propHandleCancelReply,
+  replyingToComment: propReplyingToComment,
+  user: propUser,
 }) => {
   const t = useTranslations("Comments");
+
+  // If props are not provided, fall back to useComments hook
   const {
-    user,
-    comments,
-    commentsLoading,
-    replyingToComment,
-    handleReply,
-    handleCancelReply,
-    newComment,
-    setNewComment,
-    handleSubmitComment,
-  } = useComments(entityId, entityType);
+    user: hookUser,
+    comments: hookComments,
+    commentsLoading: hookCommentsLoading,
+    replyingToComment: hookReplyingToComment,
+    handleReply: hookHandleReply,
+    handleCancelReply: hookHandleCancelReply,
+    newComment: hookNewComment,
+    setNewComment: hookSetNewComment,
+    handleSubmitComment: hookHandleSubmitComment,
+  } = propUser ? {} : useComments(entityId, entityType);
+
+  // Use prop values if provided, otherwise use hook values
+  const user = propUser || hookUser;
+  const comments = propComments || hookComments;
+  const commentsLoadingState = commentsLoading || hookCommentsLoading;
+  const newComment = propNewComment || hookNewComment;
+  const setNewComment = propSetNewComment || hookSetNewComment;
+  const handleSubmitComment =
+    propHandleSubmitComment || hookHandleSubmitComment;
+  const handleReply = propHandleReply || hookHandleReply;
+  const handleCancelReply = propHandleCancelReply || hookHandleCancelReply;
+  const replyingToComment = propReplyingToComment || hookReplyingToComment;
 
   if (!user) return null;
 
@@ -63,14 +98,14 @@ export const ItemComments: React.FC<ItemCommentsProps> = ({
             <Input
               placeholder={t("add-comment-placeholder")}
               value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
+              onChange={(e) => setNewComment?.(e.target.value)}
               className="h-8 w-full"
             />
           </div>
           <Button
             size="icon"
-            disabled={!newComment.trim()}
-            onClick={() => handleSubmitComment()}
+            disabled={!newComment?.trim()}
+            onClick={() => handleSubmitComment?.()}
           >
             <Send size={18} />
           </Button>
@@ -95,6 +130,11 @@ export const ItemComments: React.FC<ItemCommentsProps> = ({
       {comments?.length === 0 && (
         <div className="p-4 text-center text-muted-foreground">
           {t("no-comments-yet")}
+        </div>
+      )}
+      {commentsLoadingState && (
+        <div className="p-4 text-center text-muted-foreground">
+          {t("loading-comments")}
         </div>
       )}
     </div>

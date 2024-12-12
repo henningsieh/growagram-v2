@@ -1,6 +1,5 @@
 "use client";
 
-// src/components/features/Grows/grow-card.tsx:
 import { AnimatePresence, motion } from "framer-motion";
 import { Edit, Tag, Trash2, User2 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
@@ -38,16 +37,26 @@ interface GrowCardProps {
 export function GrowCard({ grow, isSocial }: GrowCardProps) {
   const [isImageHovered, setIsImageHovered] = useState(false);
 
-  const { isLiked, likeCount, isLoading } = useLikeStatus(
-    grow.id,
-    LikeableEntityType.Grow,
-  );
+  const {
+    isLiked,
+    likeCount,
+    isLoading: isLikeLoading,
+  } = useLikeStatus(grow.id, LikeableEntityType.Grow);
+
   const {
     commentCount,
     isCommentsOpen,
     toggleComments,
     commentsLoading,
     commentCountLoading,
+    comments,
+    newComment,
+    setNewComment,
+    handleSubmitComment,
+    handleReply,
+    handleCancelReply,
+    replyingToComment,
+    user,
   } = useComments(grow.id, CommentableEntityType.Grow);
 
   const locale = useLocale();
@@ -107,11 +116,7 @@ export function GrowCard({ grow, isSocial }: GrowCardProps) {
             </Link>
             <CardDescription>
               <span className="block">
-                {
-                  t("grow-card-createdAt")
-                  // eslint-disable-next-line react/jsx-no-literals
-                }
-                :{" "}
+                {t("grow-card-createdAt")}:{" "}
                 {formatDate(grow.createdAt, locale, {
                   weekday: "short",
                   month: "long",
@@ -119,11 +124,7 @@ export function GrowCard({ grow, isSocial }: GrowCardProps) {
               </span>
               {grow.updatedAt && (
                 <div className="block">
-                  {
-                    t("grow-card-updatedAt")
-                    // eslint-disable-next-line react/jsx-no-literals
-                  }
-                  :{" "}
+                  {t("grow-card-updatedAt")}:{" "}
                   {formatDate(grow.updatedAt, locale, {
                     weekday: "short",
                     month: "long",
@@ -162,7 +163,7 @@ export function GrowCard({ grow, isSocial }: GrowCardProps) {
           entityId={grow.id}
           entityType={LikeableEntityType.Grow}
           initialLiked={isLiked}
-          isLikeStatusLoading={isLoading}
+          isLikeStatusLoading={isLikeLoading}
           stats={{
             comments: commentCount,
             views: 0,
@@ -191,6 +192,15 @@ export function GrowCard({ grow, isSocial }: GrowCardProps) {
           entityId={grow.id}
           entityType={CommentableEntityType.Grow}
           isSocial={isSocial}
+          comments={comments}
+          commentsLoading={commentsLoading}
+          newComment={newComment}
+          setNewComment={setNewComment}
+          handleSubmitComment={handleSubmitComment}
+          handleReply={handleReply}
+          handleCancelReply={handleCancelReply}
+          replyingToComment={replyingToComment}
+          user={user}
         />
       )}
     </Card>
