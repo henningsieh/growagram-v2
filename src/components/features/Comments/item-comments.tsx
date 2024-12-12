@@ -1,19 +1,16 @@
-"use client";
-
-import { AnimatePresence, motion } from "framer-motion";
-import { Reply, Send, X } from "lucide-react";
+// src/components/features/Comments/comment.tsx:
+import { AnimatePresence } from "framer-motion";
+import { Send, X } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import React, { useState } from "react";
-import { SocialCardFooter } from "~/components/atom/social-card-footer";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
-import { useLikeStatus } from "~/hooks/use-likes";
 import { api } from "~/lib/trpc/react";
-import { GetCommentType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
-import { LikeableEntityType } from "~/types/like";
+
+import { Comment } from "./comment";
 
 interface ItemCommentsProps {
   entityId: string;
@@ -22,76 +19,6 @@ interface ItemCommentsProps {
   onClose?: () => void;
 }
 
-interface CommentDisplayProps {
-  comment: GetCommentType;
-  onReply?: (commentId: string) => void;
-  isSocial: boolean;
-}
-
-const CommentDisplay: React.FC<CommentDisplayProps> = ({
-  comment,
-  onReply,
-  isSocial,
-}) => {
-  const { data: session } = useSession();
-
-  const { isLiked, likeCount, isLoading } = useLikeStatus(
-    comment.id,
-    LikeableEntityType.Comment,
-  );
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.7 }}
-    >
-      <div className="flex gap-3 p-3">
-        <div className="flex justify-center">
-          <Avatar className="m-1 h-8 w-8">
-            <AvatarImage src={comment.author.image || undefined} />
-            <AvatarFallback>{comment.author.name?.[0] || "?"}</AvatarFallback>
-          </Avatar>
-        </div>
-        <div className="flex-1">
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-semibold">{comment.author.name}</span>
-            <span className="text-xs text-muted-foreground">
-              {new Date(comment.createdAt).toLocaleString()}
-            </span>
-          </div>
-          <p className="text-sm">{comment.commentText}</p>
-          {session && onReply && (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="mt-1 h-6"
-              onClick={() => onReply(comment.id)}
-            >
-              <Reply size={14} className="mr-1" /> Reply
-            </Button>
-          )}
-        </div>
-      </div>
-      <SocialCardFooter
-        className={`pb-2 pr-2 ${isSocial && "ml-16"} border-b`}
-        entityId={comment.id}
-        entityType={LikeableEntityType.Comment}
-        initialLiked={isLiked}
-        isLikeStatusLoading={isLoading}
-        stats={{
-          comments: comment.childComments.length,
-          views: 0,
-          likes: likeCount,
-        }}
-        toggleComments={function (): void {
-          // throw new Error("Function not implemented.");
-        }}
-      />
-    </motion.div>
-  );
-};
-
 export const ItemComments: React.FC<ItemCommentsProps> = ({
   entityId,
   entityType,
@@ -99,7 +26,9 @@ export const ItemComments: React.FC<ItemCommentsProps> = ({
   onClose,
 }) => {
   const [newComment, setNewComment] = useState("");
-  const [replyingTo, setReplyingTo] = useState<string | null>(null);
+  const [replyingToComment, setReplyingToComment] = useState<string | null>(
+    null,
+  );
   const { data: session } = useSession();
   const t = useTranslations("Comments");
 
@@ -116,7 +45,6 @@ export const ItemComments: React.FC<ItemCommentsProps> = ({
   const postCommentMutation = api.comments.postComment.useMutation({
     onSuccess: () => {
       setNewComment("");
-      setReplyingTo(null);
       void refetch();
     },
   });
@@ -128,7 +56,6 @@ export const ItemComments: React.FC<ItemCommentsProps> = ({
       entityId: entityId,
       entityType: entityType,
       commentText: newComment,
-      ...(replyingTo && { parentCommentId: replyingTo }),
     });
   };
 
@@ -158,11 +85,7 @@ export const ItemComments: React.FC<ItemCommentsProps> = ({
 
           <div className="flex-1">
             <Input
-              placeholder={
-                replyingTo
-                  ? t("reply-to-comment-placeholder")
-                  : t("add-comment-placeholder")
-              }
+              placeholder={t("add-comment-placeholder")}
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
               className="h-8 w-full"
@@ -181,13 +104,16 @@ export const ItemComments: React.FC<ItemCommentsProps> = ({
       <div className="max-h-fit overflow-y-auto">
         <AnimatePresence>
           {comments?.map((comment) => (
-            <CommentDisplay
+            <Comment
               key={comment.id}
               comment={comment}
               isSocial={isSocial}
+              isReplying={replyingToComment === comment.id}
               onReply={(commentId) => {
-                setReplyingTo(commentId);
-                // Optional: scroll to input
+                setReplyingToComment(commentId);
+              }}
+              onCancelReply={() => {
+                setReplyingToComment(null);
               }}
             />
           ))}

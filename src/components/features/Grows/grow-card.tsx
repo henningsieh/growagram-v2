@@ -27,8 +27,8 @@ import { GetOwnGrowType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
 import { LikeableEntityType } from "~/types/like";
 
+import { ItemComments } from "../Comments/item-comments";
 import { GrowPlantCard } from "./grow-plant-card";
-import { ItemComments } from "./item-comments";
 
 interface GrowCardProps {
   grow: GetOwnGrowType;
