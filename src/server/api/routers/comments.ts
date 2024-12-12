@@ -1,6 +1,6 @@
 // src/server/api/routers/comments.ts:
 import { TRPCError } from "@trpc/server";
-import { SQL, and, asc, eq, isNull, sql } from "drizzle-orm";
+import { and, asc, eq, isNull, sql } from "drizzle-orm";
 import { z } from "zod";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
 import { comments, grows, images, plants } from "~/lib/db/schema";
@@ -178,7 +178,7 @@ export const commentRouter = createTRPCRouter({
         orderBy: asc(comments.createdAt),
         with: {
           author: true,
-          childComments: true, // Load replies (nested answers are here)
+          // childComments: true, // Load replies (nested answers are here)
         },
       });
 
