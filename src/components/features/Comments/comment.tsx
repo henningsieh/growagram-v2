@@ -4,6 +4,7 @@ import { Reply, Trash2, X } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import React from "react";
+import { util } from "zod";
 import { SocialCardFooter } from "~/components/atom/social-card-footer";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
@@ -44,7 +45,7 @@ export const Comment: React.FC<CommentProps> = ({
     isLoading: likesAreLoading,
   } = useLikeStatus(comment.id, LikeableEntityType.Comment);
 
-  const { data: replies, isLoading: commentsAreLoading } =
+  const { data: replies, isLoading: repliesAreLoading } =
     api.comments.getReplies.useQuery({ commentId: comment.id });
 
   const {
@@ -63,25 +64,43 @@ export const Comment: React.FC<CommentProps> = ({
   // Initialize delete mutation with optimistic updates
   const deleteMutation = api.comments.deleteById.useMutation({
     // Optimistic update: immediately remove the comment from the UI
-    onMutate: async ({ commentId }) => {
+    onMutate: async ({ commentId: deletedCommentId }) => {
       // Cancel any outgoing refetches
       await utils.comments.getReplies.cancel({ commentId: comment.id });
 
-      // Snapshot the previous value
-      const previousReplies = utils.comments.getReplies.getData({
-        commentId: comment.id,
-      });
+      // Snapshot the previous comments on this nested Level
+      const previousCommentsOnThisLevel = comment.parentCommentId
+        ? utils.comments.getReplies.getData({
+            commentId: comment.parentCommentId,
+          })
+        : utils.comments.getComments.getData({
+            entityId: comment.entityId,
+            entityType: comment.entityType,
+          });
 
-      console.debug("previousReplies: ", previousReplies);
-
-      // Optimistically remove the comment
-      utils.comments.getReplies.setData(
-        { commentId: comment.id },
-        (oldReplies) => oldReplies?.filter((r) => r.id !== commentId) || [],
-      );
+      if (comment.parentCommentId) {
+        // Optimistically remove the deleted comment from the other parent's replies
+        utils.comments.getReplies.setData(
+          {
+            commentId: comment.parentCommentId,
+          },
+          (parentsReplies) =>
+            parentsReplies?.filter((r) => r.id !== deletedCommentId) || [],
+        );
+      } else {
+        // Optimistically remove the deleted comment entity's comments
+        utils.comments.getComments.setData(
+          {
+            entityId: comment.entityId,
+            entityType: comment.entityType,
+          },
+          (entitysComments) =>
+            entitysComments?.filter((r) => r.id !== deletedCommentId) || [],
+        );
+      }
 
       // Return a context object with the snapshotted value
-      return { previousReplies };
+      return { previousCommentsOnThisLevel };
     },
     onSuccess: async () => {
       toast({
@@ -94,18 +113,19 @@ export const Comment: React.FC<CommentProps> = ({
       await utils.comments.getComments.invalidate();
       await utils.comments.getCommentCount.invalidate();
     },
-    onError: (error, _, context) => {
+    onError: (error, { commentId }, context) => {
       // Rollback the optimistic update if deletion fails
-      if (context?.previousReplies) {
+      if (context?.previousCommentsOnThisLevel) {
         utils.comments.getReplies.setData(
           { commentId: comment.id },
-          context.previousReplies,
+          context.previousCommentsOnThisLevel,
         );
       }
 
       toast({
         title: "Error",
-        description: error.message || "Failed to delete comment",
+        description:
+          error.message || `Failed to delete comment with ID: ${commentId}`,
         variant: "destructive",
       });
     },
@@ -120,7 +140,7 @@ export const Comment: React.FC<CommentProps> = ({
   };
 
   return (
-    !commentsAreLoading && (
+    !repliesAreLoading && (
       <AnimatePresence>
         <motion.div
           initial={{ opacity: 0, y: -20 }}

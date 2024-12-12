@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { Calendar1, Dna, FlaskConical, Leaf } from "lucide-react";
+import { Calendar1, Dna, FlaskConical, Leaf, Tag } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { Button } from "~/components/ui/button";
@@ -55,8 +55,8 @@ export function GrowPlantCard({ plant }: PlantCardProps) {
       >
         <CardContent className="px-4 py-2">
           <div className="mb-2 flex items-center justify-between">
-            <h4 className="text-lg font-semibold">
-              {plant.strain ? plant.strain.name : plant.name}
+            <h4 className="flex items-center gap-2 text-lg font-semibold">
+              <Tag size={18} /> {plant.name}
             </h4>
             <Tooltip>
               <TooltipTrigger>

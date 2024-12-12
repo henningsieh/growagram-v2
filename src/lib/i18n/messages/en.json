@@ -1,6 +1,7 @@
 {
   "Comments": {
     "add-comment-placeholder": "Write a comment",
+    "loading-comments": "Loading comments...",
     "no-comments-yet": "No comments yet.",
     "reply-to-comment-placeholder": "Write an answer"
   },

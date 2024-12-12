@@ -2,7 +2,7 @@
 
 // src/components/features/Grows/grow-card.tsx:
 import { AnimatePresence, motion } from "framer-motion";
-import { Edit, Tag, Trash2, User2 } from "lucide-react";
+import { Edit, TentTree, Trash2, User2 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useState } from "react";
@@ -109,7 +109,7 @@ export function GrowCard({ grow, isSocial }: GrowCardProps) {
             <Link href={`/public/grows/${grow.id}`}>
               <CardTitle level="h3">
                 <div className="flex w-full items-center gap-2">
-                  <Tag size={20} />
+                  <TentTree size={20} />
                   <h3 className="text-xl font-bold">{grow.name}</h3>
                 </div>
               </CardTitle>

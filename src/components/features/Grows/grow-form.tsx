@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TRPCClientError } from "@trpc/client";
-import { Check, Flower2, Tag } from "lucide-react";
+import { Check, Flower2, TentTree } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -323,7 +323,7 @@ export default function GrowFormPage({ grow }: { grow?: GetOwnGrowType }) {
                         </FormLabel>
                         <FormControl>
                           <div className="relative">
-                            <Tag className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+                            <TentTree className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
                             <Input
                               className="pl-10"
                               placeholder={t("grow-name-placeholder")}

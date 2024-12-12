@@ -8,7 +8,7 @@ import {
   ArrowDownAZ,
   ArrowDownZA,
   Calendar,
-  Tag,
+  TentTree,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
@@ -89,7 +89,7 @@ export default function MyGrowsPage() {
     {
       field: GrowsSortField.NAME,
       label: "Name",
-      icon: <Tag className="h-5 w-5" />,
+      icon: <TentTree className="h-5 w-5" />,
       sortIconAsc: ArrowDownAZ,
       sortIconDesc: ArrowDownZA,
     },

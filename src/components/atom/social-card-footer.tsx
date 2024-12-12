@@ -52,7 +52,6 @@ export const SocialCardFooter: React.FC<CardFooterProps> = ({
     count?: number,
     onClick?: () => void,
   ) => {
-    console.debug(isLoading);
     const buttonContent = (
       <Button
         className="flex w-12 items-center justify-center gap-1"
