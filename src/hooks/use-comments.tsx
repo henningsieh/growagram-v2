@@ -3,7 +3,7 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { usePathname } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
-import { GetCommentType, GetCommentsType } from "~/server/api/root";
+import { GetCommentsType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
 
 import { useToast } from "./use-toast";

@@ -1,6 +1,6 @@
 // src/components/features/Comments/comment.tsx:
 import { AnimatePresence, motion } from "framer-motion";
-import { Reply, X } from "lucide-react";
+import { Reply, Trash2, X } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import React from "react";
@@ -51,7 +51,7 @@ export const Comment: React.FC<CommentProps> = ({
     newComment: replyComment,
     setNewComment: setReplyComment,
     handleSubmitComment,
-    commentCountLoading, //TODO: still not used
+    commentCountLoading,
   } = useComments(comment.entityId, comment.entityType);
 
   const handleReplySubmit = () => {
@@ -60,20 +60,49 @@ export const Comment: React.FC<CommentProps> = ({
 
   const utils = api.useUtils();
 
-  // Initialize delete mutation
+  // Initialize delete mutation with optimistic updates
   const deleteMutation = api.comments.deleteById.useMutation({
+    // Optimistic update: immediately remove the comment from the UI
+    onMutate: async ({ commentId }) => {
+      // Cancel any outgoing refetches
+      await utils.comments.getReplies.cancel({ commentId: comment.id });
+
+      // Snapshot the previous value
+      const previousReplies = utils.comments.getReplies.getData({
+        commentId: comment.id,
+      });
+
+      console.debug("previousReplies: ", previousReplies);
+
+      // Optimistically remove the comment
+      utils.comments.getReplies.setData(
+        { commentId: comment.id },
+        (oldReplies) => oldReplies?.filter((r) => r.id !== commentId) || [],
+      );
+
+      // Return a context object with the snapshotted value
+      return { previousReplies };
+    },
     onSuccess: async () => {
       toast({
         title: "Success",
         description: "Comment deleted successfully",
       });
-      // Optimistic Update and utils.comments ... and according results must be invalidated
-      // await utils.comments...  invalidate(); ???
-      // await utils.comments... prefetch(); ???
+
+      // Invalidate queries to ensure fresh data
+      await utils.comments.getReplies.invalidate({ commentId: comment.id });
+      await utils.comments.getComments.invalidate();
+      await utils.comments.getCommentCount.invalidate();
     },
-    onMutate: () => {}, // ???
-    onSettled: () => {}, // ???
-    onError: (error) => {
+    onError: (error, _, context) => {
+      // Rollback the optimistic update if deletion fails
+      if (context?.previousReplies) {
+        utils.comments.getReplies.setData(
+          { commentId: comment.id },
+          context.previousReplies,
+        );
+      }
+
       toast({
         title: "Error",
         description: error.message || "Failed to delete comment",
@@ -81,6 +110,14 @@ export const Comment: React.FC<CommentProps> = ({
       });
     },
   });
+
+  // Check if the current user is the comment author
+  const isAuthor = session?.user?.id === comment.author.id;
+
+  // Handle comment deletion
+  const handleDeleteComment = () => {
+    deleteMutation.mutate({ commentId: comment.id });
+  };
 
   return (
     !commentsAreLoading && (
@@ -90,7 +127,7 @@ export const Comment: React.FC<CommentProps> = ({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
         >
-          <div className="flex gap-3 p-3">
+          <div className="relative flex gap-3 p-3">
             <div className="flex justify-center">
               <Avatar className="m-1 h-8 w-8">
                 <AvatarImage src={comment.author.image || undefined} />
@@ -107,18 +144,19 @@ export const Comment: React.FC<CommentProps> = ({
                 <span className="text-xs text-muted-foreground">
                   {new Date(comment.createdAt).toLocaleString()}
                 </span>
+                {isAuthor && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="ml-auto h-6 w-6"
+                    onClick={handleDeleteComment}
+                    disabled={deleteMutation.isPending}
+                  >
+                    <Trash2 size={14} />
+                  </Button>
+                )}
               </div>
               <p className="text-sm">{comment.commentText}</p>
-              {/* {session && onReply && (
-              <Button
-                variant="ghost"
-                size="sm"
-                className="mt-1 h-6"
-                onClick={() => onReply(comment.id)}
-              >
-                <Reply size={14} className="mr-1" /> Reply
-              </Button>
-            )} */}
             </div>
           </div>
           <SocialCardFooter
@@ -136,59 +174,55 @@ export const Comment: React.FC<CommentProps> = ({
             toggleComments={() => onReply?.(comment.id)}
           />
 
-          {
-            /* Reply Input field, avatar and buttons */
-            <AnimatePresence>
-              {isReplying && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <div className="flex items-center gap-3 border-b p-3">
-                    <div className="flex justify-center">
-                      <Avatar className="m-1 h-8 w-8">
-                        <AvatarImage
-                          src={
-                            (session?.user && session.user.image) || undefined
-                          }
-                        />
-                        <AvatarFallback>
-                          {(session?.user && session.user.name?.[0]) || "?"}
-                        </AvatarFallback>
-                      </Avatar>
-                    </div>
-
-                    <div className="flex flex-1 gap-2">
-                      <Input
-                        placeholder={t("reply-to-comment-placeholder")}
-                        value={replyComment}
-                        onChange={(e) => setReplyComment(e.target.value)}
-                        className="h-8"
+          {/* Reply Input field, avatar and buttons */}
+          <AnimatePresence>
+            {isReplying && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <div className="flex items-center gap-3 border-b p-3">
+                  <div className="flex justify-center">
+                    <Avatar className="m-1 h-8 w-8">
+                      <AvatarImage
+                        src={(session?.user && session.user.image) || undefined}
                       />
-                      <Button
-                        className="shrink-0"
-                        size="icon"
-                        disabled={!replyComment.trim()}
-                        onClick={handleReplySubmit}
-                      >
-                        <Reply size={18} />
-                      </Button>
-                      <Button
-                        className="shrink-0"
-                        variant="outline"
-                        size="icon"
-                        onClick={onCancelReply}
-                      >
-                        <X size={18} />
-                      </Button>
-                    </div>
+                      <AvatarFallback>
+                        {(session?.user && session.user.name?.[0]) || "?"}
+                      </AvatarFallback>
+                    </Avatar>
                   </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          }
+
+                  <div className="flex flex-1 gap-2">
+                    <Input
+                      placeholder={t("reply-to-comment-placeholder")}
+                      value={replyComment}
+                      onChange={(e) => setReplyComment(e.target.value)}
+                      className="h-8"
+                    />
+                    <Button
+                      className="shrink-0"
+                      size="icon"
+                      disabled={!replyComment.trim()}
+                      onClick={handleReplySubmit}
+                    >
+                      <Reply size={18} />
+                    </Button>
+                    <Button
+                      className="shrink-0"
+                      variant="outline"
+                      size="icon"
+                      onClick={onCancelReply}
+                    >
+                      <X size={18} />
+                    </Button>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {replies &&
             replies.map((childComment) => (
