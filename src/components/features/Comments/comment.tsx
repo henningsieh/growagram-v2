@@ -8,6 +8,7 @@ import { SocialCardFooter } from "~/components/atom/social-card-footer";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
+import { useComments } from "~/hooks/use-comments";
 import { useLikeStatus } from "~/hooks/use-likes";
 import { api } from "~/lib/trpc/react";
 import { GetCommentType } from "~/server/api/root";
@@ -19,6 +20,8 @@ interface CommentProps {
   isSocial: boolean;
   isReplying?: boolean;
   onCancelReply?: () => void;
+  replyingToCommentId?: string | null;
+  onUpdateReplyingComment?: (commentId: string) => void;
 }
 
 export const Comment: React.FC<CommentProps> = ({
@@ -27,6 +30,8 @@ export const Comment: React.FC<CommentProps> = ({
   isSocial,
   isReplying = false,
   onCancelReply,
+  replyingToCommentId,
+  onUpdateReplyingComment,
 }) => {
   const { data: session } = useSession();
   const t = useTranslations("Comments");
@@ -40,23 +45,14 @@ export const Comment: React.FC<CommentProps> = ({
   const { data: replies, isLoading: commentsAreLoading } =
     api.comments.getReplies.useQuery({ commentId: comment.id });
 
-  const [replyComment, setReplyComment] = useState("");
-  const postCommentMutation = api.comments.postComment.useMutation({
-    onSuccess: () => {
-      setReplyComment("");
-      onCancelReply?.();
-    },
-  });
+  const {
+    newComment: replyComment,
+    setNewComment: setReplyComment,
+    handleSubmitComment,
+  } = useComments(comment.entityId, comment.entityType);
 
-  const handleSubmitReply = () => {
-    if (!replyComment.trim()) return;
-
-    postCommentMutation.mutate({
-      entityId: comment.entityId,
-      entityType: comment.entityType,
-      commentText: replyComment,
-      parentCommentId: comment.id,
-    });
+  const handleReplySubmit = () => {
+    handleSubmitComment(comment.id);
   };
 
   return (
@@ -137,7 +133,7 @@ export const Comment: React.FC<CommentProps> = ({
                 <Button
                   size="icon"
                   disabled={!replyComment.trim()}
-                  onClick={handleSubmitReply}
+                  onClick={handleReplySubmit}
                 >
                   <Send size={18} />
                 </Button>
@@ -158,6 +154,15 @@ export const Comment: React.FC<CommentProps> = ({
                   author: comment.author,
                 }}
                 isSocial={isSocial}
+                isReplying={replyingToCommentId === childComment.id}
+                onReply={(commentId) => {
+                  onUpdateReplyingComment?.(commentId);
+                }}
+                onCancelReply={() => {
+                  onUpdateReplyingComment?.("");
+                }}
+                replyingToCommentId={replyingToCommentId}
+                onUpdateReplyingComment={onUpdateReplyingComment}
               />
             </div>
           ))}

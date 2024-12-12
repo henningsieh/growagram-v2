@@ -19,7 +19,7 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 import { Separator } from "~/components/ui/separator";
-import { useCommentStatus } from "~/hooks/use-comments";
+import { useComments } from "~/hooks/use-comments";
 import { useLikeStatus } from "~/hooks/use-likes";
 import { Link } from "~/lib/i18n/routing";
 import { DateFormatOptions, formatDate } from "~/lib/utils";
@@ -46,8 +46,9 @@ export function GrowCard({ grow, isSocial }: GrowCardProps) {
     commentCount,
     isCommentsOpen,
     toggleComments,
-    isLoading: isCommentLoadingStatus,
-  } = useCommentStatus(grow.id, CommentableEntityType.Grow);
+    commentsLoading,
+    commentCountLoading,
+  } = useComments(grow.id, CommentableEntityType.Grow);
 
   const locale = useLocale();
   const t = useTranslations("Grows");
