@@ -14,6 +14,7 @@ export const useComments = (
 ) => {
   const { data: session } = useSession();
   const { toast } = useToast();
+  const utils = api.useUtils();
 
   const [newComment, setNewComment] = useState<string>("");
   const [commentCount, setCommentCount] = useState<number>(0);
@@ -59,14 +60,33 @@ export const useComments = (
   };
 
   const postCommentMutation = api.comments.postComment.useMutation({
-    onSuccess: () => {
-      setNewComment("");
-      setReplyingToComment(null);
-      void commentsQuery.refetch();
+    onSuccess: async (_, newComment) => {
+      // Refetch top-level comments for entity
+      await commentsQuery.refetch();
+
       // Update comment count
       if (commentCountQuery.data) {
         setCommentCount(commentCountQuery.data.count + 1);
       }
+
+      // Refetch replies if it's a reply to a specific comment
+      if (newComment.parentCommentId) {
+        await utils.comments.getReplies.refetch({
+          commentId: newComment.parentCommentId,
+        });
+      }
+
+      // Reset state
+      setNewComment("");
+      setReplyingToComment(null);
+    },
+    onError: (error) => {
+      console.error("Failed to post comment:", error);
+      toast({
+        title: "Error",
+        description: "Failed to post comment",
+        variant: "destructive",
+      });
     },
   });
 
