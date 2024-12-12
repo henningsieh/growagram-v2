@@ -14,11 +14,14 @@ import {
 import { cn } from "~/lib/utils";
 import { LikeableEntityType } from "~/types/like";
 
+import SpinningLoader from "../Layouts/loader";
+
 interface CardFooterProps {
   entityId: string;
   entityType: LikeableEntityType;
   initialLiked?: boolean;
   isLikeStatusLoading: boolean;
+  commentCountLoading: boolean;
   className?: string;
   stats: {
     comments: number;
@@ -33,6 +36,7 @@ export const SocialCardFooter: React.FC<CardFooterProps> = ({
   entityType,
   initialLiked = false,
   isLikeStatusLoading = true,
+  commentCountLoading = true,
   className = "",
   stats,
   toggleComments,
@@ -43,10 +47,12 @@ export const SocialCardFooter: React.FC<CardFooterProps> = ({
 
   const renderInteractiveButton = (
     Icon: React.ElementType,
-    count: number,
     tooltipMessage: string,
+    isLoading: boolean,
+    count?: number,
     onClick?: () => void,
   ) => {
+    console.debug(isLoading);
     const buttonContent = (
       <Button
         className="flex w-12 items-center justify-center gap-1"
@@ -54,8 +60,12 @@ export const SocialCardFooter: React.FC<CardFooterProps> = ({
         size="sm"
         onClick={onClick}
       >
-        <Icon className="h-4 w-4" />
-        <span>{count}</span>
+        {!isLoading ? (
+          <Icon className="h-4 w-4" />
+        ) : (
+          <SpinningLoader className="h-6 w-6 text-secondary" />
+        )}
+        {!isLoading && count && <span>{count}</span>}
       </Button>
     );
 
@@ -76,6 +86,7 @@ export const SocialCardFooter: React.FC<CardFooterProps> = ({
               onClick={() => {
                 // Replace with your actual login redirect method
                 // For example: signIn() from next-auth
+                // signIn();
               }}
             >
               {t("LoginPage.submit")}
@@ -91,15 +102,16 @@ export const SocialCardFooter: React.FC<CardFooterProps> = ({
       <div className={cn("flex items-center justify-between gap-2", className)}>
         {renderInteractiveButton(
           MessageCircle,
-          stats.comments,
           "Sign in to view and add comments",
+          commentCountLoading,
+          stats.comments,
           toggleComments,
         )}
-
         {renderInteractiveButton(
           ChartColumn,
-          stats.views,
           "Login to see detailed view statistics",
+          false,
+          stats.views,
         )}
 
         <LikeButton
@@ -113,8 +125,9 @@ export const SocialCardFooter: React.FC<CardFooterProps> = ({
 
         {renderInteractiveButton(
           Share,
-          0,
           "Please log in to share this content",
+          false,
+          undefined,
         )}
       </div>
     </div>

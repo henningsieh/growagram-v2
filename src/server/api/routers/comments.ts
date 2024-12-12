@@ -1,11 +1,13 @@
 // src/server/api/routers/comments.ts:
 import { TRPCError } from "@trpc/server";
-import { and, asc, eq, isNull, sql } from "drizzle-orm";
+import { and, asc, count, eq, isNull } from "drizzle-orm";
 import { z } from "zod";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
 import { comments, grows, images, plants } from "~/lib/db/schema";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { CommentableEntityType } from "~/types/comment";
+
+import { publicProcedure } from "../trpc";
 
 export const commentRouter = createTRPCRouter({
   // Post a new comment (create a new comment)
@@ -101,11 +103,10 @@ export const commentRouter = createTRPCRouter({
     }),
 
   // Delete a comment
-  deleteComment: protectedProcedure
+  deleteById: protectedProcedure
     .input(z.object({ commentId: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const { commentId } = input;
-      const userId = ctx.session.user.id;
 
       // Find the comment
       const comment = await ctx.db.query.comments.findFirst({
@@ -119,7 +120,7 @@ export const commentRouter = createTRPCRouter({
         });
       }
 
-      if (comment.userId !== userId) {
+      if (comment.userId !== ctx.session.user.id) {
         throw new TRPCError({
           code: "FORBIDDEN",
           message: "You can only delete your own comments",
@@ -133,7 +134,7 @@ export const commentRouter = createTRPCRouter({
     }),
 
   // Get the comment count for a specific entity
-  getCommentCount: protectedProcedure
+  getCommentCount: publicProcedure
     .input(
       z.object({
         entityId: z.string(),
@@ -144,7 +145,7 @@ export const commentRouter = createTRPCRouter({
       const { entityId, entityType } = input;
 
       const commentCount = await ctx.db
-        .select({ count: sql<number>`count(*)` })
+        .select({ count: count() })
         .from(comments)
         .where(
           and(
@@ -156,7 +157,7 @@ export const commentRouter = createTRPCRouter({
       return { count: Number(commentCount[0]?.count ?? 0) };
     }),
 
-  // Get all comments for a specific entity (including nested replies)
+  // Get all comments for a specific entity (WITHOUT nested replies)
   getComments: protectedProcedure
     .input(
       z.object({
@@ -178,7 +179,6 @@ export const commentRouter = createTRPCRouter({
         orderBy: asc(comments.createdAt),
         with: {
           author: true,
-          // childComments: true, // Load replies (nested answers are here)
         },
       });
 

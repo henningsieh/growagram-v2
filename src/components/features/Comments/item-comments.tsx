@@ -1,6 +1,6 @@
-import { AnimatePresence } from "framer-motion";
+// src/components/features/Comments/item-comments.tsx:
 import { Send, X } from "lucide-react";
-import { User } from "next-auth";
+import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
@@ -23,10 +23,9 @@ interface ItemCommentsProps {
   newComment?: string;
   setNewComment?: (comment: string) => void;
   handleSubmitComment?: (parentCommentId?: string) => void;
-  handleReply?: (commentId: string) => void;
+  handleReply?: (commentId: string | null) => void;
   handleCancelReply?: () => void;
   replyingToComment?: string | null;
-  user?: User | null;
 }
 
 export const ItemComments: React.FC<ItemCommentsProps> = ({
@@ -43,36 +42,30 @@ export const ItemComments: React.FC<ItemCommentsProps> = ({
   handleReply: propHandleReply,
   handleCancelReply: propHandleCancelReply,
   replyingToComment: propReplyingToComment,
-  user: propUser,
 }) => {
   const t = useTranslations("Comments");
 
-  // If props are not provided, fall back to useComments hook
-  const {
-    user: hookUser,
-    comments: hookComments,
-    commentsLoading: hookCommentsLoading,
-    replyingToComment: hookReplyingToComment,
-    handleReply: hookHandleReply,
-    handleCancelReply: hookHandleCancelReply,
-    newComment: hookNewComment,
-    setNewComment: hookSetNewComment,
-    handleSubmitComment: hookHandleSubmitComment,
-  } = propUser ? {} : useComments(entityId, entityType);
+  // Always call useComments, but only use its values if props are not provided
+  const commentHook = useComments(entityId, entityType);
 
   // Use prop values if provided, otherwise use hook values
-  const user = propUser || hookUser;
-  const comments = propComments || hookComments;
-  const commentsLoadingState = commentsLoading || hookCommentsLoading;
-  const newComment = propNewComment || hookNewComment;
-  const setNewComment = propSetNewComment || hookSetNewComment;
+  const comments = propComments || commentHook.comments;
+  const commentsLoadingState = commentsLoading || commentHook.commentsLoading;
+  const newComment = propNewComment || commentHook.newComment;
+  const setNewComment = propSetNewComment || commentHook.setNewComment;
   const handleSubmitComment =
-    propHandleSubmitComment || hookHandleSubmitComment;
-  const handleReply = propHandleReply || hookHandleReply;
-  const handleCancelReply = propHandleCancelReply || hookHandleCancelReply;
-  const replyingToComment = propReplyingToComment || hookReplyingToComment;
+    propHandleSubmitComment || commentHook.handleSubmitComment;
+  const handleReply = propHandleReply || commentHook.handleReply;
+  const handleCancelReply =
+    propHandleCancelReply || commentHook.handleCancelReply;
+  const replyingToComment =
+    propReplyingToComment || commentHook.replyingToComment;
 
-  if (!user) return null;
+  const { data: session, status } = useSession();
+  if (status === "loading") {
+    // Show a loading state while authentication status is being resolved
+    return <>Loading...</>;
+  }
 
   return (
     <div className="relative mt-2 border-t">
@@ -86,12 +79,12 @@ export const ItemComments: React.FC<ItemCommentsProps> = ({
           <X size={20} />
         </Button>
       )}
-      {user && (
+      {session && (
         <div className="flex items-center gap-3 p-3">
           <div className="flex justify-center">
             <Avatar className="m-1 h-8 w-8">
-              <AvatarImage src={user.image || undefined} />
-              <AvatarFallback>{user.name?.[0] || "?"}</AvatarFallback>
+              <AvatarImage src={session.user?.image || undefined} />
+              <AvatarFallback>{session.user?.name?.[0] || "?"}</AvatarFallback>
             </Avatar>
           </div>
           <div className="flex-1">
@@ -112,20 +105,18 @@ export const ItemComments: React.FC<ItemCommentsProps> = ({
         </div>
       )}
       <div className="max-h-fit overflow-y-auto">
-        <AnimatePresence>
-          {comments?.map((comment) => (
-            <Comment
-              key={comment.id}
-              comment={comment}
-              isSocial={isSocial}
-              isReplying={replyingToComment === comment.id}
-              onReply={handleReply}
-              onCancelReply={handleCancelReply}
-              replyingToCommentId={replyingToComment}
-              onUpdateReplyingComment={handleReply}
-            />
-          ))}
-        </AnimatePresence>
+        {comments?.map((comment) => (
+          <Comment
+            key={comment.id}
+            comment={comment}
+            isSocial={isSocial}
+            isReplying={replyingToComment === comment.id}
+            onReply={handleReply}
+            onCancelReply={handleCancelReply}
+            replyingToCommentId={replyingToComment}
+            onUpdateReplyingComment={handleReply}
+          />
+        ))}
       </div>
       {comments?.length === 0 && (
         <div className="p-4 text-center text-muted-foreground">

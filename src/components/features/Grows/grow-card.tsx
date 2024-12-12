@@ -1,5 +1,6 @@
 "use client";
 
+// src/components/features/Grows/grow-card.tsx:
 import { AnimatePresence, motion } from "framer-motion";
 import { Edit, Tag, Trash2, User2 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
@@ -44,19 +45,18 @@ export function GrowCard({ grow, isSocial }: GrowCardProps) {
   } = useLikeStatus(grow.id, LikeableEntityType.Grow);
 
   const {
+    comments,
+    commentsLoading,
     commentCount,
+    commentCountLoading, //TODO: still not used
     isCommentsOpen,
     toggleComments,
-    commentsLoading,
-    commentCountLoading,
-    comments,
-    newComment,
     setNewComment,
     handleSubmitComment,
     handleReply,
     handleCancelReply,
+    newComment,
     replyingToComment,
-    user,
   } = useComments(grow.id, CommentableEntityType.Grow);
 
   const locale = useLocale();
@@ -65,7 +65,7 @@ export function GrowCard({ grow, isSocial }: GrowCardProps) {
   return (
     <Card className="my-2 flex flex-col overflow-hidden">
       {isSocial && (
-        <CardHeader className="space-y-0 p-3">
+        <CardHeader className="space-y-0 p-2">
           <div className="flex items-start justify-between">
             <div className="flex gap-3">
               <Avatar className="h-10 w-10">
@@ -86,7 +86,7 @@ export function GrowCard({ grow, isSocial }: GrowCardProps) {
       )}
 
       <CardContent
-        className={`grid flex-grow grid-rows-[auto,1fr,auto] gap-4 ${isSocial ? "ml-16 p-2 pl-0" : "p-4"}`}
+        className={`grid flex-grow grid-rows-[auto,1fr,auto] gap-4 ${isSocial ? "ml-14 p-2 pl-0" : "p-4"}`}
       >
         <div
           className="relative aspect-video overflow-hidden"
@@ -140,7 +140,7 @@ export function GrowCard({ grow, isSocial }: GrowCardProps) {
             {grow.plants.map((plant) => (
               <motion.div
                 key={plant.id}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: -50 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.3 }}
@@ -159,11 +159,12 @@ export function GrowCard({ grow, isSocial }: GrowCardProps) {
 
       {isSocial ? (
         <SocialCardFooter
-          className={`pb-2 pr-2 ${isSocial && "ml-16"}`}
+          className={`pb-2 pr-2 ${isSocial && "ml-14"}`}
           entityId={grow.id}
           entityType={LikeableEntityType.Grow}
           initialLiked={isLiked}
           isLikeStatusLoading={isLikeLoading}
+          commentCountLoading={commentCountLoading}
           stats={{
             comments: commentCount,
             views: 0,
@@ -200,7 +201,6 @@ export function GrowCard({ grow, isSocial }: GrowCardProps) {
           handleReply={handleReply}
           handleCancelReply={handleCancelReply}
           replyingToComment={replyingToComment}
-          user={user}
         />
       )}
     </Card>

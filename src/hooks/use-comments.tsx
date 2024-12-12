@@ -1,23 +1,26 @@
 // src/hooks/use-comments.tsx:
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
+import { usePathname } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
-import { GetCommentType } from "~/server/api/root";
+import { GetCommentType, GetCommentsType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
+
+import { useToast } from "./use-toast";
 
 export const useComments = (
   entityId: string,
   entityType: CommentableEntityType,
 ) => {
   const { data: session } = useSession();
-  const user = session?.user;
+  const { toast } = useToast();
 
-  const [commentCount, setCommentCount] = useState(0);
-  const [isCommentsOpen, setIsCommentsOpen] = useState(false);
+  const [newComment, setNewComment] = useState<string>("");
+  const [commentCount, setCommentCount] = useState<number>(0);
+  const [isCommentsOpen, setIsCommentsOpen] = useState<boolean>(false);
   const [replyingToComment, setReplyingToComment] = useState<string | null>(
     null,
   );
-  const [newComment, setNewComment] = useState("");
 
   const commentCountQuery = api.comments.getCommentCount.useQuery({
     entityId,
@@ -40,10 +43,18 @@ export const useComments = (
     }
   }, [commentCountQuery.data]);
 
+  const pathname = usePathname();
+
   const toggleComments = () => {
     // Only allow opening comments if user is logged in
-    if (user) {
+    if (session?.user) {
       setIsCommentsOpen(!isCommentsOpen);
+    } else {
+      toast({
+        title: "Login Required",
+        description: `Please log in to like content. URL:${pathname}`,
+        variant: "secondary",
+      });
     }
   };
 
@@ -70,7 +81,7 @@ export const useComments = (
     });
   };
 
-  const handleReply = (commentId: string) => {
+  const handleReply = (commentId: string | null) => {
     setReplyingToComment(commentId);
   };
 
@@ -80,7 +91,7 @@ export const useComments = (
 
   return {
     // Comment state and queries
-    comments: commentsQuery.data as GetCommentType[] | undefined,
+    comments: commentsQuery.data as GetCommentsType | undefined,
     commentsLoading: commentsQuery.isLoading,
 
     // Comment count state
@@ -100,8 +111,5 @@ export const useComments = (
     newComment,
     setNewComment,
     handleSubmitComment,
-
-    // User session
-    user,
   };
 };

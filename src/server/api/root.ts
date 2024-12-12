@@ -34,11 +34,11 @@ export type GetCommentType = RouterOutput["comments"]["getComments"][number]
 export type GetRepliesType = RouterOutput["comments"]["getReplies"]
 export type GetReplyType = RouterOutput["comments"]["getReplies"][number]
 export type GetCommentCountType = RouterOutput["comments"]["getCommentCount"]
-export type DeleteCommentOutput = RouterOutput["comments"]["deleteComment"]
+export type DeleteCommentOutput = RouterOutput["comments"]["deleteById"]
 // INPUTS:
 export type GetCommentsInput = RouterInput["comments"]["getComments"]
 export type GetCommentCountInput = RouterInput["comments"]["getCommentCount"]
-export type DeleteCommentInput = RouterInput["comments"]["deleteComment"]
+export type DeleteCommentInput = RouterInput["comments"]["deleteById"]
 
 
 

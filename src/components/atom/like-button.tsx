@@ -96,7 +96,7 @@ export const LikeButton: React.FC<LikeProps> = ({
     toggleLikeMutation.mutate({
       entityId,
       entityType,
-    });
+    } satisfies ToggleLikeInput);
   };
 
   return (
