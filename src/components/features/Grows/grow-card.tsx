@@ -63,7 +63,7 @@ export function GrowCard({ grow, isSocial = true }: GrowCardProps) {
   const t = useTranslations("Grows");
 
   return (
-    <Card className="my-2 flex h-full flex-col overflow-hidden">
+    <Card className="my-2 flex flex-col overflow-hidden">
       {isSocial && (
         <CardHeader className="space-y-0 p-2">
           <div className="flex items-start justify-between">

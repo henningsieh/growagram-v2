@@ -54,7 +54,7 @@ export const SocialCardFooter: React.FC<CardFooterProps> = ({
   ) => {
     const buttonContent = (
       <Button
-        className="flex w-12 items-center justify-center gap-1"
+        className="flex h-10 w-10 items-center justify-center gap-1"
         variant="ghost"
         size="sm"
         onClick={onClick}

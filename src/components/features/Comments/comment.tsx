@@ -146,7 +146,7 @@ export const Comment: React.FC<CommentProps> = ({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
         >
-          <div className="relative flex gap-3 p-3">
+          <div className="relative flex gap-2 p-2">
             <div className="flex justify-center">
               <Avatar className="m-1 h-8 w-8">
                 <AvatarImage src={comment.author.image || undefined} />
@@ -156,7 +156,7 @@ export const Comment: React.FC<CommentProps> = ({
               </Avatar>
             </div>
             <div className="flex-1">
-              <div className="flex items-center gap-2 pr-2">
+              <div className="flex items-center gap-2">
                 <span className="text-sm font-semibold">
                   {comment.author.name}
                 </span>
@@ -168,11 +168,11 @@ export const Comment: React.FC<CommentProps> = ({
                   <Button
                     variant="destructive"
                     size="icon"
-                    className="ml-auto h-6 w-6"
+                    className="ml-auto h-8 w-8 bg-muted p-0"
                     onClick={handleDeleteComment}
                     disabled={deleteMutation.isPending}
                   >
-                    <Trash2 size={14} />
+                    <Trash2 size={18} />
                   </Button>
                   // </div>
                 )}
@@ -181,7 +181,7 @@ export const Comment: React.FC<CommentProps> = ({
             </div>
           </div>
           <SocialCardFooter
-            className={`pb-2 pr-2 ${isSocial && "ml-16"} border-b`}
+            className={`pb-2 pr-2 ${isSocial && "ml-14"}`}
             entityId={comment.id}
             entityType={LikeableEntityType.Comment}
             initialLiked={isLiked}
@@ -204,9 +204,9 @@ export const Comment: React.FC<CommentProps> = ({
                 exit={{ opacity: 0, height: 0 }}
                 transition={{ duration: 0.3 }}
               >
-                <div className="flex items-center gap-3 border-b p-3">
+                <div className="m-2 flex items-center gap-3 rounded-sm bg-muted p-1">
                   <div className="flex justify-center">
-                    <Avatar className="m-1 h-8 w-8">
+                    <Avatar className="m-0 h-8 w-8">
                       <AvatarImage
                         src={(session?.user && session.user.image) || undefined}
                       />
@@ -221,7 +221,7 @@ export const Comment: React.FC<CommentProps> = ({
                       placeholder={t("reply-to-comment-placeholder")}
                       value={replyComment}
                       onChange={(e) => setReplyComment(e.target.value)}
-                      className="h-8"
+                      className="h-8 w-full"
                     />
                     <Button
                       className="shrink-0"

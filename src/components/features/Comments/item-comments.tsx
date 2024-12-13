@@ -68,7 +68,7 @@ export const ItemComments: React.FC<ItemCommentsProps> = ({
   }
 
   return (
-    <div className="relative mt-2 border-t">
+    <div className="relative mt-2">
       {onClose && (
         <Button
           variant="ghost"
@@ -80,9 +80,9 @@ export const ItemComments: React.FC<ItemCommentsProps> = ({
         </Button>
       )}
       {session && (
-        <div className="flex items-center gap-3 p-3">
+        <div className="m-2 flex items-center gap-3 rounded-sm bg-muted p-1">
           <div className="flex justify-center">
-            <Avatar className="m-1 h-8 w-8">
+            <Avatar className="m-0 h-8 w-8">
               <AvatarImage src={session.user?.image || undefined} />
               <AvatarFallback>{session.user?.name?.[0] || "?"}</AvatarFallback>
             </Avatar>
