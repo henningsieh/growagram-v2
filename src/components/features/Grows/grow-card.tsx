@@ -2,20 +2,13 @@
 
 // src/components/features/Grows/grow-card.tsx:
 import { AnimatePresence, motion } from "framer-motion";
-import {
-  ChartColumn,
-  Edit,
-  Heart,
-  MessageCircle,
-  Share,
-  Tag,
-  Trash2,
-  User2,
-} from "lucide-react";
+import { Edit, Loader2, TentTree, Trash2, User2 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useState } from "react";
 import headerImagePlaceholder from "~/assets/landscape-placeholdersvg.svg";
+import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
+import { SocialCardFooter } from "~/components/atom/social-card-footer";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
 import {
@@ -27,174 +20,240 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 import { Separator } from "~/components/ui/separator";
-import { Link } from "~/lib/i18n/routing";
+import { useComments } from "~/hooks/use-comments";
+import { useLikeStatus } from "~/hooks/use-likes";
+import { useToast } from "~/hooks/use-toast";
+import { Link, useRouter } from "~/lib/i18n/routing";
+import { api } from "~/lib/trpc/react";
 import { DateFormatOptions, formatDate } from "~/lib/utils";
 import { GetOwnGrowType } from "~/server/api/root";
+import { CommentableEntityType } from "~/types/comment";
+import { LikeableEntityType } from "~/types/like";
 
+import { ItemComments } from "../Comments/item-comments";
 import { GrowPlantCard } from "./grow-plant-card";
 
 interface GrowCardProps {
   grow: GetOwnGrowType;
-  stats?: {
-    comments: number;
-    views: number;
-    likes: number;
-  };
+  isSocial?: boolean;
 }
 
-export function GrowCard({
-  grow,
-  stats = {
-    comments: 0,
-    views: 0,
-    likes: 0,
-  },
-}: GrowCardProps) {
-  const [isImageHovered, setIsImageHovered] = useState(false);
-  const [isLiked, setIsLiked] = useState(false);
-
+export function GrowCard({ grow, isSocial = true }: GrowCardProps) {
   const locale = useLocale();
+  const router = useRouter();
+  const utils = api.useUtils();
+  const { toast } = useToast();
   const t = useTranslations("Grows");
+  const [isImageHovered, setIsImageHovered] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+
+  const {
+    isLiked,
+    likeCount,
+    isLoading: isLikeLoading,
+  } = useLikeStatus(grow.id, LikeableEntityType.Grow);
+
+  const { commentCount, commentCountLoading, isCommentsOpen, toggleComments } =
+    useComments(grow.id, CommentableEntityType.Grow);
+
+  // Initialize delete mutation
+  const deleteMutation = api.grows.deleteById.useMutation({
+    onSuccess: async () => {
+      toast({
+        title: "Success",
+        description: "Grow deleted successfully",
+      });
+      // Invalidate and prefetch the plants query to refresh the list
+      await utils.grows.getOwnGrows.invalidate();
+      // await utils.grows.getOwnGrows.prefetch();
+      // router.refresh();
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to delete grow",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleDelete = () => {
+    setIsDeleteDialogOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    await deleteMutation.mutateAsync({ id: grow.id });
+    setIsDeleteDialogOpen(false);
+  };
 
   return (
-    <Card className="flex flex-col overflow-hidden">
-      <CardHeader className="space-y-0 p-4">
-        <div className="flex items-start justify-between">
-          <div className="flex gap-3">
-            <Avatar className="h-10 w-10">
-              <AvatarImage src={grow.owner.image as string | undefined} />
-              <AvatarFallback>
-                <User2 className="h-5 w-5" />
-              </AvatarFallback>
-            </Avatar>
-            <div className="flex flex-col">
-              <p className="text-sm font-semibold">{grow.owner.name}</p>
-              <p className="text-sm text-muted-foreground">
-                @{grow.owner.name}
-              </p>
-            </div>
-          </div>
-          {/* You might want to add a type field to your grow schema or remove this */}
-          {/* <Badge
-            variant={grow.type === "indoor" ? "default" : "secondary"}
-            className="uppercase"
-          >
-            {grow.type}
-          </Badge> */}
-        </div>
-      </CardHeader>
-
-      <div
-        className="relative aspect-video overflow-hidden"
-        onMouseEnter={() => setIsImageHovered(true)}
-        onMouseLeave={() => setIsImageHovered(false)}
-      >
-        <Image
-          src={headerImagePlaceholder}
-          alt={grow.name}
-          fill
-          className="object-cover transition-transform duration-300"
-          sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
-          style={{
-            transform: isImageHovered ? "scale(1.05)" : "scale(1)",
-          }}
-        />
-      </div>
-
-      <CardContent className="grid flex-grow grid-rows-[auto,1fr,auto] gap-4 p-4">
-        <div>
-          <CardHeader className="p-0">
-            <CardTitle level="h3">
-              <div className="flex w-full items-center gap-2">
-                <Tag size={20} />
-                <h3 className="text-xl font-bold">{grow.name}</h3>
+    <>
+      <DeleteConfirmationDialog
+        isOpen={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        onConfirmDelete={confirmDelete}
+        isDeleting={deleteMutation.isPending}
+        title="Are you sure you want to remove this grow?"
+        description="No plant will be deleted by this action!"
+        alertCautionText="This action also deletes postings and other events if they only refer to this grow!"
+      />
+      <Card className="my-2 flex flex-col overflow-hidden">
+        {isSocial && (
+          <CardHeader className="space-y-0 p-2">
+            <div className="flex items-start justify-between">
+              <div className="flex gap-3">
+                <Avatar className="h-10 w-10">
+                  <AvatarImage src={grow.owner.image as string | undefined} />
+                  <AvatarFallback>
+                    <User2 className="h-5 w-5" />
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex flex-col">
+                  <p className="text-sm font-semibold">{grow.owner.name}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {`@${grow.owner.name}`}
+                  </p>
+                </div>
               </div>
-            </CardTitle>
-            <CardDescription>
-              <span className="block">
-                {t("grow-card-createdAt")}:{" "}
-                {formatDate(grow.createdAt, locale, {
-                  weekday: "short",
-                  month: "long",
-                } as DateFormatOptions)}
-              </span>
-              {grow.updatedAt && (
+            </div>
+          </CardHeader>
+        )}
+
+        <CardContent
+          className={`flex flex-1 flex-col gap-4 ${isSocial ? "ml-14 p-2 pl-0" : "p-4"}`}
+        >
+          <div
+            className="relative aspect-video overflow-hidden"
+            onMouseEnter={() => setIsImageHovered(true)}
+            onMouseLeave={() => setIsImageHovered(false)}
+          >
+            <Image
+              src={headerImagePlaceholder}
+              alt={grow.name}
+              fill
+              className="object-cover transition-transform duration-300"
+              sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
+              style={{
+                transform: isImageHovered ? "scale(1.05)" : "scale(1)",
+              }}
+            />
+          </div>
+          <div>
+            <CardHeader className="p-0">
+              <CardTitle
+                level="h2"
+                className="flex items-center justify-between"
+              >
+                <Button asChild variant="link" className="p-1">
+                  <Link
+                    href={`/public/grows/${grow.id}`}
+                    className="items-center gap-2"
+                  >
+                    <TentTree size={20} className="hover:underline" />
+                    {grow.name}
+                  </Link>
+                </Button>
+              </CardTitle>
+              <CardDescription>
                 <span className="block">
-                  {t("grow-card-updatedAt")}:{" "}
-                  {formatDate(grow.updatedAt, locale, {
+                  {
+                    t("grow-card-createdAt")
+                    // eslint-disable-next-line react/jsx-no-literals
+                  }
+                  :{" "}
+                  {formatDate(grow.createdAt, locale, {
                     weekday: "short",
                     month: "long",
                   } as DateFormatOptions)}
                 </span>
-              )}
-            </CardDescription>
-          </CardHeader>
-        </div>
+                {grow.updatedAt && (
+                  <div className="block">
+                    {
+                      t("grow-card-updatedAt")
+                      // eslint-disable-next-line react/jsx-no-literals
+                    }
+                    :{" "}
+                    {formatDate(grow.updatedAt, locale, {
+                      weekday: "short",
+                      month: "long",
+                    } as DateFormatOptions)}
+                  </div>
+                )}
+              </CardDescription>
+            </CardHeader>
+          </div>
 
-        <div className="space-y-4">
-          <AnimatePresence>
-            {grow.plants.map((plant) => (
-              <motion.div
-                key={plant.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3 }}
+          <div className="space-y-4">
+            <AnimatePresence>
+              {grow.plants.map((plant) => (
+                <motion.div
+                  key={plant.id}
+                  initial={{ opacity: 0, y: -50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <GrowPlantCard plant={plant} />
+                </motion.div>
+              ))}
+            </AnimatePresence>
+            {grow.plants.length === 0 && (
+              <div className="py-8 text-center text-muted-foreground">
+                {t("no-plants-found")}
+              </div>
+            )}
+          </div>
+        </CardContent>
+
+        {isSocial ? (
+          <SocialCardFooter
+            className={`pb-2 pr-2 ${isSocial && "ml-14"}`}
+            entityId={grow.id}
+            entityType={LikeableEntityType.Grow}
+            initialLiked={isLiked}
+            isLikeStatusLoading={isLikeLoading}
+            commentCountLoading={commentCountLoading}
+            stats={{
+              comments: commentCount,
+              views: 0,
+              likes: likeCount,
+            }}
+            toggleComments={toggleComments}
+          />
+        ) : (
+          <>
+            <Separator />
+            <CardFooter className="flex w-full justify-between gap-1 p-1">
+              <Button
+                variant={"destructive"}
+                size={"sm"}
+                className="w-20"
+                onClick={handleDelete}
+                disabled={deleteMutation.isPending}
               >
-                <GrowPlantCard plant={plant} />
-              </motion.div>
-            ))}
-          </AnimatePresence>
-          {grow.plants.length === 0 && (
-            <div className="py-8 text-center text-muted-foreground">
-              {t("no-plants-found")}
-            </div>
-          )}
-        </div>
-
-        <Separator />
-
-        <div className="flex items-center justify-between">
-          <Button variant="ghost" size="sm" className="flex items-center gap-1">
-            <MessageCircle className="h-4 w-4" />
-            <span>{stats.comments}</span>
-          </Button>
-          <Button variant="ghost" size="sm" className="flex items-center gap-1">
-            <ChartColumn className="h-4 w-4" />
-            <span>{stats.views}</span>
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="flex items-center gap-1"
-            onClick={() => setIsLiked(!isLiked)}
-          >
-            <Heart
-              className={`h-4 w-4 ${
-                isLiked ? "fill-destructive text-destructive" : ""
-              }`}
-            />
-            <span>{isLiked ? stats.likes + 1 : stats.likes}</span>
-          </Button>
-          <Button variant="ghost" size="sm" className="flex items-center gap-1">
-            <Share className="h-4 w-4" />
-          </Button>
-        </div>
-      </CardContent>
-
-      <Separator />
-
-      <CardFooter className="flex w-full justify-between gap-1 p-1">
-        <Button variant={"destructive"} size={"sm"} className="w-20">
-          <Trash2 size={20} />
-        </Button>
-        <Button asChild size={"sm"} className="w-full text-base">
-          <Link href={`/grows/${grow.id}/form`}>
-            <Edit size={20} />
-            Edit Grow
-          </Link>
-        </Button>
-      </CardFooter>
-    </Card>
+                {deleteMutation.isPending ? (
+                  <Loader2 size={20} className="animate-spin" />
+                ) : (
+                  <Trash2 size={20} />
+                )}
+              </Button>
+              <Button asChild size={"sm"} className="w-full text-base">
+                <Link href={`/grows/${grow.id}/form`}>
+                  <Edit size={20} />
+                  {t("form-page-title-edit")}
+                </Link>
+              </Button>
+            </CardFooter>
+          </>
+        )}
+        {isSocial && isCommentsOpen && (
+          <ItemComments
+            entityId={grow.id}
+            entityType={CommentableEntityType.Grow}
+            isSocial={isSocial}
+          />
+        )}
+      </Card>
+    </>
   );
 }

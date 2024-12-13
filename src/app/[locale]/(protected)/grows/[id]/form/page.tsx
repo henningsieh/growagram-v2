@@ -12,7 +12,7 @@ export default async function CreatePlantPage({
   const growId = (await params).id;
 
   const grow = (
-    growId !== "new" ? await api.grow.getById({ id: growId }) : undefined
+    growId !== "new" ? await api.grows.getById({ id: growId }) : undefined
   ) satisfies GetOwnGrowType | undefined;
 
   if (growId !== "new" && grow === undefined) notFound();

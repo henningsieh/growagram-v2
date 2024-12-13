@@ -1,4 +1,16 @@
 {
+  "CardFooter": {
+    "Login to see detailed view statistics": "Melde dich an, um detaillierte Statistiken zu sehen.",
+    "Please log in to like this content": "Melde dich an, um diesen Inhalt zu liken.",
+    "Please log in to share this content": "Melde dich an, um diesen Inhalt zu teilen.",
+    "Sign in to view and add comments": "Melden dich an, um Kommentare anzuzeigen und hinzuzufügen."
+  },
+  "Comments": {
+    "add-comment-placeholder": "Schreibe einen Kommentar",
+    "loading-comments": "Kommentare werden geladen...",
+    "no-comments-yet": "Bisher keine Kommentare.",
+    "reply-to-comment-placeholder": "Schreibe eine Antwort"
+  },
   "Dashboard": {
     "Grows": {
       "your-grows": "deine Grows"
@@ -67,6 +79,7 @@
   "LanguageToggle": {
     "toggle-language": "Sprache wechseln"
   },
+  "Login to see detailed view statistics": "",
   "LoginPage": {
     "description": "Geben Sie Ihre E-Mail-Adresse und Passwort ein oder wählen Sie unten einen Social Provider für den Login aus, um sich anzumelden.",
     "email": {
@@ -105,6 +118,7 @@
     "toggle-menu": "Menü umschalten"
   },
   "Plants": {
+    "breeder": "Züchter",
     "curing-start-date": "Startdatum der Aushärtephase",
     "edit-plant-button-label": "Pflanze bearbeiten",
     "flowering-start-date": "Startdatum der Blüte",
@@ -127,7 +141,10 @@
     "harvest-date": "Datum der Ernte",
     "linkUploadButtonLabel": "Neue anlegen",
     "planting-date": "Datum der Aussaat",
+    "strain": "Sorte",
     "subtitle": "Verwalte deine Pflanzen",
+    "thc": "THC",
+    "thc-content": "THC-Gehalt",
     "title": "Meine Pflanzen",
     "user-has-no-plants": "Du hast bisher keine Pflanzen hinzugefügt.",
     "vegetation-start-date": "Startdatum der Wachstumsphase"

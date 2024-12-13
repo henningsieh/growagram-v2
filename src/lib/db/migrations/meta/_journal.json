@@ -71,6 +71,13 @@
       "when": 1733226329515,
       "tag": "0009_remarkable_spiral",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1733826132920,
+      "tag": "0010_motionless_blob",
+      "breakpoints": true
     }
   ]
 }

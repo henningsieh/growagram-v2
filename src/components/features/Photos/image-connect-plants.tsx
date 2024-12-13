@@ -30,12 +30,12 @@ import {
 import { useToast } from "~/hooks/use-toast";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
-import { GetImageByIdType, GetOwnPlantsInput } from "~/server/api/root";
+import { GetOwnPlantsInput, GetPhotoByIdType } from "~/server/api/root";
 
 import { ImageDetailsCard } from "./image-details-card";
 
 interface ImageConnectPlantsProps {
-  image: GetImageByIdType;
+  image: GetPhotoByIdType;
 }
 
 export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
@@ -53,9 +53,9 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
    *
    * On success, invalidates the cache for the image to ensure updated data.
    */
-  const connectToPlantMutation = api.image.connectToPlant.useMutation({
+  const connectToPlantMutation = api.photos.connectToPlant.useMutation({
     onSuccess: async () => {
-      await utils.image.getById.invalidate({ id: image.id });
+      await utils.photos.getById.invalidate({ id: image.id });
     },
   });
 
@@ -64,18 +64,17 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
    *
    * On success, invalidates the cache for the image to ensure updated data.
    */
-  const disconnectFromPlantMutation = api.image.disconnectFromPlant.useMutation(
-    {
+  const disconnectFromPlantMutation =
+    api.photos.disconnectFromPlant.useMutation({
       onSuccess: async () => {
-        await utils.image.getById.invalidate({ id: image.id });
+        await utils.photos.getById.invalidate({ id: image.id });
       },
-    },
-  );
+    });
 
   // The prefetched data will be available in the cache
-  const initialData = utils.plant.getOwnPlants.getData();
+  const initialData = utils.plants.getOwnPlants.getData();
 
-  const { data: plantsData, isLoading } = api.plant.getOwnPlants.useQuery(
+  const { data: plantsData, isLoading } = api.plants.getOwnPlants.useQuery(
     { limit: 100 } satisfies GetOwnPlantsInput,
     {
       // Use the data that was prefetched on the server
@@ -164,7 +163,7 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
         title: "Success",
         description: "Plants updated successfully",
       });
-      await utils.image.getOwnImages.invalidate();
+      await utils.photos.getOwnPhotos.invalidate();
       router.push("/photos");
     } catch (error) {
       // Show error toast when any operation fails
@@ -185,7 +184,7 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
     disconnectFromPlantMutation,
     toast,
     router,
-    utils.image.getOwnImages,
+    utils.photos.getOwnPhotos,
   ]);
 
   const togglePlantSelection = useCallback((plantId: string) => {

@@ -3,7 +3,11 @@ import { TRPCError } from "@trpc/server";
 import { and, eq, sql } from "drizzle-orm";
 import { z } from "zod";
 import { grows, images, likes, plants } from "~/lib/db/schema";
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "~/server/api/trpc";
 import { LikeableEntityType } from "~/types/like";
 
 export const likeRouter = createTRPCRouter({
@@ -25,7 +29,7 @@ export const likeRouter = createTRPCRouter({
           where: eq(plants.id, entityId),
         });
         entityExists = !!plant;
-      } else if (entityType === LikeableEntityType.Image) {
+      } else if (entityType === LikeableEntityType.Photo) {
         const image = await ctx.db.query.images.findFirst({
           where: eq(images.id, entityId),
         });
@@ -35,6 +39,11 @@ export const likeRouter = createTRPCRouter({
           where: eq(grows.id, entityId),
         });
         entityExists = !!grow;
+      } else if (entityType === LikeableEntityType.Comment) {
+        const comment = await ctx.db.query.comments.findFirst({
+          where: eq(grows.id, entityId),
+        });
+        entityExists = !!comment;
       }
 
       if (!entityExists) {
@@ -76,7 +85,7 @@ export const likeRouter = createTRPCRouter({
       }
     }),
 
-  getLikeCount: protectedProcedure
+  getLikeCount: publicProcedure
     .input(
       z.object({
         entityId: z.string(),

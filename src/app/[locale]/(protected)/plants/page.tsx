@@ -15,7 +15,7 @@ export default function PlantsPage() {
   const utils = api.useUtils();
 
   // Get the prefetched data from cache
-  const initialData = utils.plant.getOwnPlants.getInfiniteData({
+  const initialData = utils.plants.getOwnPlants.getInfiniteData({
     limit: PaginationItemsPerPage.PLANTS_PER_PAGE,
   } satisfies GetOwnPlantsInput);
 
@@ -26,7 +26,7 @@ export default function PlantsPage() {
     hasNextPage,
     fetchNextPage,
     isFetchingNextPage,
-  } = api.plant.getOwnPlants.useInfiniteQuery(
+  } = api.plants.getOwnPlants.useInfiniteQuery(
     {
       limit: PaginationItemsPerPage.PLANTS_PER_PAGE,
     } satisfies GetOwnPlantsInput,
@@ -82,7 +82,7 @@ export default function PlantsPage() {
         <>
           <ResponsiveGrid>
             {plants.map((plant) => (
-              <PlantCard plant={plant} isSocial={true} key={plant.id} />
+              <PlantCard plant={plant} isSocial={false} key={plant.id} />
             ))}
           </ResponsiveGrid>
           <InfiniteScrollLoader

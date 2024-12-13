@@ -25,7 +25,7 @@ import {
 } from "~/components/ui/pagination";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
-import { GetOwnImageType, GetOwnImagesInput } from "~/server/api/root";
+import { GetOwnPhotoType, GetOwnPhotosInput } from "~/server/api/root";
 import { PhotosSortField } from "~/types/image";
 
 export default function PhotosPaginatedView({
@@ -63,23 +63,23 @@ export default function PhotosPaginatedView({
   }, [currentPage, sortField, sortOrder, filterNotConnected, updateUrlParams]);
 
   // Get initial data from cache
-  const initialData = utils.image.getOwnImages.getData({
+  const initialData = utils.photos.getOwnPhotos.getData({
     cursor: currentPage,
     limit: PaginationItemsPerPage.PHOTOS_PER_PAGE,
     sortField,
     sortOrder,
     filterNotConnected,
-  } satisfies GetOwnImagesInput);
+  } satisfies GetOwnPhotosInput);
 
   // Query images
-  const { data, isLoading, isFetching } = api.image.getOwnImages.useQuery(
+  const { data, isLoading, isFetching } = api.photos.getOwnPhotos.useQuery(
     {
       limit: PaginationItemsPerPage.PHOTOS_PER_PAGE,
       cursor: currentPage,
       sortField,
       sortOrder,
       filterNotConnected,
-    } satisfies GetOwnImagesInput,
+    } satisfies GetOwnPhotosInput,
     {
       initialData,
     },
@@ -89,7 +89,7 @@ export default function PhotosPaginatedView({
     setIsFetching(isFetching);
   }, [isFetching, setIsFetching]);
 
-  const userImages = data?.images ?? [];
+  const userPhotos = data?.images ?? [];
   const totalPages = data?.total ?? 1;
 
   // Handle page changes
@@ -126,7 +126,7 @@ export default function PhotosPaginatedView({
     <>
       {isLoading ? (
         <SpinningLoader className="text-secondary" />
-      ) : userImages.length === 0 ? (
+      ) : userPhotos.length === 0 ? (
         <p className="mt-8 text-center text-muted-foreground">
           {filterNotConnected
             ? "No images without connected plants have been found."
@@ -135,10 +135,10 @@ export default function PhotosPaginatedView({
       ) : (
         <>
           <ResponsiveGrid>
-            {userImages.map((image) => (
+            {userPhotos.map((photo) => (
               <PhotoCard
-                key={image.id}
-                image={image}
+                key={photo.id}
+                photo={photo}
                 isSocial={false}
                 currentQuery={{
                   page: currentPage,

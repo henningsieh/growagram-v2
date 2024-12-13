@@ -17,9 +17,9 @@ import PhotoCard from "~/components/features/Photos/photo-card";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import {
-  GetOwnImageType,
-  GetOwnImagesInput,
-  GetOwnImagesType,
+  GetOwnPhotoType,
+  GetOwnPhotosInput,
+  GetOwnPhotosType,
 } from "~/server/api/root";
 import { PhotosSortField } from "~/types/image";
 
@@ -44,13 +44,13 @@ export default function PhotosInfiniteScrollView({
   }, [router]);
 
   // Get initial data from cache
-  const initialData = utils.image.getOwnImages.getInfiniteData({
+  const initialData = utils.photos.getOwnPhotos.getInfiniteData({
     // the input must match the server-side `prefetchInfinite`
     limit: PaginationItemsPerPage.PHOTOS_PER_PAGE,
     sortField,
     sortOrder,
     filterNotConnected,
-  } satisfies GetOwnImagesInput);
+  } satisfies GetOwnPhotosInput);
 
   // Infinite query
   const {
@@ -60,13 +60,13 @@ export default function PhotosInfiniteScrollView({
     hasNextPage,
     fetchNextPage,
     isFetchingNextPage,
-  } = api.image.getOwnImages.useInfiniteQuery(
+  } = api.photos.getOwnPhotos.useInfiniteQuery(
     {
       limit: PaginationItemsPerPage.PHOTOS_PER_PAGE,
       sortField,
       sortOrder,
       filterNotConnected,
-    } satisfies GetOwnImagesInput,
+    } satisfies GetOwnPhotosInput,
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
       initialData,
@@ -78,8 +78,8 @@ export default function PhotosInfiniteScrollView({
   }, [isFetching, setIsFetching]);
 
   // Extract photos from pages
-  const photos: GetOwnImagesType =
-    data?.pages?.flatMap((page) => page.images satisfies GetOwnImagesType) ??
+  const photos: GetOwnPhotosType =
+    data?.pages?.flatMap((page) => page.images satisfies GetOwnPhotosType) ??
     [];
 
   // Intersection Observer callback
@@ -120,10 +120,10 @@ export default function PhotosInfiniteScrollView({
       ) : (
         <>
           <ResponsiveGrid>
-            {photos.map((image) => (
+            {photos.map((photo) => (
               <PhotoCard
-                key={image.id}
-                image={image}
+                key={photo.id}
+                photo={photo}
                 isSocial={false}
                 currentQuery={{
                   page: 1,

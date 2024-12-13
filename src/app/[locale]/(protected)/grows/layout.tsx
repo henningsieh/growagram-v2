@@ -10,21 +10,21 @@ export const metadata = {
   description: "My Grows",
 };
 
-export default async function PhotosLayout({
+export default async function MyGrowsLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   // Prefetch initial data with default sorting for the first page
 
-  await api.grow.getOwnGrows.prefetchInfinite({
+  await api.grows.getOwnGrows.prefetchInfinite({
     cursor: 1,
     limit: PaginationItemsPerPage.GROWS_PER_PAGE,
     sortField: GrowsSortField.NAME,
     sortOrder: SortOrder.ASC,
   } satisfies GetOwnGrowsInput);
 
-  await api.grow.getOwnGrows.prefetch({
+  await api.grows.getOwnGrows.prefetch({
     cursor: 1,
     limit: PaginationItemsPerPage.GROWS_PER_PAGE,
     sortField: GrowsSortField.NAME,

@@ -73,7 +73,7 @@ export default function PlantFormPage({ plant }: { plant?: Plant }) {
     },
   });
 
-  const createOrEditPlantMutation = api.plant.createOrEdit.useMutation({
+  const createOrEditPlantMutation = api.plants.createOrEdit.useMutation({
     onSuccess: async (_, plant) => {
       console.debug("new or edited plant: ", { plant }); // log the plant values
       toast({
@@ -82,9 +82,9 @@ export default function PlantFormPage({ plant }: { plant?: Plant }) {
       });
 
       // Reset the infinite query
-      await utils.plant.getOwnPlants.reset();
+      await utils.plants.getOwnPlants.reset();
       // Prefetch initial OwnPlants infinite query into cache
-      await utils.plant.getOwnPlants.prefetchInfinite({
+      await utils.plants.getOwnPlants.prefetchInfinite({
         limit: PaginationItemsPerPage.PLANTS_PER_PAGE,
       } satisfies GetOwnPlantsInput);
 

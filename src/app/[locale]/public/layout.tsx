@@ -56,7 +56,7 @@ export default function TimelineLayout({ children }: PropsWithChildren) {
             <TabsList className="h-7 w-full rounded-none bg-transparent p-0">
               <TabsTrigger
                 value="/public/timeline"
-                className="w-full rounded-none data-[state=active]:bg-secondary hover:data-[state=inactive]:bg-secondary/20 hover:data-[state=inactive]:text-foreground"
+                className="w-full rounded-none data-[state=active]:bg-primary hover:data-[state=inactive]:bg-primary/20 hover:data-[state=inactive]:text-foreground"
                 asChild
               >
                 <Link href="/public/timeline">
@@ -66,7 +66,7 @@ export default function TimelineLayout({ children }: PropsWithChildren) {
               </TabsTrigger>
               <TabsTrigger
                 value="/public/following"
-                className="w-full rounded-none data-[state=active]:bg-secondary hover:data-[state=inactive]:bg-secondary/20 hover:data-[state=inactive]:text-foreground"
+                className="w-full rounded-none data-[state=active]:bg-primary hover:data-[state=inactive]:bg-primary/20 hover:data-[state=inactive]:text-foreground"
                 asChild
               >
                 <Link href="/public/following">
@@ -76,7 +76,7 @@ export default function TimelineLayout({ children }: PropsWithChildren) {
               </TabsTrigger>
               <TabsTrigger
                 value="/public/grows"
-                className="w-full rounded-none data-[state=active]:bg-secondary hover:data-[state=inactive]:bg-secondary/20 hover:data-[state=inactive]:text-foreground"
+                className="w-full rounded-none data-[state=active]:bg-primary hover:data-[state=inactive]:bg-primary/20 hover:data-[state=inactive]:text-foreground"
                 asChild
               >
                 <Link href="/public/grows">
@@ -89,7 +89,7 @@ export default function TimelineLayout({ children }: PropsWithChildren) {
         </div>
         {/* Main content and right sidebar remain unchanged */}
         <div className="flex max-w-2xl flex-1 shrink-0">
-          <div className="w-full">{children}</div>
+          <div className="w-full pl-1 pr-2">{children}</div>
         </div>
 
         <aside className="hidden w-64 lg:block">

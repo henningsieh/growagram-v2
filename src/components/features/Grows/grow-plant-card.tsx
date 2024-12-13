@@ -1,11 +1,18 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { Calendar1, Dna, FlaskConical, Leaf } from "lucide-react";
+import { Calendar1, Dna, FlaskConical, Leaf, Tag } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { Button } from "~/components/ui/button";
-import { Card, CardContent, CardFooter } from "~/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "~/components/ui/card";
 import { Progress } from "~/components/ui/progress";
 import {
   Tooltip,
@@ -44,31 +51,44 @@ export function GrowPlantCard({ plant }: PlantCardProps) {
   const progress = ((growthStageIndex + 1) / growthStages.length) * 100;
 
   const locale = useLocale();
-  const t = useTranslations("Grows");
+  const t = useTranslations();
 
   return (
     <TooltipProvider>
       <Card
-        className="overflow-hidden p-0 transition-all hover:shadow-lg"
+        className="overflow-hidden p-3 transition-all hover:shadow-lg"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <CardContent className="px-4 py-2">
-          <div className="mb-2 flex items-center justify-between">
-            <h4 className="text-lg font-semibold">
-              {plant.strain ? plant.strain.name : plant.name}
-            </h4>
+        <CardHeader className="px-0 py-0">
+          <CardTitle level="h2" className="flex items-center justify-between">
+            <Button asChild variant="link" className="p-1">
+              <Link
+                href={`/public/plants/${plant.id}`}
+                className="items-center gap-2"
+              >
+                <Tag size={20} className="hover:underline" />
+                {plant.name}
+              </Link>
+            </Button>
             <Tooltip>
               <TooltipTrigger>
                 <div className={`h-3 w-3 rounded-full bg-${color}`} />
               </TooltipTrigger>
               <TooltipContent>
                 <p>
-                  {t("growth-stage")}: {stageName}
+                  {
+                    t("Grows.growth-stage")
+                    // eslint-disable-next-line react/jsx-no-literals
+                  }
+                  : {stageName}
                 </p>
               </TooltipContent>
             </Tooltip>
-          </div>
+          </CardTitle>
+          <CardDescription></CardDescription>
+        </CardHeader>
+        <CardContent className="gap-4 p-0">
           <Progress value={progress} className="mb-4 h-2" />
 
           <AnimatePresence>
@@ -89,7 +109,7 @@ export function GrowPlantCard({ plant }: PlantCardProps) {
                     </span>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>Start Date</p>
+                    <p>{t("Plants.planting-date")}</p>
                   </TooltipContent>
                 </Tooltip>
                 <Tooltip>
@@ -98,7 +118,7 @@ export function GrowPlantCard({ plant }: PlantCardProps) {
                     <span className="text-sm">{stageName}</span>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>Current Growth Stage</p>
+                    <p>{t("Plants.growth-progress")}</p>
                   </TooltipContent>
                 </Tooltip>
                 {plant.strain && (
@@ -107,11 +127,15 @@ export function GrowPlantCard({ plant }: PlantCardProps) {
                       <TooltipTrigger className="flex items-center gap-2">
                         <FlaskConical className="h-4 w-4 text-purple-500" />
                         <span className="text-sm">
-                          THC: {plant.strain.thcContent ?? "N/A"}%
+                          {
+                            t("Plants.thc")
+                            // eslint-disable-next-line react/jsx-no-literals
+                          }
+                          : {plant.strain.thcContent ?? "N/A"}%
                         </span>
                       </TooltipTrigger>
                       <TooltipContent>
-                        <p>THC Content</p>
+                        <p>{t("Plants.thc-content")}</p>
                       </TooltipContent>
                     </Tooltip>
                     <Tooltip>
@@ -122,7 +146,7 @@ export function GrowPlantCard({ plant }: PlantCardProps) {
                         </span>
                       </TooltipTrigger>
                       <TooltipContent>
-                        <p>Breeder</p>
+                        <p>{t("Plants.breeder")}</p>
                       </TooltipContent>
                     </Tooltip>
                   </>

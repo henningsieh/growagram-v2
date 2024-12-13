@@ -10,8 +10,8 @@ import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { PhotosSortField } from "~/types/image";
 import { imageSchema } from "~/types/zodSchema";
 
-export const imageRouter = createTRPCRouter({
-  getOwnImages: protectedProcedure
+export const photoRouter = createTRPCRouter({
+  getOwnPhotos: protectedProcedure
     .input(
       z
         .object({
@@ -185,7 +185,7 @@ export const imageRouter = createTRPCRouter({
    */
 
   // Create Image
-  createImage: protectedProcedure
+  createPhoto: protectedProcedure
     .input(imageSchema)
     .mutation(async ({ ctx, input }) => {
       // Save image record to database
@@ -214,7 +214,7 @@ export const imageRouter = createTRPCRouter({
     }),
 
   // Delete image
-  deleteImage: protectedProcedure
+  deletePhoto: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
       try {

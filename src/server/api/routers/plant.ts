@@ -28,6 +28,7 @@ export const plantRouter = createTRPCRouter({
         limit: limit + 1, // Fetch extra item to check for next page
         offset: cursor ?? 0, // Use cursor for offset
         with: {
+          owner: true,
           strain: {
             columns: {
               id: true,

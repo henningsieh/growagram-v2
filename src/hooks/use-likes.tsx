@@ -1,10 +1,16 @@
+// src/hooks/use-likes.tsx:
+import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { api } from "~/lib/trpc/react";
+import { LikeableEntityType } from "~/types/like";
 
 export const useLikeStatus = (
   entityId: string,
-  entityType: "plant" | "image",
+  entityType: LikeableEntityType,
 ) => {
+  const { data: session, status } = useSession();
+  const user = session?.user;
+
   const [userHasLiked, setUserHasLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
 
@@ -13,21 +19,31 @@ export const useLikeStatus = (
     entityType,
   });
 
-  const userLikesQuery = api.likes.getUserLikedEntities.useQuery({
-    entityType,
-  });
+  // Only run queries if user is authenticated
+  const userLikesQuery = api.likes.getUserLikedEntities.useQuery(
+    { entityType },
+    { enabled: !!user },
+  );
+
+  //TODO: this different behavior for "getLikeCount" and "getUserLikedEntities" is not clean!!!
 
   useEffect(() => {
-    if (likeCountQuery.data && userLikesQuery.data) {
+    // Reset state if no user
+    if (!user) {
+      setUserHasLiked(false);
+      // setLikeCount(0);
+    }
+
+    if (likeCountQuery.data) {
       setLikeCount(likeCountQuery.data.count);
 
-      const userLikedEntity = userLikesQuery.data.find(
-        (like) => like.entityId === entityId,
-      );
+      const userLikedEntity =
+        userLikesQuery.data &&
+        userLikesQuery.data.find((like) => like.entityId === entityId);
 
       setUserHasLiked(!!userLikedEntity);
     }
-  }, [likeCountQuery.data, userLikesQuery.data, entityId, entityType]);
+  }, [likeCountQuery.data, userLikesQuery.data, user, entityId, entityType]);
 
   return {
     isLiked: userHasLiked,

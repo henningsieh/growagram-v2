@@ -5,7 +5,11 @@ import { z } from "zod";
 import { PaginationItemsPerPage } from "~/assets/constants";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
 import { grows, plants } from "~/lib/db/schema";
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "~/server/api/trpc";
 import { GrowsSortField } from "~/types/grow";
 import { growSchema } from "~/types/zodSchema";
 
@@ -63,6 +67,7 @@ export const growRouter = createTRPCRouter({
           owner: true,
           plants: {
             with: {
+              owner: true,
               strain: {
                 columns: {
                   id: true,
@@ -101,7 +106,7 @@ export const growRouter = createTRPCRouter({
     }),
 
   // Get single grow by ID
-  getById: protectedProcedure
+  getById: publicProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
       return await ctx.db.query.grows.findFirst({

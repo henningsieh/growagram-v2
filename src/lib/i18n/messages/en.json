@@ -1,4 +1,16 @@
 {
+  "CardFooter": {
+    "Login to see detailed view statistics": "Login to see detailed view statistics.",
+    "Please log in to like this content": "Please log in to like this content.",
+    "Please log in to share this content": "Please log in to share this content.",
+    "Sign in to view and add comments": "Sign in to view and add comments."
+  },
+  "Comments": {
+    "add-comment-placeholder": "Write a comment",
+    "loading-comments": "Loading comments...",
+    "no-comments-yet": "No comments yet.",
+    "reply-to-comment-placeholder": "Write an answer"
+  },
   "Dashboard": {
     "Grows": {
       "your-grows": "Your Grows"
@@ -67,6 +79,7 @@
   "LanguageToggle": {
     "toggle-language": "Change language"
   },
+  "Login to see detailed view statistics": "",
   "LoginPage": {
     "description": "To log in, enter your email address and password or select a social login provider below.",
     "email": {
@@ -105,6 +118,7 @@
     "toggle-menu": "Toggle menu"
   },
   "Plants": {
+    "breeder": "Breeder",
     "curing-start-date": "Curing phase start date",
     "edit-plant-button-label": "Edit Plant",
     "flowering-start-date": "Flowering Start Date",
@@ -127,7 +141,10 @@
     "harvest-date": "Harvest date",
     "linkUploadButtonLabel": "Add New Plant",
     "planting-date": "Seed planting date",
+    "strain": "Strain",
     "subtitle": "Manage your plants",
+    "thc": "THC",
+    "thc-content": "THC Content",
     "title": "My Plants",
     "user-has-no-plants": "You haven&apos;t added any plants yet.",
     "vegetation-start-date": "Vegetation Start Date"
