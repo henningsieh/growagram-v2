@@ -63,7 +63,7 @@ export function GrowCard({ grow, isSocial = true }: GrowCardProps) {
   const t = useTranslations("Grows");
 
   return (
-    <Card className="my-2 flex flex-col overflow-hidden">
+    <Card className="my-2 flex h-full flex-col overflow-hidden">
       {isSocial && (
         <CardHeader className="space-y-0 p-2">
           <div className="flex items-start justify-between">
@@ -86,7 +86,7 @@ export function GrowCard({ grow, isSocial = true }: GrowCardProps) {
       )}
 
       <CardContent
-        className={`grid gap-4 ${isSocial ? "ml-14 p-2 pl-0" : "p-4"}`}
+        className={`flex flex-1 flex-col gap-4 ${isSocial ? "ml-14 p-2 pl-0" : "p-4"}`}
       >
         <div
           className="relative aspect-video overflow-hidden"
@@ -146,7 +146,7 @@ export function GrowCard({ grow, isSocial = true }: GrowCardProps) {
           </CardHeader>
         </div>
 
-        <div className="h-max space-y-4">
+        <div className="space-y-4">
           <AnimatePresence>
             {grow.plants.map((plant) => (
               <motion.div
