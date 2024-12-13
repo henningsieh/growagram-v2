@@ -110,7 +110,7 @@ export default function InfiniteScrollGrowsView({
         <>
           <ResponsiveGrid>
             {grows.map((grow) => (
-              <GrowCard key={grow.id} grow={grow} />
+              <GrowCard key={grow.id} grow={grow} isSocial={false} />
             ))}
           </ResponsiveGrid>
 

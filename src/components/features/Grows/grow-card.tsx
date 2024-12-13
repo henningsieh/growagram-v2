@@ -35,7 +35,7 @@ interface GrowCardProps {
   isSocial?: boolean;
 }
 
-export function GrowCard({ grow, isSocial }: GrowCardProps) {
+export function GrowCard({ grow, isSocial = true }: GrowCardProps) {
   const [isImageHovered, setIsImageHovered] = useState(false);
 
   const {
@@ -48,7 +48,7 @@ export function GrowCard({ grow, isSocial }: GrowCardProps) {
     comments,
     commentsLoading,
     commentCount,
-    commentCountLoading, //TODO: still not used
+    commentCountLoading,
     isCommentsOpen,
     toggleComments,
     setNewComment,
@@ -86,7 +86,7 @@ export function GrowCard({ grow, isSocial }: GrowCardProps) {
       )}
 
       <CardContent
-        className={`grid flex-grow grid-rows-[auto,1fr,auto] gap-4 ${isSocial ? "ml-14 p-2 pl-0" : "p-4"}`}
+        className={`grid gap-4 ${isSocial ? "ml-14 p-2 pl-0" : "p-4"}`}
       >
         <div
           className="relative aspect-video overflow-hidden"
@@ -106,17 +106,24 @@ export function GrowCard({ grow, isSocial }: GrowCardProps) {
         </div>
         <div>
           <CardHeader className="p-0">
-            <Link href={`/public/grows/${grow.id}`}>
-              <CardTitle level="h3">
-                <div className="flex w-full items-center gap-2">
-                  <TentTree size={20} />
-                  <h3 className="text-xl font-bold">{grow.name}</h3>
-                </div>
-              </CardTitle>
-            </Link>
+            <CardTitle level="h2" className="flex items-center justify-between">
+              <Button asChild variant="link" className="p-1">
+                <Link
+                  href={`/public/grows/${grow.id}`}
+                  className="items-center gap-2"
+                >
+                  <TentTree size={20} className="hover:underline" />
+                  {grow.name}
+                </Link>
+              </Button>
+            </CardTitle>
             <CardDescription>
               <span className="block">
-                {t("grow-card-createdAt")}:{" "}
+                {
+                  t("grow-card-createdAt")
+                  // eslint-disable-next-line react/jsx-no-literals
+                }
+                :{" "}
                 {formatDate(grow.createdAt, locale, {
                   weekday: "short",
                   month: "long",
@@ -124,7 +131,11 @@ export function GrowCard({ grow, isSocial }: GrowCardProps) {
               </span>
               {grow.updatedAt && (
                 <div className="block">
-                  {t("grow-card-updatedAt")}:{" "}
+                  {
+                    t("grow-card-updatedAt")
+                    // eslint-disable-next-line react/jsx-no-literals
+                  }
+                  :{" "}
                   {formatDate(grow.updatedAt, locale, {
                     weekday: "short",
                     month: "long",
@@ -135,7 +146,7 @@ export function GrowCard({ grow, isSocial }: GrowCardProps) {
           </CardHeader>
         </div>
 
-        <div className="space-y-4">
+        <div className="h-max space-y-4">
           <AnimatePresence>
             {grow.plants.map((plant) => (
               <motion.div

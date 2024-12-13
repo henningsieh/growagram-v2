@@ -111,6 +111,7 @@
     "toggle-menu": "Menü umschalten"
   },
   "Plants": {
+    "breeder": "Züchter",
     "curing-start-date": "Startdatum der Aushärtephase",
     "edit-plant-button-label": "Pflanze bearbeiten",
     "flowering-start-date": "Startdatum der Blüte",
@@ -133,7 +134,10 @@
     "harvest-date": "Datum der Ernte",
     "linkUploadButtonLabel": "Neue anlegen",
     "planting-date": "Datum der Aussaat",
+    "strain": "Sorte",
     "subtitle": "Verwalte deine Pflanzen",
+    "thc": "THC",
+    "thc-content": "THC-Gehalt",
     "title": "Meine Pflanzen",
     "user-has-no-plants": "Du hast bisher keine Pflanzen hinzugefügt.",
     "vegetation-start-date": "Startdatum der Wachstumsphase"

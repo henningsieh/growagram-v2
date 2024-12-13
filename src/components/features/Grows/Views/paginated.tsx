@@ -131,7 +131,7 @@ export default function PaginatedGrowsView({
         <>
           <ResponsiveGrid>
             {userGrows.map((grow) => (
-              <GrowCard key={grow.id} grow={grow} />
+              <GrowCard key={grow.id} grow={grow} isSocial={false} />
             ))}
           </ResponsiveGrid>
 

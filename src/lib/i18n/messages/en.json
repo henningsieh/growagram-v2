@@ -111,6 +111,7 @@
     "toggle-menu": "Toggle menu"
   },
   "Plants": {
+    "breeder": "Breeder",
     "curing-start-date": "Curing phase start date",
     "edit-plant-button-label": "Edit Plant",
     "flowering-start-date": "Flowering Start Date",
@@ -133,7 +134,10 @@
     "harvest-date": "Harvest date",
     "linkUploadButtonLabel": "Add New Plant",
     "planting-date": "Seed planting date",
+    "strain": "Strain",
     "subtitle": "Manage your plants",
+    "thc": "THC",
+    "thc-content": "THC Content",
     "title": "My Plants",
     "user-has-no-plants": "You haven&apos;t added any plants yet.",
     "vegetation-start-date": "Vegetation Start Date"

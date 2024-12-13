@@ -156,7 +156,7 @@ export const Comment: React.FC<CommentProps> = ({
               </Avatar>
             </div>
             <div className="flex-1">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 pr-2">
                 <span className="text-sm font-semibold">
                   {comment.author.name}
                 </span>
@@ -164,8 +164,9 @@ export const Comment: React.FC<CommentProps> = ({
                   {new Date(comment.createdAt).toLocaleString()}
                 </span>
                 {isAuthor && (
+                  // <div className="p-2">
                   <Button
-                    variant="ghost"
+                    variant="destructive"
                     size="icon"
                     className="ml-auto h-6 w-6"
                     onClick={handleDeleteComment}
@@ -173,6 +174,7 @@ export const Comment: React.FC<CommentProps> = ({
                   >
                     <Trash2 size={14} />
                   </Button>
+                  // </div>
                 )}
               </div>
               <p className="text-sm">{comment.commentText}</p>
