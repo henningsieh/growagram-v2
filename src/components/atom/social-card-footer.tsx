@@ -1,4 +1,4 @@
-// src/components/atom/social-card-footer.tsx:
+// src/components/atom/social-card-footer.tsx
 import { ChartColumn, MessageCircle, Share } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
@@ -49,40 +49,23 @@ export const SocialCardFooter: React.FC<CardFooterProps> = ({
   const t = useTranslations();
   const pathname = usePathname();
 
-  const renderInteractiveButton = (
-    Icon: React.ElementType,
+  const renderButton = (
+    ButtonComponent: React.ReactNode,
     tooltipMessage: string,
-    isLoading: boolean,
-    count?: number,
-    onClick?: () => void,
   ) => {
-    const buttonContent = (
-      <Button
-        className="flex h-8 w-10 items-center justify-center gap-1"
-        variant="ghost"
-        size="sm"
-        onClick={onClick}
-      >
-        {!isLoading ? (
-          <Icon className="h-4 w-4" />
-        ) : (
-          <SpinningLoader className="h-6 w-6 text-secondary" />
-        )}
-        {!isLoading && count && <span>{count}</span>}
-      </Button>
-    );
-
-    if (user) return buttonContent;
+    if (user) return ButtonComponent;
 
     return (
       <TooltipProvider>
         <Tooltip delayDuration={0}>
-          <TooltipTrigger asChild>{buttonContent}</TooltipTrigger>
+          <TooltipTrigger asChild>{ButtonComponent}</TooltipTrigger>
           <TooltipContent
             side="top"
-            className="flex flex-col items-center space-y-2 bg-secondary p-4"
+            className="flex max-w-64 flex-col items-center space-y-2 bg-secondary p-2"
           >
-            <p className="text-sm font-medium">{tooltipMessage}</p>
+            <p className="text-center text-sm font-semibold">
+              {tooltipMessage}
+            </p>
             <Button size="sm" variant="primary" asChild>
               <Link href={`/api/auth/signin?callbackUrl=${pathname}`}>
                 {t("LoginPage.submit")}
@@ -97,37 +80,60 @@ export const SocialCardFooter: React.FC<CardFooterProps> = ({
   return (
     <div>
       <div className={cn("flex items-center justify-between gap-2", className)}>
-        {renderInteractiveButton(
-          MessageCircle,
-          "Sign in to view and add comments",
-          commentCountLoading,
-          stats.comments,
-          toggleComments,
-        )}
-        {renderInteractiveButton(
-          ChartColumn,
-          "Login to see detailed view statistics",
-          false,
-          stats.views,
+        {renderButton(
+          <Button
+            className="flex h-8 w-10 items-center justify-center gap-1"
+            variant="ghost"
+            size="sm"
+            onClick={toggleComments}
+            disabled={!user || commentCountLoading}
+          >
+            {commentCountLoading ? (
+              <SpinningLoader className="h-6 w-6 text-secondary" />
+            ) : (
+              <MessageCircle className="h-4 w-4" />
+            )}
+            {!commentCountLoading && <span>{stats.comments}</span>}
+          </Button>,
+          t("CardFooter.Sign in to view and add comments"),
         )}
 
-        {isLikeStatusLoading ? (
-          <SpinningLoader className="h-6 w-6 text-secondary" />
-        ) : (
+        {renderButton(
+          <Button
+            className="flex h-8 w-10 items-center justify-center gap-1"
+            variant="ghost"
+            size="sm"
+            disabled={!user}
+          >
+            <ChartColumn className="h-4 w-4" />
+            <span>{stats.views}</span>
+          </Button>,
+          t("CardFooter.Login to see detailed view statistics"),
+        )}
+
+        {renderButton(
           <LikeButton
             className="flex w-10 items-center justify-center gap-1 hover:bg-transparent"
             entityId={entityId}
             entityType={entityType}
             initialLiked={initialLiked}
             initialLikeCount={stats.likes}
-          />
+            disabled={!user}
+            isLikeStatusLoading={isLikeStatusLoading}
+          />,
+          t("CardFooter.Please log in to like this content"),
         )}
 
-        {renderInteractiveButton(
-          Share,
-          "Please log in to share this content",
-          false,
-          undefined,
+        {renderButton(
+          <Button
+            className="flex h-8 w-10 items-center justify-center gap-1"
+            variant="ghost"
+            size="sm"
+            disabled={!user}
+          >
+            <Share className="h-4 w-4" />
+          </Button>,
+          t("CardFooter.Please log in to share this content"),
         )}
       </div>
     </div>

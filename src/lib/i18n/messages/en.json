@@ -1,4 +1,10 @@
 {
+  "CardFooter": {
+    "Login to see detailed view statistics": "Login to see detailed view statistics.",
+    "Please log in to like this content": "Please log in to like this content.",
+    "Please log in to share this content": "Please log in to share this content.",
+    "Sign in to view and add comments": "Sign in to view and add comments."
+  },
   "Comments": {
     "add-comment-placeholder": "Write a comment",
     "loading-comments": "Loading comments...",
@@ -73,6 +79,7 @@
   "LanguageToggle": {
     "toggle-language": "Change language"
   },
+  "Login to see detailed view statistics": "",
   "LoginPage": {
     "description": "To log in, enter your email address and password or select a social login provider below.",
     "email": {

@@ -1,4 +1,10 @@
 {
+  "CardFooter": {
+    "Login to see detailed view statistics": "Melde dich an, um detaillierte Statistiken zu sehen.",
+    "Please log in to like this content": "Melde dich an, um diesen Inhalt zu liken.",
+    "Please log in to share this content": "Melde dich an, um diesen Inhalt zu teilen.",
+    "Sign in to view and add comments": "Melden dich an, um Kommentare anzuzeigen und hinzuzufügen."
+  },
   "Comments": {
     "add-comment-placeholder": "Schreibe einen Kommentar",
     "loading-comments": "Kommentare werden geladen...",
@@ -73,6 +79,7 @@
   "LanguageToggle": {
     "toggle-language": "Sprache wechseln"
   },
+  "Login to see detailed view statistics": "",
   "LoginPage": {
     "description": "Geben Sie Ihre E-Mail-Adresse und Passwort ein oder wählen Sie unten einen Social Provider für den Login aus, um sich anzumelden.",
     "email": {
