@@ -8,7 +8,7 @@ interface SpinningLoaderProps {
 
 export default function SpinningLoader({ className }: SpinningLoaderProps) {
   return (
-    <div className={cn("flex justify-center", className)}>
+    <div className={cn("flex justify-center")}>
       <Loader2
         className={cn("h-10 w-10 animate-spin text-primary", className)}
       />

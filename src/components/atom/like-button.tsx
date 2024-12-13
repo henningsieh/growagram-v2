@@ -18,7 +18,6 @@ interface LikeProps {
   initialLiked?: boolean;
   initialLikeCount?: number;
   className?: string;
-  isLikeStatusLoading: boolean;
 }
 
 export const LikeButton: React.FC<LikeProps> = ({
@@ -27,7 +26,6 @@ export const LikeButton: React.FC<LikeProps> = ({
   initialLiked = false,
   initialLikeCount = 0,
   className = "",
-  isLikeStatusLoading = true,
 }) => {
   const { data: session, status } = useSession();
   const user = session?.user;

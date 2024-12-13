@@ -1,9 +1,15 @@
 // src/hooks/use-comments.tsx:
+import { UseQueryOptions } from "@tanstack/react-query";
+import {
+  TRPCQueryOptions,
+  UseTRPCSubscriptionOptions,
+} from "@trpc/react-query/shared";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
+import { SortOrder } from "~/components/atom/sort-filter-controls";
 import { usePathname } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
-import { GetCommentsType } from "~/server/api/root";
+import { GetCommentsInput, GetCommentsType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
 
 import { useToast } from "./use-toast";
@@ -32,9 +38,14 @@ export const useComments = (
     {
       entityId: entityId,
       entityType: entityType,
-    },
+      sortOrder: SortOrder.DESC,
+    } satisfies GetCommentsInput,
     {
       enabled: !!session,
+      trpc: {
+        ssr: true,
+        abortOnUnmount: true,
+      },
     },
   );
 
@@ -111,7 +122,7 @@ export const useComments = (
 
   return {
     // Comment state and queries
-    comments: commentsQuery.data as GetCommentsType | undefined,
+    comments: commentsQuery.data satisfies GetCommentsType | undefined,
     commentsLoading: commentsQuery.isLoading,
 
     // Comment count state

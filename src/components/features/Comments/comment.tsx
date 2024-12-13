@@ -164,17 +164,15 @@ export const Comment: React.FC<CommentProps> = ({
                   {new Date(comment.createdAt).toLocaleString()}
                 </span>
                 {isAuthor && (
-                  // <div className="p-2">
                   <Button
                     variant="destructive"
                     size="icon"
-                    className="ml-auto h-8 w-8 bg-muted p-0"
+                    className="m-1 ml-auto h-8 w-8 bg-muted"
                     onClick={handleDeleteComment}
                     disabled={deleteMutation.isPending}
                   >
                     <Trash2 size={18} />
                   </Button>
-                  // </div>
                 )}
               </div>
               <p className="text-sm">{comment.commentText}</p>
@@ -244,28 +242,6 @@ export const Comment: React.FC<CommentProps> = ({
               </motion.div>
             )}
           </AnimatePresence>
-
-          {replies &&
-            replies.map((childComment) => (
-              <div key={childComment.id} className="ml-6 border-l">
-                <Comment
-                  comment={{
-                    ...childComment,
-                    author: comment.author,
-                  }}
-                  isSocial={isSocial}
-                  isReplying={replyingToCommentId === childComment.id}
-                  onReply={(commentId) => {
-                    onUpdateReplyingComment?.(commentId);
-                  }}
-                  onCancelReply={() => {
-                    onUpdateReplyingComment?.(null);
-                  }}
-                  replyingToCommentId={replyingToCommentId}
-                  onUpdateReplyingComment={onUpdateReplyingComment}
-                />
-              </div>
-            ))}
         </motion.div>
       </AnimatePresence>
     )

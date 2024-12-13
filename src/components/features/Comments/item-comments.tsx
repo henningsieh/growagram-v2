@@ -3,68 +3,42 @@ import { Send, X } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import React from "react";
+import SpinningLoader from "~/components/Layouts/loader";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { useComments } from "~/hooks/use-comments";
-import { GetCommentType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
 
-import { Comment } from "./comment";
+import CommentTree from "./comment-tree";
 
 interface ItemCommentsProps {
   entityId: string;
   entityType: CommentableEntityType;
-  isSocial: boolean;
   onClose?: () => void;
-  // New optional props from useComments hook
-  comments?: GetCommentType[];
-  commentsLoading?: boolean;
-  newComment?: string;
-  setNewComment?: (comment: string) => void;
-  handleSubmitComment?: (parentCommentId?: string) => void;
-  handleReply?: (commentId: string | null) => void;
-  handleCancelReply?: () => void;
-  replyingToComment?: string | null;
+  isSocial: boolean;
 }
 
 export const ItemComments: React.FC<ItemCommentsProps> = ({
   entityId,
   entityType,
-  isSocial,
   onClose,
-  // New props with fallback to useComments hook
-  comments: propComments,
-  commentsLoading,
-  newComment: propNewComment,
-  setNewComment: propSetNewComment,
-  handleSubmitComment: propHandleSubmitComment,
-  handleReply: propHandleReply,
-  handleCancelReply: propHandleCancelReply,
-  replyingToComment: propReplyingToComment,
+  isSocial,
 }) => {
   const t = useTranslations("Comments");
 
-  // Always call useComments, but only use its values if props are not provided
-  const commentHook = useComments(entityId, entityType);
-
-  // Use prop values if provided, otherwise use hook values
-  const comments = propComments || commentHook.comments;
-  const commentsLoadingState = commentsLoading || commentHook.commentsLoading;
-  const newComment = propNewComment || commentHook.newComment;
-  const setNewComment = propSetNewComment || commentHook.setNewComment;
-  const handleSubmitComment =
-    propHandleSubmitComment || commentHook.handleSubmitComment;
-  const handleReply = propHandleReply || commentHook.handleReply;
-  const handleCancelReply =
-    propHandleCancelReply || commentHook.handleCancelReply;
-  const replyingToComment =
-    propReplyingToComment || commentHook.replyingToComment;
+  const {
+    comments,
+    commentCountLoading,
+    newComment,
+    setNewComment,
+    handleSubmitComment,
+  } = useComments(entityId, entityType);
 
   const { data: session, status } = useSession();
   if (status === "loading") {
     // Show a loading state while authentication status is being resolved
-    return <>Loading...</>;
+    return <SpinningLoader />;
   }
 
   return (
@@ -77,6 +51,7 @@ export const ItemComments: React.FC<ItemCommentsProps> = ({
           onClick={onClose}
         >
           <X size={20} />
+          qwüvubqwrpviiub
         </Button>
       )}
       {session && (
@@ -106,16 +81,7 @@ export const ItemComments: React.FC<ItemCommentsProps> = ({
       )}
       <div className="max-h-fit overflow-y-auto">
         {comments?.map((comment) => (
-          <Comment
-            key={comment.id}
-            comment={comment}
-            isSocial={isSocial}
-            isReplying={replyingToComment === comment.id}
-            onReply={handleReply}
-            onCancelReply={handleCancelReply}
-            replyingToCommentId={replyingToComment}
-            onUpdateReplyingComment={handleReply}
-          />
+          <CommentTree key={comment.id} comment={comment} isSocial={isSocial} />
         ))}
       </div>
       {comments?.length === 0 && (
@@ -123,7 +89,7 @@ export const ItemComments: React.FC<ItemCommentsProps> = ({
           {t("no-comments-yet")}
         </div>
       )}
-      {commentsLoadingState && (
+      {commentCountLoading && (
         <div className="p-4 text-center text-muted-foreground">
           {t("loading-comments")}
         </div>

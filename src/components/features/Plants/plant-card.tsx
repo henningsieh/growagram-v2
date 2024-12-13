@@ -69,20 +69,8 @@ export default function PlantCard({ plant, isSocial = true }: PlantCardProps) {
     isLoading: isLikeLoading,
   } = useLikeStatus(plant.id, LikeableEntityType.Plant);
 
-  const {
-    comments,
-    commentsLoading,
-    commentCount,
-    commentCountLoading,
-    isCommentsOpen,
-    toggleComments,
-    setNewComment,
-    handleSubmitComment,
-    handleReply,
-    handleCancelReply,
-    newComment,
-    replyingToComment,
-  } = useComments(plant.id, CommentableEntityType.Plant);
+  const { commentCount, commentCountLoading, isCommentsOpen, toggleComments } =
+    useComments(plant.id, CommentableEntityType.Plant);
 
   // Initialize delete mutation
   const deleteMutation = api.plants.deleteById.useMutation({
@@ -384,14 +372,6 @@ export default function PlantCard({ plant, isSocial = true }: PlantCardProps) {
             entityId={plant.id}
             entityType={CommentableEntityType.Plant}
             isSocial={isSocial}
-            comments={comments}
-            commentsLoading={commentsLoading}
-            newComment={newComment}
-            setNewComment={setNewComment}
-            handleSubmitComment={handleSubmitComment}
-            handleReply={handleReply}
-            handleCancelReply={handleCancelReply}
-            replyingToComment={replyingToComment}
           />
         )}
       </Card>

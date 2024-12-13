@@ -2,6 +2,8 @@
 import { ChartColumn, MessageCircle, Share } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
+// eslint-disable-next-line no-restricted-imports
+import Link from "next/link";
 import React from "react";
 import { LikeButton } from "~/components/atom/like-button";
 import { Button } from "~/components/ui/button";
@@ -11,6 +13,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "~/components/ui/tooltip";
+import { usePathname } from "~/lib/i18n/routing";
 import { cn } from "~/lib/utils";
 import { LikeableEntityType } from "~/types/like";
 
@@ -44,6 +47,7 @@ export const SocialCardFooter: React.FC<CardFooterProps> = ({
   const { data: session } = useSession();
   const user = session?.user;
   const t = useTranslations();
+  const pathname = usePathname();
 
   const renderInteractiveButton = (
     Icon: React.ElementType,
@@ -54,7 +58,7 @@ export const SocialCardFooter: React.FC<CardFooterProps> = ({
   ) => {
     const buttonContent = (
       <Button
-        className="flex h-10 w-10 items-center justify-center gap-1"
+        className="flex h-8 w-10 items-center justify-center gap-1"
         variant="ghost"
         size="sm"
         onClick={onClick}
@@ -79,16 +83,10 @@ export const SocialCardFooter: React.FC<CardFooterProps> = ({
             className="flex flex-col items-center space-y-2 bg-secondary p-4"
           >
             <p className="text-sm font-medium">{tooltipMessage}</p>
-            <Button
-              size="sm"
-              variant="primary"
-              onClick={() => {
-                // Replace with your actual login redirect method
-                // For example: signIn() from next-auth
-                // signIn();
-              }}
-            >
-              {t("LoginPage.submit")}
+            <Button size="sm" variant="primary" asChild>
+              <Link href={`/api/auth/signin?callbackUrl=${pathname}`}>
+                {t("LoginPage.submit")}
+              </Link>
             </Button>
           </TooltipContent>
         </Tooltip>
@@ -113,14 +111,17 @@ export const SocialCardFooter: React.FC<CardFooterProps> = ({
           stats.views,
         )}
 
-        <LikeButton
-          className="flex w-16 items-center justify-center gap-1 hover:bg-transparent"
-          entityId={entityId}
-          entityType={entityType}
-          initialLiked={initialLiked}
-          initialLikeCount={stats.likes}
-          isLikeStatusLoading={isLikeStatusLoading}
-        />
+        {isLikeStatusLoading ? (
+          <SpinningLoader className="h-6 w-6 text-secondary" />
+        ) : (
+          <LikeButton
+            className="flex w-10 items-center justify-center gap-1 hover:bg-transparent"
+            entityId={entityId}
+            entityType={entityType}
+            initialLiked={initialLiked}
+            initialLikeCount={stats.likes}
+          />
+        )}
 
         {renderInteractiveButton(
           Share,

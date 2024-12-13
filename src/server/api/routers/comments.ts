@@ -163,7 +163,7 @@ export const commentRouter = createTRPCRouter({
       z.object({
         entityId: z.string(),
         entityType: z.nativeEnum(CommentableEntityType),
-        sortOrder: z.nativeEnum(SortOrder).default(SortOrder.ASC).optional(),
+        sortOrder: z.nativeEnum(SortOrder).default(SortOrder.DESC).optional(),
       }),
     )
     .query(async ({ ctx, input }) => {
