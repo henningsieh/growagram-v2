@@ -1,5 +1,4 @@
 // src/components/features/Comments/comment-tree.tsx:
-import React from "react";
 import SpinningLoader from "~/components/Layouts/loader";
 import { useComments } from "~/hooks/use-comments";
 import { api } from "~/lib/trpc/react";
@@ -33,7 +32,6 @@ const CommentsTree: React.FC<CommentsTreeProps> = ({
         isReplying={replyingToComment === comment.id}
         onReply={handleReply}
         onCancelReply={handleCancelReply}
-        onUpdateReplyingComment={handleReply}
       />
 
       {isLoading ? (
@@ -41,11 +39,13 @@ const CommentsTree: React.FC<CommentsTreeProps> = ({
       ) : (
         replies && (
           <div className="ml-6 mt-4 border-l border-muted">
-            {replies.map((reply, index) => {
-              return (
-                <CommentsTree key={index} comment={reply} isSocial={isSocial} />
-              );
-            })}
+            {replies.map((reply) => (
+              <CommentsTree
+                key={reply.id}
+                comment={reply}
+                isSocial={isSocial}
+              />
+            ))}
           </div>
         )
       )}

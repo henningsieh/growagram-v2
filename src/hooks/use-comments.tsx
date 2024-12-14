@@ -1,9 +1,4 @@
 // src/hooks/use-comments.tsx:
-import { UseQueryOptions } from "@tanstack/react-query";
-import {
-  TRPCQueryOptions,
-  UseTRPCSubscriptionOptions,
-} from "@trpc/react-query/shared";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
@@ -71,6 +66,9 @@ export const useComments = (
   };
 
   const postCommentMutation = api.comments.postComment.useMutation({
+    onMutate: () => {
+      // setIsSubmitting(true);
+    },
     onSuccess: async (_, newComment) => {
       // Refetch top-level comments for entity
       await commentsQuery.refetch();
@@ -90,6 +88,7 @@ export const useComments = (
       // Reset state
       setNewComment("");
       setReplyingToComment(null);
+      // setIsSubmitting(false);
     },
     onError: (error) => {
       console.error("Failed to post comment:", error);
@@ -114,10 +113,12 @@ export const useComments = (
 
   const handleReply = (commentId: string | null) => {
     setReplyingToComment(commentId);
+    setNewComment(""); // Clear the previous reply text when replying to a new comment
   };
 
   const handleCancelReply = () => {
     setReplyingToComment(null);
+    setNewComment(""); // Clear the reply input
   };
 
   return {
@@ -142,5 +143,6 @@ export const useComments = (
     newComment,
     setNewComment,
     handleSubmitComment,
+    isSubmitting: postCommentMutation.isPending,
   };
 };
