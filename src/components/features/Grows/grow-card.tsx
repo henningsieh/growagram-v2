@@ -30,7 +30,7 @@ import { GetOwnGrowType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
 import { LikeableEntityType } from "~/types/like";
 
-import { ItemComments } from "../Comments/item-comments";
+import { Comments } from "../Comments/comments";
 import { GrowPlantCard } from "./grow-plant-card";
 
 interface GrowCardProps {
@@ -247,7 +247,7 @@ export function GrowCard({ grow, isSocial = true }: GrowCardProps) {
           </>
         )}
         {isSocial && isCommentsOpen && (
-          <ItemComments
+          <Comments
             entityId={grow.id}
             entityType={CommentableEntityType.Grow}
             isSocial={isSocial}

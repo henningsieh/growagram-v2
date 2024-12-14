@@ -7,12 +7,12 @@ import { GetCommentType, GetRepliesInput } from "~/server/api/root";
 
 import { Comment } from "./comment";
 
-interface CommentTreeProps {
+interface CommentsTreeProps {
   comment: GetCommentType;
   isSocial?: boolean;
 }
 
-const CommentTree: React.FC<CommentTreeProps> = ({
+const CommentsTree: React.FC<CommentsTreeProps> = ({
   comment,
   isSocial = true,
 }) => {
@@ -43,7 +43,7 @@ const CommentTree: React.FC<CommentTreeProps> = ({
           <div className="ml-6 mt-4 border-l border-muted">
             {replies.map((reply, index) => {
               return (
-                <CommentTree
+                <CommentsTree
                   key={index}
                   comment={{
                     ...reply,
@@ -60,4 +60,4 @@ const CommentTree: React.FC<CommentTreeProps> = ({
   );
 };
 
-export default CommentTree;
+export default CommentsTree;

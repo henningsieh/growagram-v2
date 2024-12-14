@@ -10,15 +10,15 @@ import { Input } from "~/components/ui/input";
 import { useComments } from "~/hooks/use-comments";
 import { CommentableEntityType } from "~/types/comment";
 
-import CommentTree from "./comment-tree";
+import CommentsTree from "./comments-tree";
 
-interface ItemCommentsProps {
+interface CommentsProps {
   entityId: string;
   entityType: CommentableEntityType;
   isSocial: boolean;
 }
 
-export const ItemComments: React.FC<ItemCommentsProps> = ({
+export const Comments: React.FC<CommentsProps> = ({
   entityId,
   entityType,
   isSocial = true,
@@ -68,7 +68,11 @@ export const ItemComments: React.FC<ItemCommentsProps> = ({
       )}
       <div className="max-h-fit overflow-y-auto">
         {comments?.map((comment) => (
-          <CommentTree key={comment.id} comment={comment} isSocial={isSocial} />
+          <CommentsTree
+            key={comment.id}
+            comment={comment}
+            isSocial={isSocial}
+          />
         ))}
       </div>
       {comments?.length === 0 && (

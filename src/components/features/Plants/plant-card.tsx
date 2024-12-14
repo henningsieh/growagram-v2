@@ -46,7 +46,7 @@ import { GetOwnPlantType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
 import { LikeableEntityType } from "~/types/like";
 
-import { ItemComments } from "../Comments/item-comments";
+import { Comments } from "../Comments/comments";
 
 interface PlantCardProps {
   plant: GetOwnPlantType;
@@ -368,7 +368,7 @@ export default function PlantCard({ plant, isSocial = true }: PlantCardProps) {
         )}
 
         {isSocial && isCommentsOpen && (
-          <ItemComments
+          <Comments
             entityId={plant.id}
             entityType={CommentableEntityType.Plant}
             isSocial={isSocial}
