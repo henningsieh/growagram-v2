@@ -177,9 +177,7 @@ export const commentRouter = createTRPCRouter({
           isNull(comments.parentCommentId), // without answers on top level
         ),
         orderBy: asc(comments.createdAt),
-        with: {
-          author: true,
-        },
+        with: { author: true },
       });
 
       return allComments;
@@ -195,6 +193,7 @@ export const commentRouter = createTRPCRouter({
       const commentReplies = await ctx.db.query.comments.findMany({
         where: eq(comments.parentCommentId, commentId),
         orderBy: asc(comments.createdAt),
+        with: { author: true },
       });
 
       return commentReplies;

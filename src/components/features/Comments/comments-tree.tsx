@@ -43,14 +43,7 @@ const CommentsTree: React.FC<CommentsTreeProps> = ({
           <div className="ml-6 mt-4 border-l border-muted">
             {replies.map((reply, index) => {
               return (
-                <CommentsTree
-                  key={index}
-                  comment={{
-                    ...reply,
-                    author: comment.author,
-                  }}
-                  isSocial={isSocial}
-                />
+                <CommentsTree key={index} comment={reply} isSocial={isSocial} />
               );
             })}
           </div>
