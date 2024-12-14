@@ -19,11 +19,13 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
+import { Label } from "~/components/ui/label";
 import { Separator } from "~/components/ui/separator";
+import { Switch } from "~/components/ui/switch";
 import { useComments } from "~/hooks/use-comments";
 import { useLikeStatus } from "~/hooks/use-likes";
 import { useToast } from "~/hooks/use-toast";
-import { Link, useRouter } from "~/lib/i18n/routing";
+import { Link } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import { DateFormatOptions, formatDate } from "~/lib/utils";
 import { GetOwnGrowType } from "~/server/api/root";
@@ -38,12 +40,16 @@ interface GrowCardProps {
   isSocial?: boolean;
 }
 
-export function GrowCard({ grow, isSocial = true }: GrowCardProps) {
+export function GrowCard({
+  grow,
+  isSocial: isSocialProp = true,
+}: GrowCardProps) {
   const locale = useLocale();
-  const router = useRouter();
   const utils = api.useUtils();
   const { toast } = useToast();
   const t = useTranslations("Grows");
+
+  const [isSocial, setIsSocial] = useState(isSocialProp);
   const [isImageHovered, setIsImageHovered] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
@@ -140,20 +146,37 @@ export function GrowCard({ grow, isSocial = true }: GrowCardProps) {
           </div>
           <div>
             <CardHeader className="p-0">
-              <CardTitle
-                level="h2"
-                className="flex items-center justify-between"
-              >
-                <Button asChild variant="link" className="p-1">
-                  <Link
-                    href={`/public/grows/${grow.id}`}
-                    className="items-center gap-2"
+              <div className="flex items-center">
+                <CardTitle
+                  level="h2"
+                  className="flex items-center justify-between"
+                >
+                  <Button asChild variant="link" className="p-1">
+                    <Link
+                      href={`/public/grows/${grow.id}`}
+                      className="items-center gap-2"
+                    >
+                      <TentTree className="mt-2" size={20} />
+                      {grow.name}
+                    </Link>
+                  </Button>
+                </CardTitle>
+                {/* Switch for toggling isSocial */}
+                <div className="ml-auto flex items-start gap-2">
+                  <Label
+                    className="text-sm font-semibold"
+                    htmlFor="show-socialMode"
                   >
-                    <TentTree size={20} className="hover:underline" />
-                    {grow.name}
-                  </Link>
-                </Button>
-              </CardTitle>
+                    Social Mode
+                  </Label>
+                  <Switch
+                    id="show-socialMode"
+                    checked={isSocial}
+                    onCheckedChange={setIsSocial}
+                  />
+                </div>
+              </div>
+
               <CardDescription>
                 <span className="block">
                   {

@@ -1,3 +1,5 @@
+"use client";
+
 // src/components/features/plant/plant-card.tsx:
 import { TooltipProvider } from "@radix-ui/react-tooltip";
 import {
@@ -8,6 +10,7 @@ import {
   Nut,
   PillBottle,
   Sprout,
+  Tag,
   Trash2,
   User2,
   Wheat,
@@ -29,8 +32,10 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
+import { Label } from "~/components/ui/label";
 import { Progress } from "~/components/ui/progress";
 import { Separator } from "~/components/ui/separator";
+import { Switch } from "~/components/ui/switch";
 import {
   Tooltip,
   TooltipContent,
@@ -39,7 +44,7 @@ import {
 import { useComments } from "~/hooks/use-comments";
 import { useLikeStatus } from "~/hooks/use-likes";
 import { useToast } from "~/hooks/use-toast";
-import { Link, useRouter } from "~/lib/i18n/routing";
+import { Link } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import { calculateGrowthProgress, formatDate } from "~/lib/utils";
 import { GetOwnPlantType } from "~/server/api/root";
@@ -53,13 +58,16 @@ interface PlantCardProps {
   isSocial?: boolean;
 }
 
-export default function PlantCard({ plant, isSocial = true }: PlantCardProps) {
+export default function PlantCard({
+  plant,
+  isSocial: isSocialProp = true,
+}: PlantCardProps) {
   const locale = useLocale();
-  const router = useRouter();
   const utils = api.useUtils();
   const { toast } = useToast();
   const t = useTranslations("Plants");
 
+  const [isSocial, setIsSocial] = useState(isSocialProp);
   const [isImageHovered, setIsImageHovered] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
@@ -81,8 +89,8 @@ export default function PlantCard({ plant, isSocial = true }: PlantCardProps) {
       });
       // Invalidate and prefetch the plants query to refresh the list
       await utils.plants.getOwnPlants.invalidate();
-      await utils.plants.getOwnPlants.prefetch();
-      router.refresh();
+      // await utils.plants.getOwnPlants.prefetch();
+      // router.refresh();
     },
     onError: (error) => {
       toast({
@@ -140,7 +148,6 @@ export default function PlantCard({ plant, isSocial = true }: PlantCardProps) {
             </div>
           </CardHeader>
         )}
-
         <CardContent
           className={`grid gap-4 ${isSocial ? "ml-14 p-2 pl-0" : "p-4"}`}
         >
@@ -163,14 +170,34 @@ export default function PlantCard({ plant, isSocial = true }: PlantCardProps) {
 
           <div>
             <CardHeader className="p-0">
-              <Link href={`/public/plants/${plant.id}`}>
-                <CardTitle level="h3">
-                  <div className="flex w-full items-center gap-2">
-                    <Sprout size={20} />
-                    <h3 className="text-xl font-bold">{plant.name}</h3>
-                  </div>
+              <div className="flex items-center">
+                <CardTitle level="h2">
+                  <Button asChild variant="link" className="p-1">
+                    <Link
+                      href={`/public/plants/${plant.id}`}
+                      className="flex w-full items-center gap-2"
+                    >
+                      <Tag className="mt-2" size={20} />
+                      <h3 className="text-xl font-bold">{plant.name}</h3>
+                    </Link>
+                  </Button>
                 </CardTitle>
-              </Link>
+                {/* Switch for toggling isSocial */}
+                <div className="ml-auto flex items-start gap-2">
+                  <Label
+                    className="text-sm font-semibold"
+                    htmlFor="show-socialMode"
+                  >
+                    Social Mode
+                  </Label>
+                  <Switch
+                    id="show-socialMode"
+                    checked={isSocial}
+                    onCheckedChange={setIsSocial}
+                  />
+                </div>
+              </div>
+
               <CardDescription>
                 <span className="block">
                   {
