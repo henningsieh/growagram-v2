@@ -38,6 +38,7 @@ export type DeleteCommentOutput = RouterOutput["comments"]["deleteById"]
 // INPUTS:
 export type GetCommentsInput = RouterInput["comments"]["getComments"]
 export type GetCommentCountInput = RouterInput["comments"]["getCommentCount"]
+export type GetRepliesInput = RouterInput["comments"]["getReplies"]
 export type DeleteCommentInput = RouterInput["comments"]["deleteById"]
 
 

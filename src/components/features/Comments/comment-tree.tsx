@@ -1,23 +1,24 @@
-"use client";
-
-// src/components/features/Comments/comment-tree.tsx
+// src/components/features/Comments/comment-tree.tsx:
 import React from "react";
 import SpinningLoader from "~/components/Layouts/loader";
 import { useComments } from "~/hooks/use-comments";
 import { api } from "~/lib/trpc/react";
-import { GetCommentType } from "~/server/api/root";
+import { GetCommentType, GetRepliesInput } from "~/server/api/root";
 
 import { Comment } from "./comment";
 
 interface CommentTreeProps {
   comment: GetCommentType;
-  isSocial: boolean;
+  isSocial?: boolean;
 }
 
-const CommentTree: React.FC<CommentTreeProps> = ({ comment, isSocial }) => {
+const CommentTree: React.FC<CommentTreeProps> = ({
+  comment,
+  isSocial = true,
+}) => {
   const { data: replies, isLoading } = api.comments.getReplies.useQuery({
     commentId: comment.id,
-  });
+  } satisfies GetRepliesInput);
 
   const { handleReply, handleCancelReply, replyingToComment } = useComments(
     comment.entityId,
@@ -32,7 +33,6 @@ const CommentTree: React.FC<CommentTreeProps> = ({ comment, isSocial }) => {
         isReplying={replyingToComment === comment.id}
         onReply={handleReply}
         onCancelReply={handleCancelReply}
-        replyingToCommentId={replyingToComment}
         onUpdateReplyingComment={handleReply}
       />
 

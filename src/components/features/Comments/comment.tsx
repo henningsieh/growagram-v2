@@ -21,7 +21,6 @@ interface CommentProps {
   isSocial: boolean;
   isReplying?: boolean;
   onCancelReply?: () => void;
-  replyingToCommentId?: string | null;
   onUpdateReplyingComment?: (commentId: string | null) => void;
 }
 
@@ -31,7 +30,6 @@ export const Comment: React.FC<CommentProps> = ({
   isSocial,
   isReplying = false,
   onCancelReply,
-  replyingToCommentId,
   onUpdateReplyingComment,
 }) => {
   const { data: session } = useSession();
@@ -56,6 +54,8 @@ export const Comment: React.FC<CommentProps> = ({
 
   const handleReplySubmit = () => {
     handleSubmitComment(comment.id);
+    // Clear the replying state after submission
+    onUpdateReplyingComment?.(null);
   };
 
   const utils = api.useUtils();
@@ -136,6 +136,13 @@ export const Comment: React.FC<CommentProps> = ({
   // Handle comment deletion
   const handleDeleteComment = () => {
     deleteMutation.mutate({ commentId: comment.id });
+  };
+
+  // Handle cancelling reply
+  const handleCancelReply = () => {
+    setReplyComment(""); // Clear the reply input
+    onCancelReply?.();
+    onUpdateReplyingComment?.(null);
   };
 
   return (
@@ -233,7 +240,7 @@ export const Comment: React.FC<CommentProps> = ({
                       className="shrink-0"
                       variant="outline"
                       size="icon"
-                      onClick={onCancelReply}
+                      onClick={handleCancelReply}
                     >
                       <X size={18} />
                     </Button>

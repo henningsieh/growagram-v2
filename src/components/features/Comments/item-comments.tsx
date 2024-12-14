@@ -1,5 +1,5 @@
 // src/components/features/Comments/item-comments.tsx:
-import { Send, X } from "lucide-react";
+import { Send } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import React from "react";
@@ -15,15 +15,13 @@ import CommentTree from "./comment-tree";
 interface ItemCommentsProps {
   entityId: string;
   entityType: CommentableEntityType;
-  onClose?: () => void;
   isSocial: boolean;
 }
 
 export const ItemComments: React.FC<ItemCommentsProps> = ({
   entityId,
   entityType,
-  onClose,
-  isSocial,
+  isSocial = true,
 }) => {
   const t = useTranslations("Comments");
 
@@ -42,18 +40,7 @@ export const ItemComments: React.FC<ItemCommentsProps> = ({
   }
 
   return (
-    <div className="relative mt-2">
-      {onClose && (
-        <Button
-          variant="ghost"
-          size="icon"
-          className="absolute right-2 top-2 z-10"
-          onClick={onClose}
-        >
-          <X size={20} />
-          qwüvubqwrpviiub
-        </Button>
-      )}
+    <div className="mt-2">
       {session && (
         <div className="m-2 flex items-center gap-3 rounded-sm bg-muted p-1">
           <div className="flex justify-center">
