@@ -27,7 +27,7 @@ interface CardFooterProps {
   commentCountLoading: boolean;
   className?: string;
   stats: {
-    comments: number;
+    comments: number | undefined;
     views: number;
     likes: number;
   };

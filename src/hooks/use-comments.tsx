@@ -1,9 +1,4 @@
 // src/hooks/use-comments.tsx:
-import { UseQueryOptions } from "@tanstack/react-query";
-import {
-  TRPCQueryOptions,
-  UseTRPCSubscriptionOptions,
-} from "@trpc/react-query/shared";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
@@ -34,18 +29,16 @@ export const useComments = (
     entityType,
   });
 
+  const commentsSortOrder = SortOrder.DESC satisfies SortOrder;
+
   const commentsQuery = api.comments.getComments.useQuery(
     {
       entityId: entityId,
       entityType: entityType,
-      sortOrder: SortOrder.DESC,
+      sortOrder: commentsSortOrder,
     } satisfies GetCommentsInput,
     {
       enabled: !!session,
-      trpc: {
-        ssr: true,
-        abortOnUnmount: true,
-      },
     },
   );
 
@@ -114,16 +107,19 @@ export const useComments = (
 
   const handleReply = (commentId: string | null) => {
     setReplyingToComment(commentId);
+    setNewComment(""); // Clear the previous reply text when replying to a new comment
   };
 
   const handleCancelReply = () => {
     setReplyingToComment(null);
+    setNewComment(""); // Clear the reply input
   };
 
   return {
     // Comment state and queries
     comments: commentsQuery.data satisfies GetCommentsType | undefined,
     commentsLoading: commentsQuery.isLoading,
+    commentsSortOrder,
 
     // Comment count state
     commentCount,
@@ -142,5 +138,6 @@ export const useComments = (
     newComment,
     setNewComment,
     handleSubmitComment,
+    isSubmitting: postCommentMutation.isPending,
   };
 };

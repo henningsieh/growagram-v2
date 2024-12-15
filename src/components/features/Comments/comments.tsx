@@ -1,5 +1,5 @@
-// src/components/features/Comments/item-comments.tsx:
-import { Send, X } from "lucide-react";
+// src/components/features/Comments/comments.tsx:
+import { Send } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import React from "react";
@@ -10,20 +10,18 @@ import { Input } from "~/components/ui/input";
 import { useComments } from "~/hooks/use-comments";
 import { CommentableEntityType } from "~/types/comment";
 
-import CommentTree from "./comment-tree";
+import CommentsTree from "./comments-tree";
 
-interface ItemCommentsProps {
+interface CommentsProps {
   entityId: string;
   entityType: CommentableEntityType;
-  onClose?: () => void;
   isSocial: boolean;
 }
 
-export const ItemComments: React.FC<ItemCommentsProps> = ({
+export const Comments: React.FC<CommentsProps> = ({
   entityId,
   entityType,
-  onClose,
-  isSocial,
+  isSocial = true,
 }) => {
   const t = useTranslations("Comments");
 
@@ -42,18 +40,7 @@ export const ItemComments: React.FC<ItemCommentsProps> = ({
   }
 
   return (
-    <div className="relative mt-2">
-      {onClose && (
-        <Button
-          variant="ghost"
-          size="icon"
-          className="absolute right-2 top-2 z-10"
-          onClick={onClose}
-        >
-          <X size={20} />
-          qwüvubqwrpviiub
-        </Button>
-      )}
+    <div className="mt-2">
       {session && (
         <div className="m-2 flex items-center gap-3 rounded-sm bg-muted p-1">
           <div className="flex justify-center">
@@ -75,13 +62,17 @@ export const ItemComments: React.FC<ItemCommentsProps> = ({
             disabled={!newComment?.trim()}
             onClick={() => handleSubmitComment?.()}
           >
-            <Send size={18} />
+            <Send size={20} />
           </Button>
         </div>
       )}
       <div className="max-h-fit overflow-y-auto">
         {comments?.map((comment) => (
-          <CommentTree key={comment.id} comment={comment} isSocial={isSocial} />
+          <CommentsTree
+            key={comment.id}
+            comment={comment}
+            isSocial={isSocial}
+          />
         ))}
       </div>
       {comments?.length === 0 && (

@@ -3,12 +3,15 @@
 // src/components/features/Grows/grow-card.tsx:
 import { AnimatePresence, motion } from "framer-motion";
 import { Edit, Loader2, TentTree, Trash2, User2 } from "lucide-react";
+import { User } from "next-auth";
+import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useState } from "react";
 import headerImagePlaceholder from "~/assets/landscape-placeholdersvg.svg";
 import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
 import { SocialCardFooter } from "~/components/atom/social-card-footer";
+import SocialHeader from "~/components/atom/social-header";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
 import {
@@ -19,18 +22,20 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
+import { Label } from "~/components/ui/label";
 import { Separator } from "~/components/ui/separator";
+import { Switch } from "~/components/ui/switch";
 import { useComments } from "~/hooks/use-comments";
 import { useLikeStatus } from "~/hooks/use-likes";
 import { useToast } from "~/hooks/use-toast";
-import { Link, useRouter } from "~/lib/i18n/routing";
+import { Link } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import { DateFormatOptions, formatDate } from "~/lib/utils";
 import { GetOwnGrowType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
 import { LikeableEntityType } from "~/types/like";
 
-import { ItemComments } from "../Comments/item-comments";
+import { Comments } from "../Comments/comments";
 import { GrowPlantCard } from "./grow-plant-card";
 
 interface GrowCardProps {
@@ -38,12 +43,19 @@ interface GrowCardProps {
   isSocial?: boolean;
 }
 
-export function GrowCard({ grow, isSocial = true }: GrowCardProps) {
+export function GrowCard({
+  grow,
+  isSocial: isSocialProp = true,
+}: GrowCardProps) {
+  const { data: session } = useSession();
+  const user = session?.user;
+
   const locale = useLocale();
-  const router = useRouter();
   const utils = api.useUtils();
   const { toast } = useToast();
   const t = useTranslations("Grows");
+
+  const [isSocial, setIsSocial] = useState(isSocialProp);
   const [isImageHovered, setIsImageHovered] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
@@ -99,29 +111,17 @@ export function GrowCard({ grow, isSocial = true }: GrowCardProps) {
       />
       <Card className="my-2 flex flex-col overflow-hidden">
         {isSocial && (
-          <CardHeader className="space-y-0 p-2">
-            <div className="flex items-start justify-between">
-              <div className="flex gap-3">
-                <Avatar className="h-10 w-10">
-                  <AvatarImage src={grow.owner.image as string | undefined} />
-                  <AvatarFallback>
-                    <User2 className="h-5 w-5" />
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex flex-col">
-                  <p className="text-sm font-semibold">{grow.owner.name}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {`@${grow.owner.name}`}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </CardHeader>
+          <SocialHeader
+            userName={grow.owner.name as string}
+            userUserName={undefined}
+            userAvatarUrl={grow.owner.image}
+          />
         )}
 
         <CardContent
           className={`flex flex-1 flex-col gap-4 ${isSocial ? "ml-14 p-2 pl-0" : "p-4"}`}
         >
+          {/* Grow HeaderImage */}
           <div
             className="relative aspect-video overflow-hidden"
             onMouseEnter={() => setIsImageHovered(true)}
@@ -138,51 +138,67 @@ export function GrowCard({ grow, isSocial = true }: GrowCardProps) {
               }}
             />
           </div>
-          <div>
-            <CardHeader className="p-0">
-              <CardTitle
-                level="h2"
-                className="flex items-center justify-between"
-              >
-                <Button asChild variant="link" className="p-1">
-                  <Link
-                    href={`/public/grows/${grow.id}`}
-                    className="items-center gap-2"
-                  >
-                    <TentTree size={20} className="hover:underline" />
-                    {grow.name}
-                  </Link>
-                </Button>
-              </CardTitle>
-              <CardDescription>
-                <span className="block">
-                  {
-                    t("grow-card-createdAt")
-                    // eslint-disable-next-line react/jsx-no-literals
-                  }
-                  :{" "}
-                  {formatDate(grow.createdAt, locale, {
-                    weekday: "short",
-                    month: "long",
-                  } as DateFormatOptions)}
-                </span>
-                {grow.updatedAt && (
-                  <div className="block">
-                    {
-                      t("grow-card-updatedAt")
-                      // eslint-disable-next-line react/jsx-no-literals
-                    }
-                    :{" "}
-                    {formatDate(grow.updatedAt, locale, {
-                      weekday: "short",
-                      month: "long",
-                    } as DateFormatOptions)}
-                  </div>
-                )}
-              </CardDescription>
-            </CardHeader>
+
+          {/* Title Link */}
+          <div className="flex items-center">
+            <CardTitle level="h2" className="flex items-center justify-between">
+              <Button asChild variant="link" className="p-1">
+                <Link
+                  href={`/public/grows/${grow.id}`}
+                  className="items-center gap-2"
+                >
+                  <TentTree className="mt-2" size={20} />
+                  {grow.name}
+                </Link>
+              </Button>
+            </CardTitle>
+            {/* Switch for toggling isSocial */}
+            {user && user.id === grow.ownerId && (
+              <div className="ml-auto flex items-start gap-2">
+                <Label
+                  className="text-sm font-semibold"
+                  htmlFor="show-socialMode"
+                >
+                  Social Mode
+                </Label>
+                <Switch
+                  id="show-socialMode"
+                  checked={isSocial}
+                  onCheckedChange={setIsSocial}
+                />
+              </div>
+            )}
           </div>
 
+          {/* Grow created and updated at Date */}
+          <CardDescription>
+            <span className="block">
+              {
+                t("grow-card-createdAt")
+                // eslint-disable-next-line react/jsx-no-literals
+              }
+              :{" "}
+              {formatDate(grow.createdAt, locale, {
+                weekday: "short",
+                month: "long",
+              } as DateFormatOptions)}
+            </span>
+            {grow.updatedAt && (
+              <div className="block">
+                {
+                  t("grow-card-updatedAt")
+                  // eslint-disable-next-line react/jsx-no-literals
+                }
+                :{" "}
+                {formatDate(grow.updatedAt, locale, {
+                  weekday: "short",
+                  month: "long",
+                } as DateFormatOptions)}
+              </div>
+            )}
+          </CardDescription>
+
+          {/* Plants Grid */}
           <div className="space-y-4">
             <AnimatePresence>
               {grow.plants.map((plant) => (
@@ -206,6 +222,7 @@ export function GrowCard({ grow, isSocial = true }: GrowCardProps) {
         </CardContent>
 
         {isSocial ? (
+          // Social Footer
           <SocialCardFooter
             className={`pb-2 pr-2 ${isSocial && "ml-14"}`}
             entityId={grow.id}
@@ -221,33 +238,37 @@ export function GrowCard({ grow, isSocial = true }: GrowCardProps) {
             toggleComments={toggleComments}
           />
         ) : (
-          <>
-            <Separator />
-            <CardFooter className="flex w-full justify-between gap-1 p-1">
-              <Button
-                variant={"destructive"}
-                size={"sm"}
-                className="w-20"
-                onClick={handleDelete}
-                disabled={deleteMutation.isPending}
-              >
-                {deleteMutation.isPending ? (
-                  <Loader2 size={20} className="animate-spin" />
-                ) : (
-                  <Trash2 size={20} />
-                )}
-              </Button>
-              <Button asChild size={"sm"} className="w-full text-base">
-                <Link href={`/grows/${grow.id}/form`}>
-                  <Edit size={20} />
-                  {t("form-page-title-edit")}
-                </Link>
-              </Button>
-            </CardFooter>
-          </>
+          user &&
+          user.id === grow.ownerId && (
+            // Owner Buttons
+            <>
+              <Separator />
+              <CardFooter className="flex w-full justify-between gap-1 p-1">
+                <Button
+                  variant={"destructive"}
+                  size={"sm"}
+                  className="w-20"
+                  onClick={handleDelete}
+                  disabled={deleteMutation.isPending}
+                >
+                  {deleteMutation.isPending ? (
+                    <Loader2 size={20} className="animate-spin" />
+                  ) : (
+                    <Trash2 size={20} />
+                  )}
+                </Button>
+                <Button asChild size={"sm"} className="w-full text-base">
+                  <Link href={`/grows/${grow.id}/form`}>
+                    <Edit size={20} />
+                    {t("form-page-title-edit")}
+                  </Link>
+                </Button>
+              </CardFooter>
+            </>
+          )
         )}
         {isSocial && isCommentsOpen && (
-          <ItemComments
+          <Comments
             entityId={grow.id}
             entityType={CommentableEntityType.Grow}
             isSocial={isSocial}

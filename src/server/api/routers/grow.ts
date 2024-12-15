@@ -115,6 +115,7 @@ export const growRouter = createTRPCRouter({
           owner: true,
           plants: {
             with: {
+              owner: true,
               strain: {
                 columns: {
                   id: true,

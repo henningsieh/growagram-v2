@@ -1,10 +1,11 @@
 // src/components/features/Comments/comment.tsx:
 import { AnimatePresence, motion } from "framer-motion";
-import { Reply, Trash2, X } from "lucide-react";
+import { Loader2, Reply, Trash2, X } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
-import React from "react";
+import SpinningLoader from "~/components/Layouts/loader";
 import { SocialCardFooter } from "~/components/atom/social-card-footer";
+import { SortOrder } from "~/components/atom/sort-filter-controls";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
@@ -12,7 +13,12 @@ import { useComments } from "~/hooks/use-comments";
 import { useLikeStatus } from "~/hooks/use-likes";
 import { useToast } from "~/hooks/use-toast";
 import { api } from "~/lib/trpc/react";
-import { GetCommentType } from "~/server/api/root";
+import {
+  GetCommentType,
+  GetCommentsInput,
+  GetRepliesInput,
+} from "~/server/api/root";
+import { CommentableEntityType } from "~/types/comment";
 import { LikeableEntityType } from "~/types/like";
 
 interface CommentProps {
@@ -21,8 +27,6 @@ interface CommentProps {
   isSocial: boolean;
   isReplying?: boolean;
   onCancelReply?: () => void;
-  replyingToCommentId?: string | null;
-  onUpdateReplyingComment?: (commentId: string | null) => void;
 }
 
 export const Comment: React.FC<CommentProps> = ({
@@ -31,8 +35,6 @@ export const Comment: React.FC<CommentProps> = ({
   isSocial,
   isReplying = false,
   onCancelReply,
-  replyingToCommentId,
-  onUpdateReplyingComment,
 }) => {
   const { data: session } = useSession();
   const t = useTranslations("Comments");
@@ -44,16 +46,16 @@ export const Comment: React.FC<CommentProps> = ({
     isLoading: likesAreLoading,
   } = useLikeStatus(comment.id, LikeableEntityType.Comment);
 
-  const { data: replies, isLoading: repliesAreLoading } =
+  const { data: replies, isLoading: commentCountLoading } =
     api.comments.getReplies.useQuery({ commentId: comment.id });
 
   const {
     newComment: replyComment,
     setNewComment: setReplyComment,
     handleSubmitComment,
-    commentCountLoading,
+    isSubmitting,
+    commentsSortOrder,
   } = useComments(comment.entityId, comment.entityType);
-
   const handleReplySubmit = () => {
     handleSubmitComment(comment.id);
   };
@@ -71,11 +73,17 @@ export const Comment: React.FC<CommentProps> = ({
       const previousCommentsOnThisLevel = comment.parentCommentId
         ? utils.comments.getReplies.getData({
             commentId: comment.parentCommentId,
-          })
+          } satisfies GetRepliesInput)
         : utils.comments.getComments.getData({
             entityId: comment.entityId,
             entityType: comment.entityType,
-          });
+            sortOrder: commentsSortOrder,
+          } satisfies GetCommentsInput);
+
+      console.debug(
+        "previousCommentsOnThisLevel: ",
+        previousCommentsOnThisLevel,
+      );
 
       if (comment.parentCommentId) {
         // Optimistically remove the deleted comment from the other parent's replies
@@ -87,11 +95,12 @@ export const Comment: React.FC<CommentProps> = ({
             parentsReplies?.filter((r) => r.id !== deletedCommentId) || [],
         );
       } else {
-        // Optimistically remove the deleted comment entity's comments
+        // Optimistically remove the deleted comment from entity's comments
         utils.comments.getComments.setData(
           {
             entityId: comment.entityId,
             entityType: comment.entityType,
+            sortOrder: commentsSortOrder,
           },
           (entitysComments) =>
             entitysComments?.filter((r) => r.id !== deletedCommentId) || [],
@@ -138,112 +147,117 @@ export const Comment: React.FC<CommentProps> = ({
     deleteMutation.mutate({ commentId: comment.id });
   };
 
+  // Handle cancelling reply
+  const handleCancelReply = () => {
+    setReplyComment("");
+    onCancelReply?.();
+  };
+
   return (
-    !repliesAreLoading && (
-      <AnimatePresence>
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7 }}
-        >
-          <div className="relative flex gap-2 p-2">
-            <div className="flex justify-center">
-              <Avatar className="m-1 h-8 w-8">
-                <AvatarImage src={comment.author.image || undefined} />
-                <AvatarFallback>
-                  {comment.author.name?.[0] || "?"}
-                </AvatarFallback>
-              </Avatar>
-            </div>
-            <div className="flex-1">
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-semibold">
-                  {comment.author.name}
-                </span>
-                <span className="text-xs text-muted-foreground">
-                  {new Date(comment.createdAt).toLocaleString()}
-                </span>
-                {isAuthor && (
-                  <Button
-                    variant="destructive"
-                    size="icon"
-                    className="m-1 ml-auto h-8 w-8 bg-muted"
-                    onClick={handleDeleteComment}
-                    disabled={deleteMutation.isPending}
-                  >
-                    <Trash2 size={18} />
-                  </Button>
-                )}
-              </div>
-              <p className="text-sm">{comment.commentText}</p>
-            </div>
+    <>
+      <motion.div
+        initial={{ opacity: 0, y: -30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+      >
+        <div className="relative flex gap-2 p-2">
+          <div className="flex justify-center">
+            <Avatar className="m-1 h-8 w-8">
+              <AvatarImage src={comment.author.image || undefined} />
+              <AvatarFallback>{comment.author.name?.[0] || "?"}</AvatarFallback>
+            </Avatar>
           </div>
-          <SocialCardFooter
-            className={`pb-2 pr-2 ${isSocial && "ml-14"}`}
-            entityId={comment.id}
-            entityType={LikeableEntityType.Comment}
-            initialLiked={isLiked}
-            isLikeStatusLoading={likesAreLoading}
-            commentCountLoading={commentCountLoading}
-            stats={{
-              comments: replies ? replies.length : 0,
-              views: 0,
-              likes: likeCount,
-            }}
-            toggleComments={() => onReply?.(comment.id)}
-          />
+          <div className="flex-1">
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-semibold">
+                {comment.author.name}
+              </span>
+              <span className="text-xs text-muted-foreground">
+                {new Date(comment.createdAt).toLocaleString()}
+              </span>
+              {isAuthor && (
+                <Button
+                  variant="destructive"
+                  size="icon"
+                  className="m-1 ml-auto h-8 w-8 bg-muted"
+                  onClick={handleDeleteComment}
+                  disabled={deleteMutation.isPending}
+                >
+                  <Trash2 size={20} />
+                </Button>
+              )}
+            </div>
+            <p className="text-sm">{comment.commentText}</p>
+          </div>
+        </div>
 
-          {/* Reply Input field, avatar and buttons */}
-          <AnimatePresence>
-            {isReplying && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.3 }}
-              >
-                <div className="m-2 flex items-center gap-3 rounded-sm bg-muted p-1">
-                  <div className="flex justify-center">
-                    <Avatar className="m-0 h-8 w-8">
-                      <AvatarImage
-                        src={(session?.user && session.user.image) || undefined}
-                      />
-                      <AvatarFallback>
-                        {(session?.user && session.user.name?.[0]) || "?"}
-                      </AvatarFallback>
-                    </Avatar>
-                  </div>
+        <SocialCardFooter
+          className={`pb-2 pr-2 ${isSocial && "ml-14"}`}
+          entityId={comment.id}
+          entityType={LikeableEntityType.Comment}
+          initialLiked={isLiked}
+          isLikeStatusLoading={likesAreLoading}
+          commentCountLoading={commentCountLoading}
+          stats={{ comments: replies?.length, likes: likeCount, views: 0 }}
+          toggleComments={
+            !isReplying ? () => onReply?.(comment.id) : handleCancelReply
+          }
+        />
 
-                  <div className="flex flex-1 gap-2">
-                    <Input
-                      placeholder={t("reply-to-comment-placeholder")}
-                      value={replyComment}
-                      onChange={(e) => setReplyComment(e.target.value)}
-                      className="h-8 w-full"
-                    />
-                    <Button
-                      className="shrink-0"
-                      size="icon"
-                      disabled={!replyComment.trim()}
-                      onClick={handleReplySubmit}
-                    >
-                      <Reply size={18} />
-                    </Button>
-                    <Button
-                      className="shrink-0"
-                      variant="outline"
-                      size="icon"
-                      onClick={onCancelReply}
-                    >
-                      <X size={18} />
-                    </Button>
-                  </div>
+        <AnimatePresence>
+          {isReplying && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              transition={{ duration: 0.3 }}
+              exit={{
+                opacity: 0,
+                height: 0,
+                transition: { duration: 0.2 },
+              }}
+            >
+              <div className="m-2 flex items-center gap-3 rounded-sm bg-muted p-1">
+                <Avatar className="m-1 h-8 w-8">
+                  <AvatarImage src={session?.user?.image || undefined} />
+                  <AvatarFallback>
+                    {session?.user?.name?.[0] || "?"}
+                  </AvatarFallback>
+                </Avatar>
+
+                <div className="flex flex-1 gap-2">
+                  <Input
+                    placeholder={t("reply-to-comment-placeholder")}
+                    value={replyComment}
+                    onChange={(e) => setReplyComment(e.target.value)}
+                    className="h-8 w-full"
+                    disabled={isSubmitting}
+                  />
+                  <Button
+                    className="shrink-0"
+                    size="icon"
+                    disabled={!replyComment.trim() || isSubmitting}
+                    onClick={handleReplySubmit}
+                  >
+                    {isSubmitting ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Reply size={20} />
+                    )}
+                  </Button>
+                  <Button
+                    className="shrink-0"
+                    variant="outline"
+                    size="icon"
+                    onClick={handleCancelReply}
+                  >
+                    <X size={20} />
+                  </Button>
                 </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </motion.div>
-      </AnimatePresence>
-    )
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
+    </>
   );
 };

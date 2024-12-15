@@ -6,7 +6,11 @@ import { PaginationItemsPerPage } from "~/assets/constants";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
 import cloudinary from "~/lib/cloudinary";
 import { images, plantImages } from "~/lib/db/schema";
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "~/server/api/trpc";
 import { PhotosSortField } from "~/types/image";
 import { imageSchema } from "~/types/zodSchema";
 
@@ -96,6 +100,7 @@ export const photoRouter = createTRPCRouter({
         limit: limit,
         offset: offset,
         with: {
+          owner: true,
           plantImages: {
             columns: { imageId: false, plantId: false },
             with: {
@@ -117,13 +122,14 @@ export const photoRouter = createTRPCRouter({
     }),
 
   // Get single image
-  getById: protectedProcedure
+  getById: publicProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
       // Logic to fetch a single image by ID
       const image = await ctx.db.query.images.findFirst({
         where: eq(images.id, input.id),
         with: {
+          owner: true,
           plantImages: {
             columns: { plantId: false, imageId: false },
             with: { plant: true },
