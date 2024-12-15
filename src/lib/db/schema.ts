@@ -425,7 +425,11 @@ export const plantsRelations = relations(plants, ({ one, many }) => ({
   comments: many(comments, { relationName: "plant_comments" }), // This must match the relationName in One-to-One Relation "plantComments" above
 }));
 
-export const imagesRelations = relations(images, ({ many }) => ({
+export const imagesRelations = relations(images, ({ one, many }) => ({
+  owner: one(users, {
+    fields: [images.ownerId],
+    references: [users.id],
+  }),
   // An image has many likes
   likes: many(likes),
   // An image may show plants
