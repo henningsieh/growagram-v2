@@ -29,18 +29,16 @@ export const useComments = (
     entityType,
   });
 
+  const commentsSortOrder = SortOrder.DESC satisfies SortOrder;
+
   const commentsQuery = api.comments.getComments.useQuery(
     {
       entityId: entityId,
       entityType: entityType,
-      sortOrder: SortOrder.DESC,
+      sortOrder: commentsSortOrder,
     } satisfies GetCommentsInput,
     {
       enabled: !!session,
-      trpc: {
-        ssr: true,
-        abortOnUnmount: true,
-      },
     },
   );
 
@@ -66,9 +64,6 @@ export const useComments = (
   };
 
   const postCommentMutation = api.comments.postComment.useMutation({
-    onMutate: () => {
-      // setIsSubmitting(true);
-    },
     onSuccess: async (_, newComment) => {
       // Refetch top-level comments for entity
       await commentsQuery.refetch();
@@ -88,7 +83,6 @@ export const useComments = (
       // Reset state
       setNewComment("");
       setReplyingToComment(null);
-      // setIsSubmitting(false);
     },
     onError: (error) => {
       console.error("Failed to post comment:", error);
@@ -125,6 +119,7 @@ export const useComments = (
     // Comment state and queries
     comments: commentsQuery.data satisfies GetCommentsType | undefined,
     commentsLoading: commentsQuery.isLoading,
+    commentsSortOrder,
 
     // Comment count state
     commentCount,

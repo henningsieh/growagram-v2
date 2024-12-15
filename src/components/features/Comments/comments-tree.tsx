@@ -34,20 +34,12 @@ const CommentsTree: React.FC<CommentsTreeProps> = ({
         onCancelReply={handleCancelReply}
       />
 
-      {isLoading ? (
-        <SpinningLoader className="my-4 h-6 w-6" />
-      ) : (
-        replies && (
-          <div className="ml-6 mt-4 border-l border-muted">
-            {replies.map((reply) => (
-              <CommentsTree
-                key={reply.id}
-                comment={reply}
-                isSocial={isSocial}
-              />
-            ))}
-          </div>
-        )
+      {!isLoading && replies && (
+        <div className="ml-6 mt-4 border-l border-muted">
+          {replies.map((reply) => (
+            <CommentsTree key={reply.id} comment={reply} isSocial={isSocial} />
+          ))}
+        </div>
       )}
     </div>
   );

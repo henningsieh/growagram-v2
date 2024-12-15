@@ -1,4 +1,4 @@
-// src/components/features/Comments/item-comments.tsx:
+// src/components/features/Comments/comments.tsx:
 import { Send } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
@@ -62,7 +62,7 @@ export const Comments: React.FC<CommentsProps> = ({
             disabled={!newComment?.trim()}
             onClick={() => handleSubmitComment?.()}
           >
-            <Send size={18} />
+            <Send size={20} />
           </Button>
         </div>
       )}

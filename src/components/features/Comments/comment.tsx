@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import SpinningLoader from "~/components/Layouts/loader";
 import { SocialCardFooter } from "~/components/atom/social-card-footer";
+import { SortOrder } from "~/components/atom/sort-filter-controls";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
@@ -12,7 +13,11 @@ import { useComments } from "~/hooks/use-comments";
 import { useLikeStatus } from "~/hooks/use-likes";
 import { useToast } from "~/hooks/use-toast";
 import { api } from "~/lib/trpc/react";
-import { GetCommentType } from "~/server/api/root";
+import {
+  GetCommentType,
+  GetCommentsInput,
+  GetRepliesInput,
+} from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
 import { LikeableEntityType } from "~/types/like";
 
@@ -49,6 +54,7 @@ export const Comment: React.FC<CommentProps> = ({
     setNewComment: setReplyComment,
     handleSubmitComment,
     isSubmitting,
+    commentsSortOrder,
   } = useComments(comment.entityId, comment.entityType);
   const handleReplySubmit = () => {
     handleSubmitComment(comment.id);
@@ -67,11 +73,17 @@ export const Comment: React.FC<CommentProps> = ({
       const previousCommentsOnThisLevel = comment.parentCommentId
         ? utils.comments.getReplies.getData({
             commentId: comment.parentCommentId,
-          })
+          } satisfies GetRepliesInput)
         : utils.comments.getComments.getData({
             entityId: comment.entityId,
             entityType: comment.entityType,
-          });
+            sortOrder: commentsSortOrder,
+          } satisfies GetCommentsInput);
+
+      console.debug(
+        "previousCommentsOnThisLevel: ",
+        previousCommentsOnThisLevel,
+      );
 
       if (comment.parentCommentId) {
         // Optimistically remove the deleted comment from the other parent's replies
@@ -83,12 +95,12 @@ export const Comment: React.FC<CommentProps> = ({
             parentsReplies?.filter((r) => r.id !== deletedCommentId) || [],
         );
       } else {
-        // Optimistically remove the deleted comment entity's comments
-
+        // Optimistically remove the deleted comment from entity's comments
         utils.comments.getComments.setData(
           {
             entityId: comment.entityId,
             entityType: comment.entityType,
+            sortOrder: commentsSortOrder,
           },
           (entitysComments) =>
             entitysComments?.filter((r) => r.id !== deletedCommentId) || [],
@@ -142,11 +154,11 @@ export const Comment: React.FC<CommentProps> = ({
   };
 
   return (
-    <AnimatePresence>
+    <>
       <motion.div
-        initial={{ opacity: 0, y: -20 }}
+        initial={{ opacity: 0, y: -30 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7 }}
+        transition={{ duration: 0.3 }}
       >
         <div className="relative flex gap-2 p-2">
           <div className="flex justify-center">
@@ -171,7 +183,7 @@ export const Comment: React.FC<CommentProps> = ({
                   onClick={handleDeleteComment}
                   disabled={deleteMutation.isPending}
                 >
-                  <Trash2 size={18} />
+                  <Trash2 size={20} />
                 </Button>
               )}
             </div>
@@ -192,54 +204,60 @@ export const Comment: React.FC<CommentProps> = ({
           }
         />
 
-        {isReplying && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            <div className="m-2 flex items-center gap-3 rounded-sm bg-muted p-1">
-              <Avatar className="m-1 h-8 w-8">
-                <AvatarImage src={comment.author.image || undefined} />
-                <AvatarFallback>
-                  {comment.author.name?.[0] || "?"}
-                </AvatarFallback>
-              </Avatar>
+        <AnimatePresence>
+          {isReplying && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              transition={{ duration: 0.3 }}
+              exit={{
+                opacity: 0,
+                height: 0,
+                transition: { duration: 0.2 },
+              }}
+            >
+              <div className="m-2 flex items-center gap-3 rounded-sm bg-muted p-1">
+                <Avatar className="m-1 h-8 w-8">
+                  <AvatarImage src={session?.user?.image || undefined} />
+                  <AvatarFallback>
+                    {session?.user?.name?.[0] || "?"}
+                  </AvatarFallback>
+                </Avatar>
 
-              <div className="flex flex-1 gap-2">
-                <Input
-                  placeholder={t("reply-to-comment-placeholder")}
-                  value={replyComment}
-                  onChange={(e) => setReplyComment(e.target.value)}
-                  className="h-8 w-full"
-                  disabled={isSubmitting}
-                />
-                <Button
-                  className="shrink-0"
-                  size="icon"
-                  disabled={!replyComment.trim() || isSubmitting}
-                  onClick={handleReplySubmit}
-                >
-                  {isSubmitting ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <Reply size={18} />
-                  )}
-                </Button>
-                <Button
-                  className="shrink-0"
-                  variant="outline"
-                  size="icon"
-                  onClick={handleCancelReply}
-                >
-                  <X size={18} />
-                </Button>
+                <div className="flex flex-1 gap-2">
+                  <Input
+                    placeholder={t("reply-to-comment-placeholder")}
+                    value={replyComment}
+                    onChange={(e) => setReplyComment(e.target.value)}
+                    className="h-8 w-full"
+                    disabled={isSubmitting}
+                  />
+                  <Button
+                    className="shrink-0"
+                    size="icon"
+                    disabled={!replyComment.trim() || isSubmitting}
+                    onClick={handleReplySubmit}
+                  >
+                    {isSubmitting ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Reply size={20} />
+                    )}
+                  </Button>
+                  <Button
+                    className="shrink-0"
+                    variant="outline"
+                    size="icon"
+                    onClick={handleCancelReply}
+                  >
+                    <X size={20} />
+                  </Button>
+                </div>
               </div>
-            </div>
-          </motion.div>
-        )}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </motion.div>
-    </AnimatePresence>
+    </>
   );
 };
