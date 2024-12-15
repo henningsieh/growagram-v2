@@ -3,7 +3,11 @@ import { TRPCError } from "@trpc/server";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { plantImages, plants } from "~/lib/db/schema";
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "~/server/api/trpc";
 import { plantFormSchema } from "~/types/zodSchema";
 
 export const plantRouter = createTRPCRouter({
@@ -67,7 +71,7 @@ export const plantRouter = createTRPCRouter({
     }),
 
   // Get single plant
-  getById: protectedProcedure
+  getById: publicProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
       // Logic to fetch a single image by ID
