@@ -15,12 +15,14 @@ import {
   User2,
   Wheat,
 } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useState } from "react";
 import headerImagePlaceholder from "~/assets/landscape-placeholdersvg.svg";
 import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
 import { SocialCardFooter } from "~/components/atom/social-card-footer";
+import SocialHeader from "~/components/atom/social-header";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
@@ -62,6 +64,8 @@ export default function PlantCard({
   plant,
   isSocial: isSocialProp = true,
 }: PlantCardProps) {
+  const { data: session } = useSession();
+  const user = session?.user;
   const locale = useLocale();
   const utils = api.useUtils();
   const { toast } = useToast();
@@ -129,28 +133,17 @@ export default function PlantCard({
 
       <Card className="my-2 flex flex-col overflow-hidden">
         {isSocial && (
-          <CardHeader className="space-y-0 p-2">
-            <div className="flex items-start justify-between">
-              <div className="flex gap-3">
-                <Avatar className="h-10 w-10">
-                  <AvatarImage src={plant.owner?.image as string | undefined} />
-                  <AvatarFallback>
-                    <User2 className="h-5 w-5" />
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex flex-col">
-                  <p className="text-sm font-semibold">{plant.owner?.name}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {`@${plant.owner?.name}`}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </CardHeader>
+          <SocialHeader
+            userName={plant.owner.name as string}
+            userUserName={undefined}
+            userAvatarUrl={plant.owner.image}
+          />
         )}
+
         <CardContent
-          className={`grid gap-4 ${isSocial ? "ml-14 p-2 pl-0" : "p-4"}`}
+          className={`grid gap-2 ${isSocial ? "ml-14 pl-0 pr-2" : "p-4"}`}
         >
+          {/* Plant HeaderImage */}
           <div
             className="relative aspect-video overflow-hidden"
             onMouseEnter={() => setIsImageHovered(true)}
@@ -168,56 +161,72 @@ export default function PlantCard({
             />
           </div>
 
-          <div>
-            <CardHeader className="p-0">
-              <div className="flex items-center">
-                <CardTitle level="h2">
-                  <Button asChild variant="link" className="p-1">
-                    <Link
-                      href={`/public/plants/${plant.id}`}
-                      className="flex w-full items-center gap-2"
-                    >
-                      <Tag className="mt-2" size={20} />
-                      <h3 className="text-xl font-bold">{plant.name}</h3>
-                    </Link>
-                  </Button>
-                </CardTitle>
-                {/* Switch for toggling isSocial */}
-                <div className="ml-auto flex items-start gap-2">
-                  <Label
-                    className="text-sm font-semibold"
-                    htmlFor="show-socialMode"
-                  >
-                    Social Mode
-                  </Label>
-                  <Switch
-                    id="show-socialMode"
-                    checked={isSocial}
-                    onCheckedChange={setIsSocial}
-                  />
-                </div>
+          {/* Title Link */}
+          <div className="flex items-center">
+            <CardTitle level="h2">
+              <Button asChild variant="link" className="p-1">
+                <Link
+                  href={`/public/plants/${plant.id}`}
+                  className="flex w-full items-center gap-2"
+                >
+                  <Tag className="mt-2" size={20} />
+                  <h3 className="text-xl font-bold">{plant.name}</h3>
+                </Link>
+              </Button>
+            </CardTitle>
+            {/* Switch for toggling isSocial */}
+            {user && user.id === plant.ownerId && (
+              <div className="ml-auto flex items-start gap-2">
+                <Label
+                  className="text-sm font-semibold"
+                  htmlFor="show-socialMode"
+                >
+                  Social Mode
+                </Label>
+                <Switch
+                  id="show-socialMode"
+                  checked={isSocial}
+                  onCheckedChange={setIsSocial}
+                />
               </div>
-
-              <CardDescription>
-                <span className="block">
-                  {
-                    t("strain")
-                    // eslint-disable-next-line react/jsx-no-literals
-                  }
-                  : {plant.strain?.name ?? "Unknown"}
-                </span>
-                <span className="block">
-                  {
-                    t("breeder")
-                    // eslint-disable-next-line react/jsx-no-literals
-                  }
-                  : {plant.strain?.breeder.name ?? "Unknown"}
-                </span>
-              </CardDescription>
-            </CardHeader>
+            )}
           </div>
 
-          <div className="space-y-4">
+          {/* Strain Info */}
+          <CardDescription>
+            <span className="block">
+              {
+                t("strain")
+                // eslint-disable-next-line react/jsx-no-literals
+              }
+              : {plant.strain?.name ?? "Unknown"}
+            </span>
+            <span className="block">
+              {
+                t("breeder")
+                // eslint-disable-next-line react/jsx-no-literals
+              }
+              : {plant.strain?.breeder.name ?? "Unknown"}
+            </span>
+          </CardDescription>
+
+          {/* Plant Progress and Dates */}
+          <div className="space-y-6">
+            <div className="mt-4 flex justify-between">
+              <div className="flex w-full flex-col">
+                <div className="mb-1 flex justify-between text-sm">
+                  <span>{t("growth-progress")}</span>
+                  <span>
+                    {
+                      progress
+                      // eslint-disable-next-line react/jsx-no-literals
+                    }
+                    %
+                  </span>
+                </div>
+                <Progress value={progress} className="w-full" />
+              </div>
+            </div>
             <div className="mt-4 space-y-2">
               <div className="flex h-4 items-center">
                 <TooltipProvider>
@@ -333,26 +342,11 @@ export default function PlantCard({
                 </TooltipProvider>
               </div>
             </div>
-
-            <div className="mt-4 flex justify-between">
-              <div className="w-full">
-                <div className="mb-1 flex justify-between text-sm">
-                  <span>{t("growth-progress")}</span>
-                  <span>
-                    {
-                      progress
-                      // eslint-disable-next-line react/jsx-no-literals
-                    }
-                    %
-                  </span>
-                </div>
-                <Progress value={progress} className="w-full" />
-              </div>
-            </div>
           </div>
         </CardContent>
 
         {isSocial ? (
+          // Social Footer
           <SocialCardFooter
             className={`pb-2 pr-2 ${isSocial && "ml-14"}`}
             entityId={plant.id}
@@ -368,30 +362,34 @@ export default function PlantCard({
             toggleComments={toggleComments}
           />
         ) : (
-          <>
-            <Separator />
-            <CardFooter className="flex w-full justify-between gap-1 p-1">
-              <Button
-                variant="destructive"
-                size="sm"
-                className="w-20"
-                onClick={handleDelete}
-                disabled={deleteMutation.isPending}
-              >
-                {deleteMutation.isPending ? (
-                  <Loader2 size={20} className="animate-spin" />
-                ) : (
-                  <Trash2 size={20} />
-                )}
-              </Button>
-              <Button asChild size="sm" className="w-full text-base">
-                <Link href={`/plants/${plant.id}/form`}>
-                  <Edit size={20} />
-                  {t("edit-plant-button-label")}
-                </Link>
-              </Button>
-            </CardFooter>
-          </>
+          user &&
+          user.id === plant.ownerId && (
+            // Owner Buttons
+            <>
+              <Separator />
+              <CardFooter className="flex w-full justify-between gap-1 p-1">
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  className="w-20"
+                  onClick={handleDelete}
+                  disabled={deleteMutation.isPending}
+                >
+                  {deleteMutation.isPending ? (
+                    <Loader2 size={20} className="animate-spin" />
+                  ) : (
+                    <Trash2 size={20} />
+                  )}
+                </Button>
+                <Button asChild size="sm" className="w-full text-base">
+                  <Link href={`/plants/${plant.id}/form`}>
+                    <Edit size={20} />
+                    {t("edit-plant-button-label")}
+                  </Link>
+                </Button>
+              </CardFooter>
+            </>
+          )
         )}
 
         {isSocial && isCommentsOpen && (
