@@ -1,6 +1,8 @@
 // src/types/zodSchema.ts:
 import { z } from "zod";
 
+import { UserRoles } from "./user";
+
 export const plantFormSchema = z.object({
   id: z.string().optional(),
   name: z.string().min(2, {
@@ -38,4 +40,20 @@ export const imageSchema = z.object({
 export const growSchema = z.object({
   id: z.string().optional(),
   name: z.string().min(1, "Grow name is required"),
+});
+
+// form schema for user editing
+export const userEditSchema = z.object({
+  id: z.string(),
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  username: z
+    .string()
+    .min(3, "Username must be at least 3 characters")
+    .regex(
+      /^[a-zA-Z0-9]+$/,
+      "Username must only contain alphanumeric characters with no spaces",
+    ),
+  email: z.string().email("Invalid email address"),
+  image: z.string().url("Invalid image URL").optional(),
+  // role: z.nativeEnum(UserRoles).optional(),
 });

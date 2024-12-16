@@ -7,6 +7,7 @@ import { plantRouter } from "./routers/plant";
 import { growRouter } from "./routers/grow";
 import { likeRouter } from "./routers/likes";
 import { commentRouter } from "./routers/comments";
+import { userRouter } from "./routers/users";
 
 
 /**
@@ -19,6 +20,7 @@ export const appRouter = createTRPCRouter({
   plants: plantRouter,
   grows: growRouter,
   likes: likeRouter,
+  users: userRouter,
   comments: commentRouter,
 });
 
@@ -26,6 +28,17 @@ export const appRouter = createTRPCRouter({
 export type AppRouter = typeof appRouter;
 type RouterOutput = inferRouterOutputs<AppRouter>;
 type RouterInput = inferRouterInputs<AppRouter>
+
+// userRouter
+//  OUTPUTS:
+// export type UserType = NonNullable<GetUserType>;
+export type GetUserType = RouterOutput["users"]["getById"]
+export type GetUserEditType = RouterOutput["users"]["getAllUsers"][number]
+export type GetUserPublicType = RouterOutput["users"]["getAllUsers"][number]
+export type GetUsersPublicType = RouterOutput["users"]["getAllUsers"]
+//  INPUTS
+export type GetUserByIdInput = RouterInput["users"]["getById"]
+export type GetUserEditInput = RouterInput["users"]["editUser"]
 
 // commentRouter
 //  OUTPUTS:

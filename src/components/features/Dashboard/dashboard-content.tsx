@@ -19,6 +19,8 @@ export function DashboardContent({ user }: UserProfileProps) {
       <div className="grid items-center justify-items-center gap-4 p-8 pb-20">
         <h1>{user.name}</h1>
         <p>{user.email}</p>
+        <p>{user.username}</p>
+        <p>{user.role}</p>
       </div>
     </PageHeader>
   );

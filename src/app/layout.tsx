@@ -42,21 +42,11 @@ type LayoutProps = {
 };
 
 export default async function RootLayout(props: LayoutProps) {
-  // Await params before accessing params, see:
-  // https://nextjs.org/docs/messages/sync-dynamic-apis
-  const { locale } = await (props.params as unknown as Promise<
-    typeof props.params
-  >);
-
-  // Ensure that the incoming `locale` is valid
-  if (!routing.locales.includes(locale as never)) {
-    // notFound();
-    console.debug("LOCALE NOT FOUND");
-  }
-
+  // TODO: fix locale here!
   return (
     <html
-      lang={locale}
+      // lang={locale}
+      lang="de"
       suppressHydrationWarning
       className={APP_SETTINGS.DEFAULT_THEME === "dark" ? "dark" : ""}
     >

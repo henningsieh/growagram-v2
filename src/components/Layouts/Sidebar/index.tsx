@@ -2,7 +2,6 @@
 
 // src/components/Layouts/Sidebar/index.tsx:
 import {
-  BadgeCheck,
   Bell,
   ChevronRight,
   ChevronsUpDown,
@@ -15,7 +14,9 @@ import {
   Plus,
   Sparkles,
   Trash2,
+  UserPen,
 } from "lucide-react";
+import { User } from "next-auth";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
@@ -75,7 +76,7 @@ export default function ProtectedSidebar({
   const t = useTranslations();
   const isMobile = useIsMobile();
 
-  const user = useSession().data?.user;
+  const user = useSession().data?.user as User;
 
   return (
     <SidebarProvider className="relative">
@@ -271,10 +272,12 @@ export default function ProtectedSidebar({
 
                   <DropdownMenuSeparator />
                   <DropdownMenuGroup>
-                    <DropdownMenuItem>
-                      <BadgeCheck />
-                      Account
-                    </DropdownMenuItem>
+                    <Link href={`/users/${user && user.id}/form`}>
+                      <DropdownMenuItem>
+                        <UserPen />
+                        Account
+                      </DropdownMenuItem>
+                    </Link>
                     <DropdownMenuItem>
                       <CreditCard />
                       Billing

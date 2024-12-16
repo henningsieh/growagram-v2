@@ -16,20 +16,41 @@ import {
 import type { AdapterAccountType } from "next-auth/adapters";
 import { CommentableEntityType } from "~/types/comment";
 import { LikeableEntityType } from "~/types/like";
+import { UserRoles } from "~/types/user";
 
 // Creating table with a prefix for multi-project schema
 export const createTable = pgTableCreator((name) => `growagram.com_${name}`);
 
 // Define the users table
-export const users = pgTable("user", {
-  id: text("id")
-    .primaryKey()
-    .$defaultFn(() => crypto.randomUUID()),
-  name: text("name"),
-  email: text("email").unique(),
-  emailVerified: timestamp("emailVerified", { mode: "date" }),
-  image: text("image"),
-});
+export const users = pgTable(
+  "user",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    name: text("name"),
+    username: text("username").unique(),
+    email: text("email").unique(),
+    emailVerified: timestamp("emailVerified", { mode: "date" }),
+    image: text("image"),
+    role: text("role", {
+      // Assert UserRoles as drizzle enum tuple
+      enum: Object.values(UserRoles) as [string, ...string[]],
+    })
+      .default(UserRoles.USER) // Use the TS enum for the default value
+      .notNull(),
+  },
+  (table) => ({
+    // Unique indexes for fast lookups on unique fields
+    uniqueEmailIdx: uniqueIndex("unique_email_idx").on(table.email),
+    uniqueUsernameIdx: uniqueIndex("unique_username_idx").on(table.username),
+
+    // Additional indexes for common query patterns
+    nameIdx: index("name_idx").on(table.name),
+    roleIdx: index("role_idx").on(table.role),
+    emailVerifiedIdx: index("email_verified_idx").on(table.emailVerified),
+  }),
+);
 
 // Define the accounts table
 export const accounts = pgTable(

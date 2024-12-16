@@ -78,6 +78,20 @@
       "when": 1733826132920,
       "tag": "0010_motionless_blob",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1734272584415,
+      "tag": "0011_bright_madelyne_pryor",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1734286644625,
+      "tag": "0012_warm_james_howlett",
+      "breakpoints": true
     }
   ]
 }

@@ -16,7 +16,7 @@ const languages = routing.locales;
 function isPathProtected(path: string): boolean {
   return PROTECTED_PATHS.some(
     (protectedPath) =>
-      path === protectedPath || // Exact match
+      path === `${protectedPath}` || // Exact match
       path === `${protectedPath}/` || // Trailing slash
       path.startsWith(`${protectedPath}/`), // Any subpath
   );
@@ -25,10 +25,11 @@ function isPathProtected(path: string): boolean {
 export default async function middleware(request: NextRequest) {
   // Get the current session (user's authentication status)
   const session = await auth();
-  // console.debug("Session:", session); // Debugging session
+  console.debug("next-auth session: ", session); // Debugging session
 
   // Get the pathname
   const pathname = request.nextUrl.pathname;
+  console.debug("pathname: ", pathname); // Debugging pathname"""
 
   // Extract the locale from the path. Example: /de/photos or /en/photos
   const localeMatch = request.nextUrl.pathname.match(
