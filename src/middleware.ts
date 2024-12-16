@@ -1,4 +1,5 @@
-import NextAuth from "next-auth";
+// src/middleware.ts
+import NextAuth, { DefaultSession } from "next-auth";
 import createMiddleware from "next-intl/middleware";
 import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
@@ -25,8 +26,9 @@ function isPathProtected(path: string): boolean {
 export default async function middleware(request: NextRequest) {
   // Get the current session (user's authentication status)
   const session = await auth();
-  console.debug("next-auth session: ", session); // Debugging session
-
+  // Log the full session to verify
+  console.debug("Middleware session: ", JSON.stringify(session, null, 2));
+  console.log(request.headers);
   // Get the pathname
   const pathname = request.nextUrl.pathname;
   console.debug("pathname: ", pathname); // Debugging pathname"""
@@ -62,11 +64,7 @@ export default async function middleware(request: NextRequest) {
     console.debug("User is not authenticated. Redirecting to sign-in page.");
 
     // Redirect using the real URL, preserving the client-facing URL
-    const redirectUrl = new URL(
-      // `/${currentLocale}/login`,
-      `/api/auth/signin`,
-      `http://${realHost}`,
-    );
+    const redirectUrl = new URL(`/api/auth/signin`, `http://${realHost}`);
     redirectUrl.searchParams.append("callbackUrl", realUrl); // Use the real URL here
     return NextResponse.redirect(redirectUrl); // Redirect to the sign-in page with the real URL
   }

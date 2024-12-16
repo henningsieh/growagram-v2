@@ -1,6 +1,5 @@
 "use client";
 
-// src/components/features/Users/user-form.tsx:
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AnimatePresence, motion } from "framer-motion";
 import { debounce } from "lodash";
@@ -40,7 +39,7 @@ export default function UserEditForm({
 }: {
   user: NonNullable<GetUserType>;
 }) {
-  const { status, update } = useSession();
+  const { data: session, status, update } = useSession();
   const utils = api.useUtils();
   const { toast } = useToast();
   const t = useTranslations("Users");
@@ -48,7 +47,12 @@ export default function UserEditForm({
   const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(
     null,
   );
-  const [username, setUsername] = useState(""); // Local state to handle username input
+  const [username, setUsername] = useState(user.username || ""); // Initialize with existing username
+  const [usernameModified, setUsernameModified] = useState(false);
+
+  useEffect(() => {
+    console.debug({ session });
+  }, [session]);
 
   const form = useForm<GetUserEditInput>({
     mode: "onBlur",
@@ -81,36 +85,46 @@ export default function UserEditForm({
   });
 
   async function onSubmit(values: GetUserEditInput) {
+    // Additional check to ensure username is not empty if modified
+    // if (usernameModified && !values.username?.trim()) {
+    //   form.setError("username", {
+    //     type: "manual",
+    //     message: "Username is required",
+    //   });
+    //   return;
+    // }
+
     await editUserMutation.mutateAsync(values);
   }
 
   // Check username uniqueness
-  // This hook will refetch username availability after typing stops
   const usernameCheck = api.users.isUsernameAvailable.useQuery(
     { username: username || "", excludeOwn: true },
     {
-      enabled: false, // Disable auto-fetching
+      enabled: false,
       refetchOnWindowFocus: false,
     },
   );
 
   const debouncedUsernameCheck = debounce(() => {
-    usernameCheck.refetch(); // Trigger refetch when debounce completes
-  }, 500); // 500ms debounce
+    usernameCheck.refetch();
+  }, 500);
 
   // Handle username change, debounce the API call
   const handleUsernameChange = (newUsername: string) => {
-    setUsername(newUsername); // Update local state
-    if (typingTimeout) clearTimeout(typingTimeout); // Clear previous timer
+    setUsername(newUsername);
+    setUsernameModified(true); // Mark that username has been modified
 
-    // Set new timer
+    if (typingTimeout) clearTimeout(typingTimeout);
+
     setTypingTimeout(
       setTimeout(() => {
-        debouncedUsernameCheck(); // Call debounced function after delay
+        debouncedUsernameCheck();
       }, 500),
     );
 
-    form.setValue("username", newUsername); // Update react-hook-form state
+    form.setValue("username", newUsername);
+    form.trigger("username"); // Trigger validation
   };
 
   return (
@@ -158,7 +172,6 @@ export default function UserEditForm({
                   />
 
                   {/* Username Field */}
-
                   <FormField
                     control={form.control}
                     name="username"
@@ -269,14 +282,22 @@ export default function UserEditForm({
                   <Button
                     type="button"
                     variant="outline"
-                    onClick={() => form.reset()}
+                    onClick={() => {
+                      form.reset();
+                      setUsername(user.username || "");
+                      setUsernameModified(false);
+                    }}
                     className="w-full"
                   >
                     {t("form-reset-button")}
                   </Button>
                   <Button
                     type="submit"
-                    disabled={editUserMutation.isPending}
+                    disabled={
+                      editUserMutation.isPending ||
+                      (usernameModified &&
+                        (!usernameCheck.data?.isUnique || !username.trim()))
+                    }
                     className="w-full"
                   >
                     <Edit

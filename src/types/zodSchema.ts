@@ -46,17 +46,17 @@ export const growSchema = z.object({
 export const userEditSchema = z.object({
   id: z.string(),
   name: z
-    .string()
+    .string({ required_error: "Name is required" })
     .min(2, { message: "Name is required and must be at least 2 characters" }),
   username: z
-    .string()
+    .string({ required_error: "Username is required" })
     .min(5, { message: "Username must be at least 5 characters" })
     .regex(/^[a-zA-Z0-9]+$/, {
       message:
         "Username must only contain alphanumeric characters with no spaces",
     }),
-  email: z.string().email({ message: "Invalid email address" }),
+  email: z
+    .string({ required_error: "Email is required" })
+    .email({ message: "Invalid email address" }),
   image: z.string().url({ message: "Invalid image URL" }).optional(),
-  // editing the `role` willm be handled by an extra admin function
-  // role: z.nativeEnum(UserRoles).optional(),
 });

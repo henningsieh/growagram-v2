@@ -5,7 +5,7 @@ import Google from "next-auth/providers/google";
 import Twitter from "next-auth/providers/twitter";
 
 // Notice this is only an object, not a full Auth.js
-// instance... in order to get "Auth on Edge" running!?
+// instance... in order to get "Auth on Edge" running.
 export default {
   providers: [
     Google({

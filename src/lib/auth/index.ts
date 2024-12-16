@@ -1,39 +1,9 @@
+// src/lib/auth/index.ts:
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import NextAuth from "next-auth";
-import { DefaultSession } from "next-auth";
 import { db } from "~/lib/db";
 
 import authConfig from "./auth.config";
-
-// Extend the default types to include our custom properties
-declare module "next-auth" {
-  interface User {
-    username?: string | null;
-    role?: "user" | "admin";
-  }
-
-  interface Session {
-    user: {
-      id: string;
-      username?: string | null;
-      role?: "user" | "admin";
-    } & DefaultSession["user"];
-  }
-
-  interface JWT {
-    id?: string;
-    username?: string | null;
-    role?: "user" | "admin";
-  }
-}
-
-declare module "@auth/core/adapters" {
-  interface AdapterUser {
-    // Add your additional properties here:
-    username: string | null;
-    role: "user" | "admin";
-  }
-}
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: DrizzleAdapter(db),
