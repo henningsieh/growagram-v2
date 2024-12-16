@@ -158,5 +158,28 @@
     "light": "Light",
     "system": "System",
     "toggle-theme": "Toggle theme"
+  },
+  "Users": {
+    "form-edit-profile-title": "Edit user account details",
+    "form-edit-profile-subtitle": "Manage your profile information and settings.",
+    "form-back-button": "Back to Profile",
+    "form-profile-details": "Profile Details",
+    "form-profile-details-description": "Update your account information below.",
+    "form-name-label": "Name",
+    "form-name-description": "Your full name as displayed on your profile.",
+    "form-name-placeholder": "Enter your name",
+    "form-username-label": "Username",
+    "form-username-description": "Choose a unique username for your account.",
+    "form-username-placeholder": "Enter your username",
+    "form-username-checking": "Checking username availability...",
+    "form-username-taken": "This username is already taken.",
+    "form-email-label": "Email",
+    "form-email-description": "Your primary email address for account communications.",
+    "form-email-placeholder": "Enter your email",
+    "form-profile-image-label": "Profile Image",
+    "form-profile-image-description": "Provide a URL for your profile picture.",
+    "form-profile-image-placeholder": "Enter image URL",
+    "form-reset-button": "Reset",
+    "form-save-button": "Save Changes"
   }
 }

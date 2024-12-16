@@ -49,13 +49,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           token.role === "user" || token.role === "admin" ? token.role : "user",
       };
 
-      console.debug("async session callback ", { session });
+      // console.debug("async session callback ", { session });
 
       return session;
     },
 
     async jwt({ token, user, trigger, session }) {
-      console.debug("async jwt callback: ", { token });
+      // console.debug("async jwt callback: ", { token });
 
       // When user first logs in or during token refresh, fetch additional user details
       if (user || !token.username) {

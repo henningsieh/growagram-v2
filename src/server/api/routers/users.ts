@@ -1,6 +1,6 @@
 // src/server/api/routers/users.ts:
 import { TRPCError } from "@trpc/server";
-import { eq } from "drizzle-orm";
+import { and, eq, not } from "drizzle-orm";
 import { z } from "zod";
 import { users } from "~/lib/db/schema";
 import {
@@ -77,5 +77,30 @@ export const userRouter = createTRPCRouter({
         });
 
       return updatedUser[0];
+    }),
+
+  // refactor method to check if username is taken by another user
+  isUsernameAvailable: protectedProcedure
+    .input(
+      z.object({
+        username: z.string(),
+        excludeOwn: z.boolean().optional().default(false), // Boolean flag for exclusion
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const { username, excludeOwn } = input;
+
+      // Determine the condition for excluding the current user
+      const exclusionCondition = excludeOwn
+        ? not(eq(users.id, ctx.session.user.id)) // Exclude current user's ID if `excludeOwn` is true
+        : undefined;
+
+      // Fetch user with matching username, applying exclusion condition if needed
+      const existingUser = await ctx.db.query.users.findFirst({
+        where: and(eq(users.username, username), exclusionCondition),
+        columns: { id: true },
+      });
+
+      return { isUnique: !existingUser };
     }),
 });
