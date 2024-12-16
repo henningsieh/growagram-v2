@@ -1,5 +1,6 @@
 "use client";
 
+// src/components/features/Users/user-form.tsx:
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Edit, Image, Mail, User as UserIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
@@ -27,13 +28,8 @@ import {
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
 import { useToast } from "~/hooks/use-toast";
-import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
-import {
-  GetUserEditInput,
-  GetUserEditType,
-  GetUserType,
-} from "~/server/api/root";
+import { GetUserEditInput, GetUserType } from "~/server/api/root";
 import { userEditSchema } from "~/types/zodSchema";
 
 // type FormValues = z.infer<typeof userEditSchema>;
@@ -43,9 +39,8 @@ export default function UserEditForm({
 }: {
   user: NonNullable<GetUserType>;
 }) {
-  const { data: session, status, update } = useSession();
+  const { status, update } = useSession();
   const utils = api.useUtils();
-  const router = useRouter();
   const { toast } = useToast();
 
   const t = useTranslations("Users");
@@ -56,6 +51,7 @@ export default function UserEditForm({
     defaultValues: {
       id: user.id,
       name: user.name || undefined,
+      username: user.username || undefined,
       email: user.email || undefined,
       image: user.image || undefined,
     },
@@ -63,20 +59,17 @@ export default function UserEditForm({
 
   const editUserMutation = api.users.editUser.useMutation({
     onSuccess: async (updatedUser) => {
+      console.debug("Mutation successful, updated user:", updatedUser);
       toast({
         title: "Success",
         description: "Your profile has been updated.",
       });
 
-      // Invalidate and refetch user data
       await utils.users.getById.refetch({ id: updatedUser.id });
-
-      // Navigate back to user profile or dashboard
-      console.debug("updatedUser.name: ", updatedUser.name);
-      await update(updatedUser satisfies GetUserEditType);
-      // router.refresh();
+      await update(updatedUser);
     },
     onError: (error) => {
+      console.error("Mutation error:", error);
       toast({
         title: "Error",
         description: error.message,
@@ -85,9 +78,24 @@ export default function UserEditForm({
     },
   });
 
+  // Modify onSubmit to log validation errors
   async function onSubmit(values: GetUserEditInput) {
-    alert("aspdb");
-    await editUserMutation.mutateAsync(values satisfies GetUserEditInput);
+    // Log form validation state before submission
+    console.error("Form Validation Errors:", form.formState.errors);
+
+    if (Object.keys(form.formState.errors).length > 0) {
+      console.error(
+        "Validation Errors Prevent Submission:",
+        form.formState.errors,
+      );
+      return;
+    }
+
+    try {
+      await editUserMutation.mutateAsync(values);
+    } catch (error) {
+      console.error("Submission Error:", error);
+    }
   }
 
   return (
@@ -99,7 +107,17 @@ export default function UserEditForm({
         buttonLink="/profile"
       >
         <FormContent>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault(); // Explicitly prevent default form submission
+              console.log("Form submit event triggered!");
+
+              // Use form.handleSubmit with explicit error handling
+              form.handleSubmit(onSubmit, (errors) => {
+                console.error("Form validation errors:", errors);
+              })(e);
+            }}
+          >
             <Form {...form}>
               <Card>
                 <CardHeader>
@@ -128,6 +146,31 @@ export default function UserEditForm({
                         </FormControl>
                         <FormDescription>
                           {t("form-name-description")}
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* Username Field */}
+                  <FormField
+                    control={form.control}
+                    name="username"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t("form-username-label")}</FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <UserIcon className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+                            <Input
+                              className="pl-10"
+                              placeholder={t("form-username-placeholder")}
+                              {...field}
+                            />
+                          </div>
+                        </FormControl>
+                        <FormDescription>
+                          {t("form-username-description")}
                         </FormDescription>
                         <FormMessage />
                       </FormItem>

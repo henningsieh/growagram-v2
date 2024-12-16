@@ -45,15 +45,18 @@ export const growSchema = z.object({
 // form schema for user editing
 export const userEditSchema = z.object({
   id: z.string(),
-  name: z.string().min(2, "Name must be at least 2 characters"),
+  name: z
+    .string()
+    .min(2, { message: "Name is required and must be at least 2 characters" }),
   username: z
     .string()
-    .min(3, "Username must be at least 3 characters")
-    .regex(
-      /^[a-zA-Z0-9]+$/,
-      "Username must only contain alphanumeric characters with no spaces",
-    ),
-  email: z.string().email("Invalid email address"),
-  image: z.string().url("Invalid image URL").optional(),
+    .min(5, { message: "Username must be at least 5 characters" })
+    .regex(/^[a-zA-Z0-9]+$/, {
+      message:
+        "Username must only contain alphanumeric characters with no spaces",
+    }),
+  email: z.string().email({ message: "Invalid email address" }),
+  image: z.string().url({ message: "Invalid image URL" }).optional(),
+  // editing the `role` willm be handled by an extra admin function
   // role: z.nativeEnum(UserRoles).optional(),
 });

@@ -79,6 +79,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         console.debug("trigger session.update():", session);
         // Note, that `session` can be any arbitrary object, remember to validate it!
         token.name = session.name;
+        token.username = session.username;
       }
       return token;
     },
