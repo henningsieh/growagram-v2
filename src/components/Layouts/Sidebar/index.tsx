@@ -272,7 +272,7 @@ export default function ProtectedSidebar({
 
                   <DropdownMenuSeparator />
                   <DropdownMenuGroup>
-                    <Link href={`/users/${user && user.id}/form`}>
+                    <Link href="/account/edit">
                       <DropdownMenuItem>
                         <UserPen />
                         Account

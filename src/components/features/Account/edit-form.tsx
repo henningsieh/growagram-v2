@@ -1,9 +1,10 @@
 "use client";
 
+// src/components/features/Account/edit-form.tsx:
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AnimatePresence, motion } from "framer-motion";
 import { debounce } from "lodash";
-import { AtSign, Edit, Image, Mail } from "lucide-react";
+import { AtSign, CheckIcon, Edit, Loader2, Mail, UserIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
@@ -34,7 +35,7 @@ import { api } from "~/lib/trpc/react";
 import { GetUserEditInput, GetUserType } from "~/server/api/root";
 import { userEditSchema } from "~/types/zodSchema";
 
-export default function UserEditForm({
+export default function AccountEditForm({
   user,
 }: {
   user: NonNullable<GetUserType>;
@@ -62,7 +63,7 @@ export default function UserEditForm({
       name: user.name || undefined,
       username: user.username || undefined,
       email: user.email || undefined,
-      image: user.image || undefined,
+      // image: user.image || undefined,
     },
   });
 
@@ -85,15 +86,6 @@ export default function UserEditForm({
   });
 
   async function onSubmit(values: GetUserEditInput) {
-    // Additional check to ensure username is not empty if modified
-    // if (usernameModified && !values.username?.trim()) {
-    //   form.setError("username", {
-    //     type: "manual",
-    //     message: "Username is required",
-    //   });
-    //   return;
-    // }
-
     await editUserMutation.mutateAsync(values);
   }
 
@@ -133,7 +125,7 @@ export default function UserEditForm({
         title={t("form-edit-profile-title")}
         subtitle={t("form-edit-profile-subtitle")}
         buttonLabel={t("form-back-button")}
-        buttonLink="/profile"
+        buttonLink="/account"
       >
         <FormContent>
           <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -153,12 +145,34 @@ export default function UserEditForm({
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>{t("form-name-label")}</FormLabel>
-                        <FormDescription>
-                          {t("form-name-description")}
-                        </FormDescription>
+                        <AnimatePresence mode="wait">
+                          {form.formState.errors.name ? (
+                            <motion.div
+                              key="error"
+                              initial={{ opacity: 0, y: -10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              exit={{ opacity: 0, y: 10 }}
+                              transition={{ duration: 0.2 }}
+                            >
+                              <FormMessage />
+                            </motion.div>
+                          ) : (
+                            <motion.div
+                              key="description"
+                              initial={{ opacity: 0, y: -10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              exit={{ opacity: 0, y: 10 }}
+                              transition={{ duration: 0.2 }}
+                            >
+                              <FormDescription>
+                                {t("form-name-description")}
+                              </FormDescription>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
                         <FormControl>
                           <div className="relative">
-                            <Mail className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+                            <UserIcon className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
                             <Input
                               className="pl-10"
                               placeholder={t("form-name-placeholder")}
@@ -166,7 +180,6 @@ export default function UserEditForm({
                             />
                           </div>
                         </FormControl>
-                        <FormMessage />
                       </FormItem>
                     )}
                   />
@@ -177,7 +190,15 @@ export default function UserEditForm({
                     name="username"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>{t("form-username-label")}</FormLabel>
+                        <FormLabel
+                          className={
+                            usernameCheck.data && !usernameCheck.data.isUnique
+                              ? `text-red-500`
+                              : ``
+                          }
+                        >
+                          {t("form-username-label")}
+                        </FormLabel>
                         <AnimatePresence>
                           {usernameCheck.isFetching ? (
                             <motion.div
@@ -185,7 +206,7 @@ export default function UserEditForm({
                               animate={{ opacity: 1 }}
                               exit={{ opacity: 0 }}
                             >
-                              <div className="text-sm text-muted-foreground">
+                              <div className="text-[0.8rem] text-muted-foreground">
                                 {t("form-username-checking")}
                               </div>
                             </motion.div>
@@ -197,10 +218,12 @@ export default function UserEditForm({
                               animate={{ opacity: 1 }}
                               exit={{ opacity: 0 }}
                             >
-                              <div className="text-sm text-red-500">
+                              <div className="text-sm font-semibold text-red-500">
                                 {t("form-username-taken")}
                               </div>
                             </motion.div>
+                          ) : form.formState.errors.username ? (
+                            <FormMessage />
                           ) : (
                             <FormDescription>
                               {t("form-username-description")}
@@ -208,19 +231,32 @@ export default function UserEditForm({
                           )}
                         </AnimatePresence>
                         <FormControl>
-                          <div className="relative">
+                          <div className="relative flex items-center">
                             <AtSign className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
                             <Input
-                              className="pl-10"
+                              className="pl-10 pr-10" // Add right padding to make space for icon
+                              autoComplete="off"
+                              autoCorrect="off"
+                              autoCapitalize="off"
+                              spellCheck="false"
                               placeholder={t("form-username-placeholder")}
-                              value={username} // Bind the input value to the local state
+                              value={username}
                               onChange={(e) =>
                                 handleUsernameChange(e.target.value)
-                              } // Update local state and form value
+                              }
                             />
+                            <div className="absolute right-3 flex h-6 w-6 items-center justify-center">
+                              {!usernameCheck.isFetching ? (
+                                usernameCheck.data &&
+                                usernameCheck.data.isUnique && (
+                                  <CheckIcon className="h-6 w-6 text-green-600" />
+                                )
+                              ) : (
+                                <Loader2 className="h-6 w-6 animate-spin text-green-600" />
+                              )}
+                            </div>
                           </div>
                         </FormControl>
-                        <FormMessage />
                       </FormItem>
                     )}
                   />
@@ -239,7 +275,12 @@ export default function UserEditForm({
                           <div className="relative">
                             <Mail className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
                             <Input
+                              readOnly
+                              disabled
                               type="email"
+                              autoComplete="off"
+                              autoCapitalize="off"
+                              spellCheck="false"
                               className="pl-10"
                               placeholder={t("form-email-placeholder")}
                               {...field}
@@ -252,7 +293,7 @@ export default function UserEditForm({
                   />
 
                   {/* Profile Image Field */}
-                  <FormField
+                  {/* <FormField
                     control={form.control}
                     name="image"
                     render={({ field }) => (
@@ -275,7 +316,7 @@ export default function UserEditForm({
                         <FormMessage />
                       </FormItem>
                     )}
-                  />
+                  /> */}
                 </CardContent>
 
                 <CardFooter className="flex gap-4">
