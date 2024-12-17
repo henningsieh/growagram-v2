@@ -55,7 +55,7 @@ export default function AccountInfo({
                       {user.name?.[0] || user.username?.[0] || "U"}
                     </AvatarFallback>
                   </Avatar>
-                  <div className="w-full max-w-md space-y-4">
+                  <div className="grid w-full max-w-md grid-cols-1 gap-4 sm:grid-cols-2">
                     {infoItems.map((item, index) => (
                       <motion.div
                         key={item.label}
@@ -63,16 +63,14 @@ export default function AccountInfo({
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: index * 0.1 }}
                       >
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-2">
-                            <item.icon className="h-5 w-5 text-muted-foreground" />
-                            <span className="font-medium">
-                              {t(`${item.label}`)}:
-                            </span>
+                        <div className="space-y-1">
+                          <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+                            <item.icon className="h-4 w-4" />
+                            <span>{t(`info-${item.label}`)}</span>
                           </div>
-                          <span className="text-right">
+                          <div className="font-medium">
                             {item.value || t("not-provided")}
-                          </span>
+                          </div>
                         </div>
                       </motion.div>
                     ))}

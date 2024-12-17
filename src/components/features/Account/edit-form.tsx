@@ -31,6 +31,7 @@ import {
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
 import { useToast } from "~/hooks/use-toast";
+import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import { GetUserEditInput, GetUserType } from "~/server/api/root";
 import { userEditSchema } from "~/types/zodSchema";
@@ -40,10 +41,11 @@ export default function AccountEditForm({
 }: {
   user: NonNullable<GetUserType>;
 }) {
-  const { data: session, status, update } = useSession();
+  const router = useRouter();
   const utils = api.useUtils();
-  const { toast } = useToast();
   const t = useTranslations("Account");
+  const { toast } = useToast();
+  const { data: session, status, update } = useSession();
 
   const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(
     null,
@@ -66,15 +68,20 @@ export default function AccountEditForm({
       // image: user.image || undefined,
     },
   });
-
   const editUserMutation = api.users.editUser.useMutation({
     onSuccess: async (updatedUser) => {
+      // Update session immediately
+      update(updatedUser);
+
       toast({
         title: "Success",
         description: "Your profile has been updated.",
       });
-      await utils.users.getById.refetch({ id: updatedUser.id });
-      await update(updatedUser);
+
+      // Slight delay to allow session update to propagate
+      setTimeout(() => {
+        router.push("/account");
+      }, 50);
     },
     onError: (error) => {
       toast({
@@ -88,7 +95,6 @@ export default function AccountEditForm({
   async function onSubmit(values: GetUserEditInput) {
     await editUserMutation.mutateAsync(values);
   }
-
   // Check username uniqueness
   const usernameCheck = api.users.isUsernameAvailable.useQuery(
     { username: username || "", excludeOwn: true },

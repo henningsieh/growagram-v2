@@ -160,10 +160,10 @@
     "toggle-theme": "Designthema umschalten"
   },
   "Account": {
-    "Name": "Name",
-    "Username": "Benutzername",
-    "Email": "E-Mail",
-    "Role": "Rolle",
+    "info-Name": "Name",
+    "info-Username": "Benutzername",
+    "info-Email": "E-Mail",
+    "info-Role": "Rolle",
     "not-provided": "Nicht angegeben",
     "edit-profile": "Account bearbeiten",
     "account-info-title": "Dein Account",
