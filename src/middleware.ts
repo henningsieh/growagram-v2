@@ -1,8 +1,7 @@
 // src/middleware.ts
-import NextAuth, { DefaultSession } from "next-auth";
+import NextAuth from "next-auth";
 import createMiddleware from "next-intl/middleware";
-import { NextResponse } from "next/server";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import authConfig from "~/lib/auth/auth.config";
 
 import { PROTECTED_PATHS } from "./assets/constants";
@@ -28,6 +27,7 @@ export default async function middleware(request: NextRequest) {
   const session = await auth();
   // Log the full session to verify
   console.debug("Middleware session: ", JSON.stringify(session, null, 2));
+
   console.log(request.headers);
   // Get the pathname
   const pathname = request.nextUrl.pathname;
