@@ -1,6 +1,6 @@
 // src/app/[locale]/(protected)/users/[id]/form/page.tsx:
 import { notFound } from "next/navigation";
-import UserEditForm from "~/components/features/Users/user-form";
+import AccountEditForm from "~/components/features/Account/edit-form";
 import { api } from "~/lib/trpc/server";
 import { GetUserByIdInput, GetUserEditInput } from "~/server/api/root";
 
@@ -17,5 +17,5 @@ export default async function EditUserPage({
   // If user not found, show 404
   if (!user) notFound();
 
-  return <UserEditForm user={user} />;
+  return <AccountEditForm user={user} />;
 }

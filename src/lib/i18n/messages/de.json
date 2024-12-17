@@ -159,7 +159,16 @@
     "system": "System",
     "toggle-theme": "Designthema umschalten"
   },
-  "Users": {
+  "Account": {
+    "Name": "Name",
+    "Username": "Benutzername",
+    "Email": "E-Mail",
+    "Role": "Rolle",
+    "not-provided": "Nicht angegeben",
+    "edit-profile": "Account bearbeiten",
+    "account-info-title": "Dein Account",
+    "account-info-subtitle": "Sieh dir deine Accountinformationen an",
+    "edit-profile-button": "Account bearbeiten",
     "form-edit-profile-title": "Bearbeite deinen Account",
     "form-edit-profile-subtitle": "Verwalte deine Accountinformationen und Einstellungen.",
     "form-back-button": "Zurück zum Account",

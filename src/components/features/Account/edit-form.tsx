@@ -43,7 +43,7 @@ export default function AccountEditForm({
   const { data: session, status, update } = useSession();
   const utils = api.useUtils();
   const { toast } = useToast();
-  const t = useTranslations("Users");
+  const t = useTranslations("Account");
 
   const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(
     null,

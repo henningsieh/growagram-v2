@@ -159,7 +159,16 @@
     "system": "System",
     "toggle-theme": "Toggle theme"
   },
-  "Users": {
+  "Account": {
+    "Name": "Name",
+    "Username": "Username",
+    "Email": "Email",
+    "Role": "Role",
+    "not-provided": "Not provided",
+    "edit-profile": "Edit Profile",
+    "account-info-title": "Your Account",
+    "account-info-subtitle": "View your account details",
+    "edit-profile-button": "Edit Profile",
     "form-edit-profile-title": "Edit user account details",
     "form-edit-profile-subtitle": "Manage your profile information and settings.",
     "form-back-button": "Back to Profile",

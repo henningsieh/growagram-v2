@@ -272,7 +272,7 @@ export default function ProtectedSidebar({
 
                   <DropdownMenuSeparator />
                   <DropdownMenuGroup>
-                    <Link href="/account/edit">
+                    <Link href="/account">
                       <DropdownMenuItem>
                         <UserPen />
                         Account
