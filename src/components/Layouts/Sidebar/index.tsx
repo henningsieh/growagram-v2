@@ -152,10 +152,10 @@ export default function ProtectedSidebar({
               {sidebarItems.projects.map((item) => (
                 <SidebarMenuItem key={item.name}>
                   <SidebarMenuButton asChild>
-                    <a href={item.url}>
+                    <Link href={item.url}>
                       <item.icon />
                       <span>{item.name}</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -223,7 +223,7 @@ export default function ProtectedSidebar({
                         {user && (user.name as string)}
                       </span>
                       <span className="truncate text-xs">
-                        {user && (user.email as string)}
+                        @{user && (user.username as string)}
                       </span>
                     </div>
                     <ChevronsUpDown className="ml-auto size-4" />
@@ -244,7 +244,7 @@ export default function ProtectedSidebar({
                       <Avatar className="h-8 w-8 rounded-sm">
                         <AvatarImage
                           src={user && (user.image as string)}
-                          alt={user && (user.name as string)}
+                          alt={`@${user && (user.username as string)}`}
                         />
                         <AvatarFallback className="rounded-sm">
                           CN
@@ -255,7 +255,7 @@ export default function ProtectedSidebar({
                           {user && (user.name as string)}
                         </span>
                         <span className="truncate text-xs">
-                          {user && (user.email as string)}
+                          {`@${user && (user.username as string)}`}
                         </span>
                       </div>
                     </div>
@@ -264,7 +264,7 @@ export default function ProtectedSidebar({
                   {/* User Account Actions */}
                   <DropdownMenuSeparator />
                   <DropdownMenuGroup>
-                    <DropdownMenuItem>
+                    <DropdownMenuItem className="text-yellow-500 focus:bg-yellow-600/50 focus:text-white">
                       <Sparkles />
                       Upgrade to Pro
                     </DropdownMenuItem>
@@ -273,7 +273,7 @@ export default function ProtectedSidebar({
                   <DropdownMenuSeparator />
                   <DropdownMenuGroup>
                     <Link href="/account">
-                      <DropdownMenuItem>
+                      <DropdownMenuItem className="cursor-pointer">
                         <UserPen />
                         Account
                       </DropdownMenuItem>

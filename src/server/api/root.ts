@@ -31,8 +31,8 @@ type RouterInput = inferRouterInputs<AppRouter>
 
 // userRouter
 //  OUTPUTS:
-// export type UserType = NonNullable<GetUserType>;
 export type GetUserType = RouterOutput["users"]["getById"]
+export type UserType = NonNullable<GetUserType>;
 export type GetUserEditType = RouterOutput["users"]["getAllUsers"][number]
 export type GetUserPublicType = RouterOutput["users"]["getAllUsers"][number]
 export type GetUsersPublicType = RouterOutput["users"]["getAllUsers"]

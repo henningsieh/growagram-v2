@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { AnimatePresence, motion } from "framer-motion";
 import { debounce } from "lodash";
 import { AtSign, CheckIcon, Edit, Loader2, Mail, UserIcon } from "lucide-react";
+import type { Session } from "next-auth";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
@@ -33,16 +34,11 @@ import { Input } from "~/components/ui/input";
 import { useToast } from "~/hooks/use-toast";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
-import { GetUserEditInput, GetUserType } from "~/server/api/root";
+import { GetUserEditInput, UserType } from "~/server/api/root";
 import { userEditSchema } from "~/types/zodSchema";
 
-export default function AccountEditForm({
-  user,
-}: {
-  user: NonNullable<GetUserType>;
-}) {
+export default function AccountEditForm({ user }: { user: UserType }) {
   const router = useRouter();
-  const utils = api.useUtils();
   const t = useTranslations("Account");
   const { toast } = useToast();
   const { data: session, status, update } = useSession();
@@ -50,6 +46,8 @@ export default function AccountEditForm({
   const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(
     null,
   );
+  const [sessionHasBenUpdated, setSessionHasBenUpdated] =
+    useState<Session | null>(null);
   const [username, setUsername] = useState(user.username || ""); // Initialize with existing username
   const [usernameModified, setUsernameModified] = useState(false);
 
@@ -68,20 +66,16 @@ export default function AccountEditForm({
       // image: user.image || undefined,
     },
   });
+
   const editUserMutation = api.users.editUser.useMutation({
     onSuccess: async (updatedUser) => {
       // Update session immediately
-      update(updatedUser);
-
+      setSessionHasBenUpdated(await update(updatedUser));
       toast({
         title: "Success",
-        description: "Your profile has been updated.",
+        description: t("form-save-success-message"),
       });
-
-      // Slight delay to allow session update to propagate
-      setTimeout(() => {
-        router.push("/account");
-      }, 50);
+      router.push("/account");
     },
     onError: (error) => {
       toast({
@@ -92,9 +86,11 @@ export default function AccountEditForm({
     },
   });
 
+  // Submit the form
   async function onSubmit(values: GetUserEditInput) {
     await editUserMutation.mutateAsync(values);
   }
+
   // Check username uniqueness
   const usernameCheck = api.users.isUsernameAvailable.useQuery(
     { username: username || "", excludeOwn: true },
@@ -104,6 +100,7 @@ export default function AccountEditForm({
     },
   );
 
+  // Wait for the user stopps typing
   const debouncedUsernameCheck = debounce(() => {
     usernameCheck.refetch();
   }, 500);
@@ -126,7 +123,8 @@ export default function AccountEditForm({
   };
 
   return (
-    status === "authenticated" && (
+    status === "authenticated" &&
+    !sessionHasBenUpdated && (
       <PageHeader
         title={t("form-edit-profile-title")}
         subtitle={t("form-edit-profile-subtitle")}
@@ -143,13 +141,13 @@ export default function AccountEditForm({
                     {t("form-profile-details-description")}
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-6">
+                <CardContent className="space-y-6 p-4 sm:p-6">
                   {/* Name Field */}
                   <FormField
                     control={form.control}
                     name="name"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="rounden-md bg-muted p-2">
                         <FormLabel>{t("form-name-label")}</FormLabel>
                         <AnimatePresence mode="wait">
                           {form.formState.errors.name ? (
@@ -180,7 +178,7 @@ export default function AccountEditForm({
                           <div className="relative">
                             <UserIcon className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
                             <Input
-                              className="pl-10"
+                              className="bg-accent pl-10 font-semibold"
                               placeholder={t("form-name-placeholder")}
                               {...field}
                             />
@@ -195,7 +193,7 @@ export default function AccountEditForm({
                     control={form.control}
                     name="username"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="rounden-md bg-muted p-2">
                         <FormLabel
                           className={
                             usernameCheck.data && !usernameCheck.data.isUnique
@@ -240,13 +238,13 @@ export default function AccountEditForm({
                           <div className="relative flex items-center">
                             <AtSign className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
                             <Input
-                              className="pl-10 pr-10" // Add right padding to make space for icon
+                              className="bg-accent pl-10 font-semibold" // Add right padding to make space for icon
                               autoComplete="off"
                               autoCorrect="off"
                               autoCapitalize="off"
                               spellCheck="false"
                               placeholder={t("form-username-placeholder")}
-                              value={username}
+                              {...field}
                               onChange={(e) =>
                                 handleUsernameChange(e.target.value)
                               }
@@ -272,7 +270,7 @@ export default function AccountEditForm({
                     control={form.control}
                     name="email"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="rounden-md bg-muted p-2">
                         <FormLabel>{t("form-email-label")}</FormLabel>
                         <FormDescription>
                           {t("form-email-description")}
@@ -325,7 +323,7 @@ export default function AccountEditForm({
                   /> */}
                 </CardContent>
 
-                <CardFooter className="flex gap-4">
+                <CardFooter className="flex gap-4 p-4 sm:p-6">
                   <Button
                     type="button"
                     variant="outline"

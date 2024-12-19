@@ -132,13 +132,7 @@ export default function PlantCard({
       />
 
       <Card className="my-2 flex flex-col overflow-hidden">
-        {isSocial && (
-          <SocialHeader
-            userName={plant.owner.name as string}
-            userUserName={undefined}
-            userAvatarUrl={plant.owner.image}
-          />
-        )}
+        {isSocial && <SocialHeader user={plant.owner} />}
 
         <CardContent
           className={`grid gap-2 ${isSocial ? "ml-14 pl-0 pr-2" : "p-4"}`}

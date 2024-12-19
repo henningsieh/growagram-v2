@@ -110,13 +110,7 @@ export function GrowCard({
         alertCautionText="This action also deletes postings and other events if they only refer to this grow!"
       />
       <Card className="my-2 flex flex-col overflow-hidden">
-        {isSocial && (
-          <SocialHeader
-            userName={grow.owner.name as string}
-            userUserName={undefined}
-            userAvatarUrl={grow.owner.image}
-          />
-        )}
+        {isSocial && <SocialHeader user={grow.owner} />}
 
         <CardContent
           className={`flex flex-1 flex-col gap-4 ${isSocial ? "ml-14 p-2 pl-0" : "p-4"}`}

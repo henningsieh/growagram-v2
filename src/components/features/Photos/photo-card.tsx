@@ -169,13 +169,7 @@ export default function PhotoCard({
           </div>
         )}
 
-        {isSocial && (
-          <SocialHeader
-            userName={photo.owner.name as string}
-            userUserName={undefined}
-            userAvatarUrl={photo.owner.image}
-          />
-        )}
+        {isSocial && <SocialHeader user={photo.owner} />}
 
         {/* Photo */}
         <div

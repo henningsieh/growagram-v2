@@ -33,7 +33,7 @@ export default function Component({
               {title}
             </h1>
           </div>
-          <div className="flex items-end">
+          <div className="flex items-start">
             {buttonLink && (
               <Button
                 asChild
