@@ -96,7 +96,7 @@
       "removeAll": "Remove All Plants",
       "save": "Save Plant Selection ({count})"
     },
-    "buttonLabel": "Back",
+    "buttonBackLabel": "Back",
     "plantSelection": {
       "description": "Select each plant you can see in the photo!",
       "title": "Plant Selection"

@@ -129,7 +129,7 @@ export default function PlantFormPage({ plant }: { plant?: Plant }) {
           <Form {...form}>
             <Card>
               <CardHeader className="p-2 pb-0 sm:p-3 sm:pb-0 lg:p-4 lg:pb-0 xl:p-6 xl:pb-0">
-                <CardTitle level="h2">{t("form-heading")}</CardTitle>
+                <CardTitle as="h2">{t("form-heading")}</CardTitle>
                 <CardDescription>
                   {t("form-heading-description")}
                 </CardDescription>

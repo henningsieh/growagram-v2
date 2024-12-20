@@ -196,7 +196,7 @@ export default function PhotoCard({
         >
           {/* Title Link */}
           <div className="flex items-center">
-            <CardTitle level="h2">
+            <CardTitle as="h2">
               <Button asChild variant="link" className="p-1">
                 <Link
                   href={`/public/photos/${photo.id}`}

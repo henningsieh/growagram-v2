@@ -2,8 +2,7 @@
 
 // src/components/features/Grows/grow-card.tsx:
 import { AnimatePresence, motion } from "framer-motion";
-import { Edit, Loader2, TentTree, Trash2, User2 } from "lucide-react";
-import { User } from "next-auth";
+import { Edit, Loader2, TentTree, Trash2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
@@ -12,14 +11,12 @@ import headerImagePlaceholder from "~/assets/landscape-placeholdersvg.svg";
 import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
 import { SocialCardFooter } from "~/components/atom/social-card-footer";
 import SocialHeader from "~/components/atom/social-header";
-import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardFooter,
-  CardHeader,
   CardTitle,
 } from "~/components/ui/card";
 import { Label } from "~/components/ui/label";
@@ -113,7 +110,7 @@ export function GrowCard({
         {isSocial && <SocialHeader user={grow.owner} />}
 
         <CardContent
-          className={`flex flex-1 flex-col gap-4 ${isSocial ? "ml-14 p-2 pl-0" : "p-4"}`}
+          className={`grid gap-2 ${isSocial ? "ml-14 pl-0 pr-2" : "p-4"}`}
         >
           {/* Grow HeaderImage */}
           <div
@@ -135,7 +132,7 @@ export function GrowCard({
 
           {/* Title Link */}
           <div className="flex items-center">
-            <CardTitle level="h2" className="flex items-center justify-between">
+            <CardTitle as="h3" className="items-centers flex">
               <Button asChild variant="link" className="p-1">
                 <Link
                   href={`/public/grows/${grow.id}`}
@@ -261,6 +258,7 @@ export function GrowCard({
             </>
           )
         )}
+
         {isSocial && isCommentsOpen && (
           <Comments
             entityId={grow.id}

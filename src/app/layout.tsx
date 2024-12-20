@@ -8,8 +8,7 @@ import NextTopLoader from "nextjs-toploader";
 import { APP_SETTINGS } from "~/assets/constants";
 import { MainNavigationBar } from "~/components/Layouts/MainNavigationBar";
 import { ThemeProvider } from "~/components/Layouts/theme-provider";
-import { Toaster } from "~/components/Layouts/toaster";
-import { routing } from "~/lib/i18n/routing";
+import { Toaster } from "~/components/ui/toaster";
 import { TRPCReactProvider } from "~/lib/trpc/react";
 import "~/styles/globals.css";
 

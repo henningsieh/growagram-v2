@@ -14,7 +14,7 @@
   "navMain": [
     {
       "title": "Grows",
-      "url": "/grows",
+      "url": "#",
       "icon": "TentTree",
       "isActive": true,
       "items": [
@@ -34,7 +34,7 @@
     },
     {
       "title": "Plants",
-      "url": "/plants",
+      "url": "#",
       "icon": "Flower2",
       "items": [
         {
@@ -57,7 +57,7 @@
           "url": "/photos"
         },
         {
-          "title": "Upload new Photos",
+          "title": "Upload New Photos",
           "url": "/photos/upload"
         }
       ]

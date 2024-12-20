@@ -12,7 +12,6 @@ import {
   Sprout,
   Tag,
   Trash2,
-  User2,
   Wheat,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
@@ -23,7 +22,6 @@ import headerImagePlaceholder from "~/assets/landscape-placeholdersvg.svg";
 import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
 import { SocialCardFooter } from "~/components/atom/social-card-footer";
 import SocialHeader from "~/components/atom/social-header";
-import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import {
@@ -48,7 +46,8 @@ import { useLikeStatus } from "~/hooks/use-likes";
 import { useToast } from "~/hooks/use-toast";
 import { Link } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
-import { calculateGrowthProgress, formatDate } from "~/lib/utils";
+import { formatDate } from "~/lib/utils";
+import { calculateDetailedGrowthProgress } from "~/lib/utils/calculateDetailedGrowthProgress";
 import { GetOwnPlantType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
 import { LikeableEntityType } from "~/types/like";
@@ -114,10 +113,7 @@ export default function PlantCard({
     setIsDeleteDialogOpen(false);
   };
 
-  const progress = calculateGrowthProgress(
-    plant.startDate,
-    plant.floweringPhaseStart,
-  );
+  const progress = calculateDetailedGrowthProgress(plant);
 
   return (
     <>
@@ -157,14 +153,14 @@ export default function PlantCard({
 
           {/* Title Link */}
           <div className="flex items-center">
-            <CardTitle level="h2">
+            <CardTitle as="h3">
               <Button asChild variant="link" className="p-1">
                 <Link
                   href={`/public/plants/${plant.id}`}
-                  className="flex w-full items-center gap-2"
+                  className="items-center gap-2"
                 >
                   <Tag className="mt-2" size={20} />
-                  <h3 className="text-xl font-bold">{plant.name}</h3>
+                  {plant.name}
                 </Link>
               </Button>
             </CardTitle>
@@ -205,28 +201,26 @@ export default function PlantCard({
           </CardDescription>
 
           {/* Plant Progress and Dates */}
-          <div className="space-y-6">
-            <div className="mt-4 flex justify-between">
-              <div className="flex w-full flex-col">
-                <div className="mb-1 flex justify-between text-sm">
-                  <span>{t("growth-progress")}</span>
-                  <span>
-                    {
-                      progress
-                      // eslint-disable-next-line react/jsx-no-literals
-                    }
-                    %
-                  </span>
-                </div>
-                <Progress value={progress} className="w-full" />
+          <Card className="space-y-4 p-2 sm:p-4 md:p-6">
+            <CardHeader className="flex w-full flex-col p-0">
+              <div className="mb-1 flex justify-between text-sm">
+                <span>{t("growth-progress")}</span>
+                <span>
+                  {
+                    progress.overallProgress
+                    // eslint-disable-next-line react/jsx-no-literals
+                  }
+                  %
+                </span>
               </div>
-            </div>
-            <div className="mt-4 space-y-2">
+              <Progress value={progress.overallProgress} className="w-full" />
+            </CardHeader>
+            <CardContent className="space-y-2 p-0">
               <div className="flex h-4 items-center">
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger className="flex cursor-default items-center font-mono text-sm font-semibold tracking-tighter">
-                      <Nut className="mr-2 h-4 w-4 text-planted" />
+                      <Nut className={`mr-2 h-4 w-4 text-planted`} />
                       {formatDate(plant.startDate, locale)}
                     </TooltipTrigger>
                     <TooltipContent side="right" className="bg-transparent">
@@ -244,7 +238,13 @@ export default function PlantCard({
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger className="flex cursor-default items-center font-mono text-sm font-semibold tracking-tighter">
-                      <Sprout className="mr-2 h-4 w-4 text-seedling" />
+                      <Sprout
+                        className={`mr-2 h-4 w-4 ${
+                          plant.seedlingPhaseStart
+                            ? "text-seedling"
+                            : "text-seedling/40"
+                        }`}
+                      />
                       {plant.seedlingPhaseStart &&
                         formatDate(plant.seedlingPhaseStart, locale)}
                     </TooltipTrigger>
@@ -263,10 +263,17 @@ export default function PlantCard({
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger className="flex cursor-default items-center font-mono text-sm font-semibold tracking-tighter">
-                      <Leaf className="mr-2 h-4 w-4 text-vegetation" />
+                      <Leaf
+                        className={`mr-2 h-4 w-4 ${
+                          plant.vegetationPhaseStart
+                            ? "text-vegetation"
+                            : "text-vegetation/40"
+                        }`}
+                      />
                       {plant.vegetationPhaseStart &&
                         formatDate(plant.vegetationPhaseStart, locale)}
                     </TooltipTrigger>
+
                     <TooltipContent side="right" className="bg-transparent">
                       <Badge
                         variant={"outline"}
@@ -282,10 +289,17 @@ export default function PlantCard({
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger className="flex cursor-default items-center font-mono text-sm font-semibold tracking-tighter">
-                      <Flower2 className="mr-2 h-4 w-4 text-flowering" />
+                      <Flower2
+                        className={`mr-2 h-4 w-4 ${
+                          plant.floweringPhaseStart
+                            ? "text-flowering"
+                            : "text-flowering/40"
+                        }`}
+                      />
                       {plant.floweringPhaseStart &&
                         formatDate(plant.floweringPhaseStart, locale)}
                     </TooltipTrigger>
+
                     <TooltipContent side="right" className="bg-transparent">
                       <Badge
                         variant={"outline"}
@@ -301,10 +315,15 @@ export default function PlantCard({
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger className="flex cursor-default items-center font-mono text-sm font-semibold tracking-tighter">
-                      <Wheat className="mr-2 h-4 w-4 text-harvest" />
+                      <Wheat
+                        className={`mr-2 h-4 w-4 ${
+                          plant.harvestDate ? "text-harvest" : "text-harvest/40"
+                        }`}
+                      />
                       {plant.harvestDate &&
                         formatDate(plant.harvestDate, locale)}
                     </TooltipTrigger>
+
                     <TooltipContent side="right" className="bg-transparent">
                       <Badge
                         variant={"outline"}
@@ -320,10 +339,17 @@ export default function PlantCard({
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger className="flex cursor-default items-center font-mono text-sm font-semibold tracking-tighter">
-                      <PillBottle className="mr-2 h-4 w-4 text-curing" />
+                      <PillBottle
+                        className={`mr-2 h-4 w-4 ${
+                          plant.curingPhaseStart
+                            ? "text-curing"
+                            : "text-curing/40"
+                        }`}
+                      />
                       {plant.curingPhaseStart &&
                         formatDate(plant.curingPhaseStart, locale)}
                     </TooltipTrigger>
+
                     <TooltipContent side="right" className="bg-transparent">
                       <Badge
                         variant={"outline"}
@@ -335,8 +361,8 @@ export default function PlantCard({
                   </Tooltip>
                 </TooltipProvider>
               </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         </CardContent>
 
         {isSocial ? (
