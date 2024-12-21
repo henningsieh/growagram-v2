@@ -1,20 +1,11 @@
-// Define the connectPlantImagesQuery configuration
-export const withPlantImagesQuery = {
+// Define the connectPlantWithImagesQuery configuration
+export const connectPlantWithImagesQuery = {
   columns: { imageId: false, plantId: false, createdAt: false },
-  with: {
-    image: true,
-    // {
-    //   columns: {
-    //     id: true,
-    //     createdAt: true,
-    //     updatedAt: true,
-    //     ownerId: true,
-    //     imageUrl: true,
-    //     cloudinaryAssetId: true,
-    //     cloudinaryPublicId: true,
-    //     captureDate: true,
-    //     originalFilename: true,
-    //   },
-    // },
-  },
+  with: { image: true },
+} as const; // Ensure TypeScript infers exact typing
+
+// Define the connectImageWithPlantsQuery configuration
+export const connectImageWithPlantsQuery = {
+  columns: { imageId: false, plantId: false, createdAt: false },
+  with: { plant: true },
 } as const; // Ensure TypeScript infers exact typing

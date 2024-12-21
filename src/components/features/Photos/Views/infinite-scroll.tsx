@@ -16,11 +16,7 @@ import { SortOrder } from "~/components/atom/sort-filter-controls";
 import PhotoCard from "~/components/features/Photos/photo-card";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
-import {
-  GetOwnPhotoType,
-  GetOwnPhotosInput,
-  GetOwnPhotosType,
-} from "~/server/api/root";
+import { GetOwnPhotosInput, GetOwnPhotosType } from "~/server/api/root";
 import { PhotosSortField } from "~/types/image";
 
 export default function PhotosInfiniteScrollView({

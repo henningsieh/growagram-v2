@@ -13,7 +13,7 @@ import {
 import { GrowsSortField } from "~/types/grow";
 import { growSchema } from "~/types/zodSchema";
 
-import { withPlantImagesQuery } from "./plantImages";
+import { connectPlantWithImagesQuery } from "./plantImages";
 
 export const growRouter = createTRPCRouter({
   // Get paginated grows for the current user
@@ -55,7 +55,7 @@ export const growRouter = createTRPCRouter({
 
       const totalCount = Number(totalCountResult[0].count);
 
-      // Get the grows with pagination and sorting
+      // Get own grows with pagination and sorting
       const userGrows = await ctx.db.query.grows.findMany({
         where: eq(grows.ownerId, ctx.session.user.id),
         orderBy: (grows, { desc, asc }) => [
@@ -80,7 +80,7 @@ export const growRouter = createTRPCRouter({
                 with: { breeder: { columns: { id: true, name: true } } },
               },
               headerImage: { columns: { id: true, imageUrl: true } },
-              plantImages: withPlantImagesQuery,
+              plantImages: connectPlantWithImagesQuery,
             },
           },
         },

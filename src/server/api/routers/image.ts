@@ -14,7 +14,7 @@ import {
 import { PhotosSortField } from "~/types/image";
 import { imageSchema } from "~/types/zodSchema";
 
-import { withPlantImagesQuery } from "./plantImages";
+import { connectImageWithPlantsQuery } from "./plantImages";
 
 export const photoRouter = createTRPCRouter({
   getOwnPhotos: protectedProcedure
@@ -103,7 +103,7 @@ export const photoRouter = createTRPCRouter({
         ],
         with: {
           owner: true,
-          plantImages: withPlantImagesQuery,
+          plantImages: connectImageWithPlantsQuery,
         },
       });
 
@@ -127,7 +127,7 @@ export const photoRouter = createTRPCRouter({
         where: eq(images.id, input.id),
         with: {
           owner: true,
-          plantImages: withPlantImagesQuery,
+          plantImages: connectImageWithPlantsQuery,
         },
         columns: {
           id: true,
