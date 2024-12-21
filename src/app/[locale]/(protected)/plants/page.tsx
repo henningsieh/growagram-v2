@@ -7,7 +7,7 @@ import {
   ArrowDownAZ,
   ArrowDownZA,
   Calendar,
-  Leaf,
+  Tag,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
@@ -85,7 +85,7 @@ export default function PlantsPage() {
     {
       field: PlantsSortField.NAME,
       label: "Name",
-      icon: <Leaf className="h-5 w-5" />,
+      icon: <Tag className="h-5 w-5" />,
       sortIconAsc: ArrowDownAZ,
       sortIconDesc: ArrowDownZA,
     },
