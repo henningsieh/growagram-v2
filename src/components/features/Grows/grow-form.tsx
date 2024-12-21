@@ -43,7 +43,7 @@ import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import {
   CreateOrEditGrowInput,
-  GetOwnGrowType,
+  GetGrowByIdType,
   GetOwnGrowsInput,
   GetOwnPlantsInput,
   GrowConnectPlantInput,
@@ -54,7 +54,7 @@ import { growSchema } from "~/types/zodSchema";
 
 type FormValues = z.infer<typeof growSchema>;
 
-export default function GrowFormPage({ grow }: { grow?: GetOwnGrowType }) {
+export default function GrowFormPage({ grow }: { grow?: GetGrowByIdType }) {
   const t = useTranslations("Grows");
 
   // Determine the mode based on the presence of grow

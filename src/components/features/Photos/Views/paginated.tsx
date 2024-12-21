@@ -25,7 +25,7 @@ import {
 } from "~/components/ui/pagination";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
-import { GetOwnPhotoType, GetOwnPhotosInput } from "~/server/api/root";
+import { GetOwnPhotosInput } from "~/server/api/root";
 import { PhotosSortField } from "~/types/image";
 
 export default function PhotosPaginatedView({

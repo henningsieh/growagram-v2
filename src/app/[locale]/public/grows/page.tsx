@@ -44,100 +44,100 @@ import PostComponent from "~/components/features/Timeline/post";
 //   ];
 // }
 
-const samplePost = {
-  id: "1",
-  user: {
-    id: "user1",
-    name: "Django ElRey 🌱",
-    avatar: "/images/XYUV-dwm_400x400.jpg",
-  },
-  grow: {
-    id: "grow1",
-    name: "Summer Grow 2023",
-    startDate: new Date("2023-06-01"),
-    type: "outdoor" as const,
-  },
-  plants: [
-    {
-      id: "plant1",
-      name: "Blue Dream",
-      createdAt: new Date("2023-06-10"),
-      updatedAt: new Date("2023-07-01"),
-      ownerId: "user1",
-      headerImageId: "img1",
-      growId: "grow1",
-      strainId: "strain1", // Assuming you have a strain ID for this plant
-      startDate: new Date("2023-06-10"),
-      seedlingPhaseStart: new Date("2023-06-10"),
-      vegetationPhaseStart: new Date("2023-06-20"),
-      floweringPhaseStart: new Date("2023-07-01"),
-      harvestDate: null, // Assuming it hasn't been harvested yet
-      curingPhaseStart: null, // Assuming it's not yet in the curing phase
-      plantImages: [
-        {
-          image: {
-            id: "img1",
-            imageUrl: "/images/IMG_20241005_062601~2.jpg",
-          },
-        },
-      ],
-      strain: {
-        id: "strain1",
-        name: "Blue Dream",
-        thcContent: 20, // Mock THC content
-        cbdContent: 0.1, // Mock CBD content
-        breeder: {
-          id: "breeder1",
-          name: "Breeder X",
-        },
-      },
-      headerImage: {
-        id: "img1",
-        imageUrl: "/images/IMG_20241005_062601~2.jpg",
-      },
-    },
-    {
-      id: "plant2",
-      name: "OG Kush",
-      createdAt: new Date("2023-07-15"),
-      updatedAt: new Date("2023-08-01"),
-      ownerId: "user1",
-      headerImageId: "img2",
-      growId: "grow1",
-      strainId: "strain2", // Assuming you have a strain ID for this plant
-      startDate: new Date("2023-07-15"),
-      seedlingPhaseStart: new Date("2023-07-15"),
-      vegetationPhaseStart: new Date("2023-07-20"),
-      floweringPhaseStart: new Date("2023-08-01"),
-      harvestDate: null, // Assuming it hasn't been harvested yet
-      curingPhaseStart: null, // Assuming it's not yet in the curing phase
-      plantImages: [
-        {
-          image: {
-            id: "img2",
-            imageUrl: "/images/IMG_20241020_102123.jpg",
-          },
-        },
-      ],
-      strain: {
-        id: "strain2",
-        name: "OG Kush",
-        thcContent: 18, // Mock THC content
-        cbdContent: 0.2, // Mock CBD content
-        breeder: {
-          id: "breeder2",
-          name: "Breeder Y",
-        },
-      },
-      headerImage: {
-        id: "img2",
-        imageUrl: "/images/IMG_20241020_102123.jpg",
-      },
-    },
-  ],
-  createdAt: new Date(),
-  trigger: "new_plant" as const,
-};
+// const samplePost = {
+//   id: "1",
+//   user: {
+//     id: "user1",
+//     name: "Django ElRey 🌱",
+//     avatar: "/images/XYUV-dwm_400x400.jpg",
+//   },
+//   grow: {
+//     id: "grow1",
+//     name: "Summer Grow 2023",
+//     startDate: new Date("2023-06-01"),
+//     type: "outdoor" as const,
+//   },
+//   plants: [
+//     {
+//       id: "plant1",
+//       name: "Blue Dream",
+//       createdAt: new Date("2023-06-10"),
+//       updatedAt: new Date("2023-07-01"),
+//       ownerId: "user1",
+//       headerImageId: "img1",
+//       growId: "grow1",
+//       strainId: "strain1", // Assuming you have a strain ID for this plant
+//       startDate: new Date("2023-06-10"),
+//       seedlingPhaseStart: new Date("2023-06-10"),
+//       vegetationPhaseStart: new Date("2023-06-20"),
+//       floweringPhaseStart: new Date("2023-07-01"),
+//       harvestDate: null, // Assuming it hasn't been harvested yet
+//       curingPhaseStart: null, // Assuming it's not yet in the curing phase
+//       plantImages: [
+//         {
+//           image: {
+//             id: "img1",
+//             imageUrl: "/images/IMG_20241005_062601~2.jpg",
+//           },
+//         },
+//       ],
+//       strain: {
+//         id: "strain1",
+//         name: "Blue Dream",
+//         thcContent: 20, // Mock THC content
+//         cbdContent: 0.1, // Mock CBD content
+//         breeder: {
+//           id: "breeder1",
+//           name: "Breeder X",
+//         },
+//       },
+//       headerImage: {
+//         id: "img1",
+//         imageUrl: "/images/IMG_20241005_062601~2.jpg",
+//       },
+//     },
+//     {
+//       id: "plant2",
+//       name: "OG Kush",
+//       createdAt: new Date("2023-07-15"),
+//       updatedAt: new Date("2023-08-01"),
+//       ownerId: "user1",
+//       headerImageId: "img2",
+//       growId: "grow1",
+//       strainId: "strain2", // Assuming you have a strain ID for this plant
+//       startDate: new Date("2023-07-15"),
+//       seedlingPhaseStart: new Date("2023-07-15"),
+//       vegetationPhaseStart: new Date("2023-07-20"),
+//       floweringPhaseStart: new Date("2023-08-01"),
+//       harvestDate: null, // Assuming it hasn't been harvested yet
+//       curingPhaseStart: null, // Assuming it's not yet in the curing phase
+//       plantImages: [
+//         {
+//           image: {
+//             id: "img2",
+//             imageUrl: "/images/IMG_20241020_102123.jpg",
+//           },
+//         },
+//       ],
+//       strain: {
+//         id: "strain2",
+//         name: "OG Kush",
+//         thcContent: 18, // Mock THC content
+//         cbdContent: 0.2, // Mock CBD content
+//         breeder: {
+//           id: "breeder2",
+//           name: "Breeder Y",
+//         },
+//       },
+//       headerImage: {
+//         id: "img2",
+//         imageUrl: "/images/IMG_20241020_102123.jpg",
+//       },
+//     },
+//   ],
+//   createdAt: new Date(),
+//   trigger: "new_plant" as const,
+// };
 
 export default function TimelinePage() {
   // const posts = await getPosts();

@@ -70,7 +70,6 @@ export default function PlantCard({
   const t = useTranslations("Plants");
 
   const [isSocial, setIsSocial] = useState(isSocialProp);
-  const [isImageHovered, setIsImageHovered] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   const {
@@ -171,6 +170,7 @@ export default function PlantCard({
                 <Label
                   className="text-sm font-semibold"
                   htmlFor="show-socialMode"
+                  // eslint-disable-next-line react/jsx-no-literals
                 >
                   Social Mode
                 </Label>

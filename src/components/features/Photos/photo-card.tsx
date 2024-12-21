@@ -3,7 +3,6 @@
 // src/components/features/Photos/photo-card.tsx:
 import {
   Camera,
-  CameraIcon,
   Edit,
   FileIcon,
   Loader2,

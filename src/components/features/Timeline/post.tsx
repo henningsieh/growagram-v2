@@ -285,7 +285,7 @@ export default function PostComponent({ id }: { id: string }) {
             <div className="mb-2 overflow-hidden rounded-sm">
               <Carousel className="w-full">
                 <CarouselContent>
-                  {samplePost.images.map((image, index) => (
+                  {samplePost.images.map((image) => (
                     <CarouselItem key={image.id}>
                       <div className="relative aspect-video w-full md:aspect-square">
                         <Image
