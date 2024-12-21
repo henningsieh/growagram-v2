@@ -2,7 +2,14 @@
 
 // src/components/features/Grows/grow-plant-card.tsx:
 import { AnimatePresence, motion } from "framer-motion";
-import { Calendar1, Clock, Dna, FlaskConical, Leaf, Tag } from "lucide-react";
+import {
+  Calendar1,
+  Clock,
+  Dna,
+  FlaskConical,
+  type LucideIcon,
+  Tag,
+} from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { Button } from "~/components/ui/button";
@@ -39,10 +46,11 @@ export function GrowPlantCard({ plant }: PlantCardProps) {
   const [isHovered, setIsHovered] = useState(false);
 
   const progress = calculateGrowthProgress(plant);
-  const currentStage = PlantGrowthStages.find(
+  const CurrentPhaseIcon = progress.phaseIcon satisfies LucideIcon;
+  const currentPhase = PlantGrowthStages.find(
     (stage) => stage.name === progress.currentPhase,
   )!;
-
+  console.debug({ progress });
   const formatDaysRemaining = (days: number | null) => {
     if (!days) return null;
     return days > 1 ? `${days} days` : `${days} day`;
@@ -55,14 +63,14 @@ export function GrowPlantCard({ plant }: PlantCardProps) {
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <CardHeader className="px-0 py-0">
+        <CardHeader className="space-y-0 p-0">
           <CardTitle as="h2" className="flex items-center justify-between">
             <Button asChild variant="link" className="p-1">
               <Link
                 href={`/public/plants/${plant.id}`}
                 className="items-center gap-2"
               >
-                <Tag size={20} className="hover:underline" />
+                <Tag size={20} />
                 {plant.name}
               </Link>
             </Button>
@@ -70,7 +78,7 @@ export function GrowPlantCard({ plant }: PlantCardProps) {
               {progress.estimatedHarvestDate && (
                 <Tooltip>
                   <TooltipTrigger className="cursor-help">
-                    <Clock className={`h-4 w-4 text-${currentStage.color}`} />
+                    <Clock className={`h-4 w-4 text-${currentPhase.color}`} />
                   </TooltipTrigger>
                   <TooltipContent>
                     <p>
@@ -85,7 +93,7 @@ export function GrowPlantCard({ plant }: PlantCardProps) {
               <Tooltip>
                 <TooltipTrigger>
                   <div
-                    className={`h-3 w-3 rounded-full bg-${currentStage.color}`}
+                    className={`h-3 w-3 rounded-full bg-${currentPhase.color}`}
                   />
                 </TooltipTrigger>
                 <TooltipContent>
@@ -95,7 +103,7 @@ export function GrowPlantCard({ plant }: PlantCardProps) {
                         t("Grows.growth-stage")
                         // eslint-disable-next-line react/jsx-no-literals
                       }
-                      : {currentStage.name}
+                      : {currentPhase.name}
                     </p>
                     {progress.daysUntilNextPhase && (
                       <p className="text-sm text-muted-foreground">
@@ -110,16 +118,17 @@ export function GrowPlantCard({ plant }: PlantCardProps) {
           </CardTitle>
           <CardDescription>
             {progress.daysUntilNextPhase && progress.nextPhase && (
-              <div className="mt-1 text-xs text-muted-foreground">
-                {formatDaysRemaining(progress.daysUntilNextPhase)}{" "}
-                {t("Plants.until")} {progress.nextPhase}
+              <div className="flex items-center justify-end text-xs text-muted-foreground">
+                {formatDaysRemaining(progress.daysUntilNextPhase)}
+                {` ${t("Plants.until")} `}
+                {progress.nextPhase}
               </div>
             )}
           </CardDescription>
         </CardHeader>
         <CardContent className="gap-4 p-0">
-          <div className="mb-1 flex justify-between text-xs text-muted-foreground">
-            <span>
+          <div className="mb-1 flex justify-start text-xs text-muted-foreground">
+            {/* <span>
               {
                 t("Plants.phase")
                 // eslint-disable-next-line react/jsx-no-literals
@@ -131,7 +140,7 @@ export function GrowPlantCard({ plant }: PlantCardProps) {
                 // eslint-disable-next-line react/jsx-no-literals
               }
               %
-            </span>
+            </span> */}
             <span>
               {
                 t("Plants.overall-progress")
@@ -153,7 +162,7 @@ export function GrowPlantCard({ plant }: PlantCardProps) {
               animate={{ opacity: isMobile ? 1 : isHovered ? 1 : 0.4 }}
               transition={{ duration: 0.3 }}
             >
-              <div className="grid grid-cols-2 gap-2">
+              <div className="flex items-center justify-between gap-2">
                 <Tooltip>
                   <TooltipTrigger className="flex items-center gap-2">
                     <Calendar1 className="h-4 w-4 text-gray-500" />
@@ -169,13 +178,17 @@ export function GrowPlantCard({ plant }: PlantCardProps) {
                 </Tooltip>
                 <Tooltip>
                   <TooltipTrigger className="flex items-center gap-2">
-                    <Leaf className={`h-4 w-4 text-${currentStage.color}`} />
-                    <span className="text-sm">{currentStage.name}</span>
+                    <CurrentPhaseIcon
+                      className={`h-4 w-4 text-${currentPhase.color}`}
+                    />
+                    <span className="text-sm">{currentPhase.name}</span>
                   </TooltipTrigger>
-                  <TooltipContent>
+                  <TooltipContent className={`bg-${currentPhase.color}`}>
                     <div className="space-y-1">
-                      <p>{t("Plants.growth-progress")}</p>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="font-bold text-accent-foreground">
+                        {t("Plants.growth-progress")}
+                      </p>
+                      <p className="text-sm">
                         {
                           t("Plants.phase")
                           // eslint-disable-next-line react/jsx-no-literals
@@ -215,9 +228,9 @@ export function GrowPlantCard({ plant }: PlantCardProps) {
             </motion.div>
           </AnimatePresence>
         </CardContent>
-        <CardFooter className="flex w-full justify-end p-0">
+        <CardFooter className="mt-2 flex w-full justify-end p-0">
           <Link href={`/plants/${plant.id}/form`}>
-            <Button size="sm" variant="link">
+            <Button size="sm" variant="link" className="p-0">
               edit
             </Button>
           </Link>

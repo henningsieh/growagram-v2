@@ -1,4 +1,5 @@
-// src/lib/utils/calculateDetailedGrowthProgress.ts
+// src/lib/utils/calculateDetailedGrowthProgress.ts:
+import { Flower2, Leaf, LucideIcon, Nut, Sprout, Wheat } from "lucide-react";
 import { GetOwnPlantType } from "~/server/api/root";
 import { GrowthPhase, GrowthStage, PlantGrowthStages } from "~/types/plant";
 
@@ -9,6 +10,7 @@ interface CalculateProgressParameters {
   estimatedHarvestDate: Date | null;
   daysUntilNextPhase: number | null;
   nextPhase: GrowthPhase | null;
+  phaseIcon: LucideIcon;
 }
 
 export function calculateGrowthProgress(
@@ -39,6 +41,7 @@ export function calculateGrowthProgress(
     estimatedHarvestDate: null,
     daysUntilNextPhase: null,
     nextPhase: null,
+    phaseIcon: Nut,
   };
 
   if (plant.harvestDate) {
@@ -49,12 +52,14 @@ export function calculateGrowthProgress(
       estimatedHarvestDate: null,
       daysUntilNextPhase: null,
       nextPhase: null,
+      phaseIcon: Wheat,
     };
   }
 
   if (plant.floweringPhaseStart) {
     const floweringStage = findStage("flowering");
     progress.currentPhase = "flowering";
+    progress.phaseIcon = Flower2;
     const floweringWeeks = getWeeksBetween(plant.floweringPhaseStart, now);
     progress.phaseProgress = Math.min(
       100,
@@ -75,6 +80,7 @@ export function calculateGrowthProgress(
   } else if (plant.vegetationPhaseStart) {
     const vegetationStage = findStage("vegetation");
     progress.currentPhase = "vegetation";
+    progress.phaseIcon = Leaf;
     const vegetationWeeks = getWeeksBetween(plant.vegetationPhaseStart, now);
     progress.phaseProgress = Math.min(
       100,
@@ -89,6 +95,7 @@ export function calculateGrowthProgress(
   } else if (plant.seedlingPhaseStart) {
     const seedlingStage = findStage("seedling");
     progress.currentPhase = "seedling";
+    progress.phaseIcon = Sprout;
     const seedlingWeeks = getWeeksBetween(plant.seedlingPhaseStart, now);
     progress.phaseProgress = Math.min(
       100,
