@@ -5,6 +5,7 @@ import {
   Camera,
   CameraIcon,
   Edit,
+  FileIcon,
   Loader2,
   Maximize,
   Minimize,
@@ -197,34 +198,34 @@ export default function PhotoCard({
           {/* Title Link */}
           <div className="flex items-center">
             <CardTitle as="h2">
-              <Button asChild variant="link" className="p-1">
+              <Button asChild variant="link" className="p-0">
                 <Link
                   href={`/public/photos/${photo.id}`}
                   className="flex w-full items-center gap-2"
                 >
-                  <CameraIcon className="mt-2" size={20} />
+                  <FileIcon className="mt-2" size={20} />
                   <h3 className="text-xl font-bold">
                     {photo.originalFilename}
                   </h3>
                 </Link>
               </Button>
+              {/* Switch for toggling isSocial */}
+              {user && user.id === photo.ownerId && (
+                <div className="ml-auto flex items-start gap-2">
+                  <Label
+                    className="text-sm font-semibold"
+                    htmlFor="show-socialMode"
+                  >
+                    Social Mode
+                  </Label>
+                  <Switch
+                    id="show-socialMode"
+                    checked={isSocial}
+                    onCheckedChange={setIsSocial}
+                  />
+                </div>
+              )}
             </CardTitle>
-            {/* Switch for toggling isSocial */}
-            {user && user.id === photo.ownerId && (
-              <div className="ml-auto flex items-start gap-2">
-                <Label
-                  className="text-sm font-semibold"
-                  htmlFor="show-socialMode"
-                >
-                  Social Mode
-                </Label>
-                <Switch
-                  id="show-socialMode"
-                  checked={isSocial}
-                  onCheckedChange={setIsSocial}
-                />
-              </div>
-            )}
           </div>
 
           {/* Photo Upload and Capture Date */}

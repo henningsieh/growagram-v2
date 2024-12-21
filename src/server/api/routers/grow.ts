@@ -13,6 +13,8 @@ import {
 import { GrowsSortField } from "~/types/grow";
 import { growSchema } from "~/types/zodSchema";
 
+import { withPlantImagesQuery } from "./plantImages";
+
 export const growRouter = createTRPCRouter({
   // Get paginated grows for the current user
 
@@ -78,17 +80,7 @@ export const growRouter = createTRPCRouter({
                 with: { breeder: { columns: { id: true, name: true } } },
               },
               headerImage: { columns: { id: true, imageUrl: true } },
-              plantImages: {
-                columns: { imageId: false, plantId: false },
-                with: {
-                  image: {
-                    columns: {
-                      id: true,
-                      imageUrl: true,
-                    },
-                  },
-                },
-              },
+              plantImages: withPlantImagesQuery,
             },
           },
         },

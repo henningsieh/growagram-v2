@@ -1,9 +1,5 @@
 {
   "Account": {
-    "info-email": "Email",
-    "info-name": "Name",
-    "info-role": "Role",
-    "info-username": "Username",
     "account-info-subtitle": "View your account details",
     "account-info-title": "My Account",
     "edit-profile-button": "Edit account",
@@ -29,6 +25,10 @@
     "form-username-label": "Username",
     "form-username-placeholder": "Enter your username",
     "form-username-taken": "This username is already taken.",
+    "info-email": "Email",
+    "info-name": "Name",
+    "info-role": "Role",
+    "info-username": "Username",
     "not-provided": "Not provided"
   },
   "CardFooter": {
@@ -153,6 +153,7 @@
     "breeder": "Breeder",
     "curing-start-date": "Curing phase start date",
     "edit-plant-button-label": "Edit Plant",
+    "estimated-harvest": "Estimated harvest",
     "flowering-start-date": "Flowering Start Date",
     "form-button-reset": "Reset",
     "form-button-save-changes": "Save Changes",
@@ -172,12 +173,15 @@
     "growth-progress": "Growth Progress",
     "harvest-date": "Harvest date",
     "linkUploadButtonLabel": "Add New Plant",
+    "overall-progress": "Overall progress",
+    "phase": "Phase progress",
     "planting-date": "Seed planting date",
     "strain": "Strain",
     "subtitle": "Manage your plants",
     "thc": "THC",
     "thc-content": "THC Content",
     "title": "My Plants",
+    "until": "until",
     "user-has-no-plants": "You haven&apos;t added any plants yet.",
     "vegetation-start-date": "Vegetation Start Date"
   },

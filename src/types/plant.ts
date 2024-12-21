@@ -1,16 +1,19 @@
-// src/types/plant.ts:
+// src/types/plant.ts
 
-type GrowthStage = {
+export type GrowthStage = {
   name: string;
   color: string;
-  typical_duration?: number; // Duration in weeks
+  typical_duration?: number;
 };
 
-export const PlantGrowthStages: GrowthStage[] = [
+export const PlantGrowthStages = [
   { name: "planted", color: "planted", typical_duration: 0 },
   { name: "seedling", color: "seedling", typical_duration: 2 },
-  { name: "vegetation", color: "vegetation", typical_duration: 4 },
-  { name: "flowering", color: "flowering", typical_duration: 8 },
-  { name: "harvest", color: "harvest", typical_duration: 0 }, // Timestamp, not a duration
-  { name: "curing", color: "curing", typical_duration: 0 }, // Not part of growth calculation
-];
+  { name: "vegetation", color: "vegetation", typical_duration: 6 },
+  { name: "flowering", color: "flowering", typical_duration: 10 },
+  { name: "harvested", color: "harvested", typical_duration: 0 },
+  { name: "curing", color: "curing", typical_duration: Infinity },
+] as const;
+
+// Infer the phase names from PlantGrowthStages
+export type GrowthPhase = (typeof PlantGrowthStages)[number]["name"];

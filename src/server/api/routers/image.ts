@@ -14,6 +14,8 @@ import {
 import { PhotosSortField } from "~/types/image";
 import { imageSchema } from "~/types/zodSchema";
 
+import { withPlantImagesQuery } from "./plantImages";
+
 export const photoRouter = createTRPCRouter({
   getOwnPhotos: protectedProcedure
     .input(
@@ -74,6 +76,8 @@ export const photoRouter = createTRPCRouter({
 
       // Get the images with pagination, sorting, and filtering
       const imagesList = await ctx.db.query.images.findMany({
+        offset: offset,
+        limit: limit,
         where: (images, { eq, and, not, exists }) => {
           const conditions = [isOwnImageCondition];
 
@@ -97,16 +101,9 @@ export const photoRouter = createTRPCRouter({
             ? desc(images[sortField])
             : asc(images[sortField]),
         ],
-        limit: limit,
-        offset: offset,
         with: {
           owner: true,
-          plantImages: {
-            columns: { imageId: false, plantId: false },
-            with: {
-              plant: true,
-            },
-          },
+          plantImages: withPlantImagesQuery,
         },
       });
 
@@ -130,10 +127,18 @@ export const photoRouter = createTRPCRouter({
         where: eq(images.id, input.id),
         with: {
           owner: true,
-          plantImages: {
-            columns: { plantId: false, imageId: false },
-            with: { plant: true },
-          },
+          plantImages: withPlantImagesQuery,
+        },
+        columns: {
+          id: true,
+          createdAt: true,
+          updatedAt: true,
+          ownerId: true,
+          imageUrl: true,
+          cloudinaryAssetId: true,
+          cloudinaryPublicId: true,
+          captureDate: true,
+          originalFilename: true,
         },
       });
 

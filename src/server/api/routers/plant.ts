@@ -3,6 +3,7 @@ import { TRPCError } from "@trpc/server";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { plantImages, plants } from "~/lib/db/schema";
+import { withPlantImagesQuery } from "~/server/api/routers/plantImages";
 import {
   createTRPCRouter,
   protectedProcedure,
@@ -28,11 +29,12 @@ export const plantRouter = createTRPCRouter({
 
       const userPlants = await ctx.db.query.plants.findMany({
         where: eq(plants.ownerId, ctx.session.user.id),
-        orderBy: (plants, { desc }) => [desc(plants.createdAt)],
         limit: limit + 1, // Fetch extra item to check for next page
         offset: cursor ?? 0, // Use cursor for offset
+        orderBy: (plants, { desc }) => [desc(plants.createdAt)],
         with: {
           owner: true,
+          plantImages: withPlantImagesQuery,
           strain: {
             columns: {
               id: true,
@@ -43,17 +45,6 @@ export const plantRouter = createTRPCRouter({
             with: { breeder: { columns: { id: true, name: true } } },
           },
           headerImage: { columns: { id: true, imageUrl: true } },
-          plantImages: {
-            columns: { imageId: false, plantId: false },
-            with: {
-              image: {
-                columns: {
-                  id: true,
-                  imageUrl: true,
-                },
-              },
-            },
-          },
         },
       });
 
@@ -75,10 +66,11 @@ export const plantRouter = createTRPCRouter({
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
       // Logic to fetch a single image by ID
-      return await ctx.db.query.plants.findFirst({
+      const plant = await ctx.db.query.plants.findFirst({
         where: eq(plants.id, input.id),
         with: {
           owner: true,
+          plantImages: withPlantImagesQuery,
           strain: {
             columns: {
               id: true,
@@ -89,19 +81,22 @@ export const plantRouter = createTRPCRouter({
             with: { breeder: { columns: { id: true, name: true } } },
           },
           headerImage: { columns: { id: true, imageUrl: true } },
-          plantImages: {
-            columns: { imageId: false, plantId: false },
-            with: {
-              image: {
-                columns: {
-                  id: true,
-                  imageUrl: true,
-                },
-              },
-            },
-          },
         },
       });
+
+      // Sort the `plantImages.image` array by `captureDate`
+      if (plant?.plantImages) {
+        plant.plantImages = plant.plantImages.sort((a, b) => {
+          const dateA = a.image?.captureDate
+            ? new Date(a.image.captureDate)
+            : new Date(0);
+          const dateB = b.image?.captureDate
+            ? new Date(b.image.captureDate)
+            : new Date(0);
+          return dateA.getTime() - dateB.getTime(); // Ascending order
+        });
+      }
+      return plant;
     }),
 
   // Connect plant to an image

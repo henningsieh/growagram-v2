@@ -1,31 +1,19 @@
-// src/lib/utils/calculateDetailedGrowthProgress.ts:
+// src/lib/utils/calculateDetailedGrowthProgress.ts
 import { GetOwnPlantType } from "~/server/api/root";
-import { PlantGrowthStages } from "~/types/plant";
+import { GrowthPhase, GrowthStage, PlantGrowthStages } from "~/types/plant";
 
-// Get total weeks for active growth phases (seedling through flowering)
-// Hey Claude AI, this seems not to be needed!?
-const TOTAL_GROWTH_WEEKS = PlantGrowthStages.reduce(
-  (total, stage) => total + (stage.typical_duration || 0),
-  0,
-);
-
-interface PhaseProgress {
-  currentPhase:
-    | "planted"
-    | "seedling"
-    | "vegetation"
-    | "flowering"
-    | "harvested";
+interface CalculateProgressParameters {
+  currentPhase: GrowthPhase;
   overallProgress: number;
   phaseProgress: number;
   estimatedHarvestDate: Date | null;
   daysUntilNextPhase: number | null;
-  nextPhase: string | null;
+  nextPhase: GrowthPhase | null;
 }
 
-export function calculateDetailedGrowthProgress(
+export function calculateGrowthProgress(
   plant: GetOwnPlantType,
-): PhaseProgress {
+): CalculateProgressParameters {
   const now = new Date();
 
   const getWeeksBetween = (start: Date, end: Date): number => {
@@ -38,7 +26,13 @@ export function calculateDetailedGrowthProgress(
     return Math.ceil((end.getTime() - start.getTime()) / millisecondsPerDay);
   };
 
-  const progress: PhaseProgress = {
+  const findStage = (name: GrowthPhase): GrowthStage => {
+    const stage = PlantGrowthStages.find((s) => s.name === name);
+    if (!stage) throw new Error(`Invalid growth stage: ${name}`);
+    return stage;
+  };
+
+  const progress: CalculateProgressParameters = {
     currentPhase: "planted",
     overallProgress: 0,
     phaseProgress: 0,
@@ -59,9 +53,7 @@ export function calculateDetailedGrowthProgress(
   }
 
   if (plant.floweringPhaseStart) {
-    const floweringStage = PlantGrowthStages.find(
-      (stage) => stage.name === "flowering",
-    )!;
+    const floweringStage = findStage("flowering");
     progress.currentPhase = "flowering";
     const floweringWeeks = getWeeksBetween(plant.floweringPhaseStart, now);
     progress.phaseProgress = Math.min(
@@ -70,7 +62,7 @@ export function calculateDetailedGrowthProgress(
     );
     progress.overallProgress =
       60 + (floweringWeeks / floweringStage.typical_duration!) * 40;
-    progress.nextPhase = "harvest";
+    progress.nextPhase = "harvested";
     progress.daysUntilNextPhase =
       floweringStage.typical_duration! * 7 -
       getDaysBetween(plant.floweringPhaseStart, now);
@@ -81,9 +73,7 @@ export function calculateDetailedGrowthProgress(
     );
     progress.estimatedHarvestDate = harvestDate;
   } else if (plant.vegetationPhaseStart) {
-    const vegetationStage = PlantGrowthStages.find(
-      (stage) => stage.name === "vegetation",
-    )!;
+    const vegetationStage = findStage("vegetation");
     progress.currentPhase = "vegetation";
     const vegetationWeeks = getWeeksBetween(plant.vegetationPhaseStart, now);
     progress.phaseProgress = Math.min(
@@ -97,9 +87,7 @@ export function calculateDetailedGrowthProgress(
       vegetationStage.typical_duration! * 7 -
       getDaysBetween(plant.vegetationPhaseStart, now);
   } else if (plant.seedlingPhaseStart) {
-    const seedlingStage = PlantGrowthStages.find(
-      (stage) => stage.name === "seedling",
-    )!;
+    const seedlingStage = findStage("seedling");
     progress.currentPhase = "seedling";
     const seedlingWeeks = getWeeksBetween(plant.seedlingPhaseStart, now);
     progress.phaseProgress = Math.min(

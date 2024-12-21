@@ -1,9 +1,5 @@
 {
   "Account": {
-    "info-email": "E-Mail",
-    "info-name": "Name",
-    "info-role": "Rolle",
-    "info-username": "Benutzername",
     "account-info-subtitle": "Sieh dir deine Accountinformationen an",
     "account-info-title": "Mein Account",
     "edit-profile-button": "Account bearbeiten",
@@ -29,6 +25,10 @@
     "form-username-label": "Benutzername",
     "form-username-placeholder": "Gib deinen Benutzernamen ein",
     "form-username-taken": "Dieser Benutzername ist bereits vergeben.",
+    "info-email": "E-Mail",
+    "info-name": "Name",
+    "info-role": "Rolle",
+    "info-username": "Benutzername",
     "not-provided": "Nicht angegeben"
   },
   "CardFooter": {
@@ -153,6 +153,7 @@
     "breeder": "Züchter",
     "curing-start-date": "Startdatum der Aushärtephase",
     "edit-plant-button-label": "Pflanze bearbeiten",
+    "estimated-harvest": "Voraussichtliche Ernte",
     "flowering-start-date": "Startdatum der Blüte",
     "form-button-reset": "Zurücksetzen",
     "form-button-save-changes": "Speichern",
@@ -172,12 +173,15 @@
     "growth-progress": "Wachstumsfortschritt",
     "harvest-date": "Datum der Ernte",
     "linkUploadButtonLabel": "Neue anlegen",
+    "overall-progress": "Gesamtfortschritt",
+    "phase": "Phasenfortschritt",
     "planting-date": "Datum der Aussaat",
     "strain": "Sorte",
     "subtitle": "Verwalte deine Pflanzen",
     "thc": "THC",
     "thc-content": "THC-Gehalt",
     "title": "Meine Pflanzen",
+    "until": "",
     "user-has-no-plants": "Du hast bisher keine Pflanzen hinzugefügt.",
     "vegetation-start-date": "Startdatum der Wachstumsphase"
   },

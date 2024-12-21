@@ -16,9 +16,7 @@ import {
 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
-import Image from "next/image";
 import { useState } from "react";
-import headerImagePlaceholder from "~/assets/landscape-placeholdersvg.svg";
 import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
 import { SocialCardFooter } from "~/components/atom/social-card-footer";
 import SocialHeader from "~/components/atom/social-header";
@@ -47,15 +45,16 @@ import { useToast } from "~/hooks/use-toast";
 import { Link } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import { formatDate } from "~/lib/utils";
-import { calculateDetailedGrowthProgress } from "~/lib/utils/calculateDetailedGrowthProgress";
-import { GetOwnPlantType } from "~/server/api/root";
+import { calculateGrowthProgress } from "~/lib/utils/calculateDetailedGrowthProgress";
+import { PlantByIdType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
 import { LikeableEntityType } from "~/types/like";
 
 import { Comments } from "../Comments/comments";
+import { ImageCarousel } from "../Photos/image-carousel";
 
 interface PlantCardProps {
-  plant: GetOwnPlantType;
+  plant: PlantByIdType;
   isSocial?: boolean;
 }
 
@@ -113,7 +112,7 @@ export default function PlantCard({
     setIsDeleteDialogOpen(false);
   };
 
-  const progress = calculateDetailedGrowthProgress(plant);
+  const progress = calculateGrowthProgress(plant);
 
   return (
     <>
@@ -133,13 +132,15 @@ export default function PlantCard({
         <CardContent
           className={`grid gap-2 ${isSocial ? "ml-14 pl-0 pr-2" : "p-4"}`}
         >
-          {/* Plant HeaderImage */}
+          <ImageCarousel plantImages={plant.plantImages} />
+
+          {/* Plant HeaderImage
           <div
             className="relative aspect-video overflow-hidden"
             onMouseEnter={() => setIsImageHovered(true)}
             onMouseLeave={() => setIsImageHovered(false)}
-          >
-            <Image
+          > */}
+          {/* <Image
               src={plant.headerImage?.imageUrl ?? headerImagePlaceholder}
               alt={plant.name}
               fill
@@ -148,8 +149,8 @@ export default function PlantCard({
               style={{
                 transform: isImageHovered ? "scale(1.05)" : "scale(1)",
               }}
-            />
-          </div>
+            /> */}
+          {/* </div> */}
 
           {/* Title Link */}
           <div className="flex items-center">

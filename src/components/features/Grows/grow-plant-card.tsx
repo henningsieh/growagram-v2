@@ -2,7 +2,7 @@
 
 // src/components/features/Grows/grow-plant-card.tsx:
 import { AnimatePresence, motion } from "framer-motion";
-import { Calendar1, Dna, FlaskConical, Leaf, Tag } from "lucide-react";
+import { Calendar1, Clock, Dna, FlaskConical, Leaf, Tag } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { Button } from "~/components/ui/button";
@@ -24,21 +24,29 @@ import {
 import { useIsMobile } from "~/hooks/use-mobile";
 import { Link } from "~/lib/i18n/routing";
 import { DateFormatOptions, formatDate } from "~/lib/utils";
-import { calculateDetailedGrowthProgress } from "~/lib/utils/calculateDetailedGrowthProgress";
+import { calculateGrowthProgress } from "~/lib/utils/calculateDetailedGrowthProgress";
 import { GetOwnPlantType } from "~/server/api/root";
+import { PlantGrowthStages } from "~/types/plant";
 
 interface PlantCardProps {
   plant: GetOwnPlantType;
 }
 
 export function GrowPlantCard({ plant }: PlantCardProps) {
+  const locale = useLocale();
+  const t = useTranslations();
   const isMobile = useIsMobile();
   const [isHovered, setIsHovered] = useState(false);
 
-  const progress = calculateDetailedGrowthProgress(plant);
+  const progress = calculateGrowthProgress(plant);
+  const currentStage = PlantGrowthStages.find(
+    (stage) => stage.name === progress.currentPhase,
+  )!;
 
-  const locale = useLocale();
-  const t = useTranslations();
+  const formatDaysRemaining = (days: number | null) => {
+    if (!days) return null;
+    return days > 1 ? `${days} days` : `${days} day`;
+  };
 
   return (
     <TooltipProvider>
@@ -58,26 +66,85 @@ export function GrowPlantCard({ plant }: PlantCardProps) {
                 {plant.name}
               </Link>
             </Button>
-            <Tooltip>
-              <TooltipTrigger>
-                <div
-                  className={`h-3 w-3 rounded-full bg-${progress.currentPhase}`} // He Claude AI, this should use the correct `color` paramater from `const PlantGrowthStages: GrowthStage[]` instead using the `progress.currentPhase` name
-                />
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>
-                  {
-                    t("Grows.growth-stage")
-                    // eslint-disable-next-line react/jsx-no-literals
-                  }
-                  : {progress.currentPhase}
-                </p>
-              </TooltipContent>
-            </Tooltip>
+            <div className="flex items-center gap-2">
+              {progress.estimatedHarvestDate && (
+                <Tooltip>
+                  <TooltipTrigger className="cursor-help">
+                    <Clock className={`h-4 w-4 text-${currentStage.color}`} />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>
+                      {t("Plants.estimated-harvest")}:{" "}
+                      {formatDate(progress.estimatedHarvestDate, locale, {
+                        includeYear: true,
+                      } as DateFormatOptions)}
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              )}
+              <Tooltip>
+                <TooltipTrigger>
+                  <div
+                    className={`h-3 w-3 rounded-full bg-${currentStage.color}`}
+                  />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <div className="space-y-1">
+                    <p>
+                      {
+                        t("Grows.growth-stage")
+                        // eslint-disable-next-line react/jsx-no-literals
+                      }
+                      : {currentStage.name}
+                    </p>
+                    {progress.daysUntilNextPhase && (
+                      <p className="text-sm text-muted-foreground">
+                        {formatDaysRemaining(progress.daysUntilNextPhase)}{" "}
+                        {t("Plants.until")} {progress.nextPhase}
+                      </p>
+                    )}
+                  </div>
+                </TooltipContent>
+              </Tooltip>
+            </div>
           </CardTitle>
-          <CardDescription></CardDescription>
+          <CardDescription>
+            {progress.daysUntilNextPhase && progress.nextPhase && (
+              <div className="mt-1 text-xs text-muted-foreground">
+                {formatDaysRemaining(progress.daysUntilNextPhase)}{" "}
+                {t("Plants.until")} {progress.nextPhase}
+              </div>
+            )}
+          </CardDescription>
         </CardHeader>
         <CardContent className="gap-4 p-0">
+          <div className="mb-1 flex justify-between text-xs text-muted-foreground">
+            <span>
+              {
+                t("Plants.phase")
+                // eslint-disable-next-line react/jsx-no-literals
+              }
+              :{" "}
+              {
+                // eslint-disable-next-line react/jsx-no-literals
+                progress.phaseProgress
+                // eslint-disable-next-line react/jsx-no-literals
+              }
+              %
+            </span>
+            <span>
+              {
+                t("Plants.overall-progress")
+                // eslint-disable-next-line react/jsx-no-literals
+              }
+              :{" "}
+              {
+                progress.overallProgress
+                // eslint-disable-next-line react/jsx-no-literals
+              }
+              %
+            </span>
+          </div>
           <Progress value={progress.overallProgress} className="mb-4 h-2" />
 
           <AnimatePresence>
@@ -92,7 +159,6 @@ export function GrowPlantCard({ plant }: PlantCardProps) {
                     <Calendar1 className="h-4 w-4 text-gray-500" />
                     <span className="text-sm">
                       {formatDate(plant.startDate, locale, {
-                        // weekday: "short",
                         includeYear: false,
                       } as DateFormatOptions)}
                     </span>
@@ -103,11 +169,20 @@ export function GrowPlantCard({ plant }: PlantCardProps) {
                 </Tooltip>
                 <Tooltip>
                   <TooltipTrigger className="flex items-center gap-2">
-                    <Leaf className={`h-4 w-4 text-${progress.currentPhase}`} />
-                    <span className="text-sm">{progress.currentPhase}</span>
+                    <Leaf className={`h-4 w-4 text-${currentStage.color}`} />
+                    <span className="text-sm">{currentStage.name}</span>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <p>{t("Plants.growth-progress")}</p>
+                    <div className="space-y-1">
+                      <p>{t("Plants.growth-progress")}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {
+                          t("Plants.phase")
+                          // eslint-disable-next-line react/jsx-no-literals
+                        }
+                        : {progress.phaseProgress}%
+                      </p>
+                    </div>
                   </TooltipContent>
                 </Tooltip>
                 {plant.strain && (
@@ -116,11 +191,7 @@ export function GrowPlantCard({ plant }: PlantCardProps) {
                       <TooltipTrigger className="flex items-center gap-2">
                         <FlaskConical className="h-4 w-4 text-purple-500" />
                         <span className="text-sm">
-                          {
-                            t("Plants.thc")
-                            // eslint-disable-next-line react/jsx-no-literals
-                          }
-                          : {plant.strain.thcContent ?? "N/A"}%
+                          {t("Plants.thc")}: {plant.strain.thcContent ?? "N/A"}%
                         </span>
                       </TooltipTrigger>
                       <TooltipContent>
@@ -146,7 +217,7 @@ export function GrowPlantCard({ plant }: PlantCardProps) {
         </CardContent>
         <CardFooter className="flex w-full justify-end p-0">
           <Link href={`/plants/${plant.id}/form`}>
-            <Button size={"sm"} variant={"link"}>
+            <Button size="sm" variant="link">
               edit
             </Button>
           </Link>

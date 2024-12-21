@@ -123,7 +123,7 @@ export default function PhotoUpload({ user }: { user: User }) {
                 "Content-Type": "application/json",
               },
               body: JSON.stringify({
-                folder: user.name,
+                folder: user.username,
               }),
             },
           );
