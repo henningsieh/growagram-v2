@@ -1,70 +1,102 @@
 "use client";
 
-// src/app/[locale]/(protected)/plants/page.tsx
+import {
+  Infinity,
+  ArrowDown01,
+  ArrowDown10,
+  ArrowDownAZ,
+  ArrowDownZA,
+  Calendar,
+  Leaf,
+} from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useCallback, useEffect, useRef } from "react";
-import { PaginationItemsPerPage } from "~/assets/constants";
-import InfiniteScrollLoader from "~/components/Layouts/InfiniteScrollLoader";
+import { useSearchParams } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
 import PageHeader from "~/components/Layouts/page-header";
-import ResponsiveGrid from "~/components/Layouts/responsive-grid";
-import PlantCard from "~/components/features/Plants/plant-card";
-import { api } from "~/lib/trpc/react";
-import { GetOwnPlantsInput, GetOwnPlantsType } from "~/server/api/root";
+import {
+  SortFilterControls,
+  SortOrder,
+} from "~/components/atom/sort-filter-controls";
+import InfiniteScrollPlantsView from "~/components/features/Plants/Views/infinite-scroll";
+import PaginatedPlantsView from "~/components/features/Plants/Views/paginated";
+import { useRouter } from "~/lib/i18n/routing";
+import { PlantsSortField, PlantsViewMode } from "~/types/plant";
 
 export default function PlantsPage() {
-  const utils = api.useUtils();
-
-  // Get the prefetched data from cache
-  const initialData = utils.plants.getOwnPlants.getInfiniteData({
-    limit: PaginationItemsPerPage.PLANTS_PER_PAGE,
-  } satisfies GetOwnPlantsInput);
-
-  const {
-    data,
-    isLoading,
-    isFetching,
-    hasNextPage,
-    fetchNextPage,
-    isFetchingNextPage,
-  } = api.plants.getOwnPlants.useInfiniteQuery(
-    {
-      limit: PaginationItemsPerPage.PLANTS_PER_PAGE,
-    } satisfies GetOwnPlantsInput,
-    {
-      getNextPageParam: (lastPage) => lastPage.nextCursor,
-      initialData, // Use the prefetched data
-    },
-  );
-
-  const plants: GetOwnPlantsType =
-    data?.pages.flatMap((page) => page.plants) ?? [];
-
-  // Intersection Observer callback
-  const onIntersect = useCallback(
-    (entries: IntersectionObserverEntry[]) => {
-      const firstEntry = entries[0];
-      if (firstEntry.isIntersecting && hasNextPage && !isFetchingNextPage) {
-        void fetchNextPage();
-      }
-    },
-    [fetchNextPage, hasNextPage, isFetchingNextPage],
-  );
-
-  // Set up intersection observer
-  const loadingRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const observer = new IntersectionObserver(onIntersect, {
-      root: null, // Use viewport as root
-      rootMargin: "0px",
-      threshold: 0.01, // Trigger when even 10% of the element is visible
-    });
-    if (loadingRef.current) {
-      observer.observe(loadingRef.current);
-    }
-    return () => observer.disconnect();
-  }, [onIntersect]);
-
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const t = useTranslations("Plants");
+
+  // Manage view mode state
+  const [viewMode, setViewMode] = useState<PlantsViewMode>(
+    (localStorage.getItem("plantViewMode") as PlantsViewMode) ||
+      PlantsViewMode.PAGINATION,
+  );
+
+  // Shared state for sorting
+  const [sortField, setSortField] = useState<PlantsSortField>(
+    (searchParams.get("sortField") as PlantsSortField) || PlantsSortField.NAME,
+  );
+  const [sortOrder, setSortOrder] = useState<SortOrder>(
+    (searchParams.get("sortOrder") as SortOrder) || SortOrder.ASC,
+  );
+  const [isFetching, setIsFetching] = useState<boolean>(false);
+
+  // Update URL parameters
+  const updateUrlParams = useCallback(() => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (viewMode === PlantsViewMode.PAGINATION) {
+      params.set("page", searchParams.get("page") || "1");
+    } else {
+      params.delete("page");
+    }
+
+    params.set("sortField", sortField);
+    params.set("sortOrder", sortOrder);
+
+    const paramsString = params.toString();
+    router.push(paramsString ? `?${paramsString}` : "");
+  }, [searchParams, sortField, sortOrder, router, viewMode]);
+
+  // Sync state with URL
+  useEffect(() => {
+    updateUrlParams();
+  }, [sortField, sortOrder, viewMode, updateUrlParams]);
+
+  // Toggle view mode function
+  const toggleViewMode = () => {
+    const newMode =
+      viewMode === PlantsViewMode.PAGINATION
+        ? PlantsViewMode.INFINITE_SCROLL
+        : PlantsViewMode.PAGINATION;
+    localStorage.setItem("plantViewMode", newMode);
+    setViewMode(newMode);
+  };
+
+  // Shared handler for sort changes
+  const handleSortChange = (field: PlantsSortField, order: SortOrder) => {
+    setSortField(field);
+    setSortOrder(order);
+  };
+
+  // Define sort options
+  const sortOptions = [
+    {
+      field: PlantsSortField.NAME,
+      label: "Name",
+      icon: <Leaf className="h-5 w-5" />,
+      sortIconAsc: ArrowDownAZ,
+      sortIconDesc: ArrowDownZA,
+    },
+    {
+      field: PlantsSortField.CREATED_AT,
+      label: t("sort-plants-createdAt"),
+      icon: <Calendar className="h-5 w-5" />,
+      sortIconAsc: ArrowDown01,
+      sortIconDesc: ArrowDown10,
+    },
+  ];
 
   return (
     <PageHeader
@@ -73,27 +105,36 @@ export default function PlantsPage() {
       buttonLink="/plants/new/form"
       buttonLabel={t("linkUploadButtonLabel")}
     >
-      {/* Handling case if user hasn't uploaded any plants */}
-      {!isFetching && plants.length === 0 ? (
-        <p className="mt-8 text-center text-muted-foreground">
-          {t("user-has-no-plants")}
-        </p>
+      <SortFilterControls
+        isFetching={isFetching}
+        sortField={sortField}
+        sortOrder={sortOrder}
+        sortOptions={sortOptions}
+        onSortChange={handleSortChange}
+        filterLabel={undefined}
+        filterEnabled={undefined}
+        onFilterChange={undefined}
+        viewMode={{
+          current: viewMode,
+          options: [PlantsViewMode.PAGINATION, PlantsViewMode.INFINITE_SCROLL],
+          label: "Scroll",
+          icon: <Infinity className="mr-2 h-4 w-4" />,
+        }}
+        onViewModeToggle={toggleViewMode}
+      />
+
+      {viewMode === PlantsViewMode.PAGINATION ? (
+        <PaginatedPlantsView
+          sortField={sortField}
+          sortOrder={sortOrder}
+          setIsFetching={setIsFetching}
+        />
       ) : (
-        <>
-          <ResponsiveGrid>
-            {plants.map((plant) => (
-              <PlantCard plant={plant} isSocial={false} key={plant.id} />
-            ))}
-          </ResponsiveGrid>
-          <InfiniteScrollLoader
-            ref={loadingRef}
-            isLoading={isLoading}
-            isFetchingNextPage={isFetchingNextPage}
-            hasNextPage={hasNextPage}
-            itemsLength={plants.length}
-            noMoreMessage="No more plants to load."
-          />
-        </>
+        <InfiniteScrollPlantsView
+          sortField={sortField}
+          sortOrder={sortOrder}
+          setIsFetching={setIsFetching}
+        />
       )}
     </PageHeader>
   );

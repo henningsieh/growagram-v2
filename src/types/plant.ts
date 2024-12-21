@@ -1,4 +1,14 @@
-// src/types/plant.ts
+// src/types/plant.ts:
+
+export enum PlantsSortField {
+  NAME = "name",
+  CREATED_AT = "createdAt",
+}
+
+export enum PlantsViewMode {
+  PAGINATION = "pagination",
+  INFINITE_SCROLL = "infinite-scroll",
+}
 
 export type GrowthStage = {
   name: string;
