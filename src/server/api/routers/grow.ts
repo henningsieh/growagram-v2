@@ -118,17 +118,7 @@ export const growRouter = createTRPCRouter({
                 with: { breeder: { columns: { id: true, name: true } } },
               },
               headerImage: { columns: { id: true, imageUrl: true } },
-              plantImages: {
-                columns: { imageId: false, plantId: false },
-                with: {
-                  image: {
-                    columns: {
-                      id: true,
-                      imageUrl: true,
-                    },
-                  },
-                },
-              },
+              plantImages: connectPlantWithImagesQuery,
             },
           },
         },
