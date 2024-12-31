@@ -43,10 +43,21 @@
     "no-comments-yet": "No comments yet.",
     "reply-to-comment-placeholder": "Write an answer"
   },
+  "Common": {
+    "day": "day",
+    "days": "days"
+  },
   "Dashboard": {
     "Grows": {
       "your-grows": "Your Grows"
     }
+  },
+  "Errors": {
+    "backToHome": "Home",
+    "goBack": "Go Back",
+    "message": "Sorry, we couldn't find the page you're looking for.",
+    "path": "Requested path",
+    "title": "Page Not Found"
   },
   "Grows": {
     "buttonLabel-create-grow": "Create Grow",
@@ -152,6 +163,7 @@
   "Plants": {
     "breeder": "Breeder",
     "curing-start-date": "Curing phase start date",
+    "delete-plant-button-label": "Delete Plant",
     "edit-plant-button-label": "Edit Plant",
     "estimated-harvest": "Estimated harvest",
     "flowering-start-date": "Flowering Start Date",
@@ -176,6 +188,7 @@
     "overall-progress": "Overall progress",
     "phase": "Phase progress",
     "planting-date": "Seed planting date",
+    "public-link-label": "Open public link",
     "sort-plants-createdAt": "Created at",
     "strain": "Strain",
     "subtitle": "Manage your plants",

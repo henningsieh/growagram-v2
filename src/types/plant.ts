@@ -17,7 +17,7 @@ export type GrowthStage = {
 };
 
 export const PlantGrowthStages = [
-  { name: "planted", color: "planted", typical_duration: 0 },
+  { name: "planted", color: "planted", typical_duration: 1 },
   { name: "seedling", color: "seedling", typical_duration: 2 },
   { name: "vegetation", color: "vegetation", typical_duration: 6 },
   { name: "flowering", color: "flowering", typical_duration: 10 },

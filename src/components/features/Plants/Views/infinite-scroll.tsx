@@ -111,7 +111,7 @@ export default function InfiniteScrollPlantsView({
         <>
           <ResponsiveGrid>
             {plants.map((plant) => (
-              <PlantCard key={plant.id} plant={plant} isSocial={false} />
+              <PlantCard key={plant.id} plant={plant} isSocialProp={false} />
             ))}
           </ResponsiveGrid>
 

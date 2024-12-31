@@ -43,10 +43,21 @@
     "no-comments-yet": "Bisher keine Kommentare.",
     "reply-to-comment-placeholder": "Schreibe eine Antwort"
   },
+  "Common": {
+    "day": "Tag",
+    "days": "Tagen"
+  },
   "Dashboard": {
     "Grows": {
       "your-grows": "deine Grows"
     }
+  },
+  "Errors": {
+    "backToHome": "Startseite",
+    "goBack": "Gehe zurück",
+    "message": "Entschuldigung, wir konnten die von Ihnen gesuchte Seite nicht finden.",
+    "path": "Angefragter Pfad",
+    "title": "Seite nicht gefunden"
   },
   "Grows": {
     "buttonLabel-create-grow": "Grow erstellen",
@@ -150,8 +161,9 @@
     "toggle-menu": "Menü umschalten"
   },
   "Plants": {
-    "breeder": "Züchter",
+    "breeder": "Züchter / Breeder",
     "curing-start-date": "Startdatum der Aushärtephase",
+    "delete-plant-button-label": "Pflanze löschen",
     "edit-plant-button-label": "Pflanze bearbeiten",
     "estimated-harvest": "Voraussichtliche Ernte",
     "flowering-start-date": "Startdatum der Blüte",
@@ -176,8 +188,9 @@
     "overall-progress": "Gesamtfortschritt",
     "phase": "Phasenfortschritt",
     "planting-date": "Datum der Aussaat",
+    "public-link-label": "Mit öffentlichem Link öffnen",
     "sort-plants-createdAt": "Angelegt am",
-    "strain": "Sorte",
+    "strain": "Sorte / Strain",
     "subtitle": "Verwalte deine Pflanzen",
     "thc": "THC",
     "thc-content": "THC-Gehalt",

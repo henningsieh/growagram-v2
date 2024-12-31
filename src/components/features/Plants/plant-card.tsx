@@ -3,36 +3,43 @@
 // src/components/features/plant/plant-card.tsx:
 import { TooltipProvider } from "@radix-ui/react-tooltip";
 import {
-  Edit,
+  EditIcon,
+  ExternalLinkIcon,
   Flower2,
   Leaf,
   Loader2,
+  MessageCircleIcon,
+  MoreHorizontalIcon,
   Nut,
   PillBottle,
   Sprout,
   Tag,
-  Trash2,
+  Trash2Icon,
   Wheat,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
+import AvatarCardHeader from "~/components/atom/avatar-card-header";
 import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
 import { SocialCardFooter } from "~/components/atom/social-card-footer";
-import SocialHeader from "~/components/atom/social-header";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu";
 import { Label } from "~/components/ui/label";
 import { Progress } from "~/components/ui/progress";
-import { Separator } from "~/components/ui/separator";
 import { Switch } from "~/components/ui/switch";
 import {
   Tooltip,
@@ -55,12 +62,12 @@ import { ImageCarousel } from "../Photos/image-carousel";
 
 interface PlantCardProps {
   plant: PlantByIdType;
-  isSocial?: boolean;
+  isSocialProp?: boolean;
 }
 
 export default function PlantCard({
   plant,
-  isSocial: isSocialProp = true,
+  isSocialProp = true,
 }: PlantCardProps) {
   const { data: session } = useSession();
   const user = session?.user;
@@ -126,10 +133,10 @@ export default function PlantCard({
       />
 
       <Card className="my-2 flex flex-col overflow-hidden">
-        {isSocial && <SocialHeader user={plant.owner} />}
+        {isSocial && <AvatarCardHeader user={plant.owner} />}
 
         <CardContent
-          className={`grid gap-2 ${isSocial ? "ml-14 pl-0 pr-2" : "p-4"}`}
+          className={`grid gap-2 ${isSocial ? "ml-11 pl-0 pr-2" : "p-2"}`}
         >
           <ImageCarousel plantImages={plant.plantImages} />
 
@@ -152,34 +159,85 @@ export default function PlantCard({
           {/* </div> */}
 
           {/* Title Link */}
-          <div className="flex items-center">
+          <div className="flex items-center justify-between">
             <CardTitle as="h3">
               <Button asChild variant="link" className="p-1">
                 <Link
                   href={`/public/plants/${plant.id}`}
-                  className="items-center gap-2"
+                  className="flex items-center gap-2"
                 >
-                  <Tag className="mt-2" size={20} />
+                  <Tag className="mt-1" size={20} />
                   {plant.name}
                 </Link>
               </Button>
             </CardTitle>
             {/* Switch for toggling isSocial */}
             {user && user.id === plant.ownerId && (
-              <div className="ml-auto flex items-start gap-2">
-                <Label
-                  className="text-sm font-semibold"
-                  htmlFor="show-socialMode"
-                  // eslint-disable-next-line react/jsx-no-literals
-                >
-                  Social Mode
-                </Label>
-                <Switch
-                  id="show-socialMode"
-                  checked={isSocial}
-                  onCheckedChange={setIsSocial}
-                />
-              </div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="icon">
+                    <MoreHorizontalIcon className="h-5 w-5" />
+                    <span className="sr-only">Open menu</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  {!isSocialProp && (
+                    <DropdownMenuItem className="flex items-center justify-start">
+                      <MessageCircleIcon className="mr-2 h-4 w-4" />
+                      <Label
+                        className="cursor-pointer text-sm font-semibold"
+                        htmlFor="show-socialMode"
+                      >
+                        Social
+                      </Label>
+                      <Switch
+                        className="ml-auto"
+                        id="show-socialMode"
+                        checked={isSocial}
+                        onCheckedChange={setIsSocial}
+                      />
+                    </DropdownMenuItem>
+                  )}
+                  <DropdownMenuItem asChild>
+                    <Link
+                      target="_blank"
+                      href={`/public/plants/${plant.id}`}
+                      className="flex cursor-pointer items-center"
+                    >
+                      <ExternalLinkIcon className="mr-2 h-4 w-4" />
+                      {t("public-link-label")}
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link
+                      href={`/plants/${plant.id}/form`}
+                      className="flex cursor-pointer items-center"
+                    >
+                      <EditIcon className="mr-2 h-4 w-4" />
+                      {t("edit-plant-button-label")}
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    asChild
+                    className="bg-destructive/50 text-foreground focus:bg-destructive focus:text-white focus:outline-none"
+                  >
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      className="w-full justify-start"
+                      onClick={handleDelete}
+                      disabled={deleteMutation.isPending}
+                    >
+                      {deleteMutation.isPending ? (
+                        <Loader2 size={20} className="mr-2 animate-spin" />
+                      ) : (
+                        <Trash2Icon className="mr-2 h-4 w-4" />
+                      )}
+                      {t("delete-plant-button-label")}
+                    </Button>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             )}
           </div>
 
@@ -366,52 +424,55 @@ export default function PlantCard({
           </Card>
         </CardContent>
 
-        {isSocial ? (
-          // Social Footer
-          <SocialCardFooter
-            className={`pb-2 pr-2 ${isSocial && "ml-14"}`}
-            entityId={plant.id}
-            entityType={LikeableEntityType.Plant}
-            initialLiked={isLiked}
-            isLikeStatusLoading={isLikeLoading}
-            commentCountLoading={commentCountLoading}
-            stats={{
-              comments: commentCount,
-              views: 0,
-              likes: likeCount,
-            }}
-            toggleComments={toggleComments}
-          />
-        ) : (
-          user &&
-          user.id === plant.ownerId && (
-            // Owner Buttons
-            <>
-              <Separator />
-              <CardFooter className="flex w-full justify-between gap-1 p-1">
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  className="w-20"
-                  onClick={handleDelete}
-                  disabled={deleteMutation.isPending}
-                >
-                  {deleteMutation.isPending ? (
-                    <Loader2 size={20} className="animate-spin" />
-                  ) : (
-                    <Trash2 size={20} />
-                  )}
-                </Button>
-                <Button asChild size="sm" className="w-full text-base">
-                  <Link href={`/plants/${plant.id}/form`}>
-                    <Edit size={20} />
-                    {t("edit-plant-button-label")}
-                  </Link>
-                </Button>
-              </CardFooter>
-            </>
+        {
+          isSocial && (
+            // Social Footer
+            <SocialCardFooter
+              className={`pb-2 pr-2 ${isSocial && "ml-11"}`}
+              entityId={plant.id}
+              entityType={LikeableEntityType.Plant}
+              initialLiked={isLiked}
+              isLikeStatusLoading={isLikeLoading}
+              commentCountLoading={commentCountLoading}
+              stats={{
+                comments: commentCount,
+                views: 0,
+                likes: likeCount,
+              }}
+              toggleComments={toggleComments}
+            />
           )
-        )}
+          // : (
+          //   user &&
+          //   user.id === plant.ownerId && (
+          //     // Owner Buttons
+          //     <>
+          //       <Separator />
+          //       <CardFooter className="flex w-full justify-between gap-1 p-1">
+          //         <Button
+          //           variant="destructive"
+          //           size="sm"
+          //           className="w-20"
+          //           onClick={handleDelete}
+          //           disabled={deleteMutation.isPending}
+          //         >
+          //           {deleteMutation.isPending ? (
+          //             <Loader2 size={20} className="animate-spin" />
+          //           ) : (
+          //             <Trash2 size={20} />
+          //           )}
+          //         </Button>
+          //         <Button asChild size="sm" className="w-full text-base">
+          //           <Link href={`/plants/${plant.id}/form`}>
+          //             <Edit size={20} />
+          //             {t("edit-plant-button-label")}
+          //           </Link>
+          //         </Button>
+          //       </CardFooter>
+          //     </>
+          //   )
+          // )
+        }
 
         {isSocial && isCommentsOpen && (
           <Comments

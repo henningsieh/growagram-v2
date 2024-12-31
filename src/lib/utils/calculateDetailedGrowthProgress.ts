@@ -74,7 +74,7 @@ export function calculateGrowthProgress(
 
     const harvestDate = new Date(plant.floweringPhaseStart);
     harvestDate.setDate(
-      harvestDate.getDate() + floweringStage.typical_duration! * 7,
+      harvestDate.getDate() + findStage("flowering").typical_duration! * 7,
     );
     progress.estimatedHarvestDate = harvestDate;
   } else if (plant.vegetationPhaseStart) {
@@ -92,6 +92,14 @@ export function calculateGrowthProgress(
     progress.daysUntilNextPhase =
       vegetationStage.typical_duration! * 7 -
       getDaysBetween(plant.vegetationPhaseStart, now);
+
+    const harvestDate = new Date(plant.vegetationPhaseStart);
+    harvestDate.setDate(
+      harvestDate.getDate() +
+        findStage("vegetation").typical_duration! * 7 +
+        findStage("flowering").typical_duration! * 7,
+    );
+    progress.estimatedHarvestDate = harvestDate;
   } else if (plant.seedlingPhaseStart) {
     const seedlingStage = findStage("seedling");
     progress.currentPhase = "seedling";

@@ -65,6 +65,7 @@ export const plantRouter = createTRPCRouter({
         limit: limit,
         with: {
           owner: true,
+          grow: true,
           plantImages: connectPlantWithImagesQuery,
           strain: {
             columns: {
@@ -99,6 +100,7 @@ export const plantRouter = createTRPCRouter({
         where: eq(plants.id, input.id),
         with: {
           owner: true,
+          grow: true,
           plantImages: connectPlantWithImagesQuery,
           strain: {
             columns: {

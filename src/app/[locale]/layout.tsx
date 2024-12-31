@@ -13,13 +13,13 @@ import { TRPCReactProvider } from "~/lib/trpc/react";
 import "~/styles/globals.css";
 
 const geistSans = localFont({
-  src: "../lib/fonts/GeistMonoVF.woff",
+  src: "../../lib/fonts/GeistMonoVF.woff",
   variable: "--font-geist-sans",
   weight: "100 900",
 });
 
 const geistMono = localFont({
-  src: "../lib/fonts/GeistMonoVF.woff",
+  src: "../../lib/fonts/GeistMonoVF.woff",
   variable: "--font-geist-mono",
   weight: "100 900",
 });
@@ -35,19 +35,16 @@ export const metadata: Metadata = {
   manifest: "/site.webmanifest",
 };
 
-type LayoutProps = {
+type AppLayoutProps = {
   children: React.ReactNode;
-  params: { locale: string };
+  params: Promise<{ locale: string }>;
 };
 
-export default async function RootLayout(props: LayoutProps) {
-  // TODO: fix locale here!
+export default async function AppLayout(props: AppLayoutProps) {
   return (
     <html
-      // lang={locale}
-      lang="de"
-      suppressHydrationWarning
-      className={APP_SETTINGS.DEFAULT_THEME === "dark" ? "dark" : ""}
+      lang={(await props.params).locale}
+      // suppressHydrationWarning
     >
       <body
         className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-background font-sans antialiased`}

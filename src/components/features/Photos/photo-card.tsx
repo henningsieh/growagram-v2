@@ -18,9 +18,9 @@ import { useLocale } from "next-intl";
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import AvatarCardHeader from "~/components/atom/avatar-card-header";
 import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
 import { SocialCardFooter } from "~/components/atom/social-card-footer";
-import SocialHeader from "~/components/atom/social-header";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardFooter, CardTitle } from "~/components/ui/card";
@@ -169,7 +169,7 @@ export default function PhotoCard({
           </div>
         )}
 
-        {isSocial && <SocialHeader user={photo.owner} />}
+        {isSocial && <AvatarCardHeader user={photo.owner} />}
 
         {/* Photo */}
         <div
@@ -192,7 +192,7 @@ export default function PhotoCard({
         </div>
 
         <CardContent
-          className={`grid gap-4 ${isSocial ? "ml-14 pl-0 pr-2" : "p-4"}`}
+          className={`grid gap-4 ${isSocial ? "ml-11 pl-0 pr-2" : "p-2"}`}
         >
           {/* Title Link */}
           <div className="flex items-center">

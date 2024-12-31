@@ -1,37 +1,14 @@
-// src/app/[locale]/not-found.tsx
-import { headers } from "next/headers";
-import { routing } from "~/lib/i18n/routing";
+import { useLocale } from "next-intl";
+import { NotFoundWithPath } from "~/components/atom/notfound-withpath";
 
-export default async function LocalizedNotFound() {
-  // Get pathname from headers (server-side)
-  // Get pathname from headers (server-side)
-  const pathname = (await headers()).get("x-invoke-path") || "";
+import AppLayout from "./[locale]/layout";
 
-  // Extract locale from pathname
-  const localeMatch = pathname?.match(
-    new RegExp(`^/(${routing.locales.join("|")})/`),
-  );
-  const currentLocale = localeMatch ? localeMatch[1] : routing.defaultLocale;
-
-  const translations: Record<string, { title: string; message: string }> = {
-    en: {
-      title: "404 - Page Not Found",
-      message: "The page you're looking for doesn't exist.",
-    },
-    de: {
-      title: "404 - Seite nicht gefunden",
-      message: "Die gesuchte Seite existiert nicht.",
-    },
-  };
-
-  const { title, message } =
-    translations[currentLocale] || translations[routing.defaultLocale];
+export default function LocalizedErrorLayout() {
+  const locale = useLocale();
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center p-5 text-center font-sans">
-      <h2 className="mb-4 text-2xl font-bold">{title}</h2>
-      <h3 className="mb-2 text-gray-600">Path: {pathname}</h3>
-      <p>{message}</p>
-    </div>
+    <AppLayout params={Promise.resolve({ locale: locale })}>
+      <NotFoundWithPath />
+    </AppLayout>
   );
 }
