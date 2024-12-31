@@ -2,7 +2,7 @@
 import { notFound } from "next/navigation";
 import GrowFormPage from "~/components/features/Grows/grow-form";
 import { api } from "~/lib/trpc/server";
-import { GetGrowByIdInput, GetOwnGrowType } from "~/server/api/root";
+import { GetGrowByIdInput, GetGrowByIdType } from "~/server/api/root";
 
 export default async function CreatePlantPage({
   params,
@@ -13,7 +13,7 @@ export default async function CreatePlantPage({
 
   const grow = (
     growId !== "new" ? await api.grows.getById({ id: growId }) : undefined
-  ) satisfies GetOwnGrowType | undefined;
+  ) satisfies GetGrowByIdType;
 
   if (growId !== "new" && grow === undefined) notFound();
 

@@ -6,7 +6,7 @@ import { AtSign, Mail, Shield, User } from "lucide-react";
 import { useTranslations } from "next-intl";
 import FormContent from "~/components/Layouts/form-content";
 import PageHeader from "~/components/Layouts/page-header";
-import SocialHeader from "~/components/atom/social-header";
+import AvatarCardHeader from "~/components/atom/avatar-card-header";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader } from "~/components/ui/card";
@@ -41,7 +41,7 @@ export default function AccountInfo({ user }: { user: UserType }) {
           <FormContent>
             <Card className="overflow-hidden">
               <CardHeader>
-                <SocialHeader user={user} />
+                <AvatarCardHeader user={user} />
               </CardHeader>
               <Separator />
               <CardContent className="p-4 sm:p-6">

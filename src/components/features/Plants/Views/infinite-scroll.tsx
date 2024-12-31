@@ -1,6 +1,6 @@
 "use client";
 
-// src/components/features/Photos/Views/infinite-scroll.tsx:
+// src/components/features/Plants/Views/infinite-scroll.tsx:
 import {
   Dispatch,
   SetStateAction,
@@ -13,21 +13,19 @@ import InfiniteScrollLoader from "~/components/Layouts/InfiniteScrollLoader";
 import SpinningLoader from "~/components/Layouts/loader";
 import ResponsiveGrid from "~/components/Layouts/responsive-grid";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
-import PhotoCard from "~/components/features/Photos/photo-card";
+import PlantCard from "~/components/features/Plants/plant-card";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
-import { GetOwnPhotosInput, GetOwnPhotosType } from "~/server/api/root";
-import { PhotosSortField } from "~/types/image";
+import { GetOwnPlantsInput, GetOwnPlantsType } from "~/server/api/root";
+import { PlantsSortField } from "~/types/plant";
 
-export default function PhotosInfiniteScrollView({
+export default function InfiniteScrollPlantsView({
   sortField,
   sortOrder,
-  filterNotConnected,
   setIsFetching,
 }: {
-  sortField: PhotosSortField;
+  sortField: PlantsSortField;
   sortOrder: SortOrder;
-  filterNotConnected: boolean;
   setIsFetching: Dispatch<SetStateAction<boolean>>;
 }) {
   const router = useRouter();
@@ -35,18 +33,16 @@ export default function PhotosInfiniteScrollView({
 
   useEffect(() => {
     router.replace(
-      modulePaths.PHOTOS.path, // Use only the base path
+      modulePaths.PLANTS.path, // Use only the base path
     );
   }, [router]);
 
   // Get initial data from cache
-  const initialData = utils.photos.getOwnPhotos.getInfiniteData({
-    // the input must match the server-side `prefetchInfinite`
-    limit: PaginationItemsPerPage.PHOTOS_PER_PAGE,
+  const initialData = utils.plants.getOwnPlants.getInfiniteData({
+    limit: PaginationItemsPerPage.PLANTS_PER_PAGE,
     sortField,
     sortOrder,
-    filterNotConnected,
-  } satisfies GetOwnPhotosInput);
+  } satisfies GetOwnPlantsInput);
 
   // Infinite query
   const {
@@ -56,26 +52,26 @@ export default function PhotosInfiniteScrollView({
     hasNextPage,
     fetchNextPage,
     isFetchingNextPage,
-  } = api.photos.getOwnPhotos.useInfiniteQuery(
+  } = api.plants.getOwnPlants.useInfiniteQuery(
     {
-      limit: PaginationItemsPerPage.PHOTOS_PER_PAGE,
+      limit: PaginationItemsPerPage.PLANTS_PER_PAGE,
       sortField,
       sortOrder,
-      filterNotConnected,
-    } satisfies GetOwnPhotosInput,
+    } satisfies GetOwnPlantsInput,
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
       initialData,
     },
   );
+
   // Directly update the parent's isFetching state
   useEffect(() => {
     setIsFetching(isFetching);
   }, [isFetching, setIsFetching]);
 
-  // Extract photos from pages
-  const photos: GetOwnPhotosType =
-    data?.pages?.flatMap((page) => page.images satisfies GetOwnPhotosType) ??
+  // Extract plants from pages
+  const plants =
+    data?.pages?.flatMap((page) => page.plants satisfies GetOwnPlantsType) ??
     [];
 
   // Intersection Observer callback
@@ -107,27 +103,15 @@ export default function PhotosInfiniteScrollView({
     <>
       {isLoading ? (
         <SpinningLoader className="text-secondary" />
-      ) : photos.length === 0 ? (
+      ) : plants.length === 0 ? (
         <p className="mt-8 text-center text-muted-foreground">
-          {filterNotConnected
-            ? "No images without connected plants have been found."
-            : "You haven't uploaded any images yet."}
+          No plants have been created yet.
         </p>
       ) : (
         <>
           <ResponsiveGrid>
-            {photos.map((photo) => (
-              <PhotoCard
-                key={photo.id}
-                photo={photo}
-                isSocial={false}
-                currentQuery={{
-                  page: 1,
-                  sortField,
-                  sortOrder,
-                  filterNotConnected,
-                }}
-              />
+            {plants.map((plant) => (
+              <PlantCard key={plant.id} plant={plant} isSocialProp={false} />
             ))}
           </ResponsiveGrid>
 
@@ -136,7 +120,7 @@ export default function PhotosInfiniteScrollView({
             isLoading={isLoading}
             isFetchingNextPage={isFetchingNextPage}
             hasNextPage={hasNextPage}
-            itemsLength={photos.length}
+            itemsLength={plants.length}
             noMoreMessage="No more plants to load."
           />
         </>

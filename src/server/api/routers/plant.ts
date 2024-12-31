@@ -1,13 +1,17 @@
 // src/server/api/routers/plant.ts:
 import { TRPCError } from "@trpc/server";
-import { eq } from "drizzle-orm";
+import { count, eq } from "drizzle-orm";
 import { z } from "zod";
+import { PaginationItemsPerPage } from "~/assets/constants";
+import { SortOrder } from "~/components/atom/sort-filter-controls";
 import { plantImages, plants } from "~/lib/db/schema";
+import { connectPlantWithImagesQuery } from "~/server/api/routers/plantImages";
 import {
   createTRPCRouter,
   protectedProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
+import { PlantsSortField } from "~/types/plant";
 import { plantFormSchema } from "~/types/zodSchema";
 
 export const plantRouter = createTRPCRouter({
@@ -16,23 +20,53 @@ export const plantRouter = createTRPCRouter({
     .input(
       z
         .object({
-          limit: z.number().min(1).max(100).default(12).optional(),
-          cursor: z.number().nullish().default(null).optional(), // Cursor-based pagination
+          cursor: z.number().min(1).default(1).optional(),
+          limit: z
+            .number()
+            .min(1)
+            .max(100)
+            .default(PaginationItemsPerPage.PLANTS_PER_PAGE)
+            .optional(),
+          sortField: z
+            .nativeEnum(PlantsSortField)
+            .default(PlantsSortField.CREATED_AT)
+            .optional(),
+          sortOrder: z.nativeEnum(SortOrder).default(SortOrder.DESC).optional(),
         })
-        .optional(), // Make the entire input object optional
+        .default({}),
     )
     .query(async ({ ctx, input }) => {
       // Use default values if input is not provided
-      const limit = input?.limit ?? 12;
-      const cursor = input?.cursor ?? null;
+      const limit = input?.limit ?? PaginationItemsPerPage.GROWS_PER_PAGE;
+      const cursor = input?.cursor ?? 1;
+      const sortField = input?.sortField ?? PlantsSortField.CREATED_AT;
+      const sortOrder = input?.sortOrder ?? SortOrder.DESC;
 
+      // Calculate offset based on page number
+      const offset = (cursor - 1) * limit;
+
+      // Get total count of user's grows
+      const totalCountResult = await ctx.db
+        .select({ count: count() })
+        .from(plants)
+        .where(eq(plants.ownerId, ctx.session.user.id));
+
+      const totalCount = Number(totalCountResult[0].count);
+
+      // Get own plants with pagination and sorting
       const userPlants = await ctx.db.query.plants.findMany({
         where: eq(plants.ownerId, ctx.session.user.id),
-        orderBy: (plants, { desc }) => [desc(plants.createdAt)],
-        limit: limit + 1, // Fetch extra item to check for next page
-        offset: cursor ?? 0, // Use cursor for offset
+        orderBy: (plants, { desc, asc }) => [
+          sortOrder === SortOrder.ASC
+            ? asc(plants[sortField])
+            : desc(plants[sortField]),
+        ],
+        offset: offset,
+        limit: limit,
         with: {
           owner: true,
+          grow: true,
+          plantImages: connectPlantWithImagesQuery,
           strain: {
             columns: {
               id: true,
@@ -43,30 +77,17 @@ export const plantRouter = createTRPCRouter({
             with: { breeder: { columns: { id: true, name: true } } },
           },
           headerImage: { columns: { id: true, imageUrl: true } },
-          plantImages: {
-            columns: { imageId: false, plantId: false },
-            with: {
-              image: {
-                columns: {
-                  id: true,
-                  imageUrl: true,
-                },
-              },
-            },
-          },
         },
       });
 
-      // Check if there is a next page
-      let nextCursor: number | null = null;
-      if (userPlants.length > limit) {
-        nextCursor = (cursor ?? 0) + limit;
-        userPlants.pop(); // Remove the extra item
-      }
+      const nextCursor = userPlants.length === limit ? cursor + 1 : undefined;
 
       return {
         plants: userPlants,
-        nextCursor,
+        cursor: cursor,
+        nextCursor: nextCursor,
+        totalPages: Math.ceil(totalCount / limit),
+        count: totalCount,
       };
     }),
 
@@ -75,10 +96,12 @@ export const plantRouter = createTRPCRouter({
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
       // Logic to fetch a single image by ID
-      return await ctx.db.query.plants.findFirst({
+      const plant = await ctx.db.query.plants.findFirst({
         where: eq(plants.id, input.id),
         with: {
           owner: true,
+          grow: true,
+          plantImages: connectPlantWithImagesQuery,
           strain: {
             columns: {
               id: true,
@@ -89,19 +112,22 @@ export const plantRouter = createTRPCRouter({
             with: { breeder: { columns: { id: true, name: true } } },
           },
           headerImage: { columns: { id: true, imageUrl: true } },
-          plantImages: {
-            columns: { imageId: false, plantId: false },
-            with: {
-              image: {
-                columns: {
-                  id: true,
-                  imageUrl: true,
-                },
-              },
-            },
-          },
         },
       });
+
+      // Sort the `plantImages.image` array by `captureDate`
+      if (plant?.plantImages) {
+        plant.plantImages = plant.plantImages.sort((a, b) => {
+          const dateA = a.image?.captureDate
+            ? new Date(a.image.captureDate)
+            : new Date(0);
+          const dateB = b.image?.captureDate
+            ? new Date(b.image.captureDate)
+            : new Date(0);
+          return dateA.getTime() - dateB.getTime(); // Ascending order
+        });
+      }
+      return plant;
     }),
 
   // Connect plant to an image

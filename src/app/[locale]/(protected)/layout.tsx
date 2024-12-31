@@ -16,9 +16,5 @@ export default async function ProtectedLayout({
   console.debug("params.locale: ", locale);
   console.debug("routing.locales: ", routing.locales);
 
-  return (
-    <ProtectedSidebar>
-      <div className="relative">{children}</div>
-    </ProtectedSidebar>
-  );
+  return <ProtectedSidebar>{children}</ProtectedSidebar>;
 }

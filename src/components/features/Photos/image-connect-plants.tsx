@@ -199,14 +199,14 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
     <PageHeader
       title={t("title")}
       subtitle={t("subtitle")}
-      buttonLabel={t("buttonLabel")}
+      buttonLabel={t("buttonBackLabel")}
       buttonLink="/photos"
       searchParams={allPhotosQuery}
     >
       <FormContent>
         <Card>
           <CardHeader className="p-3 pb-0 md:p-7 md:pb-0">
-            <CardTitle level="h2">{t("plantSelection.title")}</CardTitle>
+            <CardTitle as="h2">{t("plantSelection.title")}</CardTitle>
             <CardDescription>{t("plantSelection.description")}</CardDescription>
           </CardHeader>
           <CardContent className="p-2 md:p-6">

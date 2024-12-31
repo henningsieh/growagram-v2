@@ -23,7 +23,7 @@ export default async function PublicPlantByIdPage({
 
   return (
     <>
-      <PlantCard plant={plant} isSocial={true} />
+      <PlantCard plant={plant} isSocialProp={true} />
     </>
   );
 }

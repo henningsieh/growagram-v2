@@ -1,9 +1,5 @@
 {
   "Account": {
-    "info-email": "E-Mail",
-    "info-name": "Name",
-    "info-role": "Rolle",
-    "info-username": "Benutzername",
     "account-info-subtitle": "Sieh dir deine Accountinformationen an",
     "account-info-title": "Mein Account",
     "edit-profile-button": "Account bearbeiten",
@@ -29,6 +25,10 @@
     "form-username-label": "Benutzername",
     "form-username-placeholder": "Gib deinen Benutzernamen ein",
     "form-username-taken": "Dieser Benutzername ist bereits vergeben.",
+    "info-email": "E-Mail",
+    "info-name": "Name",
+    "info-role": "Rolle",
+    "info-username": "Benutzername",
     "not-provided": "Nicht angegeben"
   },
   "CardFooter": {
@@ -43,10 +43,21 @@
     "no-comments-yet": "Bisher keine Kommentare.",
     "reply-to-comment-placeholder": "Schreibe eine Antwort"
   },
+  "Common": {
+    "day": "Tag",
+    "days": "Tagen"
+  },
   "Dashboard": {
     "Grows": {
       "your-grows": "deine Grows"
     }
+  },
+  "Errors": {
+    "backToHome": "Startseite",
+    "goBack": "Gehe zurück",
+    "message": "Entschuldigung, wir konnten die von Ihnen gesuchte Seite nicht finden.",
+    "path": "Angefragter Pfad",
+    "title": "Seite nicht gefunden"
   },
   "Grows": {
     "buttonLabel-create-grow": "Grow erstellen",
@@ -96,7 +107,7 @@
       "removeAll": "Alle Pflanzen entfernen",
       "save": "Pflanzenauswahl speichern ({count})"
     },
-    "buttonLabel": "Zurück",
+    "buttonBackLabel": "Zurück",
     "plantSelection": {
       "description": "Wähle jede Pflanze aus, die du auf dem Foto sehen kannst!",
       "title": "Pflanzenauswahl"
@@ -150,9 +161,11 @@
     "toggle-menu": "Menü umschalten"
   },
   "Plants": {
-    "breeder": "Züchter",
+    "breeder": "Züchter / Breeder",
     "curing-start-date": "Startdatum der Aushärtephase",
+    "delete-plant-button-label": "Pflanze löschen",
     "edit-plant-button-label": "Pflanze bearbeiten",
+    "estimated-harvest": "Voraussichtliche Ernte",
     "flowering-start-date": "Startdatum der Blüte",
     "form-button-reset": "Zurücksetzen",
     "form-button-save-changes": "Speichern",
@@ -172,12 +185,17 @@
     "growth-progress": "Wachstumsfortschritt",
     "harvest-date": "Datum der Ernte",
     "linkUploadButtonLabel": "Neue anlegen",
+    "overall-progress": "Gesamtfortschritt",
+    "phase": "Phasenfortschritt",
     "planting-date": "Datum der Aussaat",
-    "strain": "Sorte",
+    "public-link-label": "Mit öffentlichem Link öffnen",
+    "sort-plants-createdAt": "Angelegt am",
+    "strain": "Sorte / Strain",
     "subtitle": "Verwalte deine Pflanzen",
     "thc": "THC",
     "thc-content": "THC-Gehalt",
     "title": "Meine Pflanzen",
+    "until": "bis",
     "user-has-no-plants": "Du hast bisher keine Pflanzen hinzugefügt.",
     "vegetation-start-date": "Startdatum der Wachstumsphase"
   },

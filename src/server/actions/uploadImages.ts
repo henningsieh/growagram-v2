@@ -128,7 +128,7 @@ export async function uploadImages(formData: FormData) {
       // Generate unique filename for Cloudinary
       const cloudinaryFilename = generateCloudinaryFilename(
         originalFilename,
-        session.user.name || session.user.email || session.user.id,
+        session.user.username as string,
       );
 
       // Upload to Cloudinary

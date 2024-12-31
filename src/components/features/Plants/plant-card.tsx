@@ -3,40 +3,43 @@
 // src/components/features/plant/plant-card.tsx:
 import { TooltipProvider } from "@radix-ui/react-tooltip";
 import {
-  Edit,
+  EditIcon,
+  ExternalLinkIcon,
   Flower2,
   Leaf,
   Loader2,
+  MessageCircleIcon,
+  MoreHorizontalIcon,
   Nut,
   PillBottle,
   Sprout,
   Tag,
-  Trash2,
-  User2,
+  Trash2Icon,
   Wheat,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
-import Image from "next/image";
 import { useState } from "react";
-import headerImagePlaceholder from "~/assets/landscape-placeholdersvg.svg";
+import AvatarCardHeader from "~/components/atom/avatar-card-header";
 import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
 import { SocialCardFooter } from "~/components/atom/social-card-footer";
-import SocialHeader from "~/components/atom/social-header";
-import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu";
 import { Label } from "~/components/ui/label";
 import { Progress } from "~/components/ui/progress";
-import { Separator } from "~/components/ui/separator";
 import { Switch } from "~/components/ui/switch";
 import {
   Tooltip,
@@ -48,21 +51,23 @@ import { useLikeStatus } from "~/hooks/use-likes";
 import { useToast } from "~/hooks/use-toast";
 import { Link } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
-import { calculateGrowthProgress, formatDate } from "~/lib/utils";
-import { GetOwnPlantType } from "~/server/api/root";
+import { formatDate } from "~/lib/utils";
+import { calculateGrowthProgress } from "~/lib/utils/calculateDetailedGrowthProgress";
+import { PlantByIdType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
 import { LikeableEntityType } from "~/types/like";
 
 import { Comments } from "../Comments/comments";
+import { ImageCarousel } from "../Photos/image-carousel";
 
 interface PlantCardProps {
-  plant: GetOwnPlantType;
-  isSocial?: boolean;
+  plant: PlantByIdType;
+  isSocialProp?: boolean;
 }
 
 export default function PlantCard({
   plant,
-  isSocial: isSocialProp = true,
+  isSocialProp = true,
 }: PlantCardProps) {
   const { data: session } = useSession();
   const user = session?.user;
@@ -72,7 +77,6 @@ export default function PlantCard({
   const t = useTranslations("Plants");
 
   const [isSocial, setIsSocial] = useState(isSocialProp);
-  const [isImageHovered, setIsImageHovered] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   const {
@@ -114,10 +118,7 @@ export default function PlantCard({
     setIsDeleteDialogOpen(false);
   };
 
-  const progress = calculateGrowthProgress(
-    plant.startDate,
-    plant.floweringPhaseStart,
-  );
+  const progress = calculateGrowthProgress(plant);
 
   return (
     <>
@@ -132,18 +133,20 @@ export default function PlantCard({
       />
 
       <Card className="my-2 flex flex-col overflow-hidden">
-        {isSocial && <SocialHeader user={plant.owner} />}
+        {isSocial && <AvatarCardHeader user={plant.owner} />}
 
         <CardContent
-          className={`grid gap-2 ${isSocial ? "ml-14 pl-0 pr-2" : "p-4"}`}
+          className={`grid gap-2 ${isSocial ? "ml-11 pl-0 pr-2" : "p-2"}`}
         >
-          {/* Plant HeaderImage */}
+          <ImageCarousel plantImages={plant.plantImages} />
+
+          {/* Plant HeaderImage
           <div
             className="relative aspect-video overflow-hidden"
             onMouseEnter={() => setIsImageHovered(true)}
             onMouseLeave={() => setIsImageHovered(false)}
-          >
-            <Image
+          > */}
+          {/* <Image
               src={plant.headerImage?.imageUrl ?? headerImagePlaceholder}
               alt={plant.name}
               fill
@@ -152,37 +155,89 @@ export default function PlantCard({
               style={{
                 transform: isImageHovered ? "scale(1.05)" : "scale(1)",
               }}
-            />
-          </div>
+            /> */}
+          {/* </div> */}
 
           {/* Title Link */}
-          <div className="flex items-center">
-            <CardTitle level="h2">
+          <div className="flex items-center justify-between">
+            <CardTitle as="h3">
               <Button asChild variant="link" className="p-1">
                 <Link
                   href={`/public/plants/${plant.id}`}
-                  className="flex w-full items-center gap-2"
+                  className="flex items-center gap-2"
                 >
-                  <Tag className="mt-2" size={20} />
-                  <h3 className="text-xl font-bold">{plant.name}</h3>
+                  <Tag className="mt-1" size={20} />
+                  {plant.name}
                 </Link>
               </Button>
             </CardTitle>
             {/* Switch for toggling isSocial */}
             {user && user.id === plant.ownerId && (
-              <div className="ml-auto flex items-start gap-2">
-                <Label
-                  className="text-sm font-semibold"
-                  htmlFor="show-socialMode"
-                >
-                  Social Mode
-                </Label>
-                <Switch
-                  id="show-socialMode"
-                  checked={isSocial}
-                  onCheckedChange={setIsSocial}
-                />
-              </div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="icon">
+                    <MoreHorizontalIcon className="h-5 w-5" />
+                    <span className="sr-only">Open menu</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  {!isSocialProp && (
+                    <DropdownMenuItem className="flex items-center justify-start">
+                      <MessageCircleIcon className="mr-2 h-4 w-4" />
+                      <Label
+                        className="cursor-pointer text-sm font-semibold"
+                        htmlFor="show-socialMode"
+                      >
+                        Social
+                      </Label>
+                      <Switch
+                        className="ml-auto"
+                        id="show-socialMode"
+                        checked={isSocial}
+                        onCheckedChange={setIsSocial}
+                      />
+                    </DropdownMenuItem>
+                  )}
+                  <DropdownMenuItem asChild>
+                    <Link
+                      target="_blank"
+                      href={`/public/plants/${plant.id}`}
+                      className="flex cursor-pointer items-center"
+                    >
+                      <ExternalLinkIcon className="mr-2 h-4 w-4" />
+                      {t("public-link-label")}
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link
+                      href={`/plants/${plant.id}/form`}
+                      className="flex cursor-pointer items-center"
+                    >
+                      <EditIcon className="mr-2 h-4 w-4" />
+                      {t("edit-plant-button-label")}
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    asChild
+                    className="bg-destructive/50 text-foreground focus:bg-destructive focus:text-white focus:outline-none"
+                  >
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      className="w-full justify-start"
+                      onClick={handleDelete}
+                      disabled={deleteMutation.isPending}
+                    >
+                      {deleteMutation.isPending ? (
+                        <Loader2 size={20} className="mr-2 animate-spin" />
+                      ) : (
+                        <Trash2Icon className="mr-2 h-4 w-4" />
+                      )}
+                      {t("delete-plant-button-label")}
+                    </Button>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             )}
           </div>
 
@@ -205,28 +260,26 @@ export default function PlantCard({
           </CardDescription>
 
           {/* Plant Progress and Dates */}
-          <div className="space-y-6">
-            <div className="mt-4 flex justify-between">
-              <div className="flex w-full flex-col">
-                <div className="mb-1 flex justify-between text-sm">
-                  <span>{t("growth-progress")}</span>
-                  <span>
-                    {
-                      progress
-                      // eslint-disable-next-line react/jsx-no-literals
-                    }
-                    %
-                  </span>
-                </div>
-                <Progress value={progress} className="w-full" />
+          <Card className="space-y-4 p-2 sm:p-4 md:p-6">
+            <CardHeader className="flex w-full flex-col p-0">
+              <div className="mb-1 flex justify-between text-sm">
+                <span>{t("growth-progress")}</span>
+                <span>
+                  {
+                    progress.overallProgress
+                    // eslint-disable-next-line react/jsx-no-literals
+                  }
+                  %
+                </span>
               </div>
-            </div>
-            <div className="mt-4 space-y-2">
+              <Progress value={progress.overallProgress} className="w-full" />
+            </CardHeader>
+            <CardContent className="space-y-2 p-0">
               <div className="flex h-4 items-center">
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger className="flex cursor-default items-center font-mono text-sm font-semibold tracking-tighter">
-                      <Nut className="mr-2 h-4 w-4 text-planted" />
+                      <Nut className={`mr-2 h-4 w-4 text-planted`} />
                       {formatDate(plant.startDate, locale)}
                     </TooltipTrigger>
                     <TooltipContent side="right" className="bg-transparent">
@@ -244,7 +297,13 @@ export default function PlantCard({
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger className="flex cursor-default items-center font-mono text-sm font-semibold tracking-tighter">
-                      <Sprout className="mr-2 h-4 w-4 text-seedling" />
+                      <Sprout
+                        className={`mr-2 h-4 w-4 ${
+                          plant.seedlingPhaseStart
+                            ? "text-seedling"
+                            : "text-seedling/40"
+                        }`}
+                      />
                       {plant.seedlingPhaseStart &&
                         formatDate(plant.seedlingPhaseStart, locale)}
                     </TooltipTrigger>
@@ -263,10 +322,17 @@ export default function PlantCard({
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger className="flex cursor-default items-center font-mono text-sm font-semibold tracking-tighter">
-                      <Leaf className="mr-2 h-4 w-4 text-vegetation" />
+                      <Leaf
+                        className={`mr-2 h-4 w-4 ${
+                          plant.vegetationPhaseStart
+                            ? "text-vegetation"
+                            : "text-vegetation/40"
+                        }`}
+                      />
                       {plant.vegetationPhaseStart &&
                         formatDate(plant.vegetationPhaseStart, locale)}
                     </TooltipTrigger>
+
                     <TooltipContent side="right" className="bg-transparent">
                       <Badge
                         variant={"outline"}
@@ -282,10 +348,17 @@ export default function PlantCard({
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger className="flex cursor-default items-center font-mono text-sm font-semibold tracking-tighter">
-                      <Flower2 className="mr-2 h-4 w-4 text-flowering" />
+                      <Flower2
+                        className={`mr-2 h-4 w-4 ${
+                          plant.floweringPhaseStart
+                            ? "text-flowering"
+                            : "text-flowering/40"
+                        }`}
+                      />
                       {plant.floweringPhaseStart &&
                         formatDate(plant.floweringPhaseStart, locale)}
                     </TooltipTrigger>
+
                     <TooltipContent side="right" className="bg-transparent">
                       <Badge
                         variant={"outline"}
@@ -301,10 +374,15 @@ export default function PlantCard({
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger className="flex cursor-default items-center font-mono text-sm font-semibold tracking-tighter">
-                      <Wheat className="mr-2 h-4 w-4 text-harvest" />
+                      <Wheat
+                        className={`mr-2 h-4 w-4 ${
+                          plant.harvestDate ? "text-harvest" : "text-harvest/40"
+                        }`}
+                      />
                       {plant.harvestDate &&
                         formatDate(plant.harvestDate, locale)}
                     </TooltipTrigger>
+
                     <TooltipContent side="right" className="bg-transparent">
                       <Badge
                         variant={"outline"}
@@ -320,10 +398,17 @@ export default function PlantCard({
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger className="flex cursor-default items-center font-mono text-sm font-semibold tracking-tighter">
-                      <PillBottle className="mr-2 h-4 w-4 text-curing" />
+                      <PillBottle
+                        className={`mr-2 h-4 w-4 ${
+                          plant.curingPhaseStart
+                            ? "text-curing"
+                            : "text-curing/40"
+                        }`}
+                      />
                       {plant.curingPhaseStart &&
                         formatDate(plant.curingPhaseStart, locale)}
                     </TooltipTrigger>
+
                     <TooltipContent side="right" className="bg-transparent">
                       <Badge
                         variant={"outline"}
@@ -335,56 +420,59 @@ export default function PlantCard({
                   </Tooltip>
                 </TooltipProvider>
               </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         </CardContent>
 
-        {isSocial ? (
-          // Social Footer
-          <SocialCardFooter
-            className={`pb-2 pr-2 ${isSocial && "ml-14"}`}
-            entityId={plant.id}
-            entityType={LikeableEntityType.Plant}
-            initialLiked={isLiked}
-            isLikeStatusLoading={isLikeLoading}
-            commentCountLoading={commentCountLoading}
-            stats={{
-              comments: commentCount,
-              views: 0,
-              likes: likeCount,
-            }}
-            toggleComments={toggleComments}
-          />
-        ) : (
-          user &&
-          user.id === plant.ownerId && (
-            // Owner Buttons
-            <>
-              <Separator />
-              <CardFooter className="flex w-full justify-between gap-1 p-1">
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  className="w-20"
-                  onClick={handleDelete}
-                  disabled={deleteMutation.isPending}
-                >
-                  {deleteMutation.isPending ? (
-                    <Loader2 size={20} className="animate-spin" />
-                  ) : (
-                    <Trash2 size={20} />
-                  )}
-                </Button>
-                <Button asChild size="sm" className="w-full text-base">
-                  <Link href={`/plants/${plant.id}/form`}>
-                    <Edit size={20} />
-                    {t("edit-plant-button-label")}
-                  </Link>
-                </Button>
-              </CardFooter>
-            </>
+        {
+          isSocial && (
+            // Social Footer
+            <SocialCardFooter
+              className={`pb-2 pr-2 ${isSocial && "ml-11"}`}
+              entityId={plant.id}
+              entityType={LikeableEntityType.Plant}
+              initialLiked={isLiked}
+              isLikeStatusLoading={isLikeLoading}
+              commentCountLoading={commentCountLoading}
+              stats={{
+                comments: commentCount,
+                views: 0,
+                likes: likeCount,
+              }}
+              toggleComments={toggleComments}
+            />
           )
-        )}
+          // : (
+          //   user &&
+          //   user.id === plant.ownerId && (
+          //     // Owner Buttons
+          //     <>
+          //       <Separator />
+          //       <CardFooter className="flex w-full justify-between gap-1 p-1">
+          //         <Button
+          //           variant="destructive"
+          //           size="sm"
+          //           className="w-20"
+          //           onClick={handleDelete}
+          //           disabled={deleteMutation.isPending}
+          //         >
+          //           {deleteMutation.isPending ? (
+          //             <Loader2 size={20} className="animate-spin" />
+          //           ) : (
+          //             <Trash2 size={20} />
+          //           )}
+          //         </Button>
+          //         <Button asChild size="sm" className="w-full text-base">
+          //           <Link href={`/plants/${plant.id}/form`}>
+          //             <Edit size={20} />
+          //             {t("edit-plant-button-label")}
+          //           </Link>
+          //         </Button>
+          //       </CardFooter>
+          //     </>
+          //   )
+          // )
+        }
 
         {isSocial && isCommentsOpen && (
           <Comments

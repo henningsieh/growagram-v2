@@ -1,6 +1,6 @@
 "use client";
 
-// src/components/features/Photos/Views/paginated.tsx:
+// src/components/features/Plants/Views/paginated.tsx:
 import { useSearchParams } from "next/navigation";
 import {
   Dispatch,
@@ -13,7 +13,6 @@ import { PaginationItemsPerPage } from "~/assets/constants";
 import SpinningLoader from "~/components/Layouts/loader";
 import ResponsiveGrid from "~/components/Layouts/responsive-grid";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
-import PhotoCard from "~/components/features/Photos/photo-card";
 import {
   Pagination,
   PaginationContent,
@@ -25,24 +24,25 @@ import {
 } from "~/components/ui/pagination";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
-import { GetOwnPhotosInput } from "~/server/api/root";
-import { PhotosSortField } from "~/types/image";
+import { GetOwnPlantsInput } from "~/server/api/root";
+import { PlantsSortField } from "~/types/plant";
 
-export default function PhotosPaginatedView({
+import PlantCard from "../plant-card";
+
+export default function PaginatedPlantsView({
   sortField,
   sortOrder,
-  filterNotConnected,
   setIsFetching,
 }: {
-  sortField: PhotosSortField;
+  sortField: PlantsSortField;
   sortOrder: SortOrder;
-  filterNotConnected: boolean;
   setIsFetching: Dispatch<SetStateAction<boolean>>;
 }) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const utils = api.useUtils();
 
+  // Initialize state from URL query params
   const [currentPage, setCurrentPage] = useState(
     parseInt(searchParams.get("page") || "1"),
   );
@@ -53,44 +53,42 @@ export default function PhotosPaginatedView({
     params.set("page", currentPage.toString());
     params.set("sortField", sortField);
     params.set("sortOrder", sortOrder);
-    params.set("filterNotConnected", filterNotConnected.toString());
     router.push(`?${params.toString()}`);
-  }, [currentPage, sortField, sortOrder, filterNotConnected, router]);
+  }, [currentPage, sortField, sortOrder, router]);
 
   // Sync state with URL query params
   useEffect(() => {
     updateUrlParams();
-  }, [currentPage, sortField, sortOrder, filterNotConnected, updateUrlParams]);
+  }, [currentPage, sortField, sortOrder, updateUrlParams]);
 
   // Get initial data from cache
-  const initialData = utils.photos.getOwnPhotos.getData({
+  const initialData = utils.plants.getOwnPlants.getData({
     cursor: currentPage,
-    limit: PaginationItemsPerPage.PHOTOS_PER_PAGE,
+    limit: PaginationItemsPerPage.PLANTS_PER_PAGE,
     sortField,
     sortOrder,
-    filterNotConnected,
-  } satisfies GetOwnPhotosInput);
+  } satisfies GetOwnPlantsInput);
 
-  // Query images
-  const { data, isLoading, isFetching } = api.photos.getOwnPhotos.useQuery(
+  // Query plants
+  const { data, isLoading, isFetching } = api.plants.getOwnPlants.useQuery(
     {
-      limit: PaginationItemsPerPage.PHOTOS_PER_PAGE,
+      limit: PaginationItemsPerPage.PLANTS_PER_PAGE,
       cursor: currentPage,
       sortField,
       sortOrder,
-      filterNotConnected,
-    } satisfies GetOwnPhotosInput,
+    } satisfies GetOwnPlantsInput,
     {
       initialData,
     },
   );
+
   // Directly update the parent's isFetching state
   useEffect(() => {
     setIsFetching(isFetching);
   }, [isFetching, setIsFetching]);
 
-  const userPhotos = data?.images ?? [];
-  const totalPages = data?.total ?? 1;
+  const userPlants = data?.plants ?? [];
+  const totalPages = data?.totalPages ?? 1;
 
   // Handle page changes
   const handlePageChange = (page: number) => {
@@ -100,7 +98,7 @@ export default function PhotosPaginatedView({
   // Generate pagination numbers
   const getPaginationNumbers = () => {
     const pages: number[] = [];
-    const showAroundCurrent = 1;
+    const showAroundCurrent = 2;
 
     for (let i = 1; i <= totalPages; i++) {
       if (
@@ -126,27 +124,15 @@ export default function PhotosPaginatedView({
     <>
       {isLoading ? (
         <SpinningLoader className="text-secondary" />
-      ) : userPhotos.length === 0 ? (
+      ) : userPlants.length === 0 ? (
         <p className="mt-8 text-center text-muted-foreground">
-          {filterNotConnected
-            ? "No images without connected plants have been found."
-            : "You haven't uploaded any images yet."}
+          No plants have been created yet.
         </p>
       ) : (
         <>
           <ResponsiveGrid>
-            {userPhotos.map((photo) => (
-              <PhotoCard
-                key={photo.id}
-                photo={photo}
-                isSocial={false}
-                currentQuery={{
-                  page: currentPage,
-                  sortField,
-                  sortOrder,
-                  filterNotConnected,
-                }}
-              />
+            {userPlants.map((plant) => (
+              <PlantCard key={plant.id} plant={plant} isSocialProp={false} />
             ))}
           </ResponsiveGrid>
 
@@ -160,19 +146,19 @@ export default function PhotosPaginatedView({
                   />
                 </PaginationItem>
 
-                {getPaginationNumbers().map((pageNumber, index) =>
-                  pageNumber === "..." ? (
+                {getPaginationNumbers().map((page, index) =>
+                  page === "..." ? (
                     <PaginationItem key={`ellipsis-${index}`}>
                       <PaginationEllipsis />
                     </PaginationItem>
                   ) : (
-                    <PaginationItem key={pageNumber}>
+                    <PaginationItem key={page}>
                       <PaginationLink
-                        onClick={() => handlePageChange(pageNumber as number)}
-                        isActive={pageNumber === currentPage}
+                        onClick={() => handlePageChange(page as number)}
+                        isActive={currentPage === page}
                         disabled={isFetching}
                       >
-                        <p>{pageNumber}</p>
+                        <p>{page}</p>
                       </PaginationLink>
                     </PaginationItem>
                   ),

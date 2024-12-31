@@ -1,5 +1,4 @@
 // src/components/features/Comments/comment-tree.tsx:
-import SpinningLoader from "~/components/Layouts/loader";
 import { useComments } from "~/hooks/use-comments";
 import { api } from "~/lib/trpc/react";
 import { GetCommentType, GetRepliesInput } from "~/server/api/root";

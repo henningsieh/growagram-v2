@@ -29,6 +29,11 @@ export const modulePaths = {
     path: "/photos",
     protected: true,
   },
+  SIGNIN: {
+    name: "Signin",
+    path: "/api/auth/signin",
+    protected: false,
+  },
 };
 
 export const PROTECTED_PATHS = Object.values(modulePaths)
@@ -36,7 +41,7 @@ export const PROTECTED_PATHS = Object.values(modulePaths)
   .map((module) => module.path);
 
 export const APP_SETTINGS = {
-  DEFAULT_THEME: "light",
+  DEFAULT_THEME: "dark",
   DEFAULT_LOCALE: "de" as const,
   LANGUAGES: [
     {

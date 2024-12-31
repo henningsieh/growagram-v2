@@ -1,8 +1,6 @@
 // src/types/zodSchema.ts:
 import { z } from "zod";
 
-import { UserRoles } from "./user";
-
 export const plantFormSchema = z.object({
   id: z.string().optional(),
   name: z.string().min(2, {

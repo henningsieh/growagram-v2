@@ -14,7 +14,7 @@ export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
   }, []);
 
   if (!mounted) {
-    return null; // no flicker!
+    return <div className="h-screen bg-zinc-900"></div>; // no light flicker!
   }
 
   return <NextThemesProvider {...props}>{children}</NextThemesProvider>;

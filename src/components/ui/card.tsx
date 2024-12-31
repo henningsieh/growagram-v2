@@ -40,12 +40,12 @@ type HeadingLevel = Extract<
 >
 
 interface CardTitleProps extends React.HTMLAttributes<HTMLHeadingElement> {
-  level?: HeadingLevel
+  as?: HeadingLevel
 }
 
 const CardTitle = React.forwardRef<HTMLHeadingElement, CardTitleProps>(
-  ({ className, level = "h3", ...props }, ref) => {
-    const Heading = level
+  ({ className, as = "h3", ...props }, ref) => {
+    const Heading = as
 
     return (
       <Heading

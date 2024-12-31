@@ -8,7 +8,7 @@ export const useLikeStatus = (
   entityId: string,
   entityType: LikeableEntityType,
 ) => {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const user = session?.user;
 
   const [userHasLiked, setUserHasLiked] = useState(false);

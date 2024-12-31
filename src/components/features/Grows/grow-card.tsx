@@ -2,24 +2,21 @@
 
 // src/components/features/Grows/grow-card.tsx:
 import { AnimatePresence, motion } from "framer-motion";
-import { Edit, Loader2, TentTree, Trash2, User2 } from "lucide-react";
-import { User } from "next-auth";
+import { Edit, Loader2, TentTree, Trash2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useState } from "react";
 import headerImagePlaceholder from "~/assets/landscape-placeholdersvg.svg";
+import AvatarCardHeader from "~/components/atom/avatar-card-header";
 import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
 import { SocialCardFooter } from "~/components/atom/social-card-footer";
-import SocialHeader from "~/components/atom/social-header";
-import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardFooter,
-  CardHeader,
   CardTitle,
 } from "~/components/ui/card";
 import { Label } from "~/components/ui/label";
@@ -110,10 +107,10 @@ export function GrowCard({
         alertCautionText="This action also deletes postings and other events if they only refer to this grow!"
       />
       <Card className="my-2 flex flex-col overflow-hidden">
-        {isSocial && <SocialHeader user={grow.owner} />}
+        {isSocial && <AvatarCardHeader user={grow.owner} />}
 
         <CardContent
-          className={`flex flex-1 flex-col gap-4 ${isSocial ? "ml-14 p-2 pl-0" : "p-4"}`}
+          className={`grid gap-2 ${isSocial ? "ml-11 pl-0 pr-2" : "p-2"}`}
         >
           {/* Grow HeaderImage */}
           <div
@@ -135,13 +132,13 @@ export function GrowCard({
 
           {/* Title Link */}
           <div className="flex items-center">
-            <CardTitle level="h2" className="flex items-center justify-between">
+            <CardTitle as="h3">
               <Button asChild variant="link" className="p-1">
                 <Link
                   href={`/public/grows/${grow.id}`}
-                  className="items-center gap-2"
+                  className="flex items-center gap-2"
                 >
-                  <TentTree className="mt-2" size={20} />
+                  <TentTree className="mt-1" size={20} />
                   {grow.name}
                 </Link>
               </Button>
@@ -215,52 +212,56 @@ export function GrowCard({
           </div>
         </CardContent>
 
-        {isSocial ? (
-          // Social Footer
-          <SocialCardFooter
-            className={`pb-2 pr-2 ${isSocial && "ml-14"}`}
-            entityId={grow.id}
-            entityType={LikeableEntityType.Grow}
-            initialLiked={isLiked}
-            isLikeStatusLoading={isLikeLoading}
-            commentCountLoading={commentCountLoading}
-            stats={{
-              comments: commentCount,
-              views: 0,
-              likes: likeCount,
-            }}
-            toggleComments={toggleComments}
-          />
-        ) : (
-          user &&
-          user.id === grow.ownerId && (
-            // Owner Buttons
-            <>
-              <Separator />
-              <CardFooter className="flex w-full justify-between gap-1 p-1">
-                <Button
-                  variant={"destructive"}
-                  size={"sm"}
-                  className="w-20"
-                  onClick={handleDelete}
-                  disabled={deleteMutation.isPending}
-                >
-                  {deleteMutation.isPending ? (
-                    <Loader2 size={20} className="animate-spin" />
-                  ) : (
-                    <Trash2 size={20} />
-                  )}
-                </Button>
-                <Button asChild size={"sm"} className="w-full text-base">
-                  <Link href={`/grows/${grow.id}/form`}>
-                    <Edit size={20} />
-                    {t("form-page-title-edit")}
-                  </Link>
-                </Button>
-              </CardFooter>
-            </>
+        {
+          isSocial && (
+            // Social Footer
+            <SocialCardFooter
+              className={`pb-2 pr-2 ${isSocial && "ml-11"}`}
+              entityId={grow.id}
+              entityType={LikeableEntityType.Grow}
+              initialLiked={isLiked}
+              isLikeStatusLoading={isLikeLoading}
+              commentCountLoading={commentCountLoading}
+              stats={{
+                comments: commentCount,
+                views: 0,
+                likes: likeCount,
+              }}
+              toggleComments={toggleComments}
+            />
           )
-        )}
+          // : (
+          //   user &&
+          //   user.id === grow.ownerId && (
+          //     // Owner Buttons
+          //     <>
+          //       <Separator />
+          //       <CardFooter className="flex w-full justify-between gap-1 p-1">
+          //         <Button
+          //           variant={"destructive"}
+          //           size={"sm"}
+          //           className="w-20"
+          //           onClick={handleDelete}
+          //           disabled={deleteMutation.isPending}
+          //         >
+          //           {deleteMutation.isPending ? (
+          //             <Loader2 size={20} className="animate-spin" />
+          //           ) : (
+          //             <Trash2 size={20} />
+          //           )}
+          //         </Button>
+          //         <Button asChild size={"sm"} className="w-full text-base">
+          //           <Link href={`/grows/${grow.id}/form`}>
+          //             <Edit size={20} />
+          //             {t("form-page-title-edit")}
+          //           </Link>
+          //         </Button>
+          //       </CardFooter>
+          //     </>
+          //   )
+          // )
+        }
+
         {isSocial && isCommentsOpen && (
           <Comments
             entityId={grow.id}

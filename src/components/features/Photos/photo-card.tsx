@@ -3,8 +3,8 @@
 // src/components/features/Photos/photo-card.tsx:
 import {
   Camera,
-  CameraIcon,
   Edit,
+  FileIcon,
   Loader2,
   Maximize,
   Minimize,
@@ -18,9 +18,9 @@ import { useLocale } from "next-intl";
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import AvatarCardHeader from "~/components/atom/avatar-card-header";
 import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
 import { SocialCardFooter } from "~/components/atom/social-card-footer";
-import SocialHeader from "~/components/atom/social-header";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardFooter, CardTitle } from "~/components/ui/card";
@@ -169,7 +169,7 @@ export default function PhotoCard({
           </div>
         )}
 
-        {isSocial && <SocialHeader user={photo.owner} />}
+        {isSocial && <AvatarCardHeader user={photo.owner} />}
 
         {/* Photo */}
         <div
@@ -192,39 +192,39 @@ export default function PhotoCard({
         </div>
 
         <CardContent
-          className={`grid gap-4 ${isSocial ? "ml-14 pl-0 pr-2" : "p-4"}`}
+          className={`grid gap-4 ${isSocial ? "ml-11 pl-0 pr-2" : "p-2"}`}
         >
           {/* Title Link */}
           <div className="flex items-center">
-            <CardTitle level="h2">
-              <Button asChild variant="link" className="p-1">
+            <CardTitle as="h2">
+              <Button asChild variant="link" className="p-0">
                 <Link
                   href={`/public/photos/${photo.id}`}
                   className="flex w-full items-center gap-2"
                 >
-                  <CameraIcon className="mt-2" size={20} />
+                  <FileIcon className="mt-2" size={20} />
                   <h3 className="text-xl font-bold">
                     {photo.originalFilename}
                   </h3>
                 </Link>
               </Button>
+              {/* Switch for toggling isSocial */}
+              {user && user.id === photo.ownerId && (
+                <div className="ml-auto flex items-start gap-2">
+                  <Label
+                    className="text-sm font-semibold"
+                    htmlFor="show-socialMode"
+                  >
+                    Social Mode
+                  </Label>
+                  <Switch
+                    id="show-socialMode"
+                    checked={isSocial}
+                    onCheckedChange={setIsSocial}
+                  />
+                </div>
+              )}
             </CardTitle>
-            {/* Switch for toggling isSocial */}
-            {user && user.id === photo.ownerId && (
-              <div className="ml-auto flex items-start gap-2">
-                <Label
-                  className="text-sm font-semibold"
-                  htmlFor="show-socialMode"
-                >
-                  Social Mode
-                </Label>
-                <Switch
-                  id="show-socialMode"
-                  checked={isSocial}
-                  onCheckedChange={setIsSocial}
-                />
-              </div>
-            )}
           </div>
 
           {/* Photo Upload and Capture Date */}

@@ -3,9 +3,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Loader2, Reply, Trash2, X } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
-import SpinningLoader from "~/components/Layouts/loader";
 import { SocialCardFooter } from "~/components/atom/social-card-footer";
-import { SortOrder } from "~/components/atom/sort-filter-controls";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
@@ -18,7 +16,6 @@ import {
   GetCommentsInput,
   GetRepliesInput,
 } from "~/server/api/root";
-import { CommentableEntityType } from "~/types/comment";
 import { LikeableEntityType } from "~/types/like";
 
 interface CommentProps {

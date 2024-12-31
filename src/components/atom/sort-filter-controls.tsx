@@ -1,9 +1,4 @@
-import {
-  ArrowDownAZ as ArrowASC,
-  ArrowDownZA as ArrowDESC,
-  Loader2,
-  LucideProps,
-} from "lucide-react";
+import { Loader2, LucideProps } from "lucide-react";
 import React, { ForwardRefExoticComponent, RefAttributes } from "react";
 import { Button } from "~/components/ui/button";
 import { Label } from "~/components/ui/label";

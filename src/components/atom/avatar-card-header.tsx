@@ -7,12 +7,12 @@ interface SocialHeaderProps {
   user: UserType;
 }
 
-function SocialHeader({ user }: SocialHeaderProps) {
+function AvatarCardHeader({ user }: SocialHeaderProps) {
   return (
-    <CardHeader className="space-y-0 p-2">
+    <CardHeader className="space-y-0 p-1">
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-3">
-          <Avatar className="h-10 w-10">
+          <Avatar className="h-9 w-9">
             <AvatarImage src={user.image ? user.image : undefined} />
             <AvatarFallback>
               <User2 className="h-5 w-5" />
@@ -30,4 +30,4 @@ function SocialHeader({ user }: SocialHeaderProps) {
   );
 }
 
-export default SocialHeader;
+export default AvatarCardHeader;
