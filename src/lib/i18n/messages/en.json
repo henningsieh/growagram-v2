@@ -144,7 +144,7 @@
     "title": "Login to GrowAGram"
   },
   "Navigation": {
-    "components": "Components",
+    "components": "Explore",
     "dashboard": "Dashboard",
     "dashboard-description": "Track your grows and your plants, including inventory and tools.",
     "grower-menu": "For Growers",
