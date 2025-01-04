@@ -1,8 +1,8 @@
-// src/components/features/Comments/comment.tsx:
 import { AnimatePresence, motion } from "framer-motion";
 import { Loader2, Reply, Trash2, X } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
+import React, { useEffect, useRef } from "react";
 import { SocialCardFooter } from "~/components/atom/social-card-footer";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
@@ -34,8 +34,10 @@ export const Comment: React.FC<CommentProps> = ({
   onCancelReply,
 }) => {
   const { data: session } = useSession();
-  const t = useTranslations("Comments");
   const { toast } = useToast();
+  const utils = api.useUtils();
+  const t = useTranslations("Comments");
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const {
     isLiked,
@@ -56,8 +58,6 @@ export const Comment: React.FC<CommentProps> = ({
   const handleReplySubmit = () => {
     handleSubmitComment(comment.id);
   };
-
-  const utils = api.useUtils();
 
   // Initialize delete mutation with optimistic updates
   const deleteMutation = api.comments.deleteById.useMutation({
@@ -150,6 +150,13 @@ export const Comment: React.FC<CommentProps> = ({
     onCancelReply?.();
   };
 
+  // Focus on the input field when replying
+  useEffect(() => {
+    if (isReplying && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isReplying]);
+
   return (
     <>
       <motion.div
@@ -223,6 +230,7 @@ export const Comment: React.FC<CommentProps> = ({
 
                 <div className="flex flex-1 gap-2">
                   <Input
+                    ref={inputRef}
                     placeholder={t("reply-to-comment-placeholder")}
                     value={replyComment}
                     onChange={(e) => setReplyComment(e.target.value)}

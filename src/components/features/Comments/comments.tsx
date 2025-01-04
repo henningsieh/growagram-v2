@@ -27,7 +27,7 @@ export const Comments: React.FC<CommentsProps> = ({
 
   const {
     comments,
-    commentCountLoading,
+    commentsLoading,
     newComment,
     setNewComment,
     handleSubmitComment,
@@ -80,7 +80,7 @@ export const Comments: React.FC<CommentsProps> = ({
           {t("no-comments-yet")}
         </div>
       )}
-      {commentCountLoading && (
+      {commentsLoading && (
         <div className="p-4 text-center text-muted-foreground">
           {t("loading-comments")}
         </div>

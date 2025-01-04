@@ -68,10 +68,23 @@ export const useComments = (
       // Refetch top-level comments for entity
       await commentsQuery.refetch();
 
+      // First use optimistic updates...
+      utils.comments.getCommentCount.setData(
+        {
+          entityId: entityId,
+          entityType: entityType,
+        },
+        (old) => ({
+          count: (old?.count ?? 0) + 1,
+        }),
+      );
+
+      // ...then invalidate the queries
+      await utils.comments.getComments.invalidate();
+      await utils.comments.getCommentCount.invalidate();
+
       // Update comment count
-      if (commentCountQuery.data) {
-        setCommentCount(commentCountQuery.data.count + 1);
-      }
+      await commentCountQuery.refetch();
 
       // Refetch replies if it's a reply to a specific comment
       if (newComment.parentCommentId) {
