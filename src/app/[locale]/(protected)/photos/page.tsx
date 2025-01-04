@@ -32,21 +32,21 @@ export default function AllImagesPage() {
 
   // Shared state for sorting and filtering
   const [sortField, setSortField] = useState<PhotosSortField>(
-    (searchParams.get("sortField") as PhotosSortField) ||
+    (searchParams?.get("sortField") as PhotosSortField) ||
       PhotosSortField.UPLOAD_DATE,
   );
   const [sortOrder, setSortOrder] = useState<SortOrder>(
-    (searchParams.get("sortOrder") as SortOrder) || SortOrder.DESC,
+    (searchParams?.get("sortOrder") as SortOrder) || SortOrder.DESC,
   );
   const [filterNotConnected, setFilterNotConnected] = useState(
-    searchParams.get("filterNotConnected") === "true",
+    searchParams?.get("filterNotConnected") === "true",
   );
   const [isFetching, setIsFetching] = useState<boolean>(false);
 
   // Update URL parameters
   const updateUrlParams = useCallback(() => {
     const params = new URLSearchParams();
-    params.set("page", searchParams.get("page") || "1");
+    params.set("page", searchParams?.get("page") || "1");
     params.set("sortField", sortField);
     params.set("sortOrder", sortOrder);
     params.set("filterNotConnected", filterNotConnected.toString());

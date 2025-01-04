@@ -1,5 +1,6 @@
 "use client";
 
+// src/app/[locale]/(protected)/plants/page.tsx:
 import {
   Infinity,
   ArrowDown01,
@@ -35,19 +36,19 @@ export default function PlantsPage() {
 
   // Shared state for sorting
   const [sortField, setSortField] = useState<PlantsSortField>(
-    (searchParams.get("sortField") as PlantsSortField) || PlantsSortField.NAME,
+    (searchParams?.get("sortField") as PlantsSortField) || PlantsSortField.NAME,
   );
   const [sortOrder, setSortOrder] = useState<SortOrder>(
-    (searchParams.get("sortOrder") as SortOrder) || SortOrder.ASC,
+    (searchParams?.get("sortOrder") as SortOrder) || SortOrder.ASC,
   );
   const [isFetching, setIsFetching] = useState<boolean>(false);
 
   // Update URL parameters
   const updateUrlParams = useCallback(() => {
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(searchParams?.toString());
 
     if (viewMode === PlantsViewMode.PAGINATION) {
-      params.set("page", searchParams.get("page") || "1");
+      params.set("page", searchParams?.get("page") || "1");
     } else {
       params.delete("page");
     }
