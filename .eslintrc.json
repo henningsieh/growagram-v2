@@ -3,7 +3,18 @@
   "rules": {
     "@typescript-eslint/no-unused-vars": "warn", // only warning!
 
-    "react/jsx-no-literals": "warn", // translation needed
+    "react/jsx-no-literals": [
+      "warn",
+      { "ignoreProps": true, "noStrings": true }
+    ], // translation needed
+    "overrides": [
+      {
+        "files": ["./src/components/ui/**/*"],
+        "rules": {
+          "react/jsx-no-literals": "off"
+        }
+      }
+    ],
 
     "no-restricted-imports": [
       // translation needed
