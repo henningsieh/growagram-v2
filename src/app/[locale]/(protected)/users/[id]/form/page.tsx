@@ -1,6 +1,6 @@
 // src/app/[locale]/(protected)/users/[id]/form/page.tsx:
 import { notFound } from "next/navigation";
-import AccountEditForm from "~/components/features/Account/edit-form";
+import AccountEditForm from "~/components/features/Account/account-edit-form";
 import { api } from "~/lib/trpc/server";
 import { GetUserByIdInput, GetUserEditInput } from "~/server/api/root";
 
