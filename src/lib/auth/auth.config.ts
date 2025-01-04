@@ -3,7 +3,8 @@ import type { NextAuthConfig } from "next-auth";
 import Discord from "next-auth/providers/discord";
 import Google from "next-auth/providers/google";
 import Twitter from "next-auth/providers/twitter";
-import { db } from "~/lib/db";
+import { env } from "~/env";
+import { UserRoles } from "~/types/user";
 
 // Notice this is only an object, not a full Auth.js
 // instance... in order to get "Auth on Edge" running.
@@ -26,12 +27,10 @@ export default {
         ...session.user,
         id: token.sub as string,
         username: typeof token.username === "string" ? token.username : null,
-        role:
-          token.role === "user" || token.role === "admin" ? token.role : "user",
+        role: Object.values(UserRoles).includes(token.role as UserRoles)
+          ? (token.role as UserRoles)
+          : UserRoles.USER,
       };
-
-      // console.debug("async session callback ", { session });
-
       return session;
     },
 
@@ -41,14 +40,17 @@ export default {
       // When user first logs in or during token refresh, fetch additional user details
       if (user || !token.username) {
         try {
-          // Fetch the user from the database using the user ID
-          const dbUser = await db.query.users.findFirst({
-            where: (users, { eq }) => eq(users.id, token.sub as string),
-          });
+          const baseUrl = env.NEXTAUTH_URL || "http://localhost:3000";
+          const response = await fetch(
+            `${baseUrl}/api/token/user-details?userId=${token.sub}`,
+          );
+          const data = await response.json();
 
-          if (dbUser) {
-            token.username = dbUser.username;
-            token.role = dbUser.role;
+          if (response.ok) {
+            token.username = data.username;
+            token.role = data.role;
+          } else {
+            console.error("Error fetching user details:", data.error);
           }
         } catch (error) {
           console.error("Error fetching user details:", error);
