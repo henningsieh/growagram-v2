@@ -7,14 +7,6 @@
       "warn",
       { "ignoreProps": true, "noStrings": true }
     ], // translation needed
-    "overrides": [
-      {
-        "files": ["./src/components/ui/**/*"],
-        "rules": {
-          "react/jsx-no-literals": "off"
-        }
-      }
-    ],
 
     "no-restricted-imports": [
       // translation needed
@@ -34,5 +26,13 @@
         "message": "Please import from `@/i18n/routing` instead."
       }
     ]
-  }
+  },
+  "overrides": [
+    {
+      "files": ["./src/components/ui/**/*"],
+      "rules": {
+        "react/jsx-no-literals": "off"
+      }
+    }
+  ]
 }
