@@ -1,6 +1,7 @@
 "use client";
 
 // src/components/features/Plants/Views/paginated.tsx:
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import {
   Dispatch,
@@ -141,6 +142,9 @@ export default function PaginatedPlantsView({
               <PaginationContent>
                 <PaginationItem>
                   <PaginationPrevious
+                    size="icon"
+                    className="p-0"
+                    children={<ChevronLeftIcon className="h-4 w-4" />} // Previous
                     onClick={() => handlePageChange(currentPage - 1)}
                     disabled={currentPage === 1 || isFetching}
                   />
@@ -166,6 +170,9 @@ export default function PaginatedPlantsView({
 
                 <PaginationItem>
                   <PaginationNext
+                    size="icon"
+                    className="p-0"
+                    children={<ChevronRightIcon className="h-4 w-4" />} // Next
                     onClick={() => handlePageChange(currentPage + 1)}
                     disabled={currentPage === totalPages || isFetching}
                   />

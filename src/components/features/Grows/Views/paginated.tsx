@@ -1,5 +1,6 @@
 "use client";
 
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 // src/components/features/Grows/Views/paginated.tsx:
 import { useSearchParams } from "next/navigation";
 import {
@@ -140,6 +141,9 @@ export default function PaginatedGrowsView({
               <PaginationContent>
                 <PaginationItem>
                   <PaginationPrevious
+                    size="icon"
+                    className="p-0"
+                    children={<ChevronLeftIcon className="h-4 w-4" />} // Previous
                     onClick={() => handlePageChange(currentPage - 1)}
                     disabled={currentPage === 1 || isFetching}
                   />
@@ -165,6 +169,9 @@ export default function PaginatedGrowsView({
 
                 <PaginationItem>
                   <PaginationNext
+                    size="icon"
+                    className="p-0"
+                    children={<ChevronRightIcon className="h-4 w-4" />} // Next
                     onClick={() => handlePageChange(currentPage + 1)}
                     disabled={currentPage === totalPages || isFetching}
                   />

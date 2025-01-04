@@ -1,5 +1,6 @@
 "use client";
 
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 // src/components/features/Photos/Views/paginated.tsx:
 import { useSearchParams } from "next/navigation";
 import {
@@ -100,7 +101,7 @@ export default function PhotosPaginatedView({
   // Generate pagination numbers
   const getPaginationNumbers = () => {
     const pages: number[] = [];
-    const showAroundCurrent = 1;
+    const showAroundCurrent = 0; // Adjust this value to change the number of elements displayed beside the current page
 
     for (let i = 1; i <= totalPages; i++) {
       if (
@@ -155,6 +156,9 @@ export default function PhotosPaginatedView({
               <PaginationContent>
                 <PaginationItem>
                   <PaginationPrevious
+                    size="icon"
+                    className="p-0"
+                    children={<ChevronLeftIcon className="h-4 w-4" />} // Previous
                     onClick={() => handlePageChange(currentPage - 1)}
                     disabled={currentPage === 1 || isFetching}
                   />
@@ -180,6 +184,9 @@ export default function PhotosPaginatedView({
 
                 <PaginationItem>
                   <PaginationNext
+                    size="icon"
+                    className="p-0"
+                    children={<ChevronRightIcon className="h-4 w-4" />} // Next
                     onClick={() => handlePageChange(currentPage + 1)}
                     disabled={currentPage === totalPages || isFetching}
                   />
