@@ -43,7 +43,7 @@ export default function PaginatedGrowsView({
 
   // Initialize state from URL query params
   const [currentPage, setCurrentPage] = useState(
-    parseInt(searchParams.get("page") || "1"),
+    parseInt(searchParams?.get("page") || "1"),
   );
 
   // Function to update URL query params

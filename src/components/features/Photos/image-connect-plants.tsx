@@ -201,7 +201,7 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
       subtitle={t("subtitle")}
       buttonLabel={t("buttonBackLabel")}
       buttonLink="/photos"
-      searchParams={allPhotosQuery}
+      searchParams={allPhotosQuery ?? undefined}
     >
       <FormContent>
         <Card>

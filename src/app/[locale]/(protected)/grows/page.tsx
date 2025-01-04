@@ -36,20 +36,20 @@ export default function MyGrowsPage() {
 
   // Shared state for sorting
   const [sortField, setSortField] = useState<GrowsSortField>(
-    (searchParams.get("sortField") as GrowsSortField) || GrowsSortField.NAME,
+    (searchParams?.get("sortField") as GrowsSortField) || GrowsSortField.NAME,
   );
   const [sortOrder, setSortOrder] = useState<SortOrder>(
-    (searchParams.get("sortOrder") as SortOrder) || SortOrder.ASC,
+    (searchParams?.get("sortOrder") as SortOrder) || SortOrder.ASC,
   );
   const [isFetching, setIsFetching] = useState<boolean>(false);
 
   // Update URL parameters
   const updateUrlParams = useCallback(() => {
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(searchParams?.toString());
 
     // Only include page parameter for pagination mode
     if (viewMode === GrowsViewMode.PAGINATION) {
-      params.set("page", searchParams.get("page") || "1");
+      params.set("page", searchParams?.get("page") || "1");
     } else {
       // Remove page parameter for infinite scroll
       params.delete("page");
