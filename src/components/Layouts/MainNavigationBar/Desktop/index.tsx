@@ -30,11 +30,11 @@ function DesktopNavigationMenu() {
             <li className="row-span-3">
               <NavigationMenuLink asChild>
                 <Link
-                  className="flex h-full w-full select-none flex-col justify-center rounded-lg bg-gradient-to-b from-primary/10 via-primary/5 to-primary/20 p-6 no-underline outline-none transition-all hover:from-primary/20 hover:via-primary/15 hover:to-primary/30 focus:shadow-md"
+                  className="flex h-full w-full select-none flex-col justify-center rounded-lg bg-gradient-to-b from-primary/10 via-primary/5 to-primary/20 p-6 text-foreground no-underline outline-none transition-all hover:from-primary/20 hover:via-primary/15 hover:to-primary/30 hover:text-foreground focus:shadow-md"
                   href={content.featured.href}
                 >
                   {/* Navigation featured item title */}
-                  <div className="mb-2 mt-4 text-2xl font-bold text-primary">
+                  <div className="mb-2 mt-4 text-2xl font-bold">
                     {t(content.featured.title)}
                   </div>
                   {/* Navigation featured item description */}
@@ -67,7 +67,7 @@ function DesktopNavigationMenu() {
             className={cn(
               "block select-none space-y-1 rounded-lg p-3 leading-none no-underline outline-none transition-colors",
               "text-foreground/90 hover:bg-accent hover:text-accent-foreground",
-              "focus:bg-accent focus:text-accent-foreground",
+              "text-foreground hover:text-foreground",
               className,
             )}
             href={props.href as string}
@@ -96,7 +96,7 @@ function DesktopNavigationMenu() {
                 <NavigationMenuLink
                   className={cn(
                     navigationMenuTriggerStyle(),
-                    "text-lg font-semibold hover:text-primary",
+                    "text-lg font-semibold",
                   )}
                   asChild
                 >
@@ -108,7 +108,7 @@ function DesktopNavigationMenu() {
                 <NavigationMenuTrigger
                   className={cn(
                     navigationMenuTriggerStyle(),
-                    "text-lg font-semibold hover:text-primary",
+                    "text-lg font-semibold",
                   )}
                 >
                   <div>{t(item.title)}</div>
