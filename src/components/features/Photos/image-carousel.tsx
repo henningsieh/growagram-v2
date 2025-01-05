@@ -2,6 +2,7 @@ import { CameraIcon } from "lucide-react";
 import { useLocale } from "next-intl";
 import Image from "next/image";
 import { useEffect } from "react";
+import { RESPONSIVE_IMAGE_SIZES } from "~/components/Layouts/responsive-grid";
 import {
   Carousel,
   CarouselContent,
@@ -47,7 +48,7 @@ export const ImageCarousel = ({
     <div className="relative aspect-video w-full md:aspect-video">
       <Image
         fill
-        sizes="640px"
+        sizes={RESPONSIVE_IMAGE_SIZES}
         priority={isPriority}
         src={image.imageUrl}
         alt={`Plant image captured on ${image.captureDate.toLocaleDateString()}`}

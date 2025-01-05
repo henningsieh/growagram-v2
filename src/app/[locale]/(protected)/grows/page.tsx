@@ -58,9 +58,9 @@ export default function MyGrowsPage() {
     params.set("sortField", sortField);
     params.set("sortOrder", sortOrder);
 
-    // Only push to URL if there are parameters
+    // Only set URL if there are parameters
     const paramsString = params.toString();
-    router.push(paramsString ? `?${paramsString}` : "");
+    router.replace(paramsString ? `?${paramsString}` : "", { scroll: false });
   }, [searchParams, sortField, sortOrder, router, viewMode]);
 
   // Sync state with URL

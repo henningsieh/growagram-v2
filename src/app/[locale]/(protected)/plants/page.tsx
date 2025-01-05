@@ -56,8 +56,9 @@ export default function PlantsPage() {
     params.set("sortField", sortField);
     params.set("sortOrder", sortOrder);
 
+    // Only set URL if there are parameters
     const paramsString = params.toString();
-    router.push(paramsString ? `?${paramsString}` : "");
+    router.replace(paramsString ? `?${paramsString}` : "", { scroll: false });
   }, [searchParams, sortField, sortOrder, router, viewMode]);
 
   // Sync state with URL

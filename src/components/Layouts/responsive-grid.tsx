@@ -11,3 +11,9 @@ export default function ResponsiveGrid({
     </div>
   );
 }
+
+/**
+ * Responsive image sizes for the Cards in the grid
+ */
+export const RESPONSIVE_IMAGE_SIZES =
+  "(min-width: 1280px) min(380px, 33.333vw), (min-width: 960px) 33vw, (min-width: 640px) 50vw, 100vw";

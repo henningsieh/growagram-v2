@@ -138,25 +138,8 @@ export default function PlantCard({
         <CardContent
           className={`grid gap-2 ${isSocial ? "ml-11 pl-0 pr-2" : "p-2"}`}
         >
+          {/* Image Carousel */}
           <ImageCarousel plantImages={plant.plantImages} />
-
-          {/* Plant HeaderImage
-          <div
-            className="relative aspect-video overflow-hidden"
-            onMouseEnter={() => setIsImageHovered(true)}
-            onMouseLeave={() => setIsImageHovered(false)}
-          > */}
-          {/* <Image
-              src={plant.headerImage?.imageUrl ?? headerImagePlaceholder}
-              alt={plant.name}
-              fill
-              className="object-cover transition-transform duration-300"
-              sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
-              style={{
-                transform: isImageHovered ? "scale(1.05)" : "scale(1)",
-              }}
-            /> */}
-          {/* </div> */}
 
           {/* Title Link */}
           <div className="flex items-center justify-between">
