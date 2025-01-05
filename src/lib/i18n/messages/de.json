@@ -4,7 +4,7 @@
     "account-info-title": "Mein Account",
     "edit-profile-button": "Account bearbeiten",
     "form-back-button": "Zurück zum Account",
-    "form-edit-profile-subtitle": "Verwalte deine Accountinformationen und Einstellungen.",
+    "form-edit-profile-subtitle": "Verwalte deine Accountinformationen.",
     "form-edit-profile-title": "Account bearbeiten",
     "form-email-description": "Deine primäre E-Mail-Adresse für Accountkommunikationen.",
     "form-email-label": "E-Mail",
@@ -146,7 +146,7 @@
   "Navigation": {
     "components": "Entdecken",
     "dashboard": "Dashboard",
-    "dashboard-description": "Erfasse deine Grows und deine Pflanzen, einschließlich Inventar und Werkzeugen.",
+    "dashboard-description": "Erfasse deine Grows und deine Pflanzen einschließlich Hochladen der Fotos.",
     "grower-menu": "Für Grower",
     "login": "Login",
     "my-grows": "Meine Grows",
@@ -157,7 +157,7 @@
     "my-plants-subline": "Verwalte und bearbeite deine Pflanzen.",
     "navigation": "Navigation",
     "timeline": "Zeitleiste",
-    "timelline-description": "Eine Social-Media-artike Zeitleiste mit Beiträgen und Updates von Growern.",
+    "timeline-description": "Social Media Zeitachse (Funktion in Kürze)",
     "toggle-menu": "Menü umschalten"
   },
   "Plants": {

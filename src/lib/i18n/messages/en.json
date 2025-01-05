@@ -4,7 +4,7 @@
     "account-info-title": "My Account",
     "edit-profile-button": "Edit account",
     "form-back-button": "Back to Profile",
-    "form-edit-profile-subtitle": "Manage your profile information and settings.",
+    "form-edit-profile-subtitle": "Manage your profile information.",
     "form-edit-profile-title": "Edit account",
     "form-email-description": "Your primary email address for account communications.",
     "form-email-label": "Email",
@@ -146,7 +146,7 @@
   "Navigation": {
     "components": "Explore",
     "dashboard": "Dashboard",
-    "dashboard-description": "Track your grows and your plants, including inventory and tools.",
+    "dashboard-description": "Track your grows and your plants, including photo uploads.",
     "grower-menu": "For Growers",
     "login": "Login",
     "my-grows": "My Grows",
@@ -157,7 +157,7 @@
     "my-plants-subline": "Manage and edit your plants.",
     "navigation": "Navigation",
     "timeline": "Timeline",
-    "timelline-description": "A Social Media like Stream of Posts and Updates from the Growers.",
+    "timeline-description": "Social media timeline (feature coming soon)",
     "toggle-menu": "Toggle menu"
   },
   "Plants": {
