@@ -12,16 +12,8 @@ import {
 import { PaginationItemsPerPage } from "~/assets/constants";
 import SpinningLoader from "~/components/Layouts/loader";
 import ResponsiveGrid from "~/components/Layouts/responsive-grid";
+import ItemsPagination from "~/components/atom/item-pagination";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "~/components/ui/pagination";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import { GetOwnPlantsInput } from "~/server/api/root";
@@ -95,31 +87,6 @@ export default function PaginatedPlantsView({
     setCurrentPage(page);
   };
 
-  // Generate pagination numbers
-  const getPaginationNumbers = () => {
-    const pages: number[] = [];
-    const showAroundCurrent = 2;
-
-    for (let i = 1; i <= totalPages; i++) {
-      if (
-        i === 1 ||
-        i === totalPages ||
-        (i >= currentPage - showAroundCurrent &&
-          i <= currentPage + showAroundCurrent)
-      ) {
-        pages.push(i);
-      }
-    }
-
-    return pages.reduce((acc: (number | string)[], page, index, array) => {
-      if (index > 0 && array[index - 1] !== page - 1) {
-        acc.push("...");
-      }
-      acc.push(page);
-      return acc;
-    }, []);
-  };
-
   return (
     <>
       {isLoading ? (
@@ -136,43 +103,12 @@ export default function PaginatedPlantsView({
             ))}
           </ResponsiveGrid>
 
-          <div className="mt-8 flex justify-center">
-            <Pagination>
-              <PaginationContent>
-                <PaginationItem>
-                  <PaginationPrevious
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 1 || isFetching}
-                  />
-                </PaginationItem>
-
-                {getPaginationNumbers().map((page, index) =>
-                  page === "..." ? (
-                    <PaginationItem key={`ellipsis-${index}`}>
-                      <PaginationEllipsis />
-                    </PaginationItem>
-                  ) : (
-                    <PaginationItem key={page}>
-                      <PaginationLink
-                        onClick={() => handlePageChange(page as number)}
-                        isActive={currentPage === page}
-                        disabled={isFetching}
-                      >
-                        <p>{page}</p>
-                      </PaginationLink>
-                    </PaginationItem>
-                  ),
-                )}
-
-                <PaginationItem>
-                  <PaginationNext
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === totalPages || isFetching}
-                  />
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
-          </div>
+          <ItemsPagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            isFetching={isFetching}
+            handlePageChange={handlePageChange}
+          />
         </>
       )}
     </>

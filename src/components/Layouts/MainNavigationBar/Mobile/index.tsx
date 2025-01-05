@@ -21,35 +21,41 @@ import {
 import { Link } from "~/lib/i18n/routing";
 import navigationData from "~/lib/navigation";
 import type { NavigationItem } from "~/lib/navigation";
+import { cn } from "~/lib/utils";
 
 export default function MobileNavigationMenu() {
   const [open, setOpen] = useState(false);
-
   const t = useTranslations("Navigation");
 
   const renderMenuContent = (content: NavigationItem["content"]) => {
     if (!content) return null;
     return (
-      <div className="flex flex-col space-y-2 pl-4">
+      <div className="flex flex-col space-y-3 pl-4">
         {content.featured && (
           <Link
             href={content.featured.href}
-            className="rounded-sm bg-gradient-to-b from-secondary/45 to-secondary/20 p-3 text-accent-foreground hover:from-secondary/55 hover:to-secondary/30 hover:text-foreground"
+            className="flex flex-col justify-center rounded-sm bg-gradient-to-b from-primary/10 via-primary/5 to-primary/20 p-6 text-foreground transition-all hover:from-primary/20 hover:via-primary/15 hover:to-primary/30"
             onClick={() => setOpen(false)}
           >
-            <div className="font-bold">{t(content.featured.title)}</div>
-            <p className="text-sm">{t(content.featured.description)}</p>
+            <div className="text-2xl font-bold text-primary">
+              {t(content.featured.title)}
+            </div>
+            <p className="text-base text-muted-foreground">
+              {t(content.featured.description)}
+            </p>
           </Link>
         )}
         {content.items?.map((item) => (
           <Link
             key={item.title}
             href={item.href}
-            className="rounded-sm bg-muted p-2 text-sm text-accent-foreground hover:bg-accent hover:text-foreground"
+            className="block space-y-1 rounded-sm p-3 text-foreground/90 transition-colors hover:bg-accent hover:text-accent-foreground"
             onClick={() => setOpen(false)}
           >
-            <div className="font-bold">{t(item.title)}</div>
-            <p className="text-xs text-muted-foreground">
+            <div className="text-lg font-semibold leading-none">
+              {t(item.title)}
+            </div>
+            <p className="pt-1 text-sm leading-snug text-muted-foreground">
               {t(item.description)}
             </p>
           </Link>
@@ -61,38 +67,55 @@ export default function MobileNavigationMenu() {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button variant="ghost" size="icon" className="md:hidden">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="hover:bg-primary/10 hover:text-primary md:hidden"
+        >
           <Menu width="28" height="28" />
           <span className="sr-only">{t("toggle-menu")}</span>
         </Button>
       </SheetTrigger>
-      <SheetContent
-        title="Mobile Navigation"
-        description="Layer showing the mobile navigation"
-        side="right"
-        className="w-full border-r p-0"
-      >
-        <SheetHeader className="flex items-center justify-between border-b border-border p-4">
-          <SheetTitle className="text-lg font-semibold">
+      <SheetContent side="right" className="w-full border-l p-0">
+        <SheetHeader className="flex items-center justify-between border-b border-border p-6">
+          <SheetTitle className="text-2xl font-bold text-primary">
             {t("navigation")}
           </SheetTitle>
         </SheetHeader>
         <ScrollArea className="h-[calc(100vh-5rem)]">
           <div className="flex flex-col p-4">
-            <Accordion type="single" collapsible className="w-full">
+            <Accordion type="single" collapsible className="w-full space-y-1.5">
               {navigationData.navigationItems.map((item) =>
                 item.type === "link" ? (
-                  <Button key={item.title} variant={"link"} className="p-0">
-                    <Link href={item.href!} onClick={() => setOpen(false)}>
+                  <Button
+                    key={item.title}
+                    variant="ghost"
+                    className="w-full justify-start p-3 text-lg font-semibold hover:bg-accent hover:text-foreground"
+                  >
+                    <Link
+                      href={item.href!}
+                      onClick={() => setOpen(false)}
+                      className="w-full"
+                    >
                       {t(item.title)}
                     </Link>
                   </Button>
                 ) : (
-                  <AccordionItem key={item.title} value={item.title}>
-                    <AccordionTrigger className="py-2">
+                  <AccordionItem
+                    key={item.title}
+                    value={item.title}
+                    className="border-none"
+                  >
+                    <AccordionTrigger
+                      className={cn(
+                        "rounded-sm px-3 py-3 text-lg font-semibold hover:bg-accent",
+                        "hover:text-foreground data-[state=open]:text-primary",
+                        "hover:no-underline",
+                      )}
+                    >
                       {t(item.title)}
                     </AccordionTrigger>
-                    <AccordionContent>
+                    <AccordionContent className="pb-1 pt-3">
                       {renderMenuContent(item.content)}
                     </AccordionContent>
                   </AccordionItem>

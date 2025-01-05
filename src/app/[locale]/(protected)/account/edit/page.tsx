@@ -1,5 +1,5 @@
 // src/app/[locale]/(protected)/account/edit/page.tsx:
-import AccountEditForm from "~/components/features/Account/edit-form";
+import AccountEditForm from "~/components/features/Account/account-edit-form";
 import { auth } from "~/lib/auth";
 import { GetUserType } from "~/server/api/root";
 

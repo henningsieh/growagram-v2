@@ -1,6 +1,7 @@
 "use client";
 
 // src/components/features/Photos/Views/paginated.tsx:
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import {
   Dispatch,
@@ -12,6 +13,7 @@ import {
 import { PaginationItemsPerPage } from "~/assets/constants";
 import SpinningLoader from "~/components/Layouts/loader";
 import ResponsiveGrid from "~/components/Layouts/responsive-grid";
+import ItemsPagination from "~/components/atom/item-pagination";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
 import PhotoCard from "~/components/features/Photos/photo-card";
 import {
@@ -100,7 +102,7 @@ export default function PhotosPaginatedView({
   // Generate pagination numbers
   const getPaginationNumbers = () => {
     const pages: number[] = [];
-    const showAroundCurrent = 1;
+    const showAroundCurrent = 0; // Adjust this value to change the number of elements displayed beside the current page
 
     for (let i = 1; i <= totalPages; i++) {
       if (
@@ -150,43 +152,12 @@ export default function PhotosPaginatedView({
             ))}
           </ResponsiveGrid>
 
-          <div className="mt-8 flex justify-center">
-            <Pagination>
-              <PaginationContent>
-                <PaginationItem>
-                  <PaginationPrevious
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 1 || isFetching}
-                  />
-                </PaginationItem>
-
-                {getPaginationNumbers().map((pageNumber, index) =>
-                  pageNumber === "..." ? (
-                    <PaginationItem key={`ellipsis-${index}`}>
-                      <PaginationEllipsis />
-                    </PaginationItem>
-                  ) : (
-                    <PaginationItem key={pageNumber}>
-                      <PaginationLink
-                        onClick={() => handlePageChange(pageNumber as number)}
-                        isActive={pageNumber === currentPage}
-                        disabled={isFetching}
-                      >
-                        <p>{pageNumber}</p>
-                      </PaginationLink>
-                    </PaginationItem>
-                  ),
-                )}
-
-                <PaginationItem>
-                  <PaginationNext
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === totalPages || isFetching}
-                  />
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
-          </div>
+          <ItemsPagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            isFetching={isFetching}
+            handlePageChange={handlePageChange}
+          />
         </>
       )}
     </>

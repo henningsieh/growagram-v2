@@ -35,13 +35,11 @@ export default function PlantFormDateField<TFieldValues extends FieldValues>({
 
   const handleDateSelect = (date: Date | undefined) => {
     field.onChange(date);
-    // The Popover will automatically close when the date is selected
   };
 
-  const handleResetClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleResetClick = (event: React.MouseEvent<HTMLDivElement>) => {
     event.stopPropagation();
     field.onChange(null);
-    // The Popover will automatically close when the reset button is clicked
   };
 
   return (
@@ -66,15 +64,13 @@ export default function PlantFormDateField<TFieldValues extends FieldValues>({
                     : "Pick a date"}
                 </div>
                 {field.value && (
-                  <button
-                    type="button"
-                    // size="sm"
-                    // variant="outline"
-                    className="ml-auto h-6 w-6 cursor-default"
+                  <div
+                    role="button"
+                    className="ml-auto h-6 w-6 cursor-pointer rounded-md border-2"
                     onClick={handleResetClick}
                   >
                     <X className="h-5 w-5" />
-                  </button>
+                  </div>
                 )}
               </Button>
             </FormControl>
