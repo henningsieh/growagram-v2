@@ -8,6 +8,7 @@ export const env = createEnv({
    * This way you can ensure the app isn't built with invalid env vars.
    */
   server: {
+    INTERNAL_API_KEY: z.string().min(1),
     DATABASE_URL: z.string().url(),
     NEXTAUTH_URL: z.string().url(),
     AUTH_SECRET: z.string(),
@@ -32,6 +33,7 @@ export const env = createEnv({
    * middlewares) or client-side so we need to destruct manually.
    */
   runtimeEnv: {
+    INTERNAL_API_KEY: process.env.INTERNAL_API_KEY,
     DATABASE_URL: process.env.DATABASE_URL,
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
     AUTH_SECRET: process.env.AUTH_SECRET,

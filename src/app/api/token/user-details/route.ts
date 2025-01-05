@@ -1,7 +1,13 @@
 // src/app/api/token/user-details/route.ts:
+import { env } from "~/env";
 import { db } from "~/lib/db";
 
 export async function GET(req: Request) {
+  // Add internal API key validation
+  if (req.headers.get("x-internal-auth") !== env.INTERNAL_API_KEY) {
+    return Response.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get("userId");
 
