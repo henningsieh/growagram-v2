@@ -33,6 +33,7 @@ export const users = pgTable(
     email: text("email").unique(),
     emailVerified: timestamp("emailVerified", { mode: "date" }),
     image: text("image"),
+    passwordHash: text("passwordHash"), // Add this line
     role: text("role", {
       // Assert UserRoles as drizzle enum tuple
       enum: Object.values(UserRoles) as [string, ...string[]],
@@ -49,6 +50,8 @@ export const users = pgTable(
     nameIdx: index("name_idx").on(table.name),
     roleIdx: index("role_idx").on(table.role),
     emailVerifiedIdx: index("email_verified_idx").on(table.emailVerified),
+    // Add index for password lookups
+    passwordHashIdx: index("password_hash_idx").on(table.passwordHash),
   }),
 );
 

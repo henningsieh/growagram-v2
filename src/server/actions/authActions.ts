@@ -7,6 +7,9 @@ export async function handleSignOut() {
   await signOut({ redirectTo: "/", redirect: true });
 }
 
-export async function signInWithProvider(provider: string) {
-  await signIn(provider, { redirectTo: "/dashboard" });
+export async function signInWithProvider(
+  provider: string,
+  callbackUrl: string = "/dashboard",
+) {
+  await signIn(provider, { callbackUrl });
 }

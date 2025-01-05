@@ -1,9 +1,11 @@
 // src/lib/auth/auth.config.ts:
 import type { NextAuthConfig } from "next-auth";
+import Credentials from "next-auth/providers/credentials";
 import Discord from "next-auth/providers/discord";
 import Google from "next-auth/providers/google";
 import Twitter from "next-auth/providers/twitter";
 import { env } from "~/env";
+import { comparePasswords } from "~/lib/auth/password";
 import { db } from "~/lib/db";
 import { UserRoles } from "~/types/user";
 
@@ -11,6 +13,37 @@ import { UserRoles } from "~/types/user";
 // instance... in order to get "Auth on Edge" running.
 export default {
   providers: [
+    Credentials({
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) return null;
+
+        const user = await db.query.users.findFirst({
+          where: (users, { eq }) =>
+            eq(users.email, credentials.email as string),
+        });
+
+        if (!user || !user.passwordHash) return null;
+
+        const isValidPassword = await comparePasswords(
+          credentials.password as string,
+          user.passwordHash,
+        );
+
+        if (!isValidPassword) return null;
+
+        return {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          username: user.username,
+          role: user.role as UserRoles,
+        };
+      },
+    }),
     Google({
       allowDangerousEmailAccountLinking: true,
     }),

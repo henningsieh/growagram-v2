@@ -1,7 +1,7 @@
 "use client";
 
-// src/components/login-form.tsx
 import { LogIn } from "lucide-react";
+import { signIn } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { FaDiscord, FaTwitter } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
@@ -19,8 +19,23 @@ import { Separator } from "~/components/ui/separator";
 import { Link } from "~/lib/i18n/routing";
 import { signInWithProvider } from "~/server/actions/authActions";
 
-export function LoginForm() {
+interface LoginFormProps {
+  callbackUrl: string;
+}
+
+export function LoginForm({ callbackUrl }: LoginFormProps) {
   const t = useTranslations("LoginPage");
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+
+    await signIn("credentials", {
+      email: formData.get("email"),
+      password: formData.get("password"),
+      callbackUrl,
+    });
+  };
 
   return (
     <Card className="mx-auto min-w-full">
@@ -29,7 +44,7 @@ export function LoginForm() {
         <CardDescription>{t("description")}</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="grid gap-4">
+        <form onSubmit={handleSubmit} className="grid gap-4">
           <div className="my-4 space-y-3">
             <div className="grid gap-2">
               <Label htmlFor="email">{t("email.label")}</Label>
@@ -62,52 +77,46 @@ export function LoginForm() {
             <LogIn size={32} className="absolute left-4" />
             {t("submit")}
           </Button>
+        </form>
 
-          <Separator className="rounded-sm bg-muted-foreground/30" />
+        <Separator className="rounded-sm bg-muted-foreground/30" />
 
-          <h4 className="font-semibold">
-            {t("social-identity-oauth-providers")}
-          </h4>
+        <h4 className="font-semibold">
+          {t("social-identity-oauth-providers")}
+        </h4>
 
-          <div className="space-y-2">
-            <Button
-              onClick={async () => {
-                await signInWithProvider("google");
-              }}
-              variant="outline"
-              className="relative w-full"
-              size="lg"
-            >
-              <FcGoogle size={32} className="absolute left-4" />
-              {t("login-with-google")}
-            </Button>
+        <div className="space-y-2">
+          <Button
+            onClick={() => signIn("google", { callbackUrl })}
+            variant="outline"
+            className="relative w-full"
+            size="lg"
+          >
+            <FcGoogle size={32} className="absolute left-4" />
+            {t("login-with-google")}
+          </Button>
 
-            <Button
-              onClick={async () => {
-                await signInWithProvider("discord");
-              }}
-              variant="outline"
-              className="relative w-full"
-              size="lg"
-            >
-              <FaDiscord size={32} className="absolute left-4 text-[#7289da]" />
+          <Button
+            onClick={() => signIn("discord", { callbackUrl })}
+            variant="outline"
+            className="relative w-full"
+            size="lg"
+          >
+            <FaDiscord size={32} className="absolute left-4 text-[#7289da]" />
 
-              {t("login-with-discord")}
-            </Button>
+            {t("login-with-discord")}
+          </Button>
 
-            <Button
-              onClick={async () => {
-                await signInWithProvider("twitter");
-              }}
-              variant="outline"
-              className="relative w-full"
-              size="lg"
-            >
-              <FaTwitter size={32} className="absolute left-4 text-[#1DA1F2]" />
+          <Button
+            onClick={() => signIn("twitter", { callbackUrl })}
+            variant="outline"
+            className="relative w-full"
+            size="lg"
+          >
+            <FaTwitter size={32} className="absolute left-4 text-[#1DA1F2]" />
 
-              {t("login-with-twitter")}
-            </Button>
-          </div>
+            {t("login-with-twitter")}
+          </Button>
         </div>
         <div className="mt-4 text-center text-sm">
           {t("signUp.text")}{" "}

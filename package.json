@@ -40,6 +40,7 @@
     "@trpc/client": "^11.0.0-rc.682",
     "@trpc/react-query": "^11.0.0-rc.682",
     "@trpc/server": "^11.0.0-rc.682",
+    "bcrypt": "^5.1.1",
     "class-variance-authority": "^0.7.1",
     "client-only": "^0.0.1",
     "cloudinary": "^2.5.1",
@@ -74,6 +75,7 @@
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
+    "@types/bcrypt": "^5.0.2",
     "@types/lodash": "^4.17.14",
     "@types/node": "^20.17.11",
     "@types/react": "^19.0.2",
@@ -85,7 +87,7 @@
     "prettier": "^3.4.2",
     "prettier-plugin-tailwindcss": "^0.6.9",
     "tailwindcss": "^3.4.17",
-    "url-loader": "^4.1.1",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.2",
+    "url-loader": "^4.1.1"
   }
 }
