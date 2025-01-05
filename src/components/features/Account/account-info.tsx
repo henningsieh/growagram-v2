@@ -43,17 +43,17 @@ export default function AccountInfo({ user }: { user: UserType }) {
   ];
 
   return (
-    <AnimatePresence>
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -20 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-        className="mx-auto w-full max-w-4xl"
-      >
-        <PageHeader
-          title={t("account-info-title")}
-          subtitle={t("account-info-subtitle")}
+    <PageHeader
+      title={t("account-info-title")}
+      subtitle={t("account-info-subtitle")}
+    >
+      <AnimatePresence>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="mx-auto w-full max-w-4xl"
         >
           <FormContent>
             <Card className="overflow-hidden border-2 bg-card/95 backdrop-blur-sm">
@@ -141,8 +141,8 @@ export default function AccountInfo({ user }: { user: UserType }) {
               </CardContent>
             </Card>
           </FormContent>
-        </PageHeader>
-      </motion.div>
-    </AnimatePresence>
+        </motion.div>
+      </AnimatePresence>
+    </PageHeader>
   );
 }
