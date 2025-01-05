@@ -18,6 +18,7 @@ import { useLocale } from "next-intl";
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import { RESPONSIVE_IMAGE_SIZES } from "~/components/Layouts/responsive-grid";
 import AvatarCardHeader from "~/components/atom/avatar-card-header";
 import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
 import { SocialCardFooter } from "~/components/atom/social-card-footer";
@@ -184,7 +185,7 @@ export default function PhotoCard({
             fill
             priority
             className="object-contain transition-transform duration-300"
-            sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"
+            sizes={RESPONSIVE_IMAGE_SIZES}
             style={{
               transform: isImageHovered ? "scale(1.02)" : "scale(1)",
             }}

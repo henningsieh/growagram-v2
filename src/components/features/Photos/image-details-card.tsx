@@ -40,7 +40,7 @@ export function ImageDetailsCard({ image, locale }: ImageDetailsProps) {
           alt={image.originalFilename}
           src={image.imageUrl}
           fill
-          sizes="(max-width: 767px) 100vw, 40vw"
+          sizes="(min-width: 768px) min(300px, 40vw), min(720px, 100vw)"
           className="object-cover"
         />
       </div>
