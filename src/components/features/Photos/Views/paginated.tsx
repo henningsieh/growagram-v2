@@ -13,6 +13,7 @@ import {
 import { PaginationItemsPerPage } from "~/assets/constants";
 import SpinningLoader from "~/components/Layouts/loader";
 import ResponsiveGrid from "~/components/Layouts/responsive-grid";
+import ItemsPagination from "~/components/atom/item-pagination";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
 import PhotoCard from "~/components/features/Photos/photo-card";
 import {
@@ -151,49 +152,12 @@ export default function PhotosPaginatedView({
             ))}
           </ResponsiveGrid>
 
-          <div className="mt-8 flex justify-center">
-            <Pagination>
-              <PaginationContent>
-                <PaginationItem>
-                  <PaginationPrevious
-                    size="icon"
-                    className="p-0"
-                    children={<ChevronLeftIcon className="h-4 w-4" />} // Previous
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 1 || isFetching}
-                  />
-                </PaginationItem>
-
-                {getPaginationNumbers().map((pageNumber, index) =>
-                  pageNumber === "..." ? (
-                    <PaginationItem key={`ellipsis-${index}`}>
-                      <PaginationEllipsis />
-                    </PaginationItem>
-                  ) : (
-                    <PaginationItem key={pageNumber}>
-                      <PaginationLink
-                        onClick={() => handlePageChange(pageNumber as number)}
-                        isActive={pageNumber === currentPage}
-                        disabled={isFetching}
-                      >
-                        <p>{pageNumber}</p>
-                      </PaginationLink>
-                    </PaginationItem>
-                  ),
-                )}
-
-                <PaginationItem>
-                  <PaginationNext
-                    size="icon"
-                    className="p-0"
-                    children={<ChevronRightIcon className="h-4 w-4" />} // Next
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === totalPages || isFetching}
-                  />
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
-          </div>
+          <ItemsPagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            isFetching={isFetching}
+            handlePageChange={handlePageChange}
+          />
         </>
       )}
     </>
