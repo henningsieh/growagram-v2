@@ -50,7 +50,10 @@ export default function AllImagesPage() {
     params.set("sortField", sortField);
     params.set("sortOrder", sortOrder);
     params.set("filterNotConnected", filterNotConnected.toString());
-    router.push(`?${params.toString()}`);
+
+    // Only set URL if there are parameters
+    const paramsString = params.toString();
+    router.replace(paramsString ? `?${paramsString}` : "", { scroll: false });
   }, [searchParams, sortField, sortOrder, filterNotConnected, router]);
 
   // Sync state with URL
