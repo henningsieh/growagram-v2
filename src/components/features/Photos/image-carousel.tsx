@@ -27,7 +27,13 @@ export const ImageCarousel = ({
   const locale = useLocale();
 
   if (!plantImages.length)
-    return <center className="text-muted-foreground">no images yet</center>;
+    return (
+      <div className="relative aspect-video w-full">
+        <div className="flex h-full items-center justify-center bg-muted text-muted-foreground">
+          no images yet
+        </div>
+      </div>
+    );
 
   const [firstImage, ...restImages] = plantImages;
 
