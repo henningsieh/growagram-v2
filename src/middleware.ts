@@ -1,14 +1,11 @@
 // src/middleware.ts
-import NextAuth from "next-auth";
+import { getToken } from "next-auth/jwt";
 import createMiddleware from "next-intl/middleware";
 import { NextRequest, NextResponse } from "next/server";
-import authConfig from "~/lib/auth/auth.config";
 
 import { PROTECTED_PATHS, modulePaths } from "./assets/constants";
+import { env } from "./env";
 import { routing } from "./lib/i18n/routing";
-
-// Initialize NextAuth's middleware (edge-compatible)
-const { auth } = NextAuth(authConfig);
 
 const languages = routing.locales;
 
@@ -23,10 +20,13 @@ function isPathProtected(path: string): boolean {
 }
 
 export default async function middleware(request: NextRequest) {
-  // Get the current session (user's authentication status)
-  const session = await auth();
-  // Log the full session to verify
-  console.debug("Middleware session: ", JSON.stringify(session, null, 2));
+  // Get the current token (user's authentication status)
+  const token = await getToken({
+    req: request,
+    secret: env.AUTH_SECRET,
+  });
+  // Log the full token to verify
+  console.debug("Middleware token: ", JSON.stringify(token, null, 2));
 
   // Get the pathname
   const currentPathname = request.nextUrl.pathname;
@@ -60,7 +60,7 @@ export default async function middleware(request: NextRequest) {
   const isProtectedPath = isLocalePath && isPathProtected(pathWithoutLocale);
 
   // If the path is protected and the user is not logged in, redirect to the sign-in page
-  if (isProtectedPath && !session?.user) {
+  if (isProtectedPath && !token) {
     console.debug("User is not authenticated. Redirecting to sign-in page.");
 
     // Redirect using the real URL, preserving the client-facing URL
