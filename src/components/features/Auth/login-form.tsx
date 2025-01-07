@@ -18,6 +18,7 @@ import { Label } from "~/components/ui/label";
 import { Separator } from "~/components/ui/separator";
 import { Link } from "~/lib/i18n/routing";
 import { signInWithProvider } from "~/server/actions/authActions";
+import { useRouter } from "next/router";
 
 interface LoginFormProps {
   callbackUrl: string;
@@ -25,16 +26,22 @@ interface LoginFormProps {
 
 export function LoginForm({ callbackUrl }: LoginFormProps) {
   const t = useTranslations("LoginPage");
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
 
-    await signIn("credentials", {
+    const result = await signIn("credentials", {
       email: formData.get("email"),
       password: formData.get("password"),
       callbackUrl,
+      redirect: false,
     });
+
+    if (result?.error) {
+      router.push(`/auth/error?error=${result.error}`);
+    }
   };
 
   return (

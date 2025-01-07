@@ -1,3 +1,5 @@
+"use client";
+
 //src/app/login/page.tsx
 import { useSession } from "next-auth/react";
 import { useLocale } from "next-intl";
@@ -15,6 +17,7 @@ export default function Page({
   if (status !== "loading" && session) {
     // Redirect to dashboard if already logged in
     redirect({ href: "/dashboard", locale });
+    return null;
   }
 
   const callbackUrl = searchParams.callbackUrl || "/dashboard";

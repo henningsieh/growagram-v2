@@ -19,21 +19,35 @@ export default {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) return null;
+        if (!credentials?.email || !credentials?.password) {
+          console.error("Missing email or password");
+          return null;
+        }
 
         const user = await db.query.users.findFirst({
           where: (users, { eq }) =>
             eq(users.email, credentials.email as string),
         });
 
-        if (!user || !user.passwordHash) return null;
+        if (!user) {
+          console.error("User not found");
+          return null;
+        }
+
+        if (!user.passwordHash) {
+          console.error("User has no password hash");
+          return null;
+        }
 
         const isValidPassword = await comparePasswords(
           credentials.password as string,
           user.passwordHash,
         );
 
-        if (!isValidPassword) return null;
+        if (!isValidPassword) {
+          console.error("Invalid password");
+          return null;
+        }
 
         return {
           id: user.id,
@@ -105,5 +119,9 @@ export default {
       }
       return token;
     },
+  },
+  pages: {
+    signIn: "/auth/signin", // Custom sign-in page
+    error: "/auth/error", // Custom error page
   },
 } satisfies NextAuthConfig;
