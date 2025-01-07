@@ -5,6 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { PROTECTED_PATHS, modulePaths } from "./assets/constants";
 import { env } from "./env";
+import { auth } from "./lib/auth";
 import { routing } from "./lib/i18n/routing";
 
 const languages = routing.locales;
@@ -19,17 +20,29 @@ function isPathProtected(path: string): boolean {
   );
 }
 
-export default async function middleware(request: NextRequest) {
+export default async function middleware(req: NextRequest) {
+  const session = await auth();
+  console.debug("Middleware session: ", JSON.stringify(session, null, 2));
+
+  const secret = env.AUTH_SECRET;
+  console.debug("secret: ", secret);
+
   // Get the current token (user's authentication status)
   const token = await getToken({
-    req: request,
-    secret: env.AUTH_SECRET,
+    req,
+    secret,
+    ...(process.env.NODE_ENV === "production"
+      ? {
+          cookieName: "__Secure-authjs.session-token",
+        }
+      : {}),
   });
+
   // Log the full token to verify
   console.debug("Middleware token: ", JSON.stringify(token, null, 2));
 
   // Get the pathname
-  const currentPathname = request.nextUrl.pathname;
+  const currentPathname = req.nextUrl.pathname;
   console.debug("currentPathname: ", currentPathname);
 
   // Extract the locale from the path. Example: /de/photos or /en/photos
@@ -38,10 +51,9 @@ export default async function middleware(request: NextRequest) {
   );
 
   // Get the real host from the 'X-Forwarded-Host' header or fallback to the request's host
-  const realHost =
-    request.headers.get("X-Forwarded-Host") || request.nextUrl.host;
+  const realHost = req.headers.get("X-Forwarded-Host") || req.nextUrl.host;
   console.debug(realHost);
-  console.debug(request.nextUrl.host);
+  console.debug(req.nextUrl.host);
   // This will be the actual URL seen in the browser
   const browserUrl = `http://${realHost}${currentPathname}`;
   console.debug("browserUrl: ", browserUrl); // Logs the real URL seen by the user
@@ -79,11 +91,11 @@ export default async function middleware(request: NextRequest) {
 
   // If an invalid locale is found, redirect to the home page
   if (pathnameHasLocale && !pathnameHasValidLocale) {
-    return NextResponse.redirect(new URL("/", request.url));
+    return NextResponse.redirect(new URL("/", req.url));
   }
 
   // Proceed with handling locale routing
-  const i18nResponse = handleI18nRouting(request);
+  const i18nResponse = handleI18nRouting(req);
   if (i18nResponse) {
     return i18nResponse; // Ensure locale routing is applied
   }
