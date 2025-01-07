@@ -82,7 +82,7 @@ export default function MobileNavigationMenu() {
             {t("navigation")}
           </SheetTitle>
         </SheetHeader>
-        <ScrollArea className="h-[calc(100vh-5rem)]">
+        <ScrollArea className="h-[calc(100svh-4rem)]">
           <div className="flex flex-col p-4">
             <Accordion type="single" collapsible className="w-full space-y-1.5">
               {navigationData.navigationItems.map((item) =>

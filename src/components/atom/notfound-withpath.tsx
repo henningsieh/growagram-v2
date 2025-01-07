@@ -38,7 +38,7 @@ export function NotFoundWithPath() {
   };
 
   return (
-    <div className="flex h-[calc(100vh-5rem)] flex-col items-center justify-center p-5 text-center">
+    <div className="flex h-[calc(100svh-4rem)] flex-col items-center justify-center p-5 text-center">
       <AnimatePresence>
         <motion.div
           variants={containerVariants}

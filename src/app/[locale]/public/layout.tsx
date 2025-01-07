@@ -94,7 +94,7 @@ export default function TimelineLayout({ children }: PropsWithChildren) {
 
         <aside className="hidden w-64 lg:block">
           <div className="sticky top-16 px-4">
-            <ScrollArea className="h-[calc(100vh-5rem)]">
+            <ScrollArea className="h-[calc(100svh-4rem)] bg-red-400">
               <p>text</p>
               <p>text</p>
               <p>text</p>

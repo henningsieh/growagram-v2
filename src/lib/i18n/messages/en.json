@@ -119,10 +119,44 @@
     "subtitle": "Which plants did you spot in this photo?",
     "title": "Identify Plants"
   },
+  "LandingPage": {
+    "HeroSection": {
+      "description": "Discover the world of home cannabis cultivation. \nShare your experiences, learn from the community and document your grows in a digital diary.",
+      "subtitle": "Your cannabis grow diary",
+      "title": "GrowAGram",
+      "cta-button-start": "Get Started for free",
+      "cta-button-pricing": "Explore Grows"
+    },
+    "FeaturesSection": {
+      "title": "Everything for your successful grow",
+      "description": "With GrowAGram, you don't just manage your plants like a pro, but also share your successes and progress with the community. Comment, engage, and get inspired by other plant enthusiasts as you grow your green network!",
+      "cards": {
+        "growDiary": {
+          "title": "Grow Diary",
+          "description": "Document every step of your grow. From germination to harvest."
+        },
+        "community": {
+          "title": "Community",
+          "description": "Exchange ideas with other growers and learn from their experiences."
+        },
+        "growStats": {
+          "title": "Grow Stats",
+          "description": "Keep track of your growth progress and harvests."
+        },
+        "connections": {
+          "title": "Connections",
+          "description": "Link your photos to plants and assign them to grows."
+        }
+      }
+    },
+    "PricingSection": {
+      "title": "Fair prices for every grower",
+      "description": "Choose the right package for your needs."
+    }
+  },
   "LanguageToggle": {
     "toggle-language": "Change language"
   },
-  "Login to see detailed view statistics": "",
   "LoginPage": {
     "description": "To log in, enter your email address and password or select a social login provider below.",
     "email": {

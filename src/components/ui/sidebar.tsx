@@ -148,7 +148,7 @@ const SidebarProvider = React.forwardRef<
               } as React.CSSProperties
             }
             className={cn(
-              "group/sidebar-wrapper flex min-h-svh w-full has-[[data-variant=inset]]:bg-sidebar",
+              "group/sidebar-wrapper flex h-[calc(100svh-4rem)] w-full has-[[data-variant=inset]]:bg-sidebar",
               className,
             )}
             ref={ref}
@@ -206,7 +206,7 @@ const Sidebar = React.forwardRef<
             data-sidebar="sidebar"
             data-mobile="true"
             // className="w-[--sidebar-width] bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden"
-            className="sticky top-14 h-[calc(100vh-4rem)] w-[--sidebar-width] bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden"
+            className="sticky top-14 h-[calc(100svh-4rem)] w-[--sidebar-width] bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden"
             style={
               {
                 "--sidebar-width": SIDEBAR_WIDTH_MOBILE,
@@ -223,7 +223,7 @@ const Sidebar = React.forwardRef<
     return (
       <div
         ref={ref}
-        className="sticky top-14 h-[calc(100vh-3.5rem)] group peer hidden text-sidebar-foreground md:block"
+        className="sticky top-14 h-[calc(100svh-4rem)] group peer hidden text-sidebar-foreground md:block"
         data-state={state}
         data-collapsible={state === "collapsed" ? collapsible : ""}
         data-variant={variant}

@@ -317,8 +317,8 @@ export default function ProtectedSidebar({
         </header>
 
         {/* Main Content Area */}
-        <div className="flex flex-1 flex-col gap-2 pt-0">
-          <div className="flex-1 rounded-sm">{children}</div>
+        <div className="flex flex-col gap-2 pt-0">
+          <div className="rounded-sm">{children}</div>
         </div>
       </SidebarInset>
     </SidebarProvider>

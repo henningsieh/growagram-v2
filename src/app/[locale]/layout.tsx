@@ -43,6 +43,7 @@ type AppLayoutProps = {
 export default async function AppLayout(props: AppLayoutProps) {
   return (
     <html
+      className="scroll-smooth"
       lang={(await props.params).locale}
       // suppressHydrationWarning
     >

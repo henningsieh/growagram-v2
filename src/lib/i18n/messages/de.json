@@ -119,10 +119,44 @@
     "subtitle": "Welche Pflanzen siehst du auf diesem Foto?",
     "title": "Pflanzen identifizieren"
   },
+  "LandingPage": {
+    "HeroSection": {
+      "title": "GrowAGram",
+      "subtitle": "Dein Cannabis Grow Tagebuch",
+      "description": "Entdecke die Welt des Cannabis Eigenanbaus. Teile deine                     Erfahrungen, lerne von der Community und dokumentiere deine Grows in einem digitalen Tagebuch.",
+      "cta-button-start": "Kostenlos starten",
+      "cta-button-pricing": "Grows erkunden"
+    },
+    "FeaturesSection": {
+      "title": "Alles für deinen erfolgreichen Grow",
+      "description": "Mit GrowAGram verwaltest du nicht nur deine Pflanzen wie ein Profi, sondern kannst deine Erfolge und Fortschritte ganz einfach mit der Community teilen. Kommentiere, diskutiere und lass dich von anderen Pflanzenliebhabern inspirieren, während du dein grünes Netzwerk aufbaust!",
+      "cards": {
+        "growDiary": {
+          "title": "Grow Tagebuch",
+          "description": "Dokumentiere jeden Schritt deines Grows. Von der Keimung bis zur Ernte."
+        },
+        "community": {
+          "title": "Community",
+          "description": "Tausche dich mit anderen Growers aus und lerne von ihren Erfahrungen."
+        },
+        "growStats": {
+          "title": "Grow Stats",
+          "description": "Behalte den Überblick über deine Wachstumsfortschritte und Ernten."
+        },
+        "connections": {
+          "title": "Verknüpfungen",
+          "description": "Verbinde deine Bilder mit Pflanzen und ordne diese Grows zu."
+        }
+      }
+    },
+    "PricingSection": {
+      "title": "Faire Preise für jeden Grower",
+      "description": "Wähle das passende Paket für deine Bedürfnisse."
+    }
+  },
   "LanguageToggle": {
     "toggle-language": "Sprache wechseln"
   },
-  "Login to see detailed view statistics": "",
   "LoginPage": {
     "description": "Geben Sie Ihre E-Mail-Adresse und Passwort ein oder wählen Sie unten einen Social Provider für den Login aus, um sich anzumelden.",
     "email": {
