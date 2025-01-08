@@ -61,38 +61,18 @@
           "url": "/photos/upload"
         }
       ]
-    },
-    {
-      "title": "Inventory",
-      "url": "#",
-      "icon": "PencilRuler",
-      "items": [
-        {
-          "title": "My Inventory",
-          "url": "/inventory"
-        },
-        {
-          "title": "Add Item",
-          "url": "/inventory/add"
-        }
-      ]
     }
   ],
   "projects": [
     {
-      "name": "Grow Automation",
-      "url": "#",
-      "icon": "Workflow"
+      "name": "My Inventory",
+      "url": "",
+      "icon": "PencilRuler"
     },
     {
-      "name": "Nutrient Scheduling",
-      "url": "#",
+      "name": "Nutrient Feeding",
+      "url": "",
       "icon": "CalendarCheck"
-    },
-    {
-      "name": "Climate Control",
-      "url": "#",
-      "icon": "Thermometer"
     }
   ]
 }
