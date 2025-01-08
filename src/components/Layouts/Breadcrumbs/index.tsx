@@ -1,4 +1,5 @@
 import { useTranslations } from "next-intl";
+import { modulePaths } from "~/assets/constants";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -23,7 +24,9 @@ export function NavigationBreadcrumb({ className }: NavigationBreadcrumbProps) {
       <BreadcrumbList>
         <BreadcrumbItem className="hidden md:block">
           <BreadcrumbLink asChild>
-            <Link href="/dashboard">{t("Platform.Dashboard-title")}</Link>
+            <Link href={modulePaths.DASHBOARD.path}>
+              {t("Platform.Dashboard-title")}
+            </Link>
           </BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator className="hidden md:block" />

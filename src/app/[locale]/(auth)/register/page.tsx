@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { useState } from "react";
+import { modulePaths } from "~/assets/constants";
 import { Button } from "~/components/ui/button";
 import {
   Card,
@@ -40,7 +41,7 @@ export default function RegisterPage() {
     const data = await response.json();
 
     if (response.ok) {
-      router.push("/login");
+      router.push(modulePaths.SIGNIN.path);
     } else {
       setError(data.error);
     }
@@ -93,7 +94,7 @@ export default function RegisterPage() {
 
         <div className="mt-4 text-center text-sm">
           {t("login.text")}{" "}
-          <Link href="/login" className="underline">
+          <Link href={modulePaths.SIGNIN.path} className="underline">
             {t("login.link")}
           </Link>
         </div>

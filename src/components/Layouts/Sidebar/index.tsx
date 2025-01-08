@@ -20,6 +20,7 @@ import { User } from "next-auth";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
+import { modulePaths } from "~/assets/constants";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import {
   Collapsible,
@@ -100,7 +101,7 @@ export default function ProtectedSidebar({
               <Collapsible asChild className="group/collapsible">
                 <SidebarMenuItem>
                   <CollapsibleTrigger asChild>
-                    <Link href="/dashboard">
+                    <Link href={modulePaths.DASHBOARD.path}>
                       <SidebarMenuButton
                         tooltip={t("Platform.Dashboard-title")}
                       >

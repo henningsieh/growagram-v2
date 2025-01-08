@@ -95,7 +95,7 @@ export function LoginForm({ callbackUrl }: LoginFormProps) {
 
         <div className="space-y-2">
           <Button
-            onClick={() => signIn("google", { callbackUrl })}
+            onClick={() => signInWithProvider("google", callbackUrl)}
             variant="outline"
             className="relative w-full"
             size="lg"
@@ -105,7 +105,7 @@ export function LoginForm({ callbackUrl }: LoginFormProps) {
           </Button>
 
           <Button
-            onClick={() => signIn("discord", { callbackUrl })}
+            onClick={() => signInWithProvider("discord", callbackUrl)}
             variant="outline"
             className="relative w-full"
             size="lg"
@@ -116,7 +116,7 @@ export function LoginForm({ callbackUrl }: LoginFormProps) {
           </Button>
 
           <Button
-            onClick={() => signIn("twitter", { callbackUrl })}
+            onClick={() => signInWithProvider("twitter", callbackUrl)}
             variant="outline"
             className="relative w-full"
             size="lg"

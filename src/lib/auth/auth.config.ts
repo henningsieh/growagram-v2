@@ -4,6 +4,7 @@ import Credentials from "next-auth/providers/credentials";
 import Discord from "next-auth/providers/discord";
 import Google from "next-auth/providers/google";
 import Twitter from "next-auth/providers/twitter";
+import { modulePaths } from "~/assets/constants";
 import { env } from "~/env";
 import { comparePasswords } from "~/lib/auth/password";
 import { db } from "~/lib/db";
@@ -126,6 +127,6 @@ export default {
     },
   },
   pages: {
-    signIn: "/login", // Custom sign-in page
+    signIn: modulePaths.SIGNIN.path,
   },
 } satisfies NextAuthConfig;

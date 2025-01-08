@@ -31,7 +31,7 @@ export const modulePaths = {
   },
   SIGNIN: {
     name: "Signin",
-    path: "/api/auth/signin",
+    path: "/login",
     protected: false,
   },
 };
