@@ -41,24 +41,33 @@ export default async function middleware(req: NextRequest) {
 
   // Get the pathname
   const currentPathname = req.nextUrl.pathname;
-  console.debug("currentPathname: ", currentPathname);
+  // console.debug("currentPathname: ", currentPathname);
 
   // Extract the locale from the path. Example: /de/photos or /en/photos
   const localeMatchArray = currentPathname.match(
     new RegExp(`^\/(${languages.join("|")})\/`),
   );
 
-  // Get the real host from the 'X-Forwarded-Host' header or fallback to the request's host
+  // Get the real host and protocol
   const realHost = req.headers.get("X-Forwarded-Host") || req.nextUrl.host;
-  console.debug(realHost);
-  console.debug(req.nextUrl.host);
+  const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
+
+  // Handle auth callback paths specially
+  if (currentPathname.startsWith("/api/auth/callback")) {
+    // Ensure we're using the correct host for auth callbacks
+    const callbackUrl = new URL(currentPathname, `${protocol}://${realHost}`);
+    req.nextUrl.host = realHost;
+    req.nextUrl.protocol = protocol;
+    return NextResponse.rewrite(callbackUrl);
+  }
+
   // This will be the actual URL seen in the browser
-  const browserUrl = `http://${realHost}${currentPathname}`;
-  console.debug("browserUrl: ", browserUrl); // Logs the real URL seen by the user
+  const browserUrl = `${protocol}://${realHost}${currentPathname}`;
+  console.debug("realHost:", realHost);
+  console.debug("protocol:", protocol);
+  console.debug("browserUrl:", browserUrl);
 
   const currentLocale = localeMatchArray ? localeMatchArray[1] : null;
-
-  console.debug("currentLocale: ", currentLocale);
 
   // Extract the path without locale for comparison
   const pathWithoutLocale = currentLocale
