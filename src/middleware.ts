@@ -5,6 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { PROTECTED_PATHS, modulePaths } from "./assets/constants";
 import { env } from "./env";
+import { auth } from "./lib/auth";
 import { routing } from "./lib/i18n/routing";
 
 const languages = routing.locales;
@@ -19,36 +20,53 @@ function isPathProtected(path: string): boolean {
   );
 }
 
-export default async function middleware(request: NextRequest) {
+export default async function middleware(req: NextRequest) {
+  const secret = env.AUTH_SECRET;
+
   // Get the current token (user's authentication status)
   const token = await getToken({
-    req: request,
-    secret: env.AUTH_SECRET,
+    req,
+    secret,
+    ...(process.env.NODE_ENV === "production"
+      ? {
+          cookieName: "__Secure-authjs.session-token",
+        }
+      : {
+          cookieName: "authjs.session-token",
+        }),
   });
+
   // Log the full token to verify
   console.debug("Middleware token: ", JSON.stringify(token, null, 2));
 
   // Get the pathname
-  const currentPathname = request.nextUrl.pathname;
-  console.debug("currentPathname: ", currentPathname);
+  const currentPathname = req.nextUrl.pathname;
+  // console.debug("currentPathname: ", currentPathname);
 
   // Extract the locale from the path. Example: /de/photos or /en/photos
   const localeMatchArray = currentPathname.match(
     new RegExp(`^\/(${languages.join("|")})\/`),
   );
 
-  // Get the real host from the 'X-Forwarded-Host' header or fallback to the request's host
-  const realHost =
-    request.headers.get("X-Forwarded-Host") || request.nextUrl.host;
-  console.debug(realHost);
-  console.debug(request.nextUrl.host);
-  // This will be the actual URL seen in the browser
-  const browserUrl = `http://${realHost}${currentPathname}`;
-  console.debug("browserUrl: ", browserUrl); // Logs the real URL seen by the user
+  // Get the real host and protocol
+  const realHost = req.headers.get("X-Forwarded-Host") || req.nextUrl.host;
+  const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
+
+  const baseUrl = env.NEXTAUTH_URL || `${protocol}://${realHost}`;
+  const fullUrl = new URL(currentPathname, baseUrl);
+
+  // Handle auth callback paths specially
+  if (currentPathname.startsWith("/api/auth/callback")) {
+    req.nextUrl.host = realHost;
+    req.nextUrl.protocol = new URL(baseUrl).protocol.replace(":", "");
+    return NextResponse.rewrite(fullUrl);
+  }
+
+  console.debug("realHost:", realHost);
+  console.debug("protocol:", protocol);
+  console.debug("fullUrl:", fullUrl.toString());
 
   const currentLocale = localeMatchArray ? localeMatchArray[1] : null;
-
-  console.debug("currentLocale: ", currentLocale);
 
   // Extract the path without locale for comparison
   const pathWithoutLocale = currentLocale
@@ -59,13 +77,26 @@ export default async function middleware(request: NextRequest) {
   const isLocalePath = localeMatchArray !== null;
   const isProtectedPath = isLocalePath && isPathProtected(pathWithoutLocale);
 
+  // Check if the username is empty or null and redirect to the account page if necessary
+  if (
+    token &&
+    (token.username == null || token.username === "") &&
+    pathWithoutLocale !== "/account/edit"
+  ) {
+    const accountRedirectUrl = new URL(
+      currentLocale ? `/${currentLocale}/account/edit` : "/account/edit",
+      `${baseUrl}`,
+    );
+    return NextResponse.redirect(accountRedirectUrl);
+  }
+
   // If the path is protected and the user is not logged in, redirect to the sign-in page
   if (isProtectedPath && !token) {
     console.debug("User is not authenticated. Redirecting to sign-in page.");
 
     // Redirect using the real URL, preserving the client-facing URL
-    const redirectUrl = new URL(modulePaths.SIGNIN.path, `http://${realHost}`); //TODO: should be in sync with env next-auth url!
-    redirectUrl.searchParams.append("callbackUrl", browserUrl); // Use the real URL here
+    const redirectUrl = new URL(modulePaths.SIGNIN.path, baseUrl);
+    redirectUrl.searchParams.append("callbackUrl", fullUrl.toString()); // Use the real URL here
     return NextResponse.redirect(redirectUrl); // Redirect to the sign-in page with the real URL
   }
 
@@ -79,11 +110,11 @@ export default async function middleware(request: NextRequest) {
 
   // If an invalid locale is found, redirect to the home page
   if (pathnameHasLocale && !pathnameHasValidLocale) {
-    return NextResponse.redirect(new URL("/", request.url));
+    return NextResponse.redirect(new URL("/", req.url));
   }
 
   // Proceed with handling locale routing
-  const i18nResponse = handleI18nRouting(request);
+  const i18nResponse = handleI18nRouting(req);
   if (i18nResponse) {
     return i18nResponse; // Ensure locale routing is applied
   }

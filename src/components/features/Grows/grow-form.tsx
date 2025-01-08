@@ -359,7 +359,9 @@ export default function GrowFormPage({ grow }: { grow?: GetGrowByIdType }) {
                         </div>
                       ) : (
                         <CommandList className="min-h-24">
-                          <CommandEmpty>{t("no-plants-found")}</CommandEmpty>
+                          <CommandEmpty>
+                            {t("no-plants-connected")}
+                          </CommandEmpty>
                           <CommandGroup>
                             {filteredPlants.map((plant) => (
                               <CommandItem

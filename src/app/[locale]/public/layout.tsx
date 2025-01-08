@@ -1,6 +1,6 @@
 "use client";
 
-import { Clock, TentTree, Users } from "lucide-react";
+import { Clock, TagIcon, TentTree, Users } from "lucide-react";
 import { type PropsWithChildren } from "react";
 import { Button } from "~/components/ui/button";
 import { ScrollArea } from "~/components/ui/scroll-area";
@@ -27,7 +27,7 @@ export default function TimelineLayout({ children }: PropsWithChildren) {
                 Timeline
               </Button>
             </Link>
-            <Link href="/public/following">
+            {/* <Link href="/public/following">
               <Button
                 variant={
                   pathname === "/public/following" ? "secondary" : "ghost"
@@ -37,14 +37,23 @@ export default function TimelineLayout({ children }: PropsWithChildren) {
                 <Users className="mr-2 h-4 w-4" />
                 Following
               </Button>
-            </Link>
+            </Link> */}
             <Link href="/public/grows">
               <Button
                 variant={pathname === "/public/grows" ? "secondary" : "ghost"}
                 className="w-full justify-start text-base"
               >
-                <TentTree className="mr-2 h-4 w-4" />
+                <TagIcon className="mr-2 h-4 w-4" />
                 All Grows
+              </Button>
+            </Link>
+            <Link href="/public/plants">
+              <Button
+                variant={pathname === "/public/plants" ? "secondary" : "ghost"}
+                className="w-full justify-start text-base"
+              >
+                <TentTree className="mr-2 h-4 w-4" />
+                All Plants
               </Button>
             </Link>
           </div>
@@ -94,61 +103,8 @@ export default function TimelineLayout({ children }: PropsWithChildren) {
 
         <aside className="hidden w-64 lg:block">
           <div className="sticky top-16 px-4">
-            <ScrollArea className="h-[calc(100vh-5rem)]">
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
+            <ScrollArea className="h-[calc(100svh-4rem)]">
+              <p>Sidebar :-) (content coming soon)</p>
             </ScrollArea>
           </div>
         </aside>

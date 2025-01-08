@@ -32,6 +32,8 @@ function DesktopNavigationMenu() {
                 <Link
                   className="flex h-full w-full select-none flex-col justify-center rounded-lg bg-gradient-to-b from-primary/10 via-primary/5 to-primary/20 p-6 text-foreground no-underline outline-none transition-all hover:from-primary/20 hover:via-primary/15 hover:to-primary/30 hover:text-foreground focus:shadow-md"
                   href={content.featured.href}
+                  scroll={true}
+                  shallow={false}
                 >
                   {/* Navigation featured item title */}
                   <div className="mb-2 mt-4 text-2xl font-bold">

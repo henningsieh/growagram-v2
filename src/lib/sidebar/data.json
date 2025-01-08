@@ -6,9 +6,9 @@
       "plan": "Premium"
     },
     {
-      "name": "Personal Growers",
+      "name": "Grower",
       "logo": "TreeDeciduous",
-      "plan": "Basic"
+      "plan": "Basic Free Plan"
     }
   ],
   "navMain": [
@@ -25,10 +25,6 @@
         {
           "title": "Create New Grow",
           "url": "/grows/new/form"
-        },
-        {
-          "title": "Grow Archive",
-          "url": "#"
         }
       ]
     },
@@ -61,38 +57,29 @@
           "url": "/photos/upload"
         }
       ]
-    },
-    {
-      "title": "Inventory",
-      "url": "#",
-      "icon": "PencilRuler",
-      "items": [
-        {
-          "title": "My Inventory",
-          "url": "/inventory"
-        },
-        {
-          "title": "Add Item",
-          "url": "/inventory/add"
-        }
-      ]
     }
   ],
   "projects": [
     {
-      "name": "Grow Automation",
+      "name": "Plant Feedings",
       "url": "#",
-      "icon": "Workflow"
+      "icon": "Milk"
     },
     {
-      "name": "Nutrient Scheduling",
+      "name": "Plant Sizes",
       "url": "#",
-      "icon": "CalendarCheck"
+      "icon": "Ruler"
+    },
+
+    {
+      "name": "My Inventory",
+      "url": "#",
+      "icon": "PocketKnife"
     },
     {
-      "name": "Climate Control",
+      "name": "Grow Archive",
       "url": "#",
-      "icon": "Thermometer"
+      "icon": "FolderArchive"
     }
   ]
 }

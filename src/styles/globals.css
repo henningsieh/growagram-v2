@@ -53,18 +53,20 @@ body {
     --sidebar-ring: 120 61% 34%;
   }
   .dark {
-    --planted: 45.4 93.4% 47.5%; /* yellow-500 */
+    --planted: 35.5 91.7% 32.9%; /* yellow-500 */
     --seedling: 292.2 84.1% 60.6%; /* fuchsia-500 */
     --vegetation: 142.1 76.2% 36.3%; /* green-600 */
     --flowering: 349.7 89.2% 60.2%; /* rose-500 */
     --harvest: 24.6 95% 53.1%; /* orange-500 */
     --curing: 217.2 91.2% 59.8%; /* blue-500 */
 
-    --background: 240 5.9% 10%;
+    /* --background: 240 5.9% 10%; */
+    --background: 0 0% 3.9%;
     --foreground: 0 0% 98%;
-    --card: 240 10% 7.8%;
+    /* --card: 240 10% 7.8%; */
+    --card: 20 14.3% 6%;
     --card-foreground: 0 0% 98%;
-    --popover: 240 10% 7.8%;
+    --popover: 20 14.3% 6%;
     --popover-foreground: 0 0% 98%;
     --primary: 114 64% 28%;
     --primary-foreground: 0 0% 86%;
@@ -80,7 +82,7 @@ body {
     --input: 120 16% 28%;
     --ring: 120 61% 54%;
     --navbar-background: 0 0% 98%;
-    --sidebar-background: 240 10% 7.8%;
+    --sidebar-background: 20 14.3% 6%;
     --sidebar-foreground: 0 0% 98%;
     --sidebar-primary: 114 64% 28%;
     --sidebar-primary-foreground: 240 10% 20%;

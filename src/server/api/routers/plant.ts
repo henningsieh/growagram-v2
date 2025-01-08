@@ -91,6 +91,74 @@ export const plantRouter = createTRPCRouter({
       };
     }),
 
+  // Get all plants with pagination
+  getAllPlants: publicProcedure
+    .input(
+      z.object({
+        cursor: z.number().min(1).default(1).optional(),
+        limit: z
+          .number()
+          .min(1)
+          .max(100)
+          .default(PaginationItemsPerPage.PLANTS_PER_PAGE)
+          .optional(),
+        sortField: z
+          .nativeEnum(PlantsSortField)
+          .default(PlantsSortField.CREATED_AT)
+          .optional(),
+        sortOrder: z.nativeEnum(SortOrder).default(SortOrder.DESC).optional(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const limit = input?.limit ?? PaginationItemsPerPage.PLANTS_PER_PAGE;
+      const cursor = input?.cursor ?? 1;
+      const sortField = input?.sortField ?? PlantsSortField.CREATED_AT;
+      const sortOrder = input?.sortOrder ?? SortOrder.DESC;
+
+      const offset = (cursor - 1) * limit;
+
+      const totalCountResult = await ctx.db
+        .select({ count: count() })
+        .from(plants);
+
+      const totalCount = Number(totalCountResult[0].count);
+
+      const allPlants = await ctx.db.query.plants.findMany({
+        orderBy: (plants, { desc, asc }) => [
+          sortOrder === SortOrder.ASC
+            ? asc(plants[sortField])
+            : desc(plants[sortField]),
+        ],
+        limit: limit,
+        offset: offset,
+        with: {
+          owner: true,
+          grow: true,
+          plantImages: connectPlantWithImagesQuery,
+          strain: {
+            columns: {
+              id: true,
+              name: true,
+              thcContent: true,
+              cbdContent: true,
+            },
+            with: { breeder: { columns: { id: true, name: true } } },
+          },
+          headerImage: { columns: { id: true, imageUrl: true } },
+        },
+      });
+
+      const nextCursor = allPlants.length === limit ? cursor + 1 : undefined;
+
+      return {
+        plants: allPlants,
+        cursor: cursor,
+        nextCursor: nextCursor,
+        totalPages: Math.ceil(totalCount / limit),
+        count: totalCount,
+      };
+    }),
+
   // Get single plant
   getById: publicProcedure
     .input(z.object({ id: z.string() }))

@@ -16,7 +16,7 @@ import {
 import type { Session } from "next-auth";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import FormContent from "~/components/Layouts/form-content";
 import PageHeader from "~/components/Layouts/page-header";
@@ -65,25 +65,25 @@ export default function AccountEditForm({ user }: { user: UserType }) {
   const router = useRouter();
   const t = useTranslations("Account");
   const { toast } = useToast();
-  const { data: session, status, update } = useSession();
+  const { status, update } = useSession();
 
   const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(
     null,
   );
   const [sessionHasBenUpdated, setSessionHasBenUpdated] =
     useState<Session | null>(null);
-  const [username, setUsername] = useState(user.username || "");
+  const [username, setUsername] = useState(user?.username || "");
   const [usernameModified, setUsernameModified] = useState(false);
 
   const form = useForm<GetUserEditInput>({
     mode: "onBlur",
     resolver: zodResolver(userEditSchema),
     defaultValues: {
-      id: user.id,
-      name: user.name || undefined,
-      username: user.username || undefined,
-      email: user.email || undefined,
-      // image: user.image || undefined,
+      id: user?.id,
+      name: user?.name || undefined,
+      username: user?.username || "",
+      email: user?.email || "",
+      // image: accountData?.image || undefined,
     },
   });
 
@@ -345,8 +345,8 @@ export default function AccountEditForm({ user }: { user: UserType }) {
                                 <div className="relative mt-2">
                                   <Mail className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
                                   <Input
-                                    readOnly
-                                    disabled
+                                    // readOnly
+                                    // disabled
                                     type="email"
                                     autoComplete="off"
                                     autoCapitalize="off"
@@ -365,13 +365,13 @@ export default function AccountEditForm({ user }: { user: UserType }) {
                     </motion.div>
                   </CardContent>
 
-                  <CardFooter className="flex gap-4 p-6 sm:p-8">
+                  <CardFooter className="flex gap-4 p-2 sm:p-8">
                     <Button
                       type="button"
                       variant="outline"
                       onClick={() => {
                         form.reset();
-                        setUsername(user.username || "");
+                        setUsername(user?.username || "");
                         setUsernameModified(false);
                       }}
                       className="group relative w-full overflow-hidden"

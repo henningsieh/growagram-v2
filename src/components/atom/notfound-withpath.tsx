@@ -38,7 +38,7 @@ export function NotFoundWithPath() {
   };
 
   return (
-    <div className="flex h-[calc(100vh-5rem)] flex-col items-center justify-center p-5 text-center">
+    <div className="flex h-[calc(100svh-4rem)] flex-col items-center justify-center p-5 text-center">
       <AnimatePresence>
         <motion.div
           variants={containerVariants}
@@ -51,8 +51,8 @@ export function NotFoundWithPath() {
             variants={itemVariants}
             className="flex items-center justify-center gap-6"
           >
-            <XCircle className="h-24 w-24 text-destructive" />
-            <p className="text-7xl text-destructive">{"404"}</p>
+            <XCircle className="h-32 w-32 text-destructive" />
+            <p className="text-6xl text-destructive">{"404"}</p>
           </motion.div>
 
           <motion.h1

@@ -2,8 +2,8 @@
   "Account": {
     "account-info-subtitle": "Sieh dir deine Accountinformationen an",
     "account-info-title": "Mein Account",
-    "edit-profile-button": "Account bearbeiten",
-    "form-back-button": "Zurück zum Account",
+    "edit-profile-button": "Bearbeiten",
+    "form-back-button": "Zurück",
     "form-edit-profile-subtitle": "Verwalte deine Accountinformationen.",
     "form-edit-profile-title": "Account bearbeiten",
     "form-email-description": "Deine primäre E-Mail-Adresse für Accountkommunikationen.",
@@ -63,7 +63,9 @@
     "buttonLabel-create-grow": "Grow erstellen",
     "buttonLabel-save-changes": "Änderungen speichern",
     "connect-error": "Fehler beim Verbinden der Pflanze",
+    "delete-grow-button-label": "Grow löschen",
     "disconnect-error": "Fehler beim Trennen der Pflanze",
+    "edit-grow-button-label": "Grow bearbeiten",
     "error-default": "Etwas ist schiefgelaufen. Bitte versuche es später erneut.",
     "error-title": "Ein Fehler ist aufgetreten",
     "form-description-create-new-grow": "Bearbeite den Namen und weitere Details des Grows",
@@ -83,8 +85,9 @@
     "mygrows-page-subtitle": "Anzeige und Verwaltung meiner aktuellen Grows",
     "mygrows-page-title": "Meine Grows",
     "no-grows-yet": "Du hast bisher keine Grows erstellt.",
-    "no-plants-found": "Keine Pflanzen gefunden.",
+    "no-plants-connected": "Bisher keine Pflanzen zugeordnet.",
     "plants-selected": "{count} Pflanze(n) ausgewählt.",
+    "public-link-label": "Öffnen im neuen Tab",
     "reset": "Zurücksetzen",
     "saving": "Speichern...",
     "search-plants": "Pflanzen suchen...",
@@ -119,10 +122,44 @@
     "subtitle": "Welche Pflanzen siehst du auf diesem Foto?",
     "title": "Pflanzen identifizieren"
   },
+  "LandingPage": {
+    "FeaturesSection": {
+      "cards": {
+        "community": {
+          "description": "Tausche dich mit anderen Growers aus und lerne von ihren Erfahrungen.",
+          "title": "Community"
+        },
+        "connections": {
+          "description": "Verbinde deine Bilder mit Pflanzen und ordne diese Grows zu.",
+          "title": "Verknüpfungen"
+        },
+        "growDiary": {
+          "description": "Dokumentiere jeden Schritt deines Grows. Von der Keimung bis zur Ernte.",
+          "title": "Grow Tagebuch"
+        },
+        "growStats": {
+          "description": "Behalte den Überblick über deine Wachstumsfortschritte und Ernten.",
+          "title": "Grow Stats"
+        }
+      },
+      "description": "Mit GrowAGram verwaltest du nicht nur deine Pflanzen wie ein Profi, sondern kannst deine Erfolge und Fortschritte ganz einfach mit der Community teilen. Kommentiere, diskutiere und lass dich von anderen Pflanzenliebhabern inspirieren, während du dein grünes Netzwerk aufbaust!",
+      "title": "Alles für deinen erfolgreichen Grow"
+    },
+    "HeroSection": {
+      "cta-button-pricing": "Grows erkunden",
+      "cta-button-start": "Kostenlos starten",
+      "description": "Entdecke die Welt des Cannabis Eigenanbaus. Teile deine                     Erfahrungen, lerne von der Community und dokumentiere deine Grows in einem digitalen Tagebuch.",
+      "subtitle": "Dein Cannabis Grow Tagebuch",
+      "title": "GrowAGram"
+    },
+    "PricingSection": {
+      "description": "Wähle das passende Paket für deine Bedürfnisse.",
+      "title": "Faire Preise für jeden Grower"
+    }
+  },
   "LanguageToggle": {
     "toggle-language": "Sprache wechseln"
   },
-  "Login to see detailed view statistics": "",
   "LoginPage": {
     "description": "Geben Sie Ihre E-Mail-Adresse und Passwort ein oder wählen Sie unten einen Social Provider für den Login aus, um sich anzumelden.",
     "email": {
@@ -144,11 +181,15 @@
     "title": "Bei GrowAGram anmelden"
   },
   "Navigation": {
-    "components": "Entdecken",
     "dashboard": "Dashboard",
     "dashboard-description": "Erfasse deine Grows und deine Pflanzen einschließlich Hochladen der Fotos.",
-    "grower-menu": "Für Grower",
-    "login": "Login",
+    "discover": "Entdecken",
+    "grower-menu": "Anbauplattform",
+    "home": "Home",
+    "grows": "Alle Grows",
+    "grows-description": "Hier siehst du, was andere anbauen und wie sie es machen.",
+    "plants": "Alle Pflanzen",
+    "plants-description": "Entdecke, welche Pflanzen andere gerade großziehen.",
     "my-grows": "Meine Grows",
     "my-grows-subline": "Verwalte und gruppiere deine Pflanzen in Grows.",
     "my-photos": "Meine Fotos",
@@ -188,7 +229,7 @@
     "overall-progress": "Gesamtfortschritt",
     "phase": "Phasenfortschritt",
     "planting-date": "Datum der Aussaat",
-    "public-link-label": "Mit öffentlichem Link öffnen",
+    "public-link-label": "Öffnen im neuen Tab",
     "sort-plants-createdAt": "Angelegt am",
     "strain": "Sorte / Strain",
     "subtitle": "Verwalte deine Pflanzen",
@@ -201,6 +242,12 @@
   },
   "Platform": {
     "Dashboard-title": "Dashboard",
+    "Platform": {
+      "coming-soon-description": "Wir arbeiten schon an der neuen Funktion! Komm bald wieder... vielleicht ist sie dann schon fertig. :-)"
+    },
+    "coming-soon": "Bald verfügbar",
+    "feature-coming": "Neue Funktion ist auf dem Weg!",
+    "more": "mehr",
     "welcome-to-platform-subttitle": "Willkommen bei der Verwaltung deiner Grows und Pflanzen"
   },
   "ThemeToggler": {

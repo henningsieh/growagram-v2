@@ -82,7 +82,7 @@ export default function MobileNavigationMenu() {
             {t("navigation")}
           </SheetTitle>
         </SheetHeader>
-        <ScrollArea className="h-[calc(100vh-5rem)]">
+        <ScrollArea className="h-[calc(100svh-4rem)]">
           <div className="flex flex-col p-4">
             <Accordion type="single" collapsible className="w-full space-y-1.5">
               {navigationData.navigationItems.map((item) =>
@@ -92,11 +92,7 @@ export default function MobileNavigationMenu() {
                     variant="ghost"
                     className="w-full justify-start p-3 text-lg font-semibold hover:bg-accent hover:text-foreground"
                   >
-                    <Link
-                      href={item.href!}
-                      onClick={() => setOpen(false)}
-                      className="w-full"
-                    >
+                    <Link href={item.href!} onClick={() => setOpen(false)}>
                       {t(item.title)}
                     </Link>
                   </Button>

@@ -1,13 +1,28 @@
 {
   "navigationItems": [
     {
-      "title": "components",
+      "title": "home",
+      "href": "/",
+      "type": "link"
+    },
+    {
+      "title": "discover",
       "content": {
+        "featured": {
+          "title": "timeline",
+          "href": "/public/timeline",
+          "description": "dashboard-description"
+        },
         "items": [
           {
-            "title": "timeline",
-            "href": "/public/timeline",
-            "description": "timeline-description"
+            "title": "grows",
+            "href": "/public/grows",
+            "description": "grows-description"
+          },
+          {
+            "title": "plants",
+            "href": "/public/plants",
+            "description": "plants-description"
           }
         ]
       }
@@ -38,11 +53,6 @@
           }
         ]
       }
-    },
-    {
-      "title": "login",
-      "href": "/login",
-      "type": "link"
     }
   ]
 }

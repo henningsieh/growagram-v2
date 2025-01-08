@@ -2,7 +2,14 @@
 
 // src/components/features/Grows/grow-card.tsx:
 import { AnimatePresence, motion } from "framer-motion";
-import { TentTree } from "lucide-react";
+import { MessageCircleIcon, TentTree } from "lucide-react";
+import {
+  EditIcon,
+  ExternalLinkIcon,
+  Loader2,
+  MoreHorizontalIcon,
+  Trash2Icon,
+} from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
@@ -19,6 +26,12 @@ import {
   CardDescription,
   CardTitle,
 } from "~/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu";
 import { Label } from "~/components/ui/label";
 import { Switch } from "~/components/ui/switch";
 import { useComments } from "~/hooks/use-comments";
@@ -130,7 +143,7 @@ export function GrowCard({
           </div>
 
           {/* Title Link */}
-          <div className="flex items-center">
+          <div className="flex items-center justify-between">
             <CardTitle as="h3">
               <Button asChild variant="link" className="p-1">
                 <Link
@@ -142,21 +155,73 @@ export function GrowCard({
                 </Link>
               </Button>
             </CardTitle>
-            {/* Switch for toggling isSocial */}
+            {/* DropdownMenu for grow's owner */}
             {user && user.id === grow.ownerId && (
-              <div className="ml-auto flex items-start gap-2">
-                <Label
-                  className="text-sm font-semibold"
-                  htmlFor="show-socialMode"
-                >
-                  Social Mode
-                </Label>
-                <Switch
-                  id="show-socialMode"
-                  checked={isSocial}
-                  onCheckedChange={setIsSocial}
-                />
-              </div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="icon">
+                    <MoreHorizontalIcon className="h-5 w-5" />
+                    <span className="sr-only">Owner menu</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  {!isSocialProp && (
+                    <DropdownMenuItem className="flex items-center justify-start">
+                      <MessageCircleIcon className="mr-2 h-4 w-4" />
+                      <Label
+                        className="cursor-pointer text-sm font-semibold"
+                        htmlFor="show-socialMode"
+                      >
+                        Social
+                      </Label>
+                      <Switch
+                        className="ml-auto"
+                        id="show-socialMode"
+                        checked={isSocial}
+                        onCheckedChange={setIsSocial}
+                      />
+                    </DropdownMenuItem>
+                  )}
+                  <DropdownMenuItem asChild>
+                    <Link
+                      target="_blank"
+                      href={`/public/grows/${grow.id}`}
+                      className="flex cursor-pointer items-center"
+                    >
+                      <ExternalLinkIcon className="mr-2 h-4 w-4" />
+                      {t("public-link-label")}
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link
+                      href={`/grows/${grow.id}/form`}
+                      className="flex cursor-pointer items-center"
+                    >
+                      <EditIcon className="mr-2 h-4 w-4" />
+                      {t("edit-grow-button-label")}
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    asChild
+                    className="bg-destructive/50 text-foreground focus:bg-destructive focus:text-white focus:outline-none"
+                  >
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      className="w-full justify-start"
+                      onClick={handleDelete}
+                      disabled={deleteMutation.isPending}
+                    >
+                      {deleteMutation.isPending ? (
+                        <Loader2 size={20} className="mr-2 animate-spin" />
+                      ) : (
+                        <Trash2Icon className="mr-2 h-4 w-4" />
+                      )}
+                      {t("delete-grow-button-label")}
+                    </Button>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             )}
           </div>
 
@@ -205,7 +270,7 @@ export function GrowCard({
             </AnimatePresence>
             {grow.plants.length === 0 && (
               <div className="py-8 text-center text-muted-foreground">
-                {t("no-plants-found")}
+                {t("no-plants-connected")}
               </div>
             )}
           </div>
