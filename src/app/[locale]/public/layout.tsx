@@ -104,60 +104,7 @@ export default function TimelineLayout({ children }: PropsWithChildren) {
         <aside className="hidden w-64 lg:block">
           <div className="sticky top-16 px-4">
             <ScrollArea className="h-[calc(100svh-4rem)]">
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
-              <p>text</p>
+              <p>Sidebar :-) (content coming soon)</p>
             </ScrollArea>
           </div>
         </aside>

@@ -84,7 +84,7 @@ export default function ProtectedSidebar({
       <Sidebar
         collapsible="icon"
         variant="floating"
-        className="top-14 h-[calc(100svh-3.5rem)] flex-shrink-0"
+        className="sticky top-14 h-[calc(100svh-4rem)] flex-shrink-0"
       >
         {/* Sidebar Header: Team Switcher */}
         <SidebarHeader>
@@ -195,12 +195,12 @@ export default function ProtectedSidebar({
               ))}
 
               {/* Additional Projects Option */}
-              <SidebarMenuItem>
+              {/* <SidebarMenuItem>
                 <SidebarMenuButton className="text-sidebar-foreground/70">
                   <MoreHorizontal className="text-sidebar-foreground/70" />
                   <span>More</span>
                 </SidebarMenuButton>
-              </SidebarMenuItem>
+              </SidebarMenuItem> */}
             </SidebarMenu>
           </SidebarGroup>
         </SidebarContent>

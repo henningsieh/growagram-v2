@@ -13,8 +13,11 @@ export default async function ProtectedLayout({
   params,
 }: LayoutProps) {
   const { locale } = await params;
-  console.debug("params.locale: ", locale);
-  console.debug("routing.locales: ", routing.locales);
+  console.debug("/app/[locale]/(protected)/layout: params.locale: ", locale);
+  console.debug(
+    "/app/[locale]/(protected)/layout: routing.locales: ",
+    routing.locales,
+  );
 
   return <ProtectedSidebar>{children}</ProtectedSidebar>;
 }
