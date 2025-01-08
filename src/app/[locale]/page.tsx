@@ -77,7 +77,7 @@ export default function LandingPage() {
                       </Button>
                       <Button asChild size="lg" variant="outline">
                         <Link
-                          href="#pricing"
+                          href="/public/grows"
                           shallow={true}
                           scroll={true}
                           replace
