@@ -13,15 +13,16 @@ const registerSchema = z.object({
 
 export async function POST(request: Request) {
   try {
-    const body = registerSchema.parse(await request.json());
+    const json = await request.json();
+    const body = registerSchema.parse(json);
 
     const exists = await db.query.users.findFirst({
       where: (users, { eq }) => eq(users.email, body.email),
     });
 
     if (exists) {
-      return Response.json(
-        { error: "Email already registered" },
+      return new Response(
+        JSON.stringify({ error: "Email already registered" }),
         { status: 400 },
       );
     }
@@ -37,19 +38,27 @@ export async function POST(request: Request) {
       })
       .returning();
 
-    return Response.json(
-      {
+    return new Response(
+      JSON.stringify({
         user: {
           id: user.id,
           email: user.email,
           username: user.username,
           name: user.name,
         },
-      },
+      }),
       { status: 201 },
     );
   } catch (error) {
     console.error("Registration error:", error);
-    return Response.json({ error: "Registration failed" }, { status: 500 });
+    if (error instanceof z.ZodError) {
+      return new Response(
+        JSON.stringify({ error: "Invalid input", details: error.errors }),
+        { status: 400 },
+      );
+    }
+    return new Response(JSON.stringify({ error: "Registration failed" }), {
+      status: 500,
+    });
   }
 }

@@ -24,6 +24,11 @@ export default {
           return null;
         }
 
+        console.debug("authorize credentials:", {
+          email: credentials.email,
+          password: credentials.password,
+        });
+
         const user = await db.query.users.findFirst({
           where: (users, { eq }) =>
             eq(users.email, credentials.email as string),
@@ -121,7 +126,6 @@ export default {
     },
   },
   pages: {
-    signIn: "/auth/signin", // Custom sign-in page
-    error: "/auth/error", // Custom error page
+    signIn: "/login", // Custom sign-in page
   },
 } satisfies NextAuthConfig;

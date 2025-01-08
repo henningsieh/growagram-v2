@@ -17,8 +17,8 @@ import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { Separator } from "~/components/ui/separator";
 import { Link } from "~/lib/i18n/routing";
+import { useRouter } from "~/lib/i18n/routing";
 import { signInWithProvider } from "~/server/actions/authActions";
-import { useRouter } from "next/router";
 
 interface LoginFormProps {
   callbackUrl: string;
@@ -33,14 +33,14 @@ export function LoginForm({ callbackUrl }: LoginFormProps) {
     const formData = new FormData(e.currentTarget);
 
     const result = await signIn("credentials", {
-      email: formData.get("email"),
-      password: formData.get("password"),
+      email: formData.get("email")?.toString() || "",
+      password: formData.get("password")?.toString() || "",
       callbackUrl,
       redirect: false,
     });
 
     if (result?.error) {
-      router.push(`/auth/error?error=${result.error}`);
+      router.push(`/api/auth/error?error=${result.error}`);
     }
   };
 
@@ -57,6 +57,7 @@ export function LoginForm({ callbackUrl }: LoginFormProps) {
               <Label htmlFor="email">{t("email.label")}</Label>
               <Input
                 id="email"
+                name="email"
                 type="email"
                 placeholder="m@example.com"
                 required
@@ -72,7 +73,7 @@ export function LoginForm({ callbackUrl }: LoginFormProps) {
                   {t("password.forgot")}
                 </Link>
               </div>
-              <Input id="password" type="password" required />
+              <Input id="password" name="password" type="password" required />
             </div>
           </div>
           <Button

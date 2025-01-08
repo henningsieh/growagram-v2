@@ -3,14 +3,14 @@
 //src/app/login/page.tsx
 import { useSession } from "next-auth/react";
 import { useLocale } from "next-intl";
+import { use } from "react";
 import { LoginForm } from "~/components/features/Auth/login-form";
 import { redirect } from "~/lib/i18n/routing";
 
-export default function Page({
-  searchParams,
-}: {
-  searchParams: { callbackUrl?: string };
+export default function Page(props: {
+  searchParams: Promise<{ callbackUrl?: string }>;
 }) {
+  const searchParams = use(props.searchParams);
   const locale = useLocale();
   const { data: session, status } = useSession();
 
