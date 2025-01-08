@@ -146,7 +146,7 @@ export default function ProtectedSidebar({
 
           {/* Projects Group */}
           <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-            <SidebarGroupLabel>Projects</SidebarGroupLabel>
+            <SidebarGroupLabel>{t("Platform.coming-soon")}</SidebarGroupLabel>
             <SidebarMenu>
               {/* Project Items with Dropdown Actions */}
               {sidebarItems.projects.map((item) => (
@@ -161,7 +161,7 @@ export default function ProtectedSidebar({
                     <DropdownMenuTrigger asChild>
                       <SidebarMenuAction showOnHover>
                         <MoreHorizontal />
-                        <span className="sr-only">More</span>
+                        <span className="sr-only">{t("Platform.more")}</span>
                       </SidebarMenuAction>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent

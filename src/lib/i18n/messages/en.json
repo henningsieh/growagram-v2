@@ -235,11 +235,9 @@
   },
   "Platform": {
     "Dashboard-title": "Dashboard",
+    "coming-soon": "Coming soon",
+    "more": "more",
     "welcome-to-platform-subttitle": "Welcome to the Grower's platform where you can manage all your Grows and Plants"
-  },
-  "Plattform": {
-    "coming-soon": "",
-    "more": ""
   },
   "ThemeToggler": {
     "dark": "Dark",

@@ -235,11 +235,9 @@
   },
   "Platform": {
     "Dashboard-title": "Dashboard",
-    "welcome-to-platform-subttitle": "Willkommen bei der Verwaltung deiner Grows und Pflanzen"
-  },
-  "Plattform": {
     "coming-soon": "Bald verfügbar",
-    "more": "mehr"
+    "more": "mehr",
+    "welcome-to-platform-subttitle": "Willkommen bei der Verwaltung deiner Grows und Pflanzen"
   },
   "ThemeToggler": {
     "dark": "Dunkel",
