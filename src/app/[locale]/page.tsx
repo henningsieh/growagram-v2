@@ -172,7 +172,7 @@ export default function LandingPage() {
       </motion.div>
 
       {/* Pricing Section */}
-      <motion.div
+      {/* <motion.div
         id="pricing"
         variants={containerVariants}
         initial="hidden"
@@ -195,9 +195,8 @@ export default function LandingPage() {
               {t("PricingSection.description")}
             </motion.p>
           </div>
-          {/* Pricing Cards go here - similar to UploadThing's implementation */}
         </div>
-      </motion.div>
+      </motion.div> */}
     </div>
   );
 }
