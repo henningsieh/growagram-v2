@@ -8,11 +8,26 @@
     {
       "title": "discover",
       "content": {
+        "featured": {
+          "title": "timeline",
+          "href": "/public/timeline",
+          "description": "dashboard-description"
+        },
         "items": [
           {
-            "title": "timeline",
-            "href": "/public/timeline",
-            "description": "timeline-description"
+            "title": "Grows",
+            "href": "/public/grows",
+            "description": "grows-description"
+          },
+          {
+            "title": "Plants",
+            "href": "/public/plants",
+            "description": "plants-description"
+          },
+          {
+            "title": "Photos",
+            "href": "/public/photos",
+            "description": "photos-description"
           }
         ]
       }

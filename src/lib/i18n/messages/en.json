@@ -63,7 +63,9 @@
     "buttonLabel-create-grow": "Create Grow",
     "buttonLabel-save-changes": "Save Changes",
     "connect-error": "Error connecting plant",
+    "delete-grow-button-label": "Delete Grow",
     "disconnect-error": "Error disconnecting plant",
+    "edit-grow-button-label": "Edit Grow",
     "error-default": "Something went wrong. Please try again later.",
     "error-title": "An error occurred",
     "form-description-create-new-grow": "Edit the name and further details of the grow",
@@ -83,8 +85,9 @@
     "mygrows-page-subtitle": "View and manage my current grows",
     "mygrows-page-title": "My Grows",
     "no-grows-yet": "You haven&apos;t created any Grows yet.",
-    "no-plants-found": "No plants found.",
+    "no-plants-connected": "No plants connected yet.",
     "plants-selected": "{count} plant(s) selected.",
+    "public-link-label": "Open in new Tab",
     "reset": "Reset Form",
     "saving": "Saving...",
     "search-plants": "Search plants...",
@@ -178,11 +181,11 @@
     "title": "Login to GrowAGram"
   },
   "Navigation": {
-    "home": "Home",
-    "discover": "Discover",
     "dashboard": "Dashboard",
     "dashboard-description": "Track your grows and your plants, including photo uploads.",
+    "discover": "Discover",
     "grower-menu": "Grower's Platform",
+    "home": "Home",
     "my-grows": "My Grows",
     "my-grows-subline": "Manage and group your plants in Grows.",
     "my-photos": "My Photos",
@@ -222,7 +225,7 @@
     "overall-progress": "Overall progress",
     "phase": "Phase progress",
     "planting-date": "Seed planting date",
-    "public-link-label": "Open public link",
+    "public-link-label": "Open in new Tab",
     "sort-plants-createdAt": "Created at",
     "strain": "Strain",
     "subtitle": "Manage your plants",
@@ -235,7 +238,11 @@
   },
   "Platform": {
     "Dashboard-title": "Dashboard",
+    "Platform": {
+      "coming-soon-description": "We are already working on the new function! \nCome back soon... maybe she'll be ready by then. \n:-)"
+    },
     "coming-soon": "Coming soon",
+    "feature-coming": "New Feature is on its Way!",
     "more": "more",
     "welcome-to-platform-subttitle": "Welcome to the Grower's platform where you can manage all your Grows and Plants"
   },

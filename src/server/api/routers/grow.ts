@@ -98,6 +98,79 @@ export const growRouter = createTRPCRouter({
       };
     }),
 
+  // Get all grows with pagination
+  getAllGrows: publicProcedure
+    .input(
+      z.object({
+        cursor: z.number().min(1).default(1).optional(),
+        limit: z
+          .number()
+          .min(1)
+          .max(100)
+          .default(PaginationItemsPerPage.GROWS_PER_PAGE)
+          .optional(),
+        sortField: z
+          .nativeEnum(GrowsSortField)
+          .default(GrowsSortField.CREATED_AT)
+          .optional(),
+        sortOrder: z.nativeEnum(SortOrder).default(SortOrder.DESC).optional(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const limit = input?.limit ?? PaginationItemsPerPage.GROWS_PER_PAGE;
+      const cursor = input?.cursor ?? 1;
+      const sortField = input?.sortField ?? GrowsSortField.CREATED_AT;
+      const sortOrder = input?.sortOrder ?? SortOrder.DESC;
+
+      const offset = (cursor - 1) * limit;
+
+      const totalCountResult = await ctx.db
+        .select({ count: count() })
+        .from(grows);
+
+      const totalCount = Number(totalCountResult[0].count);
+
+      const allGrows = await ctx.db.query.grows.findMany({
+        orderBy: (grows, { desc, asc }) => [
+          sortOrder === SortOrder.ASC
+            ? asc(grows[sortField])
+            : desc(grows[sortField]),
+        ],
+        limit: limit,
+        offset: offset,
+        with: {
+          owner: true,
+          plants: {
+            with: {
+              owner: true,
+              grow: true,
+              strain: {
+                columns: {
+                  id: true,
+                  name: true,
+                  thcContent: true,
+                  cbdContent: true,
+                },
+                with: { breeder: { columns: { id: true, name: true } } },
+              },
+              headerImage: { columns: { id: true, imageUrl: true } },
+              plantImages: connectPlantWithImagesQuery,
+            },
+          },
+        },
+      });
+
+      const nextCursor = allGrows.length === limit ? cursor + 1 : undefined;
+
+      return {
+        grows: allGrows,
+        cursor: cursor,
+        nextCursor: nextCursor,
+        totalPages: Math.ceil(totalCount / limit),
+        count: totalCount,
+      };
+    }),
+
   // Get single grow by ID
   getById: publicProcedure
     .input(z.object({ id: z.string() }))

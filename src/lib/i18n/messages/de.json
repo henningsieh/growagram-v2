@@ -63,7 +63,9 @@
     "buttonLabel-create-grow": "Grow erstellen",
     "buttonLabel-save-changes": "Änderungen speichern",
     "connect-error": "Fehler beim Verbinden der Pflanze",
+    "delete-grow-button-label": "Grow löschen",
     "disconnect-error": "Fehler beim Trennen der Pflanze",
+    "edit-grow-button-label": "Grow bearbeiten",
     "error-default": "Etwas ist schiefgelaufen. Bitte versuche es später erneut.",
     "error-title": "Ein Fehler ist aufgetreten",
     "form-description-create-new-grow": "Bearbeite den Namen und weitere Details des Grows",
@@ -83,8 +85,9 @@
     "mygrows-page-subtitle": "Anzeige und Verwaltung meiner aktuellen Grows",
     "mygrows-page-title": "Meine Grows",
     "no-grows-yet": "Du hast bisher keine Grows erstellt.",
-    "no-plants-found": "Keine Pflanzen gefunden.",
+    "no-plants-connected": "Bisher keine Pflanzen zugeordnet.",
     "plants-selected": "{count} Pflanze(n) ausgewählt.",
+    "public-link-label": "Öffnen im neuen Tab",
     "reset": "Zurücksetzen",
     "saving": "Speichern...",
     "search-plants": "Pflanzen suchen...",
@@ -178,11 +181,11 @@
     "title": "Bei GrowAGram anmelden"
   },
   "Navigation": {
-    "home": "Home",
-    "discover": "Entdecken",
     "dashboard": "Dashboard",
     "dashboard-description": "Erfasse deine Grows und deine Pflanzen einschließlich Hochladen der Fotos.",
+    "discover": "Entdecken",
     "grower-menu": "Anbauplattform",
+    "home": "Home",
     "my-grows": "Meine Grows",
     "my-grows-subline": "Verwalte und gruppiere deine Pflanzen in Grows.",
     "my-photos": "Meine Fotos",
@@ -222,7 +225,7 @@
     "overall-progress": "Gesamtfortschritt",
     "phase": "Phasenfortschritt",
     "planting-date": "Datum der Aussaat",
-    "public-link-label": "Mit öffentlichem Link öffnen",
+    "public-link-label": "Öffnen im neuen Tab",
     "sort-plants-createdAt": "Angelegt am",
     "strain": "Sorte / Strain",
     "subtitle": "Verwalte deine Pflanzen",
@@ -235,7 +238,11 @@
   },
   "Platform": {
     "Dashboard-title": "Dashboard",
+    "Platform": {
+      "coming-soon-description": "Wir arbeiten schon an der neuen Funktion! Komm bald wieder... vielleicht ist sie dann schon fertig. :-)"
+    },
     "coming-soon": "Bald verfügbar",
+    "feature-coming": "Neue Funktion ist auf dem Weg!",
     "more": "mehr",
     "welcome-to-platform-subttitle": "Willkommen bei der Verwaltung deiner Grows und Pflanzen"
   },

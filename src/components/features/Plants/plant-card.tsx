@@ -154,13 +154,13 @@ export default function PlantCard({
                 </Link>
               </Button>
             </CardTitle>
-            {/* Switch for toggling isSocial */}
+            {/* DropdownMenu for plant's owner */}
             {user && user.id === plant.ownerId && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline" size="icon">
                     <MoreHorizontalIcon className="h-5 w-5" />
-                    <span className="sr-only">Open menu</span>
+                    <span className="sr-only">Owner menu</span>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">

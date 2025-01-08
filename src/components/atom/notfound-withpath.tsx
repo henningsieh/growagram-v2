@@ -51,8 +51,8 @@ export function NotFoundWithPath() {
             variants={itemVariants}
             className="flex items-center justify-center gap-6"
           >
-            <XCircle className="h-24 w-24 text-destructive" />
-            <p className="text-7xl text-destructive">{"404"}</p>
+            <XCircle className="h-32 w-32 text-destructive" />
+            <p className="text-6xl text-destructive">{"404"}</p>
           </motion.div>
 
           <motion.h1

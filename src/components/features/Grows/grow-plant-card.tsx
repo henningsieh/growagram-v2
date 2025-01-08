@@ -188,7 +188,7 @@ export function GrowPlantCard({ plant }: PlantCardProps) {
               animate={{ opacity: isMobile ? 1 : isHovered ? 1 : 0.4 }}
               transition={{ duration: 0.3 }}
             >
-              <CardFooter className="flex items-center justify-between p-0">
+              <CardFooter className="flex items-center justify-between p-0 text-muted-foreground">
                 <HybridTooltip>
                   <HybridTooltipTrigger className="flex items-center gap-2">
                     <Calendar1Icon className="h-4 w-4 shrink-0" />
@@ -231,8 +231,8 @@ export function GrowPlantCard({ plant }: PlantCardProps) {
                     </HybridTooltip>
 
                     {/* THC Gehalt */}
-                    <HybridTooltip>
-                      <HybridTooltipTrigger className="xs:flex hidden items-center gap-1">
+                    {/* <HybridTooltip>
+                      <HybridTooltipTrigger className="hidden items-center gap-1 xs:flex">
                         <FlaskConical className="h-4 w-4" />
                         <span className="text-sm">
                           {plant.strain.thcContent ?? "N/A"}%
@@ -241,7 +241,7 @@ export function GrowPlantCard({ plant }: PlantCardProps) {
                       <HybridTooltipContent>
                         <p>{t("Plants.thc-content")}</p>
                       </HybridTooltipContent>
-                    </HybridTooltip>
+                    </HybridTooltip> */}
                   </>
                 )}
               </CardFooter>

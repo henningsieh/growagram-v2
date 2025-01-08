@@ -97,13 +97,21 @@ export type CreateOrEditPlantInput = RouterInput["plants"]["createOrEdit"];
 
 // growRouter
 //  OUTPUTS:
+export type GetGrowByIdType = RouterOutput["grows"]["getById"];
+
 export type GetOwnGrowsOutput = RouterOutput["grows"]["getOwnGrows"];
 export type GetOwnGrowsType = RouterOutput["grows"]["getOwnGrows"]["grows"];
 export type GetOwnGrowType = RouterOutput["grows"]["getOwnGrows"]["grows"][number];
-export type GetGrowByIdType = RouterOutput["grows"]["getById"];
+
+export type GetAllGrowsOutput = RouterOutput["grows"]["getAllGrows"];
+export type GetAllGrowsType = RouterOutput["grows"]["getAllGrows"]["grows"]
+export type GetAllGrowType = RouterOutput["grows"]["getAllGrows"]["grows"][number];
+
+
 //  INPUTS:
-export type GetOwnGrowsInput = RouterInput["grows"]["getOwnGrows"];
 export type GetGrowByIdInput = RouterInput["grows"]["getById"];
+export type GetOwnGrowsInput = RouterInput["grows"]["getOwnGrows"];
+export type GetAllGrowsInput = RouterInput["grows"]["getAllGrows"];
 export type CreateOrEditGrowInput = RouterInput["grows"]["createOrEdit"];
 export type GrowConnectPlantInput = RouterInput["grows"]["connectPlant"];
 export type GrowDisconnectPlantInput = RouterInput["grows"]["disconnectPlant"];
