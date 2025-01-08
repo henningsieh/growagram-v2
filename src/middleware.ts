@@ -52,17 +52,20 @@ export default async function middleware(req: NextRequest) {
   const realHost = req.headers.get("X-Forwarded-Host") || req.nextUrl.host;
   const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
 
+  const baseUrl = env.NEXTAUTH_URL || `${protocol}://${realHost}`;
+
   // Handle auth callback paths specially
   if (currentPathname.startsWith("/api/auth/callback")) {
     // Ensure we're using the correct host for auth callbacks
-    const callbackUrl = new URL(currentPathname, `${protocol}://${realHost}`);
+    const callbackUrl = new URL(currentPathname, baseUrl);
+    console.debug("callbackUrl:", callbackUrl);
     req.nextUrl.host = realHost;
     req.nextUrl.protocol = protocol;
     return NextResponse.rewrite(callbackUrl);
   }
 
   // This will be the actual URL seen in the browser
-  const browserUrl = `${protocol}://${realHost}${currentPathname}`;
+  const browserUrl = `${baseUrl}${currentPathname}`;
   console.debug("realHost:", realHost);
   console.debug("protocol:", protocol);
   console.debug("browserUrl:", browserUrl);
@@ -86,7 +89,7 @@ export default async function middleware(req: NextRequest) {
   ) {
     const accountRedirectUrl = new URL(
       currentLocale ? `/${currentLocale}/account/edit` : "/account/edit",
-      `${protocol}://${realHost}`,
+      `${baseUrl}`,
     );
     return NextResponse.redirect(accountRedirectUrl);
   }
@@ -96,11 +99,7 @@ export default async function middleware(req: NextRequest) {
     console.debug("User is not authenticated. Redirecting to sign-in page.");
 
     // Redirect using the real URL, preserving the client-facing URL
-
-    const redirectUrl = new URL(
-      modulePaths.SIGNIN.path,
-      `${protocol}://${realHost}`, //TODO: should be in sync with env next-auth url!
-    );
+    const redirectUrl = new URL(modulePaths.SIGNIN.path, baseUrl);
     redirectUrl.searchParams.append("callbackUrl", browserUrl); // Use the real URL here
     return NextResponse.redirect(redirectUrl); // Redirect to the sign-in page with the real URL
   }
