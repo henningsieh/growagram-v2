@@ -92,11 +92,7 @@ export default function MobileNavigationMenu() {
                     variant="ghost"
                     className="w-full justify-start p-3 text-lg font-semibold hover:bg-accent hover:text-foreground"
                   >
-                    <Link
-                      href={item.href!}
-                      onClick={() => setOpen(false)}
-                      className="w-full"
-                    >
+                    <Link href={item.href!} onClick={() => setOpen(false)}>
                       {t(item.title)}
                     </Link>
                   </Button>

@@ -6,9 +6,9 @@
       "plan": "Premium"
     },
     {
-      "name": "Personal Growers",
+      "name": "Grower",
       "logo": "TreeDeciduous",
-      "plan": "Basic"
+      "plan": "Basic Free Plan"
     }
   ],
   "navMain": [
@@ -25,10 +25,6 @@
         {
           "title": "Create New Grow",
           "url": "/grows/new/form"
-        },
-        {
-          "title": "Grow Archive",
-          "url": "#"
         }
       ]
     },
@@ -65,14 +61,25 @@
   ],
   "projects": [
     {
-      "name": "My Inventory",
-      "url": "",
-      "icon": "PencilRuler"
+      "name": "Plant Feedings",
+      "url": "#",
+      "icon": "Milk"
     },
     {
-      "name": "Nutrient Feeding",
-      "url": "",
-      "icon": "CalendarCheck"
+      "name": "Plant Sizes",
+      "url": "#",
+      "icon": "Ruler"
+    },
+
+    {
+      "name": "My Inventory",
+      "url": "#",
+      "icon": "PocketKnife"
+    },
+    {
+      "name": "Grow Archive",
+      "url": "#",
+      "icon": "FolderArchive"
     }
   ]
 }

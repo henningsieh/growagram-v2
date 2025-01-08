@@ -1,7 +1,12 @@
 {
   "navigationItems": [
     {
-      "title": "components",
+      "title": "home",
+      "href": "/",
+      "type": "link"
+    },
+    {
+      "title": "discover",
       "content": {
         "items": [
           {
@@ -38,11 +43,6 @@
           }
         ]
       }
-    },
-    {
-      "title": "login",
-      "href": "/login",
-      "type": "link"
     }
   ]
 }

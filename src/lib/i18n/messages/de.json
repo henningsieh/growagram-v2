@@ -178,11 +178,11 @@
     "title": "Bei GrowAGram anmelden"
   },
   "Navigation": {
-    "components": "Entdecken",
+    "home": "Home",
+    "discover": "Entdecken",
     "dashboard": "Dashboard",
     "dashboard-description": "Erfasse deine Grows und deine Pflanzen einschließlich Hochladen der Fotos.",
-    "grower-menu": "Für Grower",
-    "login": "Login",
+    "grower-menu": "Anbauplattform",
     "my-grows": "Meine Grows",
     "my-grows-subline": "Verwalte und gruppiere deine Pflanzen in Grows.",
     "my-photos": "Meine Fotos",

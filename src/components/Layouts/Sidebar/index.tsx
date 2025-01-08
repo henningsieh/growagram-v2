@@ -81,7 +81,11 @@ export default function ProtectedSidebar({
   return (
     <SidebarProvider className="relative">
       {/* Main sidebar with floating, collapsible design */}
-      <Sidebar collapsible="icon" variant="floating" className="flex-shrink-0">
+      <Sidebar
+        collapsible="icon"
+        variant="floating"
+        className="top-14 h-[calc(100svh-3.5rem)] flex-shrink-0"
+      >
         {/* Sidebar Header: Team Switcher */}
         <SidebarHeader>
           <TeamSwitcher teams={sidebarItems.teams} />
@@ -145,19 +149,21 @@ export default function ProtectedSidebar({
           </SidebarGroup>
 
           {/* Projects Group */}
-          <SidebarGroup className="group-data-[collapsible=icon]:hidden">
+          <SidebarGroup className="text-muted-foreground group-data-[collapsible=icon]:hidden">
             <SidebarGroupLabel>{t("Platform.coming-soon")}</SidebarGroupLabel>
             <SidebarMenu>
               {/* Project Items with Dropdown Actions */}
               {sidebarItems.projects.map((item) => (
                 <SidebarMenuItem key={item.name}>
-                  <SidebarMenuButton asChild>
-                    <Link href={item.url}>
+                  <SidebarMenuButton asChild className="cursor-pointer">
+                    <div>
+                      {/* <Link href={item.url}> */}
                       <item.icon />
                       <span>{item.name}</span>
-                    </Link>
+                      {/* </Link> */}
+                    </div>
                   </SidebarMenuButton>
-                  <DropdownMenu>
+                  {/* <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <SidebarMenuAction showOnHover>
                         <MoreHorizontal />
@@ -168,9 +174,9 @@ export default function ProtectedSidebar({
                       className="w-48 rounded-sm"
                       side="bottom"
                       align="end"
-                    >
-                      {/* Project Action Items */}
-                      <DropdownMenuItem>
+                    > */}
+                  {/* Project Action Items */}
+                  {/* <DropdownMenuItem>
                         <Folder className="text-muted-foreground" />
                         <span>View Project</span>
                       </DropdownMenuItem>
@@ -184,7 +190,7 @@ export default function ProtectedSidebar({
                         <span>Delete Project</span>
                       </DropdownMenuItem>
                     </DropdownMenuContent>
-                  </DropdownMenu>
+                  </DropdownMenu> */}
                 </SidebarMenuItem>
               ))}
 
@@ -216,7 +222,9 @@ export default function ProtectedSidebar({
                         src={user && (user.image as string)}
                         alt={user && (user.name as string)}
                       />
-                      <AvatarFallback className="rounded-sm">CN</AvatarFallback>
+                      <AvatarFallback className="rounded-sm">
+                        {user?.username?.[0]?.toUpperCase() ?? "G"}
+                      </AvatarFallback>
                     </Avatar>
                     <div className="grid flex-1 text-left text-sm leading-tight">
                       <span className="truncate font-semibold">
@@ -247,7 +255,7 @@ export default function ProtectedSidebar({
                           alt={`@${user && (user.username as string)}`}
                         />
                         <AvatarFallback className="rounded-sm">
-                          CN
+                          {user?.username?.[0]?.toUpperCase() ?? "G"}
                         </AvatarFallback>
                       </Avatar>
                       <div className="grid flex-1 text-left text-sm leading-tight">
@@ -278,10 +286,7 @@ export default function ProtectedSidebar({
                         Account
                       </DropdownMenuItem>
                     </Link>
-                    <DropdownMenuItem>
-                      <CreditCard />
-                      Billing
-                    </DropdownMenuItem>
+
                     <DropdownMenuItem>
                       <Bell />
                       Notifications

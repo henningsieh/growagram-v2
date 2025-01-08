@@ -178,11 +178,11 @@
     "title": "Login to GrowAGram"
   },
   "Navigation": {
-    "components": "Explore",
+    "home": "Home",
+    "discover": "Discover",
     "dashboard": "Dashboard",
     "dashboard-description": "Track your grows and your plants, including photo uploads.",
-    "grower-menu": "For Growers",
-    "login": "Login",
+    "grower-menu": "Grower's Platform",
     "my-grows": "My Grows",
     "my-grows-subline": "Manage and group your plants in Grows.",
     "my-photos": "My Photos",
