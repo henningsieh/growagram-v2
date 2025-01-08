@@ -2,8 +2,8 @@
   "Account": {
     "account-info-subtitle": "Sieh dir deine Accountinformationen an",
     "account-info-title": "Mein Account",
-    "edit-profile-button": "Account bearbeiten",
-    "form-back-button": "Zurück zum Account",
+    "edit-profile-button": "Bearbeiten",
+    "form-back-button": "Zurück",
     "form-edit-profile-subtitle": "Verwalte deine Accountinformationen.",
     "form-edit-profile-title": "Account bearbeiten",
     "form-email-description": "Deine primäre E-Mail-Adresse für Accountkommunikationen.",
@@ -120,38 +120,38 @@
     "title": "Pflanzen identifizieren"
   },
   "LandingPage": {
-    "HeroSection": {
-      "title": "GrowAGram",
-      "subtitle": "Dein Cannabis Grow Tagebuch",
-      "description": "Entdecke die Welt des Cannabis Eigenanbaus. Teile deine                     Erfahrungen, lerne von der Community und dokumentiere deine Grows in einem digitalen Tagebuch.",
-      "cta-button-start": "Kostenlos starten",
-      "cta-button-pricing": "Grows erkunden"
-    },
     "FeaturesSection": {
-      "title": "Alles für deinen erfolgreichen Grow",
-      "description": "Mit GrowAGram verwaltest du nicht nur deine Pflanzen wie ein Profi, sondern kannst deine Erfolge und Fortschritte ganz einfach mit der Community teilen. Kommentiere, diskutiere und lass dich von anderen Pflanzenliebhabern inspirieren, während du dein grünes Netzwerk aufbaust!",
       "cards": {
-        "growDiary": {
-          "title": "Grow Tagebuch",
-          "description": "Dokumentiere jeden Schritt deines Grows. Von der Keimung bis zur Ernte."
-        },
         "community": {
-          "title": "Community",
-          "description": "Tausche dich mit anderen Growers aus und lerne von ihren Erfahrungen."
-        },
-        "growStats": {
-          "title": "Grow Stats",
-          "description": "Behalte den Überblick über deine Wachstumsfortschritte und Ernten."
+          "description": "Tausche dich mit anderen Growers aus und lerne von ihren Erfahrungen.",
+          "title": "Community"
         },
         "connections": {
-          "title": "Verknüpfungen",
-          "description": "Verbinde deine Bilder mit Pflanzen und ordne diese Grows zu."
+          "description": "Verbinde deine Bilder mit Pflanzen und ordne diese Grows zu.",
+          "title": "Verknüpfungen"
+        },
+        "growDiary": {
+          "description": "Dokumentiere jeden Schritt deines Grows. Von der Keimung bis zur Ernte.",
+          "title": "Grow Tagebuch"
+        },
+        "growStats": {
+          "description": "Behalte den Überblick über deine Wachstumsfortschritte und Ernten.",
+          "title": "Grow Stats"
         }
-      }
+      },
+      "description": "Mit GrowAGram verwaltest du nicht nur deine Pflanzen wie ein Profi, sondern kannst deine Erfolge und Fortschritte ganz einfach mit der Community teilen. Kommentiere, diskutiere und lass dich von anderen Pflanzenliebhabern inspirieren, während du dein grünes Netzwerk aufbaust!",
+      "title": "Alles für deinen erfolgreichen Grow"
+    },
+    "HeroSection": {
+      "cta-button-pricing": "Grows erkunden",
+      "cta-button-start": "Kostenlos starten",
+      "description": "Entdecke die Welt des Cannabis Eigenanbaus. Teile deine                     Erfahrungen, lerne von der Community und dokumentiere deine Grows in einem digitalen Tagebuch.",
+      "subtitle": "Dein Cannabis Grow Tagebuch",
+      "title": "GrowAGram"
     },
     "PricingSection": {
-      "title": "Faire Preise für jeden Grower",
-      "description": "Wähle das passende Paket für deine Bedürfnisse."
+      "description": "Wähle das passende Paket für deine Bedürfnisse.",
+      "title": "Faire Preise für jeden Grower"
     }
   },
   "LanguageToggle": {
@@ -236,6 +236,10 @@
   "Platform": {
     "Dashboard-title": "Dashboard",
     "welcome-to-platform-subttitle": "Willkommen bei der Verwaltung deiner Grows und Pflanzen"
+  },
+  "Plattform": {
+    "coming-soon": "Bald verfügbar",
+    "more": "mehr"
   },
   "ThemeToggler": {
     "dark": "Dunkel",

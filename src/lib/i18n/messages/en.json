@@ -120,38 +120,38 @@
     "title": "Identify Plants"
   },
   "LandingPage": {
-    "HeroSection": {
-      "description": "Discover the world of home cannabis cultivation. \nShare your experiences, learn from the community and document your grows in a digital diary.",
-      "subtitle": "Your cannabis grow diary",
-      "title": "GrowAGram",
-      "cta-button-start": "Get Started for free",
-      "cta-button-pricing": "Explore Grows"
-    },
     "FeaturesSection": {
-      "title": "Everything for your successful grow",
-      "description": "With GrowAGram, you don't just manage your plants like a pro, but also share your successes and progress with the community. Comment, engage, and get inspired by other plant enthusiasts as you grow your green network!",
       "cards": {
-        "growDiary": {
-          "title": "Grow Diary",
-          "description": "Document every step of your grow. From germination to harvest."
-        },
         "community": {
-          "title": "Community",
-          "description": "Exchange ideas with other growers and learn from their experiences."
-        },
-        "growStats": {
-          "title": "Grow Stats",
-          "description": "Keep track of your growth progress and harvests."
+          "description": "Exchange ideas with other growers and learn from their experiences.",
+          "title": "Community"
         },
         "connections": {
-          "title": "Connections",
-          "description": "Link your photos to plants and assign them to grows."
+          "description": "Link your photos to plants and assign them to grows.",
+          "title": "Connections"
+        },
+        "growDiary": {
+          "description": "Document every step of your grow. From germination to harvest.",
+          "title": "Grow Diary"
+        },
+        "growStats": {
+          "description": "Keep track of your growth progress and harvests.",
+          "title": "Grow Stats"
         }
-      }
+      },
+      "description": "With GrowAGram, you don't just manage your plants like a pro, but also share your successes and progress with the community. Comment, engage, and get inspired by other plant enthusiasts as you grow your green network!",
+      "title": "Everything for your successful grow"
+    },
+    "HeroSection": {
+      "cta-button-pricing": "Explore Grows",
+      "cta-button-start": "Get Started for free",
+      "description": "Discover the world of home cannabis cultivation. \nShare your experiences, learn from the community and document your grows in a digital diary.",
+      "subtitle": "Your cannabis grow diary",
+      "title": "GrowAGram"
     },
     "PricingSection": {
-      "title": "Fair prices for every grower",
-      "description": "Choose the right package for your needs."
+      "description": "Choose the right package for your needs.",
+      "title": "Fair prices for every grower"
     }
   },
   "LanguageToggle": {
@@ -236,6 +236,10 @@
   "Platform": {
     "Dashboard-title": "Dashboard",
     "welcome-to-platform-subttitle": "Welcome to the Grower's platform where you can manage all your Grows and Plants"
+  },
+  "Plattform": {
+    "coming-soon": "",
+    "more": ""
   },
   "ThemeToggler": {
     "dark": "Dark",

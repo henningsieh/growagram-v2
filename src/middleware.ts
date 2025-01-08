@@ -21,11 +21,7 @@ function isPathProtected(path: string): boolean {
 }
 
 export default async function middleware(req: NextRequest) {
-  const session = await auth();
-  console.debug("Middleware session: ", JSON.stringify(session, null, 2));
-
   const secret = env.AUTH_SECRET;
-  console.debug("secret: ", secret);
 
   // Get the current token (user's authentication status)
   const token = await getToken({
@@ -35,7 +31,9 @@ export default async function middleware(req: NextRequest) {
       ? {
           cookieName: "__Secure-authjs.session-token",
         }
-      : {}),
+      : {
+          cookieName: "authjs.session-token",
+        }),
   });
 
   // Log the full token to verify
@@ -70,6 +68,19 @@ export default async function middleware(req: NextRequest) {
   // Check if the requested path (without locale) exactly matches any protected path
   const isLocalePath = localeMatchArray !== null;
   const isProtectedPath = isLocalePath && isPathProtected(pathWithoutLocale);
+
+  // Check if the username is empty or null and redirect to the account page if necessary
+  if (
+    token &&
+    (token.username == null || token.username === "") &&
+    pathWithoutLocale !== "/account/edit"
+  ) {
+    const accountRedirectUrl = new URL(
+      currentLocale ? `/${currentLocale}/account/edit` : "/account/edit",
+      `http://${realHost}`,
+    );
+    return NextResponse.redirect(accountRedirectUrl);
+  }
 
   // If the path is protected and the user is not logged in, redirect to the sign-in page
   if (isProtectedPath && !token) {
