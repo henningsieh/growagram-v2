@@ -53,22 +53,18 @@ export default async function middleware(req: NextRequest) {
   const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
 
   const baseUrl = env.NEXTAUTH_URL || `${protocol}://${realHost}`;
+  const fullUrl = new URL(currentPathname, baseUrl);
 
   // Handle auth callback paths specially
   if (currentPathname.startsWith("/api/auth/callback")) {
-    // Ensure we're using the correct host for auth callbacks
-    const callbackUrl = new URL(currentPathname, baseUrl);
-    console.debug("callbackUrl:", callbackUrl);
     req.nextUrl.host = realHost;
-    req.nextUrl.protocol = protocol;
-    return NextResponse.rewrite(callbackUrl);
+    req.nextUrl.protocol = new URL(baseUrl).protocol.replace(":", "");
+    return NextResponse.rewrite(fullUrl);
   }
 
-  // This will be the actual URL seen in the browser
-  const browserUrl = `${baseUrl}${currentPathname}`;
   console.debug("realHost:", realHost);
   console.debug("protocol:", protocol);
-  console.debug("browserUrl:", browserUrl);
+  console.debug("fullUrl:", fullUrl.toString());
 
   const currentLocale = localeMatchArray ? localeMatchArray[1] : null;
 
@@ -100,7 +96,7 @@ export default async function middleware(req: NextRequest) {
 
     // Redirect using the real URL, preserving the client-facing URL
     const redirectUrl = new URL(modulePaths.SIGNIN.path, baseUrl);
-    redirectUrl.searchParams.append("callbackUrl", browserUrl); // Use the real URL here
+    redirectUrl.searchParams.append("callbackUrl", fullUrl.toString()); // Use the real URL here
     return NextResponse.redirect(redirectUrl); // Redirect to the sign-in page with the real URL
   }
 
