@@ -4,28 +4,29 @@ import { motion } from "framer-motion";
 import { useCallback, useEffect, useRef } from "react";
 import InfiniteScrollLoader from "~/components/Layouts/InfiniteScrollLoader";
 import SpinningLoader from "~/components/Layouts/loader";
-import { GrowCard } from "~/components/features/Grows/grow-card";
+import PlantCard from "~/components/features/Plants/plant-card";
 import { api } from "~/lib/trpc/react";
-import { GetAllGrowsInput, GetAllGrowsType } from "~/server/api/root";
+import { GetAllPlantsInput, GetAllPlantsType } from "~/server/api/root";
 
-export default function PublicGrowsPage() {
+export default function PublicPlantsPage() {
   const {
     data,
     isLoading,
     isFetching: isFetchingNextPage,
     hasNextPage,
     fetchNextPage,
-  } = api.grows.getAllGrows.useInfiniteQuery(
+  } = api.plants.getAllPlants.useInfiniteQuery(
     {
       limit: 2,
-    } satisfies GetAllGrowsInput,
+    } satisfies GetAllPlantsInput,
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
     },
   );
 
-  const grows: GetAllGrowsType =
-    data?.pages?.flatMap((page) => page.grows satisfies GetAllGrowsType) ?? [];
+  const plants: GetAllPlantsType =
+    data?.pages?.flatMap((page) => page.plants satisfies GetAllPlantsType) ??
+    [];
 
   // Intersection Observer callback
   const onIntersect = useCallback(
@@ -56,15 +57,15 @@ export default function PublicGrowsPage() {
     <>
       {isLoading ? (
         <SpinningLoader className="text-secondary" />
-      ) : grows.length === 0 ? (
+      ) : plants.length === 0 ? (
         <p className="mt-8 text-center text-muted-foreground">
-          No grows found.
+          No plants found.
         </p>
       ) : (
-        // this should be a flex-col timeline with animated grow cards
+        // this should be a flex-col timeline with animated plant cards
         <motion.div className="flex flex-col gap-4">
-          {grows.map((grow) => (
-            <GrowCard key={grow.id} grow={grow} isSocial={true} />
+          {plants.map((plant) => (
+            <PlantCard key={plant.id} plant={plant} isSocialProp={true} />
           ))}
 
           <InfiniteScrollLoader
@@ -72,8 +73,8 @@ export default function PublicGrowsPage() {
             isLoading={isLoading}
             isFetchingNextPage={isFetchingNextPage}
             hasNextPage={hasNextPage}
-            itemsLength={grows.length}
-            noMoreMessage="No more grows to load."
+            itemsLength={plants.length}
+            noMoreMessage="No more plants to load."
           />
         </motion.div>
       )}

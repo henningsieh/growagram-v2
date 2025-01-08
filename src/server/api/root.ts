@@ -85,6 +85,9 @@ export type GetOwnPlantsOutput = RouterOutput["plants"]["getOwnPlants"];
 export type GetOwnPlantsType = RouterOutput["plants"]["getOwnPlants"]["plants"];
 export type GetOwnPlantType = RouterOutput["plants"]["getOwnPlants"]["plants"][number];
 export type GetPlantByIdType = RouterOutput["plants"]["getById"];
+export type GetAllPlantsOutput = RouterOutput["plants"]["getAllPlants"];
+export type GetAllPlantsType = RouterOutput["plants"]["getAllPlants"]["plants"];
+export type GetAllPlantType = RouterOutput["plants"]["getAllPlants"]["plants"][number];
 
 export type PlantByIdType = NonNullable<GetPlantByIdType>;
 export type PlantImagesType = NonNullable<GetPlantByIdType>["plantImages"]
@@ -94,6 +97,7 @@ export type ImageType = NonNullable<GetPlantByIdType>["plantImages"][number]["im
 export type GetOwnPlantsInput = RouterInput["plants"]["getOwnPlants"];
 export type GetPlantByIdInput = RouterInput["plants"]["getById"];
 export type CreateOrEditPlantInput = RouterInput["plants"]["createOrEdit"];
+export type GetAllPlantsInput = RouterInput["plants"]["getAllPlants"];
 
 // growRouter
 //  OUTPUTS:

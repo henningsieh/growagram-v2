@@ -15,19 +15,14 @@
         },
         "items": [
           {
-            "title": "Grows",
+            "title": "grows",
             "href": "/public/grows",
             "description": "grows-description"
           },
           {
-            "title": "Plants",
+            "title": "plants",
             "href": "/public/plants",
             "description": "plants-description"
-          },
-          {
-            "title": "Photos",
-            "href": "/public/photos",
-            "description": "photos-description"
           }
         ]
       }
