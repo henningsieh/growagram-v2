@@ -86,7 +86,7 @@ export default async function middleware(req: NextRequest) {
   ) {
     const accountRedirectUrl = new URL(
       currentLocale ? `/${currentLocale}/account/edit` : "/account/edit",
-      `http://${realHost}`,
+      `${protocol}://${realHost}`,
     );
     return NextResponse.redirect(accountRedirectUrl);
   }
@@ -96,7 +96,11 @@ export default async function middleware(req: NextRequest) {
     console.debug("User is not authenticated. Redirecting to sign-in page.");
 
     // Redirect using the real URL, preserving the client-facing URL
-    const redirectUrl = new URL(modulePaths.SIGNIN.path, `http://${realHost}`); //TODO: should be in sync with env next-auth url!
+
+    const redirectUrl = new URL(
+      modulePaths.SIGNIN.path,
+      `${protocol}://${realHost}`, //TODO: should be in sync with env next-auth url!
+    );
     redirectUrl.searchParams.append("callbackUrl", browserUrl); // Use the real URL here
     return NextResponse.redirect(redirectUrl); // Redirect to the sign-in page with the real URL
   }
