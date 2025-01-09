@@ -161,7 +161,8 @@
     "toggle-language": "Change language"
   },
   "LoginPage": {
-    "description": "To log in, enter your email address and password or select a social login provider below.",
+    "continue-with-email": "Or login with email and password",
+    "description": "Log in with your provider account",
     "email": {
       "label": "Email address"
     },
@@ -176,20 +177,17 @@
       "link": "Sign up",
       "text": "Don't have an account?"
     },
-    "social-identity-oauth-providers": "Social Identity OAuth Providers",
     "submit": "Login",
-    "title": "Login to GrowAGram"
+    "title": "GrowAGram Login"
   },
   "Navigation": {
     "dashboard": "Dashboard",
     "dashboard-description": "Track your grows and your plants, including photo uploads.",
     "discover": "Discover",
     "grower-menu": "Grower's Platform",
-    "home": "Home",
     "grows": "All Grows",
     "grows-description": "Take a look at other growers' grows and get inspired.",
-    "plants": "All Plants",
-    "plants-description": "Check out what other growers are cultivating and get some new ideas.",
+    "home": "Home",
     "my-grows": "My Grows",
     "my-grows-subline": "Manage and group your plants in Grows.",
     "my-photos": "My Photos",
@@ -197,6 +195,8 @@
     "my-plants": "My Plants",
     "my-plants-subline": "Manage and edit your plants.",
     "navigation": "Navigation",
+    "plants": "All Plants",
+    "plants-description": "Check out what other growers are cultivating and get some new ideas.",
     "timeline": "Timeline",
     "timeline-description": "Social media timeline (feature coming soon)",
     "toggle-menu": "Toggle menu"
@@ -249,6 +249,9 @@
     "feature-coming": "New Feature is on its Way!",
     "more": "more",
     "welcome-to-platform-subttitle": "Welcome to the Grower's platform where you can manage all your Grows and Plants"
+  },
+  "RegisterPage": {
+    "title": "Register to GrowAGram"
   },
   "ThemeToggler": {
     "dark": "Dark",

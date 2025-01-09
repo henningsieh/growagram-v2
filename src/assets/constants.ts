@@ -31,7 +31,7 @@ export const modulePaths = {
   },
   SIGNIN: {
     name: "Signin",
-    path: "/login",
+    path: "/signin",
     protected: false,
   },
 };
