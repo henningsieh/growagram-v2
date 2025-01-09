@@ -1,6 +1,6 @@
-// src/components/features/Chat/chat-modal.tsx
 "use client";
 
+import * as ScrollAreaPrimitive from "@radix-ui/react-scroll-area";
 import { AnimatePresence, motion } from "framer-motion";
 import { Send, X } from "lucide-react";
 import { useSession } from "next-auth/react";
@@ -10,14 +10,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
-import { ScrollArea } from "~/components/ui/scroll-area";
 import { api } from "~/lib/trpc/react";
-
-// src/components/features/Chat/chat-modal.tsx
-
-// src/components/features/Chat/chat-modal.tsx
-
-// src/components/features/Chat/chat-modal.tsx
+import { cn } from "~/lib/utils";
 
 export function ChatModal({
   isOpen,
@@ -28,13 +22,11 @@ export function ChatModal({
 }) {
   const { data: session } = useSession();
   const [message, setMessage] = useState("");
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const scrollViewportRef = useRef<HTMLDivElement>(null);
   const utils = api.useUtils();
 
-  // Query for initial messages
   const { data: messages } = api.chat.getMessages.useQuery();
 
-  // Subscribe to new messages
   api.chat.onMessage.useSubscription(undefined, {
     onData: (message) => {
       utils.chat.getMessages.setData(undefined, (prev) => {
@@ -44,7 +36,6 @@ export function ChatModal({
     },
   });
 
-  // Send message mutation
   const sendMessageMutation = api.chat.sendMessage.useMutation();
 
   const handleSendMessage = async (e: React.FormEvent) => {
@@ -59,17 +50,14 @@ export function ChatModal({
     }
   };
 
-  // Scroll to bottom on new messages
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    if (scrollViewportRef.current) {
+      const scrollContainer = scrollViewportRef.current;
+      scrollContainer.scrollTop = scrollContainer.scrollHeight;
     }
   }, [messages]);
 
   if (!isOpen) return null;
-
-  console.debug("Rendering ChatModal");
-  console.debug("messages", messages);
 
   return createPortal(
     <AnimatePresence>
@@ -84,7 +72,7 @@ export function ChatModal({
           className="flex h-[600px] w-[400px] flex-col"
           onClick={(e) => e.stopPropagation()}
         >
-          <CardHeader>
+          <CardHeader className="border-b p-4">
             <div className="flex items-center justify-between">
               <CardTitle>Chat</CardTitle>
               <Button variant="ghost" size="icon" onClick={onClose}>
@@ -93,39 +81,58 @@ export function ChatModal({
             </div>
           </CardHeader>
 
-          <CardContent className="flex flex-1 flex-col">
-            <ScrollArea ref={scrollRef} className="flex-1 pr-4">
-              <div className="flex flex-col-reverse gap-4">
-                {messages?.map((msg) => (
-                  <div
-                    key={msg.id}
-                    className={`flex gap-2 ${
-                      msg.senderId === session?.user.id
-                        ? "flex-row-reverse"
-                        : ""
-                    }`}
-                  >
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage src={msg.sender.image || undefined} />
-                      <AvatarFallback>
-                        {msg.sender.name?.[0] || "?"}
-                      </AvatarFallback>
-                    </Avatar>
+          <CardContent className="flex-1 p-0">
+            <ScrollAreaPrimitive.Root
+              type="auto"
+              className="h-[calc(600px-8rem)]"
+            >
+              <ScrollAreaPrimitive.Viewport
+                ref={scrollViewportRef}
+                className="h-full w-full"
+              >
+                <div className="flex flex-col-reverse gap-4 p-4">
+                  {messages?.map((msg) => (
                     <div
-                      className={`rounded-lg px-3 py-2 ${
+                      key={msg.id}
+                      className={`flex gap-2 ${
                         msg.senderId === session?.user.id
-                          ? "bg-primary text-primary-foreground"
-                          : "bg-muted"
+                          ? "flex-row-reverse"
+                          : ""
                       }`}
                     >
-                      {msg.content}
+                      <Avatar className="h-8 w-8 flex-shrink-0">
+                        <AvatarImage src={msg.sender.image || undefined} />
+                        <AvatarFallback>
+                          {msg.sender.name?.[0] || "?"}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div
+                        className={`max-w-[75%] break-words rounded-lg px-3 py-2 ${
+                          msg.senderId === session?.user.id
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-muted"
+                        }`}
+                      >
+                        {msg.content}
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            </ScrollArea>
+                  ))}
+                </div>
+              </ScrollAreaPrimitive.Viewport>
+              <ScrollAreaPrimitive.Scrollbar
+                orientation="vertical"
+                className={cn(
+                  "flex touch-none select-none bg-muted transition-colors",
+                  "h-full w-2.5 border-l border-l-transparent p-[1px]",
+                )}
+              >
+                <ScrollAreaPrimitive.Thumb className="relative flex-1 rounded-full bg-border" />
+              </ScrollAreaPrimitive.Scrollbar>
+            </ScrollAreaPrimitive.Root>
+          </CardContent>
 
-            <form onSubmit={handleSendMessage} className="mt-4 flex gap-2">
+          <div className="border-t p-4">
+            <form onSubmit={handleSendMessage} className="flex gap-2">
               <Input
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
@@ -136,7 +143,7 @@ export function ChatModal({
                 <Send className="h-4 w-4" />
               </Button>
             </form>
-          </CardContent>
+          </div>
         </Card>
       </motion.div>
     </AnimatePresence>,
