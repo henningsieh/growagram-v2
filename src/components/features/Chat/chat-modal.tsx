@@ -1,6 +1,5 @@
 "use client";
 
-import * as ScrollAreaPrimitive from "@radix-ui/react-scroll-area";
 import { AnimatePresence, motion } from "framer-motion";
 import { Send, X } from "lucide-react";
 import { useSession } from "next-auth/react";
@@ -9,9 +8,9 @@ import { createPortal } from "react-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
+import { EnhancedScrollArea } from "~/components/ui/enhanced-scroll-area";
 import { Input } from "~/components/ui/input";
 import { api } from "~/lib/trpc/react";
-import { cn } from "~/lib/utils";
 
 export function ChatModal({
   isOpen,
@@ -51,11 +50,11 @@ export function ChatModal({
   };
 
   useEffect(() => {
-    if (scrollViewportRef.current) {
+    if (isOpen && scrollViewportRef.current) {
       const scrollContainer = scrollViewportRef.current;
       scrollContainer.scrollTop = scrollContainer.scrollHeight;
     }
-  }, [messages]);
+  }, [messages, isOpen]);
 
   if (!isOpen) return null;
 
@@ -82,53 +81,39 @@ export function ChatModal({
           </CardHeader>
 
           <CardContent className="flex-1 p-0">
-            <ScrollAreaPrimitive.Root
-              type="auto"
+            <EnhancedScrollArea
+              viewportRef={scrollViewportRef}
               className="h-[calc(600px-8rem)]"
             >
-              <ScrollAreaPrimitive.Viewport
-                ref={scrollViewportRef}
-                className="h-full w-full"
-              >
-                <div className="flex flex-col-reverse gap-4 p-4">
-                  {messages?.map((msg) => (
+              <div className="flex flex-col-reverse gap-4 p-4">
+                {messages?.map((msg) => (
+                  <div
+                    key={msg.id}
+                    className={`flex items-center gap-2 ${
+                      msg.senderId === session?.user.id
+                        ? "flex-row-reverse"
+                        : ""
+                    }`}
+                  >
+                    <Avatar className="h-10 w-10 flex-shrink-0">
+                      <AvatarImage src={msg.sender.image || undefined} />
+                      <AvatarFallback>
+                        {msg.sender.name?.[0] || "?"}
+                      </AvatarFallback>
+                    </Avatar>
                     <div
-                      key={msg.id}
-                      className={`flex gap-2 ${
+                      className={`max-w-[75%] break-words rounded-lg px-4 py-2 ${
                         msg.senderId === session?.user.id
-                          ? "flex-row-reverse"
-                          : ""
+                          ? "bg-muted text-muted-foreground"
+                          : "bg-accent text-accent-foreground"
                       }`}
                     >
-                      <Avatar className="h-8 w-8 flex-shrink-0">
-                        <AvatarImage src={msg.sender.image || undefined} />
-                        <AvatarFallback>
-                          {msg.sender.name?.[0] || "?"}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div
-                        className={`max-w-[75%] break-words rounded-lg px-3 py-2 ${
-                          msg.senderId === session?.user.id
-                            ? "bg-primary text-primary-foreground"
-                            : "bg-muted"
-                        }`}
-                      >
-                        {msg.content}
-                      </div>
+                      {msg.content}
                     </div>
-                  ))}
-                </div>
-              </ScrollAreaPrimitive.Viewport>
-              <ScrollAreaPrimitive.Scrollbar
-                orientation="vertical"
-                className={cn(
-                  "flex touch-none select-none bg-muted transition-colors",
-                  "h-full w-2.5 border-l border-l-transparent p-[1px]",
-                )}
-              >
-                <ScrollAreaPrimitive.Thumb className="relative flex-1 rounded-full bg-border" />
-              </ScrollAreaPrimitive.Scrollbar>
-            </ScrollAreaPrimitive.Root>
+                  </div>
+                ))}
+              </div>
+            </EnhancedScrollArea>
           </CardContent>
 
           <div className="border-t p-4">
