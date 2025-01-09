@@ -80,7 +80,7 @@ export default function ProtectedSidebar({
   const user = useSession().data?.user as User;
 
   return (
-    <SidebarProvider className="relative">
+    <SidebarProvider className="relative min-h-[calc(100svh-4rem)]">
       {/* Main sidebar with floating, collapsible design */}
       <Sidebar
         collapsible="icon"
@@ -312,7 +312,7 @@ export default function ProtectedSidebar({
       </Sidebar>
 
       {/* Sidebar Inset: Content Area */}
-      <SidebarInset>
+      <SidebarInset className="min-h-[calc(100svh-4rem)]">
         {/* Sticky Header with Sidebar Toggle and Breadcrumbs */}
         <header className="sticky top-14 z-10 flex h-14 shrink-0 items-center justify-between gap-2 bg-background/90 backdrop-blur">
           <div className="flex items-center gap-2 pl-2 md:pl-1 lg:pl-3 xl:pl-5">
