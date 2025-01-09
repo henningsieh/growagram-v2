@@ -101,6 +101,11 @@ export default async function middleware(req: NextRequest) {
     return NextResponse.redirect(accountRedirectUrl);
   }
 
+  // If the user is logged in but requested the sign-in page, redirect to the dashboard
+  if (token && pathWithoutLocale === modulePaths.SIGNIN.path) {
+    return NextResponse.redirect(new URL(modulePaths.DASHBOARD.path, baseUrl));
+  }
+
   // Handle the i18n routing for locales
   const handleI18nRouting = createMiddleware(routing);
 
