@@ -7,7 +7,7 @@ import { useTranslations } from "next-intl";
 import FormContent from "~/components/Layouts/form-content";
 import PageHeader from "~/components/Layouts/page-header";
 import AvatarCardHeader from "~/components/atom/avatar-card-header";
-import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
+import CustomAvatar from "~/components/atom/custom-avatar";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader } from "~/components/ui/card";
 import { Separator } from "~/components/ui/separator";
@@ -81,16 +81,12 @@ export default function AccountInfo({ user }: { user: UserType }) {
                       className="relative"
                     >
                       <div className="absolute -inset-0.5 rounded-full bg-gradient-to-br from-primary to-primary-foreground/50 opacity-75 blur" />
-                      <Avatar className="relative h-32 w-32 shrink-0 border-2 border-background">
-                        <AvatarImage
-                          src={user.image || undefined}
-                          alt={user.name || "User"}
-                          className="object-cover"
-                        />
-                        <AvatarFallback className="text-2xl">
-                          {user.name?.[0] || user.username?.[0] || "U"}
-                        </AvatarFallback>
-                      </Avatar>
+                      <CustomAvatar
+                        size={128}
+                        src={user.image || undefined}
+                        alt={user.name || "User avatar"}
+                        fallback={user.name?.[0] || "?"}
+                      />
                     </motion.div>
                     <div className="w-full">
                       <div className="grid w-full gap-4 sm:grid-cols-2">
@@ -99,7 +95,7 @@ export default function AccountInfo({ user }: { user: UserType }) {
                             key={item.label}
                             variants={itemVariants}
                             whileHover={{ scale: 1.02 }}
-                            className="group relative overflow-hidden rounded-lg bg-muted/50 p-4 transition-colors hover:bg-muted"
+                            className="group relative overflow-hidden rounded-sm bg-muted/50 p-4 transition-colors hover:bg-muted"
                           >
                             <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
                             <div className="relative space-y-3">

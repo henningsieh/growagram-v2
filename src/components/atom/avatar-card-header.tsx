@@ -1,7 +1,7 @@
-import { User2 } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { CardHeader } from "~/components/ui/card";
 import { UserType } from "~/server/api/root";
+
+import CustomAvatar from "./custom-avatar";
 
 interface SocialHeaderProps {
   user: UserType;
@@ -12,16 +12,19 @@ function AvatarCardHeader({ user }: SocialHeaderProps) {
     <CardHeader className="space-y-0 p-1">
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-3">
-          <Avatar className="h-9 w-9">
-            <AvatarImage src={user.image ? user.image : undefined} />
-            <AvatarFallback>
-              <User2 className="h-5 w-5" />
-            </AvatarFallback>
-          </Avatar>
+          <CustomAvatar
+            size={44}
+            src={user.image ?? undefined}
+            alt={user.username ?? "User avatar"}
+            fallback={user.name?.[0] || "?"}
+          />
           <div className="flex flex-col gap-0.5">
             <p className="text-sm font-semibold">{user.name}</p>
             <p className="text-sm text-muted-foreground">
-              {`@${user.username}`}
+              {
+                // eslint-disable-next-line react/jsx-no-literals
+                `@${user.username}`
+              }
             </p>
           </div>
         </div>
