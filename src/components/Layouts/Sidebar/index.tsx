@@ -5,23 +5,17 @@ import {
   Bell,
   ChevronRight,
   ChevronsUpDown,
-  CreditCard,
-  Folder,
-  Forward,
   Gauge,
   LogOut,
-  MoreHorizontal,
   Plus,
   Sparkles,
-  Trash2,
   UserPen,
 } from "lucide-react";
-import { User } from "next-auth";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { modulePaths } from "~/assets/constants";
-import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
+import CustomAvatar from "~/components/atom/custom-avatar";
 import {
   Collapsible,
   CollapsibleContent,
@@ -47,7 +41,6 @@ import {
   SidebarHeader,
   SidebarInset,
   SidebarMenu,
-  SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarMenuSub,
@@ -64,6 +57,7 @@ import { sidebarItems } from "~/lib/sidebar";
 import { handleSignOut } from "~/server/actions/authActions";
 
 import { NavigationBreadcrumb } from "../Breadcrumbs";
+import SpinningLoader from "../loader";
 
 /**
  * ProtectedSidebar: Main sidebar component for authenticated users
@@ -77,258 +71,265 @@ export default function ProtectedSidebar({
   const t = useTranslations();
   const isMobile = useIsMobile();
 
-  const user = useSession().data?.user as User;
+  const { data: session, status } = useSession();
 
-  return (
-    <SidebarProvider className="relative min-h-[calc(100svh-4rem)]">
-      {/* Main sidebar with floating, collapsible design */}
-      <Sidebar
-        collapsible="icon"
-        variant="floating"
-        className="sticky top-14 h-[calc(100svh-4rem)] flex-shrink-0"
-      >
-        {/* Sidebar Header: Team Switcher */}
-        <SidebarHeader>
-          <TeamSwitcher teams={sidebarItems.teams} />
-        </SidebarHeader>
-        {/* Main Navigation Content */}
-        <SidebarContent>
-          {/* Dashboard Group */}
-          <SidebarGroup>
-            {/* Main Navigation Menu with Collapsible Items */}
-            <SidebarMenu>
-              {/* Dashboard Button */}
-              <Collapsible asChild className="group/collapsible">
-                <SidebarMenuItem>
-                  <CollapsibleTrigger asChild>
-                    <Link href={modulePaths.DASHBOARD.path}>
-                      <SidebarMenuButton
-                        tooltip={t("Platform.Dashboard-title")}
-                      >
-                        <Gauge />
-                        <span>{t("Platform.Dashboard-title")}</span>
-                        <ChevronRight className="ml-auto transition-transform duration-200" />
-                      </SidebarMenuButton>
-                    </Link>
-                  </CollapsibleTrigger>
-                </SidebarMenuItem>
-              </Collapsible>
-              {sidebarItems.navMain.map((item) => (
-                <Collapsible
-                  key={item.title}
-                  asChild
-                  defaultOpen={item.isActive}
-                  className="group/collapsible"
-                >
+  if (status === "loading") {
+    return <SpinningLoader />;
+  }
+
+  if (status !== "authenticated") {
+    return null;
+  } else {
+    return (
+      <SidebarProvider className="relative min-h-[calc(100svh-4rem)]">
+        {/* Main sidebar with floating, collapsible design */}
+        <Sidebar
+          collapsible="icon"
+          variant="floating"
+          className="sticky top-14 h-[calc(100svh-4rem)] flex-shrink-0"
+        >
+          {/* Sidebar Header: Team Switcher */}
+          <SidebarHeader>
+            <TeamSwitcher teams={sidebarItems.teams} />
+          </SidebarHeader>
+          {/* Main Navigation Content */}
+          <SidebarContent>
+            {/* Dashboard Group */}
+            <SidebarGroup>
+              {/* Main Navigation Menu with Collapsible Items */}
+              <SidebarMenu>
+                {/* Dashboard Button */}
+                <Collapsible asChild className="group/collapsible">
                   <SidebarMenuItem>
                     <CollapsibleTrigger asChild>
-                      {/* <Link href={item.url}> */}
-                      <SidebarMenuButton tooltip={item.title}>
-                        {item.icon && <item.icon />}
-                        <span>{item.title}</span>
-                        <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-                      </SidebarMenuButton>
-                      {/* </Link> */}
+                      <Link href={modulePaths.DASHBOARD.path}>
+                        <SidebarMenuButton
+                          tooltip={t("Platform.Dashboard-title")}
+                        >
+                          <Gauge />
+                          <span>{t("Platform.Dashboard-title")}</span>
+                          <ChevronRight className="ml-auto transition-transform duration-200" />
+                        </SidebarMenuButton>
+                      </Link>
                     </CollapsibleTrigger>
-                    <CollapsibleContent>
-                      <SidebarMenuSub>
-                        {item.items?.map((subItem) => (
-                          <SidebarMenuSubItem key={subItem.title}>
-                            <SidebarMenuSubButton asChild>
-                              <Link href={subItem.url}>
-                                <span>{subItem.title}</span>
-                              </Link>
-                            </SidebarMenuSubButton>
-                          </SidebarMenuSubItem>
-                        ))}
-                      </SidebarMenuSub>
-                    </CollapsibleContent>
                   </SidebarMenuItem>
                 </Collapsible>
-              ))}
-            </SidebarMenu>
-          </SidebarGroup>
-
-          {/* Projects Group */}
-          <SidebarGroup className="text-muted-foreground group-data-[collapsible=icon]:hidden">
-            <SidebarGroupLabel>{t("Platform.coming-soon")}</SidebarGroupLabel>
-            <SidebarMenu>
-              {/* Project Items with Dropdown Actions */}
-              {sidebarItems.projects.map((item) => (
-                <SidebarMenuItem key={item.name}>
-                  <SidebarMenuButton asChild className="cursor-pointer">
-                    <div>
-                      {/* <Link href={item.url}> */}
-                      <item.icon />
-                      <span>{item.name}</span>
-                      {/* </Link> */}
-                    </div>
-                  </SidebarMenuButton>
-                  {/* <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <SidebarMenuAction showOnHover>
-                        <MoreHorizontal />
-                        <span className="sr-only">{t("Platform.more")}</span>
-                      </SidebarMenuAction>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent
-                      className="w-48 rounded-sm"
-                      side="bottom"
-                      align="end"
-                    > */}
-                  {/* Project Action Items */}
-                  {/* <DropdownMenuItem>
-                        <Folder className="text-muted-foreground" />
-                        <span>View Project</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <Forward className="text-muted-foreground" />
-                        <span>Share Project</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem>
-                        <Trash2 className="text-muted-foreground" />
-                        <span>Delete Project</span>
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu> */}
-                </SidebarMenuItem>
-              ))}
-
-              {/* Additional Projects Option */}
-              {/* <SidebarMenuItem>
-                <SidebarMenuButton className="text-sidebar-foreground/70">
-                  <MoreHorizontal className="text-sidebar-foreground/70" />
-                  <span>More</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem> */}
-            </SidebarMenu>
-          </SidebarGroup>
-        </SidebarContent>
-
-        {/* User Profile Footer */}
-        <SidebarFooter>
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  {/* User Profile Trigger */}
-                  <SidebarMenuButton
-                    size="lg"
-                    className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                {sidebarItems.navMain.map((item) => (
+                  <Collapsible
+                    key={item.title}
+                    asChild
+                    defaultOpen={item.isActive}
+                    className="group/collapsible"
                   >
-                    {/* User Avatar and Details */}
-                    <Avatar className="h-8 w-8 rounded-sm">
-                      <AvatarImage
-                        src={user && (user.image as string)}
-                        alt={user && (user.name as string)}
-                      />
-                      <AvatarFallback className="rounded-sm">
-                        {user?.username?.[0]?.toUpperCase() ?? "G"}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="grid flex-1 text-left text-sm leading-tight">
-                      <span className="truncate font-semibold">
-                        {user && (user.name as string)}
-                      </span>
-                      <span className="truncate text-xs">
-                        @{user && (user.username as string)}
-                      </span>
-                    </div>
-                    <ChevronsUpDown className="ml-auto size-4" />
-                  </SidebarMenuButton>
-                </DropdownMenuTrigger>
+                    <SidebarMenuItem>
+                      <CollapsibleTrigger asChild>
+                        {/* <Link href={item.url}> */}
+                        <SidebarMenuButton tooltip={item.title}>
+                          {item.icon && <item.icon />}
+                          <span>{item.title}</span>
+                          <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                        </SidebarMenuButton>
+                        {/* </Link> */}
+                      </CollapsibleTrigger>
+                      <CollapsibleContent>
+                        <SidebarMenuSub>
+                          {item.items?.map((subItem) => (
+                            <SidebarMenuSubItem key={subItem.title}>
+                              <SidebarMenuSubButton asChild>
+                                <Link href={subItem.url}>
+                                  <span>{subItem.title}</span>
+                                </Link>
+                              </SidebarMenuSubButton>
+                            </SidebarMenuSubItem>
+                          ))}
+                        </SidebarMenuSub>
+                      </CollapsibleContent>
+                    </SidebarMenuItem>
+                  </Collapsible>
+                ))}
+              </SidebarMenu>
+            </SidebarGroup>
 
-                {/* User Profile Dropdown Content */}
-                <DropdownMenuContent
-                  className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-sm"
-                  // side="right"
-                  side={isMobile ? "bottom" : "right"}
-                  align="end"
-                  sideOffset={4}
-                >
-                  {/* Repeated User Profile Header */}
-                  <DropdownMenuLabel className="p-0 font-normal">
-                    <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                      <Avatar className="h-8 w-8 rounded-sm">
-                        <AvatarImage
-                          src={user && (user.image as string)}
-                          alt={`@${user && (user.username as string)}`}
-                        />
-                        <AvatarFallback className="rounded-sm">
-                          {user?.username?.[0]?.toUpperCase() ?? "G"}
-                        </AvatarFallback>
-                      </Avatar>
+            {/* Projects Group */}
+            <SidebarGroup className="text-muted-foreground group-data-[collapsible=icon]:hidden">
+              <SidebarGroupLabel>{t("Platform.coming-soon")}</SidebarGroupLabel>
+              <SidebarMenu>
+                {/* Project Items with Dropdown Actions */}
+                {sidebarItems.projects.map((item) => (
+                  <SidebarMenuItem key={item.name}>
+                    <SidebarMenuButton asChild className="cursor-pointer">
+                      <div>
+                        {/* <Link href={item.url}> */}
+                        <item.icon />
+                        <span>{item.name}</span>
+                        {/* </Link> */}
+                      </div>
+                    </SidebarMenuButton>
+                    {/* <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <SidebarMenuAction showOnHover>
+                          <MoreHorizontal />
+                          <span className="sr-only">{t("Platform.more")}</span>
+                        </SidebarMenuAction>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent
+                        className="w-48 rounded-sm"
+                        side="bottom"
+                        align="end"
+                      > */}
+                    {/* Project Action Items */}
+                    {/* <DropdownMenuItem>
+                          <Folder className="text-muted-foreground" />
+                          <span>View Project</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                          <Forward className="text-muted-foreground" />
+                          <span>Share Project</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem>
+                          <Trash2 className="text-muted-foreground" />
+                          <span>Delete Project</span>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu> */}
+                  </SidebarMenuItem>
+                ))}
+
+                {/* Additional Projects Option */}
+                {/* <SidebarMenuItem>
+                  <SidebarMenuButton className="text-sidebar-foreground/70">
+                    <MoreHorizontal className="text-sidebar-foreground/70" />
+                    <span>More</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem> */}
+              </SidebarMenu>
+            </SidebarGroup>
+          </SidebarContent>
+
+          {/* User Profile Footer */}
+          <SidebarFooter>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    {/* User Profile Trigger */}
+                    <SidebarMenuButton
+                      size="lg"
+                      className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                    >
+                      {/* User Avatar and Details */}
+                      <CustomAvatar
+                        size={32}
+                        src={session.user.image ?? undefined}
+                        alt={session.user.username ?? "User avatar"}
+                        fallback={session.user.name?.[0] || "?"}
+                      />
                       <div className="grid flex-1 text-left text-sm leading-tight">
                         <span className="truncate font-semibold">
-                          {user && (user.name as string)}
+                          {session.user.name as string}
                         </span>
                         <span className="truncate text-xs">
-                          {`@${user && (user.username as string)}`}
+                          @{session.user.username as string}
                         </span>
                       </div>
-                    </div>
-                  </DropdownMenuLabel>
+                      <ChevronsUpDown className="ml-auto size-4" />
+                    </SidebarMenuButton>
+                  </DropdownMenuTrigger>
 
-                  {/* User Account Actions */}
-                  <DropdownMenuSeparator />
-                  <DropdownMenuGroup>
-                    <DropdownMenuItem className="text-yellow-500 focus:bg-yellow-600/50 focus:text-white">
-                      <Sparkles />
-                      Upgrade to Pro
-                    </DropdownMenuItem>
-                  </DropdownMenuGroup>
+                  {/* User Profile Dropdown Content */}
+                  <DropdownMenuContent
+                    className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-sm"
+                    // side="right"
+                    side={isMobile ? "bottom" : "right"}
+                    align="end"
+                    sideOffset={4}
+                  >
+                    {/* Repeated User Profile Header */}
+                    <DropdownMenuLabel className="p-0 font-normal">
+                      <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                        <CustomAvatar
+                          size={32}
+                          src={session.user.image ?? undefined}
+                          alt={session.user.username ?? "User avatar"}
+                          fallback={session.user.name?.[0] || "?"}
+                        />
+                        <div className="grid flex-1 text-left text-sm leading-tight">
+                          <span className="truncate font-semibold">
+                            {session.user.name as string}
+                          </span>
+                          <span className="truncate text-xs">
+                            {
+                              // eslint-disable-next-line react/jsx-no-literals
+                              `@${session.user.username as string}`
+                            }
+                          </span>
+                        </div>
+                      </div>
+                    </DropdownMenuLabel>
 
-                  <DropdownMenuSeparator />
-                  <DropdownMenuGroup>
-                    <Link href="/account">
-                      <DropdownMenuItem className="cursor-pointer">
-                        <UserPen />
-                        Account
+                    {/* User Account Actions */}
+                    <DropdownMenuSeparator />
+                    <DropdownMenuGroup>
+                      <DropdownMenuItem className="text-yellow-500 focus:bg-yellow-600/50 focus:text-white">
+                        <Sparkles />
+                        Upgrade to Pro
                       </DropdownMenuItem>
-                    </Link>
+                    </DropdownMenuGroup>
 
-                    <DropdownMenuItem>
-                      <Bell />
-                      Notifications
+                    <DropdownMenuSeparator />
+                    <DropdownMenuGroup>
+                      <Link href="/account">
+                        <DropdownMenuItem className="cursor-pointer">
+                          <UserPen />
+                          Account
+                        </DropdownMenuItem>
+                      </Link>
+
+                      <DropdownMenuItem>
+                        <Bell />
+                        Notifications
+                      </DropdownMenuItem>
+                    </DropdownMenuGroup>
+
+                    <DropdownMenuSeparator />
+
+                    {/* Sign Out Action */}
+                    <DropdownMenuItem
+                      onClick={async () => await handleSignOut()}
+                    >
+                      <LogOut />
+                      Log out
                     </DropdownMenuItem>
-                  </DropdownMenuGroup>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarFooter>
 
-                  <DropdownMenuSeparator />
+          {/* Sidebar Rail for Additional Navigation */}
+          <SidebarRail />
+        </Sidebar>
 
-                  {/* Sign Out Action */}
-                  <DropdownMenuItem onClick={async () => await handleSignOut()}>
-                    <LogOut />
-                    Log out
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarFooter>
+        {/* Sidebar Inset: Content Area */}
+        <SidebarInset className="min-h-[calc(100svh-4rem)]">
+          {/* Sticky Header with Sidebar Toggle and Breadcrumbs */}
+          <header className="sticky top-14 z-10 flex h-14 shrink-0 items-center justify-between gap-2 bg-background/90 backdrop-blur">
+            <div className="flex items-center gap-2 pl-2 md:pl-1 lg:pl-3 xl:pl-5">
+              <SidebarTrigger className="text-primary" />
+              <Separator orientation="vertical" className="h-5" />
+              <NavigationBreadcrumb />
+            </div>
+          </header>
 
-        {/* Sidebar Rail for Additional Navigation */}
-        <SidebarRail />
-      </Sidebar>
-
-      {/* Sidebar Inset: Content Area */}
-      <SidebarInset className="min-h-[calc(100svh-4rem)]">
-        {/* Sticky Header with Sidebar Toggle and Breadcrumbs */}
-        <header className="sticky top-14 z-10 flex h-14 shrink-0 items-center justify-between gap-2 bg-background/90 backdrop-blur">
-          <div className="flex items-center gap-2 pl-2 md:pl-1 lg:pl-3 xl:pl-5">
-            <SidebarTrigger className="text-primary" />
-            <Separator orientation="vertical" className="h-5" />
-            <NavigationBreadcrumb />
+          {/* Main Content Area */}
+          <div className="flex flex-col gap-2 pt-0">
+            <div className="rounded-sm">{children}</div>
           </div>
-        </header>
-
-        {/* Main Content Area */}
-        <div className="flex flex-col gap-2 pt-0">
-          <div className="rounded-sm">{children}</div>
-        </div>
-      </SidebarInset>
-    </SidebarProvider>
-  );
+        </SidebarInset>
+      </SidebarProvider>
+    );
+  }
 }
 
 /**
