@@ -64,13 +64,19 @@ export const chatRouter = createTRPCRouter({
 
   // Subscribe to new messages
   onMessage: protectedProcedure.subscription(() => {
+    let disposed = false;
+
     return observable<ChatMessage>((emit) => {
+      if (disposed) return;
+
       const onMessage = (message: ChatMessage) => {
-        emit.next(message);
+        if (!disposed) emit.next(message);
       };
 
       ee.on("sendMessage", onMessage);
+
       return () => {
+        disposed = true;
         ee.off("sendMessage", onMessage);
       };
     });
