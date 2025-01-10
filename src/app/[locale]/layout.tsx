@@ -8,6 +8,7 @@ import NextTopLoader from "nextjs-toploader";
 import { APP_SETTINGS } from "~/assets/constants";
 import { MainNavigationBar } from "~/components/Layouts/MainNavigationBar";
 import { ThemeProvider } from "~/components/Layouts/theme-provider";
+import { ChatButton } from "~/components/features/Chat/chat-button";
 import { Toaster } from "~/components/ui/toaster";
 import { TRPCReactProvider } from "~/lib/trpc/react";
 import "~/styles/globals.css";
@@ -70,6 +71,7 @@ export default async function AppLayout(props: AppLayoutProps) {
                 <div className="relative mx-auto flex h-screen max-w-7xl flex-col">
                   <MainNavigationBar />
                   <div className="flex-1">{props.children}</div>
+                  <ChatButton />
                 </div>
               </TRPCReactProvider>
             </SessionProvider>

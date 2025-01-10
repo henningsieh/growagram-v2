@@ -30,7 +30,7 @@ function DesktopNavigationMenu() {
             <li className="row-span-3">
               <NavigationMenuLink asChild>
                 <Link
-                  className="flex h-full w-full select-none flex-col justify-center rounded-lg bg-gradient-to-b from-primary/10 via-primary/5 to-primary/20 p-6 text-foreground no-underline outline-none transition-all hover:from-primary/20 hover:via-primary/15 hover:to-primary/30 hover:text-foreground focus:shadow-md"
+                  className="flex h-full w-full select-none flex-col justify-center rounded-md bg-gradient-to-b from-primary/10 via-primary/5 to-primary/20 p-6 text-foreground no-underline outline-none transition-all hover:from-primary/20 hover:via-primary/15 hover:to-primary/30 hover:text-foreground focus:shadow-md"
                   href={content.featured.href}
                   scroll={true}
                   shallow={false}
@@ -67,7 +67,7 @@ function DesktopNavigationMenu() {
           <Link
             ref={ref}
             className={cn(
-              "block select-none space-y-1 rounded-lg p-3 leading-none no-underline outline-none transition-colors",
+              "block select-none space-y-1 rounded-sm p-3 leading-none no-underline outline-none transition-colors",
               "text-foreground/90 hover:bg-accent hover:text-accent-foreground",
               "text-foreground hover:text-foreground",
               className,

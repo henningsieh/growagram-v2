@@ -21,6 +21,20 @@ import { UserRoles } from "~/types/user";
 // Creating table with a prefix for multi-project schema
 export const createTable = pgTableCreator((name) => `growagram.com_${name}`);
 
+// Add this to your schema
+export const chatMessages = pgTable("chat_message", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  content: text("content").notNull(),
+  senderId: text("sender_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+});
+
 // Define the users table
 export const users = pgTable(
   "user",
@@ -474,5 +488,12 @@ export const plantImagesRelations = relations(plantImages, ({ one }) => ({
   image: one(images, {
     fields: [plantImages.imageId],
     references: [images.id],
+  }),
+}));
+
+export const chatMessagesRelations = relations(chatMessages, ({ one }) => ({
+  sender: one(users, {
+    fields: [chatMessages.senderId],
+    references: [users.id],
   }),
 }));

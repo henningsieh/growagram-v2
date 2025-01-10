@@ -3,8 +3,8 @@ import { Loader2, Reply, Trash2, X } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import React, { useEffect, useRef } from "react";
+import CustomAvatar from "~/components/atom/custom-avatar";
 import { SocialCardFooter } from "~/components/atom/social-card-footer";
-import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { useComments } from "~/hooks/use-comments";
@@ -166,10 +166,12 @@ export const Comment: React.FC<CommentProps> = ({
       >
         <div className="relative flex gap-2 p-2">
           <div className="flex justify-center">
-            <Avatar className="m-1 h-8 w-8">
-              <AvatarImage src={comment.author.image || undefined} />
-              <AvatarFallback>{comment.author.name?.[0] || "?"}</AvatarFallback>
-            </Avatar>
+            <CustomAvatar
+              size={32}
+              src={comment.author.image || undefined}
+              alt={comment.author.name || "User avatar"}
+              fallback={comment.author.name?.[0] || "?"}
+            />
           </div>
           <div className="flex-1">
             <div className="flex items-center gap-2">
@@ -221,13 +223,12 @@ export const Comment: React.FC<CommentProps> = ({
               }}
             >
               <div className="m-2 flex items-center gap-3 rounded-sm bg-muted p-1">
-                <Avatar className="m-1 h-8 w-8">
-                  <AvatarImage src={session?.user?.image || undefined} />
-                  <AvatarFallback>
-                    {session?.user?.name?.[0] || "?"}
-                  </AvatarFallback>
-                </Avatar>
-
+                <CustomAvatar
+                  size={32}
+                  src={session?.user?.image || undefined}
+                  alt={session?.user?.username || "User avatar"}
+                  fallback={session?.user?.name?.[0] || "?"}
+                />
                 <div className="flex flex-1 gap-2">
                   <Input
                     ref={inputRef}

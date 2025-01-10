@@ -8,6 +8,7 @@ import { growRouter } from "./routers/grow";
 import { likeRouter } from "./routers/likes";
 import { commentRouter } from "./routers/comments";
 import { userRouter } from "./routers/users";
+import { chatRouter } from "./routers/chat";
 
 
 /**
@@ -22,6 +23,7 @@ export const appRouter = createTRPCRouter({
   likes: likeRouter,
   users: userRouter,
   comments: commentRouter,
+  chat: chatRouter,
 });
 
 // export type definition of API

@@ -55,7 +55,7 @@ export default function ComingSoon() {
           <motion.div
             variants={pulseVariants}
             animate="pulse"
-            className="text-6xl font-bold text-primary"
+            className="text-4xl font-bold text-primary"
           >
             {t("coming-soon")}
           </motion.div>
@@ -63,7 +63,7 @@ export default function ComingSoon() {
 
         <motion.h1
           variants={itemVariants}
-          className="text-4xl font-bold tracking-tight text-foreground"
+          className="text-2xl font-bold tracking-tight text-foreground"
         >
           {t("feature-coming")}
         </motion.h1>

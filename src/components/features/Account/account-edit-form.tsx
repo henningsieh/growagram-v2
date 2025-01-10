@@ -191,7 +191,7 @@ export default function AccountEditForm({ user }: { user: UserType }) {
                           control={form.control}
                           name="name"
                           render={({ field }) => (
-                            <FormItem className="overflow-hidden rounded-lg bg-muted/50 p-4 transition-colors hover:bg-muted/70">
+                            <FormItem className="overflow-hidden rounded-sm bg-muted/50 p-4 transition-colors hover:bg-muted/70">
                               <FormLabel className="text-base">
                                 {t("form-name-label")}
                               </FormLabel>
@@ -241,7 +241,7 @@ export default function AccountEditForm({ user }: { user: UserType }) {
                           control={form.control}
                           name="username"
                           render={({ field }) => (
-                            <FormItem className="overflow-hidden rounded-lg bg-muted/50 p-4 transition-colors hover:bg-muted/70">
+                            <FormItem className="overflow-hidden rounded-sm bg-muted/50 p-4 transition-colors hover:bg-muted/70">
                               <FormLabel
                                 className={`text-base ${
                                   usernameCheck.data &&
@@ -334,7 +334,7 @@ export default function AccountEditForm({ user }: { user: UserType }) {
                           control={form.control}
                           name="email"
                           render={({ field }) => (
-                            <FormItem className="overflow-hidden rounded-lg bg-muted/50 p-4 transition-colors hover:bg-muted/70">
+                            <FormItem className="overflow-hidden rounded-sm bg-muted/50 p-4 transition-colors hover:bg-muted/70">
                               <FormLabel className="text-base">
                                 {t("form-email-label")}
                               </FormLabel>

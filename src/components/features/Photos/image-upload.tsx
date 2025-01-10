@@ -292,7 +292,7 @@ export default function PhotoUpload({ user }: { user: User }) {
               onDragLeave={handleDragOut}
               onDrop={handleDrop}
               className={cn(
-                "cursor-pointer rounded-lg border-2 border-dashed bg-muted/20 p-8 text-center transition-colors duration-200",
+                "cursor-pointer rounded-sm border-2 border-dashed bg-muted/20 p-8 text-center transition-colors duration-200",
                 isDragging
                   ? "border-primary bg-primary/5"
                   : "border-muted-foreground/25",
