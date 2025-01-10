@@ -13,7 +13,7 @@ import { useSession } from "next-auth/react";
 import { useLocale } from "next-intl";
 import Image from "next/image";
 import { useMemo, useState } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
+import CustomAvatar from "~/components/atom/custom-avatar";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import {
@@ -37,8 +37,6 @@ import {
 import { api } from "~/lib/trpc/react";
 import { formatDate, formatTime } from "~/lib/utils";
 import { GetOwnPhotosInput, GetOwnPlantsInput } from "~/server/api/root";
-
-import PlantCard from "../Plants/plant-card";
 
 export default function PostComponent({ id }: { id: string }) {
   const { data: session } = useSession();
@@ -191,15 +189,12 @@ export default function PostComponent({ id }: { id: string }) {
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           >
-            <Avatar className="h-9 w-9 cursor-pointer ring-2 ring-accent transition-all hover:ring-primary sm:h-11 sm:w-11">
-              <AvatarImage
-                src={samplePost.user?.image as string}
-                alt={samplePost.user?.name as string}
-              />
-              <AvatarFallback>
-                {(samplePost.user?.name as string).slice(0, 2).toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
+            <CustomAvatar
+              size={36}
+              src={samplePost.user?.image as string}
+              alt={samplePost.user?.name as string}
+              fallback={samplePost.user?.name?.[0] || "?"}
+            />
           </PopoverTrigger>
           <PopoverContent
             className="w-64 p-4"
@@ -207,15 +202,12 @@ export default function PostComponent({ id }: { id: string }) {
             onMouseLeave={handleMouseLeave}
           >
             <div className="flex items-center gap-3">
-              <Avatar className="h-14 w-14">
-                <AvatarImage
-                  src={samplePost.user?.image as string}
-                  alt={samplePost.user?.name as string}
-                />
-                <AvatarFallback>
-                  {(samplePost.user?.name as string).slice(0, 2).toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
+              <CustomAvatar
+                src={samplePost.user?.image as string}
+                alt={samplePost.user?.name as string}
+                fallback={samplePost.user?.name?.[0] || "?"}
+                size={44}
+              />
               <div className="flex flex-col">
                 <span className="text-lg font-medium">
                   {samplePost.user?.name as string}

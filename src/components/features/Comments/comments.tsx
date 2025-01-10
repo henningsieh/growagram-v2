@@ -4,7 +4,7 @@ import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import React from "react";
 import SpinningLoader from "~/components/Layouts/loader";
-import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
+import CustomAvatar from "~/components/atom/custom-avatar";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { useComments } from "~/hooks/use-comments";
@@ -44,10 +44,12 @@ export const Comments: React.FC<CommentsProps> = ({
       {session && (
         <div className="m-2 flex items-center gap-3 rounded-sm bg-muted p-1">
           <div className="flex justify-center">
-            <Avatar className="m-0 h-8 w-8">
-              <AvatarImage src={session.user?.image || undefined} />
-              <AvatarFallback>{session.user?.name?.[0] || "?"}</AvatarFallback>
-            </Avatar>
+            <CustomAvatar
+              size={32}
+              src={session.user?.image || undefined}
+              alt={session.user?.name || "User avatar"}
+              fallback={session.user?.name?.[0] || "?"}
+            />
           </div>
           <div className="flex-1">
             <Input
