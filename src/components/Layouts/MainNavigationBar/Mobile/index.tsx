@@ -87,15 +87,18 @@ export default function MobileNavigationMenu() {
             <Accordion type="single" collapsible className="w-full space-y-1.5">
               {navigationData.navigationItems.map((item) =>
                 item.type === "link" ? (
-                  <Button
+                  <Link
                     key={item.title}
-                    variant="ghost"
-                    className="w-full justify-start p-3 text-lg font-semibold hover:bg-accent hover:text-foreground"
+                    href={item.href!}
+                    onClick={() => setOpen(false)}
                   >
-                    <Link href={item.href!} onClick={() => setOpen(false)}>
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start p-3 text-lg font-semibold hover:bg-accent hover:text-foreground"
+                    >
                       {t(item.title)}
-                    </Link>
-                  </Button>
+                    </Button>
+                  </Link>
                 ) : (
                   <AccordionItem
                     key={item.title}
