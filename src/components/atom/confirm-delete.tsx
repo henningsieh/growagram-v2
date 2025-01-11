@@ -11,6 +11,8 @@ import {
   DialogTitle,
 } from "~/components/ui/dialog";
 
+import SpinningLoader from "../Layouts/loader";
+
 interface DeleteConfirmationDialogProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
@@ -68,7 +70,7 @@ export function DeleteConfirmationDialog({
             disabled={isDeleting}
           >
             {isDeleting ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <SpinningLoader className="mr-2 h-4 w-4 animate-spin" />
             ) : (
               <Trash2 className="mr-2 h-4 w-4" />
             )}

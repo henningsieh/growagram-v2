@@ -2,11 +2,9 @@ import { Loader2 } from "lucide-react";
 import React from "react";
 import { cn } from "~/lib/utils";
 
-interface SpinningLoaderProps {
-  className?: string;
-}
-
-export default function SpinningLoader({ className }: SpinningLoaderProps) {
+export default function SpinningLoader({
+  className,
+}: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div className={cn("flex justify-center")}>
       <Loader2

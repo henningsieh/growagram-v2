@@ -5,6 +5,8 @@ import { Label } from "~/components/ui/label";
 import { Switch } from "~/components/ui/switch";
 import { cn } from "~/lib/utils";
 
+import SpinningLoader from "../Layouts/loader";
+
 export interface SortOption<T extends string> {
   field: T;
   label: string;
@@ -119,11 +121,10 @@ export function SortFilterControls<T extends string>({
               {option.label}
             </div>
             {isFetching && sortField === option.field ? (
-              <Loader2 className="h-6 w-5 animate-spin text-secondary" />
+              <SpinningLoader className="h-6 w-5 animate-spin text-secondary" />
             ) : (
               sortField === option.field &&
               (sortOrder === SortOrder.ASC ? (
-                // ${<ArrowASC className="h-6 w-5 text-secondary" />}
                 <option.sortIconAsc className="h-6 w-5 text-secondary" />
               ) : (
                 <option.sortIconDesc className="h-6 w-5 text-secondary" />

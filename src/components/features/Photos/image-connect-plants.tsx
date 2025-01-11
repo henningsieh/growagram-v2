@@ -44,7 +44,7 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
   const locale = useLocale();
   const utils = api.useUtils();
 
-  const t = useTranslations("Images");
+  const t = useTranslations("Photos");
 
   const allPhotosQuery = useSearchParams();
 

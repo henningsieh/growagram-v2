@@ -6,6 +6,7 @@ import { type User } from "next-auth";
 import { useLocale } from "next-intl";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import SpinningLoader from "~/components/Layouts/loader";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardFooter } from "~/components/ui/card";
 import { Label } from "~/components/ui/label";
@@ -399,7 +400,7 @@ export default function PhotoUpload({ user }: { user: User }) {
             className="w-full"
           >
             {uploading ? (
-              <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+              <SpinningLoader className="mr-2 h-5 w-5 animate-spin" />
             ) : (
               <Upload className="mr-2 h-5 w-5" />
             )}

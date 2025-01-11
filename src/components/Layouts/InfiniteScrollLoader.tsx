@@ -1,6 +1,7 @@
 // src/components/Layouts/InfiniteScrollLoader.tsx:
 import { Loader2 } from "lucide-react";
 import React, { forwardRef } from "react";
+import SpinningLoader from "~/components/Layouts/loader";
 
 interface InfiniteScrollLoaderProps {
   isLoading?: boolean;
@@ -31,7 +32,7 @@ const InfiniteScrollLoader = forwardRef<
         {/* Loading spinner */}
         {(isLoading || isFetchingNextPage) && (
           <div className="flex justify-center py-4">
-            <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+            <SpinningLoader className="text-secondary" />
           </div>
         )}
 
