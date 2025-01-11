@@ -5,7 +5,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Flower2,
   Leaf,
-  Loader2,
   Nut,
   PillBottle,
   Sprout,
@@ -18,6 +17,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { PaginationItemsPerPage } from "~/assets/constants";
 import FormContent from "~/components/Layouts/form-content";
+import SpinningLoader from "~/components/Layouts/loader";
 import PageHeader from "~/components/Layouts/page-header";
 import { Button } from "~/components/ui/button";
 import {
@@ -267,9 +267,7 @@ export default function PlantFormPage({ plant }: { plant?: Plant }) {
                   className="w-full"
                   disabled={isSubmitting}
                 >
-                  {isSubmitting && (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  )}
+                  {isSubmitting && <SpinningLoader className="mr-2 h-4 w-4" />}
                   {plant?.id
                     ? t("form-button-save-changes")
                     : t("form-button-save-new")}

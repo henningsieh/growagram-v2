@@ -7,7 +7,6 @@ import {
   ExternalLinkIcon,
   Flower2,
   Leaf,
-  Loader2,
   MessageCircleIcon,
   MoreHorizontalIcon,
   Nut,
@@ -20,8 +19,10 @@ import {
 import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
+import SpinningLoader from "~/components/Layouts/loader";
 import AvatarCardHeader from "~/components/atom/avatar-card-header";
 import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
+import { OwnerDropdownMenu } from "~/components/atom/owner-dropdown-menu";
 import { SocialCardFooter } from "~/components/atom/social-card-footer";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
@@ -156,71 +157,14 @@ export default function PlantCard({
             </CardTitle>
             {/* DropdownMenu for plant's owner */}
             {user && user.id === plant.ownerId && (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="icon">
-                    <MoreHorizontalIcon className="h-5 w-5" />
-                    <span className="sr-only">Owner menu</span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  {!isSocialProp && (
-                    <DropdownMenuItem className="flex items-center justify-start">
-                      <MessageCircleIcon className="mr-2 h-4 w-4" />
-                      <Label
-                        className="cursor-pointer text-sm font-semibold"
-                        htmlFor="show-socialMode"
-                      >
-                        Social
-                      </Label>
-                      <Switch
-                        className="ml-auto"
-                        id="show-socialMode"
-                        checked={isSocial}
-                        onCheckedChange={setIsSocial}
-                      />
-                    </DropdownMenuItem>
-                  )}
-                  <DropdownMenuItem asChild>
-                    <Link
-                      target="_blank"
-                      href={`/public/plants/${plant.id}`}
-                      className="flex cursor-pointer items-center"
-                    >
-                      <ExternalLinkIcon className="mr-2 h-4 w-4" />
-                      {t("public-link-label")}
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link
-                      href={`/plants/${plant.id}/form`}
-                      className="flex cursor-pointer items-center"
-                    >
-                      <EditIcon className="mr-2 h-4 w-4" />
-                      {t("edit-plant-button-label")}
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    asChild
-                    className="bg-destructive/50 text-foreground focus:bg-destructive focus:text-white focus:outline-none"
-                  >
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      className="w-full justify-start"
-                      onClick={handleDelete}
-                      disabled={deleteMutation.isPending}
-                    >
-                      {deleteMutation.isPending ? (
-                        <Loader2 size={20} className="mr-2 animate-spin" />
-                      ) : (
-                        <Trash2Icon className="mr-2 h-4 w-4" />
-                      )}
-                      {t("delete-plant-button-label")}
-                    </Button>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <OwnerDropdownMenu
+                isSocial={isSocial}
+                setIsSocial={setIsSocial}
+                isDeleting={deleteMutation.isPending}
+                handleDelete={handleDelete}
+                entityId={plant.id}
+                entityType="Plants"
+              />
             )}
           </div>
 

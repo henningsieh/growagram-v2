@@ -98,29 +98,13 @@
     "success-description-create": "Der Grow wurde erfolgreich erstellt.",
     "success-description-edit": "Der Grow wurde erfolgreich aktualisiert.",
     "success-title": "Erfolg!",
-    "unexpected-error": "Ein unerwarteter Fehler ist aufgetreten."
+    "unexpected-error": "Ein unerwarteter Fehler ist aufgetreten.",
+    "edit-button-label": "Grow bearbeiten",
+    "delete-button-label": "Grow löschen"
   },
   "HomePage": {
     "about": "gehe zur Zeitleiste",
     "title": "Hallo Welt!"
-  },
-  "Images": {
-    "button": {
-      "connecting": "Pflanzen werden verbunden...",
-      "removeAll": "Alle Pflanzen entfernen",
-      "save": "Pflanzenauswahl speichern ({count})"
-    },
-    "buttonBackLabel": "Zurück",
-    "plantSelection": {
-      "description": "Wähle jede Pflanze aus, die du auf dem Foto sehen kannst!",
-      "title": "Pflanzenauswahl"
-    },
-    "search": {
-      "noResults": "Keine Ergebnisse gefunden.",
-      "placeholder": "Pflanzen suchen..."
-    },
-    "subtitle": "Welche Pflanzen siehst du auf diesem Foto?",
-    "title": "Pflanzen identifizieren"
   },
   "LandingPage": {
     "FeaturesSection": {
@@ -201,6 +185,27 @@
     "timeline-description": "Social Media Zeitachse (Funktion in Kürze)",
     "toggle-menu": "Menü umschalten"
   },
+  "Photos": {
+    "public-link-label": "Öffnen im neuen Tab",
+    "edit-button-label": "Foto bearbeiten",
+    "delete-button-label": "Foto löschen",
+    "button": {
+      "connecting": "Pflanzen werden verbunden...",
+      "removeAll": "Alle Pflanzen entfernen",
+      "save": "Pflanzenauswahl speichern ({count})"
+    },
+    "buttonBackLabel": "Zurück",
+    "plantSelection": {
+      "description": "Wähle jede Pflanze aus, die du auf dem Foto sehen kannst!",
+      "title": "Pflanzenauswahl"
+    },
+    "search": {
+      "noResults": "Keine Ergebnisse gefunden.",
+      "placeholder": "Pflanzen suchen..."
+    },
+    "subtitle": "Welche Pflanzen siehst du auf diesem Foto?",
+    "title": "Pflanzen identifizieren"
+  },
   "Plants": {
     "breeder": "Züchter / Breeder",
     "curing-start-date": "Startdatum der Aushärtephase",
@@ -238,7 +243,9 @@
     "title": "Meine Pflanzen",
     "until": "bis",
     "user-has-no-plants": "Du hast bisher keine Pflanzen hinzugefügt.",
-    "vegetation-start-date": "Startdatum der Wachstumsphase"
+    "vegetation-start-date": "Startdatum der Wachstumsphase",
+    "edit-button-label": "Pflanze bearbeiten",
+    "delete-button-label": "Pflanze löschen"
   },
   "Platform": {
     "Dashboard-title": "Dashboard",

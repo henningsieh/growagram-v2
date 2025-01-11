@@ -5,7 +5,6 @@ import {
   Camera,
   Edit,
   FileIcon,
-  Loader2,
   Maximize,
   Minimize,
   Search,
@@ -18,14 +17,15 @@ import { useLocale } from "next-intl";
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import SpinningLoader from "~/components/Layouts/loader";
 import { RESPONSIVE_IMAGE_SIZES } from "~/components/Layouts/responsive-grid";
 import AvatarCardHeader from "~/components/atom/avatar-card-header";
 import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
+import { OwnerDropdownMenu } from "~/components/atom/owner-dropdown-menu";
 import { SocialCardFooter } from "~/components/atom/social-card-footer";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardFooter, CardTitle } from "~/components/ui/card";
-import { Label } from "~/components/ui/label";
 import { Separator } from "~/components/ui/separator";
 import { Switch } from "~/components/ui/switch";
 import {
@@ -195,37 +195,33 @@ export default function PhotoCard({
         <CardContent
           className={`grid gap-4 ${isSocial ? "ml-11 pl-0 pr-2" : "p-2"}`}
         >
-          {/* Title Link */}
-          <div className="flex items-center">
-            <CardTitle as="h2">
+          {/* Title Link and OwnerDropdownMenu */}
+          <div className="grid grid-cols-[1fr,auto] items-center gap-2">
+            <CardTitle as="h2" className="min-w-0 overflow-hidden">
               <Button asChild variant="link" className="p-0">
                 <Link
                   href={`/public/photos/${photo.id}`}
-                  className="flex w-full items-center gap-2"
+                  className="flex items-center gap-2"
                 >
-                  <FileIcon className="mt-2" size={20} />
-                  <h3 className="text-xl font-bold">
+                  <FileIcon className="flex-shrink-0" size={20} />
+                  <h3 className="truncate text-xl font-bold">
                     {photo.originalFilename}
                   </h3>
                 </Link>
               </Button>
-              {/* Switch for toggling isSocial */}
-              {user && user.id === photo.ownerId && (
-                <div className="ml-auto flex items-start gap-2">
-                  <Label
-                    className="text-sm font-semibold"
-                    htmlFor="show-socialMode"
-                  >
-                    Social Mode
-                  </Label>
-                  <Switch
-                    id="show-socialMode"
-                    checked={isSocial}
-                    onCheckedChange={setIsSocial}
-                  />
-                </div>
-              )}
             </CardTitle>
+            {user && user.id === photo.ownerId && (
+              <div className="w-8 flex-none">
+                <OwnerDropdownMenu
+                  isSocial={isSocial}
+                  setIsSocial={setIsSocial}
+                  isDeleting={deleteMutation.isPending}
+                  handleDelete={handleDelete}
+                  entityId={photo.id}
+                  entityType="Photos"
+                />
+              </div>
+            )}
           </div>
 
           {/* Photo Upload and Capture Date */}
@@ -309,7 +305,7 @@ export default function PhotoCard({
                   disabled={deleteMutation.isPending}
                 >
                   {deleteMutation.isPending ? (
-                    <Loader2 size={20} className="animate-spin" />
+                    <SpinningLoader className="h-5 w-5 animate-spin" />
                   ) : (
                     <Trash2 size={20} />
                   )}
