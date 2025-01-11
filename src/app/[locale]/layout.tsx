@@ -68,7 +68,7 @@ export default async function AppLayout(props: AppLayoutProps) {
             <SessionProvider>
               <TRPCReactProvider>
                 <Toaster />
-                <div className="relative mx-auto flex h-screen max-w-7xl flex-col">
+                <div className="relative mx-auto flex max-w-7xl flex-col">
                   <MainNavigationBar />
                   <div className="flex-1">{props.children}</div>
                   <ChatButton />
