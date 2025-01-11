@@ -6,6 +6,7 @@ export const PaginationItemsPerPage = {
   PHOTOS_PER_PAGE: 6,
   PLANTS_PER_PAGE: 6,
   GROWS_PER_PAGE: 6,
+  PUBLIC_GROWS_PER_PAGE: 2,
 };
 
 export const modulePaths = {

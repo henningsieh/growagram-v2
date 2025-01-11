@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useCallback, useEffect, useRef } from "react";
+import { PaginationItemsPerPage } from "~/assets/constants";
 import InfiniteScrollLoader from "~/components/Layouts/InfiniteScrollLoader";
 import SpinningLoader from "~/components/Layouts/loader";
 import { GrowCard } from "~/components/features/Grows/grow-card";
@@ -17,7 +18,7 @@ export default function PublicGrowsPage() {
     fetchNextPage,
   } = api.grows.getAllGrows.useInfiniteQuery(
     {
-      limit: 2,
+      limit: PaginationItemsPerPage.PUBLIC_GROWS_PER_PAGE,
     } satisfies GetAllGrowsInput,
     {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
