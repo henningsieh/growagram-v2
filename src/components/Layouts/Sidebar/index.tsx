@@ -11,6 +11,7 @@ import {
   Sparkles,
   UserPen,
 } from "lucide-react";
+import { type Session } from "next-auth";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
@@ -68,9 +69,6 @@ export default function ProtectedSidebar({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const t = useTranslations();
-  const isMobile = useIsMobile();
-
   const { data: session, status } = useSession();
 
   if (status === "loading") {
@@ -83,89 +81,110 @@ export default function ProtectedSidebar({
     return (
       <SidebarProvider className="relative min-h-[calc(100svh-4rem)]">
         {/* Main sidebar with floating, collapsible design */}
-        <Sidebar
-          collapsible="icon"
-          variant="floating"
-          className="sticky top-14 h-[calc(100svh-4rem)] flex-shrink-0"
-        >
-          {/* Sidebar Header: Team Switcher */}
-          <SidebarHeader>
-            <TeamSwitcher teams={sidebarItems.teams} />
-          </SidebarHeader>
-          {/* Main Navigation Content */}
-          <SidebarContent>
-            {/* Dashboard Group */}
-            <SidebarGroup>
-              {/* Main Navigation Menu with Collapsible Items */}
-              <SidebarMenu>
-                {/* Dashboard Button */}
-                <Collapsible asChild className="group/collapsible">
+        <ProtectedSidebarContent session={session}>
+          {children}
+        </ProtectedSidebarContent>
+      </SidebarProvider>
+    );
+  }
+}
+
+function ProtectedSidebarContent({
+  session,
+  children,
+}: {
+  session: Session;
+  children: React.ReactNode;
+}) {
+  const t = useTranslations();
+  const { isMobile, state, openMobile, setOpenMobile, toggleSidebar } =
+    useSidebar();
+
+  return (
+    <>
+      <Sidebar
+        collapsible="icon"
+        variant="floating"
+        className="sticky top-14 h-[calc(100svh-4rem)] flex-shrink-0"
+      >
+        {/* Sidebar Header: Team Switcher */}
+        <SidebarHeader>
+          <TeamSwitcher teams={sidebarItems.teams} />
+        </SidebarHeader>
+        {/* Main Navigation Content */}
+        <SidebarContent>
+          {/* Dashboard Group */}
+          <SidebarGroup>
+            {/* Main Navigation Menu with Collapsible Items */}
+            <SidebarMenu>
+              {/* Dashboard Button */}
+              <Collapsible asChild className="group/collapsible">
+                <SidebarMenuItem>
+                  <CollapsibleTrigger asChild>
+                    <Link href={modulePaths.DASHBOARD.path}>
+                      <SidebarMenuButton
+                        tooltip={t("Platform.Dashboard-title")}
+                      >
+                        <Gauge />
+                        <span>{t("Platform.Dashboard-title")}</span>
+                        <ChevronRight className="ml-auto transition-transform duration-200" />
+                      </SidebarMenuButton>
+                    </Link>
+                  </CollapsibleTrigger>
+                </SidebarMenuItem>
+              </Collapsible>
+              {sidebarItems.navMain.map((item) => (
+                <Collapsible
+                  key={item.title}
+                  asChild
+                  defaultOpen={item.isActive}
+                  className="group/collapsible"
+                >
                   <SidebarMenuItem>
                     <CollapsibleTrigger asChild>
-                      <Link href={modulePaths.DASHBOARD.path}>
-                        <SidebarMenuButton
-                          tooltip={t("Platform.Dashboard-title")}
-                        >
-                          <Gauge />
-                          <span>{t("Platform.Dashboard-title")}</span>
-                          <ChevronRight className="ml-auto transition-transform duration-200" />
-                        </SidebarMenuButton>
-                      </Link>
+                      {/* <Link href={item.url}> */}
+                      <SidebarMenuButton tooltip={item.title}>
+                        {item.icon && <item.icon />}
+                        <span>{item.title}</span>
+                        <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                      </SidebarMenuButton>
+                      {/* </Link> */}
                     </CollapsibleTrigger>
+                    <CollapsibleContent onClick={() => toggleSidebar()}>
+                      <SidebarMenuSub>
+                        {item.items?.map((subItem) => (
+                          <SidebarMenuSubItem key={subItem.title}>
+                            <SidebarMenuSubButton asChild>
+                              <Link href={subItem.url}>
+                                <span>{subItem.title}</span>
+                              </Link>
+                            </SidebarMenuSubButton>
+                          </SidebarMenuSubItem>
+                        ))}
+                      </SidebarMenuSub>
+                    </CollapsibleContent>
                   </SidebarMenuItem>
                 </Collapsible>
-                {sidebarItems.navMain.map((item) => (
-                  <Collapsible
-                    key={item.title}
-                    asChild
-                    defaultOpen={item.isActive}
-                    className="group/collapsible"
-                  >
-                    <SidebarMenuItem>
-                      <CollapsibleTrigger asChild>
-                        {/* <Link href={item.url}> */}
-                        <SidebarMenuButton tooltip={item.title}>
-                          {item.icon && <item.icon />}
-                          <span>{item.title}</span>
-                          <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-                        </SidebarMenuButton>
-                        {/* </Link> */}
-                      </CollapsibleTrigger>
-                      <CollapsibleContent>
-                        <SidebarMenuSub>
-                          {item.items?.map((subItem) => (
-                            <SidebarMenuSubItem key={subItem.title}>
-                              <SidebarMenuSubButton asChild>
-                                <Link href={subItem.url}>
-                                  <span>{subItem.title}</span>
-                                </Link>
-                              </SidebarMenuSubButton>
-                            </SidebarMenuSubItem>
-                          ))}
-                        </SidebarMenuSub>
-                      </CollapsibleContent>
-                    </SidebarMenuItem>
-                  </Collapsible>
-                ))}
-              </SidebarMenu>
-            </SidebarGroup>
+              ))}
+            </SidebarMenu>
+          </SidebarGroup>
 
-            {/* Projects Group */}
-            <SidebarGroup className="text-muted-foreground group-data-[collapsible=icon]:hidden">
-              <SidebarGroupLabel>{t("Platform.coming-soon")}</SidebarGroupLabel>
-              <SidebarMenu>
-                {/* Project Items with Dropdown Actions */}
-                {sidebarItems.projects.map((item) => (
-                  <SidebarMenuItem key={item.name}>
-                    <SidebarMenuButton asChild className="cursor-pointer">
-                      <div>
-                        {/* <Link href={item.url}> */}
-                        <item.icon />
-                        <span>{item.name}</span>
-                        {/* </Link> */}
-                      </div>
-                    </SidebarMenuButton>
-                    {/* <DropdownMenu>
+          {/* Projects Group */}
+          <SidebarGroup className="text-muted-foreground group-data-[collapsible=icon]:hidden">
+            <SidebarGroupLabel>{t("Platform.coming-soon")}</SidebarGroupLabel>
+            <SidebarMenu>
+              {/* Project Items with Dropdown Actions */}
+              {sidebarItems.projects.map((item) => (
+                <SidebarMenuItem key={item.name}>
+                  <SidebarMenuButton asChild className="cursor-pointer">
+                    <div>
+                      {/* <Link href={item.url}> */}
+                      <item.icon />
+                      <span>{item.name}</span>
+                      {/* </Link> */}
+                    </div>
+                  </SidebarMenuButton>
+                  {/* <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <SidebarMenuAction showOnHover>
                           <MoreHorizontal />
@@ -177,8 +196,8 @@ export default function ProtectedSidebar({
                         side="bottom"
                         align="end"
                       > */}
-                    {/* Project Action Items */}
-                    {/* <DropdownMenuItem>
+                  {/* Project Action Items */}
+                  {/* <DropdownMenuItem>
                           <Folder className="text-muted-foreground" />
                           <span>View Project</span>
                         </DropdownMenuItem>
@@ -193,32 +212,62 @@ export default function ProtectedSidebar({
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu> */}
-                  </SidebarMenuItem>
-                ))}
+                </SidebarMenuItem>
+              ))}
 
-                {/* Additional Projects Option */}
-                {/* <SidebarMenuItem>
+              {/* Additional Projects Option */}
+              {/* <SidebarMenuItem>
                   <SidebarMenuButton className="text-sidebar-foreground/70">
                     <MoreHorizontal className="text-sidebar-foreground/70" />
                     <span>More</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem> */}
-              </SidebarMenu>
-            </SidebarGroup>
-          </SidebarContent>
+            </SidebarMenu>
+          </SidebarGroup>
+        </SidebarContent>
 
-          {/* User Profile Footer */}
-          <SidebarFooter>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    {/* User Profile Trigger */}
-                    <SidebarMenuButton
-                      size="lg"
-                      className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-                    >
-                      {/* User Avatar and Details */}
+        {/* User Profile Footer */}
+        <SidebarFooter>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  {/* User Profile Trigger */}
+                  <SidebarMenuButton
+                    size="lg"
+                    className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                  >
+                    {/* User Avatar and Details */}
+                    <CustomAvatar
+                      size={32}
+                      src={session.user.image ?? undefined}
+                      alt={session.user.username ?? "User avatar"}
+                      fallback={session.user.name?.[0] || "?"}
+                    />
+                    <div className="grid flex-1 text-left text-sm leading-tight">
+                      <span className="truncate font-semibold">
+                        {session.user.name as string}
+                      </span>
+                      <span className="truncate text-xs">
+                        @{session.user.username as string}
+                      </span>
+                    </div>
+                    <ChevronsUpDown className="ml-auto size-4" />
+                  </SidebarMenuButton>
+                </DropdownMenuTrigger>
+
+                {/* User Profile Dropdown Content */}
+                <DropdownMenuContent
+                  onClick={() => toggleSidebar()}
+                  className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-sm"
+                  // side="right"
+                  side={isMobile ? "bottom" : "right"}
+                  align="end"
+                  sideOffset={4}
+                >
+                  {/* Repeated User Profile Header */}
+                  <DropdownMenuLabel className="p-0 font-normal">
+                    <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                       <CustomAvatar
                         size={32}
                         src={session.user.image ?? undefined}
@@ -230,106 +279,74 @@ export default function ProtectedSidebar({
                           {session.user.name as string}
                         </span>
                         <span className="truncate text-xs">
-                          @{session.user.username as string}
+                          {
+                            // eslint-disable-next-line react/jsx-no-literals
+                            `@${session.user.username as string}`
+                          }
                         </span>
                       </div>
-                      <ChevronsUpDown className="ml-auto size-4" />
-                    </SidebarMenuButton>
-                  </DropdownMenuTrigger>
+                    </div>
+                  </DropdownMenuLabel>
 
-                  {/* User Profile Dropdown Content */}
-                  <DropdownMenuContent
-                    className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-sm"
-                    // side="right"
-                    side={isMobile ? "bottom" : "right"}
-                    align="end"
-                    sideOffset={4}
-                  >
-                    {/* Repeated User Profile Header */}
-                    <DropdownMenuLabel className="p-0 font-normal">
-                      <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                        <CustomAvatar
-                          size={32}
-                          src={session.user.image ?? undefined}
-                          alt={session.user.username ?? "User avatar"}
-                          fallback={session.user.name?.[0] || "?"}
-                        />
-                        <div className="grid flex-1 text-left text-sm leading-tight">
-                          <span className="truncate font-semibold">
-                            {session.user.name as string}
-                          </span>
-                          <span className="truncate text-xs">
-                            {
-                              // eslint-disable-next-line react/jsx-no-literals
-                              `@${session.user.username as string}`
-                            }
-                          </span>
-                        </div>
-                      </div>
-                    </DropdownMenuLabel>
-
-                    {/* User Account Actions */}
-                    <DropdownMenuSeparator />
-                    <DropdownMenuGroup>
-                      <DropdownMenuItem className="text-yellow-500 focus:bg-yellow-600/50 focus:text-white">
-                        <Sparkles />
-                        Upgrade to Pro
-                      </DropdownMenuItem>
-                    </DropdownMenuGroup>
-
-                    <DropdownMenuSeparator />
-                    <DropdownMenuGroup>
-                      <Link href="/account">
-                        <DropdownMenuItem className="cursor-pointer">
-                          <UserPen />
-                          Account
-                        </DropdownMenuItem>
-                      </Link>
-
-                      <DropdownMenuItem>
-                        <Bell />
-                        Notifications
-                      </DropdownMenuItem>
-                    </DropdownMenuGroup>
-
-                    <DropdownMenuSeparator />
-
-                    {/* Sign Out Action */}
-                    <DropdownMenuItem
-                      onClick={async () => await handleSignOut()}
-                    >
-                      <LogOut />
-                      Log out
+                  {/* User Account Actions */}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuGroup>
+                    <DropdownMenuItem className="text-yellow-500 focus:bg-yellow-600/50 focus:text-white">
+                      <Sparkles />
+                      Upgrade to Pro
                     </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarFooter>
+                  </DropdownMenuGroup>
 
-          {/* Sidebar Rail for Additional Navigation */}
-          <SidebarRail />
-        </Sidebar>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuGroup>
+                    <Link href="/account">
+                      <DropdownMenuItem className="cursor-pointer">
+                        <UserPen />
+                        Account
+                      </DropdownMenuItem>
+                    </Link>
 
-        {/* Sidebar Inset: Content Area */}
-        <SidebarInset className="min-h-[calc(100svh-4rem)]">
-          {/* Sticky Header with Sidebar Toggle and Breadcrumbs */}
-          <header className="sticky top-14 z-10 flex h-14 shrink-0 items-center justify-between gap-2 bg-background/90 backdrop-blur">
-            <div className="flex items-center gap-2 pl-2 md:pl-1 lg:pl-3 xl:pl-5">
-              <SidebarTrigger className="text-primary" />
-              <Separator orientation="vertical" className="h-5" />
-              <NavigationBreadcrumb />
-            </div>
-          </header>
+                    <DropdownMenuItem>
+                      <Bell />
+                      Notifications
+                    </DropdownMenuItem>
+                  </DropdownMenuGroup>
 
-          {/* Main Content Area */}
-          <div className="flex flex-col gap-2 pt-0">
-            <div className="rounded-sm">{children}</div>
+                  <DropdownMenuSeparator />
+
+                  {/* Sign Out Action */}
+                  <DropdownMenuItem onClick={async () => await handleSignOut()}>
+                    <LogOut />
+                    Log out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarFooter>
+
+        {/* Sidebar Rail for Additional Navigation */}
+        <SidebarRail />
+      </Sidebar>
+
+      {/* Sidebar Inset: Content Area */}
+      <SidebarInset className="min-h-[calc(100svh-4rem)]">
+        {/* Sticky Header with Sidebar Toggle and Breadcrumbs */}
+        <header className="sticky top-14 z-10 flex h-14 shrink-0 items-center justify-between gap-2 bg-background/90 backdrop-blur">
+          <div className="flex items-center gap-2 pl-2 md:pl-1 lg:pl-3 xl:pl-5">
+            <SidebarTrigger className="text-primary" />
+            <Separator orientation="vertical" className="h-5" />
+            <NavigationBreadcrumb />
           </div>
-        </SidebarInset>
-      </SidebarProvider>
-    );
-  }
+        </header>
+
+        {/* Main Content Area */}
+        <div className="flex flex-col gap-2 pt-0">
+          <div className="rounded-sm">{children}</div>
+        </div>
+      </SidebarInset>
+    </>
+  );
 }
 
 /**
