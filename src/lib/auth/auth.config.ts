@@ -88,7 +88,7 @@ export default {
       return session;
     },
 
-    async jwt({ token, user, trigger, session }) {
+    async jwt({ token, user, trigger, session, account }) {
       // console.debug("async jwt callback: ", { token });
 
       // When user first logs in or during token refresh, fetch additional user details

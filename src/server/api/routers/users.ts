@@ -9,7 +9,7 @@ import {
   publicProcedure,
 } from "~/server/api/trpc";
 import { UserRoles } from "~/types/user";
-import { userEditSchema } from "~/types/zodSchema";
+import { updateTokensSchema, userEditSchema } from "~/types/zodSchema";
 
 export const userRouter = createTRPCRouter({
   // Get all users (public procedure)
@@ -103,5 +103,40 @@ export const userRouter = createTRPCRouter({
       });
 
       return { isUnique: !existingUser };
+    }),
+
+  updateUserTokens: protectedProcedure
+    .input(updateTokensSchema)
+    .mutation(async ({ ctx, input }) => {
+      // Ensure the user is updating their own tokens or is an admin
+      if (
+        input.userId !== ctx.session.user.id &&
+        ctx.session.user.role !== UserRoles.ADMIN
+      ) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "You can only update your own tokens",
+        });
+      }
+
+      const updatedUser = await ctx.db
+        .update(users)
+        .set({
+          steadyAccessToken: input.accessToken,
+          steadyRefreshToken: input.refreshToken,
+          steadyTokenExpiresAt: new Date(Date.now() + input.expiresIn * 1000),
+          steadyRefreshTokenExpiresAt: new Date(
+            Date.now() + input.refreshTokenExpiresIn * 1000,
+          ),
+          updatedAt: new Date(),
+        })
+        .where(eq(users.id, input.userId))
+        .returning({
+          id: users.id,
+          steadyAccessToken: users.steadyAccessToken,
+          steadyTokenExpiresAt: users.steadyTokenExpiresAt,
+        });
+
+      return updatedUser[0];
     }),
 });

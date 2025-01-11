@@ -54,6 +54,19 @@ export const users = pgTable(
     })
       .default(UserRoles.USER) // Use the TS enum for the default value
       .notNull(),
+    steadyAccessToken: text(),
+    steadyTokenExpiresAt: timestamp("steady_token_expires_at"),
+    steadyRefreshToken: text(),
+    steadyRefreshTokenExpiresAt: timestamp("steady_refresh_token_expires_at", {
+      withTimezone: true,
+    }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .$onUpdate(() => new Date())
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
   },
   (table) => ({
     // Unique indexes for fast lookups on unique fields

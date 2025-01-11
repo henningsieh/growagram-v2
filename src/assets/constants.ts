@@ -14,6 +14,11 @@ export const modulePaths = {
     path: "/dashboard",
     protected: true,
   },
+  PREMIUM: {
+    name: "Premium",
+    path: "/premium",
+    protected: true,
+  },
   GROWS: {
     name: "Grows",
     path: "/grows",

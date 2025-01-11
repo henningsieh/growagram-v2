@@ -258,5 +258,40 @@
     "light": "Light",
     "system": "System",
     "toggle-theme": "Toggle theme"
+  },
+  "Premium": {
+    "premium-title": "Unlock Premium Features",
+    "premium-subtitle": "Enhance your growing experience with exclusive benefits",
+    "unlock-premium-content": "Elevate Your Growing Journey",
+    "get-exclusive-access": "Get exclusive access to premium features and support our community!",
+    "connect-steady-button": "Connect with Steady",
+    "ready-to-go-premium": "Ready to Go Premium?",
+    "benefits": {
+      "title": "Premium Benefits",
+      "exclusive-content": "Exclusive premium content",
+      "ad-free-experience": "Ad-free experience",
+      "early-access": "Early access to new features",
+      "priority-support": "Priority support",
+      "community-access": "Advanced community forums access"
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "how-subscription-works": {
+        "question": "How does the premium subscription work?",
+        "answer": "Our premium subscription is managed through Steady. Once you connect your Steady account, you'll have immediate access to all premium features."
+      },
+      "cancel-subscription": {
+        "question": "Can I cancel my subscription at any time?",
+        "answer": "Yes, you can cancel your subscription at any time through your Steady account. Your premium access will continue until the end of your current billing period."
+      },
+      "payment-methods": {
+        "question": "What payment methods are accepted?",
+        "answer": "Steady supports various payment methods including credit cards, PayPal, and SEPA direct debit. You can choose your preferred method during the subscription process."
+      },
+      "free-trial": {
+        "question": "Is there a free trial available?",
+        "answer": "We currently don't offer a free trial, but you can check our free content to get a taste of what we offer before subscribing."
+      }
+    }
   }
 }

@@ -258,5 +258,40 @@
     "light": "Hell",
     "system": "System",
     "toggle-theme": "Designthema umschalten"
+  },
+  "Premium": {
+    "premium-title": "Premium-Funktionen freischalten",
+    "premium-subtitle": "Verbessere deine Anbau-Erfahrung mit exklusiven Vorteilen",
+    "unlock-premium-content": "Hebe deine Anbau-Reise auf ein neues Level",
+    "get-exclusive-access": "Erhalte exklusiven Zugang zu Premium-Funktionen und unterstütze unsere Community!",
+    "connect-steady-button": "Mit Steady verbinden",
+    "ready-to-go-premium": "Bereit für Premium?",
+    "benefits": {
+      "title": "Premium-Vorteile",
+      "exclusive-content": "Exklusive Premium-Inhalte",
+      "ad-free-experience": "Werbefreie Erfahrung",
+      "early-access": "Frühzeitiger Zugang zu neuen Funktionen",
+      "priority-support": "Prioritäts-Support",
+      "community-access": "Zugang zu erweiterten Community-Foren"
+    },
+    "faq": {
+      "title": "Häufig gestellte Fragen",
+      "how-subscription-works": {
+        "question": "Wie funktioniert das Premium-Abonnement?",
+        "answer": "Unser Premium-Abonnement wird über Steady verwaltet. Sobald du deinen Steady-Account verbunden hast, erhältst du sofortigen Zugang zu allen Premium-Funktionen."
+      },
+      "cancel-subscription": {
+        "question": "Kann ich mein Abonnement jederzeit kündigen?",
+        "answer": "Ja, du kannst dein Abonnement jederzeit über deinen Steady-Account kündigen. Dein Premium-Zugang bleibt bis zum Ende deiner aktuellen Abrechnungsperiode bestehen."
+      },
+      "payment-methods": {
+        "question": "Welche Zahlungsmethoden werden akzeptiert?",
+        "answer": "Steady unterstützt verschiedene Zahlungsmethoden, einschließlich Kreditkarten, PayPal und SEPA-Lastschrift. Du kannst deine bevorzugte Methode während des Abonnement-Prozesses auswählen."
+      },
+      "free-trial": {
+        "question": "Gibt es eine kostenlose Testphase?",
+        "answer": "Derzeit bieten wir keine kostenlose Testphase an, aber du kannst unsere kostenlosen Inhalte ausprobieren, um einen Eindruck von unserem Angebot zu bekommen, bevor du abonnierst."
+      }
+    }
   }
 }
