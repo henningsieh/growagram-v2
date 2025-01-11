@@ -5,22 +5,18 @@ import {
   Bell,
   ChevronRight,
   ChevronsUpDown,
-  CreditCard,
-  Folder,
-  Forward,
   Gauge,
   LogOut,
-  MoreHorizontal,
   Plus,
   Sparkles,
-  Trash2,
   UserPen,
 } from "lucide-react";
-import { User } from "next-auth";
+import { type Session } from "next-auth";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
+import { modulePaths } from "~/assets/constants";
+import CustomAvatar from "~/components/atom/custom-avatar";
 import {
   Collapsible,
   CollapsibleContent,
@@ -46,7 +42,6 @@ import {
   SidebarHeader,
   SidebarInset,
   SidebarMenu,
-  SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarMenuSub,
@@ -62,7 +57,9 @@ import { Link } from "~/lib/i18n/routing";
 import { sidebarItems } from "~/lib/sidebar";
 import { handleSignOut } from "~/server/actions/authActions";
 
+import { sessions } from "../../../lib/db/schema";
 import { NavigationBreadcrumb } from "../Breadcrumbs";
+import SpinningLoader from "../loader";
 
 /**
  * ProtectedSidebar: Main sidebar component for authenticated users
@@ -73,14 +70,39 @@ export default function ProtectedSidebar({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const t = useTranslations();
-  const isMobile = useIsMobile();
+  const { data: session, status } = useSession();
 
-  const user = useSession().data?.user as User;
+  if (status === "loading") {
+    return <SpinningLoader />;
+  }
+
+  if (status !== "authenticated") {
+    return null;
+  } else {
+    return (
+      <SidebarProvider className="relative min-h-[calc(100svh-4rem)]">
+        {/* Main sidebar with floating, collapsible design */}
+        <ProtectedSidebarContent session={session}>
+          {children}
+        </ProtectedSidebarContent>
+      </SidebarProvider>
+    );
+  }
+}
+
+function ProtectedSidebarContent({
+  children,
+  session,
+}: {
+  children: React.ReactNode;
+  session: Session;
+}) {
+  const t = useTranslations();
+  const { isMobile, state, openMobile, setOpenMobile, toggleSidebar } =
+    useSidebar();
 
   return (
-    <SidebarProvider className="relative">
-      {/* Main sidebar with floating, collapsible design */}
+    <>
       <Sidebar
         collapsible="icon"
         variant="floating"
@@ -100,7 +122,7 @@ export default function ProtectedSidebar({
               <Collapsible asChild className="group/collapsible">
                 <SidebarMenuItem>
                   <CollapsibleTrigger asChild>
-                    <Link href="/dashboard">
+                    <Link href={modulePaths.DASHBOARD.path}>
                       <SidebarMenuButton
                         tooltip={t("Platform.Dashboard-title")}
                       >
@@ -129,7 +151,7 @@ export default function ProtectedSidebar({
                       </SidebarMenuButton>
                       {/* </Link> */}
                     </CollapsibleTrigger>
-                    <CollapsibleContent>
+                    <CollapsibleContent onClick={() => toggleSidebar()}>
                       <SidebarMenuSub>
                         {item.items?.map((subItem) => (
                           <SidebarMenuSubItem key={subItem.title}>
@@ -148,7 +170,7 @@ export default function ProtectedSidebar({
             </SidebarMenu>
           </SidebarGroup>
 
-          {/* Projects Group */}
+          {/* Coming soon Group */}
           <SidebarGroup className="text-muted-foreground group-data-[collapsible=icon]:hidden">
             <SidebarGroupLabel>{t("Platform.coming-soon")}</SidebarGroupLabel>
             <SidebarMenu>
@@ -164,43 +186,43 @@ export default function ProtectedSidebar({
                     </div>
                   </SidebarMenuButton>
                   {/* <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <SidebarMenuAction showOnHover>
-                        <MoreHorizontal />
-                        <span className="sr-only">{t("Platform.more")}</span>
-                      </SidebarMenuAction>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent
-                      className="w-48 rounded-sm"
-                      side="bottom"
-                      align="end"
-                    > */}
+                      <DropdownMenuTrigger asChild>
+                        <SidebarMenuAction showOnHover>
+                          <MoreHorizontal />
+                          <span className="sr-only">{t("Platform.more")}</span>
+                        </SidebarMenuAction>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent
+                        className="w-48 rounded-sm"
+                        side="bottom"
+                        align="end"
+                      > */}
                   {/* Project Action Items */}
                   {/* <DropdownMenuItem>
-                        <Folder className="text-muted-foreground" />
-                        <span>View Project</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <Forward className="text-muted-foreground" />
-                        <span>Share Project</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem>
-                        <Trash2 className="text-muted-foreground" />
-                        <span>Delete Project</span>
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu> */}
+                          <Folder className="text-muted-foreground" />
+                          <span>View Project</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                          <Forward className="text-muted-foreground" />
+                          <span>Share Project</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem>
+                          <Trash2 className="text-muted-foreground" />
+                          <span>Delete Project</span>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu> */}
                 </SidebarMenuItem>
               ))}
 
               {/* Additional Projects Option */}
               {/* <SidebarMenuItem>
-                <SidebarMenuButton className="text-sidebar-foreground/70">
-                  <MoreHorizontal className="text-sidebar-foreground/70" />
-                  <span>More</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem> */}
+                    <SidebarMenuButton className="text-sidebar-foreground/70">
+                      <MoreHorizontal className="text-sidebar-foreground/70" />
+                      <span>More</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem> */}
             </SidebarMenu>
           </SidebarGroup>
         </SidebarContent>
@@ -217,21 +239,18 @@ export default function ProtectedSidebar({
                     className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                   >
                     {/* User Avatar and Details */}
-                    <Avatar className="h-8 w-8 rounded-sm">
-                      <AvatarImage
-                        src={user && (user.image as string)}
-                        alt={user && (user.name as string)}
-                      />
-                      <AvatarFallback className="rounded-sm">
-                        {user?.username?.[0]?.toUpperCase() ?? "G"}
-                      </AvatarFallback>
-                    </Avatar>
+                    <CustomAvatar
+                      size={32}
+                      src={session.user.image ?? undefined}
+                      alt={session.user.username ?? "User avatar"}
+                      fallback={session.user.name?.[0] || "?"}
+                    />
                     <div className="grid flex-1 text-left text-sm leading-tight">
                       <span className="truncate font-semibold">
-                        {user && (user.name as string)}
+                        {session.user.name as string}
                       </span>
                       <span className="truncate text-xs">
-                        @{user && (user.username as string)}
+                        @{session.user.username as string}
                       </span>
                     </div>
                     <ChevronsUpDown className="ml-auto size-4" />
@@ -245,25 +264,26 @@ export default function ProtectedSidebar({
                   side={isMobile ? "bottom" : "right"}
                   align="end"
                   sideOffset={4}
+                  onClick={() => toggleSidebar()}
                 >
                   {/* Repeated User Profile Header */}
                   <DropdownMenuLabel className="p-0 font-normal">
                     <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                      <Avatar className="h-8 w-8 rounded-sm">
-                        <AvatarImage
-                          src={user && (user.image as string)}
-                          alt={`@${user && (user.username as string)}`}
-                        />
-                        <AvatarFallback className="rounded-sm">
-                          {user?.username?.[0]?.toUpperCase() ?? "G"}
-                        </AvatarFallback>
-                      </Avatar>
+                      <CustomAvatar
+                        size={32}
+                        src={session.user.image ?? undefined}
+                        alt={session.user.username ?? "User avatar"}
+                        fallback={session.user.name?.[0] || "?"}
+                      />
                       <div className="grid flex-1 text-left text-sm leading-tight">
                         <span className="truncate font-semibold">
-                          {user && (user.name as string)}
+                          {session.user.name as string}
                         </span>
                         <span className="truncate text-xs">
-                          {`@${user && (user.username as string)}`}
+                          {
+                            // eslint-disable-next-line react/jsx-no-literals
+                            `@${session.user.username as string}`
+                          }
                         </span>
                       </div>
                     </div>
@@ -309,9 +329,8 @@ export default function ProtectedSidebar({
         {/* Sidebar Rail for Additional Navigation */}
         <SidebarRail />
       </Sidebar>
-
       {/* Sidebar Inset: Content Area */}
-      <SidebarInset>
+      <SidebarInset className="min-h-[calc(100svh-4rem)]">
         {/* Sticky Header with Sidebar Toggle and Breadcrumbs */}
         <header className="sticky top-14 z-10 flex h-14 shrink-0 items-center justify-between gap-2 bg-background/90 backdrop-blur">
           <div className="flex items-center gap-2 pl-2 md:pl-1 lg:pl-3 xl:pl-5">
@@ -326,7 +345,7 @@ export default function ProtectedSidebar({
           <div className="rounded-sm">{children}</div>
         </div>
       </SidebarInset>
-    </SidebarProvider>
+    </>
   );
 }
 
