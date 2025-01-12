@@ -23,5 +23,5 @@ export default async function PublicPlantByIdLayout({
 
   await api.plants.getById.prefetch(plantByIdQuery);
 
-  return <HydrateClient>{children}</HydrateClient>;
+  return children;
 }

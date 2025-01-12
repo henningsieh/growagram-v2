@@ -6,6 +6,7 @@ import { Check, Flower2 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
+import { modulePaths } from "~/assets/constants";
 import FormContent from "~/components/Layouts/form-content";
 import SpinningLoader from "~/components/Layouts/loader";
 import PageHeader from "~/components/Layouts/page-header";
@@ -164,7 +165,7 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
         description: "Plants updated successfully",
       });
       await utils.photos.getOwnPhotos.invalidate();
-      router.push("/photos");
+      router.push(modulePaths.PHOTOS.path);
     } catch (error) {
       // Show error toast when any operation fails
       toast({
@@ -200,7 +201,7 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
       title={t("title")}
       subtitle={t("subtitle")}
       buttonLabel={t("buttonBackLabel")}
-      buttonLink="/photos"
+      buttonLink={modulePaths.PHOTOS.path}
       searchParams={allPhotosQuery ?? undefined}
     >
       <FormContent>

@@ -17,6 +17,7 @@ import { useLocale } from "next-intl";
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import { modulePaths } from "~/assets/constants";
 import SpinningLoader from "~/components/Layouts/loader";
 import { RESPONSIVE_IMAGE_SIZES } from "~/components/Layouts/responsive-grid";
 import AvatarCardHeader from "~/components/atom/avatar-card-header";
@@ -193,20 +194,20 @@ export default function PhotoCard({
         </div>
 
         <CardContent
-          className={`grid gap-4 ${isSocial ? "ml-11 pl-0 pr-2" : "p-2"}`}
+          className={`grid gap-2 ${isSocial ? "ml-11 pl-0 pr-2" : "p-2"}`}
         >
           {/* Title Link and OwnerDropdownMenu */}
           <div className="grid grid-cols-[1fr,auto] items-center gap-2">
-            <CardTitle as="h2" className="min-w-0 overflow-hidden">
-              <Button asChild variant="link" className="p-0">
+            <CardTitle as="h2" className="min-w-0 overflow-hidden text-lg">
+              <Button asChild variant="link" className="h-9 p-0">
                 <Link
                   href={`/public/photos/${photo.id}`}
                   className="flex items-center gap-2"
                 >
                   <FileIcon className="flex-shrink-0" size={20} />
-                  <h3 className="truncate text-xl font-bold">
+                  <div className="truncate font-mono font-bold">
                     {photo.originalFilename}
-                  </h3>
+                  </div>
                 </Link>
               </Button>
             </CardTitle>
@@ -276,66 +277,66 @@ export default function PhotoCard({
           </TooltipProvider>
         </CardContent>
 
-        {isSocial ? (
-          <SocialCardFooter
-            className={`pb-2 pr-2 ${isSocial && "ml-14"}`}
-            entityId={photo.id}
-            entityType={LikeableEntityType.Photo}
-            initialLiked={isLiked}
-            isLikeStatusLoading={isLoading}
-            commentCountLoading={commentCountLoading}
-            stats={{
-              comments: commentCount,
-              views: 0,
-              likes: likeCount,
-            }}
-            toggleComments={toggleComments}
-          />
-        ) : (
-          user &&
-          user.id === photo.ownerId && (
-            <>
-              <Separator />
-              <CardFooter className="flex w-full justify-between gap-1 p-1">
-                <Button
-                  variant="destructive"
-                  size={"sm"}
-                  className="w-16"
-                  onClick={handleDelete}
-                  disabled={deleteMutation.isPending}
-                >
-                  {deleteMutation.isPending ? (
-                    <SpinningLoader className="h-5 w-5 animate-spin" />
-                  ) : (
-                    <Trash2 size={20} />
-                  )}
-                </Button>
-                <Button
-                  asChild
-                  size={"sm"}
-                  className="w-full text-base"
-                  variant={!!!photo.plantImages.length ? "primary" : "outline"}
-                >
-                  <Link
-                    href={{
-                      pathname: `/photos/${photo.id}/identify-plants`,
-                      query: currentQuery,
-                    }}
-                  >
-                    {!!!photo.plantImages.length ? (
-                      <Search size={20} />
-                    ) : (
-                      <Edit size={20} />
-                    )}
-                    {!!!photo.plantImages.length
-                      ? "Select Plants"
-                      : "Edit Plants"}
-                  </Link>
-                </Button>
-              </CardFooter>
-            </>
-          )
-        )}
+        {
+          isSocial ? (
+            <SocialCardFooter
+              className={`pb-2 pr-2 ${isSocial && "ml-14"}`}
+              entityId={photo.id}
+              entityType={LikeableEntityType.Photo}
+              initialLiked={isLiked}
+              isLikeStatusLoading={isLoading}
+              commentCountLoading={commentCountLoading}
+              stats={{
+                comments: commentCount,
+                views: 0,
+                likes: likeCount,
+              }}
+              toggleComments={toggleComments}
+            />
+          ) : undefined
+          // user?.id === photo.ownerId && (
+          //   <>
+          //     <Separator />
+          //     <CardFooter className="flex w-full justify-between gap-1 p-1">
+          //       <Button
+          //         variant="destructive"
+          //         size={"sm"}
+          //         className="w-16"
+          //         onClick={handleDelete}
+          //         disabled={deleteMutation.isPending}
+          //       >
+          //         {deleteMutation.isPending ? (
+          //           <SpinningLoader className="h-5 w-5 animate-spin" />
+          //         ) : (
+          //           <Trash2 size={20} />
+          //         )}
+          //       </Button>
+          //       <Button
+          //         asChild
+          //         size={"sm"}
+          //         className="w-full text-base"
+          //         variant={!!!photo.plantImages.length ? "primary" : "outline"}
+          //       >
+          //         <Link
+          //           href={{
+          //             pathname: `${modulePaths.PHOTOS.path}/${photo.id}/form`,
+          //             query: currentQuery,
+          //           }}
+          //         >
+          //           {!!!photo.plantImages.length ? (
+          //             <Search size={20} />
+          //           ) : (
+          //             <Edit size={20} />
+          //           )}
+          //           {!!!photo.plantImages.length
+          //             ? "Select Plants"
+          //             : "Edit Plants"}
+          //         </Link>
+          //       </Button>
+          //     </CardFooter>
+          //   </>
+          // )
+        }
 
         {isSocial && isCommentsOpen && (
           <Comments

@@ -63,8 +63,10 @@
     "buttonLabel-create-grow": "Grow erstellen",
     "buttonLabel-save-changes": "Änderungen speichern",
     "connect-error": "Fehler beim Verbinden der Pflanze",
+    "delete-button-label": "Grow löschen",
     "delete-grow-button-label": "Grow löschen",
     "disconnect-error": "Fehler beim Trennen der Pflanze",
+    "edit-button-label": "Grow bearbeiten",
     "edit-grow-button-label": "Grow bearbeiten",
     "error-default": "Etwas ist schiefgelaufen. Bitte versuche es später erneut.",
     "error-title": "Ein Fehler ist aufgetreten",
@@ -98,9 +100,7 @@
     "success-description-create": "Der Grow wurde erfolgreich erstellt.",
     "success-description-edit": "Der Grow wurde erfolgreich aktualisiert.",
     "success-title": "Erfolg!",
-    "unexpected-error": "Ein unerwarteter Fehler ist aufgetreten.",
-    "edit-button-label": "Grow bearbeiten",
-    "delete-button-label": "Grow löschen"
+    "unexpected-error": "Ein unerwarteter Fehler ist aufgetreten."
   },
   "HomePage": {
     "about": "gehe zur Zeitleiste",
@@ -169,11 +169,9 @@
     "dashboard-description": "Erfasse deine Grows und deine Pflanzen einschließlich Hochladen der Fotos.",
     "discover": "Entdecken",
     "grower-menu": "Anbauplattform",
-    "home": "Home",
     "grows": "Alle Grows",
     "grows-description": "Hier siehst du, was andere anbauen und wie sie es machen.",
-    "plants": "Alle Pflanzen",
-    "plants-description": "Entdecke, welche Pflanzen andere gerade großziehen.",
+    "home": "Home",
     "my-grows": "Meine Grows",
     "my-grows-subline": "Verwalte und gruppiere deine Pflanzen in Grows.",
     "my-photos": "Meine Fotos",
@@ -181,35 +179,44 @@
     "my-plants": "Meine Pflanzen",
     "my-plants-subline": "Verwalte und bearbeite deine Pflanzen.",
     "navigation": "Navigation",
+    "plants": "Alle Pflanzen",
+    "plants-description": "Entdecke, welche Pflanzen andere gerade großziehen.",
     "timeline": "Zeitleiste",
     "timeline-description": "Social Media Zeitachse (Funktion in Kürze)",
     "toggle-menu": "Menü umschalten"
   },
   "Photos": {
-    "public-link-label": "Öffnen im neuen Tab",
-    "edit-button-label": "Foto bearbeiten",
-    "delete-button-label": "Foto löschen",
     "button": {
       "connecting": "Pflanzen werden verbunden...",
       "removeAll": "Alle Pflanzen entfernen",
       "save": "Pflanzenauswahl speichern ({count})"
     },
+    "button-label-upload-photos": "Hochladen",
     "buttonBackLabel": "Zurück",
+    "capture-date": "aufgenommen",
+    "delete-button-label": "Foto löschen",
+    "edit-button-label": "Foto bearbeiten",
+    "my-Photos": "Meine Fotos",
+    "my-Photos-subtitle": "Anzeige und Verwaltung meiner Fotos",
     "plantSelection": {
       "description": "Wähle jede Pflanze aus, die du auf dem Foto sehen kannst!",
       "title": "Pflanzenauswahl"
     },
+    "public-link-label": "Öffnen im neuen Tab",
     "search": {
       "noResults": "Keine Ergebnisse gefunden.",
       "placeholder": "Pflanzen suchen..."
     },
     "subtitle": "Welche Pflanzen siehst du auf diesem Foto?",
-    "title": "Pflanzen identifizieren"
+    "title": "Pflanzen identifizieren",
+    "uploaded-at": "hochgeladen"
   },
   "Plants": {
     "breeder": "Züchter / Breeder",
     "curing-start-date": "Startdatum der Aushärtephase",
+    "delete-button-label": "Pflanze löschen",
     "delete-plant-button-label": "Pflanze löschen",
+    "edit-button-label": "Pflanze bearbeiten",
     "edit-plant-button-label": "Pflanze bearbeiten",
     "estimated-harvest": "Voraussichtliche Ernte",
     "flowering-start-date": "Startdatum der Blüte",
@@ -243,9 +250,7 @@
     "title": "Meine Pflanzen",
     "until": "bis",
     "user-has-no-plants": "Du hast bisher keine Pflanzen hinzugefügt.",
-    "vegetation-start-date": "Startdatum der Wachstumsphase",
-    "edit-button-label": "Pflanze bearbeiten",
-    "delete-button-label": "Pflanze löschen"
+    "vegetation-start-date": "Startdatum der Wachstumsphase"
   },
   "Platform": {
     "Dashboard-title": "Dashboard",

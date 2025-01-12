@@ -1,12 +1,13 @@
+// src/app/[locale]/(protected)/plants/layout.tsx:
 import { PaginationItemsPerPage } from "~/assets/constants";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
-import { HydrateClient, api } from "~/lib/trpc/server";
+import { api } from "~/lib/trpc/server";
 import { GetOwnPlantsInput } from "~/server/api/root";
 import { PlantsSortField } from "~/types/plant";
 
 export const metadata = {
-  title: "Grower's Plattform | Plants",
-  description: "Grower's Plattform | Plants",
+  title: "Grower's Plattform | My Plants",
+  description: "Grower's Plattform | My Plants",
 };
 
 export default async function PlantsLayout({
@@ -30,5 +31,5 @@ export default async function PlantsLayout({
     sortOrder: SortOrder.ASC,
   } satisfies GetOwnPlantsInput);
 
-  return <HydrateClient>{children}</HydrateClient>;
+  return children;
 }

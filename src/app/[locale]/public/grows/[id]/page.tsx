@@ -15,7 +15,10 @@ export default async function PublicGrowByIdPage({
     id: growId,
   } satisfies GetGrowByIdInput);
 
-  if (grow === undefined) notFound();
+  // If grow is not found, return 404
+  if (!grow) {
+    notFound();
+  }
 
   return (
     <>

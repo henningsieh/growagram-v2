@@ -52,14 +52,11 @@ import {
   SidebarTrigger,
   useSidebar,
 } from "~/components/ui/sidebar";
-import { useIsMobile } from "~/hooks/use-mobile";
 import { Link } from "~/lib/i18n/routing";
 import { sidebarItems } from "~/lib/sidebar";
 import { handleSignOut } from "~/server/actions/authActions";
 
-import { sessions } from "../../../lib/db/schema";
 import { NavigationBreadcrumb } from "../Breadcrumbs";
-import SpinningLoader from "../loader";
 
 /**
  * ProtectedSidebar: Main sidebar component for authenticated users
@@ -70,24 +67,16 @@ export default function ProtectedSidebar({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
 
-  if (status === "loading") {
-    return <SpinningLoader />;
-  }
-
-  if (status !== "authenticated") {
-    return null;
-  } else {
-    return (
-      <SidebarProvider className="relative min-h-[calc(100svh-4rem)]">
-        {/* Main sidebar with floating, collapsible design */}
-        <ProtectedSidebarContent session={session}>
-          {children}
-        </ProtectedSidebarContent>
-      </SidebarProvider>
-    );
-  }
+  return (
+    <SidebarProvider className="relative min-h-[calc(100svh-4rem)]">
+      {/* Main sidebar with floating, collapsible design */}
+      <ProtectedSidebarContent session={session}>
+        {children}
+      </ProtectedSidebarContent>
+    </SidebarProvider>
+  );
 }
 
 function ProtectedSidebarContent({
@@ -95,9 +84,10 @@ function ProtectedSidebarContent({
   session,
 }: {
   children: React.ReactNode;
-  session: Session;
+  session: Session | null;
 }) {
   const t = useTranslations();
+  //TODO: fix button to open /close sidebar
   const { isMobile, state, openMobile, setOpenMobile, toggleSidebar } =
     useSidebar();
 
@@ -241,16 +231,16 @@ function ProtectedSidebarContent({
                     {/* User Avatar and Details */}
                     <CustomAvatar
                       size={32}
-                      src={session.user.image ?? undefined}
-                      alt={session.user.username ?? "User avatar"}
-                      fallback={session.user.name?.[0] || "?"}
+                      src={session?.user.image ?? undefined}
+                      alt={session?.user.username ?? "User avatar"}
+                      fallback={session?.user.name?.[0] || "?"}
                     />
                     <div className="grid flex-1 text-left text-sm leading-tight">
                       <span className="truncate font-semibold">
-                        {session.user.name as string}
+                        {session?.user.name as string}
                       </span>
                       <span className="truncate text-xs">
-                        @{session.user.username as string}
+                        @{session?.user.username as string}
                       </span>
                     </div>
                     <ChevronsUpDown className="ml-auto size-4" />
@@ -271,18 +261,18 @@ function ProtectedSidebarContent({
                     <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                       <CustomAvatar
                         size={32}
-                        src={session.user.image ?? undefined}
-                        alt={session.user.username ?? "User avatar"}
-                        fallback={session.user.name?.[0] || "?"}
+                        src={session?.user.image ?? undefined}
+                        alt={session?.user.username ?? "User avatar"}
+                        fallback={session?.user.name?.[0] || "?"}
                       />
                       <div className="grid flex-1 text-left text-sm leading-tight">
                         <span className="truncate font-semibold">
-                          {session.user.name as string}
+                          {session?.user.name as string}
                         </span>
                         <span className="truncate text-xs">
                           {
                             // eslint-disable-next-line react/jsx-no-literals
-                            `@${session.user.username as string}`
+                            `@${session?.user.username as string}`
                           }
                         </span>
                       </div>

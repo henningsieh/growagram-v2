@@ -29,5 +29,5 @@ export default async function ProtectedGrowByIdLayout({
     } satisfies GetOwnPlantsInput);
   }
 
-  return <HydrateClient>{children}</HydrateClient>;
+  return children;
 }

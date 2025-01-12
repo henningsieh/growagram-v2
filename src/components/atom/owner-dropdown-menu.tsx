@@ -75,7 +75,7 @@ export function OwnerDropdownMenu({
         <DropdownMenuItem asChild>
           <Link
             target="_blank"
-            href={`/public/${entityType}s/${entityId}`}
+            href={`/public/${entityType.toLowerCase()}/${entityId}`}
             className="flex cursor-pointer items-center"
           >
             <ExternalLinkIcon className="mr-2 h-4 w-4" />
@@ -84,7 +84,7 @@ export function OwnerDropdownMenu({
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <Link
-            href={`/${entityType}s/${entityId}/form`}
+            href={`/${entityType.toLowerCase()}/${entityId}/form`}
             className="flex cursor-pointer items-center"
           >
             <EditIcon className="mr-2 h-4 w-4" />

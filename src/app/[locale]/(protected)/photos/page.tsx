@@ -49,7 +49,11 @@ export default function MyImagesPage() {
   // Update URL parameters
   const updateUrlParams = useCallback(() => {
     const params = new URLSearchParams();
-    params.set("page", searchParams?.get("page") || "1");
+    if (viewMode === PhotosViewMode.PAGINATION) {
+      params.set("page", searchParams?.get("page") || "1");
+    } else {
+      params.delete("page");
+    }
     params.set("sortField", sortField);
     params.set("sortOrder", sortOrder);
     params.set("filterNotConnected", filterNotConnected.toString());
@@ -57,7 +61,14 @@ export default function MyImagesPage() {
     // Only set URL if there are parameters
     const paramsString = params.toString();
     router.replace(paramsString ? `?${paramsString}` : "", { scroll: false });
-  }, [searchParams, sortField, sortOrder, filterNotConnected, router]);
+  }, [
+    searchParams,
+    sortField,
+    sortOrder,
+    filterNotConnected,
+    viewMode,
+    router,
+  ]);
 
   // Sync state with URL
   useEffect(() => {

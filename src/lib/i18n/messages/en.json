@@ -63,8 +63,10 @@
     "buttonLabel-create-grow": "Create Grow",
     "buttonLabel-save-changes": "Save Changes",
     "connect-error": "Error connecting plant",
+    "delete-button-label": "Delete Grow",
     "delete-grow-button-label": "Delete Grow",
     "disconnect-error": "Error disconnecting plant",
+    "edit-button-label": "Edit Grow",
     "edit-grow-button-label": "Edit Grow",
     "error-default": "Something went wrong. Please try again later.",
     "error-title": "An error occurred",
@@ -98,9 +100,7 @@
     "success-description-create": "The grow environment has been created successfully.",
     "success-description-edit": "The grow environment has been updated successfully.",
     "success-title": "Success!",
-    "unexpected-error": "Unexpected error occurred.",
-    "edit-button-label": "Edit Grow",
-    "delete-button-label": "Delete Grow"
+    "unexpected-error": "Unexpected error occurred."
   },
   "HomePage": {
     "about": "go to Timeline",
@@ -169,11 +169,9 @@
     "dashboard-description": "Track your grows and your plants, including photo uploads.",
     "discover": "Discover",
     "grower-menu": "Grower's Platform",
-    "home": "Home",
     "grows": "All Grows",
     "grows-description": "Take a look at other growers' grows and get inspired.",
-    "plants": "All Plants",
-    "plants-description": "Check out what other growers are cultivating and get some new ideas.",
+    "home": "Home",
     "my-grows": "My Grows",
     "my-grows-subline": "Manage and group your plants in Grows.",
     "my-photos": "My Photos",
@@ -181,14 +179,44 @@
     "my-plants": "My Plants",
     "my-plants-subline": "Manage and edit your plants.",
     "navigation": "Navigation",
+    "plants": "All Plants",
+    "plants-description": "Check out what other growers are cultivating and get some new ideas.",
     "timeline": "Timeline",
     "timeline-description": "Social media timeline (feature coming soon)",
     "toggle-menu": "Toggle menu"
   },
+  "Photos": {
+    "button": {
+      "connecting": "Connecting plants...",
+      "removeAll": "Remove All Plants",
+      "save": "Save Plant Selection ({count})"
+    },
+    "button-label-upload-photos": "Upload",
+    "buttonBackLabel": "Back",
+    "capture-date": "taken on",
+    "delete-button-label": "Delete Photo",
+    "edit-button-label": "Edit Photo",
+    "my-Photos": "My photos",
+    "my-Photos-subtitle": "Display and manage my photos",
+    "plantSelection": {
+      "description": "Select each plant you can see in the photo!",
+      "title": "Plant Selection"
+    },
+    "public-link-label": "Open in new Tab",
+    "search": {
+      "noResults": "No results found.",
+      "placeholder": "Search plants..."
+    },
+    "subtitle": "Which plants did you spot in this photo?",
+    "title": "Identify Plants",
+    "uploaded-at": "uploaded on"
+  },
   "Plants": {
     "breeder": "Breeder",
     "curing-start-date": "Curing phase start date",
+    "delete-button-label": "Delete Plant",
     "delete-plant-button-label": "Delete Plant",
+    "edit-button-label": "Edit Plant",
     "edit-plant-button-label": "Edit Plant",
     "estimated-harvest": "Estimated harvest",
     "flowering-start-date": "Flowering Start Date",
@@ -203,7 +231,7 @@
     "form-pagerheader-edit-subtitle": "Edit this plant from your collection",
     "form-pagerheader-edit-title": "Edit Plant",
     "form-pagerheader-new-subtitle": "Add a new plant to your collection",
-    "form-pagerheader-new-title": "Create New Plant",
+    "form-pagerheader-new-title": "Add New Plant",
     "form-pagerheader-subtitle": "",
     "form-pagerheader-title": "",
     "germination-date": "Germination Date",
@@ -222,9 +250,7 @@
     "title": "My Plants",
     "until": "until",
     "user-has-no-plants": "You haven&apos;t added any plants yet.",
-    "vegetation-start-date": "Vegetation Start Date",
-    "edit-button-label": "Edit Plant",
-    "delete-button-label": "Delete Plant"
+    "vegetation-start-date": "Vegetation Start Date"
   },
   "Platform": {
     "Dashboard-title": "Dashboard",
@@ -235,27 +261,6 @@
     "feature-coming": "New Feature is on its Way!",
     "more": "more",
     "welcome-to-platform-subttitle": "Welcome to the Grower's platform where you can manage all your Grows and Plants"
-  },
-  "Photos": {
-    "public-link-label": "Open in new Tab",
-    "edit-button-label": "Edit Photo",
-    "delete-button-label": "Delete Photo",
-    "button": {
-      "connecting": "Connecting plants...",
-      "removeAll": "Remove All Plants",
-      "save": "Save Plant Selection ({count})"
-    },
-    "buttonBackLabel": "Back",
-    "plantSelection": {
-      "description": "Select each plant you can see in the photo!",
-      "title": "Plant Selection"
-    },
-    "search": {
-      "noResults": "No results found.",
-      "placeholder": "Search plants..."
-    },
-    "subtitle": "Which plants did you spot in this photo?",
-    "title": "Identify Plants"
   },
   "ThemeToggler": {
     "dark": "Dark",

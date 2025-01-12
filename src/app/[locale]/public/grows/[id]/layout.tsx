@@ -1,5 +1,8 @@
 // src/app/[locale]/(protected)/grows/[id]/form/layout.tsx:
-import React from "react";
+import { asc } from "drizzle-orm";
+import { notFound } from "next/navigation";
+import { db } from "~/lib/db";
+import { grows } from "~/lib/db/schema";
 import { HydrateClient, api } from "~/lib/trpc/server";
 import { GetGrowByIdInput } from "~/server/api/root";
 
@@ -8,18 +11,40 @@ export const metadata = {
   description: "Grower's Plattform | Grows",
 };
 
+export const revalidate = 3600;
+
+export const dynamicParams = true;
+
+// Pre-generate pages for all grows using direct DB query
+export async function generateStaticParams() {
+  const popularGrows = await db.query.grows.findMany({
+    columns: {
+      id: true,
+    },
+    orderBy: [asc(grows.createdAt)],
+  });
+
+  return popularGrows.map((grow) => ({
+    id: grow.id,
+  }));
+}
+
 export default async function PublicGrowByIdLayout({
   children,
-  params,
+  // params,
 }: {
   children: React.ReactNode;
-  params: Promise<GetGrowByIdInput>;
+  // params: Promise<GetGrowByIdInput>;
 }) {
-  const growId = (await params).id;
+  // const growId = (await params).id;
 
-  await api.grows.getById.prefetch({
-    id: growId,
-  } satisfies GetGrowByIdInput);
+  // const grow = await api.grows.getById({
+  //   id: growId,
+  // } satisfies GetGrowByIdInput);
 
-  return <HydrateClient>{children}</HydrateClient>;
+  // if (!grow) {
+  //   notFound();
+  // }
+
+  return children;
 }
