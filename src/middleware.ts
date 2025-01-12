@@ -5,7 +5,6 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { PROTECTED_PATHS, modulePaths } from "./assets/constants";
 import { env } from "./env";
-import { auth } from "./lib/auth";
 import { routing } from "./lib/i18n/routing";
 
 const languages = routing.locales;
@@ -27,13 +26,9 @@ export default async function middleware(req: NextRequest) {
   const token = await getToken({
     req,
     secret,
-    ...(process.env.NODE_ENV === "production"
-      ? {
-          cookieName: "__Secure-authjs.session-token",
-        }
-      : {
-          cookieName: "authjs.session-token",
-        }),
+    cookieName: env.NEXTAUTH_URL.startsWith("https")
+      ? "__Secure-authjs.session-token"
+      : "authjs.session-token",
   });
 
   // Log the full token to verify
@@ -50,10 +45,14 @@ export default async function middleware(req: NextRequest) {
 
   // Get the real host and protocol
   const realHost = req.headers.get("X-Forwarded-Host") || req.nextUrl.host;
-  const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
-
+  const protocol = req.headers.get("X-Forwarded-Proto") || req.nextUrl.protocol;
   const baseUrl = env.NEXTAUTH_URL || `${protocol}://${realHost}`;
   const fullUrl = new URL(currentPathname, baseUrl);
+
+  console.debug("realHost:", realHost);
+  console.debug("protocol:", protocol);
+  console.debug("baseUrl:", baseUrl);
+  console.debug("fullUrl:", fullUrl.toString());
 
   // Handle auth callback paths specially
   if (currentPathname.startsWith("/api/auth/callback")) {
@@ -61,10 +60,6 @@ export default async function middleware(req: NextRequest) {
     req.nextUrl.protocol = new URL(baseUrl).protocol.replace(":", "");
     return NextResponse.rewrite(fullUrl);
   }
-
-  console.debug("realHost:", realHost);
-  console.debug("protocol:", protocol);
-  console.debug("fullUrl:", fullUrl.toString());
 
   const currentLocale = localeMatchArray ? localeMatchArray[1] : null;
 
