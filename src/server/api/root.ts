@@ -31,13 +31,13 @@ type RouterInput = inferRouterInputs<AppRouter>
 
 // userRouter
 //  OUTPUTS:
-export type GetUserType = RouterOutput["users"]["getById"]
+export type GetUserType = RouterOutput["users"]["getOwnUserData"]
 export type UserType = NonNullable<GetUserType>;
 export type GetUserEditType = RouterOutput["users"]["getAllUsers"][number]
 export type GetUserPublicType = RouterOutput["users"]["getAllUsers"][number]
 export type GetUsersPublicType = RouterOutput["users"]["getAllUsers"]
 //  INPUTS
-export type GetUserByIdInput = RouterInput["users"]["getById"]
+export type GetUserByIdInput = RouterInput["users"]["getOwnUserData"]
 export type GetUserEditInput = RouterInput["users"]["editUser"]
 
 // commentRouter

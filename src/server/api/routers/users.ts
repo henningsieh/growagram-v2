@@ -2,7 +2,7 @@
 import { TRPCError } from "@trpc/server";
 import { and, eq, not } from "drizzle-orm";
 import { z } from "zod";
-import { users } from "~/lib/db/schema";
+import { grows, users } from "~/lib/db/schema";
 import {
   createTRPCRouter,
   protectedProcedure,
@@ -27,23 +27,21 @@ export const userRouter = createTRPCRouter({
   }),
 
   // Get user by ID (public procedure)
-  getById: publicProcedure
-    .input(z.object({ id: z.string() }))
-    .query(async ({ ctx, input }) => {
-      const user = await ctx.db.query.users.findFirst({
-        where: eq(users.id, input.id),
-        columns: {
-          id: true,
-          name: true,
-          username: true,
-          email: true,
-          image: true,
-          role: true,
-        },
-      });
+  getOwnUserData: protectedProcedure.query(async ({ ctx }) => {
+    const user = await ctx.db.query.users.findFirst({
+      where: eq(users.id, ctx.session.user.id),
+      columns: {
+        id: true,
+        name: true,
+        username: true,
+        email: true,
+        image: true,
+        role: true,
+      },
+    });
 
-      return user;
-    }),
+    return user;
+  }),
 
   // Edit user (protected procedure)
   editUser: protectedProcedure
