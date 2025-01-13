@@ -38,7 +38,7 @@
           "url": "/plants"
         },
         {
-          "title": " Add New Plant",
+          "title": "Add New Plant",
           "url": "/plants/new/form"
         }
       ]
@@ -59,7 +59,7 @@
       ]
     }
   ],
-  "projects": [
+  "coming_soon": [
     {
       "name": "Plant Feedings",
       "url": "#",

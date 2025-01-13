@@ -267,5 +267,42 @@
     "light": "Light",
     "system": "System",
     "toggle-theme": "Toggle theme"
+  },
+  "Sidebar": {
+    "teams": {
+      "GrowAGram Collective": "GrowAGram Collective",
+      "Grower": "Grower",
+      "Premium": "Premium",
+      "Basic Free Plan": "Basic Free Plan"
+    },
+    "navMain": {
+      "Grows": {
+        "title": "Grows",
+        "items": {
+          "My Grows": "My Grows",
+          "Create New Grow": "Create New Grow"
+        }
+      },
+      "Plants": {
+        "title": "Plants",
+        "items": {
+          "My Plants": "My Plants",
+          "Add New Plant": "Add New Plant"
+        }
+      },
+      "Photos": {
+        "title": "Photos",
+        "items": {
+          "My Photos": "My Photos",
+          "Upload New Photos": "Upload New Photos"
+        }
+      }
+    },
+    "coming_soon": {
+      "Plant Feedings": "Plant Fertilizations",
+      "Plant Sizes": "Plant Sizes",
+      "My Inventory": "My Inventory",
+      "Grow Archive": "Grow Archive"
+    }
   }
 }

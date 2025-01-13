@@ -267,5 +267,42 @@
     "light": "Hell",
     "system": "System",
     "toggle-theme": "Designthema umschalten"
+  },
+  "Sidebar": {
+    "teams": {
+      "GrowAGram Collective": "GrowAGram Collective",
+      "Grower": "Grower",
+      "Premium": "Premium",
+      "Basic Free Plan": "Kostenloser Basisplan"
+    },
+    "navMain": {
+      "Grows": {
+        "title": "Grows",
+        "items": {
+          "My Grows": "Meine Grows",
+          "Create New Grow": "Grow erstellen"
+        }
+      },
+      "Plants": {
+        "title": "Pflanzen",
+        "items": {
+          "My Plants": "Meine Pflanzen",
+          "Add New Plant": "Pflanze hinzufügen"
+        }
+      },
+      "Photos": {
+        "title": "Fotos",
+        "items": {
+          "My Photos": "Meine Fotos",
+          "Upload New Photos": "Fotos hochladen"
+        }
+      }
+    },
+    "coming_soon": {
+      "Plant Feedings": "Pflanzendüngung",
+      "Plant Sizes": "Pflanzengrößen",
+      "My Inventory": "Mein Inventar",
+      "Grow Archive": "Grow-Archiv"
+    }
   }
 }

@@ -61,7 +61,7 @@ export interface ProcessedSidebarItems {
     plan: string;
   }>;
   navMain: ProcessedNavItem[];
-  projects: Array<{
+  coming_soon: Array<{
     name: string;
     url: string;
     icon: IconComponent;

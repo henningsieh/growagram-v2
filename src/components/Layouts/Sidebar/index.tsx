@@ -91,6 +91,27 @@ function ProtectedSidebarContent({
   const { isMobile, state, openMobile, setOpenMobile, toggleSidebar } =
     useSidebar();
 
+  const translatedSidebarItems = {
+    ...sidebarItems,
+    teams: sidebarItems.teams.map((team) => ({
+      ...team,
+      name: t(`Sidebar.teams.${team.name}`),
+      plan: t(`Sidebar.teams.${team.plan}`),
+    })),
+    navMain: sidebarItems.navMain.map((item) => ({
+      ...item,
+      title: t(`Sidebar.navMain.${item.title}.title`),
+      items: item.items?.map((subItem) => ({
+        ...subItem,
+        title: t(`Sidebar.navMain.${item.title}.items.${subItem.title}`),
+      })),
+    })),
+    coming_soon: sidebarItems.coming_soon.map((cs) => ({
+      ...cs,
+      name: t(`Sidebar.coming_soon.${cs.name}`),
+    })),
+  };
+
   return (
     <>
       <Sidebar
@@ -100,7 +121,7 @@ function ProtectedSidebarContent({
       >
         {/* Sidebar Header: Team Switcher */}
         <SidebarHeader>
-          <TeamSwitcher teams={sidebarItems.teams} />
+          <TeamSwitcher teams={translatedSidebarItems.teams} />
         </SidebarHeader>
         {/* Main Navigation Content */}
         <SidebarContent>
@@ -124,7 +145,7 @@ function ProtectedSidebarContent({
                   </CollapsibleTrigger>
                 </SidebarMenuItem>
               </Collapsible>
-              {sidebarItems.navMain.map((item) => (
+              {translatedSidebarItems.navMain.map((item) => (
                 <Collapsible
                   key={item.title}
                   asChild
@@ -165,9 +186,15 @@ function ProtectedSidebarContent({
             <SidebarGroupLabel>{t("Platform.coming-soon")}</SidebarGroupLabel>
             <SidebarMenu>
               {/* Project Items with Dropdown Actions */}
-              {sidebarItems.projects.map((item) => (
-                <SidebarMenuItem key={item.name}>
-                  <SidebarMenuButton asChild className="cursor-pointer">
+              {translatedSidebarItems.coming_soon.map((item) => (
+                <SidebarMenuItem
+                  key={item.name}
+                  className="data-[active=true]:bg-primary"
+                >
+                  <SidebarMenuButton
+                    asChild
+                    className="hover:cursor-default hover:bg-transparent"
+                  >
                     <div>
                       {/* <Link href={item.url}> */}
                       <item.icon />
