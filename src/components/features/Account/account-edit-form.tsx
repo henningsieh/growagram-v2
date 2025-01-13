@@ -43,7 +43,7 @@ import { Input } from "~/components/ui/input";
 import { useToast } from "~/hooks/use-toast";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
-import { GetUserEditInput, UserType } from "~/server/api/root";
+import { GetUserEditInput, OwnUserDataType } from "~/server/api/root";
 import { userEditSchema } from "~/types/zodSchema";
 
 const formVariants = {
@@ -62,7 +62,7 @@ const itemVariants = {
   visible: { opacity: 1, y: 0 },
 };
 
-export default function AccountEditForm({ user }: { user: UserType }) {
+export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
   const router = useRouter();
   const t = useTranslations("Account");
   const { toast } = useToast();
