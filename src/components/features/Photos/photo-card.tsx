@@ -3,12 +3,9 @@
 // src/components/features/Photos/photo-card.tsx:
 import {
   Camera,
-  Edit,
   FileIcon,
   Maximize,
   Minimize,
-  Search,
-  Trash2,
   UploadCloud,
   X,
 } from "lucide-react";
@@ -17,17 +14,15 @@ import { useLocale } from "next-intl";
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import { modulePaths } from "~/assets/constants";
-import SpinningLoader from "~/components/Layouts/loader";
 import { RESPONSIVE_IMAGE_SIZES } from "~/components/Layouts/responsive-grid";
 import AvatarCardHeader from "~/components/atom/avatar-card-header";
 import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
 import { OwnerDropdownMenu } from "~/components/atom/owner-dropdown-menu";
 import { SocialCardFooter } from "~/components/atom/social-card-footer";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
+import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
-import { Card, CardContent, CardFooter, CardTitle } from "~/components/ui/card";
-import { Separator } from "~/components/ui/separator";
+import { Card, CardContent, CardTitle } from "~/components/ui/card";
 import { Switch } from "~/components/ui/switch";
 import {
   Tooltip,
@@ -277,66 +272,34 @@ export default function PhotoCard({
           </TooltipProvider>
         </CardContent>
 
-        {
-          isSocial ? (
-            <SocialCardFooter
-              className={`pb-2 pr-2 ${isSocial && "ml-14"}`}
-              entityId={photo.id}
-              entityType={LikeableEntityType.Photo}
-              initialLiked={isLiked}
-              isLikeStatusLoading={isLoading}
-              commentCountLoading={commentCountLoading}
-              stats={{
-                comments: commentCount,
-                views: 0,
-                likes: likeCount,
-              }}
-              toggleComments={toggleComments}
-            />
-          ) : undefined
-          // user?.id === photo.ownerId && (
-          //   <>
-          //     <Separator />
-          //     <CardFooter className="flex w-full justify-between gap-1 p-1">
-          //       <Button
-          //         variant="destructive"
-          //         size={"sm"}
-          //         className="w-16"
-          //         onClick={handleDelete}
-          //         disabled={deleteMutation.isPending}
-          //       >
-          //         {deleteMutation.isPending ? (
-          //           <SpinningLoader className="h-5 w-5 animate-spin" />
-          //         ) : (
-          //           <Trash2 size={20} />
-          //         )}
-          //       </Button>
-          //       <Button
-          //         asChild
-          //         size={"sm"}
-          //         className="w-full text-base"
-          //         variant={!!!photo.plantImages.length ? "primary" : "outline"}
-          //       >
-          //         <Link
-          //           href={{
-          //             pathname: `${modulePaths.PHOTOS.path}/${photo.id}/form`,
-          //             query: currentQuery,
-          //           }}
-          //         >
-          //           {!!!photo.plantImages.length ? (
-          //             <Search size={20} />
-          //           ) : (
-          //             <Edit size={20} />
-          //           )}
-          //           {!!!photo.plantImages.length
-          //             ? "Select Plants"
-          //             : "Edit Plants"}
-          //         </Link>
-          //       </Button>
-          //     </CardFooter>
-          //   </>
-          // )
-        }
+        {isSocial ? (
+          <SocialCardFooter
+            className={`pb-2 pr-2 ${isSocial && "ml-14"}`}
+            entityId={photo.id}
+            entityType={LikeableEntityType.Photo}
+            initialLiked={isLiked}
+            isLikeStatusLoading={isLoading}
+            commentCountLoading={commentCountLoading}
+            stats={{
+              comments: commentCount,
+              views: 0,
+              likes: likeCount,
+            }}
+            toggleComments={toggleComments}
+          />
+        ) : undefined}
+
+        {/* Plant Badges */}
+        <div className="flex flex-wrap gap-2 p-2">
+          {photo.plantImages.map((plantImage) => (
+            <Link
+              key={plantImage.plant.id}
+              href={`/plants/${plantImage.plant.id}/form`}
+            >
+              <Badge variant="default">{plantImage.plant.name}</Badge>
+            </Link>
+          ))}
+        </div>
 
         {isSocial && isCommentsOpen && (
           <Comments
