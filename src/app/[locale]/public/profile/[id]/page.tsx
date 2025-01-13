@@ -1,43 +1,25 @@
-"use client";
-
-import { useParams } from "next/navigation";
+import { notFound } from "next/navigation";
 import ProfileTabs from "~/components/features/PublicProfile/PofileTabs";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
-import { Skeleton } from "~/components/ui/skeleton";
-import { api } from "~/lib/trpc/react";
+import { api } from "~/lib/trpc/server";
+import { GetPublicUserProfileInput } from "~/server/api/root";
 
-export default function ProfilePage() {
-  const params = useParams();
-  const userId = params.id as string;
+export default async function ProfilePage({
+  params,
+}: {
+  params: Promise<GetPublicUserProfileInput>;
+}) {
+  const userId = (await params).id;
 
-  const { data: profile, isLoading } = api.users.getPublicUserProfile.useQuery({
+  // const { data: profile, isLoading } = api.users.getPublicUserProfile.useQuery({
+  //   id: userId,
+  // });
+
+  const profile = await api.users.getPublicUserProfile({
     id: userId,
-  });
+  } satisfies GetPublicUserProfileInput);
 
-  if (isLoading) {
-    return (
-      <div className="container mx-auto p-6">
-        <div className="mb-8 flex items-center gap-4">
-          <Skeleton className="h-24 w-24 rounded-full" />
-          <div className="space-y-2">
-            <Skeleton className="h-8 w-[250px]" />
-            <Skeleton className="h-4 w-[200px]" />
-          </div>
-        </div>
-        <Skeleton className="h-[400px] w-full" />
-      </div>
-    );
-  }
-
-  if (!profile) {
-    return (
-      <div className="container mx-auto p-6">
-        <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-red-700">
-          Profile not found
-        </div>
-      </div>
-    );
-  }
+  if (!profile) notFound();
 
   return (
     <div className="container mx-auto p-6">

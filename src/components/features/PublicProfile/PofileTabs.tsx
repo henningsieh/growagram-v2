@@ -1,14 +1,13 @@
 "use client";
 
-import { Card, CardContent } from "~/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { type GetPublicUserProfileType } from "~/server/api/root";
+import { PublicUserProfileType } from "~/server/api/root";
 
 import { GrowCard } from "../Grows/grow-card";
 import PlantCard from "../Plants/plant-card";
 
 interface ProfileTabsProps {
-  profile: NonNullable<GetPublicUserProfileType>;
+  profile: PublicUserProfileType;
 }
 
 export const ProfileTabs = ({ profile }: ProfileTabsProps) => {
