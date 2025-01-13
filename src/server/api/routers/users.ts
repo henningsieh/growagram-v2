@@ -11,20 +11,74 @@ import {
 import { UserRoles } from "~/types/user";
 import { userEditSchema } from "~/types/zodSchema";
 
-export const userRouter = createTRPCRouter({
-  // Get all users (public procedure)
-  getAllUsers: publicProcedure.query(async ({ ctx }) => {
-    const allUsers = await ctx.db.query.users.findMany({
-      columns: {
-        id: true,
-        name: true,
-        username: true,
-        image: true,
-      },
-    });
+import { connectPlantWithImagesQuery } from "./plantImages";
 
-    return allUsers;
-  }),
+export const userRouter = createTRPCRouter({
+  // Get public user data by user id (public procedure)
+  getPublicUserProfile: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const user = await ctx.db.query.users.findFirst({
+        where: eq(users.id, input.id),
+        columns: {
+          id: true,
+          name: true,
+          image: true,
+          username: true,
+          role: true,
+        },
+        with: {
+          grows: {
+            with: {
+              owner: true,
+              plants: {
+                with: {
+                  owner: true,
+                  grow: true,
+                  headerImage: { columns: { id: true, imageUrl: true } },
+                  plantImages: connectPlantWithImagesQuery,
+                  strain: {
+                    columns: {
+                      id: true,
+                      name: true,
+                      thcContent: true,
+                      cbdContent: true,
+                    },
+                    with: { breeder: { columns: { id: true, name: true } } },
+                  },
+                },
+              },
+            },
+          },
+          plants: {
+            with: {
+              owner: true,
+              grow: true,
+              headerImage: { columns: { id: true, imageUrl: true } },
+              plantImages: connectPlantWithImagesQuery,
+              strain: {
+                columns: {
+                  id: true,
+                  name: true,
+                  thcContent: true,
+                  cbdContent: true,
+                },
+                with: { breeder: { columns: { id: true, name: true } } },
+              },
+            },
+          },
+        },
+      });
+
+      if (!user) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "User not found",
+        });
+      }
+
+      return user;
+    }),
 
   // Get user by ID (public procedure)
   getOwnUserData: protectedProcedure.query(async ({ ctx }) => {

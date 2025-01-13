@@ -43,7 +43,7 @@ export default function TimelineLayout({ children }: PropsWithChildren) {
                 variant={pathname === "/public/grows" ? "secondary" : "ghost"}
                 className="w-full justify-start text-base"
               >
-                <TagIcon className="mr-2 h-4 w-4" />
+                <TentTree className="mr-2 h-4 w-4" />
                 All Grows
               </Button>
             </Link>
@@ -52,7 +52,7 @@ export default function TimelineLayout({ children }: PropsWithChildren) {
                 variant={pathname === "/public/plants" ? "secondary" : "ghost"}
                 className="w-full justify-start text-base"
               >
-                <TentTree className="mr-2 h-4 w-4" />
+                <TagIcon className="mr-2 h-4 w-4" />
                 All Plants
               </Button>
             </Link>
