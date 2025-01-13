@@ -329,6 +329,12 @@ export const comments = pgTable(
 
 // Drizzle ORM Relations
 
+export const usersRelations = relations(users, ({ many }) => ({
+  grows: many(grows),
+  plants: many(plants),
+  Images: many(images),
+}));
+
 export const commentsRelations = relations(comments, ({ one, many }) => ({
   // Relation to the user who created the comment
   author: one(users, {
