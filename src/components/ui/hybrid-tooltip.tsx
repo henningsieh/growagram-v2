@@ -19,7 +19,7 @@ import {
 } from "react";
 
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
-import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./tooltip";
 
 const TouchContext = createContext<boolean | undefined>(undefined);
 const useTouch = () => useContext(TouchContext);
@@ -46,7 +46,7 @@ export const TouchProvider = (props: PropsWithChildren) => {
 export const HybridTooltip = (props: TooltipProps & PopoverProps) => {
   const isTouch = useTouch();
 
-  return isTouch ? <Popover  {...props} /> : <Tooltip {...props} />;
+  return isTouch ? <Popover  {...props} /> : <TooltipProvider><Tooltip {...props} /></TooltipProvider>;
 };
 
 export const HybridTooltipTrigger = (
@@ -67,8 +67,8 @@ export const HybridTooltipContent = (
   const isTouch = useTouch();
 
   return isTouch ? (
-    <PopoverContent  className="w-auto p-2" {...props} side="top" align="center"/>
+    <PopoverContent  className="bg-primary text-primary-foreground w-auto p-1" {...props} side="top" align="center"/>
   ) : (
-    <TooltipContent className="bg-background/80 text-base" {...props} />
+    <TooltipContent className="bg-primary text-primary-foreground text-base" {...props} />
   );
 };

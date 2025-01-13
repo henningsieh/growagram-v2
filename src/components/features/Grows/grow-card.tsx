@@ -108,7 +108,7 @@ export function GrowCard({
         {isSocial && <AvatarCardHeader user={grow.owner} />}
 
         <CardContent
-          className={`grid gap-2 ${isSocial ? "ml-11 pl-0 pr-2" : "p-2"}`}
+          className={`grid gap-2 ${isSocial ? "ml-12 pl-0 pr-2" : "p-2"}`}
         >
           {/* Grow HeaderImage */}
           <div
@@ -209,7 +209,7 @@ export function GrowCard({
           isSocial && (
             // Social Footer
             <SocialCardFooter
-              className={`pb-2 pr-2 ${isSocial && "ml-11"}`}
+              className={`pb-2 pr-2 ${isSocial && "ml-12"}`}
               entityId={grow.id}
               entityType={LikeableEntityType.Grow}
               initialLiked={isLiked}
