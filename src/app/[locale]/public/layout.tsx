@@ -65,7 +65,7 @@ export default function TimelineLayout({ children }: PropsWithChildren) {
             <TabsList className="h-7 w-full rounded-none bg-transparent p-0">
               <TabsTrigger
                 value="/public/timeline"
-                className="w-full rounded-none data-[state=active]:bg-primary hover:data-[state=inactive]:bg-primary/20 hover:data-[state=inactive]:text-foreground"
+                className="w-full rounded-none data-[state=active]:bg-primary data-[state=active]:font-semibold data-[state=active]:text-primary-foreground hover:data-[state=inactive]:bg-primary/20 hover:data-[state=inactive]:text-foreground"
                 asChild
               >
                 <Link href="/public/timeline">
@@ -75,7 +75,7 @@ export default function TimelineLayout({ children }: PropsWithChildren) {
               </TabsTrigger>
               <TabsTrigger
                 value="/public/following"
-                className="w-full rounded-none data-[state=active]:bg-primary hover:data-[state=inactive]:bg-primary/20 hover:data-[state=inactive]:text-foreground"
+                className="w-full rounded-none data-[state=active]:bg-primary data-[state=active]:font-semibold data-[state=active]:text-primary-foreground hover:data-[state=inactive]:bg-primary/20 hover:data-[state=inactive]:text-foreground"
                 asChild
               >
                 <Link href="/public/following">
@@ -85,7 +85,7 @@ export default function TimelineLayout({ children }: PropsWithChildren) {
               </TabsTrigger>
               <TabsTrigger
                 value="/public/grows"
-                className="w-full rounded-none data-[state=active]:bg-primary hover:data-[state=inactive]:bg-primary/20 hover:data-[state=inactive]:text-foreground"
+                className="w-full rounded-none data-[state=active]:bg-primary data-[state=active]:font-semibold data-[state=active]:text-primary-foreground hover:data-[state=inactive]:bg-primary/20 hover:data-[state=inactive]:text-foreground"
                 asChild
               >
                 <Link href="/public/grows">
