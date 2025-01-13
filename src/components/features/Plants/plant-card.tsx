@@ -3,23 +3,20 @@
 // src/components/features/plant/plant-card.tsx:
 import { TooltipProvider } from "@radix-ui/react-tooltip";
 import {
-  EditIcon,
-  ExternalLinkIcon,
+  DnaIcon,
+  FlaskConicalIcon,
   Flower2,
   Leaf,
-  MessageCircleIcon,
-  MoreHorizontalIcon,
   Nut,
   PillBottle,
   Sprout,
   Tag,
-  Trash2Icon,
+  TentTreeIcon,
   Wheat,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
-import SpinningLoader from "~/components/Layouts/loader";
 import AvatarCardHeader from "~/components/atom/avatar-card-header";
 import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
 import { OwnerDropdownMenu } from "~/components/atom/owner-dropdown-menu";
@@ -34,14 +31,11 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu";
-import { Label } from "~/components/ui/label";
+  HybridTooltip,
+  HybridTooltipContent,
+  HybridTooltipTrigger,
+} from "~/components/ui/hybrid-tooltip";
 import { Progress } from "~/components/ui/progress";
-import { Switch } from "~/components/ui/switch";
 import {
   Tooltip,
   TooltipContent,
@@ -137,7 +131,7 @@ export default function PlantCard({
         {isSocial && <AvatarCardHeader user={plant.owner} />}
 
         <CardContent
-          className={`grid gap-2 ${isSocial ? "ml-11 pl-0 pr-2" : "p-2"}`}
+          className={`grid gap-2 ${isSocial ? "ml-12 pl-0 pr-2" : "p-2"}`}
         >
           {/* Image Carousel */}
           <ImageCarousel plantImages={plant.plantImages} />
@@ -170,20 +164,53 @@ export default function PlantCard({
 
           {/* Strain Info */}
           <CardDescription>
-            <span className="block">
-              {
-                t("strain")
-                // eslint-disable-next-line react/jsx-no-literals
-              }
-              : {plant.strain?.name ?? "Unknown"}
-            </span>
-            <span className="block">
-              {
-                t("breeder")
-                // eslint-disable-next-line react/jsx-no-literals
-              }
-              : {plant.strain?.breeder.name ?? "Unknown"}
-            </span>
+            <div className="flex items-center justify-between">
+              <HybridTooltip>
+                <HybridTooltipTrigger
+                  className={`flex cursor-help items-center gap-2`}
+                >
+                  <Badge
+                    variant="outline"
+                    className="flex items-center gap-1 border-[1px] border-fuchsia-700"
+                  >
+                    <DnaIcon className={`h-4 w-4`} />
+                    Strain
+                  </Badge>
+                </HybridTooltipTrigger>
+                <HybridTooltipContent className={`w-auto bg-fuchsia-600 p-1`}>
+                  <div>
+                    <span className="block">
+                      {
+                        t("strain")
+                        // eslint-disable-next-line react/jsx-no-literals
+                      }
+                      : {plant.strain?.name ?? "Unknown"}
+                    </span>
+                    <span className="block">
+                      {
+                        t("breeder")
+                        // eslint-disable-next-line react/jsx-no-literals
+                      }
+                      : {plant.strain?.breeder.name ?? "Unknown"}
+                    </span>
+                  </div>
+                </HybridTooltipContent>
+              </HybridTooltip>
+              {/* Grow Badge */}
+              {plant.grow && (
+                <div className="flex flex-wrap gap-2 p-0">
+                  <Link href={`/public/grows/${plant.grow.id}`}>
+                    <Badge
+                      variant="secondary"
+                      className="flex items-center gap-1 whitespace-nowrap"
+                    >
+                      <TentTreeIcon className="h-4 w-4" />
+                      {plant.grow.name}
+                    </Badge>
+                  </Link>
+                </div>
+              )}
+            </div>
           </CardDescription>
 
           {/* Plant Progress and Dates */}
@@ -355,7 +382,7 @@ export default function PlantCard({
           isSocial && (
             // Social Footer
             <SocialCardFooter
-              className={`pb-2 pr-2 ${isSocial && "ml-11"}`}
+              className={`pb-2 pr-2 ${isSocial && "ml-12"}`}
               entityId={plant.id}
               entityType={LikeableEntityType.Plant}
               initialLiked={isLiked}

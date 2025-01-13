@@ -7,7 +7,6 @@ import {
   Calendar1Icon,
   Clock,
   Dna,
-  FlaskConical,
   type LucideIcon,
   Tag,
 } from "lucide-react";

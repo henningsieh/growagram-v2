@@ -4,6 +4,7 @@
 import {
   Camera,
   FileIcon,
+  Flower2Icon,
   Maximize,
   Minimize,
   UploadCloud,
@@ -189,7 +190,7 @@ export default function PhotoCard({
         </div>
 
         <CardContent
-          className={`grid gap-2 ${isSocial ? "ml-11 pl-0 pr-2" : "p-2"}`}
+          className={`grid gap-2 ${isSocial ? "ml-12 pl-0 pr-2" : "p-2"}`}
         >
           {/* Title Link and OwnerDropdownMenu */}
           <div className="grid grid-cols-[1fr,auto] items-center gap-2">
@@ -218,6 +219,24 @@ export default function PhotoCard({
                 />
               </div>
             )}
+          </div>
+
+          {/* Plant Badges */}
+          <div className="flex justify-end gap-2 p-0">
+            {photo.plantImages.map((plantImage) => (
+              <Link
+                key={plantImage.plant.id}
+                href={`/public/plants/${plantImage.plant.id}`}
+              >
+                <Badge
+                  variant="default"
+                  className="flex items-center gap-1 whitespace-nowrap"
+                >
+                  <Flower2Icon className="h-4 w-4" />
+                  {plantImage.plant.name}
+                </Badge>
+              </Link>
+            ))}
           </div>
 
           {/* Photo Upload and Capture Date */}
@@ -274,7 +293,7 @@ export default function PhotoCard({
 
         {isSocial ? (
           <SocialCardFooter
-            className={`pb-2 pr-2 ${isSocial && "ml-14"}`}
+            className={`pb-2 pr-2 ${isSocial && "ml-12"}`}
             entityId={photo.id}
             entityType={LikeableEntityType.Photo}
             initialLiked={isLiked}
@@ -288,18 +307,6 @@ export default function PhotoCard({
             toggleComments={toggleComments}
           />
         ) : undefined}
-
-        {/* Plant Badges */}
-        <div className="flex flex-wrap gap-2 p-2">
-          {photo.plantImages.map((plantImage) => (
-            <Link
-              key={plantImage.plant.id}
-              href={`/plants/${plantImage.plant.id}/form`}
-            >
-              <Badge variant="default">{plantImage.plant.name}</Badge>
-            </Link>
-          ))}
-        </div>
 
         {isSocial && isCommentsOpen && (
           <Comments
