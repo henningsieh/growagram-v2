@@ -22,8 +22,8 @@ export default async function ProfilePage({
   if (!profile) notFound();
 
   return (
-    <div className="container mx-auto p-6">
-      <div className="mb-8 flex items-center gap-4">
+    <>
+      <div className="mb-5 mt-3 flex items-center gap-4 px-2">
         <Avatar className="h-24 w-24">
           <AvatarImage src={profile.image ?? ""} />
           <AvatarFallback>
@@ -38,6 +38,6 @@ export default async function ProfilePage({
         </div>
       </div>
       <ProfileTabs profile={profile} />
-    </div>
+    </>
   );
 }
