@@ -13,7 +13,7 @@ import { Card, CardContent, CardHeader } from "~/components/ui/card";
 import { Separator } from "~/components/ui/separator";
 import { useIsMobile } from "~/hooks/use-mobile";
 import { Link } from "~/lib/i18n/routing";
-import { UserType } from "~/server/api/root";
+import { OwnUserDataType } from "~/server/api/root";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -31,7 +31,7 @@ const itemVariants = {
   visible: { opacity: 1, y: 0 },
 };
 
-export default function AccountInfo({ user }: { user: UserType }) {
+export default function AccountInfo({ user }: { user: OwnUserDataType }) {
   const isMobile = useIsMobile();
   const t = useTranslations("Account");
 

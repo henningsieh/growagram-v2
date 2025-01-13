@@ -1,11 +1,11 @@
 import { CardHeader } from "~/components/ui/card";
 import { Link } from "~/lib/i18n/routing";
-import { UserType } from "~/server/api/root";
+import { OwnUserDataType } from "~/server/api/root";
 
 import CustomAvatar from "./custom-avatar";
 
 interface SocialHeaderProps {
-  user: UserType;
+  user: OwnUserDataType;
 }
 
 function AvatarCardHeader({ user }: SocialHeaderProps) {
