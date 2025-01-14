@@ -36,17 +36,17 @@ export const modulePaths = {
     protected: false,
   },
   PUBLICTIMELINE: {
-    name: "Signin",
+    name: "Timeline",
     path: "/public/timeline",
     protected: false,
   },
   PUBLICGROWS: {
-    name: "Signin",
+    name: "All Grows",
     path: "/public/grows",
     protected: false,
   },
   PUBLICPLANTS: {
-    name: "Signin",
+    name: "All Plants",
     path: "/public/plants",
     protected: false,
   },

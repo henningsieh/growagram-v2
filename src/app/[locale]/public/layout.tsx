@@ -11,9 +11,21 @@ export default function PublicRootLayout({ children }: PropsWithChildren) {
   const pathname = usePathname();
 
   const navItems = [
-    { href: modulePaths.PUBLICTIMELINE.path, icon: Clock, label: "Timeline" },
-    { href: modulePaths.PUBLICGROWS.path, icon: TentTree, label: "All Grows" },
-    { href: modulePaths.PUBLICPLANTS.path, icon: TagIcon, label: "All Plants" },
+    {
+      href: modulePaths.PUBLICTIMELINE.path,
+      icon: Clock,
+      label: modulePaths.PUBLICTIMELINE.name,
+    },
+    {
+      href: modulePaths.PUBLICGROWS.path,
+      icon: TentTree,
+      label: modulePaths.PUBLICGROWS.name,
+    },
+    {
+      href: modulePaths.PUBLICPLANTS.path,
+      icon: TagIcon,
+      label: modulePaths.PUBLICPLANTS.name,
+    },
   ];
 
   return (
@@ -43,7 +55,7 @@ export default function PublicRootLayout({ children }: PropsWithChildren) {
               <Link href={item.href} key={item.href} className="flex-1">
                 <Button
                   variant={pathname === item.href ? "secondary" : "ghost"}
-                  className="h-12 w-full justify-start rounded-none text-xs"
+                  className="h-10 w-full justify-start rounded-none text-xs"
                 >
                   <item.icon className="mr-2 h-4 w-4" />
                   {item.label}
