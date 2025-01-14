@@ -35,6 +35,21 @@ export const modulePaths = {
     path: "/api/auth/signin",
     protected: false,
   },
+  PUBLICTIMELINE: {
+    name: "Signin",
+    path: "/public/timeline",
+    protected: false,
+  },
+  PUBLICGROWS: {
+    name: "Signin",
+    path: "/public/grows",
+    protected: false,
+  },
+  PUBLICPLANTS: {
+    name: "Signin",
+    path: "/public/plants",
+    protected: false,
+  },
 };
 
 export const PROTECTED_PATHS = Object.values(modulePaths)

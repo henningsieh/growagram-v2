@@ -1,14 +1,20 @@
 "use client";
 
-import { Clock, TagIcon, TentTree, Users } from "lucide-react";
+import { Clock, TagIcon, TentTree } from "lucide-react";
 import { type PropsWithChildren } from "react";
+import { modulePaths } from "~/assets/constants";
 import { Button } from "~/components/ui/button";
 import { ScrollArea } from "~/components/ui/scroll-area";
-import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Link, usePathname } from "~/lib/i18n/routing";
 
-export default function TimelineLayout({ children }: PropsWithChildren) {
+export default function PublicRootLayout({ children }: PropsWithChildren) {
   const pathname = usePathname();
+
+  const navItems = [
+    { href: modulePaths.PUBLICTIMELINE.path, icon: Clock, label: "Timeline" },
+    { href: modulePaths.PUBLICGROWS.path, icon: TentTree, label: "All Grows" },
+    { href: modulePaths.PUBLICPLANTS.path, icon: TagIcon, label: "All Plants" },
+  ];
 
   return (
     <div className="min-h-screen bg-background">
@@ -16,86 +22,37 @@ export default function TimelineLayout({ children }: PropsWithChildren) {
         {/* Left sidebar - hidden on mobile */}
         <aside className="hidden w-60 md:block">
           <div className="sticky top-16 flex flex-col gap-2 px-2">
-            <Link href="/public/timeline">
-              <Button
-                variant={
-                  pathname === "/public/timeline" ? "secondary" : "ghost"
-                }
-                className="w-full justify-start text-base"
-              >
-                <Clock className="mr-2 h-4 w-4" />
-                Timeline
-              </Button>
-            </Link>
-            {/* <Link href="/public/following">
-              <Button
-                variant={
-                  pathname === "/public/following" ? "secondary" : "ghost"
-                }
-                className="w-full justify-start text-base"
-              >
-                <Users className="mr-2 h-4 w-4" />
-                Following
-              </Button>
-            </Link> */}
-            <Link href="/public/grows">
-              <Button
-                variant={pathname === "/public/grows" ? "secondary" : "ghost"}
-                className="w-full justify-start text-base"
-              >
-                <TentTree className="mr-2 h-4 w-4" />
-                All Grows
-              </Button>
-            </Link>
-            <Link href="/public/plants">
-              <Button
-                variant={pathname === "/public/plants" ? "secondary" : "ghost"}
-                className="w-full justify-start text-base"
-              >
-                <TagIcon className="mr-2 h-4 w-4" />
-                All Plants
-              </Button>
-            </Link>
+            {navItems.map((item) => (
+              <Link href={item.href} key={item.href}>
+                <Button
+                  variant={pathname === item.href ? "secondary" : "ghost"}
+                  className="w-full justify-start text-base"
+                >
+                  <item.icon className="mr-2 h-4 w-4" />
+                  {item.label}
+                </Button>
+              </Link>
+            ))}
           </div>
         </aside>
 
-        {/* Mobile tabs - shown only on small screens */}
-        <div className="sticky w-full border-b md:hidden">
-          <Tabs defaultValue={pathname}>
-            <TabsList className="h-7 w-full rounded-none bg-transparent p-0">
-              <TabsTrigger
-                value="/public/timeline"
-                className="w-full rounded-none data-[state=active]:bg-primary data-[state=active]:font-semibold data-[state=active]:text-primary-foreground hover:data-[state=inactive]:bg-primary/20 hover:data-[state=inactive]:text-foreground"
-                asChild
-              >
-                <Link href="/public/timeline">
-                  <Clock className="mr-2 h-4 w-4" />
-                  Timeline
-                </Link>
-              </TabsTrigger>
-              <TabsTrigger
-                value="/public/following"
-                className="w-full rounded-none data-[state=active]:bg-primary data-[state=active]:font-semibold data-[state=active]:text-primary-foreground hover:data-[state=inactive]:bg-primary/20 hover:data-[state=inactive]:text-foreground"
-                asChild
-              >
-                <Link href="/public/following">
-                  <Users className="mr-2 h-4 w-4" />
-                  Following
-                </Link>
-              </TabsTrigger>
-              <TabsTrigger
-                value="/public/grows"
-                className="w-full rounded-none data-[state=active]:bg-primary data-[state=active]:font-semibold data-[state=active]:text-primary-foreground hover:data-[state=inactive]:bg-primary/20 hover:data-[state=inactive]:text-foreground"
-                asChild
-              >
-                <Link href="/public/grows">
-                  <TentTree className="mr-2 h-4 w-4" />
-                  All Grows
-                </Link>
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
+        {/* Mobile buttons - shown only on small screens */}
+        <div className="sticky top-0 w-full border-b bg-background md:hidden">
+          <div className="flex">
+            {navItems.map((item) => (
+              <Link href={item.href} key={item.href} className="flex-1">
+                <Button
+                  variant={pathname === item.href ? "secondary" : "ghost"}
+                  className="h-12 w-full justify-start rounded-none text-xs"
+                >
+                  <item.icon className="mr-2 h-4 w-4" />
+                  {item.label}
+                </Button>
+              </Link>
+            ))}
+          </div>
         </div>
+
         {/* Main content and right sidebar remain unchanged */}
         <div className="flex max-w-2xl flex-1 shrink-0">
           <div className="w-full pl-1 pr-2">{children}</div>
