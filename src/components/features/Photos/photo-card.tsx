@@ -3,13 +3,10 @@
 // src/components/features/Photos/photo-card.tsx:
 import {
   Camera,
-  Edit,
   FileIcon,
-  Loader2,
+  Flower2Icon,
   Maximize,
   Minimize,
-  Search,
-  Trash2,
   UploadCloud,
   X,
 } from "lucide-react";
@@ -21,12 +18,12 @@ import { createPortal } from "react-dom";
 import { RESPONSIVE_IMAGE_SIZES } from "~/components/Layouts/responsive-grid";
 import AvatarCardHeader from "~/components/atom/avatar-card-header";
 import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
+import { OwnerDropdownMenu } from "~/components/atom/owner-dropdown-menu";
 import { SocialCardFooter } from "~/components/atom/social-card-footer";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
+import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
-import { Card, CardContent, CardFooter, CardTitle } from "~/components/ui/card";
-import { Label } from "~/components/ui/label";
-import { Separator } from "~/components/ui/separator";
+import { Card, CardContent, CardTitle } from "~/components/ui/card";
 import { Switch } from "~/components/ui/switch";
 import {
   Tooltip,
@@ -193,39 +190,53 @@ export default function PhotoCard({
         </div>
 
         <CardContent
-          className={`grid gap-4 ${isSocial ? "ml-11 pl-0 pr-2" : "p-2"}`}
+          className={`grid gap-2 ${isSocial ? "ml-12 pl-0 pr-2" : "p-2"}`}
         >
-          {/* Title Link */}
-          <div className="flex items-center">
-            <CardTitle as="h2">
-              <Button asChild variant="link" className="p-0">
+          {/* Title Link and OwnerDropdownMenu */}
+          <div className="grid grid-cols-[1fr,auto] items-center gap-2">
+            <CardTitle as="h2" className="min-w-0 overflow-hidden text-lg">
+              <Button asChild variant="link" className="h-9 p-0">
                 <Link
                   href={`/public/photos/${photo.id}`}
-                  className="flex w-full items-center gap-2"
+                  className="flex items-center gap-2"
                 >
-                  <FileIcon className="mt-2" size={20} />
-                  <h3 className="text-xl font-bold">
+                  <FileIcon className="flex-shrink-0" size={20} />
+                  <div className="truncate font-mono font-bold">
                     {photo.originalFilename}
-                  </h3>
+                  </div>
                 </Link>
               </Button>
-              {/* Switch for toggling isSocial */}
-              {user && user.id === photo.ownerId && (
-                <div className="ml-auto flex items-start gap-2">
-                  <Label
-                    className="text-sm font-semibold"
-                    htmlFor="show-socialMode"
-                  >
-                    Social Mode
-                  </Label>
-                  <Switch
-                    id="show-socialMode"
-                    checked={isSocial}
-                    onCheckedChange={setIsSocial}
-                  />
-                </div>
-              )}
             </CardTitle>
+            {user && user.id === photo.ownerId && (
+              <div className="w-8 flex-none">
+                <OwnerDropdownMenu
+                  isSocial={isSocial}
+                  setIsSocial={setIsSocial}
+                  isDeleting={deleteMutation.isPending}
+                  handleDelete={handleDelete}
+                  entityId={photo.id}
+                  entityType="Photos"
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Plant Badges */}
+          <div className="flex justify-end gap-2 p-0">
+            {photo.plantImages.map((plantImage) => (
+              <Link
+                key={plantImage.plant.id}
+                href={`/public/plants/${plantImage.plant.id}`}
+              >
+                <Badge
+                  variant="default"
+                  className="flex items-center gap-1 whitespace-nowrap"
+                >
+                  <Flower2Icon className="h-4 w-4" />
+                  {plantImage.plant.name}
+                </Badge>
+              </Link>
+            ))}
           </div>
 
           {/* Photo Upload and Capture Date */}
@@ -282,7 +293,7 @@ export default function PhotoCard({
 
         {isSocial ? (
           <SocialCardFooter
-            className={`pb-2 pr-2 ${isSocial && "ml-14"}`}
+            className={`pb-2 pr-2 ${isSocial && "ml-12"}`}
             entityId={photo.id}
             entityType={LikeableEntityType.Photo}
             initialLiked={isLiked}
@@ -295,51 +306,7 @@ export default function PhotoCard({
             }}
             toggleComments={toggleComments}
           />
-        ) : (
-          user &&
-          user.id === photo.ownerId && (
-            <>
-              <Separator />
-              <CardFooter className="flex w-full justify-between gap-1 p-1">
-                <Button
-                  variant="destructive"
-                  size={"sm"}
-                  className="w-16"
-                  onClick={handleDelete}
-                  disabled={deleteMutation.isPending}
-                >
-                  {deleteMutation.isPending ? (
-                    <Loader2 size={20} className="animate-spin" />
-                  ) : (
-                    <Trash2 size={20} />
-                  )}
-                </Button>
-                <Button
-                  asChild
-                  size={"sm"}
-                  className="w-full text-base"
-                  variant={!!!photo.plantImages.length ? "primary" : "outline"}
-                >
-                  <Link
-                    href={{
-                      pathname: `/photos/${photo.id}/identify-plants`,
-                      query: currentQuery,
-                    }}
-                  >
-                    {!!!photo.plantImages.length ? (
-                      <Search size={20} />
-                    ) : (
-                      <Edit size={20} />
-                    )}
-                    {!!!photo.plantImages.length
-                      ? "Select Plants"
-                      : "Edit Plants"}
-                  </Link>
-                </Button>
-              </CardFooter>
-            </>
-          )
-        )}
+        ) : undefined}
 
         {isSocial && isCommentsOpen && (
           <Comments

@@ -63,8 +63,10 @@
     "buttonLabel-create-grow": "Grow erstellen",
     "buttonLabel-save-changes": "Änderungen speichern",
     "connect-error": "Fehler beim Verbinden der Pflanze",
+    "delete-button-label": "Grow löschen",
     "delete-grow-button-label": "Grow löschen",
     "disconnect-error": "Fehler beim Trennen der Pflanze",
+    "edit-button-label": "Grow bearbeiten",
     "edit-grow-button-label": "Grow bearbeiten",
     "error-default": "Etwas ist schiefgelaufen. Bitte versuche es später erneut.",
     "error-title": "Ein Fehler ist aufgetreten",
@@ -103,24 +105,6 @@
   "HomePage": {
     "about": "gehe zur Zeitleiste",
     "title": "Hallo Welt!"
-  },
-  "Images": {
-    "button": {
-      "connecting": "Pflanzen werden verbunden...",
-      "removeAll": "Alle Pflanzen entfernen",
-      "save": "Pflanzenauswahl speichern ({count})"
-    },
-    "buttonBackLabel": "Zurück",
-    "plantSelection": {
-      "description": "Wähle jede Pflanze aus, die du auf dem Foto sehen kannst!",
-      "title": "Pflanzenauswahl"
-    },
-    "search": {
-      "noResults": "Keine Ergebnisse gefunden.",
-      "placeholder": "Pflanzen suchen..."
-    },
-    "subtitle": "Welche Pflanzen siehst du auf diesem Foto?",
-    "title": "Pflanzen identifizieren"
   },
   "LandingPage": {
     "FeaturesSection": {
@@ -188,6 +172,7 @@
     "grows": "Alle Grows",
     "grows-description": "Hier siehst du, was andere anbauen und wie sie es machen.",
     "home": "Home",
+    "home": "Home",
     "my-grows": "Meine Grows",
     "my-grows-subline": "Verwalte und gruppiere deine Pflanzen in Grows.",
     "my-photos": "Meine Fotos",
@@ -197,14 +182,44 @@
     "navigation": "Navigation",
     "plants": "Alle Pflanzen",
     "plants-description": "Entdecke, welche Pflanzen andere gerade großziehen.",
+    "plants": "Alle Pflanzen",
+    "plants-description": "Entdecke, welche Pflanzen andere gerade großziehen.",
     "timeline": "Zeitleiste",
     "timeline-description": "Social Media Zeitachse (Funktion in Kürze)",
     "toggle-menu": "Menü umschalten"
   },
+  "Photos": {
+    "button": {
+      "connecting": "Pflanzen werden verbunden...",
+      "removeAll": "Alle Pflanzen entfernen",
+      "save": "Pflanzenauswahl speichern ({count})"
+    },
+    "button-label-upload-photos": "Hochladen",
+    "buttonBackLabel": "Zurück",
+    "capture-date": "aufgenommen",
+    "delete-button-label": "Foto löschen",
+    "edit-button-label": "Foto bearbeiten",
+    "my-Photos": "Meine Fotos",
+    "my-Photos-subtitle": "Anzeige und Verwaltung meiner Fotos",
+    "plantSelection": {
+      "description": "Wähle jede Pflanze aus, die du auf dem Foto sehen kannst!",
+      "title": "Pflanzenauswahl"
+    },
+    "public-link-label": "Öffnen im neuen Tab",
+    "search": {
+      "noResults": "Keine Ergebnisse gefunden.",
+      "placeholder": "Pflanzen suchen..."
+    },
+    "subtitle": "Welche Pflanzen siehst du auf diesem Foto?",
+    "title": "Pflanzen identifizieren",
+    "uploaded-at": "hochgeladen"
+  },
   "Plants": {
     "breeder": "Züchter / Breeder",
     "curing-start-date": "Startdatum der Aushärtephase",
+    "delete-button-label": "Pflanze löschen",
     "delete-plant-button-label": "Pflanze löschen",
+    "edit-button-label": "Pflanze bearbeiten",
     "edit-plant-button-label": "Pflanze bearbeiten",
     "estimated-harvest": "Voraussichtliche Ernte",
     "flowering-start-date": "Startdatum der Blüte",
@@ -225,7 +240,7 @@
     "germination-date": "Datum der Keimung",
     "growth-progress": "Wachstumsfortschritt",
     "harvest-date": "Datum der Ernte",
-    "linkUploadButtonLabel": "Neue anlegen",
+    "linkUploadButtonLabel": "Pflanze anlegen",
     "overall-progress": "Gesamtfortschritt",
     "phase": "Phasenfortschritt",
     "planting-date": "Datum der Aussaat",
@@ -258,6 +273,43 @@
     "light": "Hell",
     "system": "System",
     "toggle-theme": "Designthema umschalten"
+  },
+  "Sidebar": {
+    "teams": {
+      "GrowAGram Collective": "GrowAGram Collective",
+      "Grower": "Grower",
+      "Premium": "Premium",
+      "Basic Free Plan": "Kostenloser Basisplan"
+    },
+    "navMain": {
+      "Grows": {
+        "title": "Grows",
+        "items": {
+          "My Grows": "Meine Grows",
+          "Create New Grow": "Grow erstellen"
+        }
+      },
+      "Plants": {
+        "title": "Pflanzen",
+        "items": {
+          "My Plants": "Meine Pflanzen",
+          "Add New Plant": "Pflanze hinzufügen"
+        }
+      },
+      "Photos": {
+        "title": "Fotos",
+        "items": {
+          "My Photos": "Meine Fotos",
+          "Upload New Photos": "Fotos hochladen"
+        }
+      }
+    },
+    "coming_soon": {
+      "Plant Feedings": "Pflanzendüngung",
+      "Plant Sizes": "Pflanzengrößen",
+      "My Inventory": "Mein Inventar",
+      "Grow Archive": "Grow-Archiv"
+    }
   },
   "Premium": {
     "premium-title": "Premium-Funktionen freischalten",

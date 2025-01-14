@@ -1,25 +1,38 @@
-// src/app/[locale]/(protected)/grows/[id]/form/layout.tsx:
-import React from "react";
-import { HydrateClient, api } from "~/lib/trpc/server";
+import { asc } from "drizzle-orm";
+import { db } from "~/lib/db";
+import { grows } from "~/lib/db/schema";
 import { GetGrowByIdInput } from "~/server/api/root";
 
-export const metadata = {
-  title: "Grower's Plattform | Grows",
-  description: "Grower's Plattform | Grows",
-};
+// Allow both static and dynamic rendering
+export const dynamic = "force-dynamic";
+// Revalidate cache every hour
+export const revalidate = 3600;
+// Enable dynamic parameters
+export const dynamicParams = true;
+
+// Pre-generate pages for all grows using direct DB query
+export async function generateStaticParams() {
+  try {
+    const allGrows = await db.query.grows.findMany({
+      columns: {
+        id: true,
+      },
+      orderBy: [asc(grows.createdAt)],
+    });
+
+    return allGrows.map((grow) => ({
+      id: grow.id,
+    })) satisfies GetGrowByIdInput[];
+  } catch (error) {
+    console.error("Error generating static params:", error);
+    return [];
+  }
+}
 
 export default async function PublicGrowByIdLayout({
   children,
-  params,
 }: {
   children: React.ReactNode;
-  params: Promise<GetGrowByIdInput>;
 }) {
-  const growId = (await params).id;
-
-  await api.grows.getById.prefetch({
-    id: growId,
-  } satisfies GetGrowByIdInput);
-
-  return <HydrateClient>{children}</HydrateClient>;
+  return children;
 }

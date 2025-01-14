@@ -3,18 +3,15 @@
 // src/components/features/plant/plant-card.tsx:
 import { TooltipProvider } from "@radix-ui/react-tooltip";
 import {
-  EditIcon,
-  ExternalLinkIcon,
+  DnaIcon,
+  FlaskConicalIcon,
   Flower2,
   Leaf,
-  Loader2,
-  MessageCircleIcon,
-  MoreHorizontalIcon,
   Nut,
   PillBottle,
   Sprout,
   Tag,
-  Trash2Icon,
+  TentTreeIcon,
   Wheat,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
@@ -22,6 +19,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import AvatarCardHeader from "~/components/atom/avatar-card-header";
 import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
+import { OwnerDropdownMenu } from "~/components/atom/owner-dropdown-menu";
 import { SocialCardFooter } from "~/components/atom/social-card-footer";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
@@ -33,14 +31,11 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu";
-import { Label } from "~/components/ui/label";
+  HybridTooltip,
+  HybridTooltipContent,
+  HybridTooltipTrigger,
+} from "~/components/ui/hybrid-tooltip";
 import { Progress } from "~/components/ui/progress";
-import { Switch } from "~/components/ui/switch";
 import {
   Tooltip,
   TooltipContent,
@@ -136,7 +131,7 @@ export default function PlantCard({
         {isSocial && <AvatarCardHeader user={plant.owner} />}
 
         <CardContent
-          className={`grid gap-2 ${isSocial ? "ml-11 pl-0 pr-2" : "p-2"}`}
+          className={`grid gap-2 ${isSocial ? "ml-12 pl-0 pr-2" : "p-2"}`}
         >
           {/* Image Carousel */}
           <ImageCarousel plantImages={plant.plantImages} />
@@ -156,90 +151,66 @@ export default function PlantCard({
             </CardTitle>
             {/* DropdownMenu for plant's owner */}
             {user && user.id === plant.ownerId && (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="icon">
-                    <MoreHorizontalIcon className="h-5 w-5" />
-                    <span className="sr-only">Owner menu</span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  {!isSocialProp && (
-                    <DropdownMenuItem className="flex items-center justify-start">
-                      <MessageCircleIcon className="mr-2 h-4 w-4" />
-                      <Label
-                        className="cursor-pointer text-sm font-semibold"
-                        htmlFor="show-socialMode"
-                      >
-                        Social
-                      </Label>
-                      <Switch
-                        className="ml-auto"
-                        id="show-socialMode"
-                        checked={isSocial}
-                        onCheckedChange={setIsSocial}
-                      />
-                    </DropdownMenuItem>
-                  )}
-                  <DropdownMenuItem asChild>
-                    <Link
-                      target="_blank"
-                      href={`/public/plants/${plant.id}`}
-                      className="flex cursor-pointer items-center"
-                    >
-                      <ExternalLinkIcon className="mr-2 h-4 w-4" />
-                      {t("public-link-label")}
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link
-                      href={`/plants/${plant.id}/form`}
-                      className="flex cursor-pointer items-center"
-                    >
-                      <EditIcon className="mr-2 h-4 w-4" />
-                      {t("edit-plant-button-label")}
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    asChild
-                    className="bg-destructive/50 text-foreground focus:bg-destructive focus:text-white focus:outline-none"
-                  >
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      className="w-full justify-start"
-                      onClick={handleDelete}
-                      disabled={deleteMutation.isPending}
-                    >
-                      {deleteMutation.isPending ? (
-                        <Loader2 size={20} className="mr-2 animate-spin" />
-                      ) : (
-                        <Trash2Icon className="mr-2 h-4 w-4" />
-                      )}
-                      {t("delete-plant-button-label")}
-                    </Button>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <OwnerDropdownMenu
+                isSocial={isSocial}
+                setIsSocial={setIsSocial}
+                isDeleting={deleteMutation.isPending}
+                handleDelete={handleDelete}
+                entityId={plant.id}
+                entityType="Plants"
+              />
             )}
           </div>
 
           {/* Strain Info */}
           <CardDescription>
-            <span className="block">
-              {
-                t("strain")
-                // eslint-disable-next-line react/jsx-no-literals
-              }
-              : {plant.strain?.name ?? "Unknown"}
-            </span>
-            <span className="block">
-              {
-                t("breeder")
-                // eslint-disable-next-line react/jsx-no-literals
-              }
-              : {plant.strain?.breeder.name ?? "Unknown"}
-            </span>
+            <div className="flex items-center justify-between">
+              <HybridTooltip>
+                <HybridTooltipTrigger
+                  className={`flex cursor-help items-center gap-2`}
+                >
+                  <Badge
+                    variant="outline"
+                    className="flex items-center gap-1 border-[1px] border-fuchsia-700"
+                  >
+                    <DnaIcon className={`h-4 w-4`} />
+                    Strain
+                  </Badge>
+                </HybridTooltipTrigger>
+                <HybridTooltipContent className={`w-auto bg-fuchsia-600 p-1`}>
+                  <div>
+                    <span className="block">
+                      {
+                        t("strain")
+                        // eslint-disable-next-line react/jsx-no-literals
+                      }
+                      : {plant.strain?.name ?? "Unknown"}
+                    </span>
+                    <span className="block">
+                      {
+                        t("breeder")
+                        // eslint-disable-next-line react/jsx-no-literals
+                      }
+                      : {plant.strain?.breeder.name ?? "Unknown"}
+                    </span>
+                  </div>
+                </HybridTooltipContent>
+              </HybridTooltip>
+              {/* Grow Badge */}
+              {plant.grow && (
+                <div className="flex flex-wrap gap-2 p-0">
+                  <Link href={`/public/grows/${plant.grow.id}`}>
+                    <Badge
+                      variant="secondary"
+                      className="flex items-center gap-1 whitespace-nowrap"
+                    >
+                      <TentTreeIcon className="h-4 w-4" />
+                      {plant.grow.name}
+                    </Badge>
+                  </Link>
+                </div>
+              )}
+            </div>
           </CardDescription>
 
           {/* Plant Progress and Dates */}
@@ -411,7 +382,7 @@ export default function PlantCard({
           isSocial && (
             // Social Footer
             <SocialCardFooter
-              className={`pb-2 pr-2 ${isSocial && "ml-11"}`}
+              className={`pb-2 pr-2 ${isSocial && "ml-12"}`}
               entityId={plant.id}
               entityType={LikeableEntityType.Plant}
               initialLiked={isLiked}

@@ -2,14 +2,7 @@
 
 // src/components/features/Grows/grow-card.tsx:
 import { AnimatePresence, motion } from "framer-motion";
-import { MessageCircleIcon, TentTree } from "lucide-react";
-import {
-  EditIcon,
-  ExternalLinkIcon,
-  Loader2,
-  MoreHorizontalIcon,
-  Trash2Icon,
-} from "lucide-react";
+import { TentTree } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
@@ -18,6 +11,7 @@ import headerImagePlaceholder from "~/assets/landscape-placeholdersvg.svg";
 import { RESPONSIVE_IMAGE_SIZES } from "~/components/Layouts/responsive-grid";
 import AvatarCardHeader from "~/components/atom/avatar-card-header";
 import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
+import { OwnerDropdownMenu } from "~/components/atom/owner-dropdown-menu";
 import { SocialCardFooter } from "~/components/atom/social-card-footer";
 import { Button } from "~/components/ui/button";
 import {
@@ -26,14 +20,6 @@ import {
   CardDescription,
   CardTitle,
 } from "~/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu";
-import { Label } from "~/components/ui/label";
-import { Switch } from "~/components/ui/switch";
 import { useComments } from "~/hooks/use-comments";
 import { useLikeStatus } from "~/hooks/use-likes";
 import { useToast } from "~/hooks/use-toast";
@@ -122,7 +108,7 @@ export function GrowCard({
         {isSocial && <AvatarCardHeader user={grow.owner} />}
 
         <CardContent
-          className={`grid gap-2 ${isSocial ? "ml-11 pl-0 pr-2" : "p-2"}`}
+          className={`grid gap-2 ${isSocial ? "ml-12 pl-0 pr-2" : "p-2"}`}
         >
           {/* Grow HeaderImage */}
           <div
@@ -157,71 +143,14 @@ export function GrowCard({
             </CardTitle>
             {/* DropdownMenu for grow's owner */}
             {user && user.id === grow.ownerId && (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="icon">
-                    <MoreHorizontalIcon className="h-5 w-5" />
-                    <span className="sr-only">Owner menu</span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  {!isSocialProp && (
-                    <DropdownMenuItem className="flex items-center justify-start">
-                      <MessageCircleIcon className="mr-2 h-4 w-4" />
-                      <Label
-                        className="cursor-pointer text-sm font-semibold"
-                        htmlFor="show-socialMode"
-                      >
-                        Social
-                      </Label>
-                      <Switch
-                        className="ml-auto"
-                        id="show-socialMode"
-                        checked={isSocial}
-                        onCheckedChange={setIsSocial}
-                      />
-                    </DropdownMenuItem>
-                  )}
-                  <DropdownMenuItem asChild>
-                    <Link
-                      target="_blank"
-                      href={`/public/grows/${grow.id}`}
-                      className="flex cursor-pointer items-center"
-                    >
-                      <ExternalLinkIcon className="mr-2 h-4 w-4" />
-                      {t("public-link-label")}
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link
-                      href={`/grows/${grow.id}/form`}
-                      className="flex cursor-pointer items-center"
-                    >
-                      <EditIcon className="mr-2 h-4 w-4" />
-                      {t("edit-grow-button-label")}
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    asChild
-                    className="bg-destructive/50 text-foreground focus:bg-destructive focus:text-white focus:outline-none"
-                  >
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      className="w-full justify-start"
-                      onClick={handleDelete}
-                      disabled={deleteMutation.isPending}
-                    >
-                      {deleteMutation.isPending ? (
-                        <Loader2 size={20} className="mr-2 animate-spin" />
-                      ) : (
-                        <Trash2Icon className="mr-2 h-4 w-4" />
-                      )}
-                      {t("delete-grow-button-label")}
-                    </Button>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <OwnerDropdownMenu
+                isSocial={isSocial}
+                setIsSocial={setIsSocial}
+                isDeleting={deleteMutation.isPending}
+                handleDelete={handleDelete}
+                entityId={grow.id}
+                entityType="Grows"
+              />
             )}
           </div>
 
@@ -280,7 +209,7 @@ export function GrowCard({
           isSocial && (
             // Social Footer
             <SocialCardFooter
-              className={`pb-2 pr-2 ${isSocial && "ml-11"}`}
+              className={`pb-2 pr-2 ${isSocial && "ml-12"}`}
               entityId={grow.id}
               entityType={LikeableEntityType.Grow}
               initialLiked={isLiked}

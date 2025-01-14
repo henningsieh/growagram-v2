@@ -2,7 +2,7 @@
 import { TRPCError } from "@trpc/server";
 import { and, eq, not } from "drizzle-orm";
 import { z } from "zod";
-import { users } from "~/lib/db/schema";
+import { grows, users } from "~/lib/db/schema";
 import {
   createTRPCRouter,
   protectedProcedure,
@@ -11,23 +11,11 @@ import {
 import { UserRoles } from "~/types/user";
 import { updateTokensSchema, userEditSchema } from "~/types/zodSchema";
 
+import { connectPlantWithImagesQuery } from "./plantImages";
+
 export const userRouter = createTRPCRouter({
-  // Get all users (public procedure)
-  getAllUsers: publicProcedure.query(async ({ ctx }) => {
-    const allUsers = await ctx.db.query.users.findMany({
-      columns: {
-        id: true,
-        name: true,
-        username: true,
-        image: true,
-      },
-    });
-
-    return allUsers;
-  }),
-
-  // Get user by ID (public procedure)
-  getById: publicProcedure
+  // Get public user data by user id (public procedure)
+  getPublicUserProfile: publicProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
       const user = await ctx.db.query.users.findFirst({
@@ -35,15 +23,79 @@ export const userRouter = createTRPCRouter({
         columns: {
           id: true,
           name: true,
-          username: true,
-          email: true,
           image: true,
+          username: true,
           role: true,
+        },
+        with: {
+          grows: {
+            with: {
+              owner: true,
+              plants: {
+                with: {
+                  owner: true,
+                  grow: true,
+                  headerImage: { columns: { id: true, imageUrl: true } },
+                  plantImages: connectPlantWithImagesQuery,
+                  strain: {
+                    columns: {
+                      id: true,
+                      name: true,
+                      thcContent: true,
+                      cbdContent: true,
+                    },
+                    with: { breeder: { columns: { id: true, name: true } } },
+                  },
+                },
+              },
+            },
+          },
+          plants: {
+            with: {
+              owner: true,
+              grow: true,
+              headerImage: { columns: { id: true, imageUrl: true } },
+              plantImages: connectPlantWithImagesQuery,
+              strain: {
+                columns: {
+                  id: true,
+                  name: true,
+                  thcContent: true,
+                  cbdContent: true,
+                },
+                with: { breeder: { columns: { id: true, name: true } } },
+              },
+            },
+          },
         },
       });
 
+      if (!user) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "User not found",
+        });
+      }
+
       return user;
     }),
+
+  // Get user by ID (public procedure)
+  getOwnUserData: protectedProcedure.query(async ({ ctx }) => {
+    const user = await ctx.db.query.users.findFirst({
+      where: eq(users.id, ctx.session.user.id),
+      columns: {
+        id: true,
+        name: true,
+        username: true,
+        email: true,
+        image: true,
+        role: true,
+      },
+    });
+
+    return user;
+  }),
 
   // Edit user (protected procedure)
   editUser: protectedProcedure

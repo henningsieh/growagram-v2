@@ -19,6 +19,7 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import FormContent from "~/components/Layouts/form-content";
+import SpinningLoader from "~/components/Layouts/loader";
 import PageHeader from "~/components/Layouts/page-header";
 import { Button } from "~/components/ui/button";
 import {
@@ -42,7 +43,7 @@ import { Input } from "~/components/ui/input";
 import { useToast } from "~/hooks/use-toast";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
-import { GetUserEditInput, UserType } from "~/server/api/root";
+import { GetUserEditInput, OwnUserDataType } from "~/server/api/root";
 import { userEditSchema } from "~/types/zodSchema";
 
 const formVariants = {
@@ -61,7 +62,7 @@ const itemVariants = {
   visible: { opacity: 1, y: 0 },
 };
 
-export default function AccountEditForm({ user }: { user: UserType }) {
+export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
   const router = useRouter();
   const t = useTranslations("Account");
   const { toast } = useToast();
@@ -391,7 +392,7 @@ export default function AccountEditForm({ user }: { user: UserType }) {
                     >
                       <div className="absolute inset-0 translate-x-[-100%] bg-gradient-to-r from-primary-foreground/0 via-primary-foreground/20 to-primary-foreground/0 transition-transform duration-500 group-hover:translate-x-[100%]" />
                       {editUserMutation.isPending ? (
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        <SpinningLoader className="mr-2 h-4 w-4 animate-spin" />
                       ) : (
                         <Edit className="mr-2 h-4 w-4" />
                       )}

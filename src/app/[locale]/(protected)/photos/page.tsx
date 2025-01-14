@@ -8,8 +8,10 @@ import {
   Camera,
   UploadCloud,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
+import { modulePaths } from "~/assets/constants";
 import PageHeader from "~/components/Layouts/page-header";
 import {
   SortFilterControls,
@@ -20,9 +22,10 @@ import PhotosPaginatedView from "~/components/features/Photos/Views/paginated";
 import { useRouter } from "~/lib/i18n/routing";
 import { PhotosSortField, PhotosViewMode } from "~/types/image";
 
-export default function AllImagesPage() {
-  const searchParams = useSearchParams();
+export default function MyImagesPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const t = useTranslations("Photos");
 
   // Manage view mode state
   const [viewMode, setViewMode] = useState<string>(
@@ -46,7 +49,11 @@ export default function AllImagesPage() {
   // Update URL parameters
   const updateUrlParams = useCallback(() => {
     const params = new URLSearchParams();
-    params.set("page", searchParams?.get("page") || "1");
+    if (viewMode === PhotosViewMode.PAGINATION) {
+      params.set("page", searchParams?.get("page") || "1");
+    } else {
+      params.delete("page");
+    }
     params.set("sortField", sortField);
     params.set("sortOrder", sortOrder);
     params.set("filterNotConnected", filterNotConnected.toString());
@@ -54,7 +61,14 @@ export default function AllImagesPage() {
     // Only set URL if there are parameters
     const paramsString = params.toString();
     router.replace(paramsString ? `?${paramsString}` : "", { scroll: false });
-  }, [searchParams, sortField, sortOrder, filterNotConnected, router]);
+  }, [
+    searchParams,
+    sortField,
+    sortOrder,
+    filterNotConnected,
+    viewMode,
+    router,
+  ]);
 
   // Sync state with URL
   useEffect(() => {
@@ -86,14 +100,14 @@ export default function AllImagesPage() {
   const sortOptions = [
     {
       field: PhotosSortField.UPLOAD_DATE,
-      label: "Upload Date",
+      label: t("uploaded-at"),
       icon: <UploadCloud className="h-6 w-5" />,
       sortIconAsc: ArrowDown01,
       sortIconDesc: ArrowDown10,
     },
     {
       field: PhotosSortField.CAPTURE_DATE,
-      label: "Capture Date",
+      label: t("capture-date"),
       icon: <Camera className="h-6 w-5" />,
       sortIconAsc: ArrowDown01,
       sortIconDesc: ArrowDown10,
@@ -102,10 +116,10 @@ export default function AllImagesPage() {
 
   return (
     <PageHeader
-      title="My Photos"
-      subtitle="View and manage your photos"
-      buttonLink="/photos/upload"
-      buttonLabel="Upload new Photos"
+      title={t("my-Photos")}
+      subtitle={t("my-Photos-subtitle")}
+      buttonLink={`${modulePaths.PHOTOS.path}/upload`}
+      buttonLabel={t("button-label-upload-photos")}
     >
       <SortFilterControls
         isFetching={isFetching}

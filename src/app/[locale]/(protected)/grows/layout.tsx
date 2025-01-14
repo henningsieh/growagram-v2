@@ -1,7 +1,7 @@
 // src/app/[locale]/(protected)/grows/layout.tsx:
 import { PaginationItemsPerPage } from "~/assets/constants";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
-import { HydrateClient, api } from "~/lib/trpc/server";
+import { api } from "~/lib/trpc/server";
 import { GetOwnGrowsInput } from "~/server/api/root";
 import { GrowsSortField } from "~/types/grow";
 
@@ -31,5 +31,5 @@ export default async function MyGrowsLayout({
     sortOrder: SortOrder.ASC,
   } satisfies GetOwnGrowsInput);
 
-  return <HydrateClient>{children}</HydrateClient>;
+  return children;
 }

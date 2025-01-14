@@ -34,21 +34,27 @@ export default function PhotosInfiniteScrollView({
   const utils = api.useUtils();
 
   useEffect(() => {
-    router.replace(
-      modulePaths.PHOTOS.path, // Use only the base path
-    );
+    const params = new URLSearchParams(window.location.search);
+    if (params.has("page")) {
+      params.delete("page");
+      router.replace(`${modulePaths.PHOTOS.path}?${params.toString()}`, {
+        scroll: false,
+      });
+    }
   }, [router]);
 
-  // Get initial data from cache
-  const initialData = utils.photos.getOwnPhotos.getInfiniteData({
-    // the input must match the server-side `prefetchInfinite`
+  // Get initial data from cache with proper structure
+  const queryInput = {
     limit: PaginationItemsPerPage.PHOTOS_PER_PAGE,
     sortField,
     sortOrder,
     filterNotConnected,
-  } satisfies GetOwnPhotosInput);
+  } satisfies GetOwnPhotosInput;
 
-  // Infinite query
+  // Get initial data from cache with correct input structure
+  const initialData = utils.photos.getOwnPhotos.getInfiniteData(queryInput);
+
+  // Infinite query with matching input
   const {
     data,
     isLoading,
@@ -56,18 +62,11 @@ export default function PhotosInfiniteScrollView({
     hasNextPage,
     fetchNextPage,
     isFetchingNextPage,
-  } = api.photos.getOwnPhotos.useInfiniteQuery(
-    {
-      limit: PaginationItemsPerPage.PHOTOS_PER_PAGE,
-      sortField,
-      sortOrder,
-      filterNotConnected,
-    } satisfies GetOwnPhotosInput,
-    {
-      getNextPageParam: (lastPage) => lastPage.nextCursor,
-      initialData,
-    },
-  );
+  } = api.photos.getOwnPhotos.useInfiniteQuery(queryInput, {
+    getNextPageParam: (lastPage) => lastPage.nextCursor,
+    initialData: initialData || undefined,
+  });
+
   // Directly update the parent's isFetching state
   useEffect(() => {
     setIsFetching(isFetching);

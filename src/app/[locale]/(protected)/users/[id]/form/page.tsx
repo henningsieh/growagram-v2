@@ -2,17 +2,10 @@
 import { notFound } from "next/navigation";
 import AccountEditForm from "~/components/features/Account/account-edit-form";
 import { api } from "~/lib/trpc/server";
-import { GetUserByIdInput, GetUserEditInput } from "~/server/api/root";
 
-export default async function EditUserPage({
-  params,
-}: {
-  params: Promise<GetUserEditInput>;
-}) {
+export default async function EditUserPage() {
   // Get the current user's profile
-  const user = await api.users.getById({
-    id: (await params).id,
-  } satisfies GetUserByIdInput);
+  const user = await api.users.getOwnUserData();
 
   // If user not found, show 404
   if (!user) notFound();

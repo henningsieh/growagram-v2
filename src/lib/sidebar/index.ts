@@ -28,9 +28,9 @@ function getSidebarItems(): ProcessedSidebarItems {
       ...item,
       icon: item.icon ? getIconComponent(item.icon) : undefined,
     })),
-    projects: sidebarJsonData.projects.map((project) => ({
-      ...project,
-      icon: getIconComponent(project.icon),
+    coming_soon: sidebarJsonData.coming_soon.map((cs) => ({
+      ...cs,
+      icon: getIconComponent(cs.icon),
     })),
   };
 }

@@ -1,19 +1,10 @@
-// src/app/[locale]/(protected)/layout.tsx
-// import { routing } from "~/lib/i18n/routing";
+// src/app/[locale]/(protected)/layout.tsx:
 import ProtectedSidebar from "../../../components/Layouts/Sidebar";
 
 type LayoutProps = {
   children: React.ReactNode;
-  params: Promise<{ locale: string }>;
 };
 
-export default function ProtectedLayout({
-  children,
-  // params,
-}: LayoutProps) {
-  // const { locale } = await params;
-  // console.debug("params.locale: ", locale);
-  // console.debug("routing.locales: ", routing.locales);
-
+export default function ProtectedRootLayout({ children }: LayoutProps) {
   return <ProtectedSidebar>{children}</ProtectedSidebar>;
 }

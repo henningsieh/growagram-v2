@@ -63,8 +63,10 @@
     "buttonLabel-create-grow": "Create Grow",
     "buttonLabel-save-changes": "Save Changes",
     "connect-error": "Error connecting plant",
+    "delete-button-label": "Delete Grow",
     "delete-grow-button-label": "Delete Grow",
     "disconnect-error": "Error disconnecting plant",
+    "edit-button-label": "Edit Grow",
     "edit-grow-button-label": "Edit Grow",
     "error-default": "Something went wrong. Please try again later.",
     "error-title": "An error occurred",
@@ -103,24 +105,6 @@
   "HomePage": {
     "about": "go to Timeline",
     "title": "Hello world!"
-  },
-  "Images": {
-    "button": {
-      "connecting": "Connecting plants...",
-      "removeAll": "Remove All Plants",
-      "save": "Save Plant Selection ({count})"
-    },
-    "buttonBackLabel": "Back",
-    "plantSelection": {
-      "description": "Select each plant you can see in the photo!",
-      "title": "Plant Selection"
-    },
-    "search": {
-      "noResults": "No results found.",
-      "placeholder": "Search plants..."
-    },
-    "subtitle": "Which plants did you spot in this photo?",
-    "title": "Identify Plants"
   },
   "LandingPage": {
     "FeaturesSection": {
@@ -188,6 +172,7 @@
     "grows": "All Grows",
     "grows-description": "Take a look at other growers' grows and get inspired.",
     "home": "Home",
+    "home": "Home",
     "my-grows": "My Grows",
     "my-grows-subline": "Manage and group your plants in Grows.",
     "my-photos": "My Photos",
@@ -197,14 +182,44 @@
     "navigation": "Navigation",
     "plants": "All Plants",
     "plants-description": "Check out what other growers are cultivating and get some new ideas.",
+    "plants": "All Plants",
+    "plants-description": "Check out what other growers are cultivating and get some new ideas.",
     "timeline": "Timeline",
     "timeline-description": "Social media timeline (feature coming soon)",
     "toggle-menu": "Toggle menu"
   },
+  "Photos": {
+    "button": {
+      "connecting": "Connecting plants...",
+      "removeAll": "Remove All Plants",
+      "save": "Save Plant Selection ({count})"
+    },
+    "button-label-upload-photos": "Upload",
+    "buttonBackLabel": "Back",
+    "capture-date": "taken on",
+    "delete-button-label": "Delete Photo",
+    "edit-button-label": "Edit Photo",
+    "my-Photos": "My photos",
+    "my-Photos-subtitle": "Display and manage my photos",
+    "plantSelection": {
+      "description": "Select each plant you can see in the photo!",
+      "title": "Plant Selection"
+    },
+    "public-link-label": "Open in new Tab",
+    "search": {
+      "noResults": "No results found.",
+      "placeholder": "Search plants..."
+    },
+    "subtitle": "Which plants did you spot in this photo?",
+    "title": "Identify Plants",
+    "uploaded-at": "uploaded on"
+  },
   "Plants": {
     "breeder": "Breeder",
     "curing-start-date": "Curing phase start date",
+    "delete-button-label": "Delete Plant",
     "delete-plant-button-label": "Delete Plant",
+    "edit-button-label": "Edit Plant",
     "edit-plant-button-label": "Edit Plant",
     "estimated-harvest": "Estimated harvest",
     "flowering-start-date": "Flowering Start Date",
@@ -219,7 +234,7 @@
     "form-pagerheader-edit-subtitle": "Edit this plant from your collection",
     "form-pagerheader-edit-title": "Edit Plant",
     "form-pagerheader-new-subtitle": "Add a new plant to your collection",
-    "form-pagerheader-new-title": "Create New Plant",
+    "form-pagerheader-new-title": "Add New Plant",
     "form-pagerheader-subtitle": "",
     "form-pagerheader-title": "",
     "germination-date": "Germination Date",
@@ -258,6 +273,43 @@
     "light": "Light",
     "system": "System",
     "toggle-theme": "Toggle theme"
+  },
+  "Sidebar": {
+    "teams": {
+      "GrowAGram Collective": "GrowAGram Collective",
+      "Grower": "Grower",
+      "Premium": "Premium",
+      "Basic Free Plan": "Basic Free Plan"
+    },
+    "navMain": {
+      "Grows": {
+        "title": "Grows",
+        "items": {
+          "My Grows": "My Grows",
+          "Create New Grow": "Create New Grow"
+        }
+      },
+      "Plants": {
+        "title": "Plants",
+        "items": {
+          "My Plants": "My Plants",
+          "Add New Plant": "Add New Plant"
+        }
+      },
+      "Photos": {
+        "title": "Photos",
+        "items": {
+          "My Photos": "My Photos",
+          "Upload New Photos": "Upload New Photos"
+        }
+      }
+    },
+    "coming_soon": {
+      "Plant Feedings": "Plant Fertilizations",
+      "Plant Sizes": "Plant Sizes",
+      "My Inventory": "My Inventory",
+      "Grow Archive": "Grow Archive"
+    }
   },
   "Premium": {
     "premium-title": "Unlock Premium Features",

@@ -6,6 +6,7 @@ export const PaginationItemsPerPage = {
   PHOTOS_PER_PAGE: 6,
   PLANTS_PER_PAGE: 6,
   GROWS_PER_PAGE: 6,
+  PUBLIC_GROWS_PER_PAGE: 2,
 };
 
 export const modulePaths = {
@@ -37,6 +38,21 @@ export const modulePaths = {
   SIGNIN: {
     name: "Signin",
     path: "/signin",
+    protected: false,
+  },
+  PUBLICTIMELINE: {
+    name: "Timeline",
+    path: "/public/timeline",
+    protected: false,
+  },
+  PUBLICGROWS: {
+    name: "All Grows",
+    path: "/public/grows",
+    protected: false,
+  },
+  PUBLICPLANTS: {
+    name: "All Plants",
+    path: "/public/plants",
     protected: false,
   },
 };

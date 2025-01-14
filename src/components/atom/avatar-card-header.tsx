@@ -1,10 +1,11 @@
 import { CardHeader } from "~/components/ui/card";
-import { UserType } from "~/server/api/root";
+import { Link } from "~/lib/i18n/routing";
+import { OwnUserDataType } from "~/server/api/root";
 
 import CustomAvatar from "./custom-avatar";
 
 interface SocialHeaderProps {
-  user: UserType;
+  user: OwnUserDataType;
 }
 
 function AvatarCardHeader({ user }: SocialHeaderProps) {
@@ -13,19 +14,22 @@ function AvatarCardHeader({ user }: SocialHeaderProps) {
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-3">
           <CustomAvatar
-            size={44}
+            size={40}
             src={user.image ?? undefined}
             alt={user.username ?? "User avatar"}
             fallback={user.name?.[0] || "?"}
           />
           <div className="flex flex-col gap-0.5">
             <p className="text-sm font-semibold">{user.name}</p>
-            <p className="text-sm text-muted-foreground">
+            <Link
+              href={`/public/profile/${user.id}`}
+              className="text-sm text-muted-foreground"
+            >
               {
                 // eslint-disable-next-line react/jsx-no-literals
                 `@${user.username}`
               }
-            </p>
+            </Link>
           </div>
         </div>
       </div>

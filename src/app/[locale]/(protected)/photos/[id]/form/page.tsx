@@ -1,4 +1,4 @@
-// src/app/[locale]/(protected)/photos/[id]/identify-plants/page.tsx:
+// src/app/[locale]/(protected)/photos/[id]/form/page.tsx:
 import ImageConnectPlants from "~/components/features/Photos/image-connect-plants";
 import { HydrateClient, api } from "~/lib/trpc/server";
 import { GetPhotoByIdInput } from "~/server/api/root";
@@ -16,9 +16,5 @@ export default async function Page({
   // Prefetch the plants query - this will populate the cache
   void api.plants.getOwnPlants.prefetch();
 
-  return (
-    <HydrateClient>
-      <ImageConnectPlants image={image} />
-    </HydrateClient>
-  );
+  return <ImageConnectPlants image={image} />;
 }

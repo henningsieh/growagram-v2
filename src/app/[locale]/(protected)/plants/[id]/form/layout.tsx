@@ -22,5 +22,5 @@ export default async function PlantsLayout({
     } satisfies GetPlantByIdInput);
   }
 
-  return <HydrateClient>{children}</HydrateClient>;
+  return children;
 }

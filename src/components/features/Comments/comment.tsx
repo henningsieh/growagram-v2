@@ -1,8 +1,9 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { Loader2, Reply, Trash2, X } from "lucide-react";
+import { Reply, Trash2, X } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import React, { useEffect, useRef } from "react";
+import SpinningLoader from "~/components/Layouts/loader";
 import CustomAvatar from "~/components/atom/custom-avatar";
 import { SocialCardFooter } from "~/components/atom/social-card-footer";
 import { Button } from "~/components/ui/button";
@@ -245,7 +246,7 @@ export const Comment: React.FC<CommentProps> = ({
                     onClick={handleReplySubmit}
                   >
                     {isSubmitting ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
+                      <SpinningLoader className="h-4 w-4 animate-spin" />
                     ) : (
                       <Reply size={20} />
                     )}

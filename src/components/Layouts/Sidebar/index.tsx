@@ -52,13 +52,11 @@ import {
   SidebarTrigger,
   useSidebar,
 } from "~/components/ui/sidebar";
-import { useIsMobile } from "~/hooks/use-mobile";
 import { Link } from "~/lib/i18n/routing";
 import { sidebarItems } from "~/lib/sidebar";
 import { handleSignOut } from "~/server/actions/authActions";
 
 import { NavigationBreadcrumb } from "../Breadcrumbs";
-import SpinningLoader from "../loader";
 
 /**
  * ProtectedSidebar: Main sidebar component for authenticated users
@@ -69,36 +67,50 @@ export default function ProtectedSidebar({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
 
-  if (status === "loading") {
-    return <SpinningLoader />;
-  }
-
-  if (status !== "authenticated") {
-    return null;
-  } else {
-    return (
-      <SidebarProvider className="relative min-h-[calc(100svh-4rem)]">
-        {/* Main sidebar with floating, collapsible design */}
-        <ProtectedSidebarContent session={session}>
-          {children}
-        </ProtectedSidebarContent>
-      </SidebarProvider>
-    );
-  }
+  return (
+    <SidebarProvider className="relative min-h-[calc(100svh-4rem)]">
+      {/* Main sidebar with floating, collapsible design */}
+      <ProtectedSidebarContent session={session}>
+        {children}
+      </ProtectedSidebarContent>
+    </SidebarProvider>
+  );
 }
 
 function ProtectedSidebarContent({
   session,
   children,
 }: {
-  session: Session;
+  session: Session | null;
   children: React.ReactNode;
 }) {
   const t = useTranslations();
+  //TODO: fix button to open /close sidebar
   const { isMobile, state, openMobile, setOpenMobile, toggleSidebar } =
     useSidebar();
+
+  const translatedSidebarItems = {
+    ...sidebarItems,
+    teams: sidebarItems.teams.map((team) => ({
+      ...team,
+      name: t(`Sidebar.teams.${team.name}`),
+      plan: t(`Sidebar.teams.${team.plan}`),
+    })),
+    navMain: sidebarItems.navMain.map((item) => ({
+      ...item,
+      title: t(`Sidebar.navMain.${item.title}.title`),
+      items: item.items?.map((subItem) => ({
+        ...subItem,
+        title: t(`Sidebar.navMain.${item.title}.items.${subItem.title}`),
+      })),
+    })),
+    coming_soon: sidebarItems.coming_soon.map((cs) => ({
+      ...cs,
+      name: t(`Sidebar.coming_soon.${cs.name}`),
+    })),
+  };
 
   return (
     <>
@@ -109,7 +121,7 @@ function ProtectedSidebarContent({
       >
         {/* Sidebar Header: Team Switcher */}
         <SidebarHeader>
-          <TeamSwitcher teams={sidebarItems.teams} />
+          <TeamSwitcher teams={translatedSidebarItems.teams} />
         </SidebarHeader>
         {/* Main Navigation Content */}
         <SidebarContent>
@@ -133,7 +145,7 @@ function ProtectedSidebarContent({
                   </CollapsibleTrigger>
                 </SidebarMenuItem>
               </Collapsible>
-              {sidebarItems.navMain.map((item) => (
+              {translatedSidebarItems.navMain.map((item) => (
                 <Collapsible
                   key={item.title}
                   asChild
@@ -174,9 +186,15 @@ function ProtectedSidebarContent({
             <SidebarGroupLabel>{t("Platform.coming-soon")}</SidebarGroupLabel>
             <SidebarMenu>
               {/* Project Items with Dropdown Actions */}
-              {sidebarItems.projects.map((item) => (
-                <SidebarMenuItem key={item.name}>
-                  <SidebarMenuButton asChild className="cursor-pointer">
+              {translatedSidebarItems.coming_soon.map((item) => (
+                <SidebarMenuItem
+                  key={item.name}
+                  className="data-[active=true]:bg-primary"
+                >
+                  <SidebarMenuButton
+                    asChild
+                    className="hover:cursor-default hover:bg-transparent"
+                  >
                     <div>
                       {/* <Link href={item.url}> */}
                       <item.icon />
@@ -240,16 +258,16 @@ function ProtectedSidebarContent({
                     {/* User Avatar and Details */}
                     <CustomAvatar
                       size={32}
-                      src={session.user.image ?? undefined}
-                      alt={session.user.username ?? "User avatar"}
-                      fallback={session.user.name?.[0] || "?"}
+                      src={session?.user.image ?? undefined}
+                      alt={session?.user.username ?? "User avatar"}
+                      fallback={session?.user.name?.[0] || "?"}
                     />
                     <div className="grid flex-1 text-left text-sm leading-tight">
                       <span className="truncate font-semibold">
-                        {session.user.name as string}
+                        {session?.user.name as string}
                       </span>
                       <span className="truncate text-xs">
-                        @{session.user.username as string}
+                        @{session?.user.username as string}
                       </span>
                     </div>
                     <ChevronsUpDown className="ml-auto size-4" />
@@ -270,18 +288,18 @@ function ProtectedSidebarContent({
                     <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                       <CustomAvatar
                         size={32}
-                        src={session.user.image ?? undefined}
-                        alt={session.user.username ?? "User avatar"}
-                        fallback={session.user.name?.[0] || "?"}
+                        src={session?.user.image ?? undefined}
+                        alt={session?.user.username ?? "User avatar"}
+                        fallback={session?.user.name?.[0] || "?"}
                       />
                       <div className="grid flex-1 text-left text-sm leading-tight">
                         <span className="truncate font-semibold">
-                          {session.user.name as string}
+                          {session?.user.name as string}
                         </span>
                         <span className="truncate text-xs">
                           {
                             // eslint-disable-next-line react/jsx-no-literals
-                            `@${session.user.username as string}`
+                            `@${session?.user.username as string}`
                           }
                         </span>
                       </div>

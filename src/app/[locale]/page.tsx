@@ -1,5 +1,6 @@
 "use client";
 
+// src/app/[locale]/page.tsx:
 import { AnimatePresence, motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import Image from "next/image";

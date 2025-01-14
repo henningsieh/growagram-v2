@@ -23,7 +23,7 @@ import PaginatedPlantsView from "~/components/features/Plants/Views/paginated";
 import { useRouter } from "~/lib/i18n/routing";
 import { PlantsSortField, PlantsViewMode } from "~/types/plant";
 
-export default function PlantsPage() {
+export default function MyPlantsPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const t = useTranslations("Plants");
