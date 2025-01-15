@@ -62,4 +62,19 @@ export const GET = auth(async function GET(req) {
       { status: 500 },
     );
   }
-});
+
+  /**
+   * TEMPORARY WORKAROUND for Next.js 15.1.4 + NextAuth 5.0.0-beta.25 type incompatibility
+   *
+   * Issue: Route handler type mismatch between Next.js App Router and NextAuth
+   * Error: Type "AppRouteHandlerFnContext" is not a valid type for the function's second argument
+   *
+   * Affects:
+   * - next@15.1.4
+   * - next-auth@5.0.0-beta.25
+   *
+   * @see https://github.com/nextauthjs/next-auth/issues/12224#issuecomment-2506852177
+   * //TODO: Remove when NextAuth fixes type compatibility with Next.js 15+
+   */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+}) as any;
