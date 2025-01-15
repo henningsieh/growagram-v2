@@ -20,9 +20,8 @@ function isPathProtected(path: string): boolean {
 }
 
 export default async function middleware(req: NextRequest) {
-  const secret = env.AUTH_SECRET;
-
   // Get the current token (user's authentication status)
+  const secret = env.AUTH_SECRET;
   const token = await getToken({
     req,
     secret,
@@ -30,6 +29,8 @@ export default async function middleware(req: NextRequest) {
       ? "__Secure-authjs.session-token"
       : "authjs.session-token",
   });
+
+  const isUsernameUndefined = token && !token.username;
 
   // Log the full token to verify
   console.debug("Middleware token: ", JSON.stringify(token, null, 2));
@@ -72,15 +73,19 @@ export default async function middleware(req: NextRequest) {
   const isLocalePath = localeMatchArray !== null;
   const isProtectedPath = isLocalePath && isPathProtected(pathWithoutLocale);
 
-  // Check if the username is empty or null and redirect to the account page if necessary
+  console.debug("isUsernameUndefined: ", isUsernameUndefined);
+
+  // If the path is protected and the user is logged in but has no username, redirect to the account edit page
   if (
-    token &&
-    (token.username == null || token.username === "") &&
-    pathWithoutLocale !== "/account/edit"
+    isProtectedPath && // The path is protected
+    isUsernameUndefined && // The user is logged in but has no username
+    pathWithoutLocale !== modulePaths.ACCOUNT.editPath // The user is not already on the account edit page
   ) {
     const accountRedirectUrl = new URL(
-      currentLocale ? `/${currentLocale}/account/edit` : "/account/edit",
-      `${baseUrl}`,
+      currentLocale
+        ? `/${currentLocale}${modulePaths.ACCOUNT.editPath}`
+        : modulePaths.ACCOUNT.editPath,
+      baseUrl,
     );
     return NextResponse.redirect(accountRedirectUrl);
   }
@@ -95,8 +100,12 @@ export default async function middleware(req: NextRequest) {
     return NextResponse.redirect(redirectUrl); // Redirect to the sign-in page with the real URL
   }
 
-  // Handle the i18n routing for locales
+  // Handle the i18n routing for locales and proceed with handling locale routing
   const handleI18nRouting = createMiddleware(routing);
+  const i18nResponse = handleI18nRouting(req);
+  if (i18nResponse) {
+    return i18nResponse; // Ensure locale routing is applied
+  }
 
   const pathnameHasLocale = /^\/[a-zA-Z]{2}(?:\/|$)/.test(currentPathname); // Match any locale (like '/en' or '/de')
   const pathnameHasValidLocale = new RegExp(
@@ -106,12 +115,6 @@ export default async function middleware(req: NextRequest) {
   // If an invalid locale is found, redirect to the home page
   if (pathnameHasLocale && !pathnameHasValidLocale) {
     return NextResponse.redirect(new URL("/", req.url));
-  }
-
-  // Proceed with handling locale routing
-  const i18nResponse = handleI18nRouting(req);
-  if (i18nResponse) {
-    return i18nResponse; // Ensure locale routing is applied
   }
 
   // Allow the request to proceed if no issues were found

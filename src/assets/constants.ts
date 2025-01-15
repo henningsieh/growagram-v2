@@ -15,6 +15,12 @@ export const modulePaths = {
     path: "/dashboard",
     protected: true,
   },
+  ACCOUNT: {
+    name: "Account",
+    path: "/account",
+    editPath: "/account/edit",
+    protected: true,
+  },
   GROWS: {
     name: "Grows",
     path: "/grows",
