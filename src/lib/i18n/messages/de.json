@@ -29,7 +29,9 @@
     "info-name": "Name",
     "info-role": "Rolle",
     "info-username": "Benutzername",
-    "not-provided": "Nicht angegeben"
+    "not-provided": "Nicht angegeben",
+    "welcome-message-title": "Willkommen in unserer App!",
+    "welcome-message-description": "Bitte gib einen eindeutigen Benutzernamen ein. Dies ist erforderlich, um die App zu nutzen."
   },
   "CardFooter": {
     "Login to see detailed view statistics": "Melde dich an, um detaillierte Statistiken zu sehen.",
