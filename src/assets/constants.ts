@@ -20,6 +20,11 @@ export const modulePaths = {
     path: "/premium",
     protected: true,
   },
+  ACCOUNT: {
+    name: "Account",
+    path: "/account",
+    protected: true,
+  },
   GROWS: {
     name: "Grows",
     path: "/grows",

@@ -309,15 +309,17 @@ function ProtectedSidebarContent({
                   {/* User Account Actions */}
                   <DropdownMenuSeparator />
                   <DropdownMenuGroup>
-                    <DropdownMenuItem className="text-yellow-500 focus:bg-yellow-600/50 focus:text-white">
-                      <Sparkles />
-                      Upgrade to Pro
-                    </DropdownMenuItem>
+                    <Link href={modulePaths.PREMIUM.path}>
+                      <DropdownMenuItem className="cursor-pointer text-yellow-500 focus:bg-yellow-600/50 focus:text-white">
+                        <Sparkles />
+                        Upgrade to Pro
+                      </DropdownMenuItem>
+                    </Link>
                   </DropdownMenuGroup>
 
                   <DropdownMenuSeparator />
                   <DropdownMenuGroup>
-                    <Link href="/account">
+                    <Link href={modulePaths.ACCOUNT.path}>
                       <DropdownMenuItem className="cursor-pointer">
                         <UserPen />
                         Account
