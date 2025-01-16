@@ -168,7 +168,7 @@ export default function PlantCard({
 
             {/* Strain Info */}
             <CardDescription>
-              <div className="flex items-center justify-between">
+              <div className="flex min-h-6 items-center justify-between gap-2 p-0">
                 <HybridTooltip>
                   <HybridTooltipTrigger
                     className={`flex cursor-help items-center gap-2`}
@@ -387,8 +387,8 @@ export default function PlantCard({
             </Card>
             {!isSocial && (
               <Button
+                className="p-2 font-semibold"
                 onClick={() => setIsPostModalOpen(true)}
-                className="p-0 font-semibold"
               >
                 <MessageSquareTextIcon size={20} className="mr-0" />
                 {t("button-label-post-update")}
