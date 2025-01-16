@@ -234,14 +234,14 @@ export default function PhotoCard({
           </div>
 
           {/* Plant Badges */}
-          <div className="flex justify-end gap-2 p-0">
+          <div className="flex min-h-6 items-center justify-end gap-2 p-0">
             {photo.plantImages.map((plantImage) => (
               <Link
                 key={plantImage.plant.id}
                 href={`/public/plants/${plantImage.plant.id}`}
               >
                 <Badge
-                  variant="default"
+                  variant="secondary"
                   className="flex items-center gap-1 whitespace-nowrap"
                 >
                   <Flower2Icon className="h-4 w-4" />
@@ -303,7 +303,10 @@ export default function PhotoCard({
           </TooltipProvider>
 
           {!isSocial && (
-            <Button onClick={() => setIsPostModalOpen(true)}>
+            <Button
+              className="p-2 font-semibold"
+              onClick={() => setIsPostModalOpen(true)}
+            >
               <MessageSquareTextIcon className="mr-2" />
               {t("button-label-post-update")}
             </Button>
