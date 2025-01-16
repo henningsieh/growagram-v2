@@ -127,7 +127,7 @@ export default function MyImagesPage() {
         sortOrder={sortOrder}
         sortOptions={sortOptions}
         onSortChange={handleSortChange}
-        filterLabel="New only"
+        filterLabel={t("filter-label-not-connected")}
         filterEnabled={filterNotConnected}
         onFilterChange={handleFilterChange}
         viewMode={{
