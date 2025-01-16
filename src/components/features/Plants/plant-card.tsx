@@ -244,7 +244,7 @@ export default function PlantCard({
                     </HybridTooltipTrigger>
                     <HybridTooltipContent
                       side="right"
-                      className="bg-transparent"
+                      className="w-auto border-0 bg-transparent p-2"
                     >
                       <Badge
                         variant={"outline"}
