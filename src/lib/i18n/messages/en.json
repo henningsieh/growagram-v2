@@ -262,6 +262,9 @@
     "more": "more",
     "welcome-to-platform-subttitle": "Welcome to the Grower's platform where you can manage all your Grows and Plants"
   },
+  "Posts": {
+    "createNewPost-title": "Write a new post"
+  },
   "Sidebar": {
     "coming_soon": {
       "Grow Archive": "Grow Archive",
