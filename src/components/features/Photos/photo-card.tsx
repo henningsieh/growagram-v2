@@ -16,6 +16,7 @@ import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { RESPONSIVE_IMAGE_SIZES } from "~/components/Layouts/responsive-grid";
+import PostFormModal from "~/components/PostFormModal";
 import AvatarCardHeader from "~/components/atom/avatar-card-header";
 import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
 import { OwnerDropdownMenu } from "~/components/atom/owner-dropdown-menu";
@@ -41,6 +42,7 @@ import { GetOwnPhotoType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
 import { PhotosSortField } from "~/types/image";
 import { LikeableEntityType } from "~/types/like";
+import { PostableEntityType } from "~/types/post";
 
 import { Comments } from "../Comments/comments";
 
@@ -79,6 +81,7 @@ export default function PhotoCard({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isUnrestrictedView, setIsUnrestrictedView] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isPostModalOpen, setIsPostModalOpen] = useState(false);
 
   // Initialize delete mutation
   const deleteMutation = api.photos.deletePhoto.useMutation({
@@ -158,6 +161,12 @@ export default function PhotoCard({
         title="Are you sure you want to delete this photo?"
         description="No plant will be deleted by this action!"
         alertCautionText="This action cannot be undone. This will permanently delete the photo from our cloud storage servers."
+      />
+      <PostFormModal
+        isOpen={isPostModalOpen}
+        onClose={() => setIsPostModalOpen(false)}
+        entityId={photo.id}
+        entityType={PostableEntityType.PHOTO}
       />
       <Card className="relative my-2 flex flex-col overflow-hidden">
         {/* "NEW" Banner */}
@@ -289,6 +298,7 @@ export default function PhotoCard({
               </Tooltip>
             </div>
           </TooltipProvider>
+          <Button onClick={() => setIsPostModalOpen(true)}>Create Post</Button>
         </CardContent>
 
         {isSocial ? (

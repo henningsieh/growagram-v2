@@ -9,6 +9,7 @@ import Image from "next/image";
 import { useState } from "react";
 import headerImagePlaceholder from "~/assets/landscape-placeholdersvg.svg";
 import { RESPONSIVE_IMAGE_SIZES } from "~/components/Layouts/responsive-grid";
+import PostFormModal from "~/components/PostFormModal";
 import AvatarCardHeader from "~/components/atom/avatar-card-header";
 import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
 import { OwnerDropdownMenu } from "~/components/atom/owner-dropdown-menu";
@@ -30,6 +31,7 @@ import { GetOwnGrowType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
 import { LikeableEntityType } from "~/types/like";
 
+import { PostableEntityType } from "../../../types/post";
 import { Comments } from "../Comments/comments";
 import { GrowPlantCard } from "./grow-plant-card";
 
@@ -53,6 +55,7 @@ export function GrowCard({
   const [isSocial, setIsSocial] = useState(isSocialProp);
   const [isImageHovered, setIsImageHovered] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isPostModalOpen, setIsPostModalOpen] = useState(false);
 
   const {
     isLiked,
@@ -103,6 +106,12 @@ export function GrowCard({
         title="Are you sure you want to remove this grow?"
         description="No plant will be deleted by this action!"
         alertCautionText="This action also deletes postings and other events if they only refer to this grow!"
+      />
+      <PostFormModal
+        isOpen={isPostModalOpen}
+        onClose={() => setIsPostModalOpen(false)}
+        entityId={grow.id}
+        entityType={PostableEntityType.GROW}
       />
       <Card className="my-2 flex flex-col overflow-hidden">
         {isSocial && <AvatarCardHeader user={grow.owner} />}
@@ -203,6 +212,7 @@ export function GrowCard({
               </div>
             )}
           </div>
+          <Button onClick={() => setIsPostModalOpen(true)}>Create Post</Button>
         </CardContent>
 
         {

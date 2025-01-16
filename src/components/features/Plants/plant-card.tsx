@@ -17,6 +17,7 @@ import {
 import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
+import PostFormModal from "~/components/PostFormModal";
 import AvatarCardHeader from "~/components/atom/avatar-card-header";
 import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
 import { OwnerDropdownMenu } from "~/components/atom/owner-dropdown-menu";
@@ -51,6 +52,7 @@ import { calculateGrowthProgress } from "~/lib/utils/calculateDetailedGrowthProg
 import { PlantByIdType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
 import { LikeableEntityType } from "~/types/like";
+import { PostableEntityType } from "~/types/post";
 
 import { Comments } from "../Comments/comments";
 import { ImageCarousel } from "../Photos/image-carousel";
@@ -73,6 +75,7 @@ export default function PlantCard({
 
   const [isSocial, setIsSocial] = useState(isSocialProp);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isPostModalOpen, setIsPostModalOpen] = useState(false);
 
   const {
     isLiked,
@@ -126,7 +129,12 @@ export default function PlantCard({
         description="No photo will be deleted by this action. But this will also remove all references in any photos where this plant is tagged!"
         alertCautionText="This action also deletes all feedings and other events referring to this plant!"
       />
-
+      <PostFormModal
+        isOpen={isPostModalOpen}
+        onClose={() => setIsPostModalOpen(false)}
+        entityId={plant.id}
+        entityType={PostableEntityType.PLANT}
+      />
       <Card className="my-2 flex flex-col overflow-hidden">
         {isSocial && <AvatarCardHeader user={plant.owner} />}
 
@@ -377,7 +385,7 @@ export default function PlantCard({
             </CardContent>
           </Card>
         </CardContent>
-
+        <Button onClick={() => setIsPostModalOpen(true)}>Create Post</Button>
         {
           isSocial && (
             // Social Footer
