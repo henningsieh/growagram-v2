@@ -41,6 +41,11 @@ export function Modal({ isOpen, onClose, children }: ModalProps) {
       }}
     >
       <div className="relative w-full max-w-3xl bg-transparent p-3 rounded-lg shadow-lg">
+        
+        <div className="max-h-[80vh] overflow-y-auto">
+          {children}
+        </div>
+
         <Button
           variant="destructive"
           onClick={onClose}
@@ -49,7 +54,6 @@ export function Modal({ isOpen, onClose, children }: ModalProps) {
         >
           <X size={20} />
         </Button>
-        {children}
       </div>
     </div>,
     document.body
