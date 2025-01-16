@@ -64,6 +64,7 @@
   "Grows": {
     "buttonLabel-create-grow": "Grow erstellen",
     "buttonLabel-save-changes": "Änderungen speichern",
+    "buttonLabel-post-update": "Neues Update posten",
     "connect-error": "Fehler beim Verbinden der Pflanze",
     "delete-button-label": "Grow löschen",
     "delete-grow-button-label": "Grow löschen",
@@ -194,6 +195,7 @@
       "save": "Pflanzenauswahl speichern ({count})"
     },
     "button-label-upload-photos": "Hochladen",
+    "button-label-post-update": "Neues Update posten",
     "buttonBackLabel": "Zurück",
     "capture-date": "aufgenommen",
     "delete-button-label": "Foto löschen",
@@ -250,7 +252,8 @@
     "title": "Meine Pflanzen",
     "until": "bis",
     "user-has-no-plants": "Du hast bisher keine Pflanzen hinzugefügt.",
-    "vegetation-start-date": "Startdatum der Wachstumsphase"
+    "vegetation-start-date": "Startdatum der Wachstumsphase",
+    "button-label-post-update": "Neues Update posten"
   },
   "Platform": {
     "Dashboard-title": "Dashboard",

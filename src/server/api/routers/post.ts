@@ -39,7 +39,7 @@ export const postRouter = createTRPCRouter({
       if (!entityExists) {
         throw new TRPCError({
           code: "NOT_FOUND",
-          message: `${entityType} not found`,
+          message: `${entityType} with id ${entityId} not found`,
         });
       }
 

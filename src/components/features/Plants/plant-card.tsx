@@ -4,11 +4,11 @@
 import { TooltipProvider } from "@radix-ui/react-tooltip";
 import {
   DnaIcon,
-  FlaskConicalIcon,
   Flower2,
   Leaf,
   Nut,
   PillBottle,
+  ShareIcon,
   Sprout,
   Tag,
   TentTreeIcon,
@@ -384,11 +384,16 @@ export default function PlantCard({
               </div>
             </CardContent>
           </Card>
+          {!isSocial && (
+            <Button onClick={() => setIsPostModalOpen(true)}>
+              <ShareIcon className="mr-2 h-4 w-4" />
+              {t("button-label-post-update")}
+            </Button>
+          )}
         </CardContent>
-        <Button onClick={() => setIsPostModalOpen(true)}>Create Post</Button>
+
         {
           isSocial && (
-            // Social Footer
             <SocialCardFooter
               className={`pb-2 pr-2 ${isSocial && "ml-12"}`}
               entityId={plant.id}
@@ -404,6 +409,7 @@ export default function PlantCard({
               toggleComments={toggleComments}
             />
           )
+
           // : (
           //   user &&
           //   user.id === plant.ownerId && (

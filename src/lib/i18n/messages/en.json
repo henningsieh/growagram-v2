@@ -64,6 +64,7 @@
   "Grows": {
     "buttonLabel-create-grow": "Create Grow",
     "buttonLabel-save-changes": "Save Changes",
+    "buttonLabel-post-update": "Post new Update",
     "connect-error": "Error connecting plant",
     "delete-button-label": "Delete Grow",
     "delete-grow-button-label": "Delete Grow",
@@ -194,6 +195,7 @@
       "save": "Save Plant Selection ({count})"
     },
     "button-label-upload-photos": "Upload",
+    "button-label-post-update": "Post new Update",
     "buttonBackLabel": "Back",
     "capture-date": "taken on",
     "delete-button-label": "Delete Photo",
@@ -250,7 +252,8 @@
     "title": "My Plants",
     "until": "until",
     "user-has-no-plants": "You haven't added any plants yet.",
-    "vegetation-start-date": "Vegetation Start Date"
+    "vegetation-start-date": "Vegetation Start Date",
+    "button-label-post-update": "Post new Update"
   },
   "Platform": {
     "Dashboard-title": "Dashboard",

@@ -7,11 +7,12 @@ import {
   Flower2Icon,
   Maximize,
   Minimize,
+  ShareIcon,
   UploadCloud,
   X,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
@@ -67,6 +68,7 @@ export default function PhotoCard({
   const locale = useLocale();
   const router = useRouter();
   const utils = api.useUtils();
+  const t = useTranslations("Photos");
   const { toast } = useToast();
 
   const { isLiked, likeCount, isLoading } = useLikeStatus(
@@ -293,15 +295,21 @@ export default function PhotoCard({
                   </p>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Capture Date (EXIF data)</p>
+                  <p>Capture Date (from EXIF data)</p>
                 </TooltipContent>
               </Tooltip>
             </div>
           </TooltipProvider>
-          <Button onClick={() => setIsPostModalOpen(true)}>Create Post</Button>
+
+          {!isSocial && (
+            <Button onClick={() => setIsPostModalOpen(true)}>
+              <ShareIcon className="mr-2 h-4 w-4" />
+              {t("button-label-post-update")}
+            </Button>
+          )}
         </CardContent>
 
-        {isSocial ? (
+        {isSocial && (
           <SocialCardFooter
             className={`pb-2 pr-2 ${isSocial && "ml-12"}`}
             entityId={photo.id}
@@ -316,7 +324,7 @@ export default function PhotoCard({
             }}
             toggleComments={toggleComments}
           />
-        ) : undefined}
+        )}
 
         {isSocial && isCommentsOpen && (
           <Comments

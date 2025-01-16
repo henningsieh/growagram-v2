@@ -2,7 +2,7 @@
 
 // src/components/features/Grows/grow-card.tsx:
 import { AnimatePresence, motion } from "framer-motion";
-import { TentTree } from "lucide-react";
+import { ShareIcon, TentTree } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
@@ -212,58 +212,30 @@ export function GrowCard({
               </div>
             )}
           </div>
-          <Button onClick={() => setIsPostModalOpen(true)}>Create Post</Button>
+          {!isSocial && (
+            <Button onClick={() => setIsPostModalOpen(true)}>
+              <ShareIcon className="mr-2 h-4 w-4" />
+              {t("buttonLabel-post-update")}
+            </Button>
+          )}
         </CardContent>
 
-        {
-          isSocial && (
-            // Social Footer
-            <SocialCardFooter
-              className={`pb-2 pr-2 ${isSocial && "ml-12"}`}
-              entityId={grow.id}
-              entityType={LikeableEntityType.Grow}
-              initialLiked={isLiked}
-              isLikeStatusLoading={isLikeLoading}
-              commentCountLoading={commentCountLoading}
-              stats={{
-                comments: commentCount,
-                views: 0,
-                likes: likeCount,
-              }}
-              toggleComments={toggleComments}
-            />
-          )
-          // : (
-          //   user &&
-          //   user.id === grow.ownerId && (
-          //     // Owner Buttons
-          //     <>
-          //       <Separator />
-          //       <CardFooter className="flex w-full justify-between gap-1 p-1">
-          //         <Button
-          //           variant={"destructive"}
-          //           size={"sm"}
-          //           className="w-20"
-          //           onClick={handleDelete}
-          //           disabled={deleteMutation.isPending}
-          //         >
-          //           {deleteMutation.isPending ? (
-          //             <Loader2 size={20} className="animate-spin" />
-          //           ) : (
-          //             <Trash2 size={20} />
-          //           )}
-          //         </Button>
-          //         <Button asChild size={"sm"} className="w-full text-base">
-          //           <Link href={`/grows/${grow.id}/form`}>
-          //             <Edit size={20} />
-          //             {t("form-page-title-edit")}
-          //           </Link>
-          //         </Button>
-          //       </CardFooter>
-          //     </>
-          //   )
-          // )
-        }
+        {isSocial && (
+          <SocialCardFooter
+            className={`pb-2 pr-2 ${isSocial && "ml-12"}`}
+            entityId={grow.id}
+            entityType={LikeableEntityType.Grow}
+            initialLiked={isLiked}
+            isLikeStatusLoading={isLikeLoading}
+            commentCountLoading={commentCountLoading}
+            stats={{
+              comments: commentCount,
+              views: 0,
+              likes: likeCount,
+            }}
+            toggleComments={toggleComments}
+          />
+        )}
 
         {isSocial && isCommentsOpen && (
           <Comments
