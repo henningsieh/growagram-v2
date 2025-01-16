@@ -1,7 +1,7 @@
 // src/server/api/routers/publicPost.ts
 import { TRPCError } from "@trpc/server";
 import { eq } from "drizzle-orm";
-import { grows, images, plants, publicPosts } from "~/lib/db/schema";
+import { grows, images, plants, posts } from "~/lib/db/schema";
 import {
   createTRPCRouter,
   protectedProcedure,
@@ -45,7 +45,7 @@ export const postRouter = createTRPCRouter({
 
       // Insert new post
       const newPost = await ctx.db
-        .insert(publicPosts)
+        .insert(posts)
         .values({
           userId,
           content,
@@ -58,7 +58,7 @@ export const postRouter = createTRPCRouter({
     }),
 
   getAll: publicProcedure.query(async ({ ctx }) => {
-    const posts = await ctx.db.query.publicPosts.findMany({
+    const posts = await ctx.db.query.posts.findMany({
       with: {
         owner: true,
         grow: true,

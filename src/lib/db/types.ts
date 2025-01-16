@@ -8,7 +8,7 @@ import {
   images,
   likes,
   plants,
-  publicPosts as posts,
+  posts,
   sessions,
   users,
   verificationTokens,

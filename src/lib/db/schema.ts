@@ -329,7 +329,7 @@ export const comments = pgTable(
 );
 
 // Define the public_posts table
-export const publicPosts = pgTable(
+export const posts = pgTable(
   "public_post",
   {
     id: text("id")
@@ -512,21 +512,21 @@ export const plantImagesRelations = relations(plantImages, ({ one }) => ({
   }),
 }));
 
-export const publicPostsRelations = relations(publicPosts, ({ one }) => ({
+export const publicPostsRelations = relations(posts, ({ one }) => ({
   owner: one(users, {
-    fields: [publicPosts.userId],
+    fields: [posts.userId],
     references: [users.id],
   }),
   grow: one(grows, {
-    fields: [publicPosts.entityId],
+    fields: [posts.entityId],
     references: [grows.id],
   }),
   plant: one(plants, {
-    fields: [publicPosts.entityId],
+    fields: [posts.entityId],
     references: [plants.id],
   }),
   photo: one(images, {
-    fields: [publicPosts.entityId],
+    fields: [posts.entityId],
     references: [images.id],
   }),
 }));
