@@ -23,7 +23,13 @@ import {
   FormMessage,
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
-import { Select } from "~/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
 import { useToast } from "~/hooks/use-toast";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
@@ -107,17 +113,27 @@ export default function NewPostPage() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Entity Type</FormLabel>
-                      <FormControl>
-                        <Select {...field}>
-                          <option value={PostableEntityType.Grow}>Grow</option>
-                          <option value={PostableEntityType.Plant}>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select entity type" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value={PostableEntityType.GROW}>
+                            Grow
+                          </SelectItem>
+                          <SelectItem value={PostableEntityType.PLANT}>
                             Plant
-                          </option>
-                          <option value={PostableEntityType.Photo}>
+                          </SelectItem>
+                          <SelectItem value={PostableEntityType.PHOTO}>
                             Photo
-                          </option>
-                        </Select>
-                      </FormControl>
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}
