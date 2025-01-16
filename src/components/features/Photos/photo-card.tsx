@@ -4,11 +4,10 @@
 import {
   Camera,
   FileIcon,
-  Flower2Icon,
   Maximize,
   MessageSquareTextIcon,
   Minimize,
-  ShareIcon,
+  TagIcon,
   UploadCloud,
   X,
 } from "lucide-react";
@@ -168,7 +167,7 @@ export default function PhotoCard({
       <PostFormModal
         isOpen={isPostModalOpen}
         onClose={() => setIsPostModalOpen(false)}
-        entityId={photo.id}
+        entity={photo}
         entityType={PostableEntityType.PHOTO}
       />
       <Card className="relative my-2 flex flex-col overflow-hidden">
@@ -244,7 +243,7 @@ export default function PhotoCard({
                   variant="secondary"
                   className="flex items-center gap-1 whitespace-nowrap"
                 >
-                  <Flower2Icon className="h-4 w-4" />
+                  <TagIcon className="h-4 w-4" />
                   {plantImage.plant.name}
                 </Badge>
               </Link>

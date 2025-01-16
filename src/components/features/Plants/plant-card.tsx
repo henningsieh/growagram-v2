@@ -127,7 +127,7 @@ export default function PlantCard({
       <PostFormModal
         isOpen={isPostModalOpen}
         onClose={() => setIsPostModalOpen(false)}
-        entityId={plant.id}
+        entity={plant}
         entityType={PostableEntityType.PLANT}
       />
       <TouchProvider>

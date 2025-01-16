@@ -110,7 +110,7 @@ export function GrowCard({
       <PostFormModal
         isOpen={isPostModalOpen}
         onClose={() => setIsPostModalOpen(false)}
-        entityId={grow.id}
+        entity={grow}
         entityType={PostableEntityType.GROW}
       />
       <Card className="my-2 flex flex-col overflow-hidden">
