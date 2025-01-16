@@ -19,21 +19,21 @@ export const postRouter = createTRPCRouter({
 
       // Validate entity exists
       let entityExists = false;
-      if (entityType === PostableEntityType.Plant) {
-        const plant = await ctx.db.query.plants.findFirst({
-          where: eq(plants.id, entityId),
-        });
-        entityExists = !!plant;
-      } else if (entityType === PostableEntityType.Photo) {
-        const image = await ctx.db.query.images.findFirst({
-          where: eq(images.id, entityId),
-        });
-        entityExists = !!image;
-      } else if (entityType === PostableEntityType.Grow) {
+      if (entityType === PostableEntityType.GROW) {
         const grow = await ctx.db.query.grows.findFirst({
           where: eq(grows.id, entityId),
         });
         entityExists = !!grow;
+      } else if (entityType === PostableEntityType.PLANT) {
+        const plant = await ctx.db.query.plants.findFirst({
+          where: eq(plants.id, entityId),
+        });
+        entityExists = !!plant;
+      } else if (entityType === PostableEntityType.PHOTO) {
+        const image = await ctx.db.query.images.findFirst({
+          where: eq(images.id, entityId),
+        });
+        entityExists = !!image;
       }
 
       if (!entityExists) {

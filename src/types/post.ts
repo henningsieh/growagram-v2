@@ -1,7 +1,7 @@
 // src/types/post.ts:
 
 export enum PostableEntityType {
-  Grow = "grow",
-  Plant = "plant",
-  Photo = "image",
+  GROW = "grow",
+  PLANT = "plant",
+  PHOTO = "image",
 }
