@@ -40,7 +40,7 @@ export function Modal({ isOpen, onClose, children }: ModalProps) {
         }
       }}
     >
-      <div className="relative w-full max-w-3xl bg-accent p-4 rounded-lg shadow-lg">
+      <div className="relative w-full max-w-3xl bg-transparent p-3 rounded-lg shadow-lg">
         <Button
           variant="destructive"
           onClick={onClose}
