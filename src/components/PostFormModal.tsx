@@ -80,21 +80,26 @@ export default function PostFormModal({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <Card className="w-full max-w-6xl space-y-4 rounded-md p-4 shadow-lg">
-        <CardHeader>
-          <CardTitle as="h2" className="text-2xl">
-            {t("createNewPost-title")}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
+      <Card className="p1 xs:p2 w-full max-w-6xl space-y-4 rounded-md shadow-lg sm:p-4">
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <CardHeader>
+            <CardTitle as="h2" className="text-xl">
+              {t("createNewPost-title")}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Form {...form}>
               <FormField
                 control={form.control}
                 name="content"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="sr-only">Content</FormLabel>
+                    <FormLabel
+                      className="sr-only"
+                      // eslint-disable-next-line react/jsx-no-literals
+                    >
+                      Content
+                    </FormLabel>
                     <FormControl>
                       <Textarea {...field} rows={4} />
                     </FormControl>
@@ -102,15 +107,15 @@ export default function PostFormModal({
                   </FormItem>
                 )}
               />
-            </form>
-          </Form>
-        </CardContent>
-        <CardFooter>
-          <Button type="submit" className="w-full font-semibold">
-            <ShareIcon className="mr-0 h-6 w-6" />
-            {t("buttonLabel-createNewPost")}
-          </Button>
-        </CardFooter>
+            </Form>
+          </CardContent>
+          <CardFooter>
+            <Button type="submit" className="w-full font-semibold">
+              <ShareIcon className="mr-0 h-6 w-6" />
+              {t("buttonLabel-createNewPost")}
+            </Button>
+          </CardFooter>
+        </form>
       </Card>
     </Modal>
   );
