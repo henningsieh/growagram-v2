@@ -46,7 +46,7 @@ export default async function AppLayout(props: AppLayoutProps) {
     <html
       className="scroll-smooth"
       lang={(await props.params).locale}
-      // suppressHydrationWarning
+      suppressHydrationWarning
     >
       <body
         className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-background font-sans antialiased`}
