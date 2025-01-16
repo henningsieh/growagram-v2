@@ -31,12 +31,20 @@ export function Modal({ isOpen, onClose, children }: ModalProps) {
   if (!isOpen) return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="relative w-full max-w-3xl bg-transparent p-4 rounded shadow-lg">
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+      // close on click outside
+      onClick={(e) => {
+        if (e.target === e.currentTarget) {
+          onClose();
+        }
+      }}
+    >
+      <div className="relative w-full max-w-3xl bg-accent p-4 rounded-lg shadow-lg">
         <Button
-          variant="secondary"
+          variant="destructive"
           onClick={onClose}
-          className="absolute top-7 right-7 h-6 w-6 p-0"
+          className="absolute top-6 right-6 h-6 w-6 p-0"
           aria-label="Close modal"
         >
           <X size={20} />

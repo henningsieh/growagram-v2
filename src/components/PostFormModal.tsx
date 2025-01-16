@@ -80,9 +80,11 @@ export default function PostFormModal({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <Card className="w-full max-w-6xl space-y-4 rounded p-4 shadow-lg">
+      <Card className="w-full max-w-6xl space-y-4 rounded-md p-4 shadow-lg">
         <CardHeader>
-          <CardTitle>{t("createNewPost-title")}</CardTitle>
+          <CardTitle as="h2" className="text-2xl">
+            {t("createNewPost-title")}
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
