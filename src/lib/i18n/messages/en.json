@@ -30,8 +30,8 @@
     "info-role": "Role",
     "info-username": "Username",
     "not-provided": "Not provided",
-    "welcome-message-title": "Welcome to our app!",
-    "welcome-message-description": "Please enter a unique username. This is required to use the app."
+    "welcome-message-description": "Please enter a unique username. This is required to use the app.",
+    "welcome-message-title": "Welcome to our app!"
   },
   "CardFooter": {
     "Login to see detailed view statistics": "Login to see detailed view statistics.",
@@ -224,7 +224,7 @@
     "flowering-start-date": "Flowering Start Date",
     "form-button-reset": "Reset",
     "form-button-save-changes": "Save Changes",
-    "form-button-save-new": "Create Plant",
+    "form-button-save-new": "Add Plant",
     "form-heading": "Plant's basic data",
     "form-heading-description": "Edit the plant's nickname and relevant dates.",
     "form-nickname": "Name of the Plant",
@@ -232,10 +232,8 @@
     "form-pageheader-backButtonLabel": "Back",
     "form-pagerheader-edit-subtitle": "Edit this plant from your collection",
     "form-pagerheader-edit-title": "Edit Plant",
-    "form-pagerheader-new-subtitle": "Add a new plant to your collection",
-    "form-pagerheader-new-title": "Add New Plant",
-    "form-pagerheader-subtitle": "",
-    "form-pagerheader-title": "",
+    "form-pagerheader-subtitle": "Add a new plant to your collection",
+    "form-pagerheader-title": "Add new plant",
     "germination-date": "Germination Date",
     "growth-progress": "Growth Progress",
     "harvest-date": "Harvest date",
@@ -251,7 +249,7 @@
     "thc-content": "THC Content",
     "title": "My Plants",
     "until": "until",
-    "user-has-no-plants": "You haven&apos;t added any plants yet.",
+    "user-has-no-plants": "You haven't added any plants yet.",
     "vegetation-start-date": "Vegetation Start Date"
   },
   "Platform": {
@@ -264,47 +262,47 @@
     "more": "more",
     "welcome-to-platform-subttitle": "Welcome to the Grower's platform where you can manage all your Grows and Plants"
   },
+  "Sidebar": {
+    "coming_soon": {
+      "Grow Archive": "Grow Archive",
+      "My Inventory": "My Inventory",
+      "Plant Feedings": "Plant Fertilizations",
+      "Plant Sizes": "Plant Sizes"
+    },
+    "navMain": {
+      "Grows": {
+        "items": {
+          "Create New Grow": "Create New Grow",
+          "My Grows": "My Grows"
+        },
+        "title": "Grows"
+      },
+      "Photos": {
+        "items": {
+          "My Photos": "My Photos",
+          "Upload New Photos": "Upload New Photos"
+        },
+        "title": "Photos"
+      },
+      "Plants": {
+        "items": {
+          "Add New Plant": "Add New Plant",
+          "My Plants": "My Plants"
+        },
+        "title": "Plants"
+      }
+    },
+    "teams": {
+      "Basic Free Plan": "Basic Free Plan",
+      "GrowAGram Collective": "GrowAGram Collective",
+      "Grower": "Grower",
+      "Premium": "Premium"
+    }
+  },
   "ThemeToggler": {
     "dark": "Dark",
     "light": "Light",
     "system": "System",
     "toggle-theme": "Toggle theme"
-  },
-  "Sidebar": {
-    "teams": {
-      "GrowAGram Collective": "GrowAGram Collective",
-      "Grower": "Grower",
-      "Premium": "Premium",
-      "Basic Free Plan": "Basic Free Plan"
-    },
-    "navMain": {
-      "Grows": {
-        "title": "Grows",
-        "items": {
-          "My Grows": "My Grows",
-          "Create New Grow": "Create New Grow"
-        }
-      },
-      "Plants": {
-        "title": "Plants",
-        "items": {
-          "My Plants": "My Plants",
-          "Add New Plant": "Add New Plant"
-        }
-      },
-      "Photos": {
-        "title": "Photos",
-        "items": {
-          "My Photos": "My Photos",
-          "Upload New Photos": "Upload New Photos"
-        }
-      }
-    },
-    "coming_soon": {
-      "Plant Feedings": "Plant Fertilizations",
-      "Plant Sizes": "Plant Sizes",
-      "My Inventory": "My Inventory",
-      "Grow Archive": "Grow Archive"
-    }
   }
 }
