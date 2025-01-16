@@ -63,8 +63,8 @@
   },
   "Grows": {
     "buttonLabel-create-grow": "Create Grow",
-    "buttonLabel-save-changes": "Save Changes",
     "buttonLabel-post-update": "Post new Update",
+    "buttonLabel-save-changes": "Save Changes",
     "connect-error": "Error connecting plant",
     "delete-button-label": "Delete Grow",
     "delete-grow-button-label": "Delete Grow",
@@ -194,14 +194,16 @@
       "removeAll": "Remove All Plants",
       "save": "Save Plant Selection ({count})"
     },
-    "button-label-upload-photos": "Upload",
     "button-label-post-update": "Post new Update",
+    "button-label-upload-photos": "Upload",
     "buttonBackLabel": "Back",
     "capture-date": "taken on",
+    "captureDate": "Capture Date (from EXIF data)",
     "delete-button-label": "Delete Photo",
     "edit-button-label": "Edit Photo",
     "my-Photos": "My photos",
     "my-Photos-subtitle": "Display and manage my photos",
+    "newNotConnteched": "NEW",
     "plantSelection": {
       "description": "Select each plant you can see in the photo!",
       "title": "Plant Selection"
@@ -213,10 +215,12 @@
     },
     "subtitle": "Which plants did you spot in this photo?",
     "title": "Identify Plants",
+    "uploadDate": "Upload Date",
     "uploaded-at": "uploaded on"
   },
   "Plants": {
     "breeder": "Breeder",
+    "button-label-post-update": "Post new Update",
     "curing-start-date": "Curing phase start date",
     "delete-button-label": "Delete Plant",
     "delete-plant-button-label": "Delete Plant",
@@ -252,8 +256,7 @@
     "title": "My Plants",
     "until": "until",
     "user-has-no-plants": "You haven't added any plants yet.",
-    "vegetation-start-date": "Vegetation Start Date",
-    "button-label-post-update": "Post new Update"
+    "vegetation-start-date": "Vegetation Start Date"
   },
   "Platform": {
     "Dashboard-title": "Dashboard",
@@ -266,6 +269,7 @@
     "welcome-to-platform-subttitle": "Welcome to the Grower's platform where you can manage all your Grows and Plants"
   },
   "Posts": {
+    "buttonLabel-createNewPost": "Post Update",
     "createNewPost-title": "Write a new post"
   },
   "Sidebar": {

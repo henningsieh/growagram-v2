@@ -63,8 +63,8 @@
   },
   "Grows": {
     "buttonLabel-create-grow": "Grow erstellen",
-    "buttonLabel-save-changes": "Änderungen speichern",
     "buttonLabel-post-update": "Neues Update posten",
+    "buttonLabel-save-changes": "Änderungen speichern",
     "connect-error": "Fehler beim Verbinden der Pflanze",
     "delete-button-label": "Grow löschen",
     "delete-grow-button-label": "Grow löschen",
@@ -194,14 +194,16 @@
       "removeAll": "Alle Pflanzen entfernen",
       "save": "Pflanzenauswahl speichern ({count})"
     },
-    "button-label-upload-photos": "Hochladen",
     "button-label-post-update": "Neues Update posten",
+    "button-label-upload-photos": "Hochladen",
     "buttonBackLabel": "Zurück",
     "capture-date": "aufgenommen",
+    "captureDate": "Aufnahmedatum (aus EXIF-Daten)",
     "delete-button-label": "Foto löschen",
     "edit-button-label": "Foto bearbeiten",
     "my-Photos": "Meine Fotos",
     "my-Photos-subtitle": "Anzeige und Verwaltung meiner Fotos",
+    "newNotConnteched": "NEU",
     "plantSelection": {
       "description": "Wähle jede Pflanze aus, die du auf dem Foto sehen kannst!",
       "title": "Pflanzenauswahl"
@@ -213,10 +215,12 @@
     },
     "subtitle": "Welche Pflanzen siehst du auf diesem Foto?",
     "title": "Pflanzen identifizieren",
+    "uploadDate": "Upload-Datum",
     "uploaded-at": "hochgeladen"
   },
   "Plants": {
     "breeder": "Züchter / Breeder",
+    "button-label-post-update": "Neues Update posten",
     "curing-start-date": "Startdatum der Aushärtephase",
     "delete-button-label": "Pflanze löschen",
     "delete-plant-button-label": "Pflanze löschen",
@@ -252,8 +256,7 @@
     "title": "Meine Pflanzen",
     "until": "bis",
     "user-has-no-plants": "Du hast bisher keine Pflanzen hinzugefügt.",
-    "vegetation-start-date": "Startdatum der Wachstumsphase",
-    "button-label-post-update": "Neues Update posten"
+    "vegetation-start-date": "Startdatum der Wachstumsphase"
   },
   "Platform": {
     "Dashboard-title": "Dashboard",
@@ -266,6 +269,7 @@
     "welcome-to-platform-subttitle": "Willkommen bei der Verwaltung deiner Grows und Pflanzen"
   },
   "Posts": {
+    "buttonLabel-createNewPost": "Update posten",
     "createNewPost-title": "Neuen Beitrag verfassen"
   },
   "Sidebar": {

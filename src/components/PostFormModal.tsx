@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { ImageUpIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -91,7 +92,7 @@ export default function PostFormModal({
                 name="content"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Content</FormLabel>
+                    <FormLabel className="sr-only">Content</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -99,12 +100,15 @@ export default function PostFormModal({
                   </FormItem>
                 )}
               />
-              <CardFooter>
-                <Button type="submit">Create Post</Button>
-              </CardFooter>
             </form>
           </Form>
         </CardContent>
+        <CardFooter>
+          <Button type="submit" className="w-full">
+            <ImageUpIcon className="mr-2 h-6 w-6" />
+            {t("buttonLabel-createNewPost")}
+          </Button>
+        </CardFooter>
       </Card>
     </Modal>
   );

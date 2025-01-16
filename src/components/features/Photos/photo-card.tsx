@@ -174,7 +174,7 @@ export default function PhotoCard({
         {/* "NEW" Banner */}
         {!!!photo.plantImages.length && (
           <div className="absolute right-[-40px] top-[15px] z-10 w-[120px] rotate-[45deg] cursor-default bg-secondary px-[40px] py-[1px] text-[12px] font-semibold tracking-widest text-white">
-            NEW
+            {t("newNotConnteched")}
           </div>
         )}
 
@@ -272,7 +272,9 @@ export default function PhotoCard({
                   </p>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Upload Date </p>
+                  <p>
+                    {t("uploadDate")}
+                  </p>
                 </TooltipContent>
               </Tooltip>
 
@@ -295,7 +297,9 @@ export default function PhotoCard({
                   </p>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Capture Date (from EXIF data)</p>
+                  <p>
+                    {t("captureDate")}
+                  </p>
                 </TooltipContent>
               </Tooltip>
             </div>

@@ -181,7 +181,10 @@ export default function PlantCard({
                     variant="outline"
                     className="flex items-center gap-1 border-[1px] border-fuchsia-700"
                   >
-                    <DnaIcon className={`h-4 w-4`} />
+                    <DnaIcon
+                      className={`h-4 w-4`}
+                      // eslint-disable-next-line react/jsx-no-literals
+                    />
                     Strain
                   </Badge>
                 </HybridTooltipTrigger>
