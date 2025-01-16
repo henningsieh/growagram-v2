@@ -8,6 +8,7 @@ import {
   MessageSquareTextIcon,
   Minimize,
   TagIcon,
+  TagsIcon,
   UploadCloud,
   X,
 } from "lucide-react";
@@ -233,7 +234,7 @@ export default function PhotoCard({
           </div>
 
           {/* Plant Badges */}
-          <div className="flex min-h-6 items-center justify-end gap-2 p-0">
+          <div className="flex min-h-10 gap-2 overflow-x-auto p-0">
             {photo.plantImages.map((plantImage) => (
               <Link
                 key={plantImage.plant.id}
@@ -301,7 +302,7 @@ export default function PhotoCard({
             </div>
           </TooltipProvider>
 
-          {!isSocial && (
+          {!!photo.plantImages.length && !isSocial && (
             <Button
               className="p-2 font-semibold"
               onClick={() => setIsPostModalOpen(true)}
@@ -309,6 +310,19 @@ export default function PhotoCard({
               <MessageSquareTextIcon className="mr-2" />
               {t("button-label-post-update")}
             </Button>
+          )}
+
+          {!!!photo.plantImages.length && !isSocial && (
+            // link to edit plant, same as in DropDown menu
+            <Link href={`/photos/${photo.id}/form`}>
+              <Button
+                variant={"secondary"}
+                className="w-full p-2 font-semibold"
+              >
+                <TagsIcon className="mr-2" />
+                {t("button-label-connect-plants")}
+              </Button>
+            </Link>
           )}
         </CardContent>
 
