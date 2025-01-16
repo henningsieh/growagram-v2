@@ -1,7 +1,6 @@
 "use client";
 
 // src/components/features/plant/plant-card.tsx:
-import { TooltipProvider } from "@radix-ui/react-tooltip";
 import {
   DnaIcon,
   Flower2,
@@ -35,13 +34,9 @@ import {
   HybridTooltip,
   HybridTooltipContent,
   HybridTooltipTrigger,
+  TouchProvider,
 } from "~/components/ui/hybrid-tooltip";
 import { Progress } from "~/components/ui/progress";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "~/components/ui/tooltip";
 import { useComments } from "~/hooks/use-comments";
 import { useLikeStatus } from "~/hooks/use-likes";
 import { useToast } from "~/hooks/use-toast";
@@ -135,133 +130,134 @@ export default function PlantCard({
         entityId={plant.id}
         entityType={PostableEntityType.PLANT}
       />
-      <Card className="my-2 flex flex-col overflow-hidden">
-        {isSocial && <AvatarCardHeader user={plant.owner} />}
+      <TouchProvider>
+        <Card className="my-2 flex flex-col overflow-hidden">
+          {isSocial && <AvatarCardHeader user={plant.owner} />}
 
-        <CardContent
-          className={`grid gap-2 ${isSocial ? "ml-12 pl-0 pr-2" : "p-2"}`}
-        >
-          {/* Image Carousel */}
-          <ImageCarousel plantImages={plant.plantImages} />
+          <CardContent
+            className={`grid gap-2 ${isSocial ? "ml-12 pl-0 pr-2" : "p-2"}`}
+          >
+            {/* Image Carousel */}
+            <ImageCarousel plantImages={plant.plantImages} />
 
-          {/* Title Link */}
-          <div className="flex items-center justify-between">
-            <CardTitle as="h3">
-              <Button asChild variant="link" className="p-1">
-                <Link
-                  href={`/public/plants/${plant.id}`}
-                  className="flex items-center gap-2"
-                >
-                  <Tag className="mt-1" size={20} />
-                  {plant.name}
-                </Link>
-              </Button>
-            </CardTitle>
-            {/* DropdownMenu for plant's owner */}
-            {user && user.id === plant.ownerId && (
-              <OwnerDropdownMenu
-                isSocial={isSocial}
-                setIsSocial={setIsSocial}
-                isDeleting={deleteMutation.isPending}
-                handleDelete={handleDelete}
-                entityId={plant.id}
-                entityType="Plants"
-              />
-            )}
-          </div>
-
-          {/* Strain Info */}
-          <CardDescription>
+            {/* Title Link */}
             <div className="flex items-center justify-between">
-              <HybridTooltip>
-                <HybridTooltipTrigger
-                  className={`flex cursor-help items-center gap-2`}
-                >
-                  <Badge
-                    variant="outline"
-                    className="flex items-center gap-1 border-[1px] border-fuchsia-700"
+              <CardTitle as="h3">
+                <Button asChild variant="link" className="p-1">
+                  <Link
+                    href={`/public/plants/${plant.id}`}
+                    className="flex items-center gap-2"
                   >
-                    <DnaIcon
-                      className={`h-4 w-4`}
-                      // eslint-disable-next-line react/jsx-no-literals
-                    />
-                    Strain
-                  </Badge>
-                </HybridTooltipTrigger>
-                <HybridTooltipContent className={`w-auto bg-fuchsia-600 p-1`}>
-                  <div>
-                    <span className="block">
-                      {
-                        t("strain")
-                        // eslint-disable-next-line react/jsx-no-literals
-                      }
-                      : {plant.strain?.name ?? "Unknown"}
-                    </span>
-                    <span className="block">
-                      {
-                        t("breeder")
-                        // eslint-disable-next-line react/jsx-no-literals
-                      }
-                      : {plant.strain?.breeder.name ?? "Unknown"}
-                    </span>
-                  </div>
-                </HybridTooltipContent>
-              </HybridTooltip>
-              {/* Grow Badge */}
-              {plant.grow && (
-                <div className="flex flex-wrap gap-2 p-0">
-                  <Link href={`/public/grows/${plant.grow.id}`}>
-                    <Badge
-                      variant="secondary"
-                      className="flex items-center gap-1 whitespace-nowrap"
-                    >
-                      <TentTreeIcon className="h-4 w-4" />
-                      {plant.grow.name}
-                    </Badge>
+                    <Tag className="mt-1" size={20} />
+                    {plant.name}
                   </Link>
-                </div>
+                </Button>
+              </CardTitle>
+              {/* DropdownMenu for plant's owner */}
+              {user && user.id === plant.ownerId && (
+                <OwnerDropdownMenu
+                  isSocial={isSocial}
+                  setIsSocial={setIsSocial}
+                  isDeleting={deleteMutation.isPending}
+                  handleDelete={handleDelete}
+                  entityId={plant.id}
+                  entityType="Plants"
+                />
               )}
             </div>
-          </CardDescription>
 
-          {/* Plant Progress and Dates */}
-          <Card className="space-y-4 p-2 sm:p-4 md:p-6">
-            <CardHeader className="flex w-full flex-col p-0">
-              <div className="mb-1 flex justify-between text-sm">
-                <span>{t("growth-progress")}</span>
-                <span>
-                  {
-                    progress.overallProgress
-                    // eslint-disable-next-line react/jsx-no-literals
-                  }
-                  %
-                </span>
+            {/* Strain Info */}
+            <CardDescription>
+              <div className="flex items-center justify-between">
+                <HybridTooltip>
+                  <HybridTooltipTrigger
+                    className={`flex cursor-help items-center gap-2`}
+                  >
+                    <Badge
+                      variant="outline"
+                      className="flex items-center gap-1 border-[1px] border-fuchsia-700"
+                    >
+                      <DnaIcon
+                        className={`h-4 w-4`}
+                        // eslint-disable-next-line react/jsx-no-literals
+                      />
+                      Strain
+                    </Badge>
+                  </HybridTooltipTrigger>
+                  <HybridTooltipContent className={`w-auto bg-fuchsia-600 p-1`}>
+                    <div>
+                      <span className="block">
+                        {
+                          t("strain")
+                          // eslint-disable-next-line react/jsx-no-literals
+                        }
+                        : {plant.strain?.name ?? "Unknown"}
+                      </span>
+                      <span className="block">
+                        {
+                          t("breeder")
+                          // eslint-disable-next-line react/jsx-no-literals
+                        }
+                        : {plant.strain?.breeder.name ?? "Unknown"}
+                      </span>
+                    </div>
+                  </HybridTooltipContent>
+                </HybridTooltip>
+                {/* Grow Badge */}
+                {plant.grow && (
+                  <div className="flex flex-wrap gap-2 p-0">
+                    <Link href={`/public/grows/${plant.grow.id}`}>
+                      <Badge
+                        variant="secondary"
+                        className="flex items-center gap-1 whitespace-nowrap"
+                      >
+                        <TentTreeIcon className="h-4 w-4" />
+                        {plant.grow.name}
+                      </Badge>
+                    </Link>
+                  </div>
+                )}
               </div>
-              <Progress value={progress.overallProgress} className="w-full" />
-            </CardHeader>
-            <CardContent className="space-y-2 p-0">
-              <div className="flex h-4 items-center">
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger className="flex cursor-default items-center font-mono text-sm font-semibold tracking-tighter">
+            </CardDescription>
+
+            {/* Plant Progress and Dates */}
+            <Card className="space-y-4 p-2 sm:p-4 md:p-6">
+              <CardHeader className="flex w-full flex-col p-0">
+                <div className="mb-1 flex justify-between text-sm">
+                  <span>{t("growth-progress")}</span>
+                  <span>
+                    {
+                      progress.overallProgress
+                      // eslint-disable-next-line react/jsx-no-literals
+                    }
+                    %
+                  </span>
+                </div>
+                <Progress value={progress.overallProgress} className="w-full" />
+              </CardHeader>
+              <CardContent className="space-y-2 p-0">
+                <div className="flex h-4 items-center">
+                  <HybridTooltip>
+                    <HybridTooltipTrigger className="flex cursor-default items-center font-mono text-sm font-semibold tracking-tighter">
                       <Nut className={`mr-2 h-4 w-4 text-planted`} />
                       {formatDate(plant.startDate, locale)}
-                    </TooltipTrigger>
-                    <TooltipContent side="right" className="bg-transparent">
+                    </HybridTooltipTrigger>
+                    <HybridTooltipContent
+                      side="right"
+                      className="bg-transparent"
+                    >
                       <Badge
                         variant={"outline"}
                         className="whitespace-nowrap border-0 bg-planted text-sm text-white"
                       >
                         {t("planting-date")}
                       </Badge>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
-              <div className="flex h-4 items-center">
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger className="flex cursor-default items-center font-mono text-sm font-semibold tracking-tighter">
+                    </HybridTooltipContent>
+                  </HybridTooltip>
+                </div>
+                <div className="flex h-4 items-center">
+                  <HybridTooltip>
+                    <HybridTooltipTrigger className="flex cursor-default items-center font-mono text-sm font-semibold tracking-tighter">
                       <Sprout
                         className={`mr-2 h-4 w-4 ${
                           plant.seedlingPhaseStart
@@ -271,22 +267,23 @@ export default function PlantCard({
                       />
                       {plant.seedlingPhaseStart &&
                         formatDate(plant.seedlingPhaseStart, locale)}
-                    </TooltipTrigger>
-                    <TooltipContent side="right" className="bg-transparent">
+                    </HybridTooltipTrigger>
+                    <HybridTooltipContent
+                      side="right"
+                      className="bg-transparent"
+                    >
                       <Badge
                         variant={"outline"}
                         className="whitespace-nowrap border-0 bg-seedling text-sm text-white"
                       >
                         {t("germination-date")}
                       </Badge>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
-              <div className="flex h-4 items-center">
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger className="flex cursor-default items-center font-mono text-sm font-semibold tracking-tighter">
+                    </HybridTooltipContent>
+                  </HybridTooltip>
+                </div>
+                <div className="flex h-4 items-center">
+                  <HybridTooltip>
+                    <HybridTooltipTrigger className="flex cursor-default items-center font-mono text-sm font-semibold tracking-tighter">
                       <Leaf
                         className={`mr-2 h-4 w-4 ${
                           plant.vegetationPhaseStart
@@ -296,23 +293,23 @@ export default function PlantCard({
                       />
                       {plant.vegetationPhaseStart &&
                         formatDate(plant.vegetationPhaseStart, locale)}
-                    </TooltipTrigger>
-
-                    <TooltipContent side="right" className="bg-transparent">
+                    </HybridTooltipTrigger>
+                    <HybridTooltipContent
+                      side="right"
+                      className="bg-transparent"
+                    >
                       <Badge
                         variant={"outline"}
                         className="whitespace-nowrap border-0 bg-vegetation text-sm text-white"
                       >
                         {t("vegetation-start-date")}
                       </Badge>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
-              <div className="flex h-4 items-center">
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger className="flex cursor-default items-center font-mono text-sm font-semibold tracking-tighter">
+                    </HybridTooltipContent>
+                  </HybridTooltip>
+                </div>
+                <div className="flex h-4 items-center">
+                  <HybridTooltip>
+                    <HybridTooltipTrigger className="flex cursor-default items-center font-mono text-sm font-semibold tracking-tighter">
                       <Flower2
                         className={`mr-2 h-4 w-4 ${
                           plant.floweringPhaseStart
@@ -322,23 +319,23 @@ export default function PlantCard({
                       />
                       {plant.floweringPhaseStart &&
                         formatDate(plant.floweringPhaseStart, locale)}
-                    </TooltipTrigger>
-
-                    <TooltipContent side="right" className="bg-transparent">
+                    </HybridTooltipTrigger>
+                    <HybridTooltipContent
+                      side="right"
+                      className="bg-transparent"
+                    >
                       <Badge
                         variant={"outline"}
                         className="whitespace-nowrap border-0 bg-flowering text-sm text-white"
                       >
                         {t("flowering-start-date")}
                       </Badge>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
-              <div className="flex h-4 items-center">
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger className="flex cursor-default items-center font-mono text-sm font-semibold tracking-tighter">
+                    </HybridTooltipContent>
+                  </HybridTooltip>
+                </div>
+                <div className="flex h-4 items-center">
+                  <HybridTooltip>
+                    <HybridTooltipTrigger className="flex cursor-default items-center font-mono text-sm font-semibold tracking-tighter">
                       <Wheat
                         className={`mr-2 h-4 w-4 ${
                           plant.harvestDate ? "text-harvest" : "text-harvest/40"
@@ -346,23 +343,23 @@ export default function PlantCard({
                       />
                       {plant.harvestDate &&
                         formatDate(plant.harvestDate, locale)}
-                    </TooltipTrigger>
-
-                    <TooltipContent side="right" className="bg-transparent">
+                    </HybridTooltipTrigger>
+                    <HybridTooltipContent
+                      side="right"
+                      className="bg-transparent"
+                    >
                       <Badge
                         variant={"outline"}
                         className="whitespace-nowrap bg-harvest text-sm text-white"
                       >
                         {t("harvest-date")}
                       </Badge>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
-              <div className="flex h-4 items-center">
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger className="flex cursor-default items-center font-mono text-sm font-semibold tracking-tighter">
+                    </HybridTooltipContent>
+                  </HybridTooltip>
+                </div>
+                <div className="flex h-4 items-center">
+                  <HybridTooltip>
+                    <HybridTooltipTrigger className="flex cursor-default items-center font-mono text-sm font-semibold tracking-tighter">
                       <PillBottle
                         className={`mr-2 h-4 w-4 ${
                           plant.curingPhaseStart
@@ -372,90 +369,92 @@ export default function PlantCard({
                       />
                       {plant.curingPhaseStart &&
                         formatDate(plant.curingPhaseStart, locale)}
-                    </TooltipTrigger>
-
-                    <TooltipContent side="right" className="bg-transparent">
+                    </HybridTooltipTrigger>
+                    <HybridTooltipContent
+                      side="right"
+                      className="bg-transparent"
+                    >
                       <Badge
                         variant={"outline"}
                         className="whitespace-nowrap bg-curing text-sm text-white"
                       >
                         {t("curing-start-date")}
                       </Badge>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
-            </CardContent>
-          </Card>
-          {!isSocial && (
-            <Button
-              onClick={() => setIsPostModalOpen(true)}
-              className="p-0 font-semibold"
-            >
-              <MessageSquareTextIcon size={20} className="mr-0" />
-              {t("button-label-post-update")}
-            </Button>
-          )}
-        </CardContent>
+                    </HybridTooltipContent>
+                  </HybridTooltip>
+                </div>
+              </CardContent>
+            </Card>
+            {!isSocial && (
+              <Button
+                onClick={() => setIsPostModalOpen(true)}
+                className="p-0 font-semibold"
+              >
+                <MessageSquareTextIcon size={20} className="mr-0" />
+                {t("button-label-post-update")}
+              </Button>
+            )}
+          </CardContent>
 
-        {
-          isSocial && (
-            <SocialCardFooter
-              className={`pb-2 pr-2 ${isSocial && "ml-12"}`}
+          {
+            isSocial && (
+              <SocialCardFooter
+                className={`pb-2 pr-2 ${isSocial && "ml-12"}`}
+                entityId={plant.id}
+                entityType={LikeableEntityType.Plant}
+                initialLiked={isLiked}
+                isLikeStatusLoading={isLikeLoading}
+                commentCountLoading={commentCountLoading}
+                stats={{
+                  comments: commentCount,
+                  views: 0,
+                  likes: likeCount,
+                }}
+                toggleComments={toggleComments}
+              />
+            )
+
+            // : (
+            //   user &&
+            //   user.id === plant.ownerId && (
+            //     // Owner Buttons
+            //     <>
+            //       <Separator />
+            //       <CardFooter className="flex w-full justify-between gap-1 p-1">
+            //         <Button
+            //           variant="destructive"
+            //           size="sm"
+            //           className="w-20"
+            //           onClick={handleDelete}
+            //           disabled={deleteMutation.isPending}
+            //         >
+            //           {deleteMutation.isPending ? (
+            //             <Loader2 size={20} className="animate-spin" />
+            //           ) : (
+            //             <Trash2 size={20} />
+            //           )}
+            //         </Button>
+            //         <Button asChild size="sm" className="w-full text-base">
+            //           <Link href={`/plants/${plant.id}/form`}>
+            //             <Edit size={20} />
+            //             {t("edit-plant-button-label")}
+            //           </Link>
+            //         </Button>
+            //       </CardFooter>
+            //     </>
+            //   )
+            // )
+          }
+
+          {isSocial && isCommentsOpen && (
+            <Comments
               entityId={plant.id}
-              entityType={LikeableEntityType.Plant}
-              initialLiked={isLiked}
-              isLikeStatusLoading={isLikeLoading}
-              commentCountLoading={commentCountLoading}
-              stats={{
-                comments: commentCount,
-                views: 0,
-                likes: likeCount,
-              }}
-              toggleComments={toggleComments}
+              entityType={CommentableEntityType.Plant}
+              isSocial={isSocial}
             />
-          )
-
-          // : (
-          //   user &&
-          //   user.id === plant.ownerId && (
-          //     // Owner Buttons
-          //     <>
-          //       <Separator />
-          //       <CardFooter className="flex w-full justify-between gap-1 p-1">
-          //         <Button
-          //           variant="destructive"
-          //           size="sm"
-          //           className="w-20"
-          //           onClick={handleDelete}
-          //           disabled={deleteMutation.isPending}
-          //         >
-          //           {deleteMutation.isPending ? (
-          //             <Loader2 size={20} className="animate-spin" />
-          //           ) : (
-          //             <Trash2 size={20} />
-          //           )}
-          //         </Button>
-          //         <Button asChild size="sm" className="w-full text-base">
-          //           <Link href={`/plants/${plant.id}/form`}>
-          //             <Edit size={20} />
-          //             {t("edit-plant-button-label")}
-          //           </Link>
-          //         </Button>
-          //       </CardFooter>
-          //     </>
-          //   )
-          // )
-        }
-
-        {isSocial && isCommentsOpen && (
-          <Comments
-            entityId={plant.id}
-            entityType={CommentableEntityType.Plant}
-            isSocial={isSocial}
-          />
-        )}
-      </Card>
+          )}
+        </Card>
+      </TouchProvider>
     </>
   );
 }
