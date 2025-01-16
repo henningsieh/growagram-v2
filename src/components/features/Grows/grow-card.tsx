@@ -120,7 +120,7 @@ export function GrowCard({
           className={`grid gap-2 ${isSocial ? "ml-12 pl-0 pr-2" : "p-2"}`}
         >
           {/* Grow HeaderImage */}
-          <div
+          {/* <div
             className="relative aspect-video overflow-hidden"
             onMouseEnter={() => setIsImageHovered(true)}
             onMouseLeave={() => setIsImageHovered(false)}
@@ -135,7 +135,7 @@ export function GrowCard({
                 transform: isImageHovered ? "scale(1.05)" : "scale(1)",
               }}
             />
-          </div>
+          </div> */}
 
           {/* Title Link */}
           <div className="flex items-center justify-between">
