@@ -4,7 +4,6 @@ import Discord from "next-auth/providers/discord";
 import Google from "next-auth/providers/google";
 import Twitter from "next-auth/providers/twitter";
 import { env } from "~/env";
-import { db } from "~/lib/db";
 import { UserRoles } from "~/types/user";
 
 // Notice this is only an object, not a full Auth.js
