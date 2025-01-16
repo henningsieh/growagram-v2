@@ -117,7 +117,7 @@ export function GrowCard({
         {isSocial && <AvatarCardHeader user={grow.owner} />}
 
         <CardContent
-          className={`grid gap-2 ${isSocial ? "ml-12 pl-0 pr-2" : "p-2"}`}
+          className={`flex h-full flex-col gap-2 ${isSocial ? "ml-12 pl-0 pr-2" : "p-2"}`}
         >
           {/* Grow HeaderImage */}
           {/* <div
@@ -126,7 +126,7 @@ export function GrowCard({
             onMouseLeave={() => setIsImageHovered(false)}
           >
             <Image
-              src={headerImagePlaceholder}
+              src={headerImagePlaceholder || "/placeholder.svg"}
               alt={grow.name}
               fill
               className="object-cover transition-transform duration-300"
@@ -190,34 +190,44 @@ export function GrowCard({
               </div>
             )}
           </CardDescription>
+          <div className="justify-top flex h-full flex-1 flex-col">
+            {/* Plants Grid */}
+            <div className="flex-1 overflow-y-auto">
+              <div className="space-y-4">
+                <AnimatePresence>
+                  {grow.plants.map((plant) => (
+                    <motion.div
+                      key={plant.id}
+                      initial={{ opacity: 0, y: -50 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <GrowPlantCard plant={plant} />
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+                {grow.plants.length === 0 && (
+                  <div className="py-8 text-center text-muted-foreground">
+                    {t("no-plants-connected")}
+                  </div>
+                )}
+              </div>
+            </div>
 
-          {/* Plants Grid */}
-          <div className="space-y-4">
-            <AnimatePresence>
-              {grow.plants.map((plant) => (
-                <motion.div
-                  key={plant.id}
-                  initial={{ opacity: 0, y: -50 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.3 }}
+            {/* Post Update Button */}
+            {!isSocial && (
+              <div className="mt-4">
+                <Button
+                  className="w-full p-2 font-semibold"
+                  onClick={() => setIsPostModalOpen(true)}
                 >
-                  <GrowPlantCard plant={plant} />
-                </motion.div>
-              ))}
-            </AnimatePresence>
-            {grow.plants.length === 0 && (
-              <div className="py-8 text-center text-muted-foreground">
-                {t("no-plants-connected")}
+                  <MessageSquareTextIcon className="mr-2" />
+                  {t("buttonLabel-post-update")}
+                </Button>
               </div>
             )}
           </div>
-          {!isSocial && (
-            <Button onClick={() => setIsPostModalOpen(true)}>
-              <MessageSquareTextIcon className="mr-2" />
-              {t("buttonLabel-post-update")}
-            </Button>
-          )}
         </CardContent>
 
         {isSocial && (
