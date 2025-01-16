@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ImageUpIcon } from "lucide-react";
+import { ShareIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -21,8 +21,8 @@ import {
   FormLabel,
   FormMessage,
 } from "~/components/ui/form";
-import { Input } from "~/components/ui/input";
 import { Modal } from "~/components/ui/modal";
+import { Textarea } from "~/components/ui/textarea";
 import { useToast } from "~/hooks/use-toast";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
@@ -80,7 +80,7 @@ export default function PostFormModal({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <Card>
+      <Card className="w-full max-w-6xl space-y-4 rounded p-4 shadow-lg">
         <CardHeader>
           <CardTitle>{t("createNewPost-title")}</CardTitle>
         </CardHeader>
@@ -94,7 +94,7 @@ export default function PostFormModal({
                   <FormItem>
                     <FormLabel className="sr-only">Content</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Textarea {...field} rows={4} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -104,8 +104,8 @@ export default function PostFormModal({
           </Form>
         </CardContent>
         <CardFooter>
-          <Button type="submit" className="w-full">
-            <ImageUpIcon className="mr-2 h-6 w-6" />
+          <Button type="submit" className="w-full font-semibold">
+            <ShareIcon className="mr-0 h-6 w-6" />
             {t("buttonLabel-createNewPost")}
           </Button>
         </CardFooter>

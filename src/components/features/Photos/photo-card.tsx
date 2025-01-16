@@ -6,6 +6,7 @@ import {
   FileIcon,
   Flower2Icon,
   Maximize,
+  MessageSquareTextIcon,
   Minimize,
   ShareIcon,
   UploadCloud,
@@ -272,9 +273,7 @@ export default function PhotoCard({
                   </p>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>
-                    {t("uploadDate")}
-                  </p>
+                  <p>{t("uploadDate")}</p>
                 </TooltipContent>
               </Tooltip>
 
@@ -297,9 +296,7 @@ export default function PhotoCard({
                   </p>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>
-                    {t("captureDate")}
-                  </p>
+                  <p>{t("captureDate")}</p>
                 </TooltipContent>
               </Tooltip>
             </div>
@@ -307,7 +304,7 @@ export default function PhotoCard({
 
           {!isSocial && (
             <Button onClick={() => setIsPostModalOpen(true)}>
-              <ShareIcon className="mr-2 h-4 w-4" />
+              <MessageSquareTextIcon className="mr-2" />
               {t("button-label-post-update")}
             </Button>
           )}

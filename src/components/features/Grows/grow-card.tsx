@@ -2,7 +2,7 @@
 
 // src/components/features/Grows/grow-card.tsx:
 import { AnimatePresence, motion } from "framer-motion";
-import { ShareIcon, TentTree } from "lucide-react";
+import { MessageSquareTextIcon, ShareIcon, TentTree } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
@@ -214,7 +214,7 @@ export function GrowCard({
           </div>
           {!isSocial && (
             <Button onClick={() => setIsPostModalOpen(true)}>
-              <ShareIcon className="mr-2 h-4 w-4" />
+              <MessageSquareTextIcon className="mr-2" />
               {t("buttonLabel-post-update")}
             </Button>
           )}

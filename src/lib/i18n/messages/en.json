@@ -63,7 +63,7 @@
   },
   "Grows": {
     "buttonLabel-create-grow": "Create Grow",
-    "buttonLabel-post-update": "Post new Update",
+    "buttonLabel-post-update": "Create new Update",
     "buttonLabel-save-changes": "Save Changes",
     "connect-error": "Error connecting plant",
     "delete-button-label": "Delete Grow",
@@ -194,7 +194,7 @@
       "removeAll": "Remove All Plants",
       "save": "Save Plant Selection ({count})"
     },
-    "button-label-post-update": "Post new Update",
+    "button-label-post-update": "Create new Update",
     "button-label-upload-photos": "Upload",
     "buttonBackLabel": "Back",
     "capture-date": "taken on",
@@ -220,7 +220,7 @@
   },
   "Plants": {
     "breeder": "Breeder",
-    "button-label-post-update": "Post new Update",
+    "button-label-post-update": "Create new Update",
     "curing-start-date": "Curing phase start date",
     "delete-button-label": "Delete Plant",
     "delete-plant-button-label": "Delete Plant",
@@ -270,7 +270,7 @@
   },
   "Posts": {
     "buttonLabel-createNewPost": "Post Update",
-    "createNewPost-title": "Write a new post"
+    "createNewPost-title": "Write and post a new Update"
   },
   "Sidebar": {
     "coming_soon": {

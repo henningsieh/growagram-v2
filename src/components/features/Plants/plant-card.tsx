@@ -6,9 +6,9 @@ import {
   DnaIcon,
   Flower2,
   Leaf,
+  MessageSquareTextIcon,
   Nut,
   PillBottle,
-  ShareIcon,
   Sprout,
   Tag,
   TentTreeIcon,
@@ -388,8 +388,11 @@ export default function PlantCard({
             </CardContent>
           </Card>
           {!isSocial && (
-            <Button onClick={() => setIsPostModalOpen(true)}>
-              <ShareIcon className="mr-2 h-4 w-4" />
+            <Button
+              onClick={() => setIsPostModalOpen(true)}
+              className="p-0 font-semibold"
+            >
+              <MessageSquareTextIcon size={20} className="mr-0" />
               {t("button-label-post-update")}
             </Button>
           )}
