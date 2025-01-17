@@ -1,7 +1,7 @@
 {
   "i18n-ally.localesPaths": ["src/lib/i18n/messages", "src/lib/i18n"],
   "i18n-ally.keystyle": "nested",
-  "i18n-ally.sourceLanguage": "de",
+  "i18n-ally.sourceLanguage": "en",
   "i18n-ally.enabledFrameworks": ["next-intl"],
   "i18n-ally.namespace": true,
   "i18n-ally.sortKeys": true,
