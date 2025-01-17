@@ -61,7 +61,7 @@ export function GrowPlantCard({ plant }: PlantCardProps) {
   return (
     <TouchProvider>
       <Card
-        className="space-y-2 overflow-hidden p-2 pt-0 transition-all hover:shadow-lg"
+        className="space-y-2 overflow-hidden bg-muted p-2 pt-0 transition-all hover:shadow-lg"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >

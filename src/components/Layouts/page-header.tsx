@@ -1,6 +1,6 @@
 // src/components/Layouts/page-header.tsx:
 import { ReadonlyURLSearchParams } from "next/navigation";
-import { Button } from "~/components/ui/button";
+import { Button, ButtonProps } from "~/components/ui/button";
 import { Link } from "~/lib/i18n/routing";
 
 interface IPageHeader {
@@ -10,6 +10,7 @@ interface IPageHeader {
   buttonLink?: string | null;
   buttonLabel?: string;
   searchParams?: ReadonlyURLSearchParams;
+  buttonVariant?: ButtonProps["variant"];
 }
 
 export default function Component({
@@ -17,8 +18,9 @@ export default function Component({
   subtitle,
   children,
   buttonLink,
-  buttonLabel = "Upload New Image",
+  buttonLabel,
   searchParams,
+  buttonVariant = "primary",
 }: IPageHeader) {
   const queryObject = searchParams
     ? Object.fromEntries(searchParams.entries())
@@ -39,7 +41,7 @@ export default function Component({
                 asChild
                 size="sm"
                 className="sm:w-[154px]"
-                variant="primary"
+                variant={buttonVariant || "primary"}
               >
                 <Link
                   href={{

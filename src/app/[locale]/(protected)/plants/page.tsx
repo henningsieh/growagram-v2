@@ -106,6 +106,7 @@ export default function MyPlantsPage() {
       subtitle={t("subtitle")}
       buttonLink="/plants/new/form"
       buttonLabel={t("linkUploadButtonLabel")}
+      buttonVariant="plant"
     >
       <SortFilterControls
         isFetching={isFetching}

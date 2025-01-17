@@ -3,7 +3,7 @@
 import { Clock, TagIcon, TentTree } from "lucide-react";
 import { type PropsWithChildren } from "react";
 import { modulePaths } from "~/assets/constants";
-import { Button } from "~/components/ui/button";
+import { Button, ButtonProps } from "~/components/ui/button";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { Link, usePathname } from "~/lib/i18n/routing";
 
@@ -15,16 +15,19 @@ export default function PublicRootLayout({ children }: PropsWithChildren) {
       href: modulePaths.PUBLICTIMELINE.path,
       icon: Clock,
       label: modulePaths.PUBLICTIMELINE.name,
+      variant: "primary" as ButtonProps["variant"],
     },
     {
       href: modulePaths.PUBLICGROWS.path,
       icon: TentTree,
       label: modulePaths.PUBLICGROWS.name,
+      variant: "grow" as ButtonProps["variant"],
     },
     {
       href: modulePaths.PUBLICPLANTS.path,
       icon: TagIcon,
       label: modulePaths.PUBLICPLANTS.name,
+      variant: "plant" as ButtonProps["variant"],
     },
   ];
 
@@ -37,7 +40,9 @@ export default function PublicRootLayout({ children }: PropsWithChildren) {
             {navItems.map((item) => (
               <Link href={item.href} key={item.href}>
                 <Button
-                  variant={pathname === item.href ? "secondary" : "ghost"}
+                  variant={
+                    pathname.startsWith(item.href) ? item.variant : "ghost"
+                  }
                   className="w-full justify-start text-base"
                 >
                   <item.icon className="mr-2 h-4 w-4" />
@@ -54,7 +59,9 @@ export default function PublicRootLayout({ children }: PropsWithChildren) {
             {navItems.map((item) => (
               <Link href={item.href} key={item.href} className="flex-1">
                 <Button
-                  variant={pathname === item.href ? "secondary" : "ghost"}
+                  variant={
+                    pathname.startsWith(item.href) ? item.variant : "ghost"
+                  }
                   className="h-10 w-full justify-start rounded-none text-xs"
                 >
                   <item.icon className="mr-2 h-4 w-4" />

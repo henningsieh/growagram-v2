@@ -171,7 +171,7 @@ export default function PhotoCard({
         entity={photo}
         entityType={PostableEntityType.PHOTO}
       />
-      <Card className="relative my-2 flex flex-col overflow-hidden">
+      <Card className="relative my-2 flex flex-col overflow-hidden border-muted-foreground/50">
         {/* "NEW" Banner */}
         {!!!photo.plantImages.length && (
           <div className="absolute right-[-40px] top-[15px] z-10 w-[120px] rotate-[45deg] cursor-default bg-secondary px-[40px] py-[1px] text-[12px] font-semibold tracking-widest text-white">
@@ -234,21 +234,23 @@ export default function PhotoCard({
           </div>
 
           {/* Plant Badges */}
-          <div className="flex min-h-10 gap-2 overflow-x-auto p-0">
-            {photo.plantImages.map((plantImage) => (
-              <Link
-                key={plantImage.plant.id}
-                href={`/public/plants/${plantImage.plant.id}`}
-              >
-                <Badge
-                  variant="secondary"
-                  className="flex items-center gap-1 whitespace-nowrap"
+          <div className="custom-scrollbar flex min-h-8 gap-2 overflow-x-auto px-1 pb-2">
+            {photo.plantImages
+              .sort((a, b) => a.plant.name.localeCompare(b.plant.name))
+              .map((plantImage) => (
+                <Link
+                  key={plantImage.plant.id}
+                  href={`/public/plants/${plantImage.plant.id}`}
                 >
-                  <TagIcon className="h-4 w-4" />
-                  {plantImage.plant.name}
-                </Badge>
-              </Link>
-            ))}
+                  <Badge
+                    variant="plant"
+                    className="flex items-center gap-1 whitespace-nowrap"
+                  >
+                    <TagIcon className="h-4 w-4" />
+                    {plantImage.plant.name}
+                  </Badge>
+                </Link>
+              ))}
           </div>
 
           {/* Photo Upload and Capture Date */}
@@ -315,10 +317,7 @@ export default function PhotoCard({
           {!!!photo.plantImages.length && !isSocial && (
             // link to edit plant, same as in DropDown menu
             <Link href={`/photos/${photo.id}/form`}>
-              <Button
-                variant={"secondary"}
-                className="w-full p-2 font-semibold"
-              >
+              <Button variant={"plant"} className="w-full p-2 font-semibold">
                 <TagsIcon className="mr-2" />
                 {t("button-label-connect-plants")}
               </Button>

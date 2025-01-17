@@ -91,7 +91,7 @@ export function SortFilterControls<T extends string>({
           <div className="flex h-8 w-full items-center justify-start gap-2 text-nowrap rounded-sm border-[1px] border-input bg-muted px-1 hover:bg-transparent lg:w-[154px]">
             <Switch
               size="default"
-              variant="secondary"
+              variant="default"
               id="filter-toggle"
               checked={filterEnabled}
               onCheckedChange={onFilterChange}
@@ -112,7 +112,7 @@ export function SortFilterControls<T extends string>({
             className={cn(
               "flex w-full items-center justify-between gap-1 p-2 lg:w-[154px]",
               sortField === option.field &&
-                "border-[1px] border-secondary text-foreground",
+                "border-[1px] border-primary text-foreground",
             )}
             onClick={() => toggleOrder(option.field)}
           >
@@ -121,13 +121,13 @@ export function SortFilterControls<T extends string>({
               {option.label}
             </div>
             {isFetching && sortField === option.field ? (
-              <SpinningLoader className="h-6 w-5 animate-spin text-secondary" />
+              <SpinningLoader className="h-6 w-5 animate-spin text-primary" />
             ) : (
               sortField === option.field &&
               (sortOrder === SortOrder.ASC ? (
-                <option.sortIconAsc className="h-6 w-5 text-secondary" />
+                <option.sortIconAsc className="h-6 w-5 text-primary" />
               ) : (
-                <option.sortIconDesc className="h-6 w-5 text-secondary" />
+                <option.sortIconDesc className="h-6 w-5 text-primary" />
               ))
             )}
           </Button>

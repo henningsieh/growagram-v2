@@ -113,7 +113,7 @@ export function GrowCard({
         entity={grow}
         entityType={PostableEntityType.GROW}
       />
-      <Card className="my-2 flex flex-col overflow-hidden">
+      <Card className="my-2 flex flex-col overflow-hidden border border-secondary/70">
         {isSocial && <AvatarCardHeader user={grow.owner} />}
 
         <CardContent
@@ -192,7 +192,7 @@ export function GrowCard({
           </CardDescription>
           <div className="justify-top flex h-full flex-1 flex-col">
             {/* Plants Grid */}
-            <div className="flex-1 overflow-y-auto">
+            <div className="max-h-72 flex-1 overflow-y-auto">
               <div className="space-y-4">
                 <AnimatePresence>
                   {grow.plants.map((plant) => (

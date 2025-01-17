@@ -131,7 +131,7 @@ export default function PlantCard({
         entityType={PostableEntityType.PLANT}
       />
       <TouchProvider>
-        <Card className="my-2 flex flex-col overflow-hidden">
+        <Card className="my-2 flex flex-col overflow-hidden border border-primary/70">
           {isSocial && <AvatarCardHeader user={plant.owner} />}
 
           <CardContent
@@ -208,7 +208,7 @@ export default function PlantCard({
                   <div className="flex flex-wrap gap-2 p-0">
                     <Link href={`/public/grows/${plant.grow.id}`}>
                       <Badge
-                        variant="secondary"
+                        variant="grow"
                         className="flex items-center gap-1 whitespace-nowrap"
                       >
                         <TentTreeIcon className="h-4 w-4" />
@@ -221,7 +221,7 @@ export default function PlantCard({
             </CardDescription>
 
             {/* Plant Progress and Dates */}
-            <Card className="space-y-4 p-2 sm:p-4 md:p-6">
+            <Card className="space-y-4 bg-muted p-2 sm:p-4 md:p-6">
               <CardHeader className="flex w-full flex-col p-0">
                 <div className="mb-1 flex justify-between text-sm">
                   <span>{t("growth-progress")}</span>
