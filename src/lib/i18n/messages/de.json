@@ -63,7 +63,7 @@
   },
   "Grows": {
     "buttonLabel-create-grow": "Grow erstellen",
-    "buttonLabel-post-update": "Neues Update posten",
+    "buttonLabel-post-update": "Neues Update erstellen",
     "buttonLabel-save-changes": "Änderungen speichern",
     "connect-error": "Fehler beim Verbinden der Pflanze",
     "delete-button-label": "Grow löschen",
@@ -194,13 +194,15 @@
       "removeAll": "Alle Pflanzen entfernen",
       "save": "Pflanzenauswahl speichern ({count})"
     },
-    "button-label-post-update": "Neues Update posten",
+    "button-label-connect-plants": "Pflanzen markieren",
+    "button-label-post-update": "Neues Update erstellen",
     "button-label-upload-photos": "Hochladen",
     "buttonBackLabel": "Zurück",
     "capture-date": "aufgenommen",
     "captureDate": "Aufnahmedatum (aus EXIF-Daten)",
     "delete-button-label": "Foto löschen",
     "edit-button-label": "Foto bearbeiten",
+    "filter-label-not-connected": "NUR NEUE",
     "my-Photos": "Meine Fotos",
     "my-Photos-subtitle": "Anzeige und Verwaltung deiner Fotos",
     "newNotConnteched": "NEU",
@@ -220,7 +222,7 @@
   },
   "Plants": {
     "breeder": "Züchter / Breeder",
-    "button-label-post-update": "Neues Update posten",
+    "button-label-post-update": "Neues Update erstellen",
     "curing-start-date": "Startdatum der Aushärtephase",
     "delete-button-label": "Pflanze löschen",
     "delete-plant-button-label": "Pflanze löschen",
@@ -270,7 +272,8 @@
   },
   "Posts": {
     "buttonLabel-createNewPost": "Update posten",
-    "createNewPost-title": "Schreibe und veröffentliche ein neues Update"
+    "createNewPost-title": "Schreibe und poste ein neues Update",
+    "linkedInThisPost": "Mit dem Update verlinkt"
   },
   "Sidebar": {
     "coming_soon": {
