@@ -328,7 +328,7 @@ export const comments = pgTable(
   },
 );
 
-// Define the public_posts table
+// Define the posts table
 export const posts = pgTable(
   "public_post",
   {

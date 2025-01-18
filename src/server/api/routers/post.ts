@@ -10,6 +10,8 @@ import {
 import { PostableEntityType } from "~/types/post";
 import { postSchema } from "~/types/zodSchema";
 
+import { connectPlantWithImagesQuery } from "./plantImages";
+
 export const postRouter = createTRPCRouter({
   create: protectedProcedure
     .input(postSchema)
@@ -61,8 +63,45 @@ export const postRouter = createTRPCRouter({
     const posts = await ctx.db.query.posts.findMany({
       with: {
         owner: true,
-        grow: true,
-        plant: true,
+        grow: {
+          with: {
+            owner: true,
+            plants: {
+              with: {
+                owner: true,
+                grow: true,
+                strain: {
+                  columns: {
+                    id: true,
+                    name: true,
+                    thcContent: true,
+                    cbdContent: true,
+                  },
+                  with: { breeder: { columns: { id: true, name: true } } },
+                },
+                headerImage: { columns: { id: true, imageUrl: true } },
+                plantImages: connectPlantWithImagesQuery,
+              },
+            },
+          },
+        },
+        plant: {
+          with: {
+            owner: true,
+            grow: true,
+            plantImages: connectPlantWithImagesQuery,
+            strain: {
+              columns: {
+                id: true,
+                name: true,
+                thcContent: true,
+                cbdContent: true,
+              },
+              with: { breeder: { columns: { id: true, name: true } } },
+            },
+            headerImage: { columns: { id: true, imageUrl: true } },
+          },
+        },
         photo: true,
       },
     });
