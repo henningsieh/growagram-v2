@@ -131,7 +131,7 @@ export default function PlantCard({
         entityType={PostableEntityType.PLANT}
       />
       <TouchProvider>
-        <Card className="my-2 flex flex-col overflow-hidden border border-primary/70">
+        <Card className="flex flex-col overflow-hidden border border-primary/70">
           {isSocial && <AvatarCardHeader user={plant.owner} />}
 
           <CardContent

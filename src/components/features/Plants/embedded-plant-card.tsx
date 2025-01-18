@@ -27,19 +27,18 @@ import {
   TouchProvider,
 } from "~/components/ui/hybrid-tooltip";
 import { Progress } from "~/components/ui/progress";
-import { TooltipProvider } from "~/components/ui/tooltip";
 import { useIsMobile } from "~/hooks/use-mobile";
 import { Link } from "~/lib/i18n/routing";
 import { DateFormatOptions, formatDate } from "~/lib/utils";
 import { calculateGrowthProgress } from "~/lib/utils/calculateDetailedGrowthProgress";
-import { GetOwnPlantType } from "~/server/api/root";
+import { GetAllPlantType } from "~/server/api/root";
 import { PlantGrowthStages } from "~/types/plant";
 
-interface PlantCardProps {
-  plant: GetOwnPlantType;
+interface EmbeddedPlantCardProps {
+  plant: GetAllPlantType;
 }
 
-export function GrowPlantCard({ plant }: PlantCardProps) {
+export function EmbeddedPlantCard({ plant }: EmbeddedPlantCardProps) {
   const locale = useLocale();
   const t = useTranslations();
   const isMobile = useIsMobile();
@@ -61,7 +60,7 @@ export function GrowPlantCard({ plant }: PlantCardProps) {
   return (
     <TouchProvider>
       <Card
-        className="space-y-2 overflow-hidden bg-muted p-2 pt-0 transition-all hover:shadow-lg"
+        className="space-y-2 overflow-hidden border border-primary/70 bg-muted p-2 pt-0 transition-all hover:shadow-lg"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >

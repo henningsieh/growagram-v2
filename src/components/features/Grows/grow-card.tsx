@@ -2,13 +2,10 @@
 
 // src/components/features/Grows/grow-card.tsx:
 import { AnimatePresence, motion } from "framer-motion";
-import { MessageSquareTextIcon, ShareIcon, TentTree } from "lucide-react";
+import { MessageSquareTextIcon, TentTree } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
-import Image from "next/image";
 import { useState } from "react";
-import headerImagePlaceholder from "~/assets/landscape-placeholdersvg.svg";
-import { RESPONSIVE_IMAGE_SIZES } from "~/components/Layouts/responsive-grid";
 import PostFormModal from "~/components/PostFormModal";
 import AvatarCardHeader from "~/components/atom/avatar-card-header";
 import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
@@ -27,16 +24,20 @@ import { useToast } from "~/hooks/use-toast";
 import { Link } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import { DateFormatOptions, formatDate } from "~/lib/utils";
-import { GetOwnGrowType } from "~/server/api/root";
+import {
+  GetAllGrowType,
+  GetGrowByIdType,
+  GetOwnGrowType,
+} from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
 import { LikeableEntityType } from "~/types/like";
 
 import { PostableEntityType } from "../../../types/post";
 import { Comments } from "../Comments/comments";
-import { GrowPlantCard } from "./grow-plant-card";
+import { EmbeddedPlantCard } from "../Plants/embedded-plant-card";
 
 interface GrowCardProps {
-  grow: GetOwnGrowType;
+  grow: GetOwnGrowType | GetAllGrowType;
   isSocial?: boolean;
 }
 
@@ -113,7 +114,7 @@ export function GrowCard({
         entity={grow}
         entityType={PostableEntityType.GROW}
       />
-      <Card className="my-2 flex flex-col overflow-hidden border border-secondary/70">
+      <Card className="flex flex-col overflow-hidden border border-secondary/70">
         {isSocial && <AvatarCardHeader user={grow.owner} />}
 
         <CardContent
@@ -203,7 +204,7 @@ export function GrowCard({
                       exit={{ opacity: 0, y: -20 }}
                       transition={{ duration: 0.3 }}
                     >
-                      <GrowPlantCard plant={plant} />
+                      <EmbeddedPlantCard plant={plant} />
                     </motion.div>
                   ))}
                 </AnimatePresence>

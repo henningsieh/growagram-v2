@@ -36,7 +36,8 @@ import {
 import { PostableEntityType } from "~/types/post";
 import { postSchema } from "~/types/zodSchema";
 
-import { GrowPlantCard } from "./features/Grows/grow-plant-card";
+import { EmbeddedGrowCard } from "./features/Grows/embedded-grow-card";
+import { EmbeddedPlantCard } from "./features/Plants/embedded-plant-card";
 
 type PostFormValues = z.infer<typeof postSchema>;
 
@@ -142,8 +143,11 @@ export default function PostFormModal({
                 `${t("linkedInThisPost")}:`
               }
             </strong>
+            {entityType === PostableEntityType.GROW && (
+              <EmbeddedGrowCard grow={entity as GetOwnGrowType} />
+            )}
             {entityType === PostableEntityType.PLANT && (
-              <GrowPlantCard plant={entity as GetOwnPlantType} />
+              <EmbeddedPlantCard plant={entity as GetOwnPlantType} />
             )}
             {entityType === PostableEntityType.PHOTO && (
               <div className="flex items-center space-x-4 overflow-hidden">

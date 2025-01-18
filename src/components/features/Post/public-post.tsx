@@ -1,14 +1,17 @@
-import { useTranslations } from "next-intl";
 import CustomAvatar from "~/components/atom/custom-avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { GetPostType } from "~/server/api/root";
+import { PostableEntityType } from "~/types/post";
+
+import { EmbeddedGrowCard } from "../Grows/embedded-grow-card";
+import { EmbeddedPlantCard } from "../Plants/embedded-plant-card";
 
 interface PublicPostProps {
   post: GetPostType;
 }
 
 export default function PublicPost({ post }: PublicPostProps) {
-  const t = useTranslations("PublicPost");
+  // const t = useTranslations("PublicPost");
 
   return (
     <Card>
@@ -30,11 +33,11 @@ export default function PublicPost({ post }: PublicPostProps) {
       </CardHeader>
       <CardContent>
         <p>{post.content}</p>
-        {post.entityType === "grow" && (
-          <p>Connected to Grow: {post.grow?.name}</p>
+        {post.entityType === PostableEntityType.GROW && (
+          <EmbeddedGrowCard grow={post.grow} />
         )}
-        {post.entityType === "plant" && (
-          <p>Connected to Plant: {post.plant?.name}</p>
+        {post.entityType === PostableEntityType.PLANT && (
+          <EmbeddedPlantCard plant={post.plant} />
         )}
         {post.entityType === "image" && (
           <p>Connected to Photo: {post.photo?.originalFilename}</p>

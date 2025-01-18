@@ -171,7 +171,7 @@ export default function PhotoCard({
         entity={photo}
         entityType={PostableEntityType.PHOTO}
       />
-      <Card className="relative my-2 flex flex-col overflow-hidden border-muted-foreground/50">
+      <Card className="relative flex flex-col overflow-hidden border-muted-foreground/50">
         {/* "NEW" Banner */}
         {!!!photo.plantImages.length && (
           <div className="absolute right-[-40px] top-[15px] z-10 w-[120px] rotate-[45deg] cursor-default bg-secondary px-[40px] py-[1px] text-[12px] font-semibold tracking-widest text-white">
