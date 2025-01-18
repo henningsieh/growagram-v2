@@ -1,3 +1,5 @@
+"use client";
+
 // src/app/[locale]/(public)/public/timeline/page.tsx:
 import SpinningLoader from "~/components/Layouts/loader";
 import PublicPost from "~/components/features/Post/public-post";

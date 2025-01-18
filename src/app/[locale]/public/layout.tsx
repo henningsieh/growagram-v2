@@ -32,11 +32,11 @@ export default function PublicRootLayout({ children }: PropsWithChildren) {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="mx-auto flex max-w-7xl flex-col md:flex-row">
+    <div className="bg-background">
+      <div className="mx-auto flex max-w-[1440px] flex-col md:flex-row">
         {/* Left sidebar - hidden on mobile */}
-        <aside className="hidden w-60 md:block">
-          <div className="sticky top-16 flex flex-col gap-2 px-2">
+        <aside className="hidden h-[calc(100vh-4rem)] shrink-0 p-4 md:block md:w-56 xl:w-64">
+          <div className="sticky top-16 flex flex-col gap-2">
             {navItems.map((item) => (
               <Link href={item.href} key={item.href}>
                 <Button
@@ -53,34 +53,44 @@ export default function PublicRootLayout({ children }: PropsWithChildren) {
           </div>
         </aside>
 
-        {/* Mobile buttons - shown only on small screens */}
-        <div className="sticky top-0 w-full border-b bg-background md:hidden">
-          <div className="flex">
-            {navItems.map((item) => (
-              <Link href={item.href} key={item.href} className="flex-1">
-                <Button
-                  variant={
-                    pathname.startsWith(item.href) ? item.variant : "ghost"
-                  }
-                  className="h-10 w-full justify-start rounded-none text-xs"
+        {/* Mobile navigation - shown only on small screens */}
+        <nav className="sticky top-0 z-10 w-full border-b bg-background md:hidden">
+          <ScrollArea className="w-full">
+            <div className="flex">
+              {navItems.map((item) => (
+                <Link
+                  href={item.href}
+                  key={item.href}
+                  className="flex-shrink-0"
                 >
-                  <item.icon className="mr-2 h-4 w-4" />
-                  {item.label}
-                </Button>
-              </Link>
-            ))}
-          </div>
-        </div>
+                  <Button
+                    variant={
+                      pathname.startsWith(item.href) ? item.variant : "ghost"
+                    }
+                    className="h-12 px-4 text-xs"
+                  >
+                    <item.icon className="mr-2 h-4 w-4" />
+                    {item.label}
+                  </Button>
+                </Link>
+              ))}
+            </div>
+          </ScrollArea>
+        </nav>
 
-        {/* Main content and right sidebar remain unchanged */}
-        <div className="flex max-w-2xl flex-1 shrink-0">
-          <div className="w-full pl-1 pr-2">{children}</div>
-        </div>
+        {/* Main content */}
+        <main className="w-full max-w-2xl px-4 py-4 md:px-4 lg:max-w-xl lg:px-4">
+          <div className="mx-auto">{children}</div>
+        </main>
 
-        <aside className="hidden w-64 lg:block">
-          <div className="sticky top-16 px-4">
-            <ScrollArea className="h-[calc(100svh-4rem)]">
-              <p>Sidebar :-) (content coming soon)</p>
+        {/* Right sidebar */}
+        <aside className="hidden p-4 lg:block lg:flex-1 xl:flex-auto">
+          <div className="sticky top-16">
+            <ScrollArea className="h-[calc(100vh-5rem)]">
+              <div className="rounded-lg bg-accent">
+                <h2 className="mb-4 text-lg font-semibold">Sidebar</h2>
+                <p>Your sidebar content goes here...</p>
+              </div>
             </ScrollArea>
           </div>
         </aside>
