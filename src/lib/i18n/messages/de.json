@@ -62,6 +62,7 @@
     "title": "Seite nicht gefunden"
   },
   "Grows": {
+    "NoGrowsFound": "Es wurden keine Grows gefunden.",
     "buttonLabel-create-grow": "Grow erstellen",
     "buttonLabel-post-update": "Neues Update erstellen",
     "buttonLabel-save-changes": "Änderungen speichern",
