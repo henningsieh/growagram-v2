@@ -1,6 +1,7 @@
 // src/server/api/routers/publicPost.ts
 import { TRPCError } from "@trpc/server";
 import { eq } from "drizzle-orm";
+import { z } from "zod";
 import { grows, images, plants, posts } from "~/lib/db/schema";
 import {
   createTRPCRouter,
@@ -108,4 +109,33 @@ export const postRouter = createTRPCRouter({
 
     return posts;
   }),
+
+  deleteById: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      // check if the plant exists and the current user is the owner
+      const post = await ctx.db.query.posts.findFirst({
+        where: (plants, { eq }) => eq(plants.id, input.id),
+      });
+
+      if (!post) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Plant not found",
+        });
+      }
+
+      if (post.userId !== ctx.session.user.id) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Session user does not own this plant",
+        });
+      }
+
+      // Logic to delete an post by ID
+      const deletedPost = await ctx.db
+        .delete(posts)
+        .where(eq(posts.id, input.id));
+      return { success: !!deletedPost };
+    }),
 });
