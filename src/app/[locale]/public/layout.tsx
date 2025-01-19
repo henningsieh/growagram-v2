@@ -55,20 +55,18 @@ export default function PublicRootLayout({ children }: PropsWithChildren) {
         </aside>
 
         {/* Mobile navigation - shown only on small screens */}
-        <nav className="sticky top-0 z-10 w-full border-b bg-background p-1 md:hidden">
+        <nav className="sticky top-0 z-10 w-full border-b bg-background pl-0 pr-1 md:hidden">
           <ScrollArea className="w-full">
-            <div className="flex">
+            <div className="flex w-full">
               {navItems.map((item) => (
-                <Link
-                  href={item.href}
-                  key={item.href}
-                  className="flex-shrink-0"
-                >
+                <Link href={item.href} key={item.href} className="flex-1">
                   <Button
                     variant={
                       pathname.startsWith(item.href) ? item.variant : "outline"
                     }
-                    className={"h-12 rounded-none px-4 text-xs"}
+                    className={
+                      "h-12 w-full rounded-none border-x-0 px-4 text-xs"
+                    }
                   >
                     <item.icon className="mr-2 h-4 w-4" />
                     {item.label}
