@@ -82,7 +82,7 @@ export function SortFilterControls<T extends string>({
           disabled={isFetching}
         >
           <SelectTrigger className="h-8 w-40 bg-muted">
-            <SelectValue placeholder={t("SortBy")} />
+            <SelectValue />
           </SelectTrigger>
           <SelectContent>
             {sortOptions.map((option, index) => (
@@ -102,7 +102,7 @@ export function SortFilterControls<T extends string>({
           disabled={isFetching}
         >
           <SelectTrigger className="h-8 w-40 bg-muted">
-            <SelectValue placeholder={t("Order")} />
+            <SelectValue />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value={SortOrder.ASC}>
