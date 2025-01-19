@@ -23,12 +23,8 @@ import { useLikeStatus } from "~/hooks/use-likes";
 import { useToast } from "~/hooks/use-toast";
 import { Link } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
-import { DateFormatOptions, formatDate } from "~/lib/utils";
-import {
-  GetAllGrowType,
-  GetGrowByIdType,
-  GetOwnGrowType,
-} from "~/server/api/root";
+import { DateFormatOptions, cn, formatDate } from "~/lib/utils";
+import { GetAllGrowType, GetOwnGrowType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
 import { LikeableEntityType } from "~/types/like";
 
@@ -114,7 +110,12 @@ export function GrowCard({
         entity={grow}
         entityType={PostableEntityType.GROW}
       />
-      <Card className="flex flex-col overflow-hidden border border-secondary/70">
+      <Card
+        className={cn(
+          `flex flex-col overflow-hidden border border-secondary/70`,
+          isSocial && "border-none",
+        )}
+      >
         {isSocial && <AvatarCardHeader user={grow.owner} />}
 
         <CardContent

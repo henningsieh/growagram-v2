@@ -171,7 +171,12 @@ export default function PhotoCard({
         entity={photo}
         entityType={PostableEntityType.PHOTO}
       />
-      <Card className="relative flex flex-col overflow-hidden border-muted-foreground/50">
+      <Card
+        className={cn(
+          `flex flex-col overflow-hidden border border-input`,
+          isSocial && "border-none",
+        )}
+      >
         {/* "NEW" Banner */}
         {!!!photo.plantImages.length && (
           <div className="absolute right-[-40px] top-[15px] z-10 w-[120px] rotate-[45deg] cursor-default bg-secondary px-[40px] py-[1px] text-[12px] font-semibold tracking-widest text-white">
@@ -202,7 +207,7 @@ export default function PhotoCard({
         </div>
 
         <CardContent
-          className={`grid gap-2 ${isSocial ? "ml-12 pl-0 pr-2" : "p-2"}`}
+          className={`grid gap-2 p-2 ${isSocial && "ml-12 pl-0 pr-2"}`}
         >
           {/* Title Link and OwnerDropdownMenu */}
           <div className="grid grid-cols-[1fr,auto] items-center gap-2">

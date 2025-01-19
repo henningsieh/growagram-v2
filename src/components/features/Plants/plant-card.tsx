@@ -42,7 +42,7 @@ import { useLikeStatus } from "~/hooks/use-likes";
 import { useToast } from "~/hooks/use-toast";
 import { Link } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
-import { formatDate } from "~/lib/utils";
+import { cn, formatDate } from "~/lib/utils";
 import { calculateGrowthProgress } from "~/lib/utils/calculateDetailedGrowthProgress";
 import { PlantByIdType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
@@ -131,9 +131,14 @@ export default function PlantCard({
         entityType={PostableEntityType.PLANT}
       />
       <TouchProvider>
-        <Card className="flex flex-col overflow-hidden border border-primary/70">
+        <Card
+          className={cn(
+            `flex flex-col overflow-hidden border border-primary/70`,
+            isSocial && "border-none",
+          )}
+        >
+          {" "}
           {isSocial && <AvatarCardHeader user={plant.owner} />}
-
           <CardContent
             className={`grid gap-2 ${isSocial ? "ml-12 pl-0 pr-2" : "p-2"}`}
           >
@@ -395,7 +400,6 @@ export default function PlantCard({
               </Button>
             )}
           </CardContent>
-
           {
             isSocial && (
               <SocialCardFooter
@@ -445,7 +449,6 @@ export default function PlantCard({
             //   )
             // )
           }
-
           {isSocial && isCommentsOpen && (
             <Comments
               entityId={plant.id}
