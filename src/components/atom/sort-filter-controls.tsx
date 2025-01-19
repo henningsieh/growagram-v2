@@ -1,4 +1,9 @@
-import { ArrowDown01Icon, ArrowUp10Icon } from "lucide-react";
+import {
+  ArrowDown01Icon,
+  ArrowUp10Icon,
+  FilterIcon,
+  ScrollText,
+} from "lucide-react";
 import { useTranslations } from "next-intl";
 import React from "react";
 import { Label } from "~/components/ui/label";
@@ -10,8 +15,10 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import { Switch } from "~/components/ui/switch";
+import { cn } from "~/lib/utils";
 
 import SpinningLoader from "../Layouts/loader";
+import { Button } from "../ui/button";
 
 export interface SortOption<T extends string> {
   field: T;
@@ -65,98 +72,93 @@ export function SortFilterControls<T extends string>({
   const t = useTranslations("Platform");
 
   return (
-    <div className="mb-5 flex flex-col items-center justify-between gap-2 rounded-sm lg:flex-row">
-      <div className="flex w-full items-center space-x-2 lg:justify-start">
-        {viewMode && (
-          <div className="flex h-8 w-full items-center justify-start gap-2 text-nowrap rounded-sm border-[1px] border-input bg-muted px-1 hover:bg-transparent lg:w-[154px]">
-            <Switch
-              size="default"
-              id="view-mode"
-              checked={viewMode.current === viewMode.options[1]}
-              onCheckedChange={onViewModeToggle}
-            />
-            <Label
-              htmlFor="view-mode"
-              className="text-base font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            >
-              <div className="flex items-center">
-                {viewMode.icon}
-                {viewMode.label}
-              </div>
-            </Label>
-          </div>
-        )}
-        {onFilterChange && (
-          <div className="flex h-8 w-full items-center justify-start gap-2 text-nowrap rounded-sm border-[1px] border-input bg-muted px-1 hover:bg-transparent lg:w-[154px]">
-            <Switch
-              size="default"
-              variant="default"
-              id="filter-toggle"
-              checked={filterEnabled}
-              onCheckedChange={onFilterChange}
-            />
-            <Label htmlFor="filter-toggle" className="cursor-pointer text-base">
-              {filterLabel}
-            </Label>
-          </div>
-        )}
-      </div>
-      <div className="flex w-full items-center space-x-2 lg:justify-end">
+    <div className="mb-5 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+      {/* Sorting Controls Group */}
+      <div className="flex flex-wrap items-center gap-2">
+        {/* <div className="flex items-center space-x-2 rounded-md border bg-card p-1"> */}
         <Select
-          disabled={isFetching}
           value={sortField}
           onValueChange={handleSortFieldChange}
+          disabled={isFetching}
         >
-          <SelectTrigger className="">
-            <SelectValue placeholder="Sort by" />
+          <SelectTrigger className="h-8 w-40 bg-muted">
+            <SelectValue placeholder={t("SortBy")} />
           </SelectTrigger>
           <SelectContent>
-            {sortOptions.map((option) => (
-              <SelectItem key={option.field} value={option.field}>
-                <div className="flex items-center gap-2 font-semibold">
-                  {isFetching ? (
-                    <SpinningLoader className="h-6 w-5" />
-                  ) : (
-                    <div className="h-6 w-5">{option.icon}</div>
-                  )}
+            {sortOptions.map((option, index) => (
+              <SelectItem key={index} value={option.field}>
+                <span className="flex items-center gap-2">
+                  {option.icon}
                   {option.label}
-                </div>
+                </span>
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
+
         <Select
-          disabled={isFetching}
           value={sortOrder}
           onValueChange={handleSortOrderChange}
+          disabled={isFetching}
         >
-          <SelectTrigger className="">
-            <SelectValue className="w-full" placeholder="Order" />
+          <SelectTrigger className="h-8 w-40 bg-muted">
+            <SelectValue placeholder={t("Order")} />
           </SelectTrigger>
-          <SelectContent className="font-bold">
+          <SelectContent>
             <SelectItem value={SortOrder.ASC}>
-              <div className="flex items-center gap-2 font-semibold">
-                {isFetching ? (
-                  <SpinningLoader className="h-6 w-5" />
-                ) : (
-                  <ArrowDown01Icon className="h-6 w-5" />
-                )}
-                {t(SortOrder.ASC)}
+              <div className="flex items-center gap-2">
+                <ArrowDown01Icon className="h-6 w-5" /> {t(SortOrder.ASC)}
               </div>
             </SelectItem>
             <SelectItem value={SortOrder.DESC}>
-              <div className="flex items-center gap-3">
-                {isFetching ? (
-                  <SpinningLoader className="h-6 w-5" />
-                ) : (
-                  <ArrowUp10Icon className="h-6 w-5" />
-                )}
-                {t(SortOrder.DESC)}
+              <div className="flex items-center gap-2">
+                <ArrowUp10Icon className="h-6 w-5" /> {t(SortOrder.DESC)}
               </div>
             </SelectItem>
           </SelectContent>
         </Select>
+        {/* </div> */}
+
+        {filterLabel && (
+          <Button
+            variant="outline"
+            size="sm"
+            className={cn(
+              "relative border border-input text-muted-foreground",
+              filterEnabled &&
+                "bg-secondary/80 text-secondary-foreground hover:bg-secondary/90",
+            )}
+            onClick={() => onFilterChange?.(!filterEnabled)}
+            disabled={isFetching}
+          >
+            <FilterIcon className="mr-2 h-4 w-4" />
+            {filterLabel}
+          </Button>
+        )}
       </div>
+
+      {/* Infinite Scroll Toggle Group - Visually separated */}
+      {viewMode && (
+        <div className="flex justify-end">
+          <div className="flex h-8 items-center gap-3 rounded-sm border border-input bg-muted p-2">
+            <Label
+              htmlFor="infinite-scroll"
+              className="cursor-pointer text-sm font-medium"
+            >
+              Enable Infinite Scroll
+            </Label>
+            <Switch
+              id="infinite-scroll"
+              checked={viewMode.current === viewMode.options[1]}
+              onCheckedChange={onViewModeToggle}
+              className="data-[state=checked]:bg-primary"
+            />
+            <ScrollText
+              className={`h-5 w-5 ${viewMode.current === viewMode.options[1] ? `text-primary` : `text-muted-foreground`}`}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
