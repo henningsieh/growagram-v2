@@ -1,15 +1,7 @@
 "use client";
 
 // src/app/[locale]/(protected)/grows/page.tsx:
-import {
-  Infinity,
-  ArrowDown01,
-  ArrowDown10,
-  ArrowDownAZ,
-  ArrowDownZA,
-  Calendar,
-  TentTree,
-} from "lucide-react";
+import { Infinity, Calendar, TentTree } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
@@ -90,15 +82,11 @@ export default function MyGrowsPage() {
       field: GrowsSortField.NAME,
       label: "Name",
       icon: <TentTree className="h-5 w-5" />,
-      sortIconAsc: ArrowDownAZ,
-      sortIconDesc: ArrowDownZA,
     },
     {
       field: GrowsSortField.CREATED_AT,
       label: t("sort-grows-createdAt"),
       icon: <Calendar className="h-5 w-5" />,
-      sortIconAsc: ArrowDown01,
-      sortIconDesc: ArrowDown10,
     },
   ];
 

@@ -1,15 +1,7 @@
 "use client";
 
 // src/app/[locale]/(protected)/plants/page.tsx:
-import {
-  Infinity,
-  ArrowDown01,
-  ArrowDown10,
-  ArrowDownAZ,
-  ArrowDownZA,
-  Calendar,
-  Tag,
-} from "lucide-react";
+import { Infinity, Calendar, Tag } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
@@ -88,15 +80,11 @@ export default function MyPlantsPage() {
       field: PlantsSortField.NAME,
       label: "Name",
       icon: <Tag className="h-5 w-5" />,
-      sortIconAsc: ArrowDownAZ,
-      sortIconDesc: ArrowDownZA,
     },
     {
       field: PlantsSortField.CREATED_AT,
       label: t("sort-plants-createdAt"),
       icon: <Calendar className="h-5 w-5" />,
-      sortIconAsc: ArrowDown01,
-      sortIconDesc: ArrowDown10,
     },
   ];
 
