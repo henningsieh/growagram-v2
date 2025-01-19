@@ -262,10 +262,10 @@
   },
   "Platform": {
     "Dashboard-title": "Dashboard",
-    "Platform": {
-      "coming-soon-description": "We are already working on the new function. \nCome by again soon!"
-    },
+    "asc": "ascending",
     "coming-soon": "Coming soon",
+    "coming-soon-description": "We are already working on the new function. \nCome by again soon!",
+    "desc": "descending",
     "feature-coming": "New Feature is on its Way!",
     "more": "more",
     "welcome-to-platform-subttitle": "Welcome to the Grower's platform where you can manage all your Grows and Plants"

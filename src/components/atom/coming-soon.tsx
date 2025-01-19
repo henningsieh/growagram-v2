@@ -72,7 +72,7 @@ export default function ComingSoon() {
           variants={itemVariants}
           className="text-lg text-muted-foreground"
         >
-          {t("Platform.coming-soon-description")}
+          {t("coming-soon-description")}
         </motion.p>
 
         <motion.div

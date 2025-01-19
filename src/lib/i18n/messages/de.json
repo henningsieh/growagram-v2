@@ -262,10 +262,10 @@
   },
   "Platform": {
     "Dashboard-title": "Dashboard",
-    "Platform": {
-      "coming-soon-description": "Wir arbeiten schon an der neuen Funktion. Komm bald wieder vorbei!"
-    },
+    "asc": "aufsteigend",
     "coming-soon": "Bald verfügbar",
+    "coming-soon-description": "Wir arbeiten schon an der neuen Funktion. Komm bald wieder vorbei!",
+    "desc": "absteigend",
     "feature-coming": "Neue Funktion ist auf dem Weg!",
     "more": "mehr",
     "welcome-to-platform-subttitle": "Willkommen bei der Verwaltung deiner Grows und Pflanzen"
