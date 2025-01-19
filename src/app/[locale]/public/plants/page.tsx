@@ -1,14 +1,40 @@
 "use client";
 
+import { InfiniteData } from "@tanstack/react-query";
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef } from "react";
+import { PaginationItemsPerPage } from "~/assets/constants";
 import InfiniteScrollLoader from "~/components/Layouts/InfiniteScrollLoader";
 import SpinningLoader from "~/components/Layouts/loader";
 import PlantCard from "~/components/features/Plants/plant-card";
 import { api } from "~/lib/trpc/react";
-import { GetAllPlantsInput, GetAllPlantsType } from "~/server/api/root";
+import {
+  GetAllPlantsInput,
+  GetAllPlantsOutput,
+  GetAllPlantsType,
+} from "~/server/api/root";
 
 export default function PublicPlantsPage() {
+  const utils = api.useUtils();
+  const t = useTranslations("Plants");
+
+  // Get data from cache that was prefetched in layout.tsx
+  const cachedData = utils.plants.getAllPlants.getInfiniteData({
+    limit: PaginationItemsPerPage.PLANTS_PER_PAGE,
+  });
+
+  // Create initialData from cache if available
+  const initialData: InfiniteData<GetAllPlantsOutput, number> | undefined =
+    cachedData
+      ? {
+          pages: cachedData.pages,
+          pageParams: cachedData.pageParams.filter(
+            (param): param is number => param !== null,
+          ),
+        }
+      : undefined;
+
   const {
     data,
     isLoading,
@@ -17,9 +43,10 @@ export default function PublicPlantsPage() {
     fetchNextPage,
   } = api.plants.getAllPlants.useInfiniteQuery(
     {
-      limit: 2,
+      limit: PaginationItemsPerPage.PLANTS_PER_PAGE,
     } satisfies GetAllPlantsInput,
     {
+      initialData,
       getNextPageParam: (lastPage) => lastPage.nextCursor,
     },
   );
@@ -59,7 +86,7 @@ export default function PublicPlantsPage() {
         <SpinningLoader className="text-secondary" />
       ) : plants.length === 0 ? (
         <p className="mt-8 text-center text-muted-foreground">
-          No plants found.
+          {t("NoPlantsFound")}
         </p>
       ) : (
         // this should be a flex-col timeline with animated plant cards

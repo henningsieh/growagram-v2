@@ -222,6 +222,7 @@
     "uploaded-at": "uploaded on"
   },
   "Plants": {
+    "NoPlantsFound": "No plants have been found.",
     "breeder": "Breeder",
     "button-label-post-update": "Create new Update",
     "curing-start-date": "Curing phase start date",

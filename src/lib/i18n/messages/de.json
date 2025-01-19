@@ -222,6 +222,7 @@
     "uploaded-at": "hochgeladen"
   },
   "Plants": {
+    "NoPlantsFound": "Es wurden keine Pflanzen gefunden.",
     "breeder": "Züchter / Breeder",
     "button-label-post-update": "Neues Update erstellen",
     "curing-start-date": "Startdatum der Aushärtephase",
