@@ -1,5 +1,6 @@
 "use client";
 
+import { InfiniteData } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { useCallback, useEffect, useRef } from "react";
 import { PaginationItemsPerPage } from "~/assets/constants";
@@ -7,9 +8,33 @@ import InfiniteScrollLoader from "~/components/Layouts/InfiniteScrollLoader";
 import SpinningLoader from "~/components/Layouts/loader";
 import { GrowCard } from "~/components/features/Grows/grow-card";
 import { api } from "~/lib/trpc/react";
-import { GetAllGrowsInput, GetAllGrowsType } from "~/server/api/root";
+import {
+  GetAllGrowsInput,
+  GetAllGrowsOutput,
+  GetAllGrowsType,
+} from "~/server/api/root";
 
 export default function PublicGrowsPage() {
+  const utils = api.useUtils();
+
+  // Get data from cache that was prefetched in layout.tsx
+  const cachedData = utils.grows.getAllGrows.getInfiniteData({
+    limit: PaginationItemsPerPage.PUBLIC_GROWS_PER_PAGE,
+  });
+
+  console.debug("cachedData", cachedData);
+
+  // Create initialData from cache if available
+  const initialData: InfiniteData<GetAllGrowsOutput, number> | undefined =
+    cachedData
+      ? {
+          pages: cachedData.pages,
+          pageParams: cachedData.pageParams.filter(
+            (param): param is number => param !== null,
+          ),
+        }
+      : undefined;
+
   const {
     data,
     isLoading,
@@ -21,6 +46,7 @@ export default function PublicGrowsPage() {
       limit: PaginationItemsPerPage.PUBLIC_GROWS_PER_PAGE,
     } satisfies GetAllGrowsInput,
     {
+      initialData,
       getNextPageParam: (lastPage) => lastPage.nextCursor,
     },
   );
