@@ -6,6 +6,7 @@ import { modulePaths } from "~/assets/constants";
 import { Button, ButtonProps } from "~/components/ui/button";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { Link, usePathname } from "~/lib/i18n/routing";
+import { cn } from "~/lib/utils";
 
 export default function PublicRootLayout({ children }: PropsWithChildren) {
   const pathname = usePathname();
@@ -15,7 +16,7 @@ export default function PublicRootLayout({ children }: PropsWithChildren) {
       href: modulePaths.PUBLICTIMELINE.path,
       icon: Clock,
       label: modulePaths.PUBLICTIMELINE.name,
-      variant: "primary" as ButtonProps["variant"],
+      variant: "timeline" as ButtonProps["variant"],
     },
     {
       href: modulePaths.PUBLICGROWS.path,
@@ -35,15 +36,15 @@ export default function PublicRootLayout({ children }: PropsWithChildren) {
     <div className="bg-background">
       <div className="mx-auto flex max-w-[1440px] flex-col md:flex-row">
         {/* Left sidebar - hidden on mobile */}
-        <aside className="hidden h-[calc(100vh-4rem)] shrink-0 p-4 md:block md:w-56 xl:w-64">
+        <aside className="hidden h-[calc(100vh-4rem)] shrink-0 px-2 md:block md:w-56 xl:w-64">
           <div className="sticky top-16 flex flex-col gap-2">
             {navItems.map((item) => (
               <Link href={item.href} key={item.href}>
                 <Button
                   variant={
-                    pathname.startsWith(item.href) ? item.variant : "ghost"
+                    pathname.startsWith(item.href) ? item.variant : "outline"
                   }
-                  className="w-full justify-start text-base"
+                  className={cn("w-full justify-start text-base")}
                 >
                   <item.icon className="mr-2 h-4 w-4" />
                   {item.label}
@@ -54,7 +55,7 @@ export default function PublicRootLayout({ children }: PropsWithChildren) {
         </aside>
 
         {/* Mobile navigation - shown only on small screens */}
-        <nav className="sticky top-0 z-10 w-full border-b bg-background md:hidden">
+        <nav className="sticky top-0 z-10 w-full border-b bg-background p-1 md:hidden">
           <ScrollArea className="w-full">
             <div className="flex">
               {navItems.map((item) => (
@@ -65,9 +66,9 @@ export default function PublicRootLayout({ children }: PropsWithChildren) {
                 >
                   <Button
                     variant={
-                      pathname.startsWith(item.href) ? item.variant : "ghost"
+                      pathname.startsWith(item.href) ? item.variant : "outline"
                     }
-                    className="h-12 px-4 text-xs"
+                    className={"h-12 rounded-none px-4 text-xs"}
                   >
                     <item.icon className="mr-2 h-4 w-4" />
                     {item.label}
@@ -79,7 +80,7 @@ export default function PublicRootLayout({ children }: PropsWithChildren) {
         </nav>
 
         {/* Main content */}
-        <main className="w-full max-w-2xl px-4 py-4 md:px-4 lg:max-w-xl lg:px-4">
+        <main className="w-full max-w-2xl pr-1 pt-2 lg:max-w-xl">
           <div className="mx-auto">{children}</div>
         </main>
 
