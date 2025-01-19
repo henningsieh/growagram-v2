@@ -67,13 +67,11 @@ export default async function AppLayout(props: AppLayoutProps) {
           <NextIntlClientProvider messages={await getMessages()}>
             <SessionProvider>
               <TRPCReactProvider>
-                <HydrateClient>
-                  <Toaster />
-                  <div className="relative mx-auto flex max-w-7xl flex-col">
-                    <MainNavigationBar />
-                    <div className="flex-1">{props.children}</div>
-                  </div>
-                </HydrateClient>
+                <Toaster />
+                <div className="relative mx-auto flex max-w-7xl flex-col">
+                  <MainNavigationBar />
+                  <div className="flex-1">{props.children}</div>
+                </div>
               </TRPCReactProvider>
             </SessionProvider>
           </NextIntlClientProvider>
