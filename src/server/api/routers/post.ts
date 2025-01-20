@@ -11,7 +11,10 @@ import {
 import { PostableEntityType } from "~/types/post";
 import { postSchema } from "~/types/zodSchema";
 
-import { connectPlantWithImagesQuery } from "./plantImages";
+import {
+  connectImageWithPlantsQuery,
+  connectPlantWithImagesQuery,
+} from "./plantImages";
 
 export const postRouter = createTRPCRouter({
   create: protectedProcedure
@@ -103,7 +106,23 @@ export const postRouter = createTRPCRouter({
             headerImage: { columns: { id: true, imageUrl: true } },
           },
         },
-        photo: true,
+        photo: {
+          with: {
+            owner: true,
+            plantImages: connectImageWithPlantsQuery,
+          },
+          columns: {
+            id: true,
+            createdAt: true,
+            updatedAt: true,
+            ownerId: true,
+            imageUrl: true,
+            cloudinaryAssetId: true,
+            cloudinaryPublicId: true,
+            captureDate: true,
+            originalFilename: true,
+          },
+        },
       },
       orderBy: [desc(posts.createdAt)],
     });

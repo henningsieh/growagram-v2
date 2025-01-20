@@ -1,11 +1,10 @@
-import { MessageSquareTextIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
+import Image from "next/image";
 import { useState } from "react";
 import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
 import CustomAvatar from "~/components/atom/custom-avatar";
 import { OwnerDropdownMenu } from "~/components/atom/owner-dropdown-menu";
 import { SocialCardFooter } from "~/components/atom/social-card-footer";
-import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { useComments } from "~/hooks/use-comments";
 import { useLikeStatus } from "~/hooks/use-likes";
@@ -133,7 +132,15 @@ export default function PublicPost({
             <EmbeddedPlantCard plant={post.plant} />
           )}
           {post.entityType === "image" && (
-            <p>Connected to Photo: {post.photo?.originalFilename}</p>
+            <div className="relative aspect-square w-full overflow-hidden rounded-md">
+              <Image
+                src={post.photo.imageUrl}
+                alt={post.photo.originalFilename}
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              />
+            </div>
           )}
         </CardContent>
 
