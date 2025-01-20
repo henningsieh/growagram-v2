@@ -92,7 +92,7 @@ const MarkdownPage = async () => {
   return (
     <div className="container mx-auto">
       <h1 className="text-4xl font-bold">README.md</h1>
-      <Card className="mx-1 my-8 max-w-3xl p-8">
+      <Card className="mx-auto my-8 max-w-3xl p-8">
         <article className="prose prose-slate dark:prose-invert max-w-none">
           <ReactMarkdown components={components}>{markdown}</ReactMarkdown>
         </article>

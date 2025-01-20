@@ -1,20 +1,5 @@
 # GrowAGram 🪴 Track Your Grow 📜
 
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue.svg)](https://www.typescriptlang.org/)
-[![Next.js](https://img.shields.io/badge/Next.js-15.0-black.svg)](https://nextjs.org/)
-[![React](https://img.shields.io/badge/React-19.0-61dafb.svg)](https://react.dev/)
-[![TailwindCSS](https://img.shields.io/badge/Tailwind-3.0-38bdf8.svg)](https://tailwindcss.com)
-[![tRPC](https://img.shields.io/badge/tRPC-10.0-2596be.svg)](https://trpc.io)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-316192.svg)](https://www.postgresql.org/)
-[![Drizzle](https://img.shields.io/badge/Drizzle-0.28-c5f74f.svg)](https://orm.drizzle.team)
-[![Auth.js](https://img.shields.io/badge/Auth.js-5.0-000000.svg)](https://authjs.dev)
-[![Cloudinary](https://img.shields.io/badge/Cloudinary-Latest-4285f4.svg)](https://cloudinary.com)
-[![Docker](https://img.shields.io/badge/Docker-Latest-2496ed.svg)](https://docker.com)
-[![shadcn/ui](https://img.shields.io/badge/shadcn/ui-Latest-000000.svg)](https://ui.shadcn.com)
-[![next-intl](https://img.shields.io/badge/next--intl-3.0-black.svg)](https://next-intl-docs.vercel.app/)
-[![Playwright](https://img.shields.io/badge/Playwright-1.40-45ba4b.svg)](https://playwright.dev)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-
 GrowAGram is a modern social platform for plant enthusiasts to document and share their growing journeys. Users can track plant progress, share experiences, and connect with like-minded growers.
 
 ## 🌱 Key Features
@@ -27,6 +12,22 @@ GrowAGram is a modern social platform for plant enthusiasts to document and shar
 - 📱 Responsive design
 
 ## 🛠️ Tech Stack
+
+[![Next.js](https://img.shields.io/badge/Next.js-15.1.5-black.svg)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19.0.0-61dafb.svg)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.7.3-blue.svg)](https://www.typescriptlang.org/)
+[![TailwindCSS](https://img.shields.io/badge/Tailwind-3.4.17-38bdf8.svg)](https://tailwindcss.com)
+[![shadcn/ui](https://img.shields.io/badge/shadcn/ui-Latest-000000.svg)](https://ui.shadcn.com)
+[![tRPC](https://img.shields.io/badge/tRPC-11.0.0--rc.700-2596be.svg)](https://trpc.io)
+[![@tanstack/react-query](https://img.shields.io/badge/@tanstack/react--query-5.64.2-ff4154.svg)](https://tanstack.com/query/latest)
+[![Auth.js](https://img.shields.io/badge/Auth.js-5.0.0--beta.25-000000.svg)](https://authjs.dev)
+[![framer-motion](https://img.shields.io/badge/framer--motion-11.18.0-0055FF.svg)](https://www.framer.com/motion/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-316192.svg)](https://www.postgresql.org/)
+[![Drizzle](https://img.shields.io/badge/Drizzle-0.35.3-c5f74f.svg)](https://orm.drizzle.team)
+[![next-intl](https://img.shields.io/badge/next--intl-3.26.3-black.svg)](https://next-intl-docs.vercel.app/)
+[![Cloudinary](https://img.shields.io/badge/Cloudinary-2.5.1-4285f4.svg)](https://cloudinary.com)
+[![Docker](https://img.shields.io/badge/Docker-Latest-2496ed.svg)](https://docker.com)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 ### Frontend
 
@@ -89,7 +90,6 @@ This application is self-hosted on [Hetzner Cloud](https://www.hetzner.com/cloud
 #### Technical Improvements
 
 - ⏳ Unit test coverage (≥80%)
-- ⏳ E2E tests with Playwright
 - ⏳ Performance optimization
 - ⏳ API documentation
 - ⏳ Error boundaries
