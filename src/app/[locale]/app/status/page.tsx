@@ -4,6 +4,7 @@ import React from "react";
 import ReactMarkdown from "react-markdown";
 import type { Components } from "react-markdown";
 import { Card } from "~/components/ui/card";
+import { env } from "~/env";
 
 const MarkdownPage = async () => {
   const markdown = await fs.readFile(
@@ -100,5 +101,40 @@ const MarkdownPage = async () => {
     </div>
   );
 };
+
+/**
+ * //TODO: fix quick and dirty metadata globally!
+ *
+ * @returns {import('next').GetStaticProps}
+ */
+
+export async function generateMetadata() {
+  return {
+    title: "GrowAGram 🪴 Track Your Grow 📜",
+    description:
+      "GrowAGram is a modern social platform for plant enthusiasts to document and share their growing journeys.",
+    openGraph: {
+      title: "GrowAGram 🪴 Track Your Grow 📜",
+      description:
+        "GrowAGram is a modern social platform for plant enthusiasts to document and share their growing journeys.",
+      url: env.NEXTAUTH_URL,
+      images: [
+        {
+          url: "images/growagram-og-landingpage-image.png",
+          width: 800,
+          height: 600,
+          alt: "GrowAGram",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "GrowAGram 🪴 Track Your Grow 📜",
+      description:
+        "GrowAGram is a modern social platform for plant enthusiasts to document and share their growing journeys.",
+      image: "images/growagram-og-landingpage-image.png",
+    },
+  };
+}
 
 export default MarkdownPage;
