@@ -19,7 +19,7 @@ export const useComments = (
 
   const [newComment, setNewComment] = useState<string>("");
   const [commentCount, setCommentCount] = useState<number>(0);
-  const [isCommentsOpen, setIsCommentsOpen] = useState<boolean>(true);
+  const [isCommentsOpen, setIsCommentsOpen] = useState<boolean>(false);
   const [replyingToComment, setReplyingToComment] = useState<string | null>(
     null,
   );
