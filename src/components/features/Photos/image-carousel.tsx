@@ -55,7 +55,7 @@ export const ImageCarousel = ({
         className="object-cover"
         loading={isPriority ? undefined : "eager"}
       />
-      <div className="absolute bottom-0 left-0 right-0 bg-accent p-2 text-accent-foreground">
+      <div className="absolute bottom-0 left-0 right-0 bg-accent/50 p-2 text-accent-foreground">
         <div className="flex items-center gap-2 font-mono text-sm">
           <CameraIcon size={16} />
           <span>
