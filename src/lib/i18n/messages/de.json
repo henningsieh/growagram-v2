@@ -276,7 +276,9 @@
     "buttonLabel-createNewPost": "Update posten",
     "createNewPost-title": "Schreibe und poste ein neues Update",
     "linkedInThisPost": "Mit dem Update verlinkt",
-    "public-link-label": "Öffnen im neuen Tab"
+    "public-link-label": "Öffnen im neuen Tab",
+    "edit-button-label": "Update bearbeiten",
+    "delete-button-label": "Update löschen"
   },
   "Sidebar": {
     "coming_soon": {

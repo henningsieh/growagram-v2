@@ -276,7 +276,9 @@
     "buttonLabel-createNewPost": "Post Update",
     "createNewPost-title": "Write and post a new Update",
     "linkedInThisPost": "Linked in this Update",
-    "public-link-label": "Open in new Tab"
+    "public-link-label": "Open in new Tab",
+    "edit-button-label": "Edit Update",
+    "delete-button-label": "Delete Update"
   },
   "Sidebar": {
     "coming_soon": {
