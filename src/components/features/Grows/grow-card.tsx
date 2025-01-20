@@ -140,15 +140,19 @@ export function GrowCard({
           </div> */}
 
           {/* Title Link */}
-          <div className="flex items-center justify-between">
-            <CardTitle as="h3">
-              <Button asChild variant="link" className="p-1">
+          <div className="flex min-w-0 items-center gap-2">
+            <CardTitle as="h3" className="min-w-0 flex-1">
+              <Button
+                asChild
+                variant="link"
+                className="w-full justify-start p-1"
+              >
                 <Link
                   href={`/public/grows/${grow.id}`}
-                  className="flex items-center gap-2"
+                  className="flex min-w-0 items-center gap-2"
                 >
-                  <TentTree className="mt-1" size={20} />
-                  {grow.name}
+                  <TentTree className="flex-shrink-0" size={20} />
+                  <span className="truncate font-semibold">{grow.name}</span>
                 </Link>
               </Button>
             </CardTitle>

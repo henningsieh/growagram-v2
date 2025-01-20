@@ -210,17 +210,21 @@ export default function PhotoCard({
           className={`grid gap-2 p-2 ${isSocial && "ml-12 pl-0 pr-2"}`}
         >
           {/* Title Link and OwnerDropdownMenu */}
-          <div className="grid grid-cols-[1fr,auto] items-center gap-2">
-            <CardTitle as="h2" className="min-w-0 overflow-hidden text-lg">
-              <Button asChild variant="link" className="h-9 p-0">
+          <div className="flex min-w-0 items-center justify-between gap-2">
+            <CardTitle as="h3" className="min-w-0 flex-1">
+              <Button
+                asChild
+                variant="link"
+                className="w-full justify-start p-1"
+              >
                 <Link
                   href={`/public/photos/${photo.id}`}
-                  className="flex items-center gap-2"
+                  className="flex min-w-0 items-center gap-2"
                 >
                   <FileIcon className="flex-shrink-0" size={20} />
-                  <div className="truncate font-mono font-bold">
+                  <span className="truncate font-mono font-semibold">
                     {photo.originalFilename}
-                  </div>
+                  </span>
                 </Link>
               </Button>
             </CardTitle>
@@ -322,7 +326,10 @@ export default function PhotoCard({
           {!!!photo.plantImages.length && !isSocial && (
             // link to edit plant, same as in DropDown menu
             <Link href={`/photos/${photo.id}/form`}>
-              <Button variant={"plant"} className="w-full p-2 font-semibold">
+              <Button
+                variant={"secondary"}
+                className="w-full p-2 font-semibold"
+              >
                 <TagsIcon className="mr-2" />
                 {t("button-label-connect-plants")}
               </Button>
