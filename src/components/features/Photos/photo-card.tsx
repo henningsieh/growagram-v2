@@ -4,19 +4,15 @@
 import {
   Camera,
   FileIcon,
-  Maximize,
   MessageSquareTextIcon,
-  Minimize,
   TagIcon,
   TagsIcon,
   UploadCloud,
-  X,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
-import { useCallback, useEffect, useState } from "react";
-import { createPortal } from "react-dom";
+import { useState } from "react";
 import { RESPONSIVE_IMAGE_SIZES } from "~/components/Layouts/responsive-grid";
 import PostFormModal from "~/components/PostFormModal";
 import AvatarCardHeader from "~/components/atom/avatar-card-header";
@@ -27,7 +23,6 @@ import { SortOrder } from "~/components/atom/sort-filter-controls";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardTitle } from "~/components/ui/card";
-import { Switch } from "~/components/ui/switch";
 import {
   Tooltip,
   TooltipContent,
@@ -40,6 +35,7 @@ import { useToast } from "~/hooks/use-toast";
 import { Link, useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import { cn, formatDate, formatTime } from "~/lib/utils";
+import { useImageModal } from "~/providers/modal-provider";
 import { GetOwnPhotoType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
 import { PhotosSortField } from "~/types/image";
@@ -81,8 +77,6 @@ export default function PhotoCard({
     useComments(photo.id, CommentableEntityType.Photo);
 
   const [isSocial, setIsSocial] = useState(isSocialProp);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isUnrestrictedView, setIsUnrestrictedView] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
 
@@ -117,41 +111,12 @@ export default function PhotoCard({
     setIsDeleteDialogOpen(false);
   };
 
-  const handleImageClick = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleModalClose = useCallback(() => {
-    setIsModalOpen(false);
-  }, []);
-
-  useEffect(() => {
-    const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        handleModalClose();
-      }
-    };
-
-    if (isModalOpen) {
-      document.addEventListener("keydown", handleEscape);
-      document.body.style.overflow = "hidden";
-    }
-
-    return () => {
-      document.removeEventListener("keydown", handleEscape);
-      document.body.style.overflow = "";
-    };
-  }, [isModalOpen, handleModalClose]);
-
-  const toggleViewMode = () => {
-    setIsUnrestrictedView(!isUnrestrictedView);
-  };
-
-  const handleSwitchContainerClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-  };
-
+  const { openImageModal } = useImageModal();
   const [isImageHovered, setIsImageHovered] = useState(false);
+
+  const handleImageClick = () => {
+    openImageModal(photo.imageUrl);
+  };
 
   return (
     <>
@@ -362,62 +327,6 @@ export default function PhotoCard({
           />
         )}
       </Card>
-
-      {isModalOpen &&
-        createPortal(
-          <div
-            className={`fixed inset-0 z-50 ${isUnrestrictedView ? "overflow-auto" : "overflow-hidden"}`}
-            onClick={handleModalClose}
-          >
-            <div
-              className={`${isUnrestrictedView ? "min-h-screen min-w-full" : "h-screen w-screen"} p-0`}
-            >
-              <Button
-                variant={"secondary"}
-                onClick={handleModalClose}
-                className="fixed right-4 top-2 z-10 h-6 p-1"
-                aria-label="Close modal"
-              >
-                <X size={20} />
-              </Button>
-
-              <div
-                className="fixed left-1/2 top-2 z-10 flex -translate-x-1/2 items-center gap-2 rounded-sm bg-secondary bg-opacity-50 p-1 text-white"
-                onClick={handleSwitchContainerClick}
-              >
-                <div
-                  title="contain"
-                  onClick={() => setIsUnrestrictedView(false)}
-                >
-                  <Minimize size={20} />
-                </div>
-                <Switch
-                  title="Toggle contain/zoom"
-                  checked={isUnrestrictedView}
-                  onCheckedChange={toggleViewMode}
-                  aria-label="Toggle view mode"
-                />
-                <div title="zoom" onClick={() => setIsUnrestrictedView(true)}>
-                  <Maximize size={20} />
-                </div>
-              </div>
-              <div className="relative -z-30 flex h-full items-center justify-center bg-zinc-900/95">
-                <Image
-                  src={photo.imageUrl}
-                  alt=""
-                  width={1920}
-                  height={1080}
-                  className={`${
-                    isUnrestrictedView
-                      ? "max-w-none"
-                      : "max-h-[90vh] max-w-[90vw] object-contain"
-                  }`}
-                />
-              </div>
-            </div>
-          </div>,
-          document.body,
-        )}
     </>
   );
 }
