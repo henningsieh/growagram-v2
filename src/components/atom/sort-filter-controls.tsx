@@ -54,7 +54,7 @@ export function SortFilterControls<T extends string>({
   sortOrder,
   sortOptions,
   filterEnabled = false,
-  filterLabel = "Filter",
+  filterLabel,
   isFetching = false,
   viewMode,
   onSortChange,
