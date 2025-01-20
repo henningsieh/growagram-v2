@@ -4,18 +4,21 @@
 import {
   Camera,
   FileIcon,
-  Flower2Icon,
   Maximize,
+  MessageSquareTextIcon,
   Minimize,
+  TagIcon,
+  TagsIcon,
   UploadCloud,
   X,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { RESPONSIVE_IMAGE_SIZES } from "~/components/Layouts/responsive-grid";
+import PostFormModal from "~/components/PostFormModal";
 import AvatarCardHeader from "~/components/atom/avatar-card-header";
 import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
 import { OwnerDropdownMenu } from "~/components/atom/owner-dropdown-menu";
@@ -41,6 +44,7 @@ import { GetOwnPhotoType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
 import { PhotosSortField } from "~/types/image";
 import { LikeableEntityType } from "~/types/like";
+import { PostableEntityType } from "~/types/post";
 
 import { Comments } from "../Comments/comments";
 
@@ -65,6 +69,7 @@ export default function PhotoCard({
   const locale = useLocale();
   const router = useRouter();
   const utils = api.useUtils();
+  const t = useTranslations("Photos");
   const { toast } = useToast();
 
   const { isLiked, likeCount, isLoading } = useLikeStatus(
@@ -79,6 +84,7 @@ export default function PhotoCard({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isUnrestrictedView, setIsUnrestrictedView] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isPostModalOpen, setIsPostModalOpen] = useState(false);
 
   // Initialize delete mutation
   const deleteMutation = api.photos.deletePhoto.useMutation({
@@ -159,11 +165,22 @@ export default function PhotoCard({
         description="No plant will be deleted by this action!"
         alertCautionText="This action cannot be undone. This will permanently delete the photo from our cloud storage servers."
       />
-      <Card className="relative my-2 flex flex-col overflow-hidden">
+      <PostFormModal
+        isOpen={isPostModalOpen}
+        onClose={() => setIsPostModalOpen(false)}
+        entity={photo}
+        entityType={PostableEntityType.PHOTO}
+      />
+      <Card
+        className={cn(
+          `flex flex-col overflow-hidden border border-input`,
+          isSocial && "border-none",
+        )}
+      >
         {/* "NEW" Banner */}
         {!!!photo.plantImages.length && (
           <div className="absolute right-[-40px] top-[15px] z-10 w-[120px] rotate-[45deg] cursor-default bg-secondary px-[40px] py-[1px] text-[12px] font-semibold tracking-widest text-white">
-            NEW
+            {t("newNotConnteched")}
           </div>
         )}
 
@@ -190,7 +207,7 @@ export default function PhotoCard({
         </div>
 
         <CardContent
-          className={`grid gap-2 ${isSocial ? "ml-12 pl-0 pr-2" : "p-2"}`}
+          className={`grid gap-2 p-2 ${isSocial && "ml-12 pl-0 pr-2"}`}
         >
           {/* Title Link and OwnerDropdownMenu */}
           <div className="grid grid-cols-[1fr,auto] items-center gap-2">
@@ -222,21 +239,23 @@ export default function PhotoCard({
           </div>
 
           {/* Plant Badges */}
-          <div className="flex justify-end gap-2 p-0">
-            {photo.plantImages.map((plantImage) => (
-              <Link
-                key={plantImage.plant.id}
-                href={`/public/plants/${plantImage.plant.id}`}
-              >
-                <Badge
-                  variant="default"
-                  className="flex items-center gap-1 whitespace-nowrap"
+          <div className="custom-scrollbar flex min-h-8 gap-2 overflow-x-auto px-1 pb-2">
+            {photo.plantImages
+              .sort((a, b) => a.plant.name.localeCompare(b.plant.name))
+              .map((plantImage) => (
+                <Link
+                  key={plantImage.plant.id}
+                  href={`/public/plants/${plantImage.plant.id}`}
                 >
-                  <Flower2Icon className="h-4 w-4" />
-                  {plantImage.plant.name}
-                </Badge>
-              </Link>
-            ))}
+                  <Badge
+                    variant="plant"
+                    className="flex items-center gap-1 whitespace-nowrap"
+                  >
+                    <TagIcon className="h-4 w-4" />
+                    {plantImage.plant.name}
+                  </Badge>
+                </Link>
+              ))}
           </div>
 
           {/* Photo Upload and Capture Date */}
@@ -261,7 +280,7 @@ export default function PhotoCard({
                   </p>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Upload Date </p>
+                  <p>{t("uploadDate")}</p>
                 </TooltipContent>
               </Tooltip>
 
@@ -284,14 +303,34 @@ export default function PhotoCard({
                   </p>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Capture Date (EXIF data)</p>
+                  <p>{t("captureDate")}</p>
                 </TooltipContent>
               </Tooltip>
             </div>
           </TooltipProvider>
+
+          {!!photo.plantImages.length && !isSocial && (
+            <Button
+              className="p-2 font-semibold"
+              onClick={() => setIsPostModalOpen(true)}
+            >
+              <MessageSquareTextIcon className="mr-2" />
+              {t("button-label-post-update")}
+            </Button>
+          )}
+
+          {!!!photo.plantImages.length && !isSocial && (
+            // link to edit plant, same as in DropDown menu
+            <Link href={`/photos/${photo.id}/form`}>
+              <Button variant={"plant"} className="w-full p-2 font-semibold">
+                <TagsIcon className="mr-2" />
+                {t("button-label-connect-plants")}
+              </Button>
+            </Link>
+          )}
         </CardContent>
 
-        {isSocial ? (
+        {isSocial && (
           <SocialCardFooter
             className={`pb-2 pr-2 ${isSocial && "ml-12"}`}
             entityId={photo.id}
@@ -306,7 +345,7 @@ export default function PhotoCard({
             }}
             toggleComments={toggleComments}
           />
-        ) : undefined}
+        )}
 
         {isSocial && isCommentsOpen && (
           <Comments

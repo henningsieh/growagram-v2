@@ -8,7 +8,7 @@ import { growRouter } from "./routers/grow";
 import { likeRouter } from "./routers/likes";
 import { commentRouter } from "./routers/comments";
 import { userRouter } from "./routers/users";
-
+import { postRouter } from "./routers/post";
 
 /**
  * This is the primary router for your server.
@@ -16,18 +16,34 @@ import { userRouter } from "./routers/users";
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
-  photos: photoRouter,
-  plants: plantRouter,
-  grows: growRouter,
-  likes: likeRouter,
   users: userRouter,
+  grows: growRouter,
+  plants: plantRouter,
+  photos: photoRouter,
+  likes: likeRouter,
   comments: commentRouter,
+  posts: postRouter,
 });
 
 // export type definition of API
 export type AppRouter = typeof appRouter;
 type RouterOutput = inferRouterOutputs<AppRouter>;
 type RouterInput = inferRouterInputs<AppRouter>
+
+
+// postRouter
+//  OUTPUTS:
+export type GetPostsType= RouterOutput["posts"]["getAll"];
+export type GetPostType= RouterOutput["posts"]["getAll"][number];
+export type GetCreatePostOutput = RouterOutput["posts"]["create"];
+
+//  INPUTS:
+export type GetPostsInput = RouterInput["posts"]["getAll"];
+export type CreatePostInput = RouterInput["posts"]["create"];
+
+
+
+
 
 // userRouter
 //  OUTPUTS:

@@ -16,6 +16,7 @@ import {
 import type { AdapterAccountType } from "next-auth/adapters";
 import { CommentableEntityType } from "~/types/comment";
 import { LikeableEntityType } from "~/types/like";
+import { PostableEntityType } from "~/types/post";
 import { UserRoles } from "~/types/user";
 
 // Creating table with a prefix for multi-project schema
@@ -327,6 +328,37 @@ export const comments = pgTable(
   },
 );
 
+// Define the posts table
+export const posts = pgTable(
+  "public_post",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    entityId: text("entity_id").notNull(),
+    entityType: text("entity_type").$type<PostableEntityType>().notNull(),
+    content: text("content").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .$onUpdate(() => new Date())
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+  },
+  (table) => ({
+    // Prevent duplicate posts from the same user on the same entity
+    uniquePost: uniqueIndex("unique_post").on(
+      table.userId,
+      table.entityId,
+      table.entityType,
+    ),
+  }),
+);
+
 // Drizzle ORM Relations
 
 export const usersRelations = relations(users, ({ many }) => ({
@@ -476,6 +508,25 @@ export const plantImagesRelations = relations(plantImages, ({ one }) => ({
   // Each plant-image association belongs to exactly one image
   image: one(images, {
     fields: [plantImages.imageId],
+    references: [images.id],
+  }),
+}));
+
+export const publicPostsRelations = relations(posts, ({ one }) => ({
+  owner: one(users, {
+    fields: [posts.userId],
+    references: [users.id],
+  }),
+  grow: one(grows, {
+    fields: [posts.entityId],
+    references: [grows.id],
+  }),
+  plant: one(plants, {
+    fields: [posts.entityId],
+    references: [plants.id],
+  }),
+  photo: one(images, {
+    fields: [posts.entityId],
     references: [images.id],
   }),
 }));

@@ -24,7 +24,7 @@ interface OwnerDropdownMenuProps {
   isDeleting: boolean;
   handleDelete: () => void;
   entityId: string;
-  entityType: "Grows" | "Photos" | "Plants";
+  entityType: "Grows" | "Photos" | "Plants" | "Posts";
 }
 
 export function OwnerDropdownMenu({

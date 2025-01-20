@@ -1,6 +1,8 @@
 // src/types/zodSchema.ts:
 import { z } from "zod";
 
+import { PostableEntityType } from "./post";
+
 export const plantFormSchema = z.object({
   id: z.string().optional(),
   name: z.string().min(2, {
@@ -59,4 +61,10 @@ export const userEditSchema = z.object({
     .string({ required_error: "Email is required" })
     .email({ message: "Invalid email address" }),
   image: z.string().url({ message: "Invalid image URL" }).nullable(),
+});
+
+export const postSchema = z.object({
+  content: z.string().min(1),
+  entityId: z.string(),
+  entityType: z.nativeEnum(PostableEntityType),
 });

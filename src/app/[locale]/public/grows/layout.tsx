@@ -17,5 +17,5 @@ export default async function PublicGrowsLayout({
     limit: PaginationItemsPerPage.PUBLIC_GROWS_PER_PAGE,
   } satisfies GetAllGrowsInput);
 
-  return children;
+  return <HydrateClient>{children}</HydrateClient>;
 }

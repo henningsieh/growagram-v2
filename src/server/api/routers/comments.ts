@@ -3,7 +3,7 @@ import { TRPCError } from "@trpc/server";
 import { and, asc, count, desc, eq, isNull } from "drizzle-orm";
 import { z } from "zod";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
-import { comments, grows, images, plants } from "~/lib/db/schema";
+import { comments, grows, images, plants, posts } from "~/lib/db/schema";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { CommentableEntityType } from "~/types/comment";
 
@@ -32,15 +32,20 @@ export const commentRouter = createTRPCRouter({
         });
         entityExists = !!plant;
       } else if (entityType === CommentableEntityType.Photo) {
-        const image = await ctx.db.query.images.findFirst({
+        const photo = await ctx.db.query.images.findFirst({
           where: eq(images.id, entityId),
         });
-        entityExists = !!image;
+        entityExists = !!photo;
       } else if (entityType === CommentableEntityType.Grow) {
         const grow = await ctx.db.query.grows.findFirst({
           where: eq(grows.id, entityId),
         });
         entityExists = !!grow;
+      } else if (entityType === CommentableEntityType.Post) {
+        const post = await ctx.db.query.posts.findFirst({
+          where: eq(posts.id, entityId),
+        });
+        entityExists = !!post;
       }
 
       if (!entityExists) {

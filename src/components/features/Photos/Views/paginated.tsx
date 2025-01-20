@@ -1,7 +1,6 @@
 "use client";
 
 // src/components/features/Photos/Views/paginated.tsx:
-import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import {
   Dispatch,
@@ -16,15 +15,6 @@ import ResponsiveGrid from "~/components/Layouts/responsive-grid";
 import ItemsPagination from "~/components/atom/item-pagination";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
 import PhotoCard from "~/components/features/Photos/photo-card";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "~/components/ui/pagination";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import { GetOwnPhotosInput } from "~/server/api/root";

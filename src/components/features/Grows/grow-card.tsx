@@ -2,13 +2,11 @@
 
 // src/components/features/Grows/grow-card.tsx:
 import { AnimatePresence, motion } from "framer-motion";
-import { TentTree } from "lucide-react";
+import { MessageSquareTextIcon, TentTree } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
-import Image from "next/image";
 import { useState } from "react";
-import headerImagePlaceholder from "~/assets/landscape-placeholdersvg.svg";
-import { RESPONSIVE_IMAGE_SIZES } from "~/components/Layouts/responsive-grid";
+import PostFormModal from "~/components/PostFormModal";
 import AvatarCardHeader from "~/components/atom/avatar-card-header";
 import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
 import { OwnerDropdownMenu } from "~/components/atom/owner-dropdown-menu";
@@ -25,16 +23,17 @@ import { useLikeStatus } from "~/hooks/use-likes";
 import { useToast } from "~/hooks/use-toast";
 import { Link } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
-import { DateFormatOptions, formatDate } from "~/lib/utils";
-import { GetOwnGrowType } from "~/server/api/root";
+import { DateFormatOptions, cn, formatDate } from "~/lib/utils";
+import { GetAllGrowType, GetOwnGrowType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
 import { LikeableEntityType } from "~/types/like";
 
+import { PostableEntityType } from "../../../types/post";
 import { Comments } from "../Comments/comments";
-import { GrowPlantCard } from "./grow-plant-card";
+import { EmbeddedPlantCard } from "../Plants/embedded-plant-card";
 
 interface GrowCardProps {
-  grow: GetOwnGrowType;
+  grow: GetOwnGrowType | GetAllGrowType;
   isSocial?: boolean;
 }
 
@@ -53,6 +52,7 @@ export function GrowCard({
   const [isSocial, setIsSocial] = useState(isSocialProp);
   const [isImageHovered, setIsImageHovered] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isPostModalOpen, setIsPostModalOpen] = useState(false);
 
   const {
     isLiked,
@@ -104,20 +104,31 @@ export function GrowCard({
         description="No plant will be deleted by this action!"
         alertCautionText="This action also deletes postings and other events if they only refer to this grow!"
       />
-      <Card className="my-2 flex flex-col overflow-hidden">
+      <PostFormModal
+        isOpen={isPostModalOpen}
+        onClose={() => setIsPostModalOpen(false)}
+        entity={grow}
+        entityType={PostableEntityType.GROW}
+      />
+      <Card
+        className={cn(
+          `flex flex-col overflow-hidden border border-secondary/70`,
+          isSocial && "border-none",
+        )}
+      >
         {isSocial && <AvatarCardHeader user={grow.owner} />}
 
         <CardContent
-          className={`grid gap-2 ${isSocial ? "ml-12 pl-0 pr-2" : "p-2"}`}
+          className={`flex h-full flex-col gap-2 ${isSocial ? "ml-12 pl-0 pr-2" : "p-2"}`}
         >
           {/* Grow HeaderImage */}
-          <div
+          {/* <div
             className="relative aspect-video overflow-hidden"
             onMouseEnter={() => setIsImageHovered(true)}
             onMouseLeave={() => setIsImageHovered(false)}
           >
             <Image
-              src={headerImagePlaceholder}
+              src={headerImagePlaceholder || "/placeholder.svg"}
               alt={grow.name}
               fill
               className="object-cover transition-transform duration-300"
@@ -126,7 +137,7 @@ export function GrowCard({
                 transform: isImageHovered ? "scale(1.05)" : "scale(1)",
               }}
             />
-          </div>
+          </div> */}
 
           {/* Title Link */}
           <div className="flex items-center justify-between">
@@ -181,79 +192,62 @@ export function GrowCard({
               </div>
             )}
           </CardDescription>
+          <div className="justify-top flex h-full flex-1 flex-col">
+            {/* Plants Grid */}
+            <div className="max-h-72 flex-1 overflow-y-auto">
+              <div className="space-y-4">
+                <AnimatePresence>
+                  {grow.plants.map((plant) => (
+                    <motion.div
+                      key={plant.id}
+                      initial={{ opacity: 0, y: -50 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <EmbeddedPlantCard plant={plant} />
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+                {grow.plants.length === 0 && (
+                  <div className="py-8 text-center text-muted-foreground">
+                    {t("no-plants-connected")}
+                  </div>
+                )}
+              </div>
+            </div>
 
-          {/* Plants Grid */}
-          <div className="space-y-4">
-            <AnimatePresence>
-              {grow.plants.map((plant) => (
-                <motion.div
-                  key={plant.id}
-                  initial={{ opacity: 0, y: -50 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.3 }}
+            {/* Post Update Button */}
+            {!isSocial && (
+              <div className="mt-4">
+                <Button
+                  className="w-full p-2 font-semibold"
+                  onClick={() => setIsPostModalOpen(true)}
                 >
-                  <GrowPlantCard plant={plant} />
-                </motion.div>
-              ))}
-            </AnimatePresence>
-            {grow.plants.length === 0 && (
-              <div className="py-8 text-center text-muted-foreground">
-                {t("no-plants-connected")}
+                  <MessageSquareTextIcon className="mr-2" />
+                  {t("buttonLabel-post-update")}
+                </Button>
               </div>
             )}
           </div>
         </CardContent>
 
-        {
-          isSocial && (
-            // Social Footer
-            <SocialCardFooter
-              className={`pb-2 pr-2 ${isSocial && "ml-12"}`}
-              entityId={grow.id}
-              entityType={LikeableEntityType.Grow}
-              initialLiked={isLiked}
-              isLikeStatusLoading={isLikeLoading}
-              commentCountLoading={commentCountLoading}
-              stats={{
-                comments: commentCount,
-                views: 0,
-                likes: likeCount,
-              }}
-              toggleComments={toggleComments}
-            />
-          )
-          // : (
-          //   user &&
-          //   user.id === grow.ownerId && (
-          //     // Owner Buttons
-          //     <>
-          //       <Separator />
-          //       <CardFooter className="flex w-full justify-between gap-1 p-1">
-          //         <Button
-          //           variant={"destructive"}
-          //           size={"sm"}
-          //           className="w-20"
-          //           onClick={handleDelete}
-          //           disabled={deleteMutation.isPending}
-          //         >
-          //           {deleteMutation.isPending ? (
-          //             <Loader2 size={20} className="animate-spin" />
-          //           ) : (
-          //             <Trash2 size={20} />
-          //           )}
-          //         </Button>
-          //         <Button asChild size={"sm"} className="w-full text-base">
-          //           <Link href={`/grows/${grow.id}/form`}>
-          //             <Edit size={20} />
-          //             {t("form-page-title-edit")}
-          //           </Link>
-          //         </Button>
-          //       </CardFooter>
-          //     </>
-          //   )
-          // )
-        }
+        {isSocial && (
+          <SocialCardFooter
+            className={`pb-2 pr-2 ${isSocial && "ml-12"}`}
+            entityId={grow.id}
+            entityType={LikeableEntityType.Grow}
+            initialLiked={isLiked}
+            isLikeStatusLoading={isLikeLoading}
+            commentCountLoading={commentCountLoading}
+            stats={{
+              comments: commentCount,
+              views: 0,
+              likes: likeCount,
+            }}
+            toggleComments={toggleComments}
+          />
+        )}
 
         {isSocial && isCommentsOpen && (
           <Comments

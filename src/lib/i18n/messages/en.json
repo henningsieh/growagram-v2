@@ -62,7 +62,9 @@
     "title": "Page Not Found"
   },
   "Grows": {
+    "NoGrowsFound": "No grows have been found.",
     "buttonLabel-create-grow": "Create Grow",
+    "buttonLabel-post-update": "Create new Update",
     "buttonLabel-save-changes": "Save Changes",
     "connect-error": "Error connecting plant",
     "delete-button-label": "Delete Grow",
@@ -86,7 +88,7 @@
     "grow-name-description": "Give a descriptive name to your grow.",
     "grow-name-placeholder": "Enter the Grow's Name",
     "growth-stage": "Growth Stage",
-    "mygrows-page-subtitle": "View and manage my current grows",
+    "mygrows-page-subtitle": "View and manage your grows",
     "mygrows-page-title": "My Grows",
     "no-grows-yet": "You haven&apos;t created any Grows yet.",
     "no-plants-connected": "No plants connected yet.",
@@ -193,13 +195,18 @@
       "removeAll": "Remove All Plants",
       "save": "Save Plant Selection ({count})"
     },
+    "button-label-connect-plants": "Select Plants",
+    "button-label-post-update": "Create new Update",
     "button-label-upload-photos": "Upload",
     "buttonBackLabel": "Back",
     "capture-date": "taken on",
+    "captureDate": "Capture Date (from EXIF data)",
     "delete-button-label": "Delete Photo",
     "edit-button-label": "Edit Photo",
+    "filter-label-not-connected": "NEW ONLY",
     "my-Photos": "My photos",
-    "my-Photos-subtitle": "Display and manage my photos",
+    "my-Photos-subtitle": "View and manage your photos",
+    "newNotConnteched": "NEW",
     "plantSelection": {
       "description": "Select each plant you can see in the photo!",
       "title": "Plant Selection"
@@ -211,10 +218,13 @@
     },
     "subtitle": "Which plants did you spot in this photo?",
     "title": "Identify Plants",
+    "uploadDate": "Upload Date",
     "uploaded-at": "uploaded on"
   },
   "Plants": {
+    "NoPlantsFound": "No plants have been found.",
     "breeder": "Breeder",
+    "button-label-post-update": "Create new Update",
     "curing-start-date": "Curing phase start date",
     "delete-button-label": "Delete Plant",
     "delete-plant-button-label": "Delete Plant",
@@ -244,7 +254,7 @@
     "public-link-label": "Open in new Tab",
     "sort-plants-createdAt": "Created at",
     "strain": "Strain",
-    "subtitle": "Manage your plants",
+    "subtitle": "View and manage your plants",
     "thc": "THC",
     "thc-content": "THC Content",
     "title": "My Plants",
@@ -254,13 +264,18 @@
   },
   "Platform": {
     "Dashboard-title": "Dashboard",
-    "Platform": {
-      "coming-soon-description": "We are already working on the new function. \nCome by again soon!"
-    },
+    "asc": "ascending",
     "coming-soon": "Coming soon",
+    "coming-soon-description": "We are already working on the new function. \nCome by again soon!",
+    "desc": "descending",
     "feature-coming": "New Feature is on its Way!",
     "more": "more",
     "welcome-to-platform-subttitle": "Welcome to the Grower's platform where you can manage all your Grows and Plants"
+  },
+  "Posts": {
+    "buttonLabel-createNewPost": "Post Update",
+    "createNewPost-title": "Write and post a new Update",
+    "linkedInThisPost": "Linked in this Update"
   },
   "Sidebar": {
     "coming_soon": {
