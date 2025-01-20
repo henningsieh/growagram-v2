@@ -170,7 +170,7 @@ export default function PhotoUpload({ user }: { user: User }) {
       setPreviews([]);
       // Invalidate the images query to refresh the list
       utils.photos.getOwnPhotos.invalidate();
-      router.push("/images");
+      router.push("/photos");
     } catch (error) {
       console.error("Error uploading images:", error);
       toast({
