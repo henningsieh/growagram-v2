@@ -185,8 +185,8 @@
     "navigation": "Navigation",
     "plants": "Alle Pflanzen",
     "plants-description": "Entdecke, welche Pflanzen andere gerade großziehen.",
-    "timeline": "Zeitleiste",
-    "timeline-description": "Social Media Zeitachse (Funktion in Kürze)",
+    "timeline": "Alle Updates",
+    "timeline-description": "Updates in einer chronologischen Zeitleiste",
     "toggle-menu": "Menü umschalten"
   },
   "Photos": {
@@ -275,10 +275,10 @@
   "Posts": {
     "buttonLabel-createNewPost": "Update posten",
     "createNewPost-title": "Schreibe und poste ein neues Update",
-    "linkedInThisPost": "Mit dem Update verlinkt",
-    "public-link-label": "Öffnen im neuen Tab",
+    "delete-button-label": "Update löschen",
     "edit-button-label": "Update bearbeiten",
-    "delete-button-label": "Update löschen"
+    "linkedInThisPost": "Mit dem Update verlinkt",
+    "public-link-label": "Öffnen im neuen Tab"
   },
   "Sidebar": {
     "coming_soon": {

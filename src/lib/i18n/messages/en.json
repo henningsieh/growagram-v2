@@ -185,8 +185,8 @@
     "navigation": "Navigation",
     "plants": "All Plants",
     "plants-description": "Check out what other growers are cultivating and get some new ideas.",
-    "timeline": "Timeline",
-    "timeline-description": "Social media timeline (feature coming soon)",
+    "timeline": "All Updates",
+    "timeline-description": "Updates in a chronological timeline",
     "toggle-menu": "Toggle menu"
   },
   "Photos": {
@@ -275,10 +275,10 @@
   "Posts": {
     "buttonLabel-createNewPost": "Post Update",
     "createNewPost-title": "Write and post a new Update",
-    "linkedInThisPost": "Linked in this Update",
-    "public-link-label": "Open in new Tab",
+    "delete-button-label": "Delete Update",
     "edit-button-label": "Edit Update",
-    "delete-button-label": "Delete Update"
+    "linkedInThisPost": "Linked in this Update",
+    "public-link-label": "Open in new Tab"
   },
   "Sidebar": {
     "coming_soon": {
