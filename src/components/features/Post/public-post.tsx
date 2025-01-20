@@ -11,6 +11,7 @@ import { useLikeStatus } from "~/hooks/use-likes";
 import { useToast } from "~/hooks/use-toast";
 import { api } from "~/lib/trpc/react";
 import { cn } from "~/lib/utils";
+import { useImageModal } from "~/providers/modal-provider";
 import { GetPostType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
 import { LikeableEntityType } from "~/types/like";
@@ -33,6 +34,8 @@ export default function PublicPost({
   const user = session?.user;
   const utils = api.useUtils();
   const { toast } = useToast();
+  const { openImageModal } = useImageModal();
+  const [isImageHovered, setIsImageHovered] = useState(false);
 
   const [isSocial, setIsSocial] = useState(isSocialProp);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -71,6 +74,12 @@ export default function PublicPost({
   const confirmDelete = async () => {
     await deleteMutation.mutateAsync({ id: post.id });
     setIsDeleteDialogOpen(false);
+  };
+
+  const handleImageClick = () => {
+    if (post.entityType === "image") {
+      openImageModal(post.photo.imageUrl);
+    }
   };
 
   return (
@@ -132,13 +141,21 @@ export default function PublicPost({
             <EmbeddedPlantCard plant={post.plant} />
           )}
           {post.entityType === "image" && (
-            <div className="relative aspect-square w-full overflow-hidden rounded-md">
+            <div
+              className="relative aspect-square w-full cursor-pointer overflow-hidden rounded-md"
+              onClick={handleImageClick}
+              onMouseEnter={() => setIsImageHovered(true)}
+              onMouseLeave={() => setIsImageHovered(false)}
+            >
               <Image
                 src={post.photo.imageUrl}
                 alt={post.photo.originalFilename}
                 fill
-                className="object-cover"
+                className="object-cover transition-transform duration-300"
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                style={{
+                  transform: isImageHovered ? "scale(1.02)" : "scale(1)",
+                }}
               />
             </div>
           )}
