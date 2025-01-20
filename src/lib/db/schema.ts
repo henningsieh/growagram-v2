@@ -329,35 +329,24 @@ export const comments = pgTable(
 );
 
 // Define the posts table
-export const posts = pgTable(
-  "public_post",
-  {
-    id: text("id")
-      .primaryKey()
-      .$defaultFn(() => crypto.randomUUID()),
-    userId: text("user_id")
-      .notNull()
-      .references(() => users.id, { onDelete: "cascade" }),
-    entityId: text("entity_id").notNull(),
-    entityType: text("entity_type").$type<PostableEntityType>().notNull(),
-    content: text("content").notNull(),
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
-    updatedAt: timestamp("updated_at", { withTimezone: true })
-      .$onUpdate(() => new Date())
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
-  },
-  (table) => ({
-    // Prevent duplicate posts from the same user on the same entity
-    uniquePost: uniqueIndex("unique_post").on(
-      table.userId,
-      table.entityId,
-      table.entityType,
-    ),
-  }),
-);
+export const posts = pgTable("public_post", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  entityId: text("entity_id").notNull(),
+  entityType: text("entity_type").$type<PostableEntityType>().notNull(),
+  content: text("content").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .$onUpdate(() => new Date())
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+});
 
 // Drizzle ORM Relations
 
