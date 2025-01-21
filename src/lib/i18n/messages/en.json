@@ -298,7 +298,25 @@
     "unlock-premium-content": "Elevate Your Growing Journey"
   },
   "RegisterPage": {
-    "title": "Register to GrowAGram"
+    "description": "Fill in all fields below.",
+    "email": {
+      "label": "Your valid email address"
+    },
+    "login": {
+      "link": "Login",
+      "text": "Already have an account? "
+    },
+    "name": {
+      "label": "Name"
+    },
+    "password": {
+      "label": "Password"
+    },
+    "submit": "Register now",
+    "title": "Register to GrowAGram",
+    "username": {
+      "label": "@Username"
+    }
   },
   "Sidebar": {
     "coming_soon": {

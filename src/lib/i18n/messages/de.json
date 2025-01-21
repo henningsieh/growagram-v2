@@ -298,7 +298,25 @@
     "unlock-premium-content": "Hebe deine Anbau-Reise auf ein neues Level"
   },
   "RegisterPage": {
-    "title": "Registrieren bei GrowAGram"
+    "description": "Fülle alle Felder unten aus.",
+    "email": {
+      "label": "Deine gültige E-Mail-Adresse"
+    },
+    "login": {
+      "link": "Login",
+      "text": "Du hast bereits ein Konto?"
+    },
+    "name": {
+      "label": "Name"
+    },
+    "password": {
+      "label": "Passwort"
+    },
+    "submit": "Jetzt registrieren",
+    "title": "Registrieren bei GrowAGram",
+    "username": {
+      "label": "@Username"
+    }
   },
   "Sidebar": {
     "coming_soon": {

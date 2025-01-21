@@ -33,6 +33,7 @@ export function LoginForm({
   const t = useTranslations("LoginPage");
   const router = useRouter();
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [error, setError] = React.useState<string | null>(null);
 
   async function onSubmit(event: React.SyntheticEvent) {
     event.preventDefault();
@@ -50,7 +51,10 @@ export function LoginForm({
     setIsLoading(false);
 
     if (result?.error) {
-      router.push(`/api/auth/error?error=${result.error}`);
+      setError(result.error);
+    } else if (result?.ok) {
+      router.push(callbackUrl);
+      router.refresh();
     }
   }
 
@@ -156,6 +160,7 @@ export function LoginForm({
                   disabled={isLoading}
                 />
               </div>
+              {error && <p className="text-red-500">{error}</p>}
               <Button disabled={isLoading}>
                 {isLoading && <Loader2 className="mr-2 h-5 w-5 animate-spin" />}
                 {t("submit")}

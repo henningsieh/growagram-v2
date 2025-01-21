@@ -16,6 +16,11 @@ export const env = createEnv({
     AUTH_SECRET: z.string(),
     CLOUDINARY_API_KEY: z.string(),
     CLOUDINARY_API_SECRET: z.string(),
+    MAIL_SERVER_HOST: z.string().min(1),
+    MAIL_SERVER_PORT: z.coerce().int(),
+    MAIL_SERVER_USER: z.string().email(),
+    MAIL_SERVER_PASS: z.string().min(1),
+    MAIL_FROM: z.string().min(1),
     NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
@@ -45,7 +50,11 @@ export const env = createEnv({
     CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
     NEXT_PUBLIC_CLOUDINARY_NAME: process.env.NEXT_PUBLIC_CLOUDINARY_NAME,
     NODE_ENV: process.env.NODE_ENV,
-    // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
+    MAIL_SERVER_HOST: process.env.MAIL_SERVER_HOST,
+    MAIL_SERVER_PORT: process.env.MAIL_SERVER_PORT,
+    MAIL_SERVER_USER: process.env.MAIL_SERVER_USER,
+    MAIL_SERVER_PASS: process.env.MAIL_SERVER_PASS,
+    MAIL_FROM: process.env.MAIL_FROM,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
