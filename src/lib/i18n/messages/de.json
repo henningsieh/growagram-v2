@@ -172,7 +172,6 @@
     "grows": "Alle Grows",
     "grows-description": "Hier siehst du, was andere anbauen und wie sie es machen.",
     "home": "Home",
-    "home": "Home",
     "my-grows": "Meine Grows",
     "my-grows-subline": "Verwalte und gruppiere deine Pflanzen in Grows.",
     "my-photos": "Meine Fotos",
@@ -180,8 +179,6 @@
     "my-plants": "Meine Pflanzen",
     "my-plants-subline": "Verwalte und bearbeite deine Pflanzen.",
     "navigation": "Navigation",
-    "plants": "Alle Pflanzen",
-    "plants-description": "Entdecke, welche Pflanzen andere gerade großziehen.",
     "plants": "Alle Pflanzen",
     "plants-description": "Entdecke, welche Pflanzen andere gerade großziehen.",
     "timeline": "Zeitleiste",
@@ -236,7 +233,7 @@
     "form-pagerheader-new-subtitle": "Füge deiner Sammlung eine neue Pflanze hinzu",
     "form-pagerheader-new-title": "Neue Pflanze anlegen",
     "form-pagerheader-subtitle": "Füge deiner Sammlung eine neue Pflanze hinzu",
-    "form-pagerheader-title": "Neue Pflanze erstellen",
+    "form-pagerheader-title": "Neue Pflanze hinzufügen",
     "germination-date": "Datum der Keimung",
     "growth-progress": "Wachstumsfortschritt",
     "harvest-date": "Datum der Ernte",
@@ -265,85 +262,85 @@
     "more": "mehr",
     "welcome-to-platform-subttitle": "Willkommen bei der Verwaltung deiner Grows und Pflanzen"
   },
+  "Premium": {
+    "benefits": {
+      "ad-free-experience": "Werbefreie Erfahrung",
+      "community-access": "Zugang zu erweiterten Community-Foren",
+      "early-access": "Frühzeitiger Zugang zu neuen Funktionen",
+      "exclusive-content": "Exklusive Premium-Inhalte",
+      "priority-support": "Prioritäts-Support",
+      "title": "Premium-Vorteile"
+    },
+    "connect-steady-button": "Mit Steady verbinden",
+    "faq": {
+      "cancel-subscription": {
+        "answer": "Ja, du kannst dein Abonnement jederzeit über deinen Steady-Account kündigen. Dein Premium-Zugang bleibt bis zum Ende deiner aktuellen Abrechnungsperiode bestehen.",
+        "question": "Kann ich mein Abonnement jederzeit kündigen?"
+      },
+      "free-trial": {
+        "answer": "Derzeit bieten wir keine kostenlose Testphase an, aber du kannst unsere kostenlosen Inhalte ausprobieren, um einen Eindruck von unserem Angebot zu bekommen, bevor du abonnierst.",
+        "question": "Gibt es eine kostenlose Testphase?"
+      },
+      "how-subscription-works": {
+        "answer": "Unser Premium-Abonnement wird über Steady verwaltet. Sobald du deinen Steady-Account verbunden hast, erhältst du sofortigen Zugang zu allen Premium-Funktionen.",
+        "question": "Wie funktioniert das Premium-Abonnement?"
+      },
+      "payment-methods": {
+        "answer": "Steady unterstützt verschiedene Zahlungsmethoden, einschließlich Kreditkarten, PayPal und SEPA-Lastschrift. Du kannst deine bevorzugte Methode während des Abonnement-Prozesses auswählen.",
+        "question": "Welche Zahlungsmethoden werden akzeptiert?"
+      },
+      "title": "Häufig gestellte Fragen"
+    },
+    "get-exclusive-access": "Erhalte exklusiven Zugang zu Premium-Funktionen und unterstütze unsere Community!",
+    "premium-subtitle": "Verbessere deine Anbau-Erfahrung mit exklusiven Vorteilen",
+    "premium-title": "Premium-Funktionen freischalten",
+    "ready-to-go-premium": "Bereit für Premium?",
+    "unlock-premium-content": "Hebe deine Anbau-Reise auf ein neues Level"
+  },
   "RegisterPage": {
     "title": "Registrieren bei GrowAGram"
+  },
+  "Sidebar": {
+    "coming_soon": {
+      "Grow Archive": "Grow-Archiv",
+      "My Inventory": "Mein Inventar",
+      "Plant Feedings": "Pflanzendüngung",
+      "Plant Sizes": "Pflanzengrößen"
+    },
+    "navMain": {
+      "Grows": {
+        "items": {
+          "Create New Grow": "Grow erstellen",
+          "My Grows": "Meine Grows"
+        },
+        "title": "Grows"
+      },
+      "Photos": {
+        "items": {
+          "My Photos": "Meine Fotos",
+          "Upload New Photos": "Fotos hochladen"
+        },
+        "title": "Fotos"
+      },
+      "Plants": {
+        "items": {
+          "Add New Plant": "Pflanze hinzufügen",
+          "My Plants": "Meine Pflanzen"
+        },
+        "title": "Pflanzen"
+      }
+    },
+    "teams": {
+      "Basic Free Plan": "Kostenloser Basisplan",
+      "GrowAGram Collective": "GrowAGram Collective",
+      "Grower": "Grower",
+      "Premium": "Premium"
+    }
   },
   "ThemeToggler": {
     "dark": "Dunkel",
     "light": "Hell",
     "system": "System",
     "toggle-theme": "Designthema umschalten"
-  },
-  "Sidebar": {
-    "teams": {
-      "GrowAGram Collective": "GrowAGram Collective",
-      "Grower": "Grower",
-      "Premium": "Premium",
-      "Basic Free Plan": "Kostenloser Basisplan"
-    },
-    "navMain": {
-      "Grows": {
-        "title": "Grows",
-        "items": {
-          "My Grows": "Meine Grows",
-          "Create New Grow": "Grow erstellen"
-        }
-      },
-      "Plants": {
-        "title": "Pflanzen",
-        "items": {
-          "My Plants": "Meine Pflanzen",
-          "Add New Plant": "Pflanze hinzufügen"
-        }
-      },
-      "Photos": {
-        "title": "Fotos",
-        "items": {
-          "My Photos": "Meine Fotos",
-          "Upload New Photos": "Fotos hochladen"
-        }
-      }
-    },
-    "coming_soon": {
-      "Plant Feedings": "Pflanzendüngung",
-      "Plant Sizes": "Pflanzengrößen",
-      "My Inventory": "Mein Inventar",
-      "Grow Archive": "Grow-Archiv"
-    }
-  },
-  "Premium": {
-    "premium-title": "Premium-Funktionen freischalten",
-    "premium-subtitle": "Verbessere deine Anbau-Erfahrung mit exklusiven Vorteilen",
-    "unlock-premium-content": "Hebe deine Anbau-Reise auf ein neues Level",
-    "get-exclusive-access": "Erhalte exklusiven Zugang zu Premium-Funktionen und unterstütze unsere Community!",
-    "connect-steady-button": "Mit Steady verbinden",
-    "ready-to-go-premium": "Bereit für Premium?",
-    "benefits": {
-      "title": "Premium-Vorteile",
-      "exclusive-content": "Exklusive Premium-Inhalte",
-      "ad-free-experience": "Werbefreie Erfahrung",
-      "early-access": "Frühzeitiger Zugang zu neuen Funktionen",
-      "priority-support": "Prioritäts-Support",
-      "community-access": "Zugang zu erweiterten Community-Foren"
-    },
-    "faq": {
-      "title": "Häufig gestellte Fragen",
-      "how-subscription-works": {
-        "question": "Wie funktioniert das Premium-Abonnement?",
-        "answer": "Unser Premium-Abonnement wird über Steady verwaltet. Sobald du deinen Steady-Account verbunden hast, erhältst du sofortigen Zugang zu allen Premium-Funktionen."
-      },
-      "cancel-subscription": {
-        "question": "Kann ich mein Abonnement jederzeit kündigen?",
-        "answer": "Ja, du kannst dein Abonnement jederzeit über deinen Steady-Account kündigen. Dein Premium-Zugang bleibt bis zum Ende deiner aktuellen Abrechnungsperiode bestehen."
-      },
-      "payment-methods": {
-        "question": "Welche Zahlungsmethoden werden akzeptiert?",
-        "answer": "Steady unterstützt verschiedene Zahlungsmethoden, einschließlich Kreditkarten, PayPal und SEPA-Lastschrift. Du kannst deine bevorzugte Methode während des Abonnement-Prozesses auswählen."
-      },
-      "free-trial": {
-        "question": "Gibt es eine kostenlose Testphase?",
-        "answer": "Derzeit bieten wir keine kostenlose Testphase an, aber du kannst unsere kostenlosen Inhalte ausprobieren, um einen Eindruck von unserem Angebot zu bekommen, bevor du abonnierst."
-      }
-    }
   }
 }
