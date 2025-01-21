@@ -74,11 +74,11 @@ This application is self-hosted on [Hetzner Cloud](https://www.hetzner.com/cloud
 - ✅ User authentication
 - ✅ Basic CRUD operations
 - ✅ Image management
-- 🔨 Enhanced social features
-- 🔨 User profile enhancements
-- 🔨 Activity feed for Users, Grows, Plants and Photos
-- 🔨 Follow system with timeline
-- ✅ Public timeline Posts (reference Grows, Plants or Photos)
+- ✅ Public timeline Posts (reference Grows, Plants or Fotos)
+- 🔨 Features for Admin role (delete crap, ban users)
+- 🔨 Activity feeds for Users, Grows and Plants
+- 🔨 Follow system with Following timelinePhotos)
+- ⏳ User profile enhancements
 
 #### Image Management
 
