@@ -17,7 +17,6 @@ import {
 import { Switch } from "~/components/ui/switch";
 import { cn } from "~/lib/utils";
 
-import SpinningLoader from "../Layouts/loader";
 import { Button } from "../ui/button";
 
 export interface SortOption<T extends string> {

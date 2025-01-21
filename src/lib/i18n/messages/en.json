@@ -232,8 +232,6 @@
     "form-pagerheader-edit-title": "Edit Plant",
     "form-pagerheader-new-subtitle": "Add a new plant to your collection",
     "form-pagerheader-new-title": "Add New Plant",
-    "form-pagerheader-subtitle": "Add a new plant to your collection",
-    "form-pagerheader-title": "Add a new plant",
     "germination-date": "Germination Date",
     "growth-progress": "Growth Progress",
     "harvest-date": "Harvest date",
@@ -260,6 +258,8 @@
     "coming-soon": "Coming soon",
     "feature-coming": "New Feature is on its Way!",
     "more": "more",
+    "asc": "Ascending",
+    "desc": "Descending",
     "welcome-to-platform-subttitle": "Welcome to the Grower's platform where you can manage all your Grows and Plants"
   },
   "Premium": {

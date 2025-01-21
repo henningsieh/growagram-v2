@@ -145,7 +145,7 @@
     "toggle-language": "Sprache wechseln"
   },
   "LoginPage": {
-    "continue-with-email": "Oder Login mit Email und Passwort",
+    "continue-with-email": "Oder Login mit E-Mail und Passwort",
     "description": "Login mit deinem Provider-Account",
     "email": {
       "label": "E-Mail-Adresse"
@@ -231,13 +231,11 @@
     "form-pagerheader-edit-subtitle": "Bearbeite eine Pflanze aus deiner Sammlung",
     "form-pagerheader-edit-title": "Pflanze bearbeiten",
     "form-pagerheader-new-subtitle": "Füge deiner Sammlung eine neue Pflanze hinzu",
-    "form-pagerheader-new-title": "Neue Pflanze anlegen",
-    "form-pagerheader-subtitle": "Füge deiner Sammlung eine neue Pflanze hinzu",
-    "form-pagerheader-title": "Neue Pflanze hinzufügen",
+    "form-pagerheader-new-title": "Neue Pflanze hinzufügen",
     "germination-date": "Datum der Keimung",
     "growth-progress": "Wachstumsfortschritt",
     "harvest-date": "Datum der Ernte",
-    "linkUploadButtonLabel": "Pflanze anlegen",
+    "linkUploadButtonLabel": "Pflanze hinzufügen",
     "overall-progress": "Gesamtfortschritt",
     "phase": "Phasenfortschritt",
     "planting-date": "Datum der Aussaat",
@@ -260,6 +258,8 @@
     "coming-soon": "Bald verfügbar",
     "feature-coming": "Neue Funktion ist auf dem Weg!",
     "more": "mehr",
+    "asc": "Aufsteigend",
+    "desc": "Absteigend",
     "welcome-to-platform-subttitle": "Willkommen bei der Verwaltung deiner Grows und Pflanzen"
   },
   "Premium": {
