@@ -8,43 +8,39 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
-import { Separator } from "~/components/ui/separator";
 import { Link, useRouter } from "~/lib/i18n/routing";
+import { api } from "~/lib/trpc/react";
 
 export default function RegisterPage() {
   const t = useTranslations("RegisterPage");
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
 
+  const registerUserMutation = api.users.registerUser.useMutation({
+    onSuccess: () => {
+      router.push(modulePaths.SIGNIN.path);
+    },
+    onError: (error) => {
+      setError(error.message);
+    },
+  });
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
 
-    const response = await fetch("/api/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: formData.get("email")?.toString() || "",
-        password: formData.get("password")?.toString() || "",
-        username: formData.get("username")?.toString() || "",
-        name: formData.get("name")?.toString() || "",
-      }),
+    registerUserMutation.mutate({
+      email: formData.get("email")?.toString() || "",
+      password: formData.get("password")?.toString() || "",
+      username: formData.get("username")?.toString() || "",
+      name: formData.get("name")?.toString() || "",
     });
-
-    const data = await response.json();
-
-    if (response.ok) {
-      router.push(modulePaths.SIGNIN.path);
-    } else {
-      setError(data.error);
-    }
   };
 
   return (
@@ -90,16 +86,18 @@ export default function RegisterPage() {
               {t("submit")}
             </Button>
           </form>
-
-          <Separator className="rounded-sm bg-muted-foreground/30" />
-
-          <div className="mt-4 text-center text-sm">
-            {t("login.text")}{" "}
-            <Link href={modulePaths.SIGNIN.path} className="underline">
-              {t("login.link")}
-            </Link>
-          </div>
         </CardContent>
+
+        <CardFooter className="justify-center text-sm">
+          {t("login.text")}
+          &nbsp;
+          <Link
+            href={modulePaths.SIGNIN.path}
+            className="underline underline-offset-4"
+          >
+            {t("login.link")}{" "}
+          </Link>
+        </CardFooter>
       </Card>
     </div>
   );

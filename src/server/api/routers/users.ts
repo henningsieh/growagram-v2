@@ -2,7 +2,9 @@
 import { TRPCError } from "@trpc/server";
 import { and, eq, not } from "drizzle-orm";
 import { z } from "zod";
-import { grows, users } from "~/lib/db/schema";
+import { hashPassword } from "~/lib/auth/password";
+import { users, verificationTokens } from "~/lib/db/schema";
+import { sendVerificationEmail } from "~/lib/mail";
 import {
   createTRPCRouter,
   protectedProcedure,
@@ -190,5 +192,71 @@ export const userRouter = createTRPCRouter({
         });
 
       return updatedUser[0];
+    }),
+
+  // Register user (public procedure)
+  registerUser: publicProcedure
+    .input(
+      z.object({
+        email: z.string().email(),
+        password: z.string().min(6),
+        username: z.string().min(3),
+        name: z.string().optional(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const [existingEmail, existingUsername] = await Promise.all([
+        ctx.db.query.users.findFirst({
+          where: eq(users.email, input.email),
+        }),
+        ctx.db.query.users.findFirst({
+          where: eq(users.username, input.username),
+        }),
+      ]);
+
+      if (existingEmail) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "Email already in use",
+        });
+      }
+
+      if (existingUsername) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "Username already taken",
+        });
+      }
+
+      const hashedPassword = await hashPassword(input.password);
+
+      const newUser = await ctx.db
+        .insert(users)
+        .values({
+          email: input.email,
+          passwordHash: hashedPassword,
+          username: input.username,
+          name: input.name,
+        })
+        .returning({
+          id: users.id,
+          email: users.email,
+          username: users.username,
+          name: users.name,
+        });
+
+      const verificationToken = crypto.randomUUID();
+      await ctx.db.insert(verificationTokens).values({
+        identifier: newUser[0].email as string,
+        token: verificationToken,
+        expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
+      });
+
+      await sendVerificationEmail(
+        newUser[0].email as string,
+        verificationToken,
+      );
+
+      return newUser[0];
     }),
 });
