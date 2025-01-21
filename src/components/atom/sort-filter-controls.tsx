@@ -1,22 +1,29 @@
-import { Loader2, LucideProps } from "lucide-react";
-import React, { ForwardRefExoticComponent, RefAttributes } from "react";
-import { Button } from "~/components/ui/button";
+import {
+  ArrowDown01Icon,
+  ArrowUp10Icon,
+  FilterIcon,
+  ScrollText,
+} from "lucide-react";
+import { useTranslations } from "next-intl";
+import React from "react";
 import { Label } from "~/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
 import { Switch } from "~/components/ui/switch";
 import { cn } from "~/lib/utils";
 
 import SpinningLoader from "../Layouts/loader";
+import { Button } from "../ui/button";
 
 export interface SortOption<T extends string> {
   field: T;
   label: string;
   icon?: React.ReactNode;
-  sortIconAsc: ForwardRefExoticComponent<
-    Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>
-  >;
-  sortIconDesc: ForwardRefExoticComponent<
-    Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>
-  >;
 }
 
 export enum SortOrder {
@@ -47,92 +54,111 @@ export function SortFilterControls<T extends string>({
   sortOrder,
   sortOptions,
   filterEnabled = false,
-  filterLabel = "Filter",
+  filterLabel,
   isFetching = false,
   viewMode,
   onSortChange,
   onFilterChange,
   onViewModeToggle,
 }: SortFilterControlsProps<T>) {
-  const toggleOrder = async (field: T) => {
-    if (sortField === field) {
-      await onSortChange(
-        field,
-        sortOrder === SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC,
-      );
-    } else {
-      await onSortChange(field, SortOrder.DESC);
-    }
+  const handleSortFieldChange = (value: string) => {
+    onSortChange(value as T, sortOrder);
   };
 
+  const handleSortOrderChange = (value: string) => {
+    onSortChange(sortField, value as SortOrder);
+  };
+
+  const t = useTranslations("Platform");
+
   return (
-    <div className="mb-6 flex flex-col items-center justify-between gap-2 rounded-sm lg:flex-row">
-      <div className="flex w-full items-center space-x-2 lg:justify-start">
-        {viewMode && (
-          <div className="flex h-8 w-full items-center justify-start gap-2 text-nowrap rounded-sm border-[1px] border-input bg-muted px-1 hover:bg-transparent lg:w-[154px]">
-            <Switch
-              size="default"
-              id="view-mode"
-              checked={viewMode.current === viewMode.options[1]}
-              onCheckedChange={onViewModeToggle}
-            />
-            <Label
-              htmlFor="view-mode"
-              className="text-base font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            >
-              <div className="flex items-center">
-                {viewMode.icon}
-                {viewMode.label}
+    <div className="mb-5 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+      {/* Sorting Controls Group */}
+      <div className="flex flex-wrap items-center gap-2">
+        {/* <div className="flex items-center space-x-2 rounded-md border bg-card p-1"> */}
+        <Select
+          value={sortField}
+          onValueChange={handleSortFieldChange}
+          disabled={isFetching}
+        >
+          <SelectTrigger className="h-8 w-40 bg-muted">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {sortOptions.map((option, index) => (
+              <SelectItem key={index} value={option.field}>
+                <span className="flex items-center gap-2">
+                  {option.icon}
+                  {option.label}
+                </span>
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        <Select
+          value={sortOrder}
+          onValueChange={handleSortOrderChange}
+          disabled={isFetching}
+        >
+          <SelectTrigger className="h-8 w-40 bg-muted">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value={SortOrder.ASC}>
+              <div className="flex items-center gap-2">
+                <ArrowDown01Icon className="h-6 w-5" /> {t(SortOrder.ASC)}
               </div>
-            </Label>
-          </div>
-        )}
-        {onFilterChange && (
-          <div className="flex h-8 w-full items-center justify-start gap-2 text-nowrap rounded-sm border-[1px] border-input bg-muted px-1 hover:bg-transparent lg:w-[154px]">
-            <Switch
-              size="default"
-              variant="secondary"
-              id="filter-toggle"
-              checked={filterEnabled}
-              onCheckedChange={onFilterChange}
-            />
-            <Label htmlFor="filter-toggle" className="cursor-pointer text-base">
-              {filterLabel}
-            </Label>
-          </div>
-        )}
-      </div>
-      <div className="flex w-full items-center space-x-2 lg:justify-end">
-        {sortOptions.map((option, index) => (
+            </SelectItem>
+            <SelectItem value={SortOrder.DESC}>
+              <div className="flex items-center gap-2">
+                <ArrowUp10Icon className="h-6 w-5" /> {t(SortOrder.DESC)}
+              </div>
+            </SelectItem>
+          </SelectContent>
+        </Select>
+        {/* </div> */}
+
+        {filterLabel && (
           <Button
-            key={index}
-            disabled={isFetching}
             variant="outline"
             size="sm"
             className={cn(
-              "flex w-full items-center justify-between gap-1 p-2 lg:w-[154px]",
-              sortField === option.field &&
-                "border-[1px] border-secondary text-foreground",
+              "relative border border-input text-muted-foreground",
+              filterEnabled &&
+                "bg-secondary/80 text-secondary-foreground hover:bg-secondary/90",
             )}
-            onClick={() => toggleOrder(option.field)}
+            onClick={() => onFilterChange?.(!filterEnabled)}
+            disabled={isFetching}
           >
-            <div className="flex gap-2">
-              {option.icon}
-              {option.label}
-            </div>
-            {isFetching && sortField === option.field ? (
-              <SpinningLoader className="h-6 w-5 animate-spin text-secondary" />
-            ) : (
-              sortField === option.field &&
-              (sortOrder === SortOrder.ASC ? (
-                <option.sortIconAsc className="h-6 w-5 text-secondary" />
-              ) : (
-                <option.sortIconDesc className="h-6 w-5 text-secondary" />
-              ))
-            )}
+            <FilterIcon className="mr-2 h-4 w-4" />
+            {filterLabel}
           </Button>
-        ))}
+        )}
       </div>
+
+      {/* Infinite Scroll Toggle Group - Visually separated */}
+      {viewMode && (
+        <div className="flex justify-end">
+          <div className="flex h-8 items-center gap-3 rounded-sm border border-input bg-muted p-2">
+            <Label
+              htmlFor="infinite-scroll"
+              className="cursor-pointer text-sm font-medium"
+            >
+              Enable Infinite Scroll
+            </Label>
+            <Switch
+              id="infinite-scroll"
+              checked={viewMode.current === viewMode.options[1]}
+              onCheckedChange={onViewModeToggle}
+              className="data-[state=checked]:bg-primary"
+            />
+            <ScrollText
+              className={`h-5 w-5 ${viewMode.current === viewMode.options[1] ? `text-primary` : `text-muted-foreground`}`}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

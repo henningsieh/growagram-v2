@@ -23,6 +23,7 @@ export const modulePaths = {
   ACCOUNT: {
     name: "Account",
     path: "/account",
+    editPath: "/account/edit",
     protected: true,
   },
   GROWS: {
@@ -46,7 +47,7 @@ export const modulePaths = {
     protected: false,
   },
   PUBLICTIMELINE: {
-    name: "Timeline",
+    name: "Updates",
     path: "/public/timeline",
     protected: false,
   },

@@ -6,12 +6,13 @@ import { getMessages } from "next-intl/server";
 import localFont from "next/font/local";
 import NextTopLoader from "nextjs-toploader";
 import { APP_SETTINGS } from "~/assets/constants";
+import AppFooter from "~/components/Layouts/Footer/app-footer";
 import { MainNavigationBar } from "~/components/Layouts/MainNavigationBar";
 import { ThemeProvider } from "~/components/Layouts/theme-provider";
 import { ChatButton } from "~/components/features/Chat/chat-button";
 import { Toaster } from "~/components/ui/toaster";
 import { TRPCReactProvider } from "~/lib/trpc/react";
-import { HydrateClient } from "~/lib/trpc/server";
+import { ImageModalProvider } from "~/providers/modal-provider";
 import "~/styles/globals.css";
 
 const geistSans = localFont({
@@ -47,7 +48,7 @@ export default async function AppLayout(props: AppLayoutProps) {
     <html
       className="scroll-smooth"
       lang={(await props.params).locale}
-      // suppressHydrationWarning
+      suppressHydrationWarning
     >
       <body
         className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-background font-sans antialiased`}
@@ -68,14 +69,15 @@ export default async function AppLayout(props: AppLayoutProps) {
           <NextIntlClientProvider messages={await getMessages()}>
             <SessionProvider>
               <TRPCReactProvider>
-                <HydrateClient>
+                <ImageModalProvider>
                   <Toaster />
                   <div className="relative mx-auto flex max-w-7xl flex-col">
                     <MainNavigationBar />
                     <div className="flex-1">{props.children}</div>
+                    <AppFooter />
                     <ChatButton />
                   </div>
-                </HydrateClient>
+                </ImageModalProvider>
               </TRPCReactProvider>
             </SessionProvider>
           </NextIntlClientProvider>

@@ -1,6 +1,8 @@
 // src/types/zodSchema.ts:
 import { z } from "zod";
 
+import { PostableEntityType } from "./post";
+
 export const plantFormSchema = z.object({
   id: z.string().optional(),
   name: z.string().min(2, {
@@ -45,10 +47,12 @@ export const userEditSchema = z.object({
   id: z.string(),
   name: z
     .string({ required_error: "Name is required" })
-    .min(2, { message: "Name is required and must be at least 2 characters" }),
+    .min(2, { message: "Name is required and must be at least 2 characters" })
+    .max(24, { message: "Name must be less than 24 characters" }),
   username: z
     .string({ required_error: "Username is required" })
     .min(5, { message: "Username must be at least 5 characters" })
+    .max(20, { message: "Userame must be less than 20 characters" })
     .regex(/^[a-zA-Z0-9]+$/, {
       message:
         "Username must only contain alphanumeric characters with no spaces",
@@ -56,7 +60,13 @@ export const userEditSchema = z.object({
   email: z
     .string({ required_error: "Email is required" })
     .email({ message: "Invalid email address" }),
-  image: z.string().url({ message: "Invalid image URL" }).optional(),
+  image: z.string().url({ message: "Invalid image URL" }).nullable(),
+});
+
+export const postSchema = z.object({
+  content: z.string().min(1),
+  entityId: z.string(),
+  entityType: z.nativeEnum(PostableEntityType),
 });
 
 // schema for updating user tokens

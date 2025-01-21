@@ -4,18 +4,17 @@
 import {
   Camera,
   FileIcon,
-  Flower2Icon,
-  Maximize,
-  Minimize,
+  MessageSquareTextIcon,
+  TagIcon,
+  TagsIcon,
   UploadCloud,
-  X,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
-import { useCallback, useEffect, useState } from "react";
-import { createPortal } from "react-dom";
+import { useState } from "react";
 import { RESPONSIVE_IMAGE_SIZES } from "~/components/Layouts/responsive-grid";
+import PostFormModal from "~/components/PostFormModal";
 import AvatarCardHeader from "~/components/atom/avatar-card-header";
 import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
 import { OwnerDropdownMenu } from "~/components/atom/owner-dropdown-menu";
@@ -24,7 +23,6 @@ import { SortOrder } from "~/components/atom/sort-filter-controls";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardTitle } from "~/components/ui/card";
-import { Switch } from "~/components/ui/switch";
 import {
   Tooltip,
   TooltipContent,
@@ -37,10 +35,12 @@ import { useToast } from "~/hooks/use-toast";
 import { Link, useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import { cn, formatDate, formatTime } from "~/lib/utils";
+import { useImageModal } from "~/providers/modal-provider";
 import { GetOwnPhotoType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
 import { PhotosSortField } from "~/types/image";
 import { LikeableEntityType } from "~/types/like";
+import { PostableEntityType } from "~/types/post";
 
 import { Comments } from "../Comments/comments";
 
@@ -65,6 +65,7 @@ export default function PhotoCard({
   const locale = useLocale();
   const router = useRouter();
   const utils = api.useUtils();
+  const t = useTranslations("Photos");
   const { toast } = useToast();
 
   const { isLiked, likeCount, isLoading } = useLikeStatus(
@@ -76,9 +77,8 @@ export default function PhotoCard({
     useComments(photo.id, CommentableEntityType.Photo);
 
   const [isSocial, setIsSocial] = useState(isSocialProp);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isUnrestrictedView, setIsUnrestrictedView] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isPostModalOpen, setIsPostModalOpen] = useState(false);
 
   // Initialize delete mutation
   const deleteMutation = api.photos.deletePhoto.useMutation({
@@ -111,41 +111,12 @@ export default function PhotoCard({
     setIsDeleteDialogOpen(false);
   };
 
-  const handleImageClick = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleModalClose = useCallback(() => {
-    setIsModalOpen(false);
-  }, []);
-
-  useEffect(() => {
-    const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        handleModalClose();
-      }
-    };
-
-    if (isModalOpen) {
-      document.addEventListener("keydown", handleEscape);
-      document.body.style.overflow = "hidden";
-    }
-
-    return () => {
-      document.removeEventListener("keydown", handleEscape);
-      document.body.style.overflow = "";
-    };
-  }, [isModalOpen, handleModalClose]);
-
-  const toggleViewMode = () => {
-    setIsUnrestrictedView(!isUnrestrictedView);
-  };
-
-  const handleSwitchContainerClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-  };
-
+  const { openImageModal } = useImageModal();
   const [isImageHovered, setIsImageHovered] = useState(false);
+
+  const handleImageClick = () => {
+    openImageModal(photo.imageUrl);
+  };
 
   return (
     <>
@@ -159,11 +130,22 @@ export default function PhotoCard({
         description="No plant will be deleted by this action!"
         alertCautionText="This action cannot be undone. This will permanently delete the photo from our cloud storage servers."
       />
-      <Card className="relative my-2 flex flex-col overflow-hidden">
+      <PostFormModal
+        isOpen={isPostModalOpen}
+        onClose={() => setIsPostModalOpen(false)}
+        entity={photo}
+        entityType={PostableEntityType.PHOTO}
+      />
+      <Card
+        className={cn(
+          `relative flex flex-col overflow-hidden border border-input`,
+          isSocial && "border-none",
+        )}
+      >
         {/* "NEW" Banner */}
         {!!!photo.plantImages.length && (
           <div className="absolute right-[-40px] top-[15px] z-10 w-[120px] rotate-[45deg] cursor-default bg-secondary px-[40px] py-[1px] text-[12px] font-semibold tracking-widest text-white">
-            NEW
+            {t("newNotConnteched")}
           </div>
         )}
 
@@ -190,20 +172,24 @@ export default function PhotoCard({
         </div>
 
         <CardContent
-          className={`grid gap-2 ${isSocial ? "ml-12 pl-0 pr-2" : "p-2"}`}
+          className={`grid gap-2 p-2 ${isSocial && "ml-12 pl-0 pr-2"}`}
         >
           {/* Title Link and OwnerDropdownMenu */}
-          <div className="grid grid-cols-[1fr,auto] items-center gap-2">
-            <CardTitle as="h2" className="min-w-0 overflow-hidden text-lg">
-              <Button asChild variant="link" className="h-9 p-0">
+          <div className="flex min-w-0 items-center justify-between gap-2">
+            <CardTitle as="h3" className="min-w-0 flex-1">
+              <Button
+                asChild
+                variant="link"
+                className="w-full justify-start p-1"
+              >
                 <Link
                   href={`/public/photos/${photo.id}`}
-                  className="flex items-center gap-2"
+                  className="flex min-w-0 items-center gap-2"
                 >
                   <FileIcon className="flex-shrink-0" size={20} />
-                  <div className="truncate font-mono font-bold">
+                  <span className="truncate font-mono font-semibold">
                     {photo.originalFilename}
-                  </div>
+                  </span>
                 </Link>
               </Button>
             </CardTitle>
@@ -222,21 +208,23 @@ export default function PhotoCard({
           </div>
 
           {/* Plant Badges */}
-          <div className="flex justify-end gap-2 p-0">
-            {photo.plantImages.map((plantImage) => (
-              <Link
-                key={plantImage.plant.id}
-                href={`/public/plants/${plantImage.plant.id}`}
-              >
-                <Badge
-                  variant="default"
-                  className="flex items-center gap-1 whitespace-nowrap"
+          <div className="custom-scrollbar flex min-h-8 gap-2 overflow-x-auto px-1 pb-2">
+            {photo.plantImages
+              .sort((a, b) => a.plant.name.localeCompare(b.plant.name))
+              .map((plantImage) => (
+                <Link
+                  key={plantImage.plant.id}
+                  href={`/public/plants/${plantImage.plant.id}`}
                 >
-                  <Flower2Icon className="h-4 w-4" />
-                  {plantImage.plant.name}
-                </Badge>
-              </Link>
-            ))}
+                  <Badge
+                    variant="plant"
+                    className="flex items-center gap-1 whitespace-nowrap"
+                  >
+                    <TagIcon className="h-4 w-4" />
+                    {plantImage.plant.name}
+                  </Badge>
+                </Link>
+              ))}
           </div>
 
           {/* Photo Upload and Capture Date */}
@@ -261,7 +249,7 @@ export default function PhotoCard({
                   </p>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Upload Date </p>
+                  <p>{t("uploadDate")}</p>
                 </TooltipContent>
               </Tooltip>
 
@@ -284,14 +272,37 @@ export default function PhotoCard({
                   </p>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Capture Date (EXIF data)</p>
+                  <p>{t("captureDate")}</p>
                 </TooltipContent>
               </Tooltip>
             </div>
           </TooltipProvider>
+
+          {!!photo.plantImages.length && !isSocial && (
+            <Button
+              className="p-2 font-semibold"
+              onClick={() => setIsPostModalOpen(true)}
+            >
+              <MessageSquareTextIcon className="mr-2" />
+              {t("button-label-post-update")}
+            </Button>
+          )}
+
+          {!!!photo.plantImages.length && !isSocial && (
+            // link to edit plant, same as in DropDown menu
+            <Link href={`/photos/${photo.id}/form`}>
+              <Button
+                variant={"secondary"}
+                className="w-full p-2 font-semibold"
+              >
+                <TagsIcon className="mr-2" />
+                {t("button-label-connect-plants")}
+              </Button>
+            </Link>
+          )}
         </CardContent>
 
-        {isSocial ? (
+        {isSocial && (
           <SocialCardFooter
             className={`pb-2 pr-2 ${isSocial && "ml-12"}`}
             entityId={photo.id}
@@ -306,7 +317,7 @@ export default function PhotoCard({
             }}
             toggleComments={toggleComments}
           />
-        ) : undefined}
+        )}
 
         {isSocial && isCommentsOpen && (
           <Comments
@@ -316,62 +327,6 @@ export default function PhotoCard({
           />
         )}
       </Card>
-
-      {isModalOpen &&
-        createPortal(
-          <div
-            className={`fixed inset-0 z-50 ${isUnrestrictedView ? "overflow-auto" : "overflow-hidden"}`}
-            onClick={handleModalClose}
-          >
-            <div
-              className={`${isUnrestrictedView ? "min-h-screen min-w-full" : "h-screen w-screen"} p-0`}
-            >
-              <Button
-                variant={"secondary"}
-                onClick={handleModalClose}
-                className="fixed right-4 top-2 z-10 h-6 p-1"
-                aria-label="Close modal"
-              >
-                <X size={20} />
-              </Button>
-
-              <div
-                className="fixed left-1/2 top-2 z-10 flex -translate-x-1/2 items-center gap-2 rounded-sm bg-secondary bg-opacity-50 p-1 text-white"
-                onClick={handleSwitchContainerClick}
-              >
-                <div
-                  title="contain"
-                  onClick={() => setIsUnrestrictedView(false)}
-                >
-                  <Minimize size={20} />
-                </div>
-                <Switch
-                  title="Toggle contain/zoom"
-                  checked={isUnrestrictedView}
-                  onCheckedChange={toggleViewMode}
-                  aria-label="Toggle view mode"
-                />
-                <div title="zoom" onClick={() => setIsUnrestrictedView(true)}>
-                  <Maximize size={20} />
-                </div>
-              </div>
-              <div className="relative -z-30 flex h-full items-center justify-center bg-zinc-900/95">
-                <Image
-                  src={photo.imageUrl}
-                  alt=""
-                  width={1920}
-                  height={1080}
-                  className={`${
-                    isUnrestrictedView
-                      ? "max-w-none"
-                      : "max-h-[90vh] max-w-[90vw] object-contain"
-                  }`}
-                />
-              </div>
-            </div>
-          </div>,
-          document.body,
-        )}
     </>
   );
 }

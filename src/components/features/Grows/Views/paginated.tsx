@@ -1,7 +1,6 @@
 "use client";
 
 // src/components/features/Grows/Views/paginated.tsx:
-import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import {
   Dispatch,
@@ -16,15 +15,6 @@ import ResponsiveGrid from "~/components/Layouts/responsive-grid";
 import ItemsPagination from "~/components/atom/item-pagination";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
 import { GrowCard } from "~/components/features/Grows/grow-card";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "~/components/ui/pagination";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import { GetOwnGrowsInput } from "~/server/api/root";

@@ -30,12 +30,12 @@ body {
     --popover-foreground: 240 10% 20%;
     --primary: 120 61% 34%;
     --primary-foreground: 240 4.8% 95.9%;
-    --secondary: 9 100% 56%;
+    --secondary: 16 100% 42%;
     --secondary-foreground: 0 0% 98%;
-    --muted: 120 16% 72% / 0.2;
-    --muted-foreground: 240 5.2% 33.9%;
-    --accent: 120 61% 34% / 0.66;
-    --accent-foreground: 240 10% 20%;
+    --muted: 120 16% 94%;
+    --muted-foreground: 240 3.8% 48%;
+    --accent: 120 64% 32%;
+    --accent-foreground: 0 0% 98%;
     --destructive: 0 84.2% 56%;
     --destructive-foreground: 240 4.8% 95.9%;
     --border: 120 16% 72%;
@@ -47,8 +47,8 @@ body {
     --sidebar-foreground: 240 10% 20%;
     --sidebar-primary: 120 61% 34%;
     --sidebar-primary-foreground: 240 4.8% 95.9%;
-    --sidebar-accent: 120 61% 34% / 0.33;
-    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-accent: 120 64% 32%;
+    --sidebar-accent-foreground: 0 0% 98%;
     --sidebar-border: 120 16% 64%;
     --sidebar-ring: 120 61% 34%;
   }
@@ -59,11 +59,8 @@ body {
     --flowering: 349.7 89.2% 60.2%; /* rose-500 */
     --harvest: 24.6 95% 53.1%; /* orange-500 */
     --curing: 217.2 91.2% 59.8%; /* blue-500 */
-
-    /* --background: 240 5.9% 10%; */
     --background: 0 0% 3.9%;
     --foreground: 0 0% 98%;
-    /* --card: 240 10% 7.8%; */
     --card: 20 14.3% 6%;
     --card-foreground: 0 0% 98%;
     --popover: 20 14.3% 6%;
@@ -72,10 +69,10 @@ body {
     --primary-foreground: 0 0% 86%;
     --secondary: 20.5 90.2% 48.2%;
     --secondary-foreground: 0 0% 98%;
-    --muted: 120 16% 18% / 0.33;
-    --muted-foreground: 24 5.4% 63.9%; /* Stone 400 */
-    --accent: 114 64% 28% / 0.33;
-    --accent-foreground: 24 5.7% 82.9%; /* Stone 300 */
+    --muted: 120 20% 8%;
+    --muted-foreground: 240 5% 44.9%;
+    --accent: 120 42% 22%;
+    --accent-foreground: 0 0% 86%;
     --destructive: 0 80% 56%;
     --destructive-foreground: 0 0% 86%;
     --border: 120 16% 18%;
@@ -85,9 +82,9 @@ body {
     --sidebar-background: 20 14.3% 6%;
     --sidebar-foreground: 0 0% 98%;
     --sidebar-primary: 114 64% 28%;
-    --sidebar-primary-foreground: 0 0% 86%;
-    --sidebar-accent: 114 64% 28% / 0.33;
-    --sidebar-accent-foreground: 24 5.7% 82.9%; /* Stone 300 */
+    --sidebar-primary-foreground: 240 10% 20%;
+    --sidebar-accent: 120 42% 22%;
+    --sidebar-accent-foreground: 0 0% 86%;
     --sidebar-border: 120 16% 18%;
     --sidebar-ring: 114 64% 28%;
   }
@@ -111,4 +108,46 @@ body {
 *:focus-visible {
   outline: 2px solid var(--ring);
   outline-offset: 2px;
+}
+.custom-scrollbar-container {
+  position: relative;
+  padding-bottom: 4px;
+  margin-bottom: -4px; /* Compensate for the padding */
+}
+
+.custom-scrollbar {
+  /* Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--primary)) transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  height: 4px;
+  width: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: hsl(var(--primary) / 0.7);
+  border-radius: calc(var(--radius) * 0.25);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: hsl(var(--primary));
+}
+
+/* Specific adjustments for Firefox */
+@supports (scrollbar-width: thin) {
+  .custom-scrollbar-container {
+    overflow: hidden;
+  }
+
+  .custom-scrollbar {
+    /* direction: rtl; */
+    margin-bottom: -4px; /* Pull the scrollbar up in Firefox */
+    padding-bottom: 0px; /* Add padding to reveal the scrollbar */
+  }
 }

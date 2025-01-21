@@ -11,7 +11,7 @@
         "featured": {
           "title": "timeline",
           "href": "/public/timeline",
-          "description": "dashboard-description"
+          "description": "timeline-description"
         },
         "items": [
           {

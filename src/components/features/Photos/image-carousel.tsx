@@ -11,6 +11,7 @@ import {
   CarouselPrevious,
 } from "~/components/ui/carousel";
 import { formatDate, formatTime } from "~/lib/utils";
+import { useImageModal } from "~/providers/modal-provider";
 import { ImageType, PlantImagesType } from "~/server/api/root";
 
 export const ImageCarousel = ({
@@ -18,6 +19,8 @@ export const ImageCarousel = ({
 }: {
   plantImages: PlantImagesType;
 }) => {
+  const { openImageModal } = useImageModal();
+
   useEffect(() => {
     plantImages.forEach((plantImage) => {
       const imageLoader = new window.Image();
@@ -45,7 +48,10 @@ export const ImageCarousel = ({
     image: ImageType;
     isPriority?: boolean;
   }) => (
-    <div className="relative aspect-video w-full md:aspect-video">
+    <div
+      className="relative aspect-video w-full cursor-pointer md:aspect-video"
+      onClick={() => openImageModal(image.imageUrl)}
+    >
       <Image
         fill
         sizes={RESPONSIVE_IMAGE_SIZES}
@@ -55,8 +61,8 @@ export const ImageCarousel = ({
         className="object-cover"
         loading={isPriority ? undefined : "eager"}
       />
-      <div className="absolute bottom-0 left-0 right-0 bg-background/60 p-2 text-accent-foreground">
-        <div className="flex items-center gap-2 text-sm">
+      <div className="absolute bottom-0 left-0 right-0 bg-accent/50 p-2 text-accent-foreground">
+        <div className="flex items-center gap-2 font-mono text-sm">
           <CameraIcon size={16} />
           <span>
             {formatDate(image.captureDate, locale)}

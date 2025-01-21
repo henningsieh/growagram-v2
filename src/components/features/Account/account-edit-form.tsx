@@ -8,10 +8,10 @@ import {
   AtSign,
   CheckIcon,
   Edit,
-  Loader2,
   Mail,
   RotateCcw,
   UserIcon,
+  XIcon,
 } from "lucide-react";
 import type { Session } from "next-auth";
 import { useSession } from "next-auth/react";
@@ -21,14 +21,14 @@ import { useForm } from "react-hook-form";
 import FormContent from "~/components/Layouts/form-content";
 import SpinningLoader from "~/components/Layouts/loader";
 import PageHeader from "~/components/Layouts/page-header";
+import AvatarCardHeader from "~/components/atom/avatar-card-header";
+import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
 import { Button } from "~/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
-  CardTitle,
 } from "~/components/ui/card";
 import {
   Form,
@@ -40,6 +40,7 @@ import {
   FormMessage,
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
+import { Separator } from "~/components/ui/separator";
 import { useToast } from "~/hooks/use-toast";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
@@ -77,14 +78,14 @@ export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
   const [usernameModified, setUsernameModified] = useState(false);
 
   const form = useForm<GetUserEditInput>({
-    mode: "onBlur",
+    mode: "onChange",
     resolver: zodResolver(userEditSchema),
     defaultValues: {
       id: user?.id,
       name: user?.name || undefined,
       username: user?.username || "",
       email: user?.email || "",
-      // image: accountData?.image || undefined,
+      image: user?.image,
     },
   });
 
@@ -128,8 +129,9 @@ export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
 
   // Handle username change, debounce the API call
   const handleUsernameChange = (newUsername: string) => {
-    setUsername(newUsername);
     setUsernameModified(true); // Mark that username has been modified
+
+    setUsername(newUsername);
 
     if (typingTimeout) clearTimeout(typingTimeout);
 
@@ -159,6 +161,16 @@ export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="mx-auto w-full max-w-4xl"
         >
+          {!user.username && (
+            <Alert className="mb-4 border-2 border-secondary bg-secondary/80">
+              <AlertTitle className="text-lg text-accent-foreground">
+                {t("welcome-message-title")}
+              </AlertTitle>
+              <AlertDescription className="text-base text-accent-foreground">
+                {t("welcome-message-description")}
+              </AlertDescription>
+            </Alert>
+          )}
           <FormContent>
             <form onSubmit={form.handleSubmit(onSubmit)}>
               <Form {...form}>
@@ -170,15 +182,11 @@ export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
                       transition={{ duration: 0.5 }}
                       className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent"
                     />
-                    <div className="relative z-10">
-                      <CardTitle className="text-2xl">
-                        {t("form-profile-details")}
-                      </CardTitle>
-                      <CardDescription className="mt-2 text-base">
-                        {t("form-profile-details-description")}
-                      </CardDescription>
-                    </div>
+                    <AvatarCardHeader
+                      user={{ ...form.watch(), role: user.role }}
+                    />
                   </CardHeader>
+                  <Separator className="opacity-50" />
                   <CardContent className="p-6 sm:p-8">
                     <motion.div
                       variants={formVariants}
@@ -223,7 +231,7 @@ export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
                               </AnimatePresence>
                               <FormControl>
                                 <div className="relative mt-2">
-                                  <UserIcon className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+                                  <UserIcon className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-foreground" />
                                   <Input
                                     className="bg-background/50 pl-10 font-medium transition-colors focus:bg-background"
                                     placeholder={t("form-name-placeholder")}
@@ -286,7 +294,7 @@ export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
                               </AnimatePresence>
                               <FormControl>
                                 <div className="relative mt-2 flex items-center">
-                                  <AtSign className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+                                  <AtSign className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-foreground" />
                                   <Input
                                     className="bg-background/50 pl-10 pr-10 font-medium transition-colors focus:bg-background"
                                     autoComplete="off"
@@ -302,13 +310,24 @@ export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
                                   <div className="absolute right-3 flex h-6 w-6 items-center justify-center">
                                     <AnimatePresence mode="wait">
                                       {!usernameCheck.isFetching ? (
-                                        usernameCheck.data?.isUnique && (
+                                        // check if username is unique in the database
+                                        usernameCheck.data?.isUnique &&
+                                        // check for formfield username has no error
+                                        !form.formState.errors.username ? (
                                           <motion.div
                                             initial={{ opacity: 0, scale: 0.8 }}
                                             animate={{ opacity: 1, scale: 1 }}
                                             exit={{ opacity: 0, scale: 0.8 }}
                                           >
                                             <CheckIcon className="h-5 w-5 text-green-600" />
+                                          </motion.div>
+                                        ) : (
+                                          <motion.div
+                                            initial={{ opacity: 0, scale: 0.8 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            exit={{ opacity: 0, scale: 0.8 }}
+                                          >
+                                            <XIcon className="h-6 w-6 text-destructive" />
                                           </motion.div>
                                         )
                                       ) : (
@@ -317,7 +336,7 @@ export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
                                           animate={{ opacity: 1, scale: 1 }}
                                           exit={{ opacity: 0, scale: 0.8 }}
                                         >
-                                          <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+                                          <SpinningLoader className="h-6 w-6" />
                                         </motion.div>
                                       )}
                                     </AnimatePresence>
@@ -336,7 +355,7 @@ export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
                           name="email"
                           render={({ field }) => (
                             <FormItem className="overflow-hidden rounded-sm bg-muted/50 p-4 transition-colors hover:bg-muted/70">
-                              <FormLabel className="text-base">
+                              <FormLabel className="text-base text-muted-foreground">
                                 {t("form-email-label")}
                               </FormLabel>
                               <FormDescription>
@@ -344,10 +363,10 @@ export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
                               </FormDescription>
                               <FormControl>
                                 <div className="relative mt-2">
-                                  <Mail className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+                                  <Mail className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 cursor-not-allowed text-muted-foreground" />
                                   <Input
-                                    // readOnly
-                                    // disabled
+                                    readOnly
+                                    disabled
                                     type="email"
                                     autoComplete="off"
                                     autoCapitalize="off"

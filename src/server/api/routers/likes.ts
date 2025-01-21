@@ -1,8 +1,9 @@
 // src/server/api/routers/likes.ts:
 import { TRPCError } from "@trpc/server";
 import { and, eq, sql } from "drizzle-orm";
+import { comment } from "postcss";
 import { z } from "zod";
-import { grows, images, likes, plants } from "~/lib/db/schema";
+import { comments, grows, images, likes, plants, posts } from "~/lib/db/schema";
 import {
   createTRPCRouter,
   protectedProcedure,
@@ -30,10 +31,10 @@ export const likeRouter = createTRPCRouter({
         });
         entityExists = !!plant;
       } else if (entityType === LikeableEntityType.Photo) {
-        const image = await ctx.db.query.images.findFirst({
+        const photo = await ctx.db.query.images.findFirst({
           where: eq(images.id, entityId),
         });
-        entityExists = !!image;
+        entityExists = !!photo;
       } else if (entityType === LikeableEntityType.Grow) {
         const grow = await ctx.db.query.grows.findFirst({
           where: eq(grows.id, entityId),
@@ -41,9 +42,14 @@ export const likeRouter = createTRPCRouter({
         entityExists = !!grow;
       } else if (entityType === LikeableEntityType.Comment) {
         const comment = await ctx.db.query.comments.findFirst({
-          where: eq(grows.id, entityId),
+          where: eq(comments.id, entityId),
         });
         entityExists = !!comment;
+      } else if (entityType === LikeableEntityType.Post) {
+        const post = await ctx.db.query.posts.findFirst({
+          where: eq(posts.id, entityId),
+        });
+        entityExists = !!post;
       }
 
       if (!entityExists) {

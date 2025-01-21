@@ -1,112 +1,115 @@
-# GrowAGram 🪴
+# GrowAGram 🪴 Track Your Grow 📜
 
-GrowAGram is a modern social media platform for plant enthusiasts, focusing on documenting and sharing plant growing journeys. It enables users to track their plants' progress, share experiences, and connect with other growers.
+GrowAGram is a modern social platform for plant enthusiasts to document and share their growing journeys. Users can track plant progress, share experiences, and connect with like-minded growers.
 
-## Project Status
+## 🌱 Key Features
 
-🚧 **Currently in Development** 🚧
+- 🖋️ Detailed grow diary tracking
+- 🔗 Plant-to-grow connections
+- 👥 Social community features
+- 📊 Growing statistics and analytics
+- 🌍 Multi-language support
+- 📱 Responsive design
 
-The project is in active development, with core features being implemented. While the basic infrastructure is in place, many features are still under construction.
+## 🛠️ Tech Stack
 
-## Tech Stack
+[![Next.js](https://img.shields.io/badge/Next.js-15.1.5-black.svg)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19.0.0-61dafb.svg)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.7.3-blue.svg)](https://www.typescriptlang.org/)
+[![TailwindCSS](https://img.shields.io/badge/Tailwind-3.4.17-38bdf8.svg)](https://tailwindcss.com)
+[![shadcn/ui](https://img.shields.io/badge/shadcn/ui-Latest-000000.svg)](https://ui.shadcn.com)
+[![tRPC](https://img.shields.io/badge/tRPC-11.0.0--rc.700-2596be.svg)](https://trpc.io)
+[![@tanstack/react-query](https://img.shields.io/badge/@tanstack/react--query-5.64.2-ff4154.svg)](https://tanstack.com/query/latest)
+[![Auth.js](https://img.shields.io/badge/Auth.js-5.0.0--beta.25-000000.svg)](https://authjs.dev)
+[![framer-motion](https://img.shields.io/badge/framer--motion-11.18.0-0055FF.svg)](https://www.framer.com/motion/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-316192.svg)](https://www.postgresql.org/)
+[![Drizzle](https://img.shields.io/badge/Drizzle-0.35.3-c5f74f.svg)](https://orm.drizzle.team)
+[![next-intl](https://img.shields.io/badge/next--intl-3.26.3-black.svg)](https://next-intl-docs.vercel.app/)
+[![Cloudinary](https://img.shields.io/badge/Cloudinary-2.5.1-4285f4.svg)](https://cloudinary.com)
+[![Docker](https://img.shields.io/badge/Docker-Latest-2496ed.svg)](https://docker.com)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-- **Framework**: Next.js 15 (App Router)
-- **Core**: React 19 (Server Actions & Server Components)
-- **Language**: TypeScript
-- **Authentication**: NextAuth.js
-- **Database**: PostgreSQL with Drizzle ORM
-- **Styling**: Tailwind CSS + shadcn/ui
-- **Image Storage**: Cloudinary
-- **API**: tRPC
-- **Internationalization**: next-intl
+### Frontend
 
-## Getting Started
+- ⚛️ React 19 (Server Components)
+- 📱 Next.js 15 (App Router)
+- 🎨 Tailwind CSS + shadcn/ui
+- 🌐 next-intl for i18n
 
-1. Clone the repository:
-```
-git clone https://github.com/your-username/growagram.git
-cd growagram
-```
+### Backend
 
-2. Install dependencies:
-```
-bun install
-```
-
-3. Set up environment variables:
-Create a `.env.local` file in the root directory and add the necessary environment variables. Refer to `.env.example` for the required variables.
-
-4. Run the development server:
-```
-bun run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-## Learn More
-
-To learn more about the technologies used in this project, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [NextAuth.js Documentation](https://next-auth.js.org/getting-started/introduction) - learn about authentication in Next.js.
-- [Drizzle ORM Documentation](https://orm.drizzle.team/docs/overview) - learn about using Drizzle ORM with PostgreSQL.
-- [Tailwind CSS Documentation](https://tailwindcss.com/docs) - learn about styling with Tailwind CSS.
-- [shadcn/ui Documentation](https://ui.shadcn.dev/docs) - learn about using shadcn/ui components.
-- [Cloudinary Documentation](https://cloudinary.com/documentation) - learn about image storage and management.
-- [tRPC Documentation](https://trpc.io/docs) - learn about building APIs with tRPC.
-- [next-intl Documentation](https://next-intl-docs.vercel.app) - learn about internationalization in Next.js.
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-
-
-## Developer TODOs
-
-### Authentication & User Management
-- [x] Social authentication implementation
-- [ ] User profile completeness indicator
-- [ ] Email verification system
-- [ ] Password reset flow
-- [ ] User roles and permissions
-
-### Core Features
-- [x] Basic CRUD for grows
-- [x] Plant management system
-- [x] Growing phase tracking
-- [ ] Automated timeline generation
-- [ ] Environmental data logging
-- [ ] Strain database integration
-
-### Image Management
-- [x] Cloudinary integration
-- [x] Bulk upload functionality
-- [ ] Image optimization pipeline
-- [x] EXIF data extraction
-- [ ] Auto-tagging system
-
-### Social Features
-- [x] Like system
-- [x] Comments
-- [ ] Follow system
-- [ ] User mentions in comments
-- [ ] Activity feed
-- [ ] Notifications
-
-### Technical Improvements
-- [ ] Unit test coverage (>80%)
-- [ ] E2E tests with Playwright
-- [ ] Performance optimization
-- [ ] API documentation
-- [ ] Error boundary implementation
-- [ ] Progressive Web App (PWA) support
+- 🔐 Auth.js (NextAuth) for authentication
+- 🔄 tRPC for type-safe APIs
+- 📊 PostgreSQL with Drizzle ORM
+- 🖼️ Cloudinary for image storage
 
 ### DevOps
-- [x] CI/CD pipeline setup
-- [x] Docker containerization
-- [ ] Automated backups
-- [ ] Monitoring & alerting
-- [ ] Load testing
-- [ ] Security audit
+
+- 🐳 Docker containerization
+- 🔄 CI/CD with GitHub Actions
+- 📦 Self-hosted on Hetzner Cloud via Coolify
+
+## 🚀 Deployment
+
+This application is self-hosted on [Hetzner Cloud](https://www.hetzner.com/cloud) using [Coolify](https://coolify.io/). Deployment is automated with Coolify’s Git integration and container orchestration.
+
+**Beta instance:** [beta.growagram.com](https://beta.growagram.com)
+
+## 📊 Project Status
+
+⚧️ **Active Development** | Phase 1 of 3
+
+## 🖋️ Roadmap and Tasks
+
+### Legend
+
+- ⏳ Planned
+- 🔨 In Progress
+- ✅ Completed
+
+### Phase 1: Core Platform (70% Complete)
+
+#### Core Features
+
+- ✅ User authentication
+- ✅ Basic CRUD operations
+- ✅ Image management
+- ✅ Public timeline Posts (reference Grows, Plants or Fotos)
+- 🔨 Features for Admin role (delete crap, ban users)
+- 🔨 Activity feeds for Users, Grows and Plants
+- 🔨 Follow system with Following timelinePhotos)
+- ⏳ User profile enhancements
+
+#### Image Management
+
+- ✅ Cloudinary integration
+- ✅ Bulk upload functionality
+- ✅ EXIF data extraction
+- ✅ Many-to-Many relations: Grows <-> Plants <-> Photos
+
+#### Technical Improvements
+
+- ⏳ Unit test coverage (≥80%)
+- ⏳ Performance optimization
+- ⏳ API documentation
+- ⏳ Error boundaries
+
+### Phase 2: Social Features
+
+#### Community Features
+
+- ✅ Comments system
+- ✅ Like functionality
+- ⏳ User mentions in posts/comments
+- ⏳ Advanced search features
+- ⏳ Notifications
+- ⏳ Private messaging
+
+### Phase 3: Advanced Features
+
+#### Monetization & Analytics
+
+- ⏳ Sponsoring opportunities for breeders and manufacturers
+- ⏳ AI plant recognition
+- ⏳ Analytics dashboard
+- ⏳ Premium Features

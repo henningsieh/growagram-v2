@@ -1,6 +1,7 @@
 // src/app/[locale]/(protected)/plants/layout.tsx:
 import { PaginationItemsPerPage } from "~/assets/constants";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
+import { HydrateClient } from "~/lib/trpc/server";
 import { api } from "~/lib/trpc/server";
 import { GetOwnPlantsInput } from "~/server/api/root";
 import { PlantsSortField } from "~/types/plant";
@@ -31,5 +32,5 @@ export default async function PlantsLayout({
     sortOrder: SortOrder.ASC,
   } satisfies GetOwnPlantsInput);
 
-  return children;
+  return <HydrateClient>{children}</HydrateClient>;
 }

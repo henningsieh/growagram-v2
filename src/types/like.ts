@@ -5,4 +5,5 @@ export enum LikeableEntityType {
   Photo = "image",
   Grow = "grow",
   Comment = "comment",
+  Post = "post",
 }

@@ -280,6 +280,25 @@ export const plantRouter = createTRPCRouter({
   deleteById: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
+      // check if the plant exists and the current user is the owner
+      const plant = await ctx.db.query.plants.findFirst({
+        where: (plants, { eq }) => eq(plants.id, input.id),
+      });
+
+      if (!plant) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Plant not found",
+        });
+      }
+
+      if (plant.ownerId !== ctx.session.user.id) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Session user does not own this plant",
+        });
+      }
+
       // Logic to delete an plant by ID
       const deletedImage = await ctx.db
         .delete(plants)

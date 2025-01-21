@@ -1,13 +1,7 @@
 "use client";
 
 // src/app/[locale]/(protected)/photos/page.tsx:
-import {
-  Infinity,
-  ArrowDown01,
-  ArrowDown10,
-  Camera,
-  UploadCloud,
-} from "lucide-react";
+import { Infinity, Camera, UploadCloud } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
@@ -102,15 +96,11 @@ export default function MyImagesPage() {
       field: PhotosSortField.UPLOAD_DATE,
       label: t("uploaded-at"),
       icon: <UploadCloud className="h-6 w-5" />,
-      sortIconAsc: ArrowDown01,
-      sortIconDesc: ArrowDown10,
     },
     {
       field: PhotosSortField.CAPTURE_DATE,
       label: t("capture-date"),
       icon: <Camera className="h-6 w-5" />,
-      sortIconAsc: ArrowDown01,
-      sortIconDesc: ArrowDown10,
     },
   ];
 
@@ -127,7 +117,7 @@ export default function MyImagesPage() {
         sortOrder={sortOrder}
         sortOptions={sortOptions}
         onSortChange={handleSortChange}
-        filterLabel="New only"
+        filterLabel={t("filter-label-not-connected")}
         filterEnabled={filterNotConnected}
         onFilterChange={handleFilterChange}
         viewMode={{

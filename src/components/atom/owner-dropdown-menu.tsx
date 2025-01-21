@@ -24,7 +24,7 @@ interface OwnerDropdownMenuProps {
   isDeleting: boolean;
   handleDelete: () => void;
   entityId: string;
-  entityType: "Grows" | "Photos" | "Plants";
+  entityType: "Grows" | "Photos" | "Plants" | "Posts";
 }
 
 export function OwnerDropdownMenu({
@@ -53,7 +53,7 @@ export function OwnerDropdownMenu({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem
+        {/* <DropdownMenuItem
           className="flex cursor-pointer items-center justify-start"
           onSelect={(e) => e.preventDefault()}
           onClick={() => setIsSocial(!isSocial)}
@@ -71,7 +71,7 @@ export function OwnerDropdownMenu({
             checked={isSocial}
             onCheckedChange={setIsSocial}
           />
-        </DropdownMenuItem>
+        </DropdownMenuItem> */}
         <DropdownMenuItem asChild>
           <Link
             target="_blank"

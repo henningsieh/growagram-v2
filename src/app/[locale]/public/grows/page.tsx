@@ -1,15 +1,42 @@
 "use client";
 
+import { InfiniteData } from "@tanstack/react-query";
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef } from "react";
 import { PaginationItemsPerPage } from "~/assets/constants";
 import InfiniteScrollLoader from "~/components/Layouts/InfiniteScrollLoader";
 import SpinningLoader from "~/components/Layouts/loader";
 import { GrowCard } from "~/components/features/Grows/grow-card";
 import { api } from "~/lib/trpc/react";
-import { GetAllGrowsInput, GetAllGrowsType } from "~/server/api/root";
+import {
+  GetAllGrowsInput,
+  GetAllGrowsOutput,
+  GetAllGrowsType,
+} from "~/server/api/root";
 
 export default function PublicGrowsPage() {
+  const utils = api.useUtils();
+  const t = useTranslations("Grows");
+
+  // Get data from cache that was prefetched in layout.tsx
+  const cachedData = utils.grows.getAllGrows.getInfiniteData({
+    limit: PaginationItemsPerPage.PUBLIC_GROWS_PER_PAGE,
+  });
+
+  console.debug("cachedData", cachedData);
+
+  // Create initialData from cache if available
+  const initialData: InfiniteData<GetAllGrowsOutput, number> | undefined =
+    cachedData
+      ? {
+          pages: cachedData.pages,
+          pageParams: cachedData.pageParams.filter(
+            (param): param is number => param !== null,
+          ),
+        }
+      : undefined;
+
   const {
     data,
     isLoading,
@@ -21,6 +48,7 @@ export default function PublicGrowsPage() {
       limit: PaginationItemsPerPage.PUBLIC_GROWS_PER_PAGE,
     } satisfies GetAllGrowsInput,
     {
+      initialData,
       getNextPageParam: (lastPage) => lastPage.nextCursor,
     },
   );
@@ -59,7 +87,7 @@ export default function PublicGrowsPage() {
         <SpinningLoader className="text-secondary" />
       ) : grows.length === 0 ? (
         <p className="mt-8 text-center text-muted-foreground">
-          No grows found.
+          {t("NoGrowsFound")}
         </p>
       ) : (
         // this should be a flex-col timeline with animated grow cards
