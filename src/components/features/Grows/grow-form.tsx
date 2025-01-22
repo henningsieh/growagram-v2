@@ -69,8 +69,8 @@ export default function GrowFormPage({ grow }: { grow?: GetGrowByIdType }) {
       ? t("form-description-edit-grow")
       : t("form-description-create-new-grow"),
     submitButtonText: isEditMode
-      ? t("buttonLabel-save-changes")
-      : t("buttonLabel-create-grow"),
+      ? t("button-label-save-changes")
+      : t("button-label-create-grow"),
     successToast: {
       title: t("success-title"),
       description: isEditMode

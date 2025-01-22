@@ -60,8 +60,10 @@
     "title": "Page Not Found"
   },
   "Grows": {
-    "buttonLabel-create-grow": "Create Grow",
-    "buttonLabel-save-changes": "Save Changes",
+    "NoGrowsFound": "No grows have been found.",
+    "button-label-create-grow": "Create Grow",
+    "button-label-post-update": "Create Update for Grow",
+    "button-label-save-changes": "Save Changes",
     "connect-error": "Error connecting plant",
     "delete-button-label": "Delete Grow",
     "delete-grow-button-label": "Delete Grow",

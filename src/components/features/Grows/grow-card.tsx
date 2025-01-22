@@ -229,7 +229,7 @@ export function GrowCard({
                   onClick={() => setIsPostModalOpen(true)}
                 >
                   <MessageSquareTextIcon className="mr-2" />
-                  {t("buttonLabel-post-update")}
+                  {t("button-label-post-update")}
                 </Button>
               </div>
             )}
