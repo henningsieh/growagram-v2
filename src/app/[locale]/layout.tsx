@@ -9,6 +9,7 @@ import { APP_SETTINGS } from "~/assets/constants";
 import AppFooter from "~/components/Layouts/Footer/app-footer";
 import { MainNavigationBar } from "~/components/Layouts/MainNavigationBar";
 import { ThemeProvider } from "~/components/Layouts/theme-provider";
+import { ChatButton } from "~/components/features/Chat/chat-button";
 import { Toaster } from "~/components/ui/toaster";
 import { TRPCReactProvider } from "~/lib/trpc/react";
 import { ImageModalProvider } from "~/providers/modal-provider";
@@ -76,6 +77,7 @@ export default async function AppLayout(props: AppLayoutProps) {
                       {props.children}
                     </div>
                     <AppFooter />
+                    <ChatButton />
                   </div>
                 </ImageModalProvider>
               </TRPCReactProvider>

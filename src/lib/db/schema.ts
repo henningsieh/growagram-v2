@@ -22,6 +22,20 @@ import { UserRoles } from "~/types/user";
 // Creating table with a prefix for multi-project schema
 export const createTable = pgTableCreator((name) => `growagram.com_${name}`);
 
+// Add this to your schema
+export const chatMessages = pgTable("chat_message", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  content: text("content").notNull(),
+  senderId: text("sender_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+});
+
 // Define the users table
 export const users = pgTable(
   "user",
@@ -34,11 +48,25 @@ export const users = pgTable(
     email: text("email").unique(),
     emailVerified: timestamp("emailVerified", { mode: "date" }),
     image: text("image"),
+    passwordHash: text("passwordHash"), // Add this line
     role: text("role", {
       // Assert UserRoles as drizzle enum tuple
       enum: Object.values(UserRoles) as [string, ...string[]],
     })
       .default(UserRoles.USER) // Use the TS enum for the default value
+      .notNull(),
+    steadyAccessToken: text(),
+    steadyTokenExpiresAt: timestamp("steady_token_expires_at"),
+    steadyRefreshToken: text(),
+    steadyRefreshTokenExpiresAt: timestamp("steady_refresh_token_expires_at", {
+      withTimezone: true,
+    }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .$onUpdate(() => new Date())
+      .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
   },
   (table) => ({
@@ -50,6 +78,8 @@ export const users = pgTable(
     nameIdx: index("name_idx").on(table.name),
     roleIdx: index("role_idx").on(table.role),
     emailVerifiedIdx: index("email_verified_idx").on(table.emailVerified),
+    // Add index for password lookups
+    passwordHashIdx: index("password_hash_idx").on(table.passwordHash),
   }),
 );
 
@@ -517,5 +547,12 @@ export const publicPostsRelations = relations(posts, ({ one }) => ({
   photo: one(images, {
     fields: [posts.entityId],
     references: [images.id],
+  }),
+}));
+
+export const chatMessagesRelations = relations(chatMessages, ({ one }) => ({
+  sender: one(users, {
+    fields: [chatMessages.senderId],
+    references: [users.id],
   }),
 }));

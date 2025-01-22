@@ -29,9 +29,7 @@
     "info-name": "Name",
     "info-role": "Rolle",
     "info-username": "Benutzername",
-    "not-provided": "Nicht angegeben",
-    "welcome-message-description": "Bitte gib einen eindeutigen Benutzernamen ein. Dies ist erforderlich, um die App zu nutzen.",
-    "welcome-message-title": "Willkommen in unserer App!"
+    "not-provided": "Nicht angegeben"
   },
   "CardFooter": {
     "Login to see detailed view statistics": "Melde dich an, um detaillierte Statistiken zu sehen.",
@@ -79,7 +77,7 @@
     "form-page-subtitle-edit": "Bearbeite einen Grow aus deiner Sammlung",
     "form-page-subtitle-new": "Füge deiner Sammlung einen neuen Grow hinzu",
     "form-page-title-edit": "Grow bearbeiten",
-    "form-page-title-new": "Grow erstellen",
+    "form-page-title-new": "Neuen Grow anlegen",
     "form-title-create-new-grow": "Stammdaten deines Grows",
     "form-title-edit-grow": "Stammdaten des Grows",
     "grow-card-createdAt": "Erstellt am",
@@ -88,7 +86,7 @@
     "grow-name-description": "Gib deinem Grow einen einprägsamen Namen.",
     "grow-name-placeholder": "Gib den Namen des Grows ein",
     "growth-stage": "Wachstumsphase",
-    "mygrows-page-subtitle": "Anzeige und Verwaltung deiner Grows",
+    "mygrows-page-subtitle": "Anzeige und Verwaltung meiner aktuellen Grows",
     "mygrows-page-title": "Meine Grows",
     "no-grows-yet": "Du hast bisher keine Grows erstellt.",
     "no-plants-connected": "Bisher keine Pflanzen zugeordnet.",
@@ -149,7 +147,10 @@
     "toggle-language": "Sprache wechseln"
   },
   "LoginPage": {
-    "description": "Geben Sie Ihre E-Mail-Adresse und Passwort ein oder wählen Sie unten einen Social Provider für den Login aus, um sich anzumelden.",
+    "Email-verified-description": "Deine E-Mail-Adresse wurde erfolgreich verifiziert.",
+    "Email-verified-title": "E-Mail-Adresse bestätigt",
+    "continue-with-email": "Oder Login mit E-Mail und Passwort",
+    "description": "Login mit deinem Provider-Account",
     "email": {
       "label": "E-Mail-Adresse"
     },
@@ -164,9 +165,8 @@
       "link": "Registrieren",
       "text": "Noch kein Konto?"
     },
-    "social-identity-oauth-providers": "OAuth-Anbieter für soziale Identität",
     "submit": "Anmelden",
-    "title": "Bei GrowAGram anmelden"
+    "title": "GrowAGram Login"
   },
   "Navigation": {
     "dashboard": "Dashboard",
@@ -185,8 +185,8 @@
     "navigation": "Navigation",
     "plants": "Alle Pflanzen",
     "plants-description": "Entdecke, welche Pflanzen andere gerade großziehen.",
-    "timeline": "Alle Updates",
-    "timeline-description": "Updates in einer chronologischen Zeitleiste",
+    "timeline": "Zeitleiste",
+    "timeline-description": "Social Media Zeitachse (Funktion in Kürze)",
     "toggle-menu": "Menü umschalten"
   },
   "Photos": {
@@ -195,18 +195,13 @@
       "removeAll": "Alle Pflanzen entfernen",
       "save": "Pflanzenauswahl speichern ({count})"
     },
-    "button-label-connect-plants": "Pflanzen markieren",
-    "button-label-post-update": "Update zum Foto erstellen",
     "button-label-upload-photos": "Hochladen",
     "buttonBackLabel": "Zurück",
     "capture-date": "aufgenommen",
-    "captureDate": "Aufnahmedatum (aus EXIF-Daten)",
     "delete-button-label": "Foto löschen",
     "edit-button-label": "Foto bearbeiten",
-    "filter-label-not-connected": "NUR NEUE",
     "my-Photos": "Meine Fotos",
-    "my-Photos-subtitle": "Anzeige und Verwaltung deiner Fotos",
-    "newNotConnteched": "NEU",
+    "my-Photos-subtitle": "Anzeige und Verwaltung meiner Fotos",
     "plantSelection": {
       "description": "Wähle jede Pflanze aus, die du auf dem Foto sehen kannst!",
       "title": "Pflanzenauswahl"
@@ -218,13 +213,10 @@
     },
     "subtitle": "Welche Pflanzen siehst du auf diesem Foto?",
     "title": "Pflanzen identifizieren",
-    "uploadDate": "Upload-Datum",
     "uploaded-at": "hochgeladen"
   },
   "Plants": {
-    "NoPlantsFound": "Es wurden keine Pflanzen gefunden.",
     "breeder": "Züchter / Breeder",
-    "button-label-post-update": "Update zur Pflanze erstellen",
     "curing-start-date": "Startdatum der Aushärtephase",
     "delete-button-label": "Pflanze löschen",
     "delete-plant-button-label": "Pflanze löschen",
@@ -234,7 +226,7 @@
     "flowering-start-date": "Startdatum der Blüte",
     "form-button-reset": "Zurücksetzen",
     "form-button-save-changes": "Speichern",
-    "form-button-save-new": "Pflanze hinzufügen",
+    "form-button-save-new": "Pflanze erstellen",
     "form-heading": "Stammdaten der Pflanze",
     "form-heading-description": "Bearbeite den Namen und die relevanten Datumsangaben der Pflanze.",
     "form-nickname": "Name der Pflanze",
@@ -242,8 +234,8 @@
     "form-pageheader-backButtonLabel": "Zurück",
     "form-pagerheader-edit-subtitle": "Bearbeite eine Pflanze aus deiner Sammlung",
     "form-pagerheader-edit-title": "Pflanze bearbeiten",
-    "form-pagerheader-subtitle": "Füge deiner Sammlung eine neue Pflanze hinzu",
-    "form-pagerheader-title": "Neue Pflanze hinzufügen",
+    "form-pagerheader-new-subtitle": "Füge deiner Sammlung eine neue Pflanze hinzu",
+    "form-pagerheader-new-title": "Neue Pflanze hinzufügen",
     "germination-date": "Datum der Keimung",
     "growth-progress": "Wachstumsfortschritt",
     "harvest-date": "Datum der Ernte",
@@ -254,7 +246,7 @@
     "public-link-label": "Öffnen im neuen Tab",
     "sort-plants-createdAt": "Angelegt am",
     "strain": "Sorte / Strain",
-    "subtitle": "Anzeige und Verwaltung deiner Pflanzen",
+    "subtitle": "Verwalte deine Pflanzen",
     "thc": "THC",
     "thc-content": "THC-Gehalt",
     "title": "Meine Pflanzen",
@@ -264,21 +256,71 @@
   },
   "Platform": {
     "Dashboard-title": "Dashboard",
-    "asc": "aufsteigend",
+    "Platform": {
+      "coming-soon-description": "Wir arbeiten schon an der neuen Funktion. Komm bald wieder vorbei!"
+    },
+    "asc": "Aufsteigend",
     "coming-soon": "Bald verfügbar",
-    "coming-soon-description": "Wir arbeiten schon an der neuen Funktion. Komm bald wieder vorbei!",
-    "desc": "absteigend",
+    "desc": "Absteigend",
     "feature-coming": "Neue Funktion ist auf dem Weg!",
     "more": "mehr",
     "welcome-to-platform-subttitle": "Willkommen bei der Verwaltung deiner Grows und Pflanzen"
   },
-  "Posts": {
-    "buttonLabel-createNewPost": "Update posten",
-    "createNewPost-title": "Schreibe und poste ein neues Update",
-    "delete-button-label": "Update löschen",
-    "edit-button-label": "Update bearbeiten",
-    "linkedInThisPost": "Mit dem Update verlinkt",
-    "public-link-label": "Öffnen im neuen Tab"
+  "Premium": {
+    "benefits": {
+      "ad-free-experience": "Werbefreie Erfahrung",
+      "community-access": "Zugang zu erweiterten Community-Foren",
+      "early-access": "Frühzeitiger Zugang zu neuen Funktionen",
+      "exclusive-content": "Exklusive Premium-Inhalte",
+      "priority-support": "Prioritäts-Support",
+      "title": "Premium-Vorteile"
+    },
+    "connect-steady-button": "Mit Steady verbinden",
+    "faq": {
+      "cancel-subscription": {
+        "answer": "Ja, du kannst dein Abonnement jederzeit über deinen Steady-Account kündigen. Dein Premium-Zugang bleibt bis zum Ende deiner aktuellen Abrechnungsperiode bestehen.",
+        "question": "Kann ich mein Abonnement jederzeit kündigen?"
+      },
+      "free-trial": {
+        "answer": "Derzeit bieten wir keine kostenlose Testphase an, aber du kannst unsere kostenlosen Inhalte ausprobieren, um einen Eindruck von unserem Angebot zu bekommen, bevor du abonnierst.",
+        "question": "Gibt es eine kostenlose Testphase?"
+      },
+      "how-subscription-works": {
+        "answer": "Unser Premium-Abonnement wird über Steady verwaltet. Sobald du deinen Steady-Account verbunden hast, erhältst du sofortigen Zugang zu allen Premium-Funktionen.",
+        "question": "Wie funktioniert das Premium-Abonnement?"
+      },
+      "payment-methods": {
+        "answer": "Steady unterstützt verschiedene Zahlungsmethoden, einschließlich Kreditkarten, PayPal und SEPA-Lastschrift. Du kannst deine bevorzugte Methode während des Abonnement-Prozesses auswählen.",
+        "question": "Welche Zahlungsmethoden werden akzeptiert?"
+      },
+      "title": "Häufig gestellte Fragen"
+    },
+    "get-exclusive-access": "Erhalte exklusiven Zugang zu Premium-Funktionen und unterstütze unsere Community!",
+    "premium-subtitle": "Verbessere deine Anbau-Erfahrung mit exklusiven Vorteilen",
+    "premium-title": "Premium-Funktionen freischalten",
+    "ready-to-go-premium": "Bereit für Premium?",
+    "unlock-premium-content": "Hebe deine Anbau-Reise auf ein neues Level"
+  },
+  "RegisterPage": {
+    "description": "Fülle alle Felder unten aus.",
+    "email": {
+      "label": "Deine gültige E-Mail-Adresse"
+    },
+    "login": {
+      "link": "Login",
+      "text": "Du hast bereits ein Konto?"
+    },
+    "name": {
+      "label": "Name"
+    },
+    "password": {
+      "label": "Passwort"
+    },
+    "submit": "Jetzt registrieren",
+    "title": "Registrieren bei GrowAGram",
+    "username": {
+      "label": "Username"
+    }
   },
   "Sidebar": {
     "coming_soon": {

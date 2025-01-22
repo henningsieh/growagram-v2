@@ -31,8 +31,11 @@ export default async function middleware(req: NextRequest) {
       : "authjs.session-token",
   });
 
-  // Log the full token to verify
-  console.debug("Middleware token: ", JSON.stringify(token, null, 2));
+  if (!token) {
+    console.debug("Middleware token: null");
+  } else {
+    console.debug("Middleware token: ", JSON.stringify(token, null, 2));
+  }
 
   // Get the pathname
   const currentPathname = req.nextUrl.pathname;
@@ -72,27 +75,30 @@ export default async function middleware(req: NextRequest) {
   const isLocalePath = localeMatchArray !== null;
   const isProtectedPath = isLocalePath && isPathProtected(pathWithoutLocale);
 
-  // Check if the username is empty or null and redirect to the account page if necessary
+  // If the path is protected and the user is not logged in, redirect to the sign-in page
+  if (isProtectedPath && !token) {
+    console.debug("User is not authenticated. Redirecting to sign-in page.");
+    const redirectUrl = new URL(modulePaths.SIGNIN.path, baseUrl);
+    redirectUrl.searchParams.append("callbackUrl", fullUrl.toString());
+    return NextResponse.redirect(redirectUrl);
+  }
+
+  // If the user is logged in but missing username, redirect to account edit page
   if (
     token &&
-    (token.username == null || token.username === "") &&
+    (!token.username || token.username === "") &&
     pathWithoutLocale !== "/account/edit"
   ) {
     const accountRedirectUrl = new URL(
       currentLocale ? `/${currentLocale}/account/edit` : "/account/edit",
-      `${baseUrl}`,
+      baseUrl,
     );
     return NextResponse.redirect(accountRedirectUrl);
   }
 
-  // If the path is protected and the user is not logged in, redirect to the sign-in page
-  if (isProtectedPath && !token) {
-    console.debug("User is not authenticated. Redirecting to sign-in page.");
-
-    // Redirect using the real URL, preserving the client-facing URL
-    const redirectUrl = new URL(modulePaths.SIGNIN.path, baseUrl);
-    redirectUrl.searchParams.append("callbackUrl", fullUrl.toString()); // Use the real URL here
-    return NextResponse.redirect(redirectUrl); // Redirect to the sign-in page with the real URL
+  // If the user is logged in but requested the sign-in page, redirect to the dashboard
+  if (token && pathWithoutLocale === modulePaths.SIGNIN.path) {
+    return NextResponse.redirect(new URL(modulePaths.DASHBOARD.path, baseUrl));
   }
 
   // Handle the i18n routing for locales

@@ -80,11 +80,11 @@ export default function ProtectedSidebar({
 }
 
 function ProtectedSidebarContent({
-  children,
   session,
+  children,
 }: {
-  children: React.ReactNode;
   session: Session | null;
+  children: React.ReactNode;
 }) {
   const t = useTranslations();
   //TODO: fix button to open /close sidebar
@@ -181,7 +181,7 @@ function ProtectedSidebarContent({
             </SidebarMenu>
           </SidebarGroup>
 
-          {/* Coming soon Group */}
+          {/* Projects Group */}
           <SidebarGroup className="text-muted-foreground group-data-[collapsible=icon]:hidden">
             <SidebarGroupLabel>{t("Platform.coming-soon")}</SidebarGroupLabel>
             <SidebarMenu>
@@ -235,11 +235,11 @@ function ProtectedSidebarContent({
 
               {/* Additional Projects Option */}
               {/* <SidebarMenuItem>
-                    <SidebarMenuButton className="text-sidebar-foreground/70">
-                      <MoreHorizontal className="text-sidebar-foreground/70" />
-                      <span>More</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem> */}
+                  <SidebarMenuButton className="text-sidebar-foreground/70">
+                    <MoreHorizontal className="text-sidebar-foreground/70" />
+                    <span>More</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem> */}
             </SidebarMenu>
           </SidebarGroup>
         </SidebarContent>
@@ -276,12 +276,12 @@ function ProtectedSidebarContent({
 
                 {/* User Profile Dropdown Content */}
                 <DropdownMenuContent
+                  onClick={() => toggleSidebar()}
                   className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-sm"
                   // side="right"
                   side={isMobile ? "bottom" : "right"}
                   align="end"
                   sideOffset={4}
-                  onClick={() => toggleSidebar()}
                 >
                   {/* Repeated User Profile Header */}
                   <DropdownMenuLabel className="p-0 font-normal">
@@ -309,15 +309,17 @@ function ProtectedSidebarContent({
                   {/* User Account Actions */}
                   <DropdownMenuSeparator />
                   <DropdownMenuGroup>
-                    <DropdownMenuItem className="text-yellow-500 focus:bg-yellow-600/50 focus:text-white">
-                      <Sparkles />
-                      Upgrade to Pro
-                    </DropdownMenuItem>
+                    <Link href={modulePaths.PREMIUM.path}>
+                      <DropdownMenuItem className="cursor-pointer text-yellow-500 focus:bg-yellow-600/50 focus:text-white">
+                        <Sparkles />
+                        Upgrade to Pro
+                      </DropdownMenuItem>
+                    </Link>
                   </DropdownMenuGroup>
 
                   <DropdownMenuSeparator />
                   <DropdownMenuGroup>
-                    <Link href="/account">
+                    <Link href={modulePaths.ACCOUNT.path}>
                       <DropdownMenuItem className="cursor-pointer">
                         <UserPen />
                         Account
@@ -346,6 +348,7 @@ function ProtectedSidebarContent({
         {/* Sidebar Rail for Additional Navigation */}
         <SidebarRail />
       </Sidebar>
+
       {/* Sidebar Inset: Content Area */}
       <SidebarInset className="min-h-[calc(100svh-5rem)]">
         {/* Sticky Header with Sidebar Toggle and Breadcrumbs */}

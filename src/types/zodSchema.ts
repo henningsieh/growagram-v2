@@ -68,3 +68,12 @@ export const postSchema = z.object({
   entityId: z.string(),
   entityType: z.nativeEnum(PostableEntityType),
 });
+
+// schema for updating user tokens
+export const updateTokensSchema = z.object({
+  userId: z.string(),
+  accessToken: z.string(),
+  expiresIn: z.number(),
+  refreshToken: z.string(),
+  refreshTokenExpiresIn: z.number(),
+});

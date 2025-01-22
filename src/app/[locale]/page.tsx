@@ -4,6 +4,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
+import { modulePaths } from "~/assets/constants";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
 import { Link } from "~/lib/i18n/routing";
@@ -72,7 +73,7 @@ export default function LandingPage() {
                   <div className="mt-10 sm:mt-12">
                     <div className="flex w-full flex-col justify-center gap-4 xs:flex-row">
                       <Button asChild size="lg" variant="primary">
-                        <Link href="/dashboard">
+                        <Link href={modulePaths.DASHBOARD.path}>
                           {t("HeroSection.cta-button-start")}
                         </Link>
                       </Button>

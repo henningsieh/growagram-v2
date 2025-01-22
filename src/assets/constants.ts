@@ -15,6 +15,11 @@ export const modulePaths = {
     path: "/dashboard",
     protected: true,
   },
+  PREMIUM: {
+    name: "Premium",
+    path: "/premium",
+    protected: true,
+  },
   ACCOUNT: {
     name: "Account",
     path: "/account",
@@ -38,7 +43,7 @@ export const modulePaths = {
   },
   SIGNIN: {
     name: "Signin",
-    path: "/api/auth/signin",
+    path: "/signin",
     protected: false,
   },
   PUBLICTIMELINE: {

@@ -2,14 +2,18 @@
 import { TRPCError } from "@trpc/server";
 import { and, eq, not } from "drizzle-orm";
 import { z } from "zod";
-import { grows, users } from "~/lib/db/schema";
+import { hashPassword } from "~/lib/auth/password";
+import { users, verificationTokens } from "~/lib/db/schema";
+import { routing } from "~/lib/i18n/routing";
+import { sendVerificationEmail } from "~/server/actions/sendVerificationEmail";
 import {
   createTRPCRouter,
   protectedProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
+import { Locale } from "~/types/locale";
 import { UserRoles } from "~/types/user";
-import { userEditSchema } from "~/types/zodSchema";
+import { updateTokensSchema, userEditSchema } from "~/types/zodSchema";
 
 import { connectPlantWithImagesQuery } from "./plantImages";
 
@@ -155,5 +159,112 @@ export const userRouter = createTRPCRouter({
       });
 
       return { isUnique: !existingUser };
+    }),
+
+  updateUserTokens: protectedProcedure
+    .input(updateTokensSchema)
+    .mutation(async ({ ctx, input }) => {
+      // Ensure the user is updating their own tokens or is an admin
+      if (
+        input.userId !== ctx.session.user.id &&
+        ctx.session.user.role !== UserRoles.ADMIN
+      ) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "You can only update your own tokens",
+        });
+      }
+
+      const updatedUser = await ctx.db
+        .update(users)
+        .set({
+          steadyAccessToken: input.accessToken,
+          steadyRefreshToken: input.refreshToken,
+          steadyTokenExpiresAt: new Date(Date.now() + input.expiresIn * 1000),
+          steadyRefreshTokenExpiresAt: new Date(
+            Date.now() + input.refreshTokenExpiresIn * 1000,
+          ),
+          updatedAt: new Date(),
+        })
+        .where(eq(users.id, input.userId))
+        .returning({
+          id: users.id,
+          steadyAccessToken: users.steadyAccessToken,
+          steadyTokenExpiresAt: users.steadyTokenExpiresAt,
+        });
+
+      return updatedUser[0];
+    }),
+
+  // Register user (public procedure)
+  registerUser: publicProcedure
+    .input(
+      z.object({
+        email: z.string().email(),
+        password: z.string().min(6),
+        username: z.string().min(3),
+        name: z.string().optional(),
+        locale: z.enum(routing.locales as [Locale, ...Locale[]]),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const [existingEmail, existingUsername] = await Promise.all([
+        ctx.db.query.users.findFirst({
+          where: eq(users.email, input.email),
+        }),
+        ctx.db.query.users.findFirst({
+          where: eq(users.username, input.username),
+        }),
+      ]);
+
+      if (existingEmail) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "Email already in use",
+        });
+      }
+
+      if (existingUsername) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "Username already taken",
+        });
+      }
+
+      const hashedPassword = await hashPassword(input.password);
+
+      const newUser = await ctx.db
+        .insert(users)
+        .values({
+          email: input.email,
+          passwordHash: hashedPassword,
+          username: input.username,
+          name: input.name,
+        })
+        .returning({
+          id: users.id,
+          email: users.email,
+          username: users.username,
+          name: users.name,
+        });
+
+      const randomBytes = new Uint8Array(32);
+      crypto.getRandomValues(randomBytes);
+      const verificationToken = Array.from(randomBytes)
+        .map((b) => b.toString(16).padStart(2, "0"))
+        .join("");
+      await ctx.db.insert(verificationTokens).values({
+        identifier: newUser[0].email as string,
+        token: verificationToken,
+        expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
+      });
+
+      await sendVerificationEmail(
+        newUser[0].email as string,
+        verificationToken,
+        input.locale,
+      );
+
+      return newUser[0];
     }),
 });

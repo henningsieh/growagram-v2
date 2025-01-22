@@ -13,6 +13,5 @@
   },
   "editor.quickSuggestions": {
     "strings": true
-  },
-  "typescript.tsdk": "node_modules/typescript/lib"
+  }
 }

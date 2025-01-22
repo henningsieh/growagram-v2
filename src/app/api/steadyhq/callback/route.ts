@@ -1,0 +1,80 @@
+import axios from "axios";
+import "next-auth";
+import { NextResponse } from "next/server";
+import { modulePaths } from "~/assets/constants";
+import { env } from "~/env";
+import { auth } from "~/lib/auth";
+import { api } from "~/lib/trpc/server";
+
+export const GET = auth(async function GET(req) {
+  if (!req.auth) {
+    return NextResponse.json(
+      { error: "You are not authorized" },
+      { status: 401 },
+    );
+  }
+
+  const { searchParams } = new URL(req.url);
+  const code = searchParams.get("code");
+
+  if (!code) {
+    return NextResponse.json(
+      { error: "Authorization code is missing." },
+      { status: 400 },
+    );
+  }
+
+  try {
+    const response = await axios.post(
+      "https://steadyhq.com/api/v1/oauth/token",
+      {
+        client_id: env.STEADYHQ_CLIENT_ID,
+        client_secret: env.STEADYHQ_CLIENT_SECRET,
+        grant_type: "authorization_code",
+        code,
+        redirect_uri: `${env.NEXTAUTH_URL}/api/steadyhq/callback`,
+      },
+    );
+
+    const {
+      access_token,
+      refresh_token,
+      expires_in,
+      refresh_token_expires_in,
+    } = response.data;
+
+    console.log("OAuth callback response:", response.data);
+
+    // Update tokens using the TRPC procedure
+    await api.users.updateUserTokens({
+      userId: req.auth.user.id,
+      accessToken: access_token,
+      refreshToken: refresh_token,
+      expiresIn: expires_in,
+      refreshTokenExpiresIn: refresh_token_expires_in,
+    });
+
+    return NextResponse.redirect(new URL(modulePaths.PREMIUM.path, req.url));
+  } catch (error) {
+    console.error("OAuth callback error:", error);
+    return NextResponse.json(
+      { error: "Failed to connect to SteadyHQ." },
+      { status: 500 },
+    );
+  }
+
+  /**
+   * TEMPORARY WORKAROUND for Next.js 15.1.4 + NextAuth 5.0.0-beta.25 type incompatibility
+   *
+   * Issue: Route handler type mismatch between Next.js App Router and NextAuth
+   * Error: Type "AppRouteHandlerFnContext" is not a valid type for the function's second argument
+   *
+   * Affects:
+   * - next@15.1.4
+   * - next-auth@5.0.0-beta.25
+   *
+   * @see https://github.com/nextauthjs/next-auth/issues/12224#issuecomment-2506852177
+   * //TODO: Remove when NextAuth fixes type compatibility with Next.js 15+
+   */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+}) as any;

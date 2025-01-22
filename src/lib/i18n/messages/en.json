@@ -29,9 +29,7 @@
     "info-name": "Name",
     "info-role": "Role",
     "info-username": "Username",
-    "not-provided": "Not provided",
-    "welcome-message-description": "Please enter a unique username. This is required to use the app.",
-    "welcome-message-title": "Welcome to our app!"
+    "not-provided": "Not provided"
   },
   "CardFooter": {
     "Login to see detailed view statistics": "Login to see detailed view statistics.",
@@ -88,7 +86,7 @@
     "grow-name-description": "Give a descriptive name to your grow.",
     "grow-name-placeholder": "Enter the Grow's Name",
     "growth-stage": "Growth Stage",
-    "mygrows-page-subtitle": "View and manage your grows",
+    "mygrows-page-subtitle": "View and manage my current grows",
     "mygrows-page-title": "My Grows",
     "no-grows-yet": "You haven&apos;t created any Grows yet.",
     "no-plants-connected": "No plants connected yet.",
@@ -149,7 +147,10 @@
     "toggle-language": "Change language"
   },
   "LoginPage": {
-    "description": "To log in, enter your email address and password or select a social login provider below.",
+    "Email-verified-description": "Your email address has been verified successfully.",
+    "Email-verified-title": "Email verified",
+    "continue-with-email": "Or login with email and password",
+    "description": "Log in with your provider account",
     "email": {
       "label": "Email address"
     },
@@ -164,9 +165,8 @@
       "link": "Sign up",
       "text": "Don't have an account?"
     },
-    "social-identity-oauth-providers": "Social Identity OAuth Providers",
     "submit": "Login",
-    "title": "Login to GrowAGram"
+    "title": "GrowAGram Login"
   },
   "Navigation": {
     "dashboard": "Dashboard",
@@ -185,8 +185,8 @@
     "navigation": "Navigation",
     "plants": "All Plants",
     "plants-description": "Check out what other growers are cultivating and get some new ideas.",
-    "timeline": "All Updates",
-    "timeline-description": "Updates in a chronological timeline",
+    "timeline": "Timeline",
+    "timeline-description": "Social media timeline (feature coming soon)",
     "toggle-menu": "Toggle menu"
   },
   "Photos": {
@@ -195,18 +195,13 @@
       "removeAll": "Remove All Plants",
       "save": "Save Plant Selection ({count})"
     },
-    "button-label-connect-plants": "Select Plants",
-    "button-label-post-update": "Create Update for Photo",
     "button-label-upload-photos": "Upload",
     "buttonBackLabel": "Back",
     "capture-date": "taken on",
-    "captureDate": "Capture Date (from EXIF data)",
     "delete-button-label": "Delete Photo",
     "edit-button-label": "Edit Photo",
-    "filter-label-not-connected": "NEW ONLY",
     "my-Photos": "My photos",
-    "my-Photos-subtitle": "View and manage your photos",
-    "newNotConnteched": "NEW",
+    "my-Photos-subtitle": "Display and manage my photos",
     "plantSelection": {
       "description": "Select each plant you can see in the photo!",
       "title": "Plant Selection"
@@ -218,13 +213,10 @@
     },
     "subtitle": "Which plants did you spot in this photo?",
     "title": "Identify Plants",
-    "uploadDate": "Upload Date",
     "uploaded-at": "uploaded on"
   },
   "Plants": {
-    "NoPlantsFound": "No plants have been found.",
     "breeder": "Breeder",
-    "button-label-post-update": "Create Update for Plant",
     "curing-start-date": "Curing phase start date",
     "delete-button-label": "Delete Plant",
     "delete-plant-button-label": "Delete Plant",
@@ -234,7 +226,7 @@
     "flowering-start-date": "Flowering Start Date",
     "form-button-reset": "Reset",
     "form-button-save-changes": "Save Changes",
-    "form-button-save-new": "Add Plant",
+    "form-button-save-new": "Create Plant",
     "form-heading": "Plant's basic data",
     "form-heading-description": "Edit the plant's nickname and relevant dates.",
     "form-nickname": "Name of the Plant",
@@ -242,8 +234,8 @@
     "form-pageheader-backButtonLabel": "Back",
     "form-pagerheader-edit-subtitle": "Edit this plant from your collection",
     "form-pagerheader-edit-title": "Edit Plant",
-    "form-pagerheader-subtitle": "Add a new plant to your collection",
-    "form-pagerheader-title": "Add new plant",
+    "form-pagerheader-new-subtitle": "Add a new plant to your collection",
+    "form-pagerheader-new-title": "Add New Plant",
     "germination-date": "Germination Date",
     "growth-progress": "Growth Progress",
     "harvest-date": "Harvest date",
@@ -254,31 +246,81 @@
     "public-link-label": "Open in new Tab",
     "sort-plants-createdAt": "Created at",
     "strain": "Strain",
-    "subtitle": "View and manage your plants",
+    "subtitle": "Manage your plants",
     "thc": "THC",
     "thc-content": "THC Content",
     "title": "My Plants",
     "until": "until",
-    "user-has-no-plants": "You haven't added any plants yet.",
+    "user-has-no-plants": "You haven&apos;t added any plants yet.",
     "vegetation-start-date": "Vegetation Start Date"
   },
   "Platform": {
     "Dashboard-title": "Dashboard",
-    "asc": "ascending",
+    "Platform": {
+      "coming-soon-description": "We are already working on the new function. \nCome by again soon!"
+    },
+    "asc": "Ascending",
     "coming-soon": "Coming soon",
-    "coming-soon-description": "We are already working on the new function. \nCome by again soon!",
-    "desc": "descending",
+    "desc": "Descending",
     "feature-coming": "New Feature is on its Way!",
     "more": "more",
     "welcome-to-platform-subttitle": "Welcome to the Grower's platform where you can manage all your Grows and Plants"
   },
-  "Posts": {
-    "buttonLabel-createNewPost": "Post Update",
-    "createNewPost-title": "Write and post a new Update",
-    "delete-button-label": "Delete Update",
-    "edit-button-label": "Edit Update",
-    "linkedInThisPost": "Linked in this Update",
-    "public-link-label": "Open in new Tab"
+  "Premium": {
+    "benefits": {
+      "ad-free-experience": "Ad-free experience",
+      "community-access": "Advanced community forums access",
+      "early-access": "Early access to new features",
+      "exclusive-content": "Exclusive premium content",
+      "priority-support": "Priority support",
+      "title": "Premium Benefits"
+    },
+    "connect-steady-button": "Connect with Steady",
+    "faq": {
+      "cancel-subscription": {
+        "answer": "Yes, you can cancel your subscription at any time through your Steady account. Your premium access will continue until the end of your current billing period.",
+        "question": "Can I cancel my subscription at any time?"
+      },
+      "free-trial": {
+        "answer": "We currently don't offer a free trial, but you can check our free content to get a taste of what we offer before subscribing.",
+        "question": "Is there a free trial available?"
+      },
+      "how-subscription-works": {
+        "answer": "Our premium subscription is managed through Steady. Once you connect your Steady account, you'll have immediate access to all premium features.",
+        "question": "How does the premium subscription work?"
+      },
+      "payment-methods": {
+        "answer": "Steady supports various payment methods including credit cards, PayPal, and SEPA direct debit. You can choose your preferred method during the subscription process.",
+        "question": "What payment methods are accepted?"
+      },
+      "title": "Frequently Asked Questions"
+    },
+    "get-exclusive-access": "Get exclusive access to premium features and support our community!",
+    "premium-subtitle": "Enhance your growing experience with exclusive benefits",
+    "premium-title": "Unlock Premium Features",
+    "ready-to-go-premium": "Ready to Go Premium?",
+    "unlock-premium-content": "Elevate Your Growing Journey"
+  },
+  "RegisterPage": {
+    "description": "Fill in all fields below.",
+    "email": {
+      "label": "Your valid email address"
+    },
+    "login": {
+      "link": "Login",
+      "text": "Already have an account? "
+    },
+    "name": {
+      "label": "Name"
+    },
+    "password": {
+      "label": "Password"
+    },
+    "submit": "Register now",
+    "title": "Register to GrowAGram",
+    "username": {
+      "label": "Username"
+    }
   },
   "Sidebar": {
     "coming_soon": {
