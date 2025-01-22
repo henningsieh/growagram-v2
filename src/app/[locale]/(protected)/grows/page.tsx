@@ -95,7 +95,7 @@ export default function MyGrowsPage() {
       title={t("mygrows-page-title")}
       subtitle={t("mygrows-page-subtitle")}
       buttonLink="/grows/new/form"
-      buttonLabel={t("buttonLabel-create-grow")}
+      buttonLabel={t("button-label-create-grow")}
       buttonVariant={"grow"}
     >
       <SortFilterControls
