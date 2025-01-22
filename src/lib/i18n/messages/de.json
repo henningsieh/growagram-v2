@@ -63,9 +63,9 @@
   },
   "Grows": {
     "NoGrowsFound": "Es wurden keine Grows gefunden.",
-    "buttonLabel-create-grow": "Grow erstellen",
-    "buttonLabel-post-update": "Update zum Grow erstellen",
-    "buttonLabel-save-changes": "Änderungen speichern",
+    "button-label-create-grow": "Grow erstellen",
+    "button-label-post-update": "Update zum Grow erstellen",
+    "button-label-save-changes": "Änderungen speichern",
     "connect-error": "Fehler beim Verbinden der Pflanze",
     "delete-button-label": "Grow löschen",
     "delete-grow-button-label": "Grow löschen",
