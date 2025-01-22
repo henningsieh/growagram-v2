@@ -31,7 +31,7 @@ export default function LandingPage() {
   const t = useTranslations("LandingPage");
 
   return (
-    <div className="relative">
+    <div className="relative w-full">
       <AnimatePresence mode="popLayout">
         <motion.div
           initial={{ height: 0 }}
@@ -39,7 +39,7 @@ export default function LandingPage() {
           exit={{ height: 0 }}
           transition={{ duration: 0.3, ease: "easeIn" }}
           // className="hidden h-0 w-full bg-primary sm:block sm:h-2"
-          className="h-2 w-full bg-primary"
+          className="h-2 bg-primary"
         />
       </AnimatePresence>
 
@@ -146,7 +146,7 @@ export default function LandingPage() {
             </motion.p>
           </div>
           <div className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-none">
-            <dl className="grid max-w-xl grid-cols-1 gap-x-8 gap-y-16 md:grid-cols-2 lg:max-w-none lg:grid-cols-4">
+            <dl className="grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 md:grid-cols-2 lg:max-w-none lg:grid-cols-4">
               {/* Feature Cards */}
               <FeatureCard
                 title={t("FeaturesSection.cards.growDiary.title")}

@@ -6,15 +6,10 @@ const AppFooter = () => {
     <footer className="border-t py-4">
       <div className="container flex items-center justify-between px-4">
         <span className="text-sm text-muted-foreground">
-          © {new Date().getFullYear()} GrowAGram, a project from{" "}
-          <a
-            href="https://henningsieh.de/impressum"
-            className="hover:text-foreground"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Henning Sieh
-          </a>
+          {
+            // eslint-disable-next-line react/jsx-no-literals
+            `© ${new Date().getFullYear()} GrowAGram`
+          }
         </span>
         <Link
           href="/app/status"

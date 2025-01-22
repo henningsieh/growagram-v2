@@ -145,6 +145,8 @@
     "toggle-language": "Change language"
   },
   "LoginPage": {
+    "Email-verified-description": "Your email address has been verified successfully.",
+    "Email-verified-title": "Email verified",
     "continue-with-email": "Or login with email and password",
     "description": "Log in with your provider account",
     "email": {
@@ -232,8 +234,6 @@
     "form-pagerheader-edit-title": "Edit Plant",
     "form-pagerheader-new-subtitle": "Add a new plant to your collection",
     "form-pagerheader-new-title": "Add New Plant",
-    "form-pagerheader-subtitle": "Add a new plant to your collection",
-    "form-pagerheader-title": "Add a new plant",
     "germination-date": "Germination Date",
     "growth-progress": "Growth Progress",
     "harvest-date": "Harvest date",
@@ -257,7 +257,9 @@
     "Platform": {
       "coming-soon-description": "We are already working on the new function. \nCome by again soon!"
     },
+    "asc": "Ascending",
     "coming-soon": "Coming soon",
+    "desc": "Descending",
     "feature-coming": "New Feature is on its Way!",
     "more": "more",
     "welcome-to-platform-subttitle": "Welcome to the Grower's platform where you can manage all your Grows and Plants"
@@ -298,7 +300,25 @@
     "unlock-premium-content": "Elevate Your Growing Journey"
   },
   "RegisterPage": {
-    "title": "Register to GrowAGram"
+    "description": "Fill in all fields below.",
+    "email": {
+      "label": "Your valid email address"
+    },
+    "login": {
+      "link": "Login",
+      "text": "Already have an account? "
+    },
+    "name": {
+      "label": "Name"
+    },
+    "password": {
+      "label": "Password"
+    },
+    "submit": "Register now",
+    "title": "Register to GrowAGram",
+    "username": {
+      "label": "Username"
+    }
   },
   "Sidebar": {
     "coming_soon": {

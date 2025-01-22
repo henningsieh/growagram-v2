@@ -114,12 +114,12 @@ export default function PlantFormPage({ plant }: { plant?: Plant }) {
       title={
         plant !== undefined
           ? t("form-pagerheader-edit-title")
-          : t("form-pagerheader-title")
+          : t("form-pagerheader-new-title")
       }
       subtitle={
         plant !== undefined
           ? t("form-pagerheader-edit-subtitle")
-          : t("form-pagerheader-subtitle")
+          : t("form-pagerheader-new-subtitle")
       }
       buttonLabel={t("form-pageheader-backButtonLabel")}
       buttonLink={"/plants"}

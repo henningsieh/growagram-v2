@@ -3,11 +3,9 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Loader2, Send, X } from "lucide-react";
 import { useSession } from "next-auth/react";
-import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import CustomAvatar from "~/components/atom/custom-avatar";
-import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { EnhancedScrollArea } from "~/components/ui/enhanced-scroll-area";
@@ -21,13 +19,15 @@ export function ChatModal({
   isOpen: boolean;
   onClose: () => void;
 }) {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const [message, setMessage] = useState("");
   const [error, setError] = useState<string | null>(null);
   const scrollViewportRef = useRef<HTMLDivElement>(null);
   const utils = api.useUtils();
 
-  const { data: messages } = api.chat.getMessages.useQuery();
+  const { data: messages } = api.chat.getMessages.useQuery(undefined, {
+    enabled: status === "authenticated" && isOpen, // Only fetch messages when user is authenticated and modal is open
+  });
 
   // Enhanced subscription with error handling
   api.chat.onMessage.useSubscription(undefined, {
