@@ -1,16 +1,13 @@
 "use client";
 
-// src/components/features/Account/account-info.tsx:
 import { AnimatePresence, motion } from "framer-motion";
 import { AtSign, Edit, Mail, Shield, User } from "lucide-react";
 import { useTranslations } from "next-intl";
 import FormContent from "~/components/Layouts/form-content";
 import PageHeader from "~/components/Layouts/page-header";
-import AvatarCardHeader from "~/components/atom/avatar-card-header";
 import CustomAvatar from "~/components/atom/custom-avatar";
 import { Button } from "~/components/ui/button";
-import { Card, CardContent, CardHeader } from "~/components/ui/card";
-import { Separator } from "~/components/ui/separator";
+import { Card, CardContent } from "~/components/ui/card";
 import { useIsMobile } from "~/hooks/use-mobile";
 import { Link } from "~/lib/i18n/routing";
 import { OwnUserDataType } from "~/server/api/root";
@@ -53,83 +50,62 @@ export default function AccountInfo({ user }: { user: OwnUserDataType }) {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
-          className="mx-auto w-full max-w-4xl"
+          className="mx-auto w-full max-w-2xl"
         >
           <FormContent>
-            <Card className="overflow-hidden border-2 bg-card/95 backdrop-blur-sm">
-              <CardHeader className="relative">
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.5 }}
-                  className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent"
-                />
-                <AvatarCardHeader user={user} />
-              </CardHeader>
-              <Separator className="opacity-50" />
-              <CardContent className="p-6 sm:p-8">
+            <Card className="overflow-hidden bg-card/95">
+              <CardContent className="p-6">
                 <motion.div
                   variants={containerVariants}
                   initial="hidden"
                   animate="visible"
-                  className="flex flex-col items-center space-y-8 sm:items-start"
+                  className="flex flex-col items-center space-y-6"
                 >
-                  <div className="flex w-full flex-col items-center gap-8 sm:flex-row sm:gap-12">
-                    <motion.div
-                      whileHover={{ scale: 1.05 }}
-                      transition={{ type: "spring", stiffness: 300 }}
-                      className="relative"
-                    >
-                      <div className="absolute -inset-0.5 rounded-full bg-gradient-to-br from-primary to-primary-foreground/50 opacity-75 blur" />
-                      <CustomAvatar
-                        size={128}
-                        src={user.image || undefined}
-                        alt={user.name || "User avatar"}
-                        fallback={user.name?.[0] || "?"}
-                      />
-                    </motion.div>
-                    <div className="w-full">
-                      <div className="grid w-full gap-4 sm:grid-cols-2">
-                        {infoItems.map((item, index) => (
-                          <motion.div
-                            key={index}
-                            variants={itemVariants}
-                            whileHover={{ scale: 1.02 }}
-                            className="group relative overflow-hidden rounded-sm bg-muted/50 p-4 transition-colors hover:bg-muted"
-                          >
-                            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
-                            <div className="relative space-y-3">
-                              <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-                                <item.icon className="h-4 w-4" />
-                                <span className="capitalize">
-                                  {t(`info-${item.label}`)}
-                                </span>
-                              </div>
-                              <div className="rounded-md bg-background/50 px-4 py-2 font-medium text-foreground shadow-sm">
-                                {item.value || t("not-provided")}
-                              </div>
-                            </div>
-                          </motion.div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
                   <motion.div
-                    variants={itemVariants}
-                    className="flex w-full justify-end"
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ type: "spring", stiffness: 300 }}
                   >
+                    <CustomAvatar
+                      size={96}
+                      src={user.image || undefined}
+                      alt={user.name || "User avatar"}
+                      fallback={user.name?.[0] || "?"}
+                      className="border-2 border-primary/10"
+                    />
+                  </motion.div>
+
+                  <div className="w-full space-y-4">
+                    {infoItems.map((item, index) => (
+                      <motion.div
+                        key={index}
+                        variants={itemVariants}
+                        className="space-y-1.5"
+                      >
+                        <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+                          <item.icon className="h-4 w-4" />
+                          <span className="capitalize">
+                            {t(`info-${item.label}`)}
+                          </span>
+                        </div>
+                        <div className="rounded-md bg-muted/50 px-4 py-2.5 font-medium">
+                          {item.value || t("not-provided")}
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+
+                  <motion.div variants={itemVariants} className="w-full">
                     <Button
                       size={isMobile ? "sm" : "default"}
-                      className="group relative overflow-hidden bg-primary hover:bg-primary/90"
+                      className="w-full"
                       asChild
                     >
                       <Link
                         href="/account/edit"
-                        className="flex items-center gap-2"
+                        className="flex items-center justify-center gap-2"
                       >
                         <Edit className="h-4 w-4" />
                         <span>{t("edit-profile-button")}</span>
-                        <div className="absolute inset-0 translate-x-[-100%] bg-gradient-to-r from-primary-foreground/0 via-primary-foreground/10 to-primary-foreground/0 transition-transform duration-500 group-hover:translate-x-[100%]" />
                       </Link>
                     </Button>
                   </motion.div>
