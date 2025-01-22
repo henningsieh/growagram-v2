@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { Calendar1Icon, Tag } from "lucide-react";
+import { Calendar1Icon, TentTreeIcon } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { Button } from "~/components/ui/button";
@@ -49,7 +49,7 @@ export function EmbeddedGrowCard({ grow }: EmbeddedGrowCardProps) {
                 href={`/public/grows/${grow.id}`}
                 className="items-center gap-2"
               >
-                <Tag size={20} />
+                <TentTreeIcon size={20} />
                 {grow.name}
               </Link>
             </Button>
