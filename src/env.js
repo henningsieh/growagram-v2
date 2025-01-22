@@ -16,11 +16,15 @@ export const env = createEnv({
     AUTH_SECRET: z.string(),
     CLOUDINARY_API_KEY: z.string(),
     CLOUDINARY_API_SECRET: z.string(),
-    MAIL_SERVER_HOST: z.string().min(1),
-    MAIL_SERVER_PORT: z.coerce().int(),
-    MAIL_SERVER_USER: z.string().email(),
-    MAIL_SERVER_PASS: z.string().min(1),
-    MAIL_FROM: z.string().min(1),
+    MAIL_SERVER_HOST: z.string(),
+    MAIL_SERVER_PORT: z.coerce
+      .number()
+      .refine((n) => n === 465 || n === 587, "Port must be either 465 or 587")
+      .default(587),
+    MAIL_SERVER_USER: z.string(),
+    MAIL_SERVER_PASS: z.string(),
+    MAIL_FROM_EMAIL: z.string().email(),
+    MAIL_FROM_NAME: z.string().max(32),
     NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
@@ -54,7 +58,8 @@ export const env = createEnv({
     MAIL_SERVER_PORT: process.env.MAIL_SERVER_PORT,
     MAIL_SERVER_USER: process.env.MAIL_SERVER_USER,
     MAIL_SERVER_PASS: process.env.MAIL_SERVER_PASS,
-    MAIL_FROM: process.env.MAIL_FROM,
+    MAIL_FROM_EMAIL: process.env.MAIL_FROM_EMAIL,
+    MAIL_FROM_NAME: process.env.MAIL_FROM_NAME,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

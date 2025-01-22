@@ -4,12 +4,14 @@ import { and, eq, not } from "drizzle-orm";
 import { z } from "zod";
 import { hashPassword } from "~/lib/auth/password";
 import { users, verificationTokens } from "~/lib/db/schema";
-import { sendVerificationEmail } from "~/lib/mail";
+import { routing } from "~/lib/i18n/routing";
+import { sendVerificationEmail } from "~/server/actions/sendVerificationEmail";
 import {
   createTRPCRouter,
   protectedProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
+import { Locale } from "~/types/locale";
 import { UserRoles } from "~/types/user";
 import { updateTokensSchema, userEditSchema } from "~/types/zodSchema";
 
@@ -202,6 +204,7 @@ export const userRouter = createTRPCRouter({
         password: z.string().min(6),
         username: z.string().min(3),
         name: z.string().optional(),
+        locale: z.enum(routing.locales as [Locale, ...Locale[]]),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -245,7 +248,11 @@ export const userRouter = createTRPCRouter({
           name: users.name,
         });
 
-      const verificationToken = crypto.randomUUID();
+      const randomBytes = new Uint8Array(32);
+      crypto.getRandomValues(randomBytes);
+      const verificationToken = Array.from(randomBytes)
+        .map((b) => b.toString(16).padStart(2, "0"))
+        .join("");
       await ctx.db.insert(verificationTokens).values({
         identifier: newUser[0].email as string,
         token: verificationToken,
@@ -255,6 +262,7 @@ export const userRouter = createTRPCRouter({
       await sendVerificationEmail(
         newUser[0].email as string,
         verificationToken,
+        input.locale,
       );
 
       return newUser[0];

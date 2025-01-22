@@ -1,5 +1,7 @@
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
+import { modulePaths } from "~/assets/constants";
+import { env } from "~/env";
 import { db } from "~/lib/db";
 import { users, verificationTokens } from "~/lib/db/schema";
 
@@ -31,5 +33,8 @@ export async function GET(request: Request) {
     .delete(verificationTokens)
     .where(eq(verificationTokens.token, token));
 
-  return NextResponse.json({ message: "Email verified successfully" });
+  // return NextResponse.json({ message: "Email verified successfully" });
+  return NextResponse.redirect(
+    `${env.NEXTAUTH_URL}${modulePaths.SIGNIN.path}?emailVerified=true`,
+  );
 }

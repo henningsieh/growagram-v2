@@ -145,6 +145,8 @@
     "toggle-language": "Change language"
   },
   "LoginPage": {
+    "Email-verified-description": "Your email address has been verified successfully.",
+    "Email-verified-title": "Email verified",
     "continue-with-email": "Or login with email and password",
     "description": "Log in with your provider account",
     "email": {
@@ -255,11 +257,11 @@
     "Platform": {
       "coming-soon-description": "We are already working on the new function. \nCome by again soon!"
     },
+    "asc": "Ascending",
     "coming-soon": "Coming soon",
+    "desc": "Descending",
     "feature-coming": "New Feature is on its Way!",
     "more": "more",
-    "asc": "Ascending",
-    "desc": "Descending",
     "welcome-to-platform-subttitle": "Welcome to the Grower's platform where you can manage all your Grows and Plants"
   },
   "Premium": {
@@ -315,7 +317,7 @@
     "submit": "Register now",
     "title": "Register to GrowAGram",
     "username": {
-      "label": "@Username"
+      "label": "Username"
     }
   },
   "Sidebar": {

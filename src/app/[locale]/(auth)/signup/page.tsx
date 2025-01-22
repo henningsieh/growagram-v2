@@ -1,8 +1,10 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { ClipboardPenLineIcon } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { modulePaths } from "~/assets/constants";
+import SpinningLoader from "~/components/Layouts/loader";
 import { Button } from "~/components/ui/button";
 import {
   Card,
@@ -16,10 +18,12 @@ import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { Link, useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
+import { Locale } from "~/types/locale";
 
 export default function RegisterPage() {
   const t = useTranslations("RegisterPage");
   const router = useRouter();
+  const locale = useLocale() as Locale;
   const [error, setError] = useState<string | null>(null);
 
   const registerUserMutation = api.users.registerUser.useMutation({
@@ -33,6 +37,7 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError(null);
     const formData = new FormData(e.currentTarget);
 
     registerUserMutation.mutate({
@@ -40,65 +45,90 @@ export default function RegisterPage() {
       password: formData.get("password")?.toString() || "",
       username: formData.get("username")?.toString() || "",
       name: formData.get("name")?.toString() || "",
+      locale: locale,
     });
   };
 
   return (
-    <div className="flex h-full flex-col items-center justify-center">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle className="text-2xl">{t("title")}</CardTitle>
-          <CardDescription>{t("description")}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="grid gap-4">
-            <div className="my-4 space-y-3">
-              <div className="grid gap-2">
-                <Label htmlFor="email">{t("email.label")}</Label>
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  placeholder="m@example.com"
-                  required
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="username">{t("username.label")}</Label>
-                <Input id="username" name="username" type="text" required />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="name">{t("name.label")}</Label>
-                <Input id="name" name="name" type="text" />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="password">{t("password.label")}</Label>
-                <Input id="password" name="password" type="password" required />
-              </div>
+    <Card className="mx-2 w-full max-w-md xs:mx-auto">
+      <CardHeader>
+        <CardTitle className="flex justify-center text-2xl">
+          {t("title")}
+        </CardTitle>
+        <CardDescription>{t("description")}</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit} className="grid gap-4">
+          <div className="my-4 space-y-3">
+            <div className="grid gap-2">
+              <Label htmlFor="email">{t("email.label")}</Label>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                placeholder="weedwarrior@gmail.com"
+                required
+              />
             </div>
-            {error && <p className="text-red-500">{error}</p>}
-            <Button
-              variant={"primary"}
-              type="submit"
-              className="relative w-full"
-              size="lg"
-            >
-              {t("submit")}
-            </Button>
-          </form>
-        </CardContent>
-
-        <CardFooter className="justify-center text-sm">
-          {t("login.text")}
-          &nbsp;
-          <Link
-            href={modulePaths.SIGNIN.path}
-            className="underline underline-offset-4"
+            <div className="grid gap-2">
+              <Label htmlFor="username">{t("username.label")}</Label>
+              <Input
+                id="username"
+                name="username"
+                type="text"
+                placeholder="weedwarrior"
+                required
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="name">{t("name.label")}</Label>
+              <Input
+                id="name"
+                name="name"
+                type="text"
+                placeholder="Weed Warrior"
+                required
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="password">{t("password.label")}</Label>
+              <Input
+                id="password"
+                name="password"
+                type="password"
+                placeholder="********"
+                required
+              />
+            </div>
+          </div>
+          {error && <p className="text-red-500">{error}</p>}
+          <Button
+            type="submit"
+            disabled={registerUserMutation.isPending}
+            variant={"primary"}
+            size="lg"
+            className="w-full"
           >
-            {t("login.link")}{" "}
-          </Link>
-        </CardFooter>
-      </Card>
-    </div>
+            {registerUserMutation.isPending ? (
+              <SpinningLoader className="mr-2 h-5 w-5 animate-spin" />
+            ) : (
+              <ClipboardPenLineIcon className="mr-2 h-5 w-5" />
+            )}
+            {t("submit")}
+          </Button>
+        </form>
+      </CardContent>
+
+      <CardFooter className="justify-center text-sm">
+        {t("login.text")}
+        &nbsp;
+        <Link
+          href={modulePaths.SIGNIN.path}
+          className="underline underline-offset-4"
+        >
+          {t("login.link")}{" "}
+        </Link>
+      </CardFooter>
+    </Card>
   );
 }
