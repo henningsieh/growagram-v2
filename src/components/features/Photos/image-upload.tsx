@@ -1,6 +1,5 @@
 "use client";
 
-import { UploadApiResponse } from "cloudinary";
 import { CloudUpload, Loader2, Upload, X } from "lucide-react";
 import { type User } from "next-auth";
 import { useLocale } from "next-intl";
@@ -34,55 +33,6 @@ interface FilePreview {
   } | null;
 }
 
-interface CloudinarySignature {
-  signature: string;
-  timestamp: number;
-  cloud_name: string;
-  api_key: string;
-  folder: string;
-  transformation: string;
-}
-
-async function uploadToCloudinary(
-  file: File,
-  signature: CloudinarySignature,
-  onProgress: (progress: number) => void,
-): Promise<UploadApiResponse> {
-  return new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("api_key", signature.api_key);
-    formData.append("timestamp", signature.timestamp.toString());
-    formData.append("signature", signature.signature);
-    formData.append("folder", signature.folder);
-    formData.append("transformation", signature.transformation);
-
-    xhr.open(
-      "POST",
-      `https://api.cloudinary.com/v1_1/${signature.cloud_name}/image/upload`,
-      true,
-    );
-    xhr.onload = () => {
-      if (xhr.status === 200) {
-        resolve(JSON.parse(xhr.responseText));
-      } else {
-        reject(new Error("Upload failed"));
-      }
-    };
-    xhr.onerror = () => {
-      reject(new Error("Upload failed"));
-    };
-    xhr.upload.onprogress = (event) => {
-      if (event.lengthComputable) {
-        const progress = Math.round((event.loaded * 100) / event.total);
-        onProgress(progress);
-      }
-    };
-    xhr.send(formData);
-  });
-}
-
 const MAX_FILE_SIZE = 10000000; // 10MB
 const ACCEPTED_IMAGE_TYPES = [
   "image/jpeg",
@@ -112,48 +62,17 @@ export default function PhotoUpload({ user }: { user: User }) {
     try {
       setUploading(true);
 
-      // Get signature for each file
       const uploadedImages = await Promise.all(
         previews.map(async (preview) => {
-          // Get signature from your API
-          const signatureResponse = await fetch(
-            "/api/cloudinary/getSignature",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                folder: user.username,
-              }),
-            },
-          );
+          const buffer = await preview.file.arrayBuffer();
+          const exifData = await readExif(Buffer.from(buffer));
 
-          if (!signatureResponse.ok) {
-            throw new Error("Failed to get upload signature");
-          }
-
-          const signature: CloudinarySignature = await signatureResponse.json();
-
-          // Upload to Cloudinary
-          const cloudinaryResponse = await uploadToCloudinary(
-            preview.file,
-            signature,
-            (progress) => {
-              setPreviews((current) =>
-                current.map((p) =>
-                  p.file === preview.file ? { ...p, progress } : p,
-                ),
-              );
-            },
-          );
-
-          // Save to your database using your tRPC mutation
+          // Save to your database using tRPC mutation
           const savedImage = await saveImageMutation.mutateAsync({
-            imageUrl: cloudinaryResponse.secure_url,
-            cloudinaryAssetId: cloudinaryResponse.asset_id,
-            cloudinaryPublicId: cloudinaryResponse.public_id,
-            captureDate: preview.exifData?.captureDate || new Date(),
+            imageUrl: preview.preview,
+            cloudinaryAssetId: "",
+            cloudinaryPublicId: "",
+            captureDate: exifData?.captureDate || new Date(),
             originalFilename: preview.file.name,
           } satisfies CreatePhotoInput);
 
@@ -342,7 +261,6 @@ export default function PhotoUpload({ user }: { user: User }) {
                       <div className="flex justify-between gap-2">
                         <span>Filename: </span>
                         <span className="overflow-x-hidden whitespace-nowrap">
-                          {" "}
                           {preview.file.name}
                         </span>
                       </div>
@@ -355,22 +273,12 @@ export default function PhotoUpload({ user }: { user: User }) {
                       {/* EXIF Data Display */}
                       {preview.exifData?.captureDate && (
                         <div className="flex justify-between">
-                          {/* <div>
-                            Camera: {preview.exifData.make}{" "}
-                            {preview.exifData.model}
-                          </div> */}
                           <span>Capture date: </span>
                           <span>
                             {formatDate(preview.exifData.captureDate, locale)}
                             {", "}
                             {formatTime(preview.exifData.captureDate, locale)}
                           </span>
-                          {/* {preview.exifData.gpsLocation && (
-                            <div>
-                              GPS: {preview.exifData.gpsLocation.latitude},{" "}
-                              {preview.exifData.gpsLocation.longitude}
-                            </div>
-                          )} */}
                         </div>
                       )}
                     </div>

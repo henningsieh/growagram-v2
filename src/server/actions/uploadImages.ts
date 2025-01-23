@@ -1,11 +1,10 @@
 "use server";
 
-import { UploadApiResponse } from "cloudinary";
 import { createHash } from "crypto";
 import { auth } from "~/lib/auth";
-import cloudinary from "~/lib/cloudinary";
 import { db } from "~/lib/db";
 import { images } from "~/lib/db/schema";
+import s3 from "~/lib/minio/minio";
 import { readExif } from "~/lib/utils/readExif";
 
 const MAX_FILE_SIZE = 10000000; // 10MB
@@ -16,17 +15,14 @@ const ACCEPTED_IMAGE_TYPES = [
   "image/webp",
 ];
 
-function generateCloudinaryFilename(
+function generateS3Filename(
   originalFilename: string,
   username: string,
 ): string {
-  const timestamp = Date.now();
-  const hash = createHash("sha512")
-    .update(`${originalFilename}_${timestamp}_${username}`)
-    .digest("hex")
-    .slice(0, 16); // 16 characters
-
-  return `${originalFilename}_${hash}`;
+  const hash = createHash("md5")
+    .update(originalFilename + username)
+    .digest("hex");
+  return `${username}/${hash}-${originalFilename}`;
 }
 
 export async function uploadImages(formData: FormData) {
@@ -71,9 +67,8 @@ export async function uploadImages(formData: FormData) {
 
   const uploadedImages = [];
 
-  for (let i = 0; i < files.length; i++) {
-    const file = files[i];
-    const originalFilename = originalFilenames[i];
+  for (const [index, file] of files.entries()) {
+    const originalFilename = originalFilenames[index];
 
     // Validate file type
     const isAcceptedType = ACCEPTED_IMAGE_TYPES.some(
@@ -121,36 +116,33 @@ export async function uploadImages(formData: FormData) {
       // const exifResult = await getExifData(buffer);
       const exifResult = await readExif(buffer);
 
-      // Convert the buffer to base64
-      const base64String = buffer.toString("base64");
-      const dataURI = `data:${file.type};base64,${base64String}`;
-
-      // Generate unique filename for Cloudinary
-      const cloudinaryFilename = generateCloudinaryFilename(
+      // Generate unique filename for MinIO S3
+      const s3Filename = generateS3Filename(
         originalFilename,
         session.user.username as string,
       );
 
-      // Upload to Cloudinary
-      const cloudinaryResponse = (await cloudinary.uploader.upload(dataURI, {
-        folder: "growagram",
-        resource_type: "auto",
-        // allowed_formats: ACCEPTED_IMAGE_TYPES,
-        public_id: cloudinaryFilename,
-      })) satisfies UploadApiResponse;
+      const uploadParams = {
+        Bucket: process.env.MINIO_BUCKET_NAME as string,
+        Key: s3Filename,
+        Body: buffer,
+        ContentType: file.type,
+      };
 
-      console.debug("cloudinaryResponse: ", cloudinaryResponse);
+      // Upload to MinIO S3
+      const s3Response = await s3.upload(uploadParams).promise();
+      console.debug("s3Response: ", s3Response);
 
       // Save image record to database
       const [newImage] = await db
         .insert(images)
         .values({
           ownerId: session.user.id,
-          imageUrl: cloudinaryResponse.secure_url,
-          cloudinaryAssetId: cloudinaryResponse.asset_id,
-          cloudinaryPublicId: cloudinaryResponse.public_id,
-          captureDate: exifResult?.captureDate,
-          originalFilename: originalFilename,
+          imageUrl: s3Response.Location,
+          cloudinaryAssetId: s3Response.ETag,
+          cloudinaryPublicId: s3Filename,
+          captureDate: exifResult?.captureDate || new Date(),
+          originalFilename,
         })
         .returning();
 
