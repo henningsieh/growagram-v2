@@ -14,7 +14,7 @@ export function MainNavigationBar() {
     <header className="sticky top-0 z-20 w-full border-b bg-background/90 backdrop-blur">
       <div className="relative flex h-14 items-center justify-center">
         {/* Navigation Left:  Main Logo */}
-        <div className="absolute left-4 top-1/2 flex -translate-y-1/2 items-center">
+        <div className="absolute left-4 top-0 flex items-center">
           <Link href={"/"}>
             <Image
               src="/images/grow-a-gram-high-resolution-logo.webp"
@@ -31,7 +31,7 @@ export function MainNavigationBar() {
         <DesktopNavigationManu />
 
         {/* Navigation Right Side: Toggles */}
-        <div className="absolute right-4 top-1/2 flex -translate-y-1/2 items-center space-x-2">
+        <div className="absolute right-4 top-1/2 flex -translate-y-1/2 items-center space-x-1">
           {/* Theme Toggle Button */}
           <ThemeToggle />
 

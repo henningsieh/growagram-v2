@@ -249,7 +249,7 @@ export default function PhotoCard({
                   </p>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>{t("uploadDate")}</p>
+                  <p>{t("uploaded-at")}</p>
                 </TooltipContent>
               </Tooltip>
 
@@ -272,7 +272,7 @@ export default function PhotoCard({
                   </p>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>{t("captureDate")}</p>
+                  <p>{t("capture-date")}</p>
                 </TooltipContent>
               </Tooltip>
             </div>

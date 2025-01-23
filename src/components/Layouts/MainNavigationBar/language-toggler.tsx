@@ -49,7 +49,7 @@ export function LanguageToggle() {
           aria-haspopup="menu"
           title={t("toggle-language")}
         >
-          <LanguagesIcon size={20} strokeWidth={1.6} />
+          <LanguagesIcon size={24} strokeWidth={1.6} />
           <span className="sr-only">{t("toggle-language")}</span>
         </Button>
       </DropdownMenuTrigger>

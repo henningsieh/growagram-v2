@@ -70,9 +70,9 @@ export default function MobileNavigationMenu() {
         <Button
           variant="ghost"
           size="icon"
-          className="hover:bg-primary/10 hover:text-primary md:hidden"
+          // className="hover:bg-primary/10 hover:text-primary md:hidden"
         >
-          <Menu width="28" height="28" />
+          <Menu size={32} />
           <span className="sr-only">{t("toggle-menu")}</span>
         </Button>
       </SheetTrigger>

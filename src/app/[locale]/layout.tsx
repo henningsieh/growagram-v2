@@ -73,7 +73,7 @@ export default async function AppLayout(props: AppLayoutProps) {
                   <Toaster />
                   <div className="relative mx-auto flex max-w-7xl flex-col">
                     <MainNavigationBar />
-                    <div className="flex min-h-[calc(100svh-7rem)] flex-1 items-center">
+                    <div className="flex min-h-[calc(100svh-7rem)] flex-1">
                       {props.children}
                     </div>
                     <AppFooter />

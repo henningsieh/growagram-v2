@@ -165,10 +165,15 @@
       "link": "Registrieren",
       "text": "Noch kein Konto?"
     },
-    "submit": "Anmelden",
-    "title": "GrowAGram Login"
+    "submit": "Mit E-Mail-Adresse anmelden",
+    "title": "Bei GrowAGram einloggen"
   },
   "Navigation": {
+    "Timelines": {
+      "All Updates": "Alle Updates",
+      "All Grows": "Alle Grows",
+      "All Plants": "Alle Pflanzen"
+    },
     "dashboard": "Dashboard",
     "dashboard-description": "Erfasse deine Grows und deine Pflanzen einschließlich Hochladen der Fotos.",
     "discover": "Entdecken",
@@ -195,13 +200,17 @@
       "removeAll": "Alle Pflanzen entfernen",
       "save": "Pflanzenauswahl speichern ({count})"
     },
+    "button-label-connect-plants": "Pflanze(n) auswählen",
+    "button-label-post-update": "Update zum Foto erstellen",
     "button-label-upload-photos": "Hochladen",
     "buttonBackLabel": "Zurück",
     "capture-date": "aufgenommen",
     "delete-button-label": "Foto löschen",
     "edit-button-label": "Foto bearbeiten",
+    "filter-label-not-connected": "NUR NEUE",
     "my-Photos": "Meine Fotos",
     "my-Photos-subtitle": "Anzeige und Verwaltung meiner Fotos",
+    "newNotConnteched": "NEU",
     "plantSelection": {
       "description": "Wähle jede Pflanze aus, die du auf dem Foto sehen kannst!",
       "title": "Pflanzenauswahl"
@@ -266,6 +275,14 @@
     "more": "mehr",
     "welcome-to-platform-subttitle": "Willkommen bei der Verwaltung deiner Grows und Pflanzen"
   },
+  "Posts": {
+    "buttonLabel-createNewPost": "Update posten",
+    "createNewPost-title": "Schreibe und poste ein neues Update",
+    "delete-button-label": "Update löschen",
+    "edit-button-label": "Update bearbeiten",
+    "linkedInThisPost": "Mit dem Update verlinkt",
+    "public-link-label": "Öffnen im neuen Tab"
+  },
   "Premium": {
     "benefits": {
       "ad-free-experience": "Werbefreie Erfahrung",
@@ -304,7 +321,7 @@
   "RegisterPage": {
     "description": "Fülle alle Felder unten aus.",
     "email": {
-      "label": "Deine gültige E-Mail-Adresse"
+      "label": "Deine E-Mail-Adresse"
     },
     "login": {
       "link": "Login",

@@ -47,7 +47,7 @@ export const modulePaths = {
     protected: false,
   },
   PUBLICTIMELINE: {
-    name: "Updates",
+    name: "All Updates",
     path: "/public/timeline",
     protected: false,
   },

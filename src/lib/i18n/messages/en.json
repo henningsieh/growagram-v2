@@ -169,6 +169,11 @@
     "title": "GrowAGram Login"
   },
   "Navigation": {
+    "Timelines": {
+      "All Updates": "All Updates",
+      "All Grows": "All Grows",
+      "All Plants": "All Plants"
+    },
     "dashboard": "Dashboard",
     "dashboard-description": "Track your grows and your plants, including photo uploads.",
     "discover": "Discover",
@@ -195,13 +200,17 @@
       "removeAll": "Remove All Plants",
       "save": "Save Plant Selection ({count})"
     },
+    "button-label-connect-plants": "Select Plant(s)",
+    "button-label-post-update": "Create Update for Photo",
     "button-label-upload-photos": "Upload",
     "buttonBackLabel": "Back",
     "capture-date": "taken on",
     "delete-button-label": "Delete Photo",
     "edit-button-label": "Edit Photo",
+    "filter-label-not-connected": "NEW ONLY",
     "my-Photos": "My photos",
     "my-Photos-subtitle": "Display and manage my photos",
+    "newNotConnteched": "NEW",
     "plantSelection": {
       "description": "Select each plant you can see in the photo!",
       "title": "Plant Selection"
@@ -265,6 +274,14 @@
     "feature-coming": "New Feature is on its Way!",
     "more": "more",
     "welcome-to-platform-subttitle": "Welcome to the Grower's platform where you can manage all your Grows and Plants"
+  },
+  "Posts": {
+    "buttonLabel-createNewPost": "Post Update",
+    "createNewPost-title": "Write and post a new Update",
+    "delete-button-label": "Delete Update",
+    "edit-button-label": "Edit Update",
+    "linkedInThisPost": "Linked in this Update",
+    "public-link-label": "Open in new Tab"
   },
   "Premium": {
     "benefits": {

@@ -1,6 +1,7 @@
 "use client";
 
 import { Clock, TagIcon, TentTree } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { type PropsWithChildren } from "react";
 import { modulePaths } from "~/assets/constants";
 import { Button, ButtonProps } from "~/components/ui/button";
@@ -10,6 +11,7 @@ import { cn } from "~/lib/utils";
 
 export default function PublicRootLayout({ children }: PropsWithChildren) {
   const pathname = usePathname();
+  const t = useTranslations("Navigation");
 
   const navItems = [
     {
@@ -36,7 +38,7 @@ export default function PublicRootLayout({ children }: PropsWithChildren) {
     // <div className="bg-background">
     <div className="flex w-full flex-col md:flex-row">
       {/* Left sidebar - hidden on mobile */}
-      <aside className="hidden h-[calc(100vh-4rem)] shrink-0 px-2 md:block md:w-56 xl:w-64">
+      <aside className="hidden h-[calc(100vh-9rem)] shrink-0 px-2 md:block md:w-56 xl:w-64">
         <div className="sticky top-16 flex flex-col gap-2">
           {navItems.map((item) => (
             <Link href={item.href} key={item.href}>
@@ -55,7 +57,7 @@ export default function PublicRootLayout({ children }: PropsWithChildren) {
       </aside>
 
       {/* Mobile navigation - shown only on small screens */}
-      <nav className="sticky top-0 z-10 w-full border-b bg-background pl-0 pr-1 md:hidden">
+      <nav className="sticky top-[57px] z-10 w-full border-b bg-background px-0 md:hidden">
         <ScrollArea className="w-full">
           <div className="flex w-full">
             {navItems.map((item) => (
@@ -64,10 +66,12 @@ export default function PublicRootLayout({ children }: PropsWithChildren) {
                   variant={
                     pathname.startsWith(item.href) ? item.variant : "outline"
                   }
-                  className={"h-12 w-full rounded-none border-x-0 px-4 text-xs"}
+                  className={
+                    "h-10 w-full rounded-none border-0 p-2 text-xs font-semibold xs:text-sm"
+                  }
                 >
-                  <item.icon className="mr-2 h-4 w-4" />
-                  {item.label}
+                  <item.icon className="h-4 w-4" />
+                  {t(`Timelines.${item.label}`)}
                 </Button>
               </Link>
             ))}
@@ -76,15 +80,15 @@ export default function PublicRootLayout({ children }: PropsWithChildren) {
       </nav>
 
       {/* Main content */}
-      <main className="w-full max-w-2xl pr-1 pt-2 lg:max-w-xl">
+      <main className="mx-auto w-full max-w-2xl pr-1 pt-2 lg:max-w-xl">
         <div className="mx-auto">{children}</div>
       </main>
 
       {/* Right sidebar */}
-      <aside className="hidden p-4 lg:block lg:flex-1 xl:flex-auto">
+      <aside className="hidden p-0 lg:block lg:flex-1 xl:flex-auto">
         <div className="sticky top-16">
-          <ScrollArea className="h-[calc(100vh-5rem)]">
-            <div className="rounded-lg bg-accent">
+          <ScrollArea className="h-[calc(100vh-7rem)]">
+            <div className="m-2 flex flex-col rounded-lg bg-accent p-2">
               <h2 className="mb-4 text-lg font-semibold">Sidebar</h2>
               <p>Your sidebar content goes here...</p>
             </div>
