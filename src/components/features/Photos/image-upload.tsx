@@ -1,5 +1,6 @@
 "use client";
 
+import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { CloudUpload, Upload, X } from "lucide-react";
 import { useLocale } from "next-intl";
 import Image from "next/image";
@@ -11,7 +12,7 @@ import { Label } from "~/components/ui/label";
 import { Progress as ProgressBar } from "~/components/ui/progress";
 import { useToast } from "~/hooks/use-toast";
 import { useRouter } from "~/lib/i18n/routing";
-import s3 from "~/lib/minio";
+import { getSignedUrl, s3Client } from "~/lib/minio";
 import { api } from "~/lib/trpc/react";
 import { cn, formatDate, formatTime } from "~/lib/utils";
 import { readExif } from "~/lib/utils/readExif";
@@ -41,13 +42,8 @@ const ACCEPTED_IMAGE_TYPES = [
   "image/webp",
 ];
 
-console.log("MINIO_SERVER_URL:", process.env.MINIO_SERVER_URL);
-console.log("MINIO_ROOT_USER:", process.env.MINIO_ROOT_USER);
-console.log("MINIO_ROOT_PASSWORD:", process.env.MINIO_ROOT_PASSWORD);
-console.log("MINIO_BUCKET_NAME:", process.env.MINIO_BUCKET_NAME);
-
-const getSignedUrl = async (file: File) => {
-  const signedUrlResponse = await fetch("/api/getSignedURL", {
+const getSignedUrlForUpload = async (file: File) => {
+  const response = await fetch("/api/getSignedURL", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -58,12 +54,12 @@ const getSignedUrl = async (file: File) => {
     }),
   });
 
-  if (!signedUrlResponse.ok) {
+  if (!response.ok) {
     throw new Error("Failed to get signed URL");
   }
 
-  const { uploadUrl: signedUrl } = await signedUrlResponse.json();
-  return signedUrl;
+  const { uploadUrl } = await response.json();
+  return uploadUrl;
 };
 
 const uploadToS3 = async (file: File, uploadUrl: string) => {
@@ -109,7 +105,7 @@ export default function PhotoUpload() {
           const buffer = await preview.file.arrayBuffer();
           const exifData = await readExif(Buffer.from(buffer));
 
-          const uploadUrl = await getSignedUrl(preview.file);
+          const uploadUrl = await getSignedUrlForUpload(preview.file);
           const s3Url = await uploadToS3(preview.file, uploadUrl);
 
           const savedImage = await saveImageMutation.mutateAsync({
