@@ -129,17 +129,6 @@ export const photoRouter = createTRPCRouter({
           owner: true,
           plantImages: connectImageWithPlantsQuery,
         },
-        columns: {
-          id: true,
-          createdAt: true,
-          updatedAt: true,
-          ownerId: true,
-          imageUrl: true,
-          cloudinaryAssetId: true,
-          cloudinaryPublicId: true,
-          captureDate: true,
-          originalFilename: true,
-        },
       });
 
       if (!image) {

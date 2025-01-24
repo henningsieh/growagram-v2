@@ -1,10 +1,11 @@
 "use client";
 
-import { PutObjectCommand } from "@aws-sdk/client-s3";
+// src/components/features/Photos/image-upload.tsx:
 import { CloudUpload, Upload, X } from "lucide-react";
 import { useLocale } from "next-intl";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { modulePaths } from "~/assets/constants";
 import SpinningLoader from "~/components/Layouts/loader";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardFooter } from "~/components/ui/card";
@@ -12,11 +13,10 @@ import { Label } from "~/components/ui/label";
 import { Progress as ProgressBar } from "~/components/ui/progress";
 import { useToast } from "~/hooks/use-toast";
 import { useRouter } from "~/lib/i18n/routing";
-import { getSignedUrl, s3Client } from "~/lib/minio";
 import { api } from "~/lib/trpc/react";
 import { cn, formatDate, formatTime } from "~/lib/utils";
 import { readExif } from "~/lib/utils/readExif";
-import { CreatePhotoInput } from "~/server/api/root";
+import type { CreatePhotoInput } from "~/server/api/root";
 
 interface FilePreview {
   file: File;
@@ -128,7 +128,7 @@ export default function PhotoUpload() {
       formRef.current?.reset();
       setPreviews([]);
       utils.photos.getOwnPhotos.invalidate();
-      router.push("/photos");
+      router.push(modulePaths.PHOTOS.path);
     } catch (error) {
       console.error("Error uploading images:", error);
       toast({

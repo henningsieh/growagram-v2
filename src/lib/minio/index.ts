@@ -1,3 +1,4 @@
+// src/lib/minio/index.ts:
 import { S3Client } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
@@ -12,4 +13,4 @@ const s3Client = new S3Client({
   forcePathStyle: true,
 });
 
-export { s3Client, getSignedUrl };
+export { getSignedUrl, s3Client };
