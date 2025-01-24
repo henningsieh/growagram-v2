@@ -1,7 +1,6 @@
 "use client";
 
-import { CloudUpload, Loader2, Upload, X } from "lucide-react";
-import { type User } from "next-auth";
+import { CloudUpload, Upload, X } from "lucide-react";
 import { useLocale } from "next-intl";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
@@ -12,6 +11,7 @@ import { Label } from "~/components/ui/label";
 import { Progress as ProgressBar } from "~/components/ui/progress";
 import { useToast } from "~/hooks/use-toast";
 import { useRouter } from "~/lib/i18n/routing";
+import s3 from "~/lib/minio";
 import { api } from "~/lib/trpc/react";
 import { cn, formatDate, formatTime } from "~/lib/utils";
 import { readExif } from "~/lib/utils/readExif";
@@ -41,7 +41,48 @@ const ACCEPTED_IMAGE_TYPES = [
   "image/webp",
 ];
 
-export default function PhotoUpload({ user }: { user: User }) {
+console.log("MINIO_SERVER_URL:", process.env.MINIO_SERVER_URL);
+console.log("MINIO_ROOT_USER:", process.env.MINIO_ROOT_USER);
+console.log("MINIO_ROOT_PASSWORD:", process.env.MINIO_ROOT_PASSWORD);
+console.log("MINIO_BUCKET_NAME:", process.env.MINIO_BUCKET_NAME);
+
+const getSignedUrl = async (file: File) => {
+  const signedUrlResponse = await fetch("/api/getSignedURL", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      fileName: file.name,
+      fileType: file.type,
+    }),
+  });
+
+  if (!signedUrlResponse.ok) {
+    throw new Error("Failed to get signed URL");
+  }
+
+  const { uploadUrl: signedUrl } = await signedUrlResponse.json();
+  return signedUrl;
+};
+
+const uploadToS3 = async (file: File, uploadUrl: string) => {
+  const response = await fetch(uploadUrl, {
+    method: "PUT",
+    body: file,
+    headers: {
+      "Content-Type": file.type,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to upload file");
+  }
+
+  return uploadUrl.split("?")[0]; // Return the URL without query parameters
+};
+
+export default function PhotoUpload() {
   const locale = useLocale();
   const [uploading, setUploading] = useState(false);
   const [previews, setPreviews] = useState<FilePreview[]>([]);
@@ -49,10 +90,11 @@ export default function PhotoUpload({ user }: { user: User }) {
   const router = useRouter();
   const utils = api.useUtils();
   const { toast } = useToast();
-  const saveImageMutation = api.photos.createPhoto.useMutation();
 
   const formRef = useRef<HTMLFormElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const saveImageMutation = api.photos.createPhoto.useMutation();
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -67,11 +109,13 @@ export default function PhotoUpload({ user }: { user: User }) {
           const buffer = await preview.file.arrayBuffer();
           const exifData = await readExif(Buffer.from(buffer));
 
-          // Save to your database using tRPC mutation
+          const uploadUrl = await getSignedUrl(preview.file);
+          const s3Url = await uploadToS3(preview.file, uploadUrl);
+
           const savedImage = await saveImageMutation.mutateAsync({
-            imageUrl: preview.preview,
-            cloudinaryAssetId: "",
-            cloudinaryPublicId: "",
+            imageUrl: s3Url,
+            s3Key: s3Url.split("/").pop(), // Extract the key from the URL
+            s3ETag: "", // You can add logic to get the ETag if needed
             captureDate: exifData?.captureDate || new Date(),
             originalFilename: preview.file.name,
           } satisfies CreatePhotoInput);
@@ -87,7 +131,6 @@ export default function PhotoUpload({ user }: { user: User }) {
 
       formRef.current?.reset();
       setPreviews([]);
-      // Invalidate the images query to refresh the list
       utils.photos.getOwnPhotos.invalidate();
       router.push("/photos");
     } catch (error) {

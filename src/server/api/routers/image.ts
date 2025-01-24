@@ -200,9 +200,6 @@ export const photoRouter = createTRPCRouter({
     .input(imageSchema)
     .mutation(async ({ ctx, input }) => {
       // Save image record to database
-
-      console.debug("captureDate: ", input.captureDate);
-
       const newImage = await ctx.db
         .insert(images)
         .values({
@@ -211,6 +208,8 @@ export const photoRouter = createTRPCRouter({
           imageUrl: input.imageUrl,
           cloudinaryAssetId: input.cloudinaryAssetId,
           cloudinaryPublicId: input.cloudinaryPublicId,
+          s3Key: input.s3Key,
+          s3ETag: input.s3ETag,
           captureDate: input.captureDate,
           originalFilename: input.originalFilename,
         })
@@ -251,7 +250,8 @@ export const photoRouter = createTRPCRouter({
 
         // Delete from Cloudinary
         const deleteResult = (await cloudinary.uploader.destroy(
-          image.cloudinaryPublicId,
+          //FIXME: stored in S3 MinIO if cloudinaryPublicId is null
+          image.cloudinaryPublicId as string, //FIXME: cloudinaryPublicId is optional
         )) as { result: string };
 
         if (deleteResult.result !== "ok") {

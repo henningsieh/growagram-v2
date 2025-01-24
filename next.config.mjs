@@ -31,6 +31,10 @@ const nextConfig = {
         hostname: "res.cloudinary.com",
         pathname: "/dgcydirlu/image/**",
       },
+      {
+        protocol: "https",
+        hostname: "s3.growagram.com",
+      },
     ],
   },
   webpack(config) {

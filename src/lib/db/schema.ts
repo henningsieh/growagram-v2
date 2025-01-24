@@ -216,8 +216,10 @@ export const images = pgTable("image", {
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
   imageUrl: text("image_url").notNull(),
-  cloudinaryAssetId: text("asset_id").notNull(),
-  cloudinaryPublicId: text("public_id").notNull(),
+  cloudinaryAssetId: text("asset_id"),
+  cloudinaryPublicId: text("public_id"),
+  s3Key: text("s3_key"),
+  s3ETag: text("s3_etag"),
   captureDate: timestamp("captureDate", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),

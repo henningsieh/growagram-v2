@@ -10,7 +10,9 @@ export default async function ImageUploadPage() {
     <PageHeader title="Photo Upload" subtitle="Upload new Photos">
       {session && session.user && (
         <FormContent>
-          <PhotoUpload user={session.user} />
+          <PhotoUpload
+          // user={session.user}
+          />
         </FormContent>
       )}
     </PageHeader>
