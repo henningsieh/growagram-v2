@@ -17,10 +17,10 @@ import { Label } from "~/components/ui/label";
 import { Progress as ProgressBar } from "~/components/ui/progress";
 import { useToast } from "~/hooks/use-toast";
 import { useRouter } from "~/lib/i18n/routing";
-import { uploadToS3 } from "~/lib/minio";
 import { api } from "~/lib/trpc/react";
 import { cn, formatDate, formatTime } from "~/lib/utils";
 import { readExif } from "~/lib/utils/readExif";
+import { uploadToS3 } from "~/lib/utils/uploadToS3";
 import type { CreatePhotoInput } from "~/server/api/root";
 
 interface FilePreview {
