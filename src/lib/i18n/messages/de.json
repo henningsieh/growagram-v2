@@ -170,9 +170,9 @@
   },
   "Navigation": {
     "Timelines": {
-      "All Updates": "Alle Updates",
       "All Grows": "Alle Grows",
-      "All Plants": "Alle Pflanzen"
+      "All Plants": "Alle Pflanzen",
+      "All Updates": "Alle Updates"
     },
     "dashboard": "Dashboard",
     "dashboard-description": "Erfasse deine Grows und deine Pflanzen einschließlich Hochladen der Fotos.",
@@ -195,6 +195,20 @@
     "toggle-menu": "Menü umschalten"
   },
   "Photos": {
+    "Photos": {
+      "upload": {
+        "buttonLabel-files": "Dateien",
+        "buttonLabel-upload": "Hochladen",
+        "dropzone-description": "Bilddateien (JPG, PNG, GIF, WebP bis zu 10MB)",
+        "dropzone-title": "Ziehe deine Fotos per Drag & Drop hierher",
+        "preview": {
+          "capturedate-label": "Aufnahmedatum:",
+          "filename-label": "Dateiname:",
+          "filesize-label": "Dateigröße:",
+          "filesize-unit": "Megabyte (MB)"
+        }
+      }
+    },
     "button": {
       "connecting": "Pflanzen werden verbunden...",
       "removeAll": "Alle Pflanzen entfernen",

@@ -170,9 +170,9 @@
   },
   "Navigation": {
     "Timelines": {
-      "All Updates": "All Updates",
       "All Grows": "All Grows",
-      "All Plants": "All Plants"
+      "All Plants": "All Plants",
+      "All Updates": "All Updates"
     },
     "dashboard": "Dashboard",
     "dashboard-description": "Track your grows and your plants, including photo uploads.",
@@ -195,6 +195,20 @@
     "toggle-menu": "Toggle menu"
   },
   "Photos": {
+    "Photos": {
+      "upload": {
+        "buttonLabel-files": "files",
+        "buttonLabel-upload": "Upload",
+        "dropzone-description": "Imagefiles (JPG, PNG, GIF, WebP up to 10MB)",
+        "dropzone-title": "Drag & Drop your photos here",
+        "preview": {
+          "capturedate-label": "Capture date:",
+          "filename-label": "Filename:",
+          "filesize-label": "Filesize:",
+          "filesize-unit": "Megabyte (MB)"
+        }
+      }
+    },
     "button": {
       "connecting": "Connecting plants...",
       "removeAll": "Remove All Plants",

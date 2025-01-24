@@ -6,6 +6,7 @@ import { PaginationItemsPerPage } from "~/assets/constants";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
 import cloudinary from "~/lib/cloudinary";
 import { images, plantImages } from "~/lib/db/schema";
+import { deleteFromS3 } from "~/lib/minio";
 import {
   createTRPCRouter,
   protectedProcedure,
@@ -237,20 +238,31 @@ export const photoRouter = createTRPCRouter({
           });
         }
 
-        // Delete from Cloudinary
-        const deleteResult = (await cloudinary.uploader.destroy(
-          //FIXME: stored in S3 MinIO if cloudinaryPublicId is null
-          image.cloudinaryPublicId as string, //FIXME: cloudinaryPublicId is optional
-        )) as { result: string };
+        if (image.s3Key) {
+          // Delete from S3
+          const deleteResult = await deleteFromS3(image.s3Key);
+          if (!deleteResult) {
+            throw new TRPCError({
+              code: "INTERNAL_SERVER_ERROR",
+              message: "Failed to delete image from storage",
+            });
+          }
+        } else {
+          // Delete from Cloudinary
+          const deleteResult = (await cloudinary.uploader.destroy(
+            //FIXME: stored in S3 MinIO if cloudinaryPublicId is null
+            image.cloudinaryPublicId as string, //FIXME: cloudinaryPublicId is optional
+          )) as { result: string };
 
-        if (deleteResult.result !== "ok") {
-          throw new TRPCError({
-            code: "UNPROCESSABLE_CONTENT",
-            message: "Failed delete image from Cloudinary",
-          });
+          if (deleteResult.result !== "ok") {
+            throw new TRPCError({
+              code: "UNPROCESSABLE_CONTENT",
+              message: "Failed delete image from Cloudinary",
+            });
+          }
         }
 
-        // Delete from database
+        // Delete database record
         const deletedImage = await ctx.db
           .delete(images)
           .where(eq(images.id, input.id))

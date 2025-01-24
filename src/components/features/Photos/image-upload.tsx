@@ -2,10 +2,14 @@
 
 // src/components/features/Photos/image-upload.tsx:
 import { CloudUpload, Upload, X } from "lucide-react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { modulePaths } from "~/assets/constants";
+import {
+  ACCEPTED_IMAGE_TYPES,
+  MAX_UPLOAD_FILE_SIZE,
+  modulePaths,
+} from "~/assets/constants";
 import SpinningLoader from "~/components/Layouts/loader";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardFooter } from "~/components/ui/card";
@@ -13,6 +17,7 @@ import { Label } from "~/components/ui/label";
 import { Progress as ProgressBar } from "~/components/ui/progress";
 import { useToast } from "~/hooks/use-toast";
 import { useRouter } from "~/lib/i18n/routing";
+import { uploadToS3 } from "~/lib/minio";
 import { api } from "~/lib/trpc/react";
 import { cn, formatDate, formatTime } from "~/lib/utils";
 import { readExif } from "~/lib/utils/readExif";
@@ -34,14 +39,6 @@ interface FilePreview {
   } | null;
 }
 
-const MAX_FILE_SIZE = 10000000; // 10MB
-const ACCEPTED_IMAGE_TYPES = [
-  "image/jpeg",
-  "image/jpg",
-  "image/png",
-  "image/webp",
-];
-
 const getSignedUrlForUpload = async (file: File) => {
   const response = await fetch("/api/getSignedURL", {
     method: "POST",
@@ -60,36 +57,6 @@ const getSignedUrlForUpload = async (file: File) => {
 
   const { uploadUrl } = await response.json();
   return uploadUrl;
-};
-
-interface UploadResult {
-  url: string;
-  eTag: string;
-}
-
-const uploadToS3 = async (
-  file: File,
-  uploadUrl: string,
-): Promise<UploadResult> => {
-  const response = await fetch(uploadUrl, {
-    method: "PUT",
-    body: file,
-    headers: {
-      "Content-Type": file.type,
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error("Failed to upload file");
-  }
-
-  // Extract ETag from response headers (remove quotes)
-  const eTag = response.headers.get("ETag")?.replace(/['"]/g, "") || "";
-
-  return {
-    url: uploadUrl.split("?")[0], // Return the URL without query parameters
-    eTag,
-  };
 };
 
 export default function PhotoUpload() {
@@ -127,7 +94,8 @@ export default function PhotoUpload() {
 
           const savedImage = await saveImageMutation.mutateAsync({
             imageUrl: s3Url,
-            s3Key: s3Url.split("/").pop(), // Extract the key from the URL
+            // s3Key: s3Url.split("/").pop(), // Extract the key from the URL
+            s3Key: `photos/${preview.file.name}`, // Store complete path
             s3ETag: eTag, // Use the extracted ETag
             captureDate: exifData?.captureDate || new Date(),
             originalFilename: preview.file.name,
@@ -212,7 +180,7 @@ export default function PhotoUpload() {
   const handleFiles = async (files: File[]) => {
     const validFiles = files.filter((file) => {
       const isValid = ACCEPTED_IMAGE_TYPES.includes(file.type);
-      const isValidSize = file.size <= MAX_FILE_SIZE;
+      const isValidSize = file.size <= MAX_UPLOAD_FILE_SIZE;
 
       if (!isValid) {
         toast({
@@ -224,7 +192,7 @@ export default function PhotoUpload() {
       if (!isValidSize) {
         toast({
           title: "File too large",
-          description: `${file.name} exceeds 10MB limit`,
+          description: `${file.name} exceeds the ${MAX_UPLOAD_FILE_SIZE / 1000000} MB limit`,
           variant: "destructive",
         });
       }
@@ -255,12 +223,16 @@ export default function PhotoUpload() {
     };
   }, [previews]);
 
+  const t = useTranslations("Photos");
+
   return (
     <Card>
       <form ref={formRef} onSubmit={onSubmit}>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="files">Upload Images</Label>
+            <Label className="sr-only" htmlFor="files">
+              {t("Photos.upload.dropzone-title")}
+            </Label>
             <div
               onClick={() => fileInputRef.current?.click()}
               onDragOver={handleDrag}
@@ -279,12 +251,14 @@ export default function PhotoUpload() {
                 <CloudUpload className="h-10 w-10 text-muted-foreground" />
 
                 <div className="text-lg text-muted-foreground">
-                  <span className="font-semibold">Click to upload</span> or drag
-                  and drop
+                  <span className="font-semibold">
+                    {" "}
+                    {t("Photos.upload.dropzone-title")}
+                  </span>
                 </div>
 
                 <div className="text-xs text-muted-foreground">
-                  Imagefiles (JPG, PNG, WebP up to 10MB)
+                  {t("Photos.upload.dropzone-description")}
                 </div>
               </div>
             </div>
@@ -315,24 +289,30 @@ export default function PhotoUpload() {
                     />
                     <div className="absolute bottom-1 left-1 right-1 mt-2 flex flex-col rounded-sm bg-accent p-1 text-xs font-semibold text-foreground">
                       <div className="flex justify-between gap-2">
-                        <span>Filename: </span>
+                        <span>{t("Photos.upload.preview.filename-label")}</span>
                         <span className="overflow-x-hidden whitespace-nowrap">
                           {preview.file.name}
                         </span>
                       </div>
                       <div className="flex justify-between">
-                        <span>Filesize: </span>
+                        <span>{t("Photos.upload.preview.filesize-label")}</span>
                         <span className="overflow-hidden">
-                          {(preview.file.size / 1024 / 1024).toFixed(2)} MB
+                          {(preview.file.size / 1024 / 1024).toFixed(2)}
+                          {t("Photos.upload.preview.filesize-unit")}
                         </span>
                       </div>
                       {/* EXIF Data Display */}
                       {preview.exifData?.captureDate && (
                         <div className="flex justify-between">
-                          <span>Capture date: </span>
+                          <span>
+                            {t("Photos.upload.preview.capturedate-label")}
+                          </span>
                           <span>
                             {formatDate(preview.exifData.captureDate, locale)}
-                            {", "}
+                            {
+                              // eslint-disable-next-line react/jsx-no-literals
+                              ", "
+                            }
                             {formatTime(preview.exifData.captureDate, locale)}
                           </span>
                         </div>
@@ -368,7 +348,15 @@ export default function PhotoUpload() {
             ) : (
               <Upload className="mr-2 h-5 w-5" />
             )}
-            Upload ({previews.length} files)
+            {
+              // eslint-disable-next-line react/jsx-no-literals
+              `${t("Photos.upload.buttonLabel-upload")} (`
+            }
+            {previews.length}
+            {
+              // eslint-disable-next-line react/jsx-no-literals
+              ` ${t("Photos.upload.buttonLabel-files")})`
+            }
           </Button>
         </CardFooter>
       </form>
