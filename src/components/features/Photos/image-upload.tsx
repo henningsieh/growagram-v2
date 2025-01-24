@@ -62,7 +62,15 @@ const getSignedUrlForUpload = async (file: File) => {
   return uploadUrl;
 };
 
-const uploadToS3 = async (file: File, uploadUrl: string) => {
+interface UploadResult {
+  url: string;
+  eTag: string;
+}
+
+const uploadToS3 = async (
+  file: File,
+  uploadUrl: string,
+): Promise<UploadResult> => {
   const response = await fetch(uploadUrl, {
     method: "PUT",
     body: file,
@@ -75,7 +83,13 @@ const uploadToS3 = async (file: File, uploadUrl: string) => {
     throw new Error("Failed to upload file");
   }
 
-  return uploadUrl.split("?")[0]; // Return the URL without query parameters
+  // Extract ETag from response headers (remove quotes)
+  const eTag = response.headers.get("ETag")?.replace(/['"]/g, "") || "";
+
+  return {
+    url: uploadUrl.split("?")[0], // Return the URL without query parameters
+    eTag,
+  };
 };
 
 export default function PhotoUpload() {
@@ -106,12 +120,15 @@ export default function PhotoUpload() {
           const exifData = await readExif(Buffer.from(buffer));
 
           const uploadUrl = await getSignedUrlForUpload(preview.file);
-          const s3Url = await uploadToS3(preview.file, uploadUrl);
+          const { url: s3Url, eTag } = await uploadToS3(
+            preview.file,
+            uploadUrl,
+          );
 
           const savedImage = await saveImageMutation.mutateAsync({
             imageUrl: s3Url,
             s3Key: s3Url.split("/").pop(), // Extract the key from the URL
-            s3ETag: "", // You can add logic to get the ETag if needed
+            s3ETag: eTag, // Use the extracted ETag
             captureDate: exifData?.captureDate || new Date(),
             originalFilename: preview.file.name,
           } satisfies CreatePhotoInput);
