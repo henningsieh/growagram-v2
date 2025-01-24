@@ -1,12 +1,18 @@
 // src/server/api/routers/image.ts:
+import {
+  DeleteObjectCommand,
+  HeadObjectCommand,
+  NotFound,
+} from "@aws-sdk/client-s3";
 import { TRPCError } from "@trpc/server";
 import { and, count, eq, exists, not } from "drizzle-orm";
 import { z } from "zod";
 import { PaginationItemsPerPage } from "~/assets/constants";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
+import { env } from "~/env";
 import cloudinary from "~/lib/cloudinary";
 import { images, plantImages } from "~/lib/db/schema";
-import { deleteFromS3 } from "~/lib/minio";
+import { s3Client } from "~/lib/minio";
 import {
   createTRPCRouter,
   protectedProcedure,
@@ -297,3 +303,78 @@ export const photoRouter = createTRPCRouter({
       }
     }),
 });
+
+/**
+ * Deletes an object from S3 storage.
+ * @param s3Key - The key of the object to delete
+ * @returns `true` if the object was successfully deleted, `false` otherwise
+ * @throws TRPCError if an error occurs during deletion
+ * @see {@link https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-s3/index.html#deleteobjectcommand}
+ * @see {@link https://min.io/docs/minio/linux/index.html}
+ */
+export async function deleteFromS3(s3Key: string) {
+  const bucket = env.MINIO_BUCKET_NAME;
+
+  try {
+    // Log pre-deletion state
+    console.debug("Attempting to delete:", {
+      bucket,
+      key: s3Key,
+    });
+
+    // Perform deletion
+    const command = new DeleteObjectCommand({
+      Bucket: bucket,
+      Key: s3Key,
+    });
+
+    const deleteResult = await s3Client.send(command);
+    console.debug("deleteFromS3:", deleteResult);
+
+    // Verify deletion
+    const stillExists = await objectExists(bucket, s3Key);
+    if (stillExists) {
+      console.error("Object still exists after deletion attempt");
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    console.error("Error in deleteFromS3:", {
+      error,
+      bucket,
+      key: s3Key,
+    });
+    throw new TRPCError({
+      code: "INTERNAL_SERVER_ERROR",
+      message: "Failed to delete image from storage",
+      cause: error,
+    });
+  }
+}
+
+/**
+ * Checks if an object exists in S3 storage.
+ * @param bucket - The bucket where the object is stored
+ * @param key - The key of the object to check
+ * @returns `true` if the object exists, `false` otherwise
+ * @throws Error if an error occurs during the check
+ */
+async function objectExists(bucket: string, key: string) {
+  try {
+    const command = new HeadObjectCommand({
+      Bucket: bucket,
+      Key: key,
+    });
+    await s3Client.send(command);
+    return true;
+  } catch (error) {
+    // NotFound is expected when object doesn't exist
+    if (error instanceof NotFound) {
+      return false;
+    }
+    // For other errors, we should throw
+    console.error("Error checking if object exists:", error);
+    throw new Error(`Failed to check if image exists in storage: ${error}`);
+  }
+}
