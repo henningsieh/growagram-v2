@@ -1,7 +1,7 @@
 // src/app/[locale]/(protected)/photos/[id]/form/page.tsx:
 import ImageConnectPlants from "~/components/features/Photos/image-connect-plants";
-import { HydrateClient, api } from "~/lib/trpc/server";
-import { GetPhotoByIdInput } from "~/server/api/root";
+import { api } from "~/lib/trpc/server";
+import type { GetPhotoByIdInput } from "~/server/api/root";
 
 export default async function Page({
   params,

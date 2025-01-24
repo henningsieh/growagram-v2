@@ -4,7 +4,7 @@ import { Clock, TagIcon, TentTree } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { type PropsWithChildren } from "react";
 import { modulePaths } from "~/assets/constants";
-import { Button, ButtonProps } from "~/components/ui/button";
+import { Button, type ButtonProps } from "~/components/ui/button";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { Link, usePathname } from "~/lib/i18n/routing";
 import { cn } from "~/lib/utils";

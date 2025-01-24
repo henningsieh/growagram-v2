@@ -1,6 +1,5 @@
 // src/components/Layouts/InfiniteScrollLoader.tsx:
-import { Loader2 } from "lucide-react";
-import React, { forwardRef } from "react";
+import { forwardRef } from "react";
 import SpinningLoader from "~/components/Layouts/loader";
 
 interface InfiniteScrollLoaderProps {

@@ -1,6 +1,6 @@
 import { X } from "lucide-react";
 import { useLocale } from "next-intl";
-import { ControllerRenderProps, FieldValues, Path } from "react-hook-form";
+import type { ControllerRenderProps, FieldValues, Path } from "react-hook-form";
 import { Button } from "~/components/ui/button";
 import { Calendar } from "~/components/ui/calendar";
 import {

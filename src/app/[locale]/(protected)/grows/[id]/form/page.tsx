@@ -2,7 +2,7 @@
 import { notFound } from "next/navigation";
 import GrowFormPage from "~/components/features/Grows/grow-form";
 import { api } from "~/lib/trpc/server";
-import { GetGrowByIdInput, GetGrowByIdType } from "~/server/api/root";
+import type { GetGrowByIdInput, GetGrowByIdType } from "~/server/api/root";
 
 export default async function CreatePlantPage({
   params,

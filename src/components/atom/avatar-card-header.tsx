@@ -1,6 +1,6 @@
 import { CardHeader } from "~/components/ui/card";
 import { Link } from "~/lib/i18n/routing";
-import { OwnUserDataType } from "~/server/api/root";
+import type { OwnUserDataType } from "~/server/api/root";
 
 import CustomAvatar from "./custom-avatar";
 

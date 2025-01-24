@@ -41,8 +41,11 @@ import { Input } from "~/components/ui/input";
 import { useToast } from "~/hooks/use-toast";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
-import { CreateOrEditPlantInput, GetOwnPlantsInput } from "~/server/api/root";
-import { Plant } from "~/types/db";
+import type {
+  CreateOrEditPlantInput,
+  GetOwnPlantsInput,
+} from "~/server/api/root";
+import type { Plant } from "~/types/db";
 import { plantFormSchema } from "~/types/zodSchema";
 
 import PlantFormDateField from "./plant-form-date-fields";

@@ -18,7 +18,7 @@ import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { Link, useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
-import { Locale } from "~/types/locale";
+import type { Locale } from "~/types/locale";
 
 export default function RegisterPage() {
   const t = useTranslations("RegisterPage");

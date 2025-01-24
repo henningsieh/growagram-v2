@@ -23,8 +23,8 @@ import { useLikeStatus } from "~/hooks/use-likes";
 import { useToast } from "~/hooks/use-toast";
 import { Link } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
-import { DateFormatOptions, cn, formatDate } from "~/lib/utils";
-import { GetAllGrowType, GetOwnGrowType } from "~/server/api/root";
+import { type DateFormatOptions, cn, formatDate } from "~/lib/utils";
+import type { GetAllGrowType, GetOwnGrowType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
 import { LikeableEntityType } from "~/types/like";
 

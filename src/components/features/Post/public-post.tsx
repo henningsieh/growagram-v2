@@ -12,7 +12,7 @@ import { useToast } from "~/hooks/use-toast";
 import { api } from "~/lib/trpc/react";
 import { cn } from "~/lib/utils";
 import { useImageModal } from "~/providers/modal-provider";
-import { GetPostType } from "~/server/api/root";
+import type { GetPostType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
 import { LikeableEntityType } from "~/types/like";
 import { PostableEntityType } from "~/types/post";

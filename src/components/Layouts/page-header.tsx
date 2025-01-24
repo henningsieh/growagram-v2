@@ -1,6 +1,6 @@
 // src/components/Layouts/page-header.tsx:
 import { ReadonlyURLSearchParams } from "next/navigation";
-import { Button, ButtonProps } from "~/components/ui/button";
+import { Button, type ButtonProps } from "~/components/ui/button";
 import { Link } from "~/lib/i18n/routing";
 
 interface IPageHeader {

@@ -2,8 +2,8 @@
 
 // src/components/features/Plants/Views/infinite-scroll.tsx:
 import {
-  Dispatch,
-  SetStateAction,
+  type Dispatch,
+  type SetStateAction,
   useCallback,
   useEffect,
   useRef,
@@ -16,7 +16,7 @@ import { SortOrder } from "~/components/atom/sort-filter-controls";
 import PlantCard from "~/components/features/Plants/plant-card";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
-import { GetOwnPlantsInput, GetOwnPlantsType } from "~/server/api/root";
+import type { GetOwnPlantsInput, GetOwnPlantsType } from "~/server/api/root";
 import { PlantsSortField } from "~/types/plant";
 
 export default function InfiniteScrollPlantsView({

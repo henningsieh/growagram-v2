@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import ProfileTabs from "~/components/features/PublicProfile/PofileTabs";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { api } from "~/lib/trpc/server";
-import { GetPublicUserProfileInput } from "~/server/api/root";
+import type { GetPublicUserProfileInput } from "~/server/api/root";
 
 export default async function ProfilePage({
   params,

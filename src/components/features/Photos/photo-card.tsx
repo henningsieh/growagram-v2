@@ -13,6 +13,7 @@ import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useState } from "react";
+import { modulePaths } from "~/assets/constants";
 import { RESPONSIVE_IMAGE_SIZES } from "~/components/Layouts/responsive-grid";
 import PostFormModal from "~/components/PostFormModal";
 import AvatarCardHeader from "~/components/atom/avatar-card-header";
@@ -36,7 +37,7 @@ import { Link, useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import { cn, formatDate, formatTime } from "~/lib/utils";
 import { useImageModal } from "~/providers/modal-provider";
-import { GetOwnPhotoType } from "~/server/api/root";
+import type { GetOwnPhotoType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
 import { PhotosSortField } from "~/types/image";
 import { LikeableEntityType } from "~/types/like";
@@ -183,7 +184,7 @@ export default function PhotoCard({
                 className="w-full justify-start p-1"
               >
                 <Link
-                  href={`/public/photos/${photo.id}`}
+                  href={`/public${modulePaths.PHOTOS.path}/${photo.id}`}
                   className="flex min-w-0 items-center gap-2"
                 >
                   <FileIcon className="flex-shrink-0" size={20} />
@@ -290,7 +291,7 @@ export default function PhotoCard({
 
           {!!!photo.plantImages.length && !isSocial && (
             // link to edit plant, same as in DropDown menu
-            <Link href={`/photos/${photo.id}/form`}>
+            <Link href={`${modulePaths.PHOTOS.path}/${photo.id}/form`}>
               <Button
                 variant={"secondary"}
                 className="w-full p-2 font-semibold"

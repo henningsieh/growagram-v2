@@ -1,5 +1,5 @@
 // src/components/ui/delete-confirmation-dialog.tsx
-import { Loader2, Trash2, TriangleAlert } from "lucide-react";
+import { Trash2, TriangleAlert } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
 import { Button } from "~/components/ui/button";
 import {

@@ -1,7 +1,7 @@
 import { asc } from "drizzle-orm";
 import { db } from "~/lib/db";
 import { grows } from "~/lib/db/schema";
-import { GetGrowByIdInput } from "~/server/api/root";
+import type { GetGrowByIdInput } from "~/server/api/root";
 
 // Allow both static and dynamic rendering
 export const dynamic = "force-dynamic";

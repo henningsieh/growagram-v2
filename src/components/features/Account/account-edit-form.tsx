@@ -44,7 +44,7 @@ import { Separator } from "~/components/ui/separator";
 import { useToast } from "~/hooks/use-toast";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
-import { GetUserEditInput, OwnUserDataType } from "~/server/api/root";
+import type { GetUserEditInput, OwnUserDataType } from "~/server/api/root";
 import { userEditSchema } from "~/types/zodSchema";
 
 const formVariants = {

@@ -20,8 +20,8 @@ import {
 } from "~/components/ui/hybrid-tooltip";
 import { useIsMobile } from "~/hooks/use-mobile";
 import { Link } from "~/lib/i18n/routing";
-import { DateFormatOptions, formatDate } from "~/lib/utils";
-import { GetAllGrowType } from "~/server/api/root";
+import { type DateFormatOptions, formatDate } from "~/lib/utils";
+import type { GetAllGrowType } from "~/server/api/root";
 
 import { EmbeddedPlantCard } from "../Plants/embedded-plant-card";
 

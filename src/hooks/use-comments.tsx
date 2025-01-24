@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
 import { usePathname } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
-import { GetCommentsInput, GetCommentsType } from "~/server/api/root";
+import type { GetCommentsInput, GetCommentsType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
 
 import { useToast } from "./use-toast";

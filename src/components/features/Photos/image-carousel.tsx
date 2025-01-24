@@ -12,7 +12,7 @@ import {
 } from "~/components/ui/carousel";
 import { formatDate, formatTime } from "~/lib/utils";
 import { useImageModal } from "~/providers/modal-provider";
-import { ImageType, PlantImagesType } from "~/server/api/root";
+import type { ImageType, PlantImagesType } from "~/server/api/root";
 
 export const ImageCarousel = ({
   plantImages,

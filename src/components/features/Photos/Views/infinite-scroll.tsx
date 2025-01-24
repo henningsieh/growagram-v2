@@ -2,8 +2,8 @@
 
 // src/components/features/Photos/Views/infinite-scroll.tsx:
 import {
-  Dispatch,
-  SetStateAction,
+  type Dispatch,
+  type SetStateAction,
   useCallback,
   useEffect,
   useRef,
@@ -16,7 +16,7 @@ import { SortOrder } from "~/components/atom/sort-filter-controls";
 import PhotoCard from "~/components/features/Photos/photo-card";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
-import { GetOwnPhotosInput, GetOwnPhotosType } from "~/server/api/root";
+import type { GetOwnPhotosInput, GetOwnPhotosType } from "~/server/api/root";
 import { PhotosSortField } from "~/types/image";
 
 export default function PhotosInfiniteScrollView({

@@ -44,7 +44,7 @@ import { Link } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import { cn, formatDate } from "~/lib/utils";
 import { calculateGrowthProgress } from "~/lib/utils/calculateDetailedGrowthProgress";
-import { PlantByIdType } from "~/server/api/root";
+import type { PlantByIdType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
 import { LikeableEntityType } from "~/types/like";
 import { PostableEntityType } from "~/types/post";

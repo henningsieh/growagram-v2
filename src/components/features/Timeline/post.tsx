@@ -36,7 +36,7 @@ import {
 } from "~/components/ui/tooltip";
 import { api } from "~/lib/trpc/react";
 import { formatDate, formatTime } from "~/lib/utils";
-import { GetOwnPhotosInput, GetOwnPlantsInput } from "~/server/api/root";
+import type { GetOwnPhotosInput, GetOwnPlantsInput } from "~/server/api/root";
 
 export default function PostComponent({ id }: { id: string }) {
   const { data: session } = useSession();

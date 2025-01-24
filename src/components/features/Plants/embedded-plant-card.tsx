@@ -29,9 +29,9 @@ import {
 import { Progress } from "~/components/ui/progress";
 import { useIsMobile } from "~/hooks/use-mobile";
 import { Link } from "~/lib/i18n/routing";
-import { DateFormatOptions, formatDate } from "~/lib/utils";
+import { type DateFormatOptions, formatDate } from "~/lib/utils";
 import { calculateGrowthProgress } from "~/lib/utils/calculateDetailedGrowthProgress";
-import { GetAllPlantType } from "~/server/api/root";
+import type { GetAllPlantType } from "~/server/api/root";
 import { PlantGrowthStages } from "~/types/plant";
 
 interface EmbeddedPlantCardProps {

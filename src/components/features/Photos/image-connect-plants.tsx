@@ -31,7 +31,7 @@ import {
 import { useToast } from "~/hooks/use-toast";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
-import { GetOwnPlantsInput, GetPhotoByIdType } from "~/server/api/root";
+import type { GetOwnPlantsInput, GetPhotoByIdType } from "~/server/api/root";
 
 import { ImageDetailsCard } from "./image-details-card";
 
