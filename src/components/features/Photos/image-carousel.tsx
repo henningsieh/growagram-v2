@@ -13,6 +13,7 @@ import {
 import { formatDate, formatTime } from "~/lib/utils";
 import { useImageModal } from "~/providers/modal-provider";
 import type { ImageType, PlantImagesType } from "~/server/api/root";
+import { Locale } from "~/types/locale";
 
 export const ImageCarousel = ({
   plantImages,
@@ -65,9 +66,9 @@ export const ImageCarousel = ({
         <div className="flex items-center gap-2 font-mono text-sm">
           <CameraIcon size={16} />
           <span>
-            {formatDate(image.captureDate, locale)}
+            {formatDate(image.captureDate, locale as Locale)}
             {locale !== "en" ? " um " : " at "}
-            {formatTime(image.captureDate, locale)}
+            {formatTime(image.captureDate, locale as Locale)}
             {locale !== "en" && " Uhr"}
           </span>
         </div>

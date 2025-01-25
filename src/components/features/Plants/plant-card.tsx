@@ -46,6 +46,7 @@ import { calculateGrowthProgress } from "~/lib/utils/calculateDetailedGrowthProg
 import type { PlantByIdType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
 import { LikeableEntityType } from "~/types/like";
+import { Locale } from "~/types/locale";
 import { PostableEntityType } from "~/types/post";
 
 import { Comments } from "../Comments/comments";
@@ -137,7 +138,9 @@ export default function PlantCard({
           )}
         >
           {" "}
-          {isSocial && <AvatarCardHeader user={plant.owner} />}
+          {isSocial && (
+            <AvatarCardHeader user={plant.owner} date={plant.createdAt} />
+          )}
           <CardContent
             className={`grid gap-2 ${isSocial ? "ml-12 pl-0 pr-2" : "p-2"}`}
           >
@@ -248,7 +251,7 @@ export default function PlantCard({
                   <HybridTooltip>
                     <HybridTooltipTrigger className="flex cursor-default items-center font-mono text-sm font-semibold tracking-tighter">
                       <Nut className={`mr-2 h-4 w-4 text-planted`} />
-                      {formatDate(plant.startDate, locale)}
+                      {formatDate(plant.startDate, locale as Locale)}
                     </HybridTooltipTrigger>
                     <HybridTooltipContent
                       side="right"
@@ -274,7 +277,7 @@ export default function PlantCard({
                         }`}
                       />
                       {plant.seedlingPhaseStart &&
-                        formatDate(plant.seedlingPhaseStart, locale)}
+                        formatDate(plant.seedlingPhaseStart, locale as Locale)}
                     </HybridTooltipTrigger>
                     <HybridTooltipContent
                       side="right"
@@ -300,7 +303,10 @@ export default function PlantCard({
                         }`}
                       />
                       {plant.vegetationPhaseStart &&
-                        formatDate(plant.vegetationPhaseStart, locale)}
+                        formatDate(
+                          plant.vegetationPhaseStart,
+                          locale as Locale,
+                        )}
                     </HybridTooltipTrigger>
                     <HybridTooltipContent
                       side="right"
@@ -326,7 +332,7 @@ export default function PlantCard({
                         }`}
                       />
                       {plant.floweringPhaseStart &&
-                        formatDate(plant.floweringPhaseStart, locale)}
+                        formatDate(plant.floweringPhaseStart, locale as Locale)}
                     </HybridTooltipTrigger>
                     <HybridTooltipContent
                       side="right"
@@ -350,7 +356,7 @@ export default function PlantCard({
                         }`}
                       />
                       {plant.harvestDate &&
-                        formatDate(plant.harvestDate, locale)}
+                        formatDate(plant.harvestDate, locale as Locale)}
                     </HybridTooltipTrigger>
                     <HybridTooltipContent
                       side="right"
@@ -376,7 +382,7 @@ export default function PlantCard({
                         }`}
                       />
                       {plant.curingPhaseStart &&
-                        formatDate(plant.curingPhaseStart, locale)}
+                        formatDate(plant.curingPhaseStart, locale as Locale)}
                     </HybridTooltipTrigger>
                     <HybridTooltipContent
                       side="right"

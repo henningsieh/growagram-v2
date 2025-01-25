@@ -32,6 +32,7 @@ import { Link } from "~/lib/i18n/routing";
 import { type DateFormatOptions, formatDate } from "~/lib/utils";
 import { calculateGrowthProgress } from "~/lib/utils/calculateDetailedGrowthProgress";
 import type { GetAllPlantType } from "~/server/api/root";
+import { Locale } from "~/types/locale";
 import { PlantGrowthStages } from "~/types/plant";
 
 interface EmbeddedPlantCardProps {
@@ -88,9 +89,13 @@ export function EmbeddedPlantCard({ plant }: EmbeddedPlantCardProps) {
                         {t("Plants.estimated-harvest")}:{" "}
                       </p>
                       <p className="text-base">
-                        {formatDate(progress.estimatedHarvestDate, locale, {
-                          includeYear: true,
-                        } as DateFormatOptions)}{" "}
+                        {formatDate(
+                          progress.estimatedHarvestDate,
+                          locale as Locale,
+                          {
+                            includeYear: true,
+                          } as DateFormatOptions,
+                        )}{" "}
                         {`(in ${formatDaysRemaining(progress.daysUntilNextPhase)})`}
                       </p>
                     </div>
@@ -190,9 +195,13 @@ export function EmbeddedPlantCard({ plant }: EmbeddedPlantCardProps) {
                 <HybridTooltipTrigger className="flex items-center gap-2">
                   <Calendar1Icon className="h-4 w-4 shrink-0" />
                   <span className="whitespace-nowrap text-sm">
-                    {formatDate(plant.startDate, locale, {
-                      includeYear: false,
-                    } as DateFormatOptions)}
+                    {formatDate(
+                      plant.startDate,
+                      locale as Locale,
+                      {
+                        includeYear: false,
+                      } as DateFormatOptions,
+                    )}
                   </span>
                 </HybridTooltipTrigger>
                 <HybridTooltipContent>

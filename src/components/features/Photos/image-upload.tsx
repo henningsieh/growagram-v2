@@ -22,6 +22,7 @@ import { cn, formatDate, formatTime } from "~/lib/utils";
 import { readExif } from "~/lib/utils/readExif";
 import { uploadToS3 } from "~/lib/utils/uploadToS3";
 import type { CreatePhotoInput } from "~/server/api/root";
+import { Locale } from "~/types/locale";
 
 interface FilePreview {
   file: File;
@@ -308,12 +309,18 @@ export default function PhotoUpload() {
                             {t("Photos.upload.preview.capturedate-label")}
                           </span>
                           <span>
-                            {formatDate(preview.exifData.captureDate, locale)}
+                            {formatDate(
+                              preview.exifData.captureDate,
+                              locale as Locale,
+                            )}
                             {
                               // eslint-disable-next-line react/jsx-no-literals
                               ", "
                             }
-                            {formatTime(preview.exifData.captureDate, locale)}
+                            {formatTime(
+                              preview.exifData.captureDate,
+                              locale as Locale,
+                            )}
                           </span>
                         </div>
                       )}

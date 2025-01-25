@@ -41,6 +41,7 @@ import type { GetOwnPhotoType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
 import { PhotosSortField } from "~/types/image";
 import { LikeableEntityType } from "~/types/like";
+import { Locale } from "~/types/locale";
 import { PostableEntityType } from "~/types/post";
 
 import { Comments } from "../Comments/comments";
@@ -150,7 +151,9 @@ export default function PhotoCard({
           </div>
         )}
 
-        {isSocial && <AvatarCardHeader user={photo.owner} />}
+        {isSocial && (
+          <AvatarCardHeader user={photo.owner} date={photo.captureDate} />
+        )}
 
         {/* Photo */}
         <div
@@ -243,9 +246,9 @@ export default function PhotoCard({
                     )}
                   >
                     <UploadCloud size={20} />
-                    {formatDate(photo.createdAt, locale)}
+                    {formatDate(photo.createdAt, locale as Locale)}
                     {locale !== "en" ? " um " : " at "}
-                    {formatTime(photo.createdAt, locale)}
+                    {formatTime(photo.createdAt, locale as Locale)}
                     {locale !== "en" && " Uhr"}
                   </p>
                 </TooltipTrigger>
@@ -266,9 +269,9 @@ export default function PhotoCard({
                     )}
                   >
                     <Camera size={20} />
-                    {formatDate(photo.captureDate, locale)}
+                    {formatDate(photo.captureDate, locale as Locale)}
                     {locale !== "en" ? " um " : " at "}
-                    {formatTime(photo.captureDate, locale)}
+                    {formatTime(photo.captureDate, locale as Locale)}
                     {locale !== "en" && " Uhr"}
                   </p>
                 </TooltipTrigger>

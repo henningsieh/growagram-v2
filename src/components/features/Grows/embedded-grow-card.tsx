@@ -22,6 +22,7 @@ import { useIsMobile } from "~/hooks/use-mobile";
 import { Link } from "~/lib/i18n/routing";
 import { type DateFormatOptions, formatDate } from "~/lib/utils";
 import type { GetAllGrowType } from "~/server/api/root";
+import { Locale } from "~/types/locale";
 
 import { EmbeddedPlantCard } from "../Plants/embedded-plant-card";
 
@@ -61,9 +62,13 @@ export function EmbeddedGrowCard({ grow }: EmbeddedGrowCardProps) {
               <HybridTooltipTrigger className="flex items-center gap-2">
                 <Calendar1Icon className="h-4 w-4 shrink-0" />
                 <span className="whitespace-nowrap text-sm">
-                  {formatDate(grow.createdAt, locale, {
-                    includeYear: false,
-                  } as DateFormatOptions)}
+                  {formatDate(
+                    grow.createdAt,
+                    locale as Locale,
+                    {
+                      includeYear: false,
+                    } as DateFormatOptions,
+                  )}
                 </span>
               </HybridTooltipTrigger>
               <HybridTooltipContent>
