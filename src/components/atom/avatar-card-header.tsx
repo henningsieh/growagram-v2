@@ -19,11 +19,11 @@ function AvatarCardHeader({ user, date }: SocialHeaderProps) {
   const locale = useLocale();
 
   return (
-    <CardHeader className="space-y-0 p-2">
+    <CardHeader className="space-y-0 px-1 py-2">
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-1">
           <CustomAvatar
-            size={38}
+            size={39}
             src={user.image ?? undefined}
             alt={user.username ?? "User avatar"}
             fallback={user.name?.[0] || "?"}

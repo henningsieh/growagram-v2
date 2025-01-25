@@ -209,7 +209,7 @@ export function GrowCard({
           </CardDescription>
           <div className="justify-top flex h-full flex-1 flex-col">
             {/* Plants Grid */}
-            <div className="max-h-72 flex-1 overflow-y-auto">
+            <div className="custom-scrollbar max-h-72 flex-1 overflow-y-auto pr-3">
               <div className="space-y-4">
                 <AnimatePresence>
                   {grow.plants.map((plant) => (
