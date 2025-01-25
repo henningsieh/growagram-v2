@@ -284,25 +284,28 @@ export default function PhotoCard({
 
           {!!photo.plantImages.length && !isSocial && (
             <Button
+              size={"sm"}
               className="p-2 font-semibold"
               onClick={() => setIsPostModalOpen(true)}
             >
-              <MessageSquareTextIcon className="mr-2" />
+              <MessageSquareTextIcon size={20} />
               {t("button-label-post-update")}
             </Button>
           )}
 
           {!!!photo.plantImages.length && !isSocial && (
             // link to edit plant, same as in DropDown menu
-            <Link href={`${modulePaths.PHOTOS.path}/${photo.id}/form`}>
-              <Button
-                variant={"secondary"}
-                className="w-full p-2 font-semibold"
-              >
-                <TagsIcon className="mr-2" />
+            <Button
+              asChild
+              size={"sm"}
+              variant={"secondary"}
+              className="p-2 font-semibold"
+            >
+              <Link href={`${modulePaths.PHOTOS.path}/${photo.id}/form`}>
+                <TagsIcon size={20} />
                 {t("button-label-connect-plants")}
-              </Button>
-            </Link>
+              </Link>
+            </Button>
           )}
         </CardContent>
 

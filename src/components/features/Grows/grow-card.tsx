@@ -236,10 +236,11 @@ export function GrowCard({
             {!isSocial && (
               <div className="mt-4">
                 <Button
+                  size={"sm"}
                   className="w-full p-2 font-semibold"
                   onClick={() => setIsPostModalOpen(true)}
                 >
-                  <MessageSquareTextIcon className="mr-2" />
+                  <MessageSquareTextIcon size={20} />
                   {t("button-label-post-update")}
                 </Button>
               </div>

@@ -220,10 +220,12 @@ export default function PlantCard({
                     <Link href={`/public/grows/${plant.grow.id}`}>
                       <Badge
                         variant="grow"
-                        className="flex items-center gap-1 whitespace-nowrap"
+                        className="flex max-w-32 items-center gap-1 overflow-hidden text-ellipsis whitespace-nowrap"
                       >
-                        <TentTreeIcon className="h-4 w-4" />
-                        {plant.grow.name}
+                        <TentTreeIcon className="h-4 w-4 flex-shrink-0" />
+                        <span className="overflow-hidden text-ellipsis">
+                          {plant.grow.name}
+                        </span>
                       </Badge>
                     </Link>
                   </div>
@@ -401,10 +403,11 @@ export default function PlantCard({
             </Card>
             {!isSocial && (
               <Button
+                size={"sm"}
                 className="p-2 font-semibold"
                 onClick={() => setIsPostModalOpen(true)}
               >
-                <MessageSquareTextIcon size={20} className="mr-0" />
+                <MessageSquareTextIcon size={20} />
                 {t("button-label-post-update")}
               </Button>
             )}
