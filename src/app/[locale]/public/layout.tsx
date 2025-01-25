@@ -38,7 +38,7 @@ export default function PublicRootLayout({ children }: PropsWithChildren) {
     // <div className="bg-background">
     <div className="flex w-full flex-col md:flex-row">
       {/* Left sidebar - hidden on mobile */}
-      <aside className="hidden h-[calc(100vh-9rem)] shrink-0 px-2 md:block md:w-56 xl:w-64">
+      <aside className="hidden h-[calc(100svh-9rem)] shrink-0 px-2 md:block md:w-56 xl:w-64">
         <div className="sticky top-16 flex flex-col gap-2">
           {navItems.map((item) => (
             <Link href={item.href} key={item.href}>
@@ -49,7 +49,7 @@ export default function PublicRootLayout({ children }: PropsWithChildren) {
                 className={cn("w-full justify-start text-base")}
               >
                 <item.icon className="mr-2 h-4 w-4" />
-                {item.label}
+                {t(item.label)}
               </Button>
             </Link>
           ))}
@@ -87,10 +87,15 @@ export default function PublicRootLayout({ children }: PropsWithChildren) {
       {/* Right sidebar */}
       <aside className="hidden p-0 lg:block lg:flex-1 xl:flex-auto">
         <div className="sticky top-16">
-          <ScrollArea className="h-[calc(100vh-7rem)]">
-            <div className="m-2 flex flex-col rounded-lg bg-accent p-2">
+          <ScrollArea className="h-[calc(100svh-5rem)] rounded-sm bg-muted">
+            <div className="m-2 flex flex-col p-0.5">
               <h2 className="mb-4 text-lg font-semibold">Sidebar</h2>
-              <p>Your sidebar content goes here...</p>
+              <p className="my-2 bg-accent p-2">Ad Banner</p>
+              <p className="my-2 bg-accent p-2">Ad Banner</p>
+              <p className="my-2 bg-accent p-2">Ad Banner</p>
+              <p className="my-2 bg-accent p-2">Ad Banner</p>
+              <p className="my-2 bg-accent p-2">Ad Banner</p>
+              <p className="my-2 bg-accent p-2">Ad Banner</p>
             </div>
           </ScrollArea>
         </div>

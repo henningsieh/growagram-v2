@@ -169,6 +169,9 @@
     "title": "GrowAGram Login"
   },
   "Navigation": {
+    "All Grows": "All Grows",
+    "All Plants": "All Plants",
+    "All Updates": "All Updates",
     "Timelines": {
       "All Grows": "All Grows",
       "All Plants": "All Plants",
