@@ -240,6 +240,7 @@
   },
   "Plants": {
     "breeder": "Breeder",
+    "button-label-post-update": "Create Update for Plant",
     "curing-start-date": "Curing phase start date",
     "delete-button-label": "Delete Plant",
     "delete-plant-button-label": "Delete Plant",

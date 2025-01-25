@@ -240,6 +240,7 @@
   },
   "Plants": {
     "breeder": "Züchter / Breeder",
+    "button-label-post-update": "Update zur Pflanze erstellen",
     "curing-start-date": "Startdatum der Aushärtephase",
     "delete-button-label": "Pflanze löschen",
     "delete-plant-button-label": "Pflanze löschen",
