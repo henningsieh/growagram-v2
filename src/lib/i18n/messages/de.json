@@ -198,6 +198,17 @@
     "toggle-menu": "Menü umschalten"
   },
   "Photos": {
+    "DeleteConfirmation": {
+      "alertCautionText": "Diese Aktion kann nicht rückgängig gemacht werden. \nDadurch wird das Foto dauerhaft aus unserer Cloud bzw. von den Speicherservern gelöscht.",
+      "description": "Durch diese Aktion wird keine deiner Pflanzen gelöscht!",
+      "title": "Möchtest du dieses Foto wirklich löschen?",
+      "toasts": {
+        "warning-photo-has-posts": {
+          "description": "Dieses Foto ist mit einem oder mehreren Beiträgen verbunden. \nDu kannst ein Foto nicht löschen, wenn es Beiträge zugeordnet ist.",
+          "title": "Warnung"
+        }
+      }
+    },
     "Photos": {
       "upload": {
         "buttonLabel-files": "Dateien",
@@ -282,7 +293,9 @@
     "vegetation-start-date": "Startdatum der Wachstumsphase"
   },
   "Platform": {
+    "Cancel": "Abbrechen",
     "Dashboard-title": "Dashboard",
+    "Delete": "Löschen",
     "Platform": {
       "coming-soon-description": "Wir arbeiten schon an der neuen Funktion. Komm bald wieder vorbei!"
     },

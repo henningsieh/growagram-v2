@@ -110,6 +110,7 @@ export const photoRouter = createTRPCRouter({
         ],
         with: {
           owner: true,
+          posts: true,
           plantImages: connectImageWithPlantsQuery,
         },
       });
@@ -134,6 +135,7 @@ export const photoRouter = createTRPCRouter({
         where: eq(images.id, input.id),
         with: {
           owner: true,
+          posts: true,
           plantImages: connectImageWithPlantsQuery,
         },
       });
@@ -227,12 +229,22 @@ export const photoRouter = createTRPCRouter({
         // First, fetch the image to get its URL
         const image = await ctx.db.query.images.findFirst({
           where: eq(images.id, input.id),
+          with: {
+            posts: true,
+          },
         });
 
         if (!image) {
           throw new TRPCError({
             code: "NOT_FOUND",
             message: "Image not found",
+          });
+        }
+
+        if (image.posts.length > 0) {
+          throw new TRPCError({
+            code: "UNPROCESSABLE_CONTENT",
+            message: "Image is connected to posts",
           });
         }
 

@@ -109,6 +109,17 @@ export default function PhotoCard({
   };
 
   const confirmDelete = async () => {
+    if (photo.posts.length > 0) {
+      toast({
+        title: t("DeleteConfirmation.toasts.warning-photo-has-posts.title"),
+        description: t(
+          "DeleteConfirmation.toasts.warning-photo-has-posts.description",
+        ),
+        variant: "destructive",
+      });
+      setIsDeleteDialogOpen(false);
+      return;
+    }
     await deleteMutation.mutateAsync({ id: photo.id });
     setIsDeleteDialogOpen(false);
   };
@@ -128,9 +139,9 @@ export default function PhotoCard({
         onOpenChange={setIsDeleteDialogOpen}
         onConfirmDelete={confirmDelete}
         isDeleting={deleteMutation.isPending}
-        title="Are you sure you want to delete this photo?"
-        description="No plant will be deleted by this action!"
-        alertCautionText="This action cannot be undone. This will permanently delete the photo from our cloud storage servers."
+        title={t("DeleteConfirmation.title")}
+        description={t("DeleteConfirmation.description")}
+        alertCautionText={t("DeleteConfirmation.alertCautionText")}
       />
       <PostFormModal
         isOpen={isPostModalOpen}

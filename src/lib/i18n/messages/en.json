@@ -198,6 +198,17 @@
     "toggle-menu": "Toggle menu"
   },
   "Photos": {
+    "DeleteConfirmation": {
+      "alertCautionText": "This action cannot be undone. This will permanently delete the photo from our cloud storage servers.",
+      "description": "This action will not delete any of your plants!",
+      "title": "Are you sure you want to delete this photo?",
+      "toasts": {
+        "warning-photo-has-posts": {
+          "description": "This photo is associated with one or more Posts. You cannot delete a photo if it has posts associated with it.",
+          "title": "Warning"
+        }
+      }
+    },
     "Photos": {
       "upload": {
         "buttonLabel-files": "files",
@@ -282,7 +293,9 @@
     "vegetation-start-date": "Vegetation Start Date"
   },
   "Platform": {
+    "Cancel": "Cancel",
     "Dashboard-title": "Dashboard",
+    "Delete": "Delete",
     "Platform": {
       "coming-soon-description": "We are already working on the new function. \nCome by again soon!"
     },

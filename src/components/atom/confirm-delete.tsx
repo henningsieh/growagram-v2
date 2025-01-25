@@ -1,5 +1,6 @@
 // src/components/ui/delete-confirmation-dialog.tsx
 import { Trash2, TriangleAlert } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
 import { Button } from "~/components/ui/button";
 import {
@@ -32,9 +33,13 @@ export function DeleteConfirmationDialog({
   description = "This action cannot be undone!",
   alertCautionText,
 }: DeleteConfirmationDialogProps) {
+  const t = useTranslations("Platform");
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent
+        className="sm:max-w-xl"
+        onOpenAutoFocus={(e) => e.preventDefault()}
+      >
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold">{title}</DialogTitle>
           <DialogDescription className="mt-2 text-sm text-muted-foreground">
@@ -43,12 +48,9 @@ export function DeleteConfirmationDialog({
         </DialogHeader>
 
         {alertCautionText && (
-          <Alert
-            variant="destructive"
-            // className="border-destructive bg-destructive/10 p-4"
-          >
+          <Alert variant="destructive">
             <AlertTitle className="items-gap-1 center flex gap-1 font-semibold text-foreground">
-              <TriangleAlert className="h-4 w-4 text-yellow-400" /> Caution!
+              <TriangleAlert className="h-8 w-8 text-yellow-400" />
             </AlertTitle>
             <AlertDescription className="text-destructive">
               {alertCautionText}
@@ -61,8 +63,9 @@ export function DeleteConfirmationDialog({
             variant="outline"
             onClick={() => onOpenChange(false)}
             disabled={isDeleting}
+            autoFocus={false}
           >
-            Cancel
+            {t("Cancel")}
           </Button>
           <Button
             variant="destructive"
@@ -74,7 +77,7 @@ export function DeleteConfirmationDialog({
             ) : (
               <Trash2 className="mr-2 h-4 w-4" />
             )}
-            Delete
+            {t("Delete")}
           </Button>
         </DialogFooter>
       </DialogContent>
