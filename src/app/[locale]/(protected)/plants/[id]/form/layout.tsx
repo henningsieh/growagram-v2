@@ -1,5 +1,5 @@
-import { HydrateClient, api } from "~/lib/trpc/server";
-import { GetPlantByIdInput } from "~/server/api/root";
+import { api } from "~/lib/trpc/server";
+import type { GetPlantByIdInput } from "~/server/api/root";
 
 export const metadata = {
   title: "Grower's Plattform | Edit Plant",

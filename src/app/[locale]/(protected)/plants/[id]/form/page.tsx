@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import PlantFormPage from "~/components/features/Plants/plant-form";
 import { api } from "~/lib/trpc/server";
-import { GetPlantByIdInput, GetPlantByIdType } from "~/server/api/root";
+import type { GetPlantByIdInput, GetPlantByIdType } from "~/server/api/root";
 
 export default async function EditPlantPage({
   params,

@@ -1,7 +1,18 @@
 // src/lib/utils/calculateDetailedGrowthProgress.ts:
-import { Flower2, Leaf, LucideIcon, Nut, Sprout, Wheat } from "lucide-react";
-import { GetOwnPlantType } from "~/server/api/root";
-import { GrowthPhase, GrowthStage, PlantGrowthStages } from "~/types/plant";
+import {
+  Flower2,
+  Leaf,
+  type LucideIcon,
+  Nut,
+  Sprout,
+  Wheat,
+} from "lucide-react";
+import type { GetOwnPlantType } from "~/server/api/root";
+import {
+  type GrowthPhase,
+  type GrowthStage,
+  PlantGrowthStages,
+} from "~/types/plant";
 
 interface CalculateProgressParameters {
   currentPhase: GrowthPhase;

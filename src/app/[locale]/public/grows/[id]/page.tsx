@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { GrowCard } from "~/components/features/Grows/grow-card";
 import { api } from "~/lib/trpc/server";
-import { GetGrowByIdInput } from "~/server/api/root";
+import type { GetGrowByIdInput } from "~/server/api/root";
 
 export type PublicGrowByIdProps = {
   params: Promise<GetGrowByIdInput>;

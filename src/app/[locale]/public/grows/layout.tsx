@@ -1,6 +1,6 @@
 import { PaginationItemsPerPage } from "~/assets/constants";
 import { HydrateClient, api } from "~/lib/trpc/server";
-import { GetAllGrowsInput } from "~/server/api/root";
+import type { GetAllGrowsInput } from "~/server/api/root";
 
 export const metadata = {
   title: "Public Grows",

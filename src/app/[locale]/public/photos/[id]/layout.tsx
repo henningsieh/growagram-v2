@@ -1,7 +1,7 @@
 // src/app/[locale]/(protected)/grows/[id]/form/layout.tsx:
 import React from "react";
-import { HydrateClient, api } from "~/lib/trpc/server";
-import { GetPhotoByIdInput } from "~/server/api/root";
+import { api } from "~/lib/trpc/server";
+import type { GetPhotoByIdInput } from "~/server/api/root";
 
 export const metadata = {
   title: "Grower's Plattform | Photos",

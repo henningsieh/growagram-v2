@@ -1,3 +1,4 @@
+// src/app/api/steadyhq/callback/route.ts:
 import axios from "axios";
 import "next-auth";
 import { NextResponse } from "next/server";
@@ -6,6 +7,8 @@ import { env } from "~/env";
 import { auth } from "~/lib/auth";
 import { api } from "~/lib/trpc/server";
 
+// this Auth wrapper has bogus return type,
+// so we need to cast it to any. See below!
 export const GET = auth(async function GET(req) {
   if (!req.auth) {
     return NextResponse.json(

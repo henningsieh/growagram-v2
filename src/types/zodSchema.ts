@@ -28,8 +28,10 @@ export const plantFormSchema = z.object({
 export const imageSchema = z.object({
   id: z.string().optional(),
   imageUrl: z.string().url({ message: "Image URL must be a valid URL." }),
-  cloudinaryAssetId: z.string().min(1, { message: "Asset ID is required." }),
-  cloudinaryPublicId: z.string().min(1, { message: "Public ID is required." }),
+  cloudinaryAssetId: z.string().optional(),
+  cloudinaryPublicId: z.string().optional(),
+  s3Key: z.string().optional(),
+  s3ETag: z.string().optional(),
   captureDate: z.date().optional(), // Optional capture date
   originalFilename: z.string().min(1, {
     message: "Original filename is required.",

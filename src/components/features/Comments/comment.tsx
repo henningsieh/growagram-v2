@@ -12,7 +12,7 @@ import { useComments } from "~/hooks/use-comments";
 import { useLikeStatus } from "~/hooks/use-likes";
 import { useToast } from "~/hooks/use-toast";
 import { api } from "~/lib/trpc/react";
-import {
+import type {
   GetCommentType,
   GetCommentsInput,
   GetRepliesInput,

@@ -1,6 +1,6 @@
 import { User2 } from "lucide-react";
 import Image from "next/image";
-import { HTMLAttributes } from "react";
+import type { HTMLAttributes } from "react";
 import { Avatar, AvatarFallback } from "~/components/ui/avatar";
 import { cn } from "~/lib/utils";
 

@@ -10,7 +10,7 @@ import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
 import { useIsMobile } from "~/hooks/use-mobile";
 import { Link } from "~/lib/i18n/routing";
-import { OwnUserDataType } from "~/server/api/root";
+import type { OwnUserDataType } from "~/server/api/root";
 
 const containerVariants = {
   hidden: { opacity: 0 },

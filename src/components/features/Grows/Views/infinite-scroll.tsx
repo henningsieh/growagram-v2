@@ -2,8 +2,8 @@
 
 // src/components/features/Grows/Views/infinite-scroll.tsx:
 import {
-  Dispatch,
-  SetStateAction,
+  type Dispatch,
+  type SetStateAction,
   useCallback,
   useEffect,
   useRef,
@@ -16,7 +16,7 @@ import { SortOrder } from "~/components/atom/sort-filter-controls";
 import { GrowCard } from "~/components/features/Grows/grow-card";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
-import { GetOwnGrowsInput, GetOwnGrowsType } from "~/server/api/root";
+import type { GetOwnGrowsInput, GetOwnGrowsType } from "~/server/api/root";
 import { GrowsSortField } from "~/types/grow";
 
 export default function InfiniteScrollGrowsView({

@@ -9,7 +9,7 @@ import { Button } from "~/components/ui/button";
 import { useToast } from "~/hooks/use-toast";
 import { api } from "~/lib/trpc/react";
 import { cn } from "~/lib/utils";
-import { ToggleLikeInput } from "~/server/api/root";
+import type { ToggleLikeInput } from "~/server/api/root";
 import { LikeableEntityType } from "~/types/like";
 
 import SpinningLoader from "../Layouts/loader";

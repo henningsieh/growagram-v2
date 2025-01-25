@@ -1,7 +1,7 @@
 // src/components/features/Comments/comment-tree.tsx:
 import { useComments } from "~/hooks/use-comments";
 import { api } from "~/lib/trpc/react";
-import { GetCommentType, GetRepliesInput } from "~/server/api/root";
+import type { GetCommentType, GetRepliesInput } from "~/server/api/root";
 
 import { Comment } from "./comment";
 

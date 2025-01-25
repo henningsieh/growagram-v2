@@ -2,7 +2,7 @@
 
 // src/app/[locale]/(public)/public/timeline/page.tsx:
 import SpinningLoader from "~/components/Layouts/loader";
-import PublicPost from "~/components/features/Post/public-post";
+import PostCard from "~/components/features/Timeline/Post/post-card";
 import { api } from "~/lib/trpc/react";
 
 export default function PublicTimelinePage() {
@@ -14,7 +14,7 @@ export default function PublicTimelinePage() {
 
   return (
     <div className="space-y-4">
-      {posts?.map((post) => <PublicPost key={post.id} post={post} />)}
+      {posts?.map((post) => <PostCard key={post.id} post={post} />)}
     </div>
   );
 }
