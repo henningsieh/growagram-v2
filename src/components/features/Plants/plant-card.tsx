@@ -3,13 +3,12 @@
 // src/components/features/plant/plant-card.tsx:
 import {
   DnaIcon,
-  Flower2,
   Leaf,
   MessageSquareTextIcon,
   Nut,
   PillBottle,
   Sprout,
-  Tag,
+  TagIcon,
   TentTreeIcon,
   Wheat,
 } from "lucide-react";
@@ -157,7 +156,7 @@ export default function PlantCard({
                     href={`/public/plants/${plant.id}`}
                     className="flex min-w-0 items-center gap-2"
                   >
-                    <Tag className="flex-shrink-0" size={20} />
+                    <TagIcon className="flex-shrink-0" size={20} />
                     <span className="truncate font-semibold">{plant.name}</span>
                   </Link>
                 </Button>
@@ -319,7 +318,7 @@ export default function PlantCard({
                 <div className="flex h-4 items-center">
                   <HybridTooltip>
                     <HybridTooltipTrigger className="flex cursor-default items-center font-mono text-sm font-semibold tracking-tighter">
-                      <Flower2
+                      <TagIcon
                         className={`mr-2 h-4 w-4 ${
                           plant.floweringPhaseStart
                             ? "text-flowering"

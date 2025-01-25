@@ -8,7 +8,7 @@ import {
   Clock,
   Dna,
   type LucideIcon,
-  Tag,
+  TagIcon,
 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
@@ -71,7 +71,7 @@ export function EmbeddedPlantCard({ plant }: EmbeddedPlantCardProps) {
                 href={`/public/plants/${plant.id}`}
                 className="items-center gap-2"
               >
-                <Tag size={20} />
+                <TagIcon size={20} />
                 {plant.name}
               </Link>
             </Button>

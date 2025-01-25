@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TRPCClientError } from "@trpc/client";
-import { Check, Flower2, TentTree } from "lucide-react";
+import { Check, TagIcon, TentTree } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -384,7 +384,7 @@ export default function GrowFormPage({ grow }: { grow?: GetGrowByIdType }) {
                                     <Check className="h-3 w-3 text-primary-foreground" />
                                   )}
                                 </div>
-                                <Flower2 className="mr-2 h-4 w-4" />
+                                <TagIcon className="mr-2 h-4 w-4" />
                                 <span>{plant.name}</span>
                               </CommandItem>
                             ))}

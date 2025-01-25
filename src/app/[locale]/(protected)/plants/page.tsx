@@ -1,7 +1,7 @@
 "use client";
 
 // src/app/[locale]/(protected)/plants/page.tsx:
-import { Infinity, Calendar, Tag } from "lucide-react";
+import { Infinity, Calendar, TagIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
@@ -79,7 +79,7 @@ export default function MyPlantsPage() {
     {
       field: PlantsSortField.NAME,
       label: "Name",
-      icon: <Tag className="h-5 w-5" />,
+      icon: <TagIcon className="h-5 w-5" />,
     },
     {
       field: PlantsSortField.CREATED_AT,
