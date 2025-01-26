@@ -23,10 +23,11 @@ import { useLikeStatus } from "~/hooks/use-likes";
 import { useToast } from "~/hooks/use-toast";
 import { Link } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
-import { DateFormatOptions, cn, formatDate } from "~/lib/utils";
-import { GetAllGrowType, GetOwnGrowType } from "~/server/api/root";
+import { type DateFormatOptions, cn, formatDate } from "~/lib/utils";
+import type { GetAllGrowType, GetOwnGrowType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
 import { LikeableEntityType } from "~/types/like";
+import { Locale } from "~/types/locale";
 
 import { PostableEntityType } from "../../../types/post";
 import { Comments } from "../Comments/comments";
@@ -116,7 +117,9 @@ export function GrowCard({
           isSocial && "border-none",
         )}
       >
-        {isSocial && <AvatarCardHeader user={grow.owner} />}
+        {isSocial && (
+          <AvatarCardHeader user={grow.owner} date={grow.createdAt} />
+        )}
 
         <CardContent
           className={`flex h-full flex-col gap-2 ${isSocial ? "ml-12 pl-0 pr-2" : "p-2"}`}
@@ -177,10 +180,14 @@ export function GrowCard({
                 // eslint-disable-next-line react/jsx-no-literals
               }
               :{" "}
-              {formatDate(grow.createdAt, locale, {
-                weekday: "short",
-                month: "long",
-              } as DateFormatOptions)}
+              {formatDate(
+                grow.createdAt,
+                locale as Locale,
+                {
+                  weekday: "short",
+                  month: "long",
+                } as DateFormatOptions,
+              )}
             </span>
             {grow.updatedAt && (
               <div className="block">
@@ -189,16 +196,20 @@ export function GrowCard({
                   // eslint-disable-next-line react/jsx-no-literals
                 }
                 :{" "}
-                {formatDate(grow.updatedAt, locale, {
-                  weekday: "short",
-                  month: "long",
-                } as DateFormatOptions)}
+                {formatDate(
+                  grow.updatedAt,
+                  locale as Locale,
+                  {
+                    weekday: "short",
+                    month: "long",
+                  } as DateFormatOptions,
+                )}
               </div>
             )}
           </CardDescription>
           <div className="justify-top flex h-full flex-1 flex-col">
             {/* Plants Grid */}
-            <div className="max-h-72 flex-1 overflow-y-auto">
+            <div className="custom-scrollbar max-h-72 flex-1 overflow-y-auto pr-3">
               <div className="space-y-4">
                 <AnimatePresence>
                   {grow.plants.map((plant) => (
@@ -225,10 +236,11 @@ export function GrowCard({
             {!isSocial && (
               <div className="mt-4">
                 <Button
+                  size={"sm"}
                   className="w-full p-2 font-semibold"
                   onClick={() => setIsPostModalOpen(true)}
                 >
-                  <MessageSquareTextIcon className="mr-2" />
+                  <MessageSquareTextIcon size={20} />
                   {t("button-label-post-update")}
                 </Button>
               </div>

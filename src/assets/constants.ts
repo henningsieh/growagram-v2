@@ -83,3 +83,13 @@ export const APP_SETTINGS = {
     },
   ] as const, // Ensures immutability and type inference
 };
+
+export const MAX_UPLOAD_FILE_SIZE = 10000000; // 10MB
+
+export const ACCEPTED_IMAGE_TYPES = [
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/gif",
+  "image/webp",
+];

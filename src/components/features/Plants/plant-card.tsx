@@ -3,13 +3,12 @@
 // src/components/features/plant/plant-card.tsx:
 import {
   DnaIcon,
-  Flower2,
   Leaf,
   MessageSquareTextIcon,
   Nut,
   PillBottle,
   Sprout,
-  Tag,
+  TagIcon,
   TentTreeIcon,
   Wheat,
 } from "lucide-react";
@@ -44,9 +43,10 @@ import { Link } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import { cn, formatDate } from "~/lib/utils";
 import { calculateGrowthProgress } from "~/lib/utils/calculateDetailedGrowthProgress";
-import { PlantByIdType } from "~/server/api/root";
+import type { PlantByIdType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
 import { LikeableEntityType } from "~/types/like";
+import { Locale } from "~/types/locale";
 import { PostableEntityType } from "~/types/post";
 
 import { Comments } from "../Comments/comments";
@@ -138,7 +138,9 @@ export default function PlantCard({
           )}
         >
           {" "}
-          {isSocial && <AvatarCardHeader user={plant.owner} />}
+          {isSocial && (
+            <AvatarCardHeader user={plant.owner} date={plant.createdAt} />
+          )}
           <CardContent
             className={`grid gap-2 ${isSocial ? "ml-12 pl-0 pr-2" : "p-2"}`}
           >
@@ -157,7 +159,7 @@ export default function PlantCard({
                     href={`/public/plants/${plant.id}`}
                     className="flex min-w-0 items-center gap-2"
                   >
-                    <Tag className="flex-shrink-0" size={20} />
+                    <TagIcon className="flex-shrink-0" size={20} />
                     <span className="truncate font-semibold">{plant.name}</span>
                   </Link>
                 </Button>
@@ -218,10 +220,12 @@ export default function PlantCard({
                     <Link href={`/public/grows/${plant.grow.id}`}>
                       <Badge
                         variant="grow"
-                        className="flex items-center gap-1 whitespace-nowrap"
+                        className="flex max-w-32 items-center gap-1 overflow-hidden text-ellipsis whitespace-nowrap"
                       >
-                        <TentTreeIcon className="h-4 w-4" />
-                        {plant.grow.name}
+                        <TentTreeIcon className="h-4 w-4 flex-shrink-0" />
+                        <span className="overflow-hidden text-ellipsis">
+                          {plant.grow.name}
+                        </span>
                       </Badge>
                     </Link>
                   </div>
@@ -249,7 +253,7 @@ export default function PlantCard({
                   <HybridTooltip>
                     <HybridTooltipTrigger className="flex cursor-default items-center font-mono text-sm font-semibold tracking-tighter">
                       <Nut className={`mr-2 h-4 w-4 text-planted`} />
-                      {formatDate(plant.startDate, locale)}
+                      {formatDate(plant.startDate, locale as Locale)}
                     </HybridTooltipTrigger>
                     <HybridTooltipContent
                       side="right"
@@ -275,7 +279,7 @@ export default function PlantCard({
                         }`}
                       />
                       {plant.seedlingPhaseStart &&
-                        formatDate(plant.seedlingPhaseStart, locale)}
+                        formatDate(plant.seedlingPhaseStart, locale as Locale)}
                     </HybridTooltipTrigger>
                     <HybridTooltipContent
                       side="right"
@@ -301,7 +305,10 @@ export default function PlantCard({
                         }`}
                       />
                       {plant.vegetationPhaseStart &&
-                        formatDate(plant.vegetationPhaseStart, locale)}
+                        formatDate(
+                          plant.vegetationPhaseStart,
+                          locale as Locale,
+                        )}
                     </HybridTooltipTrigger>
                     <HybridTooltipContent
                       side="right"
@@ -319,7 +326,7 @@ export default function PlantCard({
                 <div className="flex h-4 items-center">
                   <HybridTooltip>
                     <HybridTooltipTrigger className="flex cursor-default items-center font-mono text-sm font-semibold tracking-tighter">
-                      <Flower2
+                      <TagIcon
                         className={`mr-2 h-4 w-4 ${
                           plant.floweringPhaseStart
                             ? "text-flowering"
@@ -327,7 +334,7 @@ export default function PlantCard({
                         }`}
                       />
                       {plant.floweringPhaseStart &&
-                        formatDate(plant.floweringPhaseStart, locale)}
+                        formatDate(plant.floweringPhaseStart, locale as Locale)}
                     </HybridTooltipTrigger>
                     <HybridTooltipContent
                       side="right"
@@ -351,7 +358,7 @@ export default function PlantCard({
                         }`}
                       />
                       {plant.harvestDate &&
-                        formatDate(plant.harvestDate, locale)}
+                        formatDate(plant.harvestDate, locale as Locale)}
                     </HybridTooltipTrigger>
                     <HybridTooltipContent
                       side="right"
@@ -377,7 +384,7 @@ export default function PlantCard({
                         }`}
                       />
                       {plant.curingPhaseStart &&
-                        formatDate(plant.curingPhaseStart, locale)}
+                        formatDate(plant.curingPhaseStart, locale as Locale)}
                     </HybridTooltipTrigger>
                     <HybridTooltipContent
                       side="right"
@@ -396,10 +403,11 @@ export default function PlantCard({
             </Card>
             {!isSocial && (
               <Button
+                size={"sm"}
                 className="p-2 font-semibold"
                 onClick={() => setIsPostModalOpen(true)}
               >
-                <MessageSquareTextIcon size={20} className="mr-0" />
+                <MessageSquareTextIcon size={20} />
                 {t("button-label-post-update")}
               </Button>
             )}

@@ -144,7 +144,7 @@ export function SortFilterControls<T extends string>({
               htmlFor="infinite-scroll"
               className="cursor-pointer text-sm font-medium"
             >
-              Enable Infinite Scroll
+              {t("infinitescroll")}
             </Label>
             <Switch
               id="infinite-scroll"

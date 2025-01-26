@@ -3,12 +3,11 @@
 // src/components/features/Plants/plant-form.tsx:
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  Flower2,
   Leaf,
   Nut,
   PillBottle,
   Sprout,
-  Tag,
+  TagIcon,
   Wheat,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -41,8 +40,11 @@ import { Input } from "~/components/ui/input";
 import { useToast } from "~/hooks/use-toast";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
-import { CreateOrEditPlantInput, GetOwnPlantsInput } from "~/server/api/root";
-import { Plant } from "~/types/db";
+import type {
+  CreateOrEditPlantInput,
+  GetOwnPlantsInput,
+} from "~/server/api/root";
+import type { Plant } from "~/types/db";
 import { plantFormSchema } from "~/types/zodSchema";
 
 import PlantFormDateField from "./plant-form-date-fields";
@@ -146,7 +148,7 @@ export default function PlantFormPage({ plant }: { plant?: Plant }) {
                         </FormLabel>
                         <FormControl>
                           <div className="relative">
-                            <Tag className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-accent-foreground" />
+                            <TagIcon className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-accent-foreground" />
                             <Input
                               className="bg-muted pl-10 text-foreground md:text-base"
                               placeholder="Enter plant name"
@@ -214,7 +216,7 @@ export default function PlantFormPage({ plant }: { plant?: Plant }) {
                           field={field}
                           label={t("flowering-start-date")}
                           description="When did you see the first buds?"
-                          icon={Flower2}
+                          icon={TagIcon}
                           iconClassName="text-flowering"
                         />
                       )}

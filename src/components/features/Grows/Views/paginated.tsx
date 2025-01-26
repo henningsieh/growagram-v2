@@ -3,8 +3,8 @@
 // src/components/features/Grows/Views/paginated.tsx:
 import { useSearchParams } from "next/navigation";
 import {
-  Dispatch,
-  SetStateAction,
+  type Dispatch,
+  type SetStateAction,
   useCallback,
   useEffect,
   useState,
@@ -17,7 +17,7 @@ import { SortOrder } from "~/components/atom/sort-filter-controls";
 import { GrowCard } from "~/components/features/Grows/grow-card";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
-import { GetOwnGrowsInput } from "~/server/api/root";
+import type { GetOwnGrowsInput } from "~/server/api/root";
 import { GrowsSortField } from "~/types/grow";
 
 export default function PaginatedGrowsView({

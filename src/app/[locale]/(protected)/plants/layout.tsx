@@ -3,7 +3,7 @@ import { PaginationItemsPerPage } from "~/assets/constants";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
 import { HydrateClient } from "~/lib/trpc/server";
 import { api } from "~/lib/trpc/server";
-import { GetOwnPlantsInput } from "~/server/api/root";
+import type { GetOwnPlantsInput } from "~/server/api/root";
 import { PlantsSortField } from "~/types/plant";
 
 export const metadata = {

@@ -13,6 +13,7 @@ import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useState } from "react";
+import { modulePaths } from "~/assets/constants";
 import { RESPONSIVE_IMAGE_SIZES } from "~/components/Layouts/responsive-grid";
 import PostFormModal from "~/components/PostFormModal";
 import AvatarCardHeader from "~/components/atom/avatar-card-header";
@@ -36,10 +37,11 @@ import { Link, useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import { cn, formatDate, formatTime } from "~/lib/utils";
 import { useImageModal } from "~/providers/modal-provider";
-import { GetOwnPhotoType } from "~/server/api/root";
+import type { GetOwnPhotoType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
 import { PhotosSortField } from "~/types/image";
 import { LikeableEntityType } from "~/types/like";
+import { Locale } from "~/types/locale";
 import { PostableEntityType } from "~/types/post";
 
 import { Comments } from "../Comments/comments";
@@ -107,6 +109,17 @@ export default function PhotoCard({
   };
 
   const confirmDelete = async () => {
+    if (photo.posts.length > 0) {
+      toast({
+        title: t("DeleteConfirmation.toasts.warning-photo-has-posts.title"),
+        description: t(
+          "DeleteConfirmation.toasts.warning-photo-has-posts.description",
+        ),
+        variant: "destructive",
+      });
+      setIsDeleteDialogOpen(false);
+      return;
+    }
     await deleteMutation.mutateAsync({ id: photo.id });
     setIsDeleteDialogOpen(false);
   };
@@ -126,9 +139,9 @@ export default function PhotoCard({
         onOpenChange={setIsDeleteDialogOpen}
         onConfirmDelete={confirmDelete}
         isDeleting={deleteMutation.isPending}
-        title="Are you sure you want to delete this photo?"
-        description="No plant will be deleted by this action!"
-        alertCautionText="This action cannot be undone. This will permanently delete the photo from our cloud storage servers."
+        title={t("DeleteConfirmation.title")}
+        description={t("DeleteConfirmation.description")}
+        alertCautionText={t("DeleteConfirmation.alertCautionText")}
       />
       <PostFormModal
         isOpen={isPostModalOpen}
@@ -149,7 +162,9 @@ export default function PhotoCard({
           </div>
         )}
 
-        {isSocial && <AvatarCardHeader user={photo.owner} />}
+        {isSocial && (
+          <AvatarCardHeader user={photo.owner} date={photo.captureDate} />
+        )}
 
         {/* Photo */}
         <div
@@ -183,7 +198,7 @@ export default function PhotoCard({
                 className="w-full justify-start p-1"
               >
                 <Link
-                  href={`/public/photos/${photo.id}`}
+                  href={`/public${modulePaths.PHOTOS.path}/${photo.id}`}
                   className="flex min-w-0 items-center gap-2"
                 >
                   <FileIcon className="flex-shrink-0" size={20} />
@@ -242,9 +257,9 @@ export default function PhotoCard({
                     )}
                   >
                     <UploadCloud size={20} />
-                    {formatDate(photo.createdAt, locale)}
+                    {formatDate(photo.createdAt, locale as Locale)}
                     {locale !== "en" ? " um " : " at "}
-                    {formatTime(photo.createdAt, locale)}
+                    {formatTime(photo.createdAt, locale as Locale)}
                     {locale !== "en" && " Uhr"}
                   </p>
                 </TooltipTrigger>
@@ -265,9 +280,9 @@ export default function PhotoCard({
                     )}
                   >
                     <Camera size={20} />
-                    {formatDate(photo.captureDate, locale)}
+                    {formatDate(photo.captureDate, locale as Locale)}
                     {locale !== "en" ? " um " : " at "}
-                    {formatTime(photo.captureDate, locale)}
+                    {formatTime(photo.captureDate, locale as Locale)}
                     {locale !== "en" && " Uhr"}
                   </p>
                 </TooltipTrigger>
@@ -280,25 +295,28 @@ export default function PhotoCard({
 
           {!!photo.plantImages.length && !isSocial && (
             <Button
+              size={"sm"}
               className="p-2 font-semibold"
               onClick={() => setIsPostModalOpen(true)}
             >
-              <MessageSquareTextIcon className="mr-2" />
+              <MessageSquareTextIcon size={20} />
               {t("button-label-post-update")}
             </Button>
           )}
 
           {!!!photo.plantImages.length && !isSocial && (
             // link to edit plant, same as in DropDown menu
-            <Link href={`/photos/${photo.id}/form`}>
-              <Button
-                variant={"secondary"}
-                className="w-full p-2 font-semibold"
-              >
-                <TagsIcon className="mr-2" />
+            <Button
+              asChild
+              size={"sm"}
+              variant={"secondary"}
+              className="p-2 font-semibold"
+            >
+              <Link href={`${modulePaths.PHOTOS.path}/${photo.id}/form`}>
+                <TagsIcon size={20} />
                 {t("button-label-connect-plants")}
-              </Button>
-            </Link>
+              </Link>
+            </Button>
           )}
         </CardContent>
 

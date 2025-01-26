@@ -3,8 +3,8 @@
 // src/components/features/Plants/Views/paginated.tsx:
 import { useSearchParams } from "next/navigation";
 import {
-  Dispatch,
-  SetStateAction,
+  type Dispatch,
+  type SetStateAction,
   useCallback,
   useEffect,
   useState,
@@ -16,7 +16,7 @@ import ItemsPagination from "~/components/atom/item-pagination";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
-import { GetOwnPlantsInput } from "~/server/api/root";
+import type { GetOwnPlantsInput } from "~/server/api/root";
 import { PlantsSortField } from "~/types/plant";
 
 import PlantCard from "../plant-card";

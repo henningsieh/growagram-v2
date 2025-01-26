@@ -1,7 +1,7 @@
 "use client";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { PublicUserProfileType } from "~/server/api/root";
+import type { PublicUserProfileType } from "~/server/api/root";
 
 import { GrowCard } from "../Grows/grow-card";
 import PlantCard from "../Plants/plant-card";

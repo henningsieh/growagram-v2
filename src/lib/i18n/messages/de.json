@@ -169,10 +169,16 @@
     "title": "Bei GrowAGram einloggen"
   },
   "Navigation": {
+    "All Grows": "Alle Grows",
+    "All Plants": "Alle Pflanzen",
+    "All Updates": "Alle Updates",
+    "Sidebar": {
+      "title": "Angebote"
+    },
     "Timelines": {
-      "All Updates": "Alle Updates",
       "All Grows": "Alle Grows",
-      "All Plants": "Alle Pflanzen"
+      "All Plants": "Alle Pflanzen",
+      "All Updates": "Alle Updates"
     },
     "dashboard": "Dashboard",
     "dashboard-description": "Erfasse deine Grows und deine Pflanzen einschließlich Hochladen der Fotos.",
@@ -195,6 +201,31 @@
     "toggle-menu": "Menü umschalten"
   },
   "Photos": {
+    "DeleteConfirmation": {
+      "alertCautionText": "Diese Aktion kann nicht rückgängig gemacht werden. \nDadurch wird das Foto dauerhaft aus unserer Cloud bzw. von den Speicherservern gelöscht.",
+      "description": "Durch diese Aktion wird keine deiner Pflanzen gelöscht!",
+      "title": "Möchtest du dieses Foto wirklich löschen?",
+      "toasts": {
+        "warning-photo-has-posts": {
+          "description": "Dieses Foto ist mit einem oder mehreren Beiträgen verbunden. \nDu kannst ein Foto nicht löschen, wenn es Beiträge zugeordnet ist.",
+          "title": "Warnung"
+        }
+      }
+    },
+    "Photos": {
+      "upload": {
+        "buttonLabel-files": "Dateien",
+        "buttonLabel-upload": "Hochladen",
+        "dropzone-description": "Bilddateien (JPG, PNG, GIF, WebP bis zu 10MB)",
+        "dropzone-title": "Ziehe deine Fotos per Drag & Drop hierher",
+        "preview": {
+          "capturedate-label": "Aufnahmedatum:",
+          "filename-label": "Dateiname:",
+          "filesize-label": "Dateigröße:",
+          "filesize-unit": "Megabyte (MB)"
+        }
+      }
+    },
     "button": {
       "connecting": "Pflanzen werden verbunden...",
       "removeAll": "Alle Pflanzen entfernen",
@@ -226,6 +257,7 @@
   },
   "Plants": {
     "breeder": "Züchter / Breeder",
+    "button-label-post-update": "Update zur Pflanze erstellen",
     "curing-start-date": "Startdatum der Aushärtephase",
     "delete-button-label": "Pflanze löschen",
     "delete-plant-button-label": "Pflanze löschen",
@@ -264,7 +296,9 @@
     "vegetation-start-date": "Startdatum der Wachstumsphase"
   },
   "Platform": {
+    "Cancel": "Abbrechen",
     "Dashboard-title": "Dashboard",
+    "Delete": "Löschen",
     "Platform": {
       "coming-soon-description": "Wir arbeiten schon an der neuen Funktion. Komm bald wieder vorbei!"
     },
@@ -272,6 +306,7 @@
     "coming-soon": "Bald verfügbar",
     "desc": "Absteigend",
     "feature-coming": "Neue Funktion ist auf dem Weg!",
+    "infinitescroll": "Unendliches Scrollen",
     "more": "mehr",
     "welcome-to-platform-subttitle": "Willkommen bei der Verwaltung deiner Grows und Pflanzen"
   },

@@ -41,13 +41,13 @@ GrowAGram is a modern social platform for plant enthusiasts to document and shar
 - 🔐 Auth.js (NextAuth) for authentication
 - 🔄 tRPC for type-safe APIs
 - 📊 PostgreSQL with Drizzle ORM
-- 🖼️ Cloudinary for image storage
+- 🖼️ S3-compatible MinIO Instance in Hetzner Cloud
 
 ### DevOps
 
 - 🐳 Docker containerization
 - 🔄 CI/CD with GitHub Actions
-- 📦 Self-hosted on Hetzner Cloud via Coolify
+- 📦 Self-hosted in Hetzner Cloud via Coolify
 
 ## 🚀 Deployment
 
@@ -76,13 +76,15 @@ This application is self-hosted on [Hetzner Cloud](https://www.hetzner.com/cloud
 - ✅ Image management
 - ✅ Public timeline Posts (reference Grows, Plants or Fotos)
 - 🔨 Features for Admin role (delete crap, ban users)
-- 🔨 Activity feeds for Users, Grows and Plants
-- 🔨 Follow system with Following timelinePhotos)
+- 🔨 Activity feeds/timelines for Users, Grows and Plants
+- 🔨 Follow system with Following timeline
 - ⏳ User profile enhancements
 
-#### Image Management
+#### Image Management and Storage Infrastructure
 
-- ✅ Cloudinary integration
+- ✅ Migrated from Cloudinary to self-hosted MinIO Instance
+- ✅ Secure photo storage in Hetzner Cloud
+- ✅ S3-compatible API for scalable object storage
 - ✅ Bulk upload functionality
 - ✅ EXIF data extraction
 - ✅ Many-to-Many relations: Grows <-> Plants <-> Photos

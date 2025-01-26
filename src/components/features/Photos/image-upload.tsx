@@ -1,11 +1,15 @@
 "use client";
 
-import { UploadApiResponse } from "cloudinary";
-import { CloudUpload, Loader2, Upload, X } from "lucide-react";
-import { type User } from "next-auth";
-import { useLocale } from "next-intl";
+// src/components/features/Photos/image-upload.tsx:
+import { CloudUpload, Upload, X } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import {
+  ACCEPTED_IMAGE_TYPES,
+  MAX_UPLOAD_FILE_SIZE,
+  modulePaths,
+} from "~/assets/constants";
 import SpinningLoader from "~/components/Layouts/loader";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardFooter } from "~/components/ui/card";
@@ -16,7 +20,9 @@ import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import { cn, formatDate, formatTime } from "~/lib/utils";
 import { readExif } from "~/lib/utils/readExif";
-import { CreatePhotoInput } from "~/server/api/root";
+import { uploadToS3 } from "~/lib/utils/uploadToS3";
+import type { CreatePhotoInput } from "~/server/api/root";
+import { Locale } from "~/types/locale";
 
 interface FilePreview {
   file: File;
@@ -34,64 +40,27 @@ interface FilePreview {
   } | null;
 }
 
-interface CloudinarySignature {
-  signature: string;
-  timestamp: number;
-  cloud_name: string;
-  api_key: string;
-  folder: string;
-  transformation: string;
-}
-
-async function uploadToCloudinary(
-  file: File,
-  signature: CloudinarySignature,
-  onProgress: (progress: number) => void,
-): Promise<UploadApiResponse> {
-  return new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("api_key", signature.api_key);
-    formData.append("timestamp", signature.timestamp.toString());
-    formData.append("signature", signature.signature);
-    formData.append("folder", signature.folder);
-    formData.append("transformation", signature.transformation);
-
-    xhr.open(
-      "POST",
-      `https://api.cloudinary.com/v1_1/${signature.cloud_name}/image/upload`,
-      true,
-    );
-    xhr.onload = () => {
-      if (xhr.status === 200) {
-        resolve(JSON.parse(xhr.responseText));
-      } else {
-        reject(new Error("Upload failed"));
-      }
-    };
-    xhr.onerror = () => {
-      reject(new Error("Upload failed"));
-    };
-    xhr.upload.onprogress = (event) => {
-      if (event.lengthComputable) {
-        const progress = Math.round((event.loaded * 100) / event.total);
-        onProgress(progress);
-      }
-    };
-    xhr.send(formData);
+const getSignedUrlForUpload = async (file: File) => {
+  const response = await fetch("/api/getSignedURL", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      fileName: file.name,
+      fileType: file.type,
+    }),
   });
-}
 
-const MAX_FILE_SIZE = 10000000; // 10MB
-const ACCEPTED_IMAGE_TYPES = [
-  "image/jpeg",
-  "image/jpg",
-  "image/png",
-  "image/webp",
-];
+  if (!response.ok) {
+    throw new Error("Failed to get signed URL");
+  }
 
-export default function PhotoUpload({ user }: { user: User }) {
+  const { uploadUrl } = await response.json();
+  return uploadUrl;
+};
+
+export default function PhotoUpload() {
   const locale = useLocale();
   const [uploading, setUploading] = useState(false);
   const [previews, setPreviews] = useState<FilePreview[]>([]);
@@ -99,10 +68,11 @@ export default function PhotoUpload({ user }: { user: User }) {
   const router = useRouter();
   const utils = api.useUtils();
   const { toast } = useToast();
-  const saveImageMutation = api.photos.createPhoto.useMutation();
 
   const formRef = useRef<HTMLFormElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const saveImageMutation = api.photos.createPhoto.useMutation();
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -112,48 +82,23 @@ export default function PhotoUpload({ user }: { user: User }) {
     try {
       setUploading(true);
 
-      // Get signature for each file
       const uploadedImages = await Promise.all(
         previews.map(async (preview) => {
-          // Get signature from your API
-          const signatureResponse = await fetch(
-            "/api/cloudinary/getSignature",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                folder: user.username,
-              }),
-            },
-          );
+          const buffer = await preview.file.arrayBuffer();
+          const exifData = await readExif(Buffer.from(buffer));
 
-          if (!signatureResponse.ok) {
-            throw new Error("Failed to get upload signature");
-          }
-
-          const signature: CloudinarySignature = await signatureResponse.json();
-
-          // Upload to Cloudinary
-          const cloudinaryResponse = await uploadToCloudinary(
+          const uploadUrl = await getSignedUrlForUpload(preview.file);
+          const { url: s3Url, eTag } = await uploadToS3(
             preview.file,
-            signature,
-            (progress) => {
-              setPreviews((current) =>
-                current.map((p) =>
-                  p.file === preview.file ? { ...p, progress } : p,
-                ),
-              );
-            },
+            uploadUrl,
           );
 
-          // Save to your database using your tRPC mutation
           const savedImage = await saveImageMutation.mutateAsync({
-            imageUrl: cloudinaryResponse.secure_url,
-            cloudinaryAssetId: cloudinaryResponse.asset_id,
-            cloudinaryPublicId: cloudinaryResponse.public_id,
-            captureDate: preview.exifData?.captureDate || new Date(),
+            imageUrl: s3Url,
+            // s3Key: s3Url.split("/").pop(), // Extract the key from the URL
+            s3Key: `photos/${preview.file.name}`, // Store complete path
+            s3ETag: eTag, // Use the extracted ETag
+            captureDate: exifData?.captureDate || new Date(),
             originalFilename: preview.file.name,
           } satisfies CreatePhotoInput);
 
@@ -168,9 +113,8 @@ export default function PhotoUpload({ user }: { user: User }) {
 
       formRef.current?.reset();
       setPreviews([]);
-      // Invalidate the images query to refresh the list
       utils.photos.getOwnPhotos.invalidate();
-      router.push("/photos");
+      router.push(modulePaths.PHOTOS.path);
     } catch (error) {
       console.error("Error uploading images:", error);
       toast({
@@ -237,7 +181,7 @@ export default function PhotoUpload({ user }: { user: User }) {
   const handleFiles = async (files: File[]) => {
     const validFiles = files.filter((file) => {
       const isValid = ACCEPTED_IMAGE_TYPES.includes(file.type);
-      const isValidSize = file.size <= MAX_FILE_SIZE;
+      const isValidSize = file.size <= MAX_UPLOAD_FILE_SIZE;
 
       if (!isValid) {
         toast({
@@ -249,7 +193,7 @@ export default function PhotoUpload({ user }: { user: User }) {
       if (!isValidSize) {
         toast({
           title: "File too large",
-          description: `${file.name} exceeds 10MB limit`,
+          description: `${file.name} exceeds the ${MAX_UPLOAD_FILE_SIZE / 1000000} MB limit`,
           variant: "destructive",
         });
       }
@@ -280,12 +224,16 @@ export default function PhotoUpload({ user }: { user: User }) {
     };
   }, [previews]);
 
+  const t = useTranslations("Photos");
+
   return (
     <Card>
       <form ref={formRef} onSubmit={onSubmit}>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="files">Upload Images</Label>
+            <Label className="sr-only" htmlFor="files">
+              {t("Photos.upload.dropzone-title")}
+            </Label>
             <div
               onClick={() => fileInputRef.current?.click()}
               onDragOver={handleDrag}
@@ -304,12 +252,14 @@ export default function PhotoUpload({ user }: { user: User }) {
                 <CloudUpload className="h-10 w-10 text-muted-foreground" />
 
                 <div className="text-lg text-muted-foreground">
-                  <span className="font-semibold">Click to upload</span> or drag
-                  and drop
+                  <span className="font-semibold">
+                    {" "}
+                    {t("Photos.upload.dropzone-title")}
+                  </span>
                 </div>
 
                 <div className="text-xs text-muted-foreground">
-                  Imagefiles (JPG, PNG, WebP up to 10MB)
+                  {t("Photos.upload.dropzone-description")}
                 </div>
               </div>
             </div>
@@ -340,37 +290,38 @@ export default function PhotoUpload({ user }: { user: User }) {
                     />
                     <div className="absolute bottom-1 left-1 right-1 mt-2 flex flex-col rounded-sm bg-accent p-1 text-xs font-semibold text-foreground">
                       <div className="flex justify-between gap-2">
-                        <span>Filename: </span>
+                        <span>{t("Photos.upload.preview.filename-label")}</span>
                         <span className="overflow-x-hidden whitespace-nowrap">
-                          {" "}
                           {preview.file.name}
                         </span>
                       </div>
                       <div className="flex justify-between">
-                        <span>Filesize: </span>
+                        <span>{t("Photos.upload.preview.filesize-label")}</span>
                         <span className="overflow-hidden">
-                          {(preview.file.size / 1024 / 1024).toFixed(2)} MB
+                          {(preview.file.size / 1024 / 1024).toFixed(2)}
+                          {t("Photos.upload.preview.filesize-unit")}
                         </span>
                       </div>
                       {/* EXIF Data Display */}
                       {preview.exifData?.captureDate && (
                         <div className="flex justify-between">
-                          {/* <div>
-                            Camera: {preview.exifData.make}{" "}
-                            {preview.exifData.model}
-                          </div> */}
-                          <span>Capture date: </span>
                           <span>
-                            {formatDate(preview.exifData.captureDate, locale)}
-                            {", "}
-                            {formatTime(preview.exifData.captureDate, locale)}
+                            {t("Photos.upload.preview.capturedate-label")}
                           </span>
-                          {/* {preview.exifData.gpsLocation && (
-                            <div>
-                              GPS: {preview.exifData.gpsLocation.latitude},{" "}
-                              {preview.exifData.gpsLocation.longitude}
-                            </div>
-                          )} */}
+                          <span>
+                            {formatDate(
+                              preview.exifData.captureDate,
+                              locale as Locale,
+                            )}
+                            {
+                              // eslint-disable-next-line react/jsx-no-literals
+                              ", "
+                            }
+                            {formatTime(
+                              preview.exifData.captureDate,
+                              locale as Locale,
+                            )}
+                          </span>
                         </div>
                       )}
                     </div>
@@ -404,7 +355,15 @@ export default function PhotoUpload({ user }: { user: User }) {
             ) : (
               <Upload className="mr-2 h-5 w-5" />
             )}
-            Upload ({previews.length} files)
+            {
+              // eslint-disable-next-line react/jsx-no-literals
+              `${t("Photos.upload.buttonLabel-upload")} (`
+            }
+            {previews.length}
+            {
+              // eslint-disable-next-line react/jsx-no-literals
+              ` ${t("Photos.upload.buttonLabel-files")})`
+            }
           </Button>
         </CardFooter>
       </form>

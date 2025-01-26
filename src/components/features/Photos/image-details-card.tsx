@@ -4,7 +4,8 @@ import Image from "next/image";
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { formatDate, formatTime } from "~/lib/utils";
-import { GetOwnPhotoType } from "~/server/api/root";
+import type { GetOwnPhotoType } from "~/server/api/root";
+import { Locale } from "~/types/locale";
 
 interface ImageDetailsProps {
   image: GetOwnPhotoType;
@@ -21,12 +22,12 @@ export function ImageDetailsCard({ image, locale }: ImageDetailsProps) {
     {
       icon: <Camera className="h-5 w-5" />,
       title: "Capture Date",
-      content: `${formatDate(image.captureDate, locale)} ${locale !== "en" ? "um" : "at"} ${formatTime(image.captureDate, locale)}${locale !== "en" ? " Uhr" : ""}`,
+      content: `${formatDate(image.captureDate, locale as Locale)} ${locale !== "en" ? "um" : "at"} ${formatTime(image.captureDate, locale as Locale)}${locale !== "en" ? " Uhr" : ""}`,
     },
     {
       icon: <UploadCloud className="h-5 w-5" />,
       title: "Upload Date",
-      content: `${formatDate(image.createdAt, locale)} ${locale !== "en" ? "um" : "at"} ${formatTime(image.createdAt, locale)}${locale !== "en" ? " Uhr" : ""}`,
+      content: `${formatDate(image.createdAt, locale as Locale)} ${locale !== "en" ? "um" : "at"} ${formatTime(image.createdAt, locale as Locale)}${locale !== "en" ? " Uhr" : ""}`,
     },
   ];
 

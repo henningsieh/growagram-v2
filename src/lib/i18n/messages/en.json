@@ -169,10 +169,16 @@
     "title": "GrowAGram Login"
   },
   "Navigation": {
+    "All Grows": "All Grows",
+    "All Plants": "All Plants",
+    "All Updates": "All Updates",
+    "Sidebar": {
+      "title": "Deals"
+    },
     "Timelines": {
-      "All Updates": "All Updates",
       "All Grows": "All Grows",
-      "All Plants": "All Plants"
+      "All Plants": "All Plants",
+      "All Updates": "All Updates"
     },
     "dashboard": "Dashboard",
     "dashboard-description": "Track your grows and your plants, including photo uploads.",
@@ -195,6 +201,31 @@
     "toggle-menu": "Toggle menu"
   },
   "Photos": {
+    "DeleteConfirmation": {
+      "alertCautionText": "This action cannot be undone. This will permanently delete the photo from our cloud storage servers.",
+      "description": "This action will not delete any of your plants!",
+      "title": "Are you sure you want to delete this photo?",
+      "toasts": {
+        "warning-photo-has-posts": {
+          "description": "This photo is associated with one or more Posts. You cannot delete a photo if it has posts associated with it.",
+          "title": "Warning"
+        }
+      }
+    },
+    "Photos": {
+      "upload": {
+        "buttonLabel-files": "files",
+        "buttonLabel-upload": "Upload",
+        "dropzone-description": "Imagefiles (JPG, PNG, GIF, WebP up to 10MB)",
+        "dropzone-title": "Drag & Drop your photos here",
+        "preview": {
+          "capturedate-label": "Capture date:",
+          "filename-label": "Filename:",
+          "filesize-label": "Filesize:",
+          "filesize-unit": "Megabyte (MB)"
+        }
+      }
+    },
     "button": {
       "connecting": "Connecting plants...",
       "removeAll": "Remove All Plants",
@@ -226,6 +257,7 @@
   },
   "Plants": {
     "breeder": "Breeder",
+    "button-label-post-update": "Create Update for Plant",
     "curing-start-date": "Curing phase start date",
     "delete-button-label": "Delete Plant",
     "delete-plant-button-label": "Delete Plant",
@@ -264,7 +296,9 @@
     "vegetation-start-date": "Vegetation Start Date"
   },
   "Platform": {
+    "Cancel": "Cancel",
     "Dashboard-title": "Dashboard",
+    "Delete": "Delete",
     "Platform": {
       "coming-soon-description": "We are already working on the new function. \nCome by again soon!"
     },
@@ -272,6 +306,7 @@
     "coming-soon": "Coming soon",
     "desc": "Descending",
     "feature-coming": "New Feature is on its Way!",
+    "infinitescroll": "Infinite scrolling",
     "more": "more",
     "welcome-to-platform-subttitle": "Welcome to the Grower's platform where you can manage all your Grows and Plants"
   },

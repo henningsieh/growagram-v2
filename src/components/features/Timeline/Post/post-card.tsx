@@ -1,37 +1,30 @@
-import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useState } from "react";
+import AvatarCardHeader from "~/components/atom/avatar-card-header";
 import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
-import CustomAvatar from "~/components/atom/custom-avatar";
-import { OwnerDropdownMenu } from "~/components/atom/owner-dropdown-menu";
 import { SocialCardFooter } from "~/components/atom/social-card-footer";
-import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
+import { Card, CardContent } from "~/components/ui/card";
 import { useComments } from "~/hooks/use-comments";
 import { useLikeStatus } from "~/hooks/use-likes";
 import { useToast } from "~/hooks/use-toast";
 import { api } from "~/lib/trpc/react";
 import { cn } from "~/lib/utils";
 import { useImageModal } from "~/providers/modal-provider";
-import { GetPostType } from "~/server/api/root";
+import type { GetPostType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
 import { LikeableEntityType } from "~/types/like";
 import { PostableEntityType } from "~/types/post";
 
-import { Comments } from "../Comments/comments";
-import { EmbeddedGrowCard } from "../Grows/embedded-grow-card";
-import { EmbeddedPlantCard } from "../Plants/embedded-plant-card";
+import { Comments } from "../../Comments/comments";
+import { EmbeddedGrowCard } from "../../Grows/embedded-grow-card";
+import { EmbeddedPlantCard } from "../../Plants/embedded-plant-card";
 
-interface PublicPostProps {
+interface PostCardProps {
   post: GetPostType;
   isSocialProp?: boolean;
 }
 
-export default function PublicPost({
-  post,
-  isSocialProp = true,
-}: PublicPostProps) {
-  const { data: session } = useSession();
-  const user = session?.user;
+export default function PostCard({ post, isSocialProp = true }: PostCardProps) {
   const utils = api.useUtils();
   const { toast } = useToast();
   const { openImageModal } = useImageModal();
@@ -99,38 +92,11 @@ export default function PublicPost({
         )}
       >
         {isSocial && (
-          <CardHeader className="p-2">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <CustomAvatar
-                  size={40}
-                  src={post.owner.image ?? undefined}
-                  alt={post.owner.username ?? "User avatar"}
-                  fallback={post.owner.name?.[0] || "?"}
-                />
-                <div>
-                  <CardTitle>{post.owner.name}</CardTitle>
-                  <p className="text-sm text-muted-foreground">
-                    {new Date(post.createdAt).toLocaleString()}
-                  </p>
-                </div>
-              </div>
-              {user && user.id === post.userId && (
-                <OwnerDropdownMenu
-                  isSocial={isSocial}
-                  setIsSocial={setIsSocial}
-                  isDeleting={deleteMutation.isPending}
-                  handleDelete={handleDelete}
-                  entityId={post.id}
-                  entityType="Posts"
-                />
-              )}
-            </div>
-          </CardHeader>
+          <AvatarCardHeader user={post.owner} date={post.createdAt} />
         )}
 
         <CardContent
-          className={`grid gap-2 p-2 ${isSocial && "ml-12 pl-0 pr-2"}`}
+          className={`grid gap-2 ${isSocial ? "ml-12 pl-0 pr-2" : "p-2"}`}
         >
           <p>{post.content}</p>
 

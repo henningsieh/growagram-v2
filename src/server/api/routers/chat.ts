@@ -3,7 +3,7 @@ import { observable } from "@trpc/server/observable";
 import EventEmitter from "events";
 import { z } from "zod";
 import { chatMessages } from "~/lib/db/schema";
-import { ChatMessage } from "~/types/chat";
+import type { ChatMessage } from "~/types/chat";
 
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 

@@ -2,7 +2,7 @@
 import { notFound } from "next/navigation";
 import PhotoCard from "~/components/features/Photos/photo-card";
 import { api } from "~/lib/trpc/server";
-import { GetPhotoByIdInput } from "~/server/api/root";
+import type { GetPhotoByIdInput } from "~/server/api/root";
 
 export default async function PublicPlantByIdPage({
   params,

@@ -25,6 +25,10 @@ export const env = createEnv({
     MAIL_SERVER_PASS: z.string(),
     MAIL_FROM_EMAIL: z.string().email(),
     MAIL_FROM_NAME: z.string().max(32),
+    MINIO_SERVER_URL: z.string().url(),
+    MINIO_BUCKET_NAME: z.string().min(1),
+    MINIO_ACCESS_KEY: z.string().min(20),
+    MINIO_SECRET_KEY: z.string().min(40),
     NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
@@ -53,13 +57,17 @@ export const env = createEnv({
     CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
     CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
     NEXT_PUBLIC_CLOUDINARY_NAME: process.env.NEXT_PUBLIC_CLOUDINARY_NAME,
-    NODE_ENV: process.env.NODE_ENV,
     MAIL_SERVER_HOST: process.env.MAIL_SERVER_HOST,
     MAIL_SERVER_PORT: process.env.MAIL_SERVER_PORT,
     MAIL_SERVER_USER: process.env.MAIL_SERVER_USER,
     MAIL_SERVER_PASS: process.env.MAIL_SERVER_PASS,
     MAIL_FROM_EMAIL: process.env.MAIL_FROM_EMAIL,
     MAIL_FROM_NAME: process.env.MAIL_FROM_NAME,
+    MINIO_SERVER_URL: process.env.MINIO_SERVER_URL,
+    MINIO_BUCKET_NAME: process.env.MINIO_BUCKET_NAME,
+    MINIO_ACCESS_KEY: process.env.MINIO_ACCESS_KEY,
+    MINIO_SECRET_KEY: process.env.MINIO_SECRET_KEY,
+    NODE_ENV: process.env.NODE_ENV,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

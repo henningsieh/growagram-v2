@@ -1,11 +1,18 @@
 // src/server/api/routers/image.ts:
+import {
+  DeleteObjectCommand,
+  HeadObjectCommand,
+  NotFound,
+} from "@aws-sdk/client-s3";
 import { TRPCError } from "@trpc/server";
 import { and, count, eq, exists, not } from "drizzle-orm";
 import { z } from "zod";
 import { PaginationItemsPerPage } from "~/assets/constants";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
+import { env } from "~/env";
 import cloudinary from "~/lib/cloudinary";
 import { images, plantImages } from "~/lib/db/schema";
+import { s3Client } from "~/lib/minio";
 import {
   createTRPCRouter,
   protectedProcedure,
@@ -103,6 +110,7 @@ export const photoRouter = createTRPCRouter({
         ],
         with: {
           owner: true,
+          posts: true,
           plantImages: connectImageWithPlantsQuery,
         },
       });
@@ -127,18 +135,8 @@ export const photoRouter = createTRPCRouter({
         where: eq(images.id, input.id),
         with: {
           owner: true,
+          posts: true,
           plantImages: connectImageWithPlantsQuery,
-        },
-        columns: {
-          id: true,
-          createdAt: true,
-          updatedAt: true,
-          ownerId: true,
-          imageUrl: true,
-          cloudinaryAssetId: true,
-          cloudinaryPublicId: true,
-          captureDate: true,
-          originalFilename: true,
         },
       });
 
@@ -200,9 +198,6 @@ export const photoRouter = createTRPCRouter({
     .input(imageSchema)
     .mutation(async ({ ctx, input }) => {
       // Save image record to database
-
-      console.debug("captureDate: ", input.captureDate);
-
       const newImage = await ctx.db
         .insert(images)
         .values({
@@ -211,6 +206,8 @@ export const photoRouter = createTRPCRouter({
           imageUrl: input.imageUrl,
           cloudinaryAssetId: input.cloudinaryAssetId,
           cloudinaryPublicId: input.cloudinaryPublicId,
+          s3Key: input.s3Key,
+          s3ETag: input.s3ETag,
           captureDate: input.captureDate,
           originalFilename: input.originalFilename,
         })
@@ -232,12 +229,22 @@ export const photoRouter = createTRPCRouter({
         // First, fetch the image to get its URL
         const image = await ctx.db.query.images.findFirst({
           where: eq(images.id, input.id),
+          with: {
+            posts: true,
+          },
         });
 
         if (!image) {
           throw new TRPCError({
             code: "NOT_FOUND",
             message: "Image not found",
+          });
+        }
+
+        if (image.posts.length > 0) {
+          throw new TRPCError({
+            code: "UNPROCESSABLE_CONTENT",
+            message: "Image is connected to posts",
           });
         }
 
@@ -249,19 +256,31 @@ export const photoRouter = createTRPCRouter({
           });
         }
 
-        // Delete from Cloudinary
-        const deleteResult = (await cloudinary.uploader.destroy(
-          image.cloudinaryPublicId,
-        )) as { result: string };
+        if (image.s3Key) {
+          // Delete from S3
+          const deleteResult = await deleteFromS3(image.s3Key);
+          if (!deleteResult) {
+            throw new TRPCError({
+              code: "INTERNAL_SERVER_ERROR",
+              message: "Failed to delete image from storage",
+            });
+          }
+        } else {
+          // Delete from Cloudinary
+          const deleteResult = (await cloudinary.uploader.destroy(
+            //FIXME: stored in S3 MinIO if cloudinaryPublicId is null
+            image.cloudinaryPublicId as string, //FIXME: cloudinaryPublicId is optional
+          )) as { result: string };
 
-        if (deleteResult.result !== "ok") {
-          throw new TRPCError({
-            code: "UNPROCESSABLE_CONTENT",
-            message: "Failed delete image from Cloudinary",
-          });
+          if (deleteResult.result !== "ok") {
+            throw new TRPCError({
+              code: "UNPROCESSABLE_CONTENT",
+              message: "Failed delete image from Cloudinary",
+            });
+          }
         }
 
-        // Delete from database
+        // Delete database record
         const deletedImage = await ctx.db
           .delete(images)
           .where(eq(images.id, input.id))
@@ -296,3 +315,78 @@ export const photoRouter = createTRPCRouter({
       }
     }),
 });
+
+/**
+ * Deletes an object from S3 storage.
+ * @param s3Key - The key of the object to delete
+ * @returns `true` if the object was successfully deleted, `false` otherwise
+ * @throws TRPCError if an error occurs during deletion
+ * @see {@link https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-s3/index.html#deleteobjectcommand}
+ * @see {@link https://min.io/docs/minio/linux/index.html}
+ */
+export async function deleteFromS3(s3Key: string) {
+  const bucket = env.MINIO_BUCKET_NAME;
+
+  try {
+    // Log pre-deletion state
+    console.debug("Attempting to delete:", {
+      bucket,
+      key: s3Key,
+    });
+
+    // Perform deletion
+    const command = new DeleteObjectCommand({
+      Bucket: bucket,
+      Key: s3Key,
+    });
+
+    const deleteResult = await s3Client.send(command);
+    console.debug("deleteFromS3:", deleteResult);
+
+    // Verify deletion
+    const stillExists = await objectExists(bucket, s3Key);
+    if (stillExists) {
+      console.error("Object still exists after deletion attempt");
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    console.error("Error in deleteFromS3:", {
+      error,
+      bucket,
+      key: s3Key,
+    });
+    throw new TRPCError({
+      code: "INTERNAL_SERVER_ERROR",
+      message: "Failed to delete image from storage",
+      cause: error,
+    });
+  }
+}
+
+/**
+ * Checks if an object exists in S3 storage.
+ * @param bucket - The bucket where the object is stored
+ * @param key - The key of the object to check
+ * @returns `true` if the object exists, `false` otherwise
+ * @throws Error if an error occurs during the check
+ */
+async function objectExists(bucket: string, key: string) {
+  try {
+    const command = new HeadObjectCommand({
+      Bucket: bucket,
+      Key: key,
+    });
+    await s3Client.send(command);
+    return true;
+  } catch (error) {
+    // NotFound is expected when object doesn't exist
+    if (error instanceof NotFound) {
+      return false;
+    }
+    // For other errors, we should throw
+    console.error("Error checking if object exists:", error);
+    throw new Error(`Failed to check if image exists in storage: ${error}`);
+  }
+}

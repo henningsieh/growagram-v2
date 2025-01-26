@@ -2,7 +2,7 @@
 import { notFound } from "next/navigation";
 import PlantCard from "~/components/features/Plants/plant-card";
 import { api } from "~/lib/trpc/server";
-import { GetPlantByIdInput } from "~/server/api/root";
+import type { GetPlantByIdInput } from "~/server/api/root";
 
 export default async function PublicPlantByIdPage({
   params,

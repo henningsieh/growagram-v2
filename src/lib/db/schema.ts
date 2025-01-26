@@ -216,8 +216,10 @@ export const images = pgTable("image", {
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
   imageUrl: text("image_url").notNull(),
-  cloudinaryAssetId: text("asset_id").notNull(),
-  cloudinaryPublicId: text("public_id").notNull(),
+  cloudinaryAssetId: text("asset_id"),
+  cloudinaryPublicId: text("public_id"),
+  s3Key: text("s3_key"),
+  s3ETag: text("s3_etag"),
   captureDate: timestamp("captureDate", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
@@ -446,9 +448,14 @@ export const growsRelations = relations(grows, ({ one, many }) => ({
     fields: [grows.ownerId],
     references: [users.id],
   }),
+  // A grow has many plants
   plants: many(plants),
+  // A grow has many likes
   likes: many(likes),
+  // A grow has many comments
   comments: many(comments, { relationName: "grow_comments" }), // This must match the relationName in One-to-One Relation "growComments" above
+  // A grow is referenced by many posts
+  posts: many(posts),
 }));
 
 export const likesRelations = relations(likes, ({ one }) => ({
@@ -501,6 +508,8 @@ export const plantsRelations = relations(plants, ({ one, many }) => ({
   likes: many(likes),
   // A plant has many comments
   comments: many(comments, { relationName: "plant_comments" }), // This must match the relationName in One-to-One Relation "plantComments" above
+  // A plant is referenced by many posts
+  posts: many(posts),
 }));
 
 export const imagesRelations = relations(images, ({ one, many }) => ({
@@ -516,6 +525,8 @@ export const imagesRelations = relations(images, ({ one, many }) => ({
   plantsAsHeader: many(plants),
   // An image has many comments
   comments: many(comments, { relationName: "image_comments" }), // This must match the relationName in One-to-One Relation "imageComments" above
+  // An image is referenced by many posts
+  posts: many(posts),
 }));
 
 export const plantImagesRelations = relations(plantImages, ({ one }) => ({

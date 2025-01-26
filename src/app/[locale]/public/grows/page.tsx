@@ -1,6 +1,6 @@
 "use client";
 
-import { InfiniteData } from "@tanstack/react-query";
+import type { InfiniteData } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef } from "react";
@@ -9,7 +9,7 @@ import InfiniteScrollLoader from "~/components/Layouts/InfiniteScrollLoader";
 import SpinningLoader from "~/components/Layouts/loader";
 import { GrowCard } from "~/components/features/Grows/grow-card";
 import { api } from "~/lib/trpc/react";
-import {
+import type {
   GetAllGrowsInput,
   GetAllGrowsOutput,
   GetAllGrowsType,
