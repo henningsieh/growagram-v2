@@ -29,6 +29,9 @@
     "info-name": "Name",
     "info-role": "Role",
     "info-username": "Username",
+    "navigation": {
+      "label": "My Account"
+    },
     "not-provided": "Not provided"
   },
   "CardFooter": {
@@ -143,9 +146,6 @@
       "title": "Fair prices for every grower"
     }
   },
-  "LanguageToggle": {
-    "toggle-language": "Change language"
-  },
   "LoginPage": {
     "Email-verified-description": "Your email address has been verified successfully.",
     "Email-verified-title": "Email verified",
@@ -200,6 +200,11 @@
     "timeline-description": "Social media timeline (feature coming soon)",
     "toggle-menu": "Toggle menu"
   },
+  "Notifications": {
+    "navigation": {
+      "label": "Notifications"
+    }
+  },
   "Photos": {
     "DeleteConfirmation": {
       "alertCautionText": "This action cannot be undone. This will permanently delete the photo from our cloud storage servers.",
@@ -209,20 +214,6 @@
         "warning-photo-has-posts": {
           "description": "This photo is associated with one or more Posts. You cannot delete a photo if it has posts associated with it.",
           "title": "Warning"
-        }
-      }
-    },
-    "Photos": {
-      "upload": {
-        "buttonLabel-files": "files",
-        "buttonLabel-upload": "Upload",
-        "dropzone-description": "Imagefiles (JPG, PNG, GIF, WebP up to 10MB)",
-        "dropzone-title": "Drag & Drop your photos here",
-        "preview": {
-          "capturedate-label": "Capture date:",
-          "filename-label": "Filename:",
-          "filesize-label": "Filesize:",
-          "filesize-unit": "Megabyte (MB)"
         }
       }
     },
@@ -236,12 +227,17 @@
     "button-label-upload-photos": "Upload",
     "buttonBackLabel": "Back",
     "capture-date": "taken on",
+    "connectPlants": {
+      "photo-details-metadata": "Photo Details / Metadata"
+    },
     "delete-button-label": "Delete Photo",
     "edit-button-label": "Edit Photo",
     "filter-label-not-connected": "NEW ONLY",
     "my-Photos": "My photos",
     "my-Photos-subtitle": "Display and manage my photos",
     "newNotConnteched": "NEW",
+    "no-photos-yet": "No photos have been uploaded yet.",
+    "no-photos-yet-filtered": "No new images (without connected plants) have been found.",
     "plantSelection": {
       "description": "Select each plant you can see in the photo!",
       "title": "Plant Selection"
@@ -253,6 +249,18 @@
     },
     "subtitle": "Which plants did you spot in this photo?",
     "title": "Identify Plants",
+    "upload": {
+      "buttonLabel-files": "files",
+      "buttonLabel-upload": "Upload",
+      "dropzone-description": "Imagefiles (JPG, PNG, GIF, WebP up to 10MB)",
+      "dropzone-title": "Drag & Drop your photos here",
+      "preview": {
+        "capturedate-label": "Capture date:",
+        "filename-label": "Filename:",
+        "filesize-label": "Filesize:",
+        "filesize-unit": "Megabyte (MB)"
+      }
+    },
     "uploaded-at": "uploaded on"
   },
   "Plants": {
@@ -281,6 +289,7 @@
     "growth-progress": "Growth Progress",
     "harvest-date": "Harvest date",
     "linkUploadButtonLabel": "Add New Plant",
+    "no-plants-yet": "No plants have been added yet.",
     "overall-progress": "Overall progress",
     "phase": "Phase progress",
     "planting-date": "Seed planting date",
@@ -299,11 +308,12 @@
     "Cancel": "Cancel",
     "Dashboard-title": "Dashboard",
     "Delete": "Delete",
-    "Platform": {
-      "coming-soon-description": "We are already working on the new function. \nCome by again soon!"
+    "LanguageToggle": {
+      "toggle-language": "Change language"
     },
     "asc": "Ascending",
     "coming-soon": "Coming soon",
+    "coming-soon-description": "We are already working on the new function. \nCome by again soon!",
     "desc": "Descending",
     "feature-coming": "New Feature is on its Way!",
     "infinitescroll": "Infinite scrolling",
@@ -328,6 +338,7 @@
       "title": "Premium Benefits"
     },
     "connect-steady-button": "Connect with Steady",
+    "connect-with-steady": "Connect with Steady",
     "faq": {
       "cancel-subscription": {
         "answer": "Yes, you can cancel your subscription at any time through your Steady account. Your premium access will continue until the end of your current billing period.",
@@ -348,10 +359,20 @@
       "title": "Frequently Asked Questions"
     },
     "get-exclusive-access": "Get exclusive access to premium features and support our community!",
+    "navigation": {
+      "label": "Upgrade to Pro"
+    },
     "premium-subtitle": "Enhance your growing experience with exclusive benefits",
     "premium-title": "Unlock Premium Features",
     "ready-to-go-premium": "Ready to Go Premium?",
     "unlock-premium-content": "Elevate Your Growing Journey"
+  },
+  "Profile": {
+    "tabs": {
+      "grows": "Grows",
+      "plants": "Plants",
+      "timeline": "Timeline"
+    }
   },
   "RegisterPage": {
     "description": "Fill in all fields below.",

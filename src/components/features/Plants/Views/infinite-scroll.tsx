@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 // src/components/features/Plants/Views/infinite-scroll.tsx:
 import {
   type Dispatch,
@@ -30,6 +31,7 @@ export default function InfiniteScrollPlantsView({
 }) {
   const router = useRouter();
   const utils = api.useUtils();
+  const t = useTranslations("Plants");
 
   useEffect(() => {
     router.replace(
@@ -105,7 +107,7 @@ export default function InfiniteScrollPlantsView({
         <SpinningLoader className="text-secondary" />
       ) : plants.length === 0 ? (
         <p className="mt-8 text-center text-muted-foreground">
-          No plants have been created yet.
+          {t("no-plants-yet")}
         </p>
       ) : (
         <>

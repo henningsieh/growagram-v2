@@ -60,9 +60,9 @@ export default function PostCard({ post, isSocialProp = true }: PostCardProps) {
     },
   });
 
-  const handleDelete = () => {
-    setIsDeleteDialogOpen(true);
-  };
+  // const handleDelete = () => {
+  //   setIsDeleteDialogOpen(true);
+  // };
 
   const confirmDelete = async () => {
     await deleteMutation.mutateAsync({ id: post.id });

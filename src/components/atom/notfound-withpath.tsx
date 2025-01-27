@@ -52,7 +52,12 @@ export function NotFoundWithPath() {
             className="flex items-center justify-center gap-6"
           >
             <XCircle className="h-32 w-32 text-destructive" />
-            <p className="text-6xl text-destructive">{"404"}</p>
+            <p className="text-6xl text-destructive">
+              {
+                // eslint-disable-next-line react/jsx-no-literals
+                "404"
+              }
+            </p>
           </motion.div>
 
           <motion.h1
@@ -66,7 +71,10 @@ export function NotFoundWithPath() {
             <h2 className="flex flex-col items-center text-lg font-medium text-muted-foreground">
               <span>
                 {t("path")}
-                {":"}
+                {
+                  // eslint-disable-next-line react/jsx-no-literals
+                  ":"
+                }
               </span>
               <motion.span
                 initial={{ opacity: 0, scale: 0.2 }}

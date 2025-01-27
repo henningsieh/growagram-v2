@@ -16,7 +16,6 @@ interface PaginationProps {
   totalPages: number;
   isFetching: boolean;
   handlePageChange: (page: number) => void;
-  // getPaginationNumbers: () => (number | string)[];
 }
 
 export default function ItemsPagination({
@@ -24,7 +23,6 @@ export default function ItemsPagination({
   totalPages,
   isFetching,
   handlePageChange,
-  // getPaginationNumbers,
 }: PaginationProps) {
   // Generate pagination numbers
   const getPaginationNumbers = () => {

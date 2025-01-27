@@ -1,4 +1,5 @@
 import { CheckCircle } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 const benefits = [
   "Exclusive premium content",
@@ -9,10 +10,11 @@ const benefits = [
 ];
 
 export function PremiumBenefits() {
+  const t = useTranslations("Premium");
   return (
     <section className="my-16">
       <h2 className="mb-8 text-center text-3xl font-semibold">
-        Premium Benefits
+        {t("benefits.title")}
       </h2>
       <ul className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {benefits.map((benefit, index) => (

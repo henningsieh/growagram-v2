@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 // src/components/features/Grows/Views/paginated.tsx:
 import { useSearchParams } from "next/navigation";
 import {
@@ -32,6 +33,7 @@ export default function PaginatedGrowsView({
   const searchParams = useSearchParams();
   const router = useRouter();
   const utils = api.useUtils();
+  const t = useTranslations("Grows");
 
   // Initialize state from URL query params
   const [currentPage, setCurrentPage] = useState(
@@ -86,38 +88,13 @@ export default function PaginatedGrowsView({
     setCurrentPage(page);
   };
 
-  // Generate pagination numbers
-  const getPaginationNumbers = () => {
-    const pages: number[] = [];
-    const showAroundCurrent = 2;
-
-    for (let i = 1; i <= totalPages; i++) {
-      if (
-        i === 1 ||
-        i === totalPages ||
-        (i >= currentPage - showAroundCurrent &&
-          i <= currentPage + showAroundCurrent)
-      ) {
-        pages.push(i);
-      }
-    }
-
-    return pages.reduce((acc: (number | string)[], page, index, array) => {
-      if (index > 0 && array[index - 1] !== page - 1) {
-        acc.push("...");
-      }
-      acc.push(page);
-      return acc;
-    }, []);
-  };
-
   return (
     <>
       {isLoading ? (
         <SpinningLoader className="text-secondary" />
       ) : userGrows.length === 0 ? (
         <p className="mt-8 text-center text-muted-foreground">
-          No grows have been created yet.
+          {t("no-grows-yet")}
         </p>
       ) : (
         <>

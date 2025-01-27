@@ -46,13 +46,13 @@ export default function PremiumPage() {
                   variants={containerVariants}
                   initial="hidden"
                   animate="visible"
-                  className="flex flex-col items-center space-y-8"
+                  className="flex flex-col items-center space-y-16"
                 >
                   <motion.div variants={itemVariants} className="text-center">
-                    <h1 className="mb-4 text-4xl font-bold">
+                    <h2 className="mb-4 text-2xl font-bold">
                       {t("unlock-premium-content")}
-                    </h1>
-                    <p className="mb-8 text-xl text-muted-foreground">
+                    </h2>
+                    <p className="mb-4 text-xl text-muted-foreground">
                       {t("get-exclusive-access")}
                     </p>
                   </motion.div>
@@ -63,6 +63,8 @@ export default function PremiumPage() {
 
                   <PremiumBenefits />
 
+                  <PremiumFAQ />
+
                   <motion.div
                     variants={itemVariants}
                     className="my-16 text-center"
@@ -72,8 +74,6 @@ export default function PremiumPage() {
                     </h2>
                     <ConnectSteadyHQButton />
                   </motion.div>
-
-                  <PremiumFAQ />
                 </motion.div>
               </CardContent>
             </Card>

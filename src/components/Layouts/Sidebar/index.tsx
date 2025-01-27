@@ -88,8 +88,7 @@ function ProtectedSidebarContent({
 }) {
   const t = useTranslations();
   //TODO: fix button to open /close sidebar
-  const { isMobile, state, openMobile, setOpenMobile, toggleSidebar } =
-    useSidebar();
+  const { isMobile, toggleSidebar } = useSidebar();
 
   const translatedSidebarItems = {
     ...sidebarItems,
@@ -266,7 +265,10 @@ function ProtectedSidebarContent({
                       <span className="truncate font-semibold">
                         {session?.user.name as string}
                       </span>
-                      <span className="truncate text-xs">
+                      <span
+                        className="truncate text-xs"
+                        // eslint-disable-next-line react/jsx-no-literals
+                      >
                         @{session?.user.username as string}
                       </span>
                     </div>
@@ -312,7 +314,7 @@ function ProtectedSidebarContent({
                     <Link href={modulePaths.PREMIUM.path}>
                       <DropdownMenuItem className="cursor-pointer text-yellow-500 focus:bg-yellow-600/50 focus:text-white">
                         <Sparkles />
-                        Upgrade to Pro
+                        {t("Premium.navigation.label")}
                       </DropdownMenuItem>
                     </Link>
                   </DropdownMenuGroup>
@@ -322,13 +324,13 @@ function ProtectedSidebarContent({
                     <Link href={modulePaths.ACCOUNT.path}>
                       <DropdownMenuItem className="cursor-pointer">
                         <UserPen />
-                        Account
+                        {t("Account.navigation.label")}
                       </DropdownMenuItem>
                     </Link>
 
                     <DropdownMenuItem>
                       <Bell />
-                      Notifications
+                      {t("Notifications.navigation.label")}
                     </DropdownMenuItem>
                   </DropdownMenuGroup>
 
@@ -337,7 +339,7 @@ function ProtectedSidebarContent({
                   {/* Sign Out Action */}
                   <DropdownMenuItem onClick={async () => await handleSignOut()}>
                     <LogOut />
-                    Log out
+                    {}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

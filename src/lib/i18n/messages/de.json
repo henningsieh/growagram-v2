@@ -29,6 +29,9 @@
     "info-name": "Name",
     "info-role": "Rolle",
     "info-username": "Benutzername",
+    "navigation": {
+      "label": "Mein Konto"
+    },
     "not-provided": "Nicht angegeben"
   },
   "CardFooter": {
@@ -143,9 +146,6 @@
       "title": "Faire Preise für jeden Grower"
     }
   },
-  "LanguageToggle": {
-    "toggle-language": "Sprache wechseln"
-  },
   "LoginPage": {
     "Email-verified-description": "Deine E-Mail-Adresse wurde erfolgreich verifiziert.",
     "Email-verified-title": "E-Mail-Adresse bestätigt",
@@ -200,6 +200,11 @@
     "timeline-description": "Social Media Zeitachse (Funktion in Kürze)",
     "toggle-menu": "Menü umschalten"
   },
+  "Notifications": {
+    "navigation": {
+      "label": "Benachrichtigungen"
+    }
+  },
   "Photos": {
     "DeleteConfirmation": {
       "alertCautionText": "Diese Aktion kann nicht rückgängig gemacht werden. \nDadurch wird das Foto dauerhaft aus unserer Cloud bzw. von den Speicherservern gelöscht.",
@@ -209,20 +214,6 @@
         "warning-photo-has-posts": {
           "description": "Dieses Foto ist mit einem oder mehreren Beiträgen verbunden. \nDu kannst ein Foto nicht löschen, wenn es Beiträge zugeordnet ist.",
           "title": "Warnung"
-        }
-      }
-    },
-    "Photos": {
-      "upload": {
-        "buttonLabel-files": "Dateien",
-        "buttonLabel-upload": "Hochladen",
-        "dropzone-description": "Bilddateien (JPG, PNG, GIF, WebP bis zu 10MB)",
-        "dropzone-title": "Ziehe deine Fotos per Drag & Drop hierher",
-        "preview": {
-          "capturedate-label": "Aufnahmedatum:",
-          "filename-label": "Dateiname:",
-          "filesize-label": "Dateigröße:",
-          "filesize-unit": "Megabyte (MB)"
         }
       }
     },
@@ -236,12 +227,17 @@
     "button-label-upload-photos": "Hochladen",
     "buttonBackLabel": "Zurück",
     "capture-date": "aufgenommen",
+    "connectPlants": {
+      "photo-details-metadata": "Fotodetails / Metadaten"
+    },
     "delete-button-label": "Foto löschen",
     "edit-button-label": "Foto bearbeiten",
     "filter-label-not-connected": "NUR NEUE",
     "my-Photos": "Meine Fotos",
     "my-Photos-subtitle": "Anzeige und Verwaltung meiner Fotos",
     "newNotConnteched": "NEU",
+    "no-photos-yet": "Es wurden noch keine Fotos hochgeladen.",
+    "no-photos-yet-filtered": "Es wurden keine neuen Bilder (ohne verknüpte Pflanzen) gefunden.",
     "plantSelection": {
       "description": "Wähle jede Pflanze aus, die du auf dem Foto sehen kannst!",
       "title": "Pflanzenauswahl"
@@ -253,6 +249,18 @@
     },
     "subtitle": "Welche Pflanzen siehst du auf diesem Foto?",
     "title": "Pflanzen identifizieren",
+    "upload": {
+      "buttonLabel-files": "Dateien",
+      "buttonLabel-upload": "Hochladen",
+      "dropzone-description": "Bilddateien (JPG, PNG, GIF, WebP bis zu 10MB)",
+      "dropzone-title": "Ziehe deine Fotos per Drag & Drop hierher",
+      "preview": {
+        "capturedate-label": "Aufnahmedatum:",
+        "filename-label": "Dateiname:",
+        "filesize-label": "Dateigröße:",
+        "filesize-unit": "Megabyte (MB)"
+      }
+    },
     "uploaded-at": "hochgeladen"
   },
   "Plants": {
@@ -281,6 +289,7 @@
     "growth-progress": "Wachstumsfortschritt",
     "harvest-date": "Datum der Ernte",
     "linkUploadButtonLabel": "Pflanze hinzufügen",
+    "no-plants-yet": "Es wurden noch keine Pflanzen hinzugefügt.",
     "overall-progress": "Gesamtfortschritt",
     "phase": "Phasenfortschritt",
     "planting-date": "Datum der Aussaat",
@@ -299,11 +308,12 @@
     "Cancel": "Abbrechen",
     "Dashboard-title": "Dashboard",
     "Delete": "Löschen",
-    "Platform": {
-      "coming-soon-description": "Wir arbeiten schon an der neuen Funktion. Komm bald wieder vorbei!"
+    "LanguageToggle": {
+      "toggle-language": "Sprache wechseln"
     },
     "asc": "Aufsteigend",
     "coming-soon": "Bald verfügbar",
+    "coming-soon-description": "",
     "desc": "Absteigend",
     "feature-coming": "Neue Funktion ist auf dem Weg!",
     "infinitescroll": "Unendliches Scrollen",
@@ -328,6 +338,7 @@
       "title": "Premium-Vorteile"
     },
     "connect-steady-button": "Mit Steady verbinden",
+    "connect-with-steady": "Mit Steady verbinden",
     "faq": {
       "cancel-subscription": {
         "answer": "Ja, du kannst dein Abonnement jederzeit über deinen Steady-Account kündigen. Dein Premium-Zugang bleibt bis zum Ende deiner aktuellen Abrechnungsperiode bestehen.",
@@ -348,10 +359,20 @@
       "title": "Häufig gestellte Fragen"
     },
     "get-exclusive-access": "Erhalte exklusiven Zugang zu Premium-Funktionen und unterstütze unsere Community!",
+    "navigation": {
+      "label": "Upgrade auf Pro"
+    },
     "premium-subtitle": "Verbessere deine Anbau-Erfahrung mit exklusiven Vorteilen",
     "premium-title": "Premium-Funktionen freischalten",
     "ready-to-go-premium": "Bereit für Premium?",
     "unlock-premium-content": "Hebe deine Anbau-Reise auf ein neues Level"
+  },
+  "Profile": {
+    "tabs": {
+      "grows": "Grows",
+      "plants": "Pflanzen",
+      "timeline": "Zeitleiste"
+    }
   },
   "RegisterPage": {
     "description": "Fülle alle Felder unten aus.",

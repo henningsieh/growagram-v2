@@ -86,7 +86,11 @@ export function EmbeddedPlantCard({ plant }: EmbeddedPlantCardProps) {
                   <HybridTooltipContent className="w-auto bg-harvest p-1">
                     <div className="space-y-0">
                       <p className="text-sm">
-                        {t("Plants.estimated-harvest")}:{" "}
+                        {
+                          t("Plants.estimated-harvest")
+                          // eslint-disable-next-line react/jsx-no-literals
+                        }
+                        :{" "}
                       </p>
                       <p className="text-base">
                         {formatDate(
@@ -96,7 +100,10 @@ export function EmbeddedPlantCard({ plant }: EmbeddedPlantCardProps) {
                             includeYear: true,
                           } as DateFormatOptions,
                         )}{" "}
-                        {`(in ${formatDaysRemaining(progress.daysUntilNextPhase)})`}
+                        {
+                          // eslint-disable-next-line react/jsx-no-literals
+                          `(in ${formatDaysRemaining(progress.daysUntilNextPhase)})`
+                        }
                       </p>
                     </div>
                   </HybridTooltipContent>

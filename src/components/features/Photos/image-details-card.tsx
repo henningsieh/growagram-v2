@@ -1,5 +1,6 @@
 // src/components/features/Images/image-details-card.tsx:
 import { Camera, FileIcon, UploadCloud } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
@@ -13,6 +14,8 @@ interface ImageDetailsProps {
 }
 
 export function ImageDetailsCard({ image, locale }: ImageDetailsProps) {
+  const t = useTranslations("Photos");
+
   const detailItems = [
     {
       icon: <FileIcon className="h-5 w-5" />,
@@ -47,7 +50,9 @@ export function ImageDetailsCard({ image, locale }: ImageDetailsProps) {
       </div>
       <div className="w-full p-0 md:w-3/5 md:px-0">
         <CardHeader>
-          <CardTitle className="text-xl font-semibold">Image Details</CardTitle>
+          <CardTitle className="text-xl font-semibold">
+            {t("connectPlants.photo-details-metadata")}
+          </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           {detailItems.map((item, index) => (

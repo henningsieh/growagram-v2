@@ -44,7 +44,12 @@ function AvatarCardHeader({ user, date }: SocialHeaderProps) {
                     className="h-4 w-4 text-yellow-500"
                   />
                 )}
-                <span className="text-muted-foreground">@{user.username}</span>
+                <span
+                  className="text-muted-foreground"
+                  // eslint-disable-next-line react/jsx-no-literals
+                >
+                  @{user.username}
+                </span>
               </div>
             </Link>
             {date && (

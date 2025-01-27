@@ -67,7 +67,12 @@ export function ChatModal({
       await sendMessageMutation.mutateAsync({ content: message });
       setMessage("");
     } catch (error) {
-      // Error handling is managed by mutation onError callback
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError("An unexpected error occurred");
+      }
+      console.error("Error sending message:", error);
     }
   };
 
@@ -95,7 +100,11 @@ export function ChatModal({
         >
           <CardHeader className="border-b p-4">
             <div className="flex items-center justify-between">
-              <CardTitle>Chat</CardTitle>
+              <CardTitle
+              // eslint-disable-next-line react/jsx-no-literals
+              >
+                Chat
+              </CardTitle>
               <Button variant="ghost" size="icon" onClick={onClose}>
                 <X className="h-4 w-4" />
               </Button>
