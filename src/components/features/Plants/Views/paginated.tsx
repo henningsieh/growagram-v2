@@ -1,6 +1,7 @@
 "use client";
 
 // src/components/features/Plants/Views/paginated.tsx:
+import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import {
   type Dispatch,
@@ -33,6 +34,7 @@ export default function PaginatedPlantsView({
   const searchParams = useSearchParams();
   const router = useRouter();
   const utils = api.useUtils();
+  const t = useTranslations("Plants");
 
   // Initialize state from URL query params
   const [currentPage, setCurrentPage] = useState(
@@ -93,7 +95,7 @@ export default function PaginatedPlantsView({
         <SpinningLoader className="text-secondary" />
       ) : userPlants.length === 0 ? (
         <p className="mt-8 text-center text-muted-foreground">
-          No plants have been created yet.
+          {t("no-plants-yet")}
         </p>
       ) : (
         <>

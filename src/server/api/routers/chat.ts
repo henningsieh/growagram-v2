@@ -64,10 +64,8 @@ export const chatRouter = createTRPCRouter({
 
   // Subscribe to new messages
   onMessage: protectedProcedure.subscription(() => {
-    let disposed = false;
-
     return observable<ChatMessage>((emit) => {
-      if (disposed) return;
+      let disposed = false;
 
       const onMessage = (message: ChatMessage) => {
         if (!disposed) emit.next(message);
@@ -76,8 +74,12 @@ export const chatRouter = createTRPCRouter({
       ee.on("sendMessage", onMessage);
 
       return () => {
-        disposed = true;
-        ee.off("sendMessage", onMessage);
+        try {
+          disposed = true;
+          ee.off("sendMessage", onMessage);
+        } catch (error) {
+          console.error("Error during subscription cleanup:", error);
+        }
       };
     });
   }),

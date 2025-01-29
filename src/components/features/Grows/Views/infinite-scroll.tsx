@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 // src/components/features/Grows/Views/infinite-scroll.tsx:
 import {
   type Dispatch,
@@ -30,6 +31,7 @@ export default function InfiniteScrollGrowsView({
 }) {
   const router = useRouter();
   const utils = api.useUtils();
+  const t = useTranslations("Grows");
 
   useEffect(() => {
     router.replace(
@@ -104,7 +106,7 @@ export default function InfiniteScrollGrowsView({
         <SpinningLoader className="text-secondary" />
       ) : grows.length === 0 ? (
         <p className="mt-8 text-center text-muted-foreground">
-          No grows have been created yet.
+          {t("no-grows-yet")}
         </p>
       ) : (
         <>

@@ -7,8 +7,10 @@ import { Card } from "~/components/ui/card";
 import { env } from "~/env";
 
 const MarkdownPage = async () => {
+  const sourceFile = "README.md";
+
   const markdown = await fs.readFile(
-    path.join(process.cwd(), "README.md"),
+    path.join(process.cwd(), sourceFile),
     "utf-8",
   );
 
@@ -92,7 +94,7 @@ const MarkdownPage = async () => {
 
   return (
     <div className="container mx-auto">
-      <h1 className="text-4xl font-bold">README.md</h1>
+      <h1 className="text-4xl font-bold">{sourceFile}</h1>
       <Card className="mx-auto my-8 max-w-3xl p-8">
         <article className="prose prose-slate dark:prose-invert max-w-none">
           <ReactMarkdown components={components}>{markdown}</ReactMarkdown>
@@ -101,12 +103,6 @@ const MarkdownPage = async () => {
     </div>
   );
 };
-
-/**
- * //TODO: fix quick and dirty metadata globally!
- *
- * @returns {import('next').GetStaticProps}
- */
 
 export async function generateMetadata() {
   return {

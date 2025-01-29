@@ -14,8 +14,9 @@ const AppFooter = () => {
         <Link
           href="/app/status"
           className="text-sm text-muted-foreground hover:text-foreground"
+          // eslint-disable-next-line react/jsx-no-literals
         >
-          Development Status
+          ReadMe / Development
         </Link>
       </div>
     </footer>

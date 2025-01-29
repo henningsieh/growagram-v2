@@ -33,7 +33,12 @@ export default async function ProfilePage({
         <div>
           <h1 className="text-3xl font-bold">{profile.name}</h1>
           {profile.username && (
-            <p className="text-muted-foreground">@{profile.username}</p>
+            <p
+              className="text-muted-foreground"
+              // eslint-disable-next-line react/jsx-no-literals
+            >
+              @{profile.username}
+            </p>
           )}
         </div>
       </div>

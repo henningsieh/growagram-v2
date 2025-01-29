@@ -232,7 +232,7 @@ export default function PhotoUpload() {
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <Label className="sr-only" htmlFor="files">
-              {t("Photos.upload.dropzone-title")}
+              {t("upload.dropzone-title")}
             </Label>
             <div
               onClick={() => fileInputRef.current?.click()}
@@ -254,12 +254,12 @@ export default function PhotoUpload() {
                 <div className="text-lg text-muted-foreground">
                   <span className="font-semibold">
                     {" "}
-                    {t("Photos.upload.dropzone-title")}
+                    {t("upload.dropzone-title")}
                   </span>
                 </div>
 
                 <div className="text-xs text-muted-foreground">
-                  {t("Photos.upload.dropzone-description")}
+                  {t("upload.dropzone-description")}
                 </div>
               </div>
             </div>
@@ -290,24 +290,22 @@ export default function PhotoUpload() {
                     />
                     <div className="absolute bottom-1 left-1 right-1 mt-2 flex flex-col rounded-sm bg-accent p-1 text-xs font-semibold text-foreground">
                       <div className="flex justify-between gap-2">
-                        <span>{t("Photos.upload.preview.filename-label")}</span>
+                        <span>{t("upload.preview.filename-label")}</span>
                         <span className="overflow-x-hidden whitespace-nowrap">
                           {preview.file.name}
                         </span>
                       </div>
                       <div className="flex justify-between">
-                        <span>{t("Photos.upload.preview.filesize-label")}</span>
+                        <span>{t("upload.preview.filesize-label")}</span>
                         <span className="overflow-hidden">
                           {(preview.file.size / 1024 / 1024).toFixed(2)}
-                          {t("Photos.upload.preview.filesize-unit")}
+                          {t("upload.preview.filesize-unit")}
                         </span>
                       </div>
                       {/* EXIF Data Display */}
                       {preview.exifData?.captureDate && (
                         <div className="flex justify-between">
-                          <span>
-                            {t("Photos.upload.preview.capturedate-label")}
-                          </span>
+                          <span>{t("upload.preview.capturedate-label")}</span>
                           <span>
                             {formatDate(
                               preview.exifData.captureDate,
@@ -357,12 +355,12 @@ export default function PhotoUpload() {
             )}
             {
               // eslint-disable-next-line react/jsx-no-literals
-              `${t("Photos.upload.buttonLabel-upload")} (`
+              `${t("upload.buttonLabel-upload")} (`
             }
             {previews.length}
             {
               // eslint-disable-next-line react/jsx-no-literals
-              ` ${t("Photos.upload.buttonLabel-files")})`
+              ` ${t("upload.buttonLabel-files")})`
             }
           </Button>
         </CardFooter>

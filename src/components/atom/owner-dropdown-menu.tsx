@@ -1,7 +1,6 @@
 import {
   EditIcon,
   ExternalLinkIcon,
-  MessageCircleIcon,
   MoreHorizontalIcon,
   Trash2Icon,
 } from "lucide-react";
@@ -14,8 +13,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
-import { Label } from "~/components/ui/label";
-import { Switch } from "~/components/ui/switch";
 import { Link } from "~/lib/i18n/routing";
 
 interface OwnerDropdownMenuProps {
@@ -28,8 +25,8 @@ interface OwnerDropdownMenuProps {
 }
 
 export function OwnerDropdownMenu({
-  isSocial,
-  setIsSocial,
+  // isSocial,
+  // setIsSocial,
   isDeleting,
   handleDelete,
   entityId,
@@ -49,7 +46,12 @@ export function OwnerDropdownMenu({
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="icon">
           <MoreHorizontalIcon className="h-5 w-5" />
-          <span className="sr-only">Owner menu</span>
+          <span
+            className="sr-only"
+            // eslint-disable-next-line react/jsx-no-literals
+          >
+            Owner menu
+          </span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">

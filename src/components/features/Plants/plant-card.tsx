@@ -50,7 +50,7 @@ import { Locale } from "~/types/locale";
 import { PostableEntityType } from "~/types/post";
 
 import { Comments } from "../Comments/comments";
-import { ImageCarousel } from "../Photos/image-carousel";
+import { ImageCarousel } from "./image-carousel";
 
 interface PlantCardProps {
   plant: PlantByIdType;

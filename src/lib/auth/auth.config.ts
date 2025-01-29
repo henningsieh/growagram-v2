@@ -90,7 +90,10 @@ export default {
     },
 
     async jwt({ token, user, trigger, session, account }) {
-      // console.debug("async jwt callback: ", { token });
+      console.debug("async jwt callback token:", token);
+      if (account) {
+        console.debug("async jwt callback account:", account);
+      }
 
       // When user first logs in or during token refresh, fetch additional user details
       if (user || !token.username) {
@@ -117,7 +120,7 @@ export default {
         }
       }
 
-      // the following case gets invoked by session.update() on user-form/page.tsx:
+      // this gets invoked by session.update() in src/components/features/Account/edit-form.tsx:
       if (trigger === "update" && session?.name) {
         console.debug("trigger session.update():", session);
         // Note, that `session` can be any arbitrary object, remember to validate it!

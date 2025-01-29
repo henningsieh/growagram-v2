@@ -1,5 +1,5 @@
 import { CameraIcon } from "lucide-react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useEffect } from "react";
 import { RESPONSIVE_IMAGE_SIZES } from "~/components/Layouts/responsive-grid";
@@ -21,6 +21,7 @@ export const ImageCarousel = ({
   plantImages: PlantImagesType;
 }) => {
   const { openImageModal } = useImageModal();
+  const t = useTranslations();
 
   useEffect(() => {
     plantImages.forEach((plantImage) => {
@@ -35,7 +36,7 @@ export const ImageCarousel = ({
     return (
       <div className="relative aspect-video w-full">
         <div className="flex h-full items-center justify-center bg-muted text-muted-foreground">
-          no images yet
+          {t("Photos.no-photos-yet")}
         </div>
       </div>
     );

@@ -3,7 +3,6 @@
 // src/lib/trpc/react.tsx:
 import { type QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
-  httpBatchLink,
   loggerLink,
   splitLink,
   unstable_httpBatchStreamLink,

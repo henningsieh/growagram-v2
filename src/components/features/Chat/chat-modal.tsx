@@ -1,5 +1,6 @@
 "use client";
 
+// src/components/features/Chat/chat-modal.tsx:
 import { AnimatePresence, motion } from "framer-motion";
 import { Loader2, Send, X } from "lucide-react";
 import { useSession } from "next-auth/react";
@@ -43,13 +44,11 @@ export function ChatModal({
     },
   });
 
-  // Add this effect to handle cleanup when the modal closes
+  // Cleanup subscription when modal closes
   useEffect(() => {
-    return () => {
-      if (!isOpen) {
-        utils.chat.getMessages.reset();
-      }
-    };
+    if (!isOpen) {
+      utils.chat.getMessages.reset();
+    }
   }, [isOpen, utils.chat.getMessages]);
 
   const sendMessageMutation = api.chat.sendMessage.useMutation({
@@ -68,18 +67,14 @@ export function ChatModal({
       await sendMessageMutation.mutateAsync({ content: message });
       setMessage("");
     } catch (error) {
-      // Error handling is managed by mutation onError callback
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError("An unexpected error occurred");
+      }
+      console.error("Error sending message:", error);
     }
   };
-
-  // Cleanup subscription when modal closes
-  useEffect(() => {
-    return () => {
-      if (!isOpen) {
-        utils.chat.getMessages.reset();
-      }
-    };
-  }, [isOpen, utils.chat.getMessages]);
 
   useEffect(() => {
     if (isOpen && scrollViewportRef.current) {
@@ -105,7 +100,11 @@ export function ChatModal({
         >
           <CardHeader className="border-b p-4">
             <div className="flex items-center justify-between">
-              <CardTitle>Chat</CardTitle>
+              <CardTitle
+              // eslint-disable-next-line react/jsx-no-literals
+              >
+                Chat
+              </CardTitle>
               <Button variant="ghost" size="icon" onClick={onClose}>
                 <X className="h-4 w-4" />
               </Button>

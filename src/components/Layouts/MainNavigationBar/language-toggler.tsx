@@ -19,7 +19,7 @@ export function LanguageToggle() {
   const router = useRouter();
   const pathname = usePathname();
   const params = useParams();
-  const t = useTranslations("LanguageToggle");
+  const t = useTranslations("Platform");
 
   const languages = APP_SETTINGS.LANGUAGES.map((language) => ({
     ...language,
@@ -47,10 +47,10 @@ export function LanguageToggle() {
           size="icon"
           variant="ghost"
           aria-haspopup="menu"
-          title={t("toggle-language")}
+          title={t("LanguageToggle.toggle-language")}
         >
           <LanguagesIcon size={24} strokeWidth={1.6} />
-          <span className="sr-only">{t("toggle-language")}</span>
+          <span className="sr-only">{t("LanguageToggle.toggle-language")}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">

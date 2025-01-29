@@ -51,7 +51,7 @@ export function GrowCard({
   const t = useTranslations("Grows");
 
   const [isSocial, setIsSocial] = useState(isSocialProp);
-  const [isImageHovered, setIsImageHovered] = useState(false);
+  // const [isImageHovered, setIsImageHovered] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
 

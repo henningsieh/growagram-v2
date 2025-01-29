@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 // src/components/features/Photos/Views/paginated.tsx:
 import { useSearchParams } from "next/navigation";
 import {
@@ -34,6 +35,7 @@ export default function PhotosPaginatedView({
   const searchParams = useSearchParams();
   const router = useRouter();
   const utils = api.useUtils();
+  const t = useTranslations("Photos");
 
   const [currentPage, setCurrentPage] = useState(
     parseInt(searchParams?.get("page") || "1"),
@@ -89,31 +91,6 @@ export default function PhotosPaginatedView({
     setCurrentPage(page);
   };
 
-  // Generate pagination numbers
-  const getPaginationNumbers = () => {
-    const pages: number[] = [];
-    const showAroundCurrent = 0; // Adjust this value to change the number of elements displayed beside the current page
-
-    for (let i = 1; i <= totalPages; i++) {
-      if (
-        i === 1 ||
-        i === totalPages ||
-        (i >= currentPage - showAroundCurrent &&
-          i <= currentPage + showAroundCurrent)
-      ) {
-        pages.push(i);
-      }
-    }
-
-    return pages.reduce((acc: (number | string)[], page, index, array) => {
-      if (index > 0 && array[index - 1] !== page - 1) {
-        acc.push("...");
-      }
-      acc.push(page);
-      return acc;
-    }, []);
-  };
-
   return (
     <>
       {isLoading ? (
@@ -121,8 +98,8 @@ export default function PhotosPaginatedView({
       ) : userPhotos.length === 0 ? (
         <p className="mt-8 text-center text-muted-foreground">
           {filterNotConnected
-            ? "No images without connected plants have been found."
-            : "You haven't uploaded any images yet."}
+            ? t("no-photos-yet-filtered")
+            : t("no-photos-yet")}
         </p>
       ) : (
         <>
