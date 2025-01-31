@@ -32,9 +32,9 @@ export default async function middleware(req: NextRequest) {
   });
 
   if (!token) {
-    console.debug("Middleware token: null");
+    console.debug("Middleware token: IS NULL");
   } else {
-    console.debug("Middleware token: ", JSON.stringify(token, null, 2));
+    // console.debug("Middleware token: ", JSON.stringify(token, null, 2));
   }
 
   // Get the pathname

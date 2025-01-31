@@ -14,7 +14,7 @@ export const chatRouter = createTRPCRouter({
   sendMessage: protectedProcedure
     .input(z.object({ content: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      const message = await ctx.db
+      const [message] = await ctx.db
         .insert(chatMessages)
         .values({
           content: input.content,
@@ -24,7 +24,7 @@ export const chatRouter = createTRPCRouter({
 
       // Create complete message with sender before emitting
       const completeMessage: ChatMessage = {
-        ...message[0],
+        ...message,
         sender: {
           id: ctx.session.user.id,
           name: ctx.session.user.name ?? null,
