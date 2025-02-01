@@ -17,8 +17,8 @@ export function useNotifications() {
     {
       refetchOnWindowFocus: true,
       refetchOnMount: true,
-      staleTime: 0, // Override default staleTime
-      refetchInterval: 5 * 1000, // Refetch every 30 seconds
+      staleTime: 5 * 1000, // Override default staleTime
+      // refetchInterval: 5 * 1000, // Refetch every 30 seconds
     },
   );
 
