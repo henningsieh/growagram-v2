@@ -23,28 +23,31 @@ export function useNotifications() {
   );
 
   // Subscribe to new notifications
-  api.notifications.onNotification.useSubscription(undefined, {
-    onData: (notification) => {
-      console.debug("New notification received:", notification);
-      setNotifications((current) => {
-        const existing = current ?? [];
-        return [notification, ...existing].sort(
-          (a, b) => b.createdAt.getTime() - a.createdAt.getTime(),
-        );
-      });
+  api.notifications.onNotification.useSubscription(
+    {},
+    {
+      onData: (notification) => {
+        console.debug("New notification received:", notification);
+        setNotifications((current) => {
+          const existing = current ?? [];
+          return [notification, ...existing].sort(
+            (a, b) => b.createdAt.getTime() - a.createdAt.getTime(),
+          );
+        });
 
-      toast({
-        title: "New Notification",
-        description: `${notification.actor.name} started following you`,
-      });
+        toast({
+          title: "New Notification",
+          description: `${notification.actor.name} started following you`,
+        });
 
-      // Invalidate queries to ensure consistency
-      void utils.notifications.getUnread.invalidate();
+        // Invalidate queries to ensure consistency
+        void utils.notifications.getUnread.invalidate();
+      },
+      onError: (err) => {
+        console.error("Notification subscription error:", err);
+      },
     },
-    onError: (err) => {
-      console.error("Notification subscription error:", err);
-    },
-  });
+  );
 
   return {
     notifications: notifications ?? unreadNotifications ?? [],
