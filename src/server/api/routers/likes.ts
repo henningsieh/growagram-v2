@@ -3,14 +3,10 @@ import { TRPCError } from "@trpc/server";
 import { and, eq, sql } from "drizzle-orm";
 import { z } from "zod";
 import { comments, grows, images, likes, plants, posts } from "~/lib/db/schema";
-import {
-  createTRPCRouter,
-  protectedProcedure,
-  publicProcedure,
-} from "~/server/api/trpc";
+import { protectedProcedure, publicProcedure } from "~/server/api/trpc";
 import { LikeableEntityType } from "~/types/like";
 
-export const likeRouter = createTRPCRouter({
+export const likeRouter = {
   toggleLike: protectedProcedure
     .input(
       z.object({
@@ -131,4 +127,4 @@ export const likeRouter = createTRPCRouter({
         entityType: like.entityType,
       }));
     }),
-});
+};

@@ -3,11 +3,7 @@ import { TRPCError } from "@trpc/server";
 import { desc, eq } from "drizzle-orm";
 import { z } from "zod";
 import { grows, images, plants, posts } from "~/lib/db/schema";
-import {
-  createTRPCRouter,
-  protectedProcedure,
-  publicProcedure,
-} from "~/server/api/trpc";
+import { protectedProcedure, publicProcedure } from "~/server/api/trpc";
 import { PostableEntityType } from "~/types/post";
 import { postSchema } from "~/types/zodSchema";
 
@@ -16,7 +12,7 @@ import {
   connectPlantWithImagesQuery,
 } from "./plantImages";
 
-export const postRouter = createTRPCRouter({
+export const postRouter = {
   create: protectedProcedure
     .input(postSchema)
     .mutation(async ({ ctx, input }) => {
@@ -158,4 +154,4 @@ export const postRouter = createTRPCRouter({
         .where(eq(posts.id, input.id));
       return { success: !!deletedPost };
     }),
-});
+};

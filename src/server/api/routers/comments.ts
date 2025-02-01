@@ -4,12 +4,10 @@ import { and, asc, count, desc, eq, isNull } from "drizzle-orm";
 import { z } from "zod";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
 import { comments, grows, images, plants, posts } from "~/lib/db/schema";
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { protectedProcedure, publicProcedure } from "~/server/api/trpc";
 import { CommentableEntityType } from "~/types/comment";
 
-import { publicProcedure } from "../trpc";
-
-export const commentRouter = createTRPCRouter({
+export const commentRouter = {
   // Post a new comment (create a new comment)
   postComment: protectedProcedure
     .input(
@@ -206,4 +204,4 @@ export const commentRouter = createTRPCRouter({
 
       return commentReplies;
     }),
-});
+};

@@ -3,13 +3,12 @@ import { observable } from "@trpc/server/observable";
 import EventEmitter from "events";
 import { z } from "zod";
 import { chatMessages } from "~/lib/db/schema";
+import { protectedProcedure } from "~/server/api/trpc";
 import type { ChatMessage } from "~/types/chat";
-
-import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 const ee = new EventEmitter();
 
-export const chatRouter = createTRPCRouter({
+export const chatRouter = {
   // Send a message
   sendMessage: protectedProcedure
     .input(z.object({ content: z.string() }))
@@ -83,4 +82,4 @@ export const chatRouter = createTRPCRouter({
       };
     });
   }),
-});
+};

@@ -6,18 +6,13 @@ import { hashPassword } from "~/lib/auth/password";
 import { users, verificationTokens } from "~/lib/db/schema";
 import { routing } from "~/lib/i18n/routing";
 import { sendVerificationEmail } from "~/server/actions/sendVerificationEmail";
-import {
-  createTRPCRouter,
-  protectedProcedure,
-  publicProcedure,
-} from "~/server/api/trpc";
+import { connectPlantWithImagesQuery } from "~/server/api/routers/plantImages";
+import { protectedProcedure, publicProcedure } from "~/server/api/trpc";
 import type { Locale } from "~/types/locale";
 import { UserRoles } from "~/types/user";
 import { updateTokensSchema, userEditSchema } from "~/types/zodSchema";
 
-import { connectPlantWithImagesQuery } from "./plantImages";
-
-export const userRouter = createTRPCRouter({
+export const userRouter = {
   // Get public user data by user id (public procedure)
   getPublicUserProfile: publicProcedure
     .input(z.object({ id: z.string() }))
@@ -254,17 +249,17 @@ export const userRouter = createTRPCRouter({
         .map((b) => b.toString(16).padStart(2, "0"))
         .join("");
       await ctx.db.insert(verificationTokens).values({
-        identifier: newUser[0].email as string,
+        identifier: newUser[0]?.email as string,
         token: verificationToken,
         expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
       });
 
       await sendVerificationEmail(
-        newUser[0].email as string,
+        newUser[0]?.email as string,
         verificationToken,
         input.locale,
       );
 
       return newUser[0];
     }),
-});
+};
