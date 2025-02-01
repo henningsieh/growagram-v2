@@ -158,6 +158,7 @@
     },
     "login-with-discord": "Mit Discord anmelden",
     "login-with-github": "Mit GitHub anmelden",
+    "login-with-facebook": "Mit Facebook anmelden",
     "login-with-google": "Mit Google anmelden",
     "login-with-twitter": "Mit Twitter anmelden",
     "password": {
@@ -314,6 +315,9 @@
     "Delete": "Löschen",
     "LanguageToggle": {
       "toggle-language": "Sprache wechseln"
+    },
+    "SignOut": {
+      "buttonLabel": "Abmelden"
     },
     "asc": "Aufsteigend",
     "coming-soon": "Bald verfügbar",

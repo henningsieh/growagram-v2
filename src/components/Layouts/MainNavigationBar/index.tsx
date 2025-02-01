@@ -3,6 +3,7 @@
 // src/components/navbar/index.tsx:
 import Image from "next/image";
 import { ThemeToggle } from "~/components/Layouts/MainNavigationBar/theme-toggler";
+import { Notifications } from "~/components/features/Notifications";
 import { Link } from "~/lib/i18n/routing";
 
 import DesktopNavigationManu from "./Desktop";
@@ -32,6 +33,9 @@ export function MainNavigationBar() {
 
         {/* Navigation Right Side: Toggles */}
         <div className="absolute right-4 top-1/2 flex -translate-y-1/2 items-center space-x-1">
+          {/* Notifications Subscription */}
+          <Notifications />
+
           {/* Theme Toggle Button */}
           <ThemeToggle />
 

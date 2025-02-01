@@ -1,9 +1,15 @@
 // src/server/api/routers/users.ts:
 import { TRPCError } from "@trpc/server";
 import { and, eq, not } from "drizzle-orm";
+import EventEmitter from "events";
 import { z } from "zod";
 import { hashPassword } from "~/lib/auth/password";
-import { users, verificationTokens } from "~/lib/db/schema";
+import {
+  notifications,
+  userFollows,
+  users,
+  verificationTokens,
+} from "~/lib/db/schema";
 import { routing } from "~/lib/i18n/routing";
 import { sendVerificationEmail } from "~/server/actions/sendVerificationEmail";
 import { connectPlantWithImagesQuery } from "~/server/api/routers/plantImages";
@@ -11,6 +17,8 @@ import { protectedProcedure, publicProcedure } from "~/server/api/trpc";
 import type { Locale } from "~/types/locale";
 import { UserRoles } from "~/types/user";
 import { updateTokensSchema, userEditSchema } from "~/types/zodSchema";
+
+const ee = new EventEmitter();
 
 export const userRouter = {
   // Get public user data by user id (public procedure)
@@ -27,6 +35,30 @@ export const userRouter = {
           role: true,
         },
         with: {
+          followers: {
+            with: {
+              follower: {
+                columns: {
+                  id: true,
+                  name: true,
+                  image: true,
+                  username: true,
+                },
+              },
+            },
+          },
+          following: {
+            with: {
+              following: {
+                columns: {
+                  id: true,
+                  name: true,
+                  image: true,
+                  username: true,
+                },
+              },
+            },
+          },
           grows: {
             with: {
               owner: true,
@@ -83,6 +115,7 @@ export const userRouter = {
   getOwnUserData: protectedProcedure.query(async ({ ctx }) => {
     const user = await ctx.db.query.users.findFirst({
       where: eq(users.id, ctx.session.user.id),
+      with: {},
       columns: {
         id: true,
         name: true,
@@ -261,5 +294,52 @@ export const userRouter = {
       );
 
       return newUser[0];
+    }),
+
+  followUser: protectedProcedure
+    .input(z.object({ userId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const follow = await ctx.db
+        .insert(userFollows)
+        .values({
+          followerId: ctx.session.user.id,
+          followingId: input.userId,
+        })
+        .returning();
+
+      // Create notification
+      const notification = await ctx.db
+        .insert(notifications)
+        .values({
+          userId: input.userId,
+          type: "follow",
+          actorId: ctx.session.user.id,
+        })
+        .returning();
+
+      // Emit notification event
+      ee.emit("notification", {
+        ...notification[0],
+        actor: {
+          id: ctx.session.user.id,
+          name: ctx.session.user.name,
+          image: ctx.session.user.image,
+        },
+      });
+
+      return follow[0];
+    }),
+
+  unfollowUser: protectedProcedure
+    .input(z.object({ userId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db
+        .delete(userFollows)
+        .where(
+          and(
+            eq(userFollows.followerId, ctx.session.user.id),
+            eq(userFollows.followingId, input.userId),
+          ),
+        );
     }),
 };

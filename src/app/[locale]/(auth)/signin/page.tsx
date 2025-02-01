@@ -7,7 +7,7 @@ import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import * as React from "react";
 import { useEffect } from "react";
-import { FaDiscord, FaGithub, FaTwitter } from "react-icons/fa";
+import { FaDiscord, FaFacebook, FaGithub, FaTwitter } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { modulePaths } from "~/assets/constants";
 import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
@@ -91,45 +91,50 @@ export default function Page() {
             <div className={"grid gap-6"}>
               {/* Social Buttons */}
               <div className="space-y-3">
+                {/* Google Button */}
                 <Button
                   variant="outline"
                   type="button"
                   disabled={isLoading}
                   onClick={() => signIn("google", { callbackUrl })}
-                  className="w-full justify-between px-14"
+                  className="w-full px-14"
                 >
                   {isLoading ? (
-                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                    <Loader2 className="mr-2 size-5 animate-spin" />
                   ) : (
-                    <FcGoogle className="mr-2 h-4 w-4" />
+                    <FcGoogle className="mr-2 size-5" />
                   )}{" "}
                   {t("login-with-google")}
                 </Button>
+
+                {/* Discord Button */}
                 <Button
                   type="button"
                   variant="outline"
                   disabled={isLoading}
                   onClick={() => signIn("discord", { callbackUrl })}
-                  className="w-full justify-between px-14"
+                  className="w-full px-14"
                 >
                   {isLoading ? (
-                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                    <Loader2 className="mr-2 size-5 animate-spin" />
                   ) : (
-                    <FaDiscord className="mr-2 h-4 w-4 text-[#7289da]" />
+                    <FaDiscord className="mr-2 size-5 text-[#7289da]" />
                   )}{" "}
                   {t("login-with-discord")}
                 </Button>
+
+                {/* Twitter Button */}
                 <Button
                   variant="outline"
                   type="button"
                   disabled={isLoading}
                   onClick={() => signIn("twitter", { callbackUrl })}
-                  className="w-full justify-between px-14"
+                  className="w-full px-14"
                 >
                   {isLoading ? (
-                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                    <Loader2 className="mr-2 size-5 animate-spin" />
                   ) : (
-                    <FaTwitter className="mr-2 h-4 w-4 text-[#1DA1F2]" />
+                    <FaTwitter className="mr-2 size-5 text-[#1DA1F2]" />
                   )}{" "}
                   {t("login-with-twitter")}
                 </Button>
@@ -146,6 +151,22 @@ export default function Page() {
                     <FaGithub className="mr-2 h-4 w-4 text-[#1DA1F2]" />
                   )}{" "}
                   {t("login-with-github")}
+                </Button>
+
+                {/* Facebook Button */}
+                <Button
+                  variant="outline"
+                  type="button"
+                  disabled={isLoading}
+                  onClick={() => signIn("facebook", { callbackUrl })}
+                  className="w-full px-14"
+                >
+                  {isLoading ? (
+                    <Loader2 className="mr-2 size-5 animate-spin" />
+                  ) : (
+                    <FaFacebook className="mr-2 size-5 text-[#1877F2]" />
+                  )}{" "}
+                  {t("login-with-facebook")}
                 </Button>
               </div>
 
@@ -165,7 +186,7 @@ export default function Page() {
                   className="mx-auto max-w-lg bg-accent text-primary-foreground"
                   variant={"default"}
                 >
-                  <MailCheckIcon className="h-4 w-4" />
+                  <MailCheckIcon className="size-5" />
                   <AlertTitle>{t("Email-verified-title")}</AlertTitle>
                   <AlertDescription>
                     {t("Email-verified-description")}
@@ -213,9 +234,9 @@ export default function Page() {
                     disabled={isLoading}
                   >
                     {isLoading ? (
-                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                      <Loader2 className="mr-2 size-5 animate-spin" />
                     ) : (
-                      <LogInIcon className="mr-2 h-5 w-5" />
+                      <LogInIcon className="mr-2 size-5" />
                     )}
                     {t("submit")}
                   </Button>

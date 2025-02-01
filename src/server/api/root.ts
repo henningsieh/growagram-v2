@@ -1,5 +1,4 @@
 // src/server/api/root.ts:
-import { observable } from "@trpc/server/observable";
 import { createCallerFactory } from "@trpc/server/unstable-core-do-not-import";
 import { RouterInput, RouterOutput } from "~/lib/trpc/react";
 
@@ -14,6 +13,7 @@ import { plantRouter } from "./routers/plant";
 import { postRouter } from "./routers/post";
 import { userRouter } from "./routers/users";
 import { createTRPCRouter, publicProcedure } from "./trpc";
+import { notificationRouter } from "./routers/notifications";
 
 /**
  * This is the primary router for the server.
@@ -31,6 +31,7 @@ export const appRouter = createTRPCRouter({
   chat: chatRouter,
   channel: channelRouter,
   message: messageRouter,
+  notifications: notificationRouter,
 
   healthcheck: publicProcedure.query(() => "yay!"),
 
@@ -44,6 +45,10 @@ export const appRouter = createTRPCRouter({
 
 // export type definition of API
 export type AppRouter = typeof appRouter;
+
+// notificationRouter
+//  OUTPUTS:
+export type GetUnreadNotificationType = RouterOutput["notifications"]["getUnread"][number];
 
 // postRouter
 //  OUTPUTS:

@@ -428,6 +428,49 @@ export const posts = pgTable("public_post", {
     .notNull(),
 });
 
+export const userFollows = pgTable(
+  "user_follow",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    followerId: text("follower_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    followingId: text("following_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+  },
+  (table) => ({
+    followerIdx: index("follower_idx").on(table.followerId),
+    followingIdx: index("following_idx").on(table.followingId),
+    uniqFollow: uniqueIndex("uniq_follow_idx").on(
+      table.followerId,
+      table.followingId,
+    ),
+  }),
+);
+
+export const notifications = pgTable("notification", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  type: text("type").notNull(), // "follow", "like", etc
+  actorId: text("actor_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  read: boolean("read").default(false).notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+});
+
 // Drizzle ORM Relations
 
 export const MessageRelations = relations(Message, ({ one }) => ({
@@ -441,10 +484,48 @@ export const ChannelRelations = relations(Channel, ({ many }) => ({
   posts: many(Message),
 }));
 
+export const notificationsRelations = relations(notifications, ({ one }) => ({
+  user: one(users, {
+    relationName: "userNotifications",
+    fields: [notifications.userId],
+    references: [users.id],
+  }),
+  actor: one(users, {
+    relationName: "actorNotifications",
+    fields: [notifications.actorId],
+    references: [users.id],
+  }),
+}));
+
 export const usersRelations = relations(users, ({ many }) => ({
   grows: many(grows),
   plants: many(plants),
-  Images: many(images),
+  images: many(images),
+  followers: many(userFollows, {
+    relationName: "userFollowers",
+  }),
+  following: many(userFollows, {
+    relationName: "userFollowing",
+  }),
+  notifications: many(notifications, {
+    relationName: "userNotifications",
+  }),
+  actorNotifications: many(notifications, {
+    relationName: "actorNotifications",
+  }),
+}));
+
+export const userFollowsRelations = relations(userFollows, ({ one }) => ({
+  follower: one(users, {
+    relationName: "userFollowers",
+    fields: [userFollows.followerId],
+    references: [users.id],
+  }),
+  following: one(users, {
+    relationName: "userFollowing",
+    fields: [userFollows.followingId],
+    references: [users.id],
+  }),
 }));
 
 export const commentsRelations = relations(comments, ({ one, many }) => ({
