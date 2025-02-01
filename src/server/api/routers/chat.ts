@@ -62,24 +62,48 @@ export const chatRouter = {
   }),
 
   // Subscribe to new messages
-  onMessage: protectedProcedure.subscription(() => {
-    return observable<ChatMessage>((emit) => {
-      let disposed = false;
+  onMessage: protectedProcedure.subscription(async function* () {
+    let disposed = false;
 
-      const onMessage = (message: ChatMessage) => {
-        if (!disposed) emit.next(message);
-      };
+    const messages = new AsyncIterableQueue<ChatMessage>();
 
-      ee.on("sendMessage", onMessage);
+    const onMessage = (message: ChatMessage) => {
+      if (!disposed) messages.push(message);
+    };
 
-      return () => {
-        try {
-          disposed = true;
-          ee.off("sendMessage", onMessage);
-        } catch (error) {
-          console.error("Error during subscription cleanup:", error);
-        }
-      };
-    });
+    ee.on("sendMessage", onMessage);
+
+    try {
+      while (!disposed) {
+        yield await messages.next();
+      }
+    } finally {
+      disposed = true;
+      ee.off("sendMessage", onMessage);
+    }
   }),
 };
+
+// Helper class for async iteration
+class AsyncIterableQueue<T> {
+  private queue: T[] = [];
+  private resolveNext: ((value: T) => void) | null = null;
+
+  push(item: T) {
+    if (this.resolveNext) {
+      this.resolveNext(item);
+      this.resolveNext = null;
+    } else {
+      this.queue.push(item);
+    }
+  }
+
+  async next(): Promise<T> {
+    if (this.queue.length > 0) {
+      return this.queue.shift()!;
+    }
+    return new Promise((resolve) => {
+      this.resolveNext = resolve;
+    });
+  }
+}

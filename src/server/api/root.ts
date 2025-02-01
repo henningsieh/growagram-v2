@@ -1,5 +1,4 @@
 // src/server/api/root.ts:
-import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 import { observable } from "@trpc/server/observable";
 import { createCallerFactory } from "@trpc/server/unstable-core-do-not-import";
 import { RouterInput, RouterOutput } from "~/lib/trpc/react";
@@ -17,9 +16,9 @@ import { userRouter } from "./routers/users";
 import { createTRPCRouter, publicProcedure } from "./trpc";
 
 /**
- * This is the primary router for your server.
+ * This is the primary router for the server.
  *
- * All routers added in /api/routers should be manually added here.
+ * All routers added in /server/api/routers must be added here.
  */
 export const appRouter = createTRPCRouter({
   users: userRouter,
@@ -35,15 +34,11 @@ export const appRouter = createTRPCRouter({
 
   healthcheck: publicProcedure.query(() => "yay!"),
 
-  randomNumber: publicProcedure.subscription(() => {
-    return observable<number>((emit) => {
-      const int = setInterval(() => {
-        emit.next(Math.random());
-      }, 500);
-      return () => {
-        clearInterval(int);
-      };
-    });
+  randomNumber: publicProcedure.subscription(async function* () {
+    while (true) {
+      yield Math.random();
+      await new Promise((resolve) => setTimeout(resolve, 500));
+    }
   }),
 });
 

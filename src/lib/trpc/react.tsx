@@ -75,12 +75,12 @@ export function TRPCReactProvider(
           false: httpBatchLink({
             transformer: SuperJSON,
             url: getUrl(),
-            //FIXME: uncomment to add headers after merge
-            // headers: () => {
-            //   const headers = new Headers();
-            //   headers.set("x-trpc-source", "nextjs-react");
-            //   return headers;
-            // },
+
+            headers: () => {
+              const headers = new Headers();
+              headers.set("x-trpc-source", "nextjs-react");
+              return headers;
+            },
           }),
         }),
       ],
@@ -93,7 +93,7 @@ export function TRPCReactProvider(
         <HydrationBoundary state={props.dehydratedState}>
           {props.children}
         </HydrationBoundary>
-        <ReactQueryDevtools initialIsOpen={false} />
+        {/* <ReactQueryDevtools initialIsOpen={false} /> */}
       </QueryClientProvider>
     </api.Provider>
   );
