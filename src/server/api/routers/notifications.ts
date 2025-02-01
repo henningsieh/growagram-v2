@@ -130,11 +130,16 @@ export const notificationRouter = createTRPCRouter({
     }),
 
   getUnread: protectedProcedure.query(async ({ ctx }) => {
-    return ctx.db.query.notifications.findMany({
+    console.debug("Executing getUnread query with conditions:", {
+      userId: ctx.session.user.id,
+      read: false,
+    });
+
+    const results = await ctx.db.query.notifications.findMany({
       where: (notification) =>
         and(
           eq(notification.userId, ctx.session.user.id),
-          eq(notification.read, false),
+          eq(notification.read, false), // This should filter out read notifications
         ),
       with: {
         actor: {
@@ -146,6 +151,9 @@ export const notificationRouter = createTRPCRouter({
         },
       },
     });
+
+    console.debug("getUnread query results:", results);
+    return results;
   }),
 
   markAsRead: protectedProcedure

@@ -3,21 +3,29 @@
 import { formatDistanceToNow } from "date-fns";
 import CustomAvatar from "~/components/atom/custom-avatar";
 import { api } from "~/lib/trpc/react";
+import { cn } from "~/lib/utils";
 import { GetUnreadNotificationType } from "~/server/api/root";
 
-export function NotificationItem(notification: GetUnreadNotificationType) {
-  const utils = api.useUtils();
+interface NotificationItemProps extends GetUnreadNotificationType {
+  isNew?: boolean;
+  onMarkAsRead: (args: { id: string }) => void;
+}
 
-  const { mutate: markAsRead } = api.notifications.markAsRead.useMutation({
-    onSuccess: () => {
-      utils.notifications.getUnread.invalidate();
-    },
-  });
-
+export function NotificationItem({
+  isNew,
+  onMarkAsRead,
+  ...notification
+}: NotificationItemProps) {
   return (
     <button
-      className="flex w-full items-center gap-2 rounded-md p-2 text-left hover:bg-accent"
-      onClick={() => markAsRead({ id: notification.id })}
+      className={cn(
+        "flex w-full items-center gap-2 rounded-md p-2 text-left transition-colors",
+        {
+          "bg-accent/50 hover:bg-accent": isNew,
+          "hover:bg-accent": !isNew,
+        },
+      )}
+      onClick={() => onMarkAsRead({ id: notification.id })}
     >
       <CustomAvatar
         src={notification.actor.image || undefined}
@@ -34,6 +42,9 @@ export function NotificationItem(notification: GetUnreadNotificationType) {
           {formatDistanceToNow(notification.createdAt)} ago
         </span>
       </div>
+      {isNew && (
+        <span className="ml-auto flex h-2 w-2 rounded-full bg-blue-500" />
+      )}
     </button>
   );
 }

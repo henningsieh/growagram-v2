@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell } from "lucide-react";
+import { Bell, Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { Button } from "~/components/ui/button";
@@ -10,7 +10,9 @@ import {
   PopoverTrigger,
 } from "~/components/ui/popover";
 import { ScrollArea } from "~/components/ui/scroll-area";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { useNotifications } from "~/hooks/use-notifications";
+import { cn } from "~/lib/utils";
 
 import { NotificationItem } from "./notification-item";
 
@@ -18,7 +20,29 @@ export function Notifications() {
   const { data: session } = useSession();
   const [open, setOpen] = useState(false);
 
-  const { notifications } = useNotifications();
+  const {
+    all,
+    new: newNotifications,
+    grouped,
+    unreadCount,
+    isLoading,
+    subscriptionStatus,
+    subscriptionError,
+    error: queryError,
+    markAsRead,
+  } = useNotifications();
+
+  // Status indicator classes
+  const statusIndicatorClass = cn(
+    "absolute -right-1 -top-1 h-2 w-2 rounded-full",
+    {
+      "bg-yellow-500 animate-pulse": subscriptionStatus === "connecting",
+      "bg-green-500": subscriptionStatus === "idle" || "pending",
+      "bg-red-500": subscriptionStatus === "error",
+    },
+  );
+
+  console.debug("unreadCount", unreadCount);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -30,27 +54,105 @@ export function Notifications() {
           disabled={!session}
         >
           <Bell className="h-5 w-5" />
-          {notifications?.length ? (
+          {unreadCount > 0 && (
             <span className="absolute right-0 top-0 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] text-white">
-              {notifications.length}
+              {unreadCount}
             </span>
-          ) : null}
+          )}
+          <span className={statusIndicatorClass} />
         </Button>
       </PopoverTrigger>
       <PopoverContent align="end" className="w-80 p-0">
-        <ScrollArea className="h-80">
-          <div className="flex flex-col gap-1 p-2">
-            {notifications?.length ? (
-              notifications.map((notification) => (
-                <NotificationItem key={notification.id} {...notification} />
-              ))
-            ) : (
-              <p className="p-2 text-center text-sm text-muted-foreground">
-                No new notifications
-              </p>
-            )}
+        <Tabs defaultValue="all" className="w-full">
+          <div className="border-b px-2">
+            <TabsList className="grid w-full grid-cols-4">
+              <TabsTrigger value="all" className="text-xs">
+                All ({all.length})
+              </TabsTrigger>
+              <TabsTrigger value="follow" className="text-xs">
+                Follows ({grouped.follow.length})
+              </TabsTrigger>
+              <TabsTrigger value="like" className="text-xs">
+                Likes ({grouped.like.length})
+              </TabsTrigger>
+              <TabsTrigger value="comment" className="text-xs">
+                Comments ({grouped.comment.length})
+              </TabsTrigger>
+            </TabsList>
           </div>
-        </ScrollArea>
+
+          <ScrollArea className="h-80">
+            {isLoading ? (
+              <div className="flex h-full items-center justify-center">
+                <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+              </div>
+            ) : subscriptionError || queryError ? (
+              <div className="p-4 text-center text-sm text-red-500">
+                Failed to load notifications
+              </div>
+            ) : (
+              <div className="flex flex-col gap-1 p-2">
+                <TabsContent value="all" className="m-0">
+                  {all.length > 0 ? (
+                    all.map((notification, key) => (
+                      <NotificationItem
+                        key={key}
+                        {...notification}
+                        isNew={newNotifications.some(
+                          (n) => n.id === notification.id,
+                        )}
+                        onMarkAsRead={markAsRead}
+                      />
+                    ))
+                  ) : (
+                    <p className="p-2 text-center text-sm text-muted-foreground">
+                      No notifications
+                    </p>
+                  )}
+                </TabsContent>
+
+                <TabsContent value="follow" className="m-0">
+                  {grouped.follow.map((notification) => (
+                    <NotificationItem
+                      key={notification.id}
+                      {...notification}
+                      isNew={newNotifications.some(
+                        (n) => n.id === notification.id,
+                      )}
+                      onMarkAsRead={markAsRead}
+                    />
+                  ))}
+                </TabsContent>
+
+                <TabsContent value="like" className="m-0">
+                  {grouped.like.map((notification, key) => (
+                    <NotificationItem
+                      key={key}
+                      {...notification}
+                      isNew={newNotifications.some(
+                        (n) => n.id === notification.id,
+                      )}
+                      onMarkAsRead={markAsRead}
+                    />
+                  ))}
+                </TabsContent>
+
+                <TabsContent value="comment" className="m-0">
+                  {grouped.comment.map((notification, key) => (
+                    <NotificationItem
+                      key={key}
+                      {...notification}
+                      isNew={newNotifications.some(
+                        (n) => n.id === notification.id,
+                      )}
+                      onMarkAsRead={markAsRead}
+                    />
+                  ))}
+                </TabsContent>
+              </div>
+            )}
+          </ScrollArea>
+        </Tabs>
       </PopoverContent>
     </Popover>
   );
