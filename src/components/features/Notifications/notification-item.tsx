@@ -1,9 +1,11 @@
 "use client";
 
 import { formatDistanceToNow } from "date-fns";
+import { SparklesIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 import CustomAvatar from "~/components/atom/custom-avatar";
+import { Badge } from "~/components/ui/badge";
 import { useNotifications } from "~/hooks/use-notifications";
-import { api } from "~/lib/trpc/react";
 import { cn } from "~/lib/utils";
 import { GetUnreadNotificationType } from "~/server/api/root";
 
@@ -11,17 +13,16 @@ export function NotificationItem({
   ...notification
 }: GetUnreadNotificationType) {
   const { markAsRead } = useNotifications();
+  const t = useTranslations("Notifications");
 
   return (
     <button
       className={cn(
         "flex w-full items-center gap-2 overflow-hidden rounded-sm p-2 text-left transition-colors",
         {
-          // "bg-accent/50 hover:bg-accent": notification.read,
           "bg-accent/20 hover:bg-accent/40": !notification.read,
         },
       )}
-      onClick={() => markAsRead({ id: notification.id })}
     >
       <CustomAvatar
         src={notification.actor.image || undefined}
@@ -39,7 +40,13 @@ export function NotificationItem({
         </span>
       </div>
       {!notification.read && (
-        <span className="ml-auto flex h-2 w-2 rounded-full bg-primary" />
+        <Badge
+          onClick={() => markAsRead({ id: notification.id })}
+          className="mb-auto ml-auto cursor-default text-xs"
+        >
+          <SparklesIcon className="mr-1 h-4 w-4 fill-yellow-600 text-orange-500" />{" "}
+          {t("new")}
+        </Badge>
       )}
     </button>
   );

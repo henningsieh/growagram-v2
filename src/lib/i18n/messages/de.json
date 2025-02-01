@@ -157,8 +157,8 @@
       "label": "E-Mail-Adresse"
     },
     "login-with-discord": "Mit Discord anmelden",
-    "login-with-github": "Mit GitHub anmelden",
     "login-with-facebook": "Mit Facebook anmelden",
+    "login-with-github": "Mit GitHub anmelden",
     "login-with-google": "Mit Google anmelden",
     "login-with-twitter": "Mit Twitter anmelden",
     "password": {
@@ -207,7 +207,8 @@
   "Notifications": {
     "navigation": {
       "label": "Benachrichtigungen"
-    }
+    },
+    "new": "NEU"
   },
   "Photos": {
     "DeleteConfirmation": {
