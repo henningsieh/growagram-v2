@@ -2,6 +2,7 @@
 import type { NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import Discord from "next-auth/providers/discord";
+import GitHub from "next-auth/providers/github";
 import Google from "next-auth/providers/google";
 import Twitter from "next-auth/providers/twitter";
 import { modulePaths } from "~/assets/constants";
@@ -74,6 +75,9 @@ export default {
     Twitter({
       allowDangerousEmailAccountLinking: true,
     }),
+    GitHub({
+      allowDangerousEmailAccountLinking: true,
+    }),
   ],
   callbacks: {
     async session({ session, token }) {
@@ -90,7 +94,7 @@ export default {
     },
 
     async jwt({ token, user, trigger, session, account }) {
-      console.debug("async jwt callback token:", token);
+      // console.debug("async jwt callback token:", token);
       if (account) {
         console.debug("async jwt callback account:", account);
       }
