@@ -66,6 +66,11 @@ export const notificationRouter = createTRPCRouter({
       }),
     )
     .subscription(async function* (opts) {
+      console.debug(
+        "Starting notification subscription for user:",
+        opts.ctx.session.user.id,
+      );
+
       const iterable = ee.toIterable("notification", {
         signal: opts.signal,
       });
@@ -101,6 +106,8 @@ export const notificationRouter = createTRPCRouter({
           orderBy: (fields, { asc }) => [asc(fields.createdAt)],
         });
 
+      console.debug("Found missed notifications:", missedNotifications.length);
+
       // Yield missed notifications first
       for (const notification of missedNotifications) {
         yield notification;
@@ -108,8 +115,11 @@ export const notificationRouter = createTRPCRouter({
 
       // Then yield new notifications as they come in
       try {
+        console.debug("Starting to listen for new notifications");
         for await (const [notification] of iterable) {
+          console.debug("Received notification event:", notification);
           if (notification.userId === opts.ctx.session.user.id) {
+            console.debug("Yielding notification to client:", notification);
             yield notification;
           }
         }

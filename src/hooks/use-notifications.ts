@@ -27,18 +27,33 @@ export function useNotifications() {
     {},
     {
       onData: (notification) => {
-        console.debug("New notification received:", notification);
-        setNotifications((current) => {
-          const existing = current ?? [];
-          return [notification, ...existing].sort(
-            (a, b) => b.createdAt.getTime() - a.createdAt.getTime(),
-          );
-        });
+        console.debug(
+          "useNotifications: Received notification event:",
+          notification,
+        );
 
-        toast({
-          title: "New Notification",
-          description: `${notification.actor.name} started following you`,
-        });
+        // Only add unread notifications to state
+        if (!notification.read) {
+          console.debug(
+            "useNotifications: Adding unread notification to state",
+          );
+          setNotifications((current) => {
+            const existing = current ?? [];
+            return [notification, ...existing].sort(
+              (a, b) => b.createdAt.getTime() - a.createdAt.getTime(),
+            );
+          });
+
+          toast({
+            title: "New Notification",
+            description: `${notification.actor.name} started following you`,
+          });
+        } else {
+          console.debug(
+            "useNotifications: Ignoring read notification:",
+            notification,
+          );
+        }
 
         // Invalidate queries to ensure consistency
         void utils.notifications.getUnread.invalidate();

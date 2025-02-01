@@ -18,7 +18,7 @@ import type { Locale } from "~/types/locale";
 import { UserRoles } from "~/types/user";
 import { updateTokensSchema, userEditSchema } from "~/types/zodSchema";
 
-const ee = new EventEmitter();
+import { ee } from "./notifications";
 
 export const userRouter = {
   // Get public user data by user id (public procedure)
