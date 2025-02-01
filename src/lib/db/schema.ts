@@ -1,4 +1,4 @@
-// src/lib/db/schema.ts:
+import type { InferSelectModel } from "drizzle-orm";
 import { relations, sql } from "drizzle-orm";
 import {
   AnyPgColumn,
@@ -6,8 +6,7 @@ import {
   foreignKey,
   index,
   integer,
-  pgTable,
-  pgTableCreator,
+  pgTable, // pgTableCreator,
   primaryKey,
   text,
   timestamp,
@@ -19,10 +18,59 @@ import { LikeableEntityType } from "~/types/like";
 import { PostableEntityType } from "~/types/post";
 import { UserRoles } from "~/types/user";
 
-// Creating table with a prefix for multi-project schema
-export const createTable = pgTableCreator((name) => `growagram.com_${name}`);
+export const Message = pgTable("message", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  channelId: text("channel_id")
+    .notNull()
+    .references(() => Channel.id),
 
-// Add this to your schema
+  name: text("name").notNull(),
+  text: text("text").notNull(),
+
+  createdAt: timestamp("created_at", {
+    mode: "date",
+    precision: 3,
+    withTimezone: true,
+  })
+    .notNull()
+    .defaultNow(),
+  updatedAt: timestamp("updated_at", {
+    mode: "date",
+    precision: 3,
+    withTimezone: true,
+  })
+    .notNull()
+    .defaultNow()
+    .$onUpdateFn(() => new Date()),
+});
+export type PostType = InferSelectModel<typeof Message>;
+
+export const Channel = pgTable("channel", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  name: text("name"),
+
+  createdAt: timestamp("created_at", {
+    mode: "date",
+    precision: 3,
+    withTimezone: true,
+  })
+    .notNull()
+    .defaultNow(),
+  updatedAt: timestamp("updated_at", {
+    mode: "date",
+    precision: 3,
+    withTimezone: true,
+  })
+    .notNull()
+    .defaultNow()
+    .$onUpdateFn(() => new Date()),
+});
+export type ChannelType = InferSelectModel<typeof Channel>;
+
 export const chatMessages = pgTable("chat_message", {
   id: text("id")
     .primaryKey()
@@ -381,6 +429,17 @@ export const posts = pgTable("public_post", {
 });
 
 // Drizzle ORM Relations
+
+export const MessageRelations = relations(Message, ({ one }) => ({
+  channel: one(Channel, {
+    fields: [Message.channelId],
+    references: [Channel.id],
+  }),
+}));
+
+export const ChannelRelations = relations(Channel, ({ many }) => ({
+  posts: many(Message),
+}));
 
 export const usersRelations = relations(users, ({ many }) => ({
   grows: many(grows),
