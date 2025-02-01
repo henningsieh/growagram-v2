@@ -2,7 +2,7 @@
 
 import { Bell } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "~/components/ui/button";
 import {
   Popover,
@@ -10,40 +10,15 @@ import {
   PopoverTrigger,
 } from "~/components/ui/popover";
 import { ScrollArea } from "~/components/ui/scroll-area";
-import { useToast } from "~/hooks/use-toast";
-import { api } from "~/lib/trpc/react";
-import { cn } from "~/lib/utils";
+import { useNotifications } from "~/hooks/use-notifications";
 
 import { NotificationItem } from "./notification-item";
 
 export function Notifications() {
   const { data: session } = useSession();
   const [open, setOpen] = useState(false);
-  const { toast } = useToast();
-  const utils = api.useUtils();
 
-  // Query unread notifications
-  const { data: notifications } = api.notifications.getUnread.useQuery(
-    undefined,
-    {
-      enabled: Boolean(session),
-    },
-  );
-
-  // Subscribe to new notifications
-  api.notifications.onNotification.useSubscription(undefined, {
-    enabled: Boolean(session),
-    onData: (notification) => {
-      toast({
-        title: "New Notification",
-        description: `${notification} started following you`,
-      });
-      utils.notifications.getUnread.invalidate();
-    },
-    onError: (err) => {
-      console.error("Subscription error:", err);
-    },
-  });
+  const { notifications } = useNotifications();
 
   return (
     <Popover open={open} onOpenChange={setOpen}>

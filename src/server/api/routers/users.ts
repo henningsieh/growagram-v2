@@ -326,6 +326,7 @@ export const userRouter = {
           image: ctx.session.user.image,
         },
       });
+      console.debug("notification emitted:", { notification });
 
       return follow[0];
     }),

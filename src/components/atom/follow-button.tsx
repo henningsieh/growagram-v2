@@ -8,13 +8,13 @@ import { api } from "~/lib/trpc/react";
 
 interface FollowButtonProps {
   userId: string;
-  initialIsFollowing?: boolean;
+  initialIsFollowing: boolean;
   className?: string;
 }
 
 export function FollowButton({
   userId,
-  initialIsFollowing = false,
+  initialIsFollowing,
   className,
 }: FollowButtonProps) {
   const { data: session } = useSession();

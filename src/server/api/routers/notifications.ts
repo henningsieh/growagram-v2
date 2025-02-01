@@ -9,10 +9,37 @@ import { createTRPCRouter, protectedProcedure } from "../trpc";
 const ee = new EventEmitter();
 
 export const notificationRouter = createTRPCRouter({
-  onNotification: protectedProcedure.subscription(() => {
-    return observable<Notification>((emit) => {
-      const onNotification = (notification: Notification) => {
-        emit.next(notification);
+  onNotification: protectedProcedure.subscription(({ ctx }) => {
+    return observable<{
+      type: string;
+      id: string;
+      createdAt: Date;
+      userId: string;
+      actorId: string;
+      read: boolean;
+      actor: {
+        id: string;
+        name: string | null;
+        image: string | null;
+      };
+    }>((emit) => {
+      const onNotification = (notification: {
+        type: string;
+        id: string;
+        createdAt: Date;
+        userId: string;
+        actorId: string;
+        read: boolean;
+        actor: {
+          id: string;
+          name: string | null;
+          image: string | null;
+        };
+      }) => {
+        // Only emit if notification is for current user
+        if (notification.userId === ctx.session.user.id) {
+          emit.next(notification);
+        }
       };
 
       ee.on("notification", onNotification);
@@ -31,7 +58,13 @@ export const notificationRouter = createTRPCRouter({
           eq(notification.read, false),
         ),
       with: {
-        actor: true,
+        actor: {
+          columns: {
+            id: true,
+            name: true,
+            image: true,
+          },
+        },
       },
     });
   }),
@@ -45,3 +78,6 @@ export const notificationRouter = createTRPCRouter({
         .where(eq(notifications.id, input.id));
     }),
 });
+
+// Export emitter for use in other routers
+export const notificationEmitter = ee;

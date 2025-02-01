@@ -20,12 +20,18 @@ export default async function ProfilePage({
 
   if (!profile) notFound();
 
-  const isFollowing = profile.followers.some(
-    (follow) => follow.follower.id === session?.user.id,
-  );
-  console.debug("profile.followers", profile.followers);
-  console.debug("profile.following", profile.following);
-  console.debug("session?.user.id", session?.user.id);
+  const isFollowing = profile.followers.some((follow) => {
+    console.debug("follow item:", follow);
+    console.debug("follow.follower.id:", follow.follower.id);
+    console.debug("session?.user.id:", session?.user.id);
+    return follow.follower.id === session?.user.id;
+  });
+  // console.debug("profile", { profile });
+  // console.debug("profile.followers", profile.followers);
+  // console.debug("profile.following", profile.following);
+  // console.debug("session?.user.id", session?.user.id);
+
+  console.debug("isFollowing", isFollowing);
 
   return (
     <>

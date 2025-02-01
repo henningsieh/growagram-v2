@@ -517,12 +517,12 @@ export const usersRelations = relations(users, ({ many }) => ({
 
 export const userFollowsRelations = relations(userFollows, ({ one }) => ({
   follower: one(users, {
-    relationName: "userFollowers",
+    relationName: "userFollowing",
     fields: [userFollows.followerId],
     references: [users.id],
   }),
   following: one(users, {
-    relationName: "userFollowing",
+    relationName: "userFollowers",
     fields: [userFollows.followingId],
     references: [users.id],
   }),
