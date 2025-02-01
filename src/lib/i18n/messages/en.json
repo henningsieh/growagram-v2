@@ -32,7 +32,9 @@
     "navigation": {
       "label": "My Account"
     },
-    "not-provided": "Not provided"
+    "not-provided": "Not provided",
+    "welcome-message-description": "You must set your username first before entering the platform!",
+    "welcome-message-title": "Welcome"
   },
   "CardFooter": {
     "Login to see detailed view statistics": "Login to see detailed view statistics.",
@@ -155,6 +157,7 @@
       "label": "Email address"
     },
     "login-with-discord": "Login with Discord",
+    "login-with-github": "Login with Github",
     "login-with-google": "Login with Google",
     "login-with-twitter": "Login with Twitter",
     "password": {

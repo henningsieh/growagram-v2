@@ -77,7 +77,7 @@ export default function PostFormModal({
     },
   });
 
-  const createPostMutation = api.posts.create.useMutation({
+  const createPostMutation = api.updates.create.useMutation({
     onSuccess: () => {
       toast({
         title: "Success",

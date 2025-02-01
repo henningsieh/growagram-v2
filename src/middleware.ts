@@ -126,5 +126,5 @@ export default async function middleware(req: NextRequest) {
 
 export const config = {
   // Match all paths to check for invalid locales and routes
-  matcher: ["/((?!api|_next|_next/static|_next/image|.*\\..*).*)", "/"],
+  matcher: ["/((?!Chat|api|_next|_next/static|_next/image|.*\\..*).*)", "/"],
 };

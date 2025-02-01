@@ -1,8 +1,7 @@
 // src/app/[locale]/(protected)/plants/layout.tsx:
 import { PaginationItemsPerPage } from "~/assets/constants";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
-import { HydrateClient } from "~/lib/trpc/server";
-import { api } from "~/lib/trpc/server";
+import { HydrateClient, api } from "~/lib/trpc/server";
 import type { GetOwnPlantsInput } from "~/server/api/root";
 import { PlantsSortField } from "~/types/plant";
 

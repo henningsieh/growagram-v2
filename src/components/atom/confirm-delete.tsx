@@ -1,6 +1,7 @@
 // src/components/ui/delete-confirmation-dialog.tsx
 import { Trash2, TriangleAlert } from "lucide-react";
 import { useTranslations } from "next-intl";
+import SpinningLoader from "~/components/Layouts/loader";
 import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
 import { Button } from "~/components/ui/button";
 import {
@@ -11,8 +12,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "~/components/ui/dialog";
-
-import SpinningLoader from "../Layouts/loader";
 
 interface DeleteConfirmationDialogProps {
   isOpen: boolean;

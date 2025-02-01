@@ -6,7 +6,7 @@ import PostCard from "~/components/features/Timeline/Post/post-card";
 import { api } from "~/lib/trpc/react";
 
 export default function PublicTimelinePage() {
-  const { data: posts, isLoading } = api.posts.getAll.useQuery();
+  const { data: posts, isLoading } = api.updates.getAll.useQuery();
 
   if (isLoading) {
     return <SpinningLoader />;

@@ -3,21 +3,20 @@ import { useState } from "react";
 import AvatarCardHeader from "~/components/atom/avatar-card-header";
 import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
 import { SocialCardFooter } from "~/components/atom/social-card-footer";
+import { Comments } from "~/components/features/Comments/comments";
+import { EmbeddedGrowCard } from "~/components/features/Grows/embedded-grow-card";
 import { useImageModal } from "~/components/features/Photos/modal-provider";
+import { EmbeddedPlantCard } from "~/components/features/Plants/embedded-plant-card";
 import { Card, CardContent } from "~/components/ui/card";
 import { useComments } from "~/hooks/use-comments";
 import { useLikeStatus } from "~/hooks/use-likes";
 import { useToast } from "~/hooks/use-toast";
 import { api } from "~/lib/trpc/react";
 import { cn } from "~/lib/utils";
-import type { GetPostType } from "~/server/api/root";
+import { GetPostType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
 import { LikeableEntityType } from "~/types/like";
 import { PostableEntityType } from "~/types/post";
-
-import { Comments } from "../../Comments/comments";
-import { EmbeddedGrowCard } from "../../Grows/embedded-grow-card";
-import { EmbeddedPlantCard } from "../../Plants/embedded-plant-card";
 
 interface PostCardProps {
   post: GetPostType;
@@ -43,13 +42,13 @@ export default function PostCard({ post, isSocialProp = true }: PostCardProps) {
     useComments(post.id, CommentableEntityType.Post);
 
   // Initialize delete mutation
-  const deleteMutation = api.posts.deleteById.useMutation({
+  const deleteMutation = api.updates.deleteById.useMutation({
     onSuccess: async () => {
       toast({
         title: "Success",
         description: "Post deleted successfully",
       });
-      await utils.posts.getAll.invalidate();
+      await utils.updates.getAll.invalidate();
     },
     onError: (error) => {
       toast({

@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 // eslint-disable-next-line no-restricted-imports
 import Link from "next/link";
 import React from "react";
+import SpinningLoader from "~/components/Layouts/loader";
 import { LikeButton } from "~/components/atom/like-button";
 import { Button } from "~/components/ui/button";
 import {
@@ -16,8 +17,6 @@ import {
 import { usePathname } from "~/lib/i18n/routing";
 import { cn } from "~/lib/utils";
 import { LikeableEntityType } from "~/types/like";
-
-import SpinningLoader from "../Layouts/loader";
 
 interface CardFooterProps {
   entityId: string;

@@ -21,6 +21,7 @@ import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
 import { OwnerDropdownMenu } from "~/components/atom/owner-dropdown-menu";
 import { SocialCardFooter } from "~/components/atom/social-card-footer";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
+import { Comments } from "~/components/features/Comments/comments";
 import { useImageModal } from "~/components/features/Photos/modal-provider";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
@@ -43,8 +44,6 @@ import { PhotosSortField } from "~/types/image";
 import { LikeableEntityType } from "~/types/like";
 import { Locale } from "~/types/locale";
 import { PostableEntityType } from "~/types/post";
-
-import { Comments } from "../Comments/comments";
 
 interface PhotoCardProps {
   photo: GetOwnPhotoType;

@@ -7,7 +7,7 @@ import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import * as React from "react";
 import { useEffect } from "react";
-import { FaDiscord, FaTwitter } from "react-icons/fa";
+import { FaDiscord, FaGithub, FaTwitter } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { modulePaths } from "~/assets/constants";
 import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
@@ -132,6 +132,20 @@ export default function Page() {
                     <FaTwitter className="mr-2 h-4 w-4 text-[#1DA1F2]" />
                   )}{" "}
                   {t("login-with-twitter")}
+                </Button>
+                <Button
+                  variant="outline"
+                  type="button"
+                  disabled={isLoading}
+                  onClick={() => signIn("github", { callbackUrl })}
+                  className="w-full justify-between px-14"
+                >
+                  {isLoading ? (
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                  ) : (
+                    <FaGithub className="mr-2 h-4 w-4 text-[#1DA1F2]" />
+                  )}{" "}
+                  {t("login-with-github")}
                 </Button>
               </div>
 

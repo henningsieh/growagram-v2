@@ -32,7 +32,9 @@
     "navigation": {
       "label": "Mein Konto"
     },
-    "not-provided": "Nicht angegeben"
+    "not-provided": "Nicht angegeben",
+    "welcome-message-description": "Du musst deinen Benutzernamen zuerst festlegen, bevor Sie die Plattform betreten!",
+    "welcome-message-title": "Willkommen"
   },
   "CardFooter": {
     "Login to see detailed view statistics": "Melde dich an, um detaillierte Statistiken zu sehen.",
@@ -155,6 +157,7 @@
       "label": "E-Mail-Adresse"
     },
     "login-with-discord": "Mit Discord anmelden",
+    "login-with-github": "Mit GitHub anmelden",
     "login-with-google": "Mit Google anmelden",
     "login-with-twitter": "Mit Twitter anmelden",
     "password": {

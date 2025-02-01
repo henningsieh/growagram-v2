@@ -20,6 +20,8 @@ import AvatarCardHeader from "~/components/atom/avatar-card-header";
 import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
 import { OwnerDropdownMenu } from "~/components/atom/owner-dropdown-menu";
 import { SocialCardFooter } from "~/components/atom/social-card-footer";
+import { Comments } from "~/components/features/Comments/comments";
+import { ImageCarousel } from "~/components/features/Plants/image-carousel";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import {
@@ -48,9 +50,6 @@ import { CommentableEntityType } from "~/types/comment";
 import { LikeableEntityType } from "~/types/like";
 import { Locale } from "~/types/locale";
 import { PostableEntityType } from "~/types/post";
-
-import { Comments } from "../Comments/comments";
-import { ImageCarousel } from "./image-carousel";
 
 interface PlantCardProps {
   plant: PlantByIdType;
