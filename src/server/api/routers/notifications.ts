@@ -1,4 +1,4 @@
-import { and, eq } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 import EventEmitter, { on } from "node:events";
 import { z } from "zod";
 import { notifications } from "~/lib/db/schema";
@@ -86,6 +86,7 @@ export const notificationRouter = createTRPCRouter({
     });
 
     const results = await ctx.db.query.notifications.findMany({
+      orderBy: [desc(notifications.createdAt)],
       where: (notification) =>
         and(
           eq(notification.userId, ctx.session.user.id),
