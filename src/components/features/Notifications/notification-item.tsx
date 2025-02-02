@@ -1,15 +1,15 @@
 "use client";
 
-import { formatDistanceToNow } from "date-fns";
 import { SparklesIcon } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import * as React from "react";
 import CustomAvatar from "~/components/atom/custom-avatar";
 import { Badge } from "~/components/ui/badge";
 import { useNotifications } from "~/hooks/use-notifications";
 import { Link } from "~/lib/i18n/routing";
-import { cn } from "~/lib/utils";
+import { cn, formatDate, formatTime } from "~/lib/utils";
 import { GetUnreadNotificationType } from "~/server/api/root";
+import { Locale } from "~/types/locale";
 import { NotifiableEntityType } from "~/types/notification";
 
 interface NotificationItemProps extends GetUnreadNotificationType {
@@ -22,6 +22,7 @@ export function NotificationItem({
 }: NotificationItemProps) {
   const { markAsRead, getNotificationText } = useNotifications();
   const t = useTranslations("Notifications");
+  const locale = useLocale();
 
   const href = React.useMemo(() => {
     switch (notification.entityType) {
@@ -34,7 +35,7 @@ export function NotificationItem({
       case NotifiableEntityType.PLANT:
         return `/public/plants/${notification.entityId}`; // Plant that was liked or commented on
       case NotifiableEntityType.PHOTO:
-        return `#${notification.entityId}`; // FIXME: Photo that was liked or commented on
+        return `/public/photos/${notification.entityId}`; // Photo that was liked or commented on
       default:
         return "#"; // Fallback
     }
@@ -47,7 +48,7 @@ export function NotificationItem({
       className={cn(
         "flex w-full items-center gap-2 overflow-hidden rounded-sm p-2 text-left transition-colors",
         {
-          "bg-accent/20 hover:bg-accent/40": !notification.read,
+          "bg-accent/20 hover:bg-accent/50": !notification.read,
         },
       )}
     >
@@ -65,7 +66,8 @@ export function NotificationItem({
           </span>
         </p>
         <span className="text-xs text-muted-foreground">
-          {formatDistanceToNow(notification.createdAt)} ago
+          {formatDate(notification.createdAt, locale as Locale)}{" "}
+          {formatTime(notification.createdAt, locale as Locale)}
         </span>
       </div>
       {!notification.read && (
