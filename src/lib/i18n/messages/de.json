@@ -208,6 +208,7 @@
     "entity_grow": "Grow",
     "entity_photo": "Foto",
     "entity_plant": "Pflanze",
+    "entity_post": "Post",
     "navigation": {
       "label": "Benachrichtigungen"
     },

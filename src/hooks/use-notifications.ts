@@ -38,6 +38,8 @@ export function useNotifications() {
           return t("entity_plant");
         case NotifiableEntityType.PHOTO:
           return t("entity_photo");
+        case NotifiableEntityType.POST:
+          return t("entity_post");
         default:
           return "";
       }
