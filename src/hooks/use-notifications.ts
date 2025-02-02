@@ -20,7 +20,7 @@ export function useNotifications() {
   const query = api.notifications.getUnread.useQuery(undefined, {
     refetchOnWindowFocus: true,
     refetchOnMount: true,
-    staleTime: 5 * 1000,
+    staleTime: 10 * 1000,
   });
 
   React.useEffect(() => {
@@ -101,6 +101,15 @@ export function useNotifications() {
     },
   });
 
+  const { mutate: markAllAsRead } = api.notifications.markAllAsRead.useMutation(
+    {
+      onSuccess: () => {
+        setAllNotifications([]);
+        utils.notifications.getUnread.invalidate();
+      },
+    },
+  );
+
   return {
     all: allNotifications ?? [],
     grouped: {
@@ -121,6 +130,7 @@ export function useNotifications() {
     subscriptionStatus: subscription.status,
     subscriptionError: subscription.error,
     getNotificationText,
+    markAllAsRead,
     markAsRead,
   };
 }

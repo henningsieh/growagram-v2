@@ -25,6 +25,7 @@ export function Notifications() {
     grouped,
     unreadCount,
     isLoading,
+    markAllAsRead,
     subscriptionStatus,
     subscriptionError,
     error: queryError,
@@ -90,6 +91,28 @@ export function Notifications() {
                 Kommentare ({grouped.comment.length})
               </TabsTrigger>
             </TabsList>
+          </div>
+
+          <div className="flex justify-between border-b p-2">
+            <Button
+              variant="outline"
+              size="sm"
+              // onClick={handleGoToAllNotifications}
+            >
+              Go to All Notifications
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={(e) => {
+                e.preventDefault(); // Prevent link navigation
+                e.stopPropagation(); // Prevent Link onClick
+                markAllAsRead();
+              }}
+              disabled={unreadCount === 0}
+            >
+              Mark All as Read
+            </Button>
           </div>
 
           <ScrollArea className="h-[min(60vh,400px)]">

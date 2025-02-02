@@ -119,6 +119,13 @@ export const notificationRouter = createTRPCRouter({
         .set({ read: true })
         .where(eq(notifications.id, input.id));
     }),
+
+  markAllAsRead: protectedProcedure.mutation(async ({ ctx }) => {
+    return ctx.db
+      .update(notifications)
+      .set({ read: true })
+      .where(eq(notifications.userId, ctx.session.user.id));
+  }),
 });
 
 // Export emitter for use in other routers
