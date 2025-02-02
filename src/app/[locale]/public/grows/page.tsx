@@ -24,8 +24,6 @@ export default function PublicGrowsPage() {
     limit: PaginationItemsPerPage.PUBLIC_GROWS_PER_PAGE,
   });
 
-  console.debug("cachedData", cachedData);
-
   // Create initialData from cache if available
   const initialData: InfiniteData<GetAllGrowsOutput, number> | undefined =
     cachedData

@@ -157,6 +157,7 @@
       "label": "E-Mail-Adresse"
     },
     "login-with-discord": "Mit Discord anmelden",
+    "login-with-facebook": "Mit Facebook anmelden",
     "login-with-github": "Mit GitHub anmelden",
     "login-with-google": "Mit Google anmelden",
     "login-with-twitter": "Mit Twitter anmelden",
@@ -204,9 +205,18 @@
     "toggle-menu": "Menü umschalten"
   },
   "Notifications": {
+    "entity_grow": "Grow",
+    "entity_photo": "Foto",
+    "entity_plant": "Pflanze",
     "navigation": {
       "label": "Benachrichtigungen"
-    }
+    },
+    "new": "NEU",
+    "new_comment": "kommentierte deine(n)",
+    "new_follow": "folgt dir jetzt",
+    "new_like": "mag deine(n)",
+    "new_notification": "Neue Benachrichtigung",
+    "new_post": "hat ein Update gepostet"
   },
   "Photos": {
     "DeleteConfirmation": {
@@ -314,6 +324,9 @@
     "Delete": "Löschen",
     "LanguageToggle": {
       "toggle-language": "Sprache wechseln"
+    },
+    "SignOut": {
+      "buttonLabel": "Abmelden"
     },
     "asc": "Aufsteigend",
     "coming-soon": "Bald verfügbar",

@@ -1,8 +1,8 @@
 // src/types/like.ts:
 
 export enum LikeableEntityType {
-  Plant = "plant",
   Photo = "image",
+  Plant = "plant",
   Grow = "grow",
   Comment = "comment",
   Post = "post",

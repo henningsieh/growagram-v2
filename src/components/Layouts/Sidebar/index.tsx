@@ -6,7 +6,7 @@ import {
   ChevronRight,
   ChevronsUpDown,
   Gauge,
-  LogOut,
+  LogOutIcon,
   Plus,
   Sparkles,
   UserPen,
@@ -70,7 +70,7 @@ export default function ProtectedSidebar({
   const { data: session } = useSession();
 
   return (
-    <SidebarProvider className="relative">
+    <SidebarProvider className="relative min-h-[calc(100svh-7rem)]">
       {/* Main sidebar with floating, collapsible design */}
       <ProtectedSidebarContent session={session}>
         {children}
@@ -88,7 +88,7 @@ function ProtectedSidebarContent({
 }) {
   const t = useTranslations();
   //TODO: fix button to open /close sidebar
-  const { isMobile, toggleSidebar } = useSidebar();
+  const { isMobile, toggleSidebar, open } = useSidebar();
 
   const translatedSidebarItems = {
     ...sidebarItems,
@@ -152,7 +152,12 @@ function ProtectedSidebarContent({
                   className="group/collapsible"
                 >
                   <SidebarMenuItem>
-                    <CollapsibleTrigger asChild>
+                    <CollapsibleTrigger
+                      asChild
+                      onClick={() => {
+                        if (!open) toggleSidebar();
+                      }}
+                    >
                       {/* <Link href={item.url}> */}
                       <SidebarMenuButton tooltip={item.title}>
                         {item.icon && <item.icon />}
@@ -161,7 +166,11 @@ function ProtectedSidebarContent({
                       </SidebarMenuButton>
                       {/* </Link> */}
                     </CollapsibleTrigger>
-                    <CollapsibleContent onClick={() => toggleSidebar()}>
+                    <CollapsibleContent
+                      onClick={() => {
+                        if (isMobile) toggleSidebar();
+                      }}
+                    >
                       <SidebarMenuSub>
                         {item.items?.map((subItem) => (
                           <SidebarMenuSubItem key={subItem.title}>
@@ -278,7 +287,9 @@ function ProtectedSidebarContent({
 
                 {/* User Profile Dropdown Content */}
                 <DropdownMenuContent
-                  onClick={() => toggleSidebar()}
+                  onClick={function () {
+                    if (isMobile) toggleSidebar();
+                  }}
                   className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-sm"
                   // side="right"
                   side={isMobile ? "bottom" : "right"}
@@ -338,8 +349,8 @@ function ProtectedSidebarContent({
 
                   {/* Sign Out Action */}
                   <DropdownMenuItem onClick={async () => await handleSignOut()}>
-                    <LogOut />
-                    {}
+                    <LogOutIcon />
+                    {t("Platform.SignOut.buttonLabel")}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

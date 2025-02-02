@@ -23,7 +23,6 @@ export async function generateMetadata(
 
   const connectedPlantImages =
     grow?.plants.flatMap((plant) => plant.plantImages) || [];
-  console.debug("imagesConnectedPlants", connectedPlantImages);
 
   return {
     title: grow?.name || "Grow not found",

@@ -157,6 +157,7 @@
       "label": "Email address"
     },
     "login-with-discord": "Login with Discord",
+    "login-with-facebook": "Login with Facebook",
     "login-with-github": "Login with Github",
     "login-with-google": "Login with Google",
     "login-with-twitter": "Login with Twitter",
@@ -204,9 +205,18 @@
     "toggle-menu": "Toggle menu"
   },
   "Notifications": {
+    "entity_grow": "Grow",
+    "entity_photo": "Photo",
+    "entity_plant": "Plant",
     "navigation": {
       "label": "Notifications"
-    }
+    },
+    "new": "NEW",
+    "new_comment": "commented on your ",
+    "new_follow": "follows you now",
+    "new_like": "likes your",
+    "new_notification": "New notification",
+    "new_post": "has posted an update"
   },
   "Photos": {
     "DeleteConfirmation": {
@@ -314,6 +324,9 @@
     "Delete": "Delete",
     "LanguageToggle": {
       "toggle-language": "Change language"
+    },
+    "SignOut": {
+      "buttonLabel": "Sign out"
     },
     "asc": "Ascending",
     "coming-soon": "Coming soon",
