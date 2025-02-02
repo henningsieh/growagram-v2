@@ -2,16 +2,20 @@ import { and, eq } from "drizzle-orm";
 import EventEmitter, { on } from "node:events";
 import { z } from "zod";
 import { notifications } from "~/lib/db/schema";
+import {
+  NotifiableEntityType,
+  NotificationEventType,
+} from "~/types/notification";
 
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export type NotificationType = {
   id: string;
-  type: string;
   createdAt: Date;
   userId: string;
-  actorId: string;
-  read: boolean;
+  type: NotificationEventType;
+  entityType: NotifiableEntityType;
+  entityId: string;
   actor: {
     id: string;
     name: string | null;
@@ -87,18 +91,22 @@ export const notificationRouter = createTRPCRouter({
           eq(notification.userId, ctx.session.user.id),
           eq(notification.read, false), // This should filter out read notifications
         ),
+      columns: {
+        actorId: false,
+      },
       with: {
         actor: {
           columns: {
             id: true,
             name: true,
+            // username: true,
             image: true,
           },
         },
       },
     });
 
-    console.debug("getUnread query results:", results);
+    // console.debug("getUnread query results:", results);
     return results;
   }),
 

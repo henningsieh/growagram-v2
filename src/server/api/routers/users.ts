@@ -1,24 +1,21 @@
 // src/server/api/routers/users.ts:
 import { TRPCError } from "@trpc/server";
 import { and, eq, not } from "drizzle-orm";
-import EventEmitter from "events";
 import { z } from "zod";
 import { hashPassword } from "~/lib/auth/password";
-import {
-  notifications,
-  userFollows,
-  users,
-  verificationTokens,
-} from "~/lib/db/schema";
+import { userFollows, users, verificationTokens } from "~/lib/db/schema";
 import { routing } from "~/lib/i18n/routing";
+import { createNotification } from "~/lib/notifications";
 import { sendVerificationEmail } from "~/server/actions/sendVerificationEmail";
 import { connectPlantWithImagesQuery } from "~/server/api/routers/plantImages";
 import { protectedProcedure, publicProcedure } from "~/server/api/trpc";
 import type { Locale } from "~/types/locale";
+import {
+  NotifiableEntityType,
+  NotificationEventType,
+} from "~/types/notification";
 import { UserRoles } from "~/types/user";
 import { updateTokensSchema, userEditSchema } from "~/types/zodSchema";
-
-import { ee } from "./notifications";
 
 export const userRouter = {
   // Get public user data by user id (public procedure)
@@ -307,26 +304,20 @@ export const userRouter = {
         })
         .returning();
 
-      // Create notification
-      const notification = await ctx.db
-        .insert(notifications)
-        .values({
-          userId: input.userId,
-          type: "follow",
-          actorId: ctx.session.user.id,
-        })
-        .returning();
-
-      // Emit notification event
-      ee.emit("notification", {
-        ...notification[0],
-        actor: {
+      await createNotification({
+        notificationType: NotificationEventType.NEW_FOLLOW,
+        entityData: {
+          type: NotifiableEntityType.USER,
+          // user being followed AND notified
+          id: input.userId,
+        },
+        actorData: {
           id: ctx.session.user.id,
           name: ctx.session.user.name,
-          image: ctx.session.user.image,
+          username: ctx.session.user.username ?? null,
+          image: ctx.session.user.image ?? null,
         },
       });
-      console.debug("notification emitted:", { notification });
 
       return follow[0];
     }),

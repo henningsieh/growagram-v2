@@ -15,6 +15,10 @@ import {
 import type { AdapterAccountType } from "next-auth/adapters";
 import { CommentableEntityType } from "~/types/comment";
 import { LikeableEntityType } from "~/types/like";
+import {
+  NotifiableEntityType,
+  NotificationEventType,
+} from "~/types/notification";
 import { PostableEntityType } from "~/types/post";
 import { UserRoles } from "~/types/user";
 
@@ -454,22 +458,42 @@ export const userFollows = pgTable(
   }),
 );
 
-export const notifications = pgTable("notification", {
-  id: text("id")
-    .primaryKey()
-    .$defaultFn(() => crypto.randomUUID()),
-  userId: text("user_id")
-    .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
-  type: text("type").notNull(), // "follow", "like", etc
-  actorId: text("actor_id")
-    .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
-  read: boolean("read").default(false).notNull(),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
-});
+export const notifications = pgTable(
+  "notification",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    // Who receives the notification
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    // Who triggered the notification
+    actorId: text("actor_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    // Type of notification
+    type: text("type").$type<NotificationEventType>().notNull(),
+    // What entity was acted upon
+    entityType: text("entity_type").$type<NotifiableEntityType>().notNull(),
+    entityId: text("entity_id").notNull(),
+    read: boolean("read").default(false).notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+  },
+  (table) => ({
+    // Index for querying user's notifications
+    userIdx: index("notification_user_idx").on(table.userId),
+    // Index for querying by entity
+    entityIdx: index("notification_entity_idx").on(
+      table.entityType,
+      table.entityId,
+    ),
+    // Index for finding unread notifications
+    unreadIdx: index("notification_unread_idx").on(table.userId, table.read),
+  }),
+);
 
 // Drizzle ORM Relations
 
@@ -494,6 +518,27 @@ export const notificationsRelations = relations(notifications, ({ one }) => ({
     relationName: "actorNotifications",
     fields: [notifications.actorId],
     references: [users.id],
+  }),
+  // Dynamic relations based on entityType
+  follow: one(users, {
+    fields: [notifications.entityId],
+    references: [users.id],
+  }),
+  grow: one(grows, {
+    fields: [notifications.entityId],
+    references: [grows.id],
+  }),
+  plant: one(plants, {
+    fields: [notifications.entityId],
+    references: [plants.id],
+  }),
+  photo: one(images, {
+    fields: [notifications.entityId],
+    references: [images.id],
+  }),
+  comment: one(comments, {
+    fields: [notifications.entityId],
+    references: [comments.id],
   }),
 }));
 
@@ -618,6 +663,10 @@ export const likesRelations = relations(likes, ({ one }) => ({
   comment: one(comments, {
     fields: [likes.entityId],
     references: [comments.id],
+  }),
+  post: one(posts, {
+    fields: [likes.entityId],
+    references: [posts.id],
   }),
 }));
 

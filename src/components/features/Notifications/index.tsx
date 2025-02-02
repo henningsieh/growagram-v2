@@ -107,7 +107,11 @@ export function Notifications() {
                   <div className="flex flex-col items-center justify-between gap-1">
                     {all.length > 0 ? (
                       all.map((notification, key) => (
-                        <NotificationItem key={key} {...notification} />
+                        <NotificationItem
+                          key={key}
+                          setOpen={setOpen}
+                          {...notification}
+                        />
                       ))
                     ) : (
                       <p className="p-2 text-center text-sm text-muted-foreground">
@@ -122,6 +126,7 @@ export function Notifications() {
                     {grouped.follow.length > 0 ? (
                       grouped.follow.map((notification) => (
                         <NotificationItem
+                          setOpen={setOpen}
                           key={notification.id}
                           {...notification}
                         />
@@ -138,7 +143,11 @@ export function Notifications() {
                   <div className="flex flex-col items-center justify-between gap-1">
                     {grouped.like.length > 0 ? (
                       grouped.like.map((notification, key) => (
-                        <NotificationItem key={key} {...notification} />
+                        <NotificationItem
+                          key={key}
+                          setOpen={setOpen}
+                          {...notification}
+                        />
                       ))
                     ) : (
                       <p className="p-2 text-center text-sm text-muted-foreground">
@@ -151,7 +160,11 @@ export function Notifications() {
                 <TabsContent value="comment" className="m-0">
                   {grouped.comment.length > 0 ? (
                     grouped.comment.map((notification, key) => (
-                      <NotificationItem key={key} {...notification} />
+                      <NotificationItem
+                        key={key}
+                        setOpen={setOpen}
+                        {...notification}
+                      />
                     ))
                   ) : (
                     <p className="p-2 text-center text-sm text-muted-foreground">

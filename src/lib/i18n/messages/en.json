@@ -205,10 +205,18 @@
     "toggle-menu": "Toggle menu"
   },
   "Notifications": {
+    "entity_grow": "Grow",
+    "entity_photo": "Photo",
+    "entity_plant": "Plant",
     "navigation": {
       "label": "Notifications"
     },
-    "new": "NEW"
+    "new": "NEW",
+    "new_comment": "commented on your ",
+    "new_follow": "follows you now",
+    "new_like": "likes your",
+    "new_notification": "New notification",
+    "new_post": "has posted an update"
   },
   "Photos": {
     "DeleteConfirmation": {
