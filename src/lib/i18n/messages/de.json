@@ -67,7 +67,7 @@
   "Grows": {
     "NoGrowsFound": "Es wurden keine Grows gefunden.",
     "button-label-create-grow": "Grow erstellen",
-    "button-label-post-update": "Update zum Grow erstellen",
+    "button-label-post-update": "Post zum Grow erstellen",
     "button-label-save-changes": "Änderungen speichern",
     "connect-error": "Fehler beim Verbinden der Pflanze",
     "delete-button-label": "Grow löschen",
@@ -86,7 +86,7 @@
     "form-title-create-new-grow": "Stammdaten deines Grows",
     "form-title-edit-grow": "Stammdaten des Grows",
     "grow-card-createdAt": "Erstellt am",
-    "grow-card-updatedAt": "Bearbeitet am",
+    "grow-card-updatedAt": "Zuletzt bearbeitet",
     "grow-name": "Name des Grows",
     "grow-name-description": "Gib deinem Grow einen einprägsamen Namen.",
     "grow-name-placeholder": "Gib den Namen des Grows ein",
@@ -237,7 +237,7 @@
       "save": "Pflanzenauswahl speichern ({count})"
     },
     "button-label-connect-plants": "Pflanze(n) auswählen",
-    "button-label-post-update": "Update zum Foto erstellen",
+    "button-label-post-update": "Post zum Foto erstellen",
     "button-label-upload-photos": "Hochladen",
     "buttonBackLabel": "Zurück",
     "capture-date": "aufgenommen",
@@ -280,7 +280,7 @@
   "Plants": {
     "NoPlantsFound": "Es konnten keine Pflanzen gefunden werden.",
     "breeder": "Züchter / Breeder",
-    "button-label-post-update": "Update zur Pflanze erstellen",
+    "button-label-post-update": "Post zur Pflanze erstellen",
     "curing-start-date": "Startdatum der Aushärtephase",
     "delete-button-label": "Pflanze löschen",
     "delete-plant-button-label": "Pflanze löschen",

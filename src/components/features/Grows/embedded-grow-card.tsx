@@ -66,6 +66,7 @@ export function EmbeddedGrowCard({ grow }: EmbeddedGrowCardProps) {
                     locale as Locale,
                     {
                       includeYear: false,
+                      force: true,
                     } as DateFormatOptions,
                   )}
                 </span>

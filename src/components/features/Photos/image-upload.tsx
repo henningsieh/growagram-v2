@@ -310,11 +310,7 @@ export default function PhotoUpload() {
                             {formatDate(
                               preview.exifData.captureDate,
                               locale as Locale,
-                            )}
-                            {
-                              // eslint-disable-next-line react/jsx-no-literals
-                              ", "
-                            }
+                            )}{" "}
                             {formatTime(
                               preview.exifData.captureDate,
                               locale as Locale,

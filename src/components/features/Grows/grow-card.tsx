@@ -25,7 +25,12 @@ import { useLikeStatus } from "~/hooks/use-likes";
 import { useToast } from "~/hooks/use-toast";
 import { Link } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
-import { type DateFormatOptions, cn, formatDate } from "~/lib/utils";
+import {
+  type DateFormatOptions,
+  cn,
+  formatDate,
+  formatTime,
+} from "~/lib/utils";
 import type { GetAllGrowType, GetOwnGrowType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
 import { LikeableEntityType } from "~/types/like";
@@ -202,7 +207,8 @@ export function GrowCard({
                     weekday: "short",
                     month: "long",
                   } as DateFormatOptions,
-                )}
+                )}{" "}
+                {formatTime(grow.updatedAt, locale as Locale)}
               </div>
             )}
           </CardDescription>

@@ -25,12 +25,14 @@ export function ImageDetailsCard({ image, locale }: ImageDetailsProps) {
     {
       icon: <Camera className="h-5 w-5" />,
       title: "Capture Date",
-      content: `${formatDate(image.captureDate, locale as Locale)} ${locale !== "en" ? "um" : "at"} ${formatTime(image.captureDate, locale as Locale)}${locale !== "en" ? " Uhr" : ""}`,
+      content: `${formatDate(image.captureDate, locale as Locale)} {" "}
+      ${formatTime(image.captureDate, locale as Locale)}`,
     },
     {
       icon: <UploadCloud className="h-5 w-5" />,
       title: "Upload Date",
-      content: `${formatDate(image.createdAt, locale as Locale)} ${locale !== "en" ? "um" : "at"} ${formatTime(image.createdAt, locale as Locale)}${locale !== "en" ? " Uhr" : ""}`,
+      content: `${formatDate(image.createdAt, locale as Locale)}{" "}
+      ${formatTime(image.createdAt, locale as Locale)}`,
     },
   ];
 

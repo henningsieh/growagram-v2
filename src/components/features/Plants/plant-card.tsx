@@ -252,7 +252,9 @@ export default function PlantCard({
                   <HybridTooltip>
                     <HybridTooltipTrigger className="flex cursor-default items-center font-mono text-sm font-semibold tracking-tighter">
                       <Nut className={`mr-2 h-4 w-4 text-planted`} />
-                      {formatDate(plant.startDate, locale as Locale)}
+                      {formatDate(plant.startDate, locale as Locale, {
+                        force: true,
+                      })}
                     </HybridTooltipTrigger>
                     <HybridTooltipContent
                       side="right"
@@ -278,7 +280,9 @@ export default function PlantCard({
                         }`}
                       />
                       {plant.seedlingPhaseStart &&
-                        formatDate(plant.seedlingPhaseStart, locale as Locale)}
+                        formatDate(plant.seedlingPhaseStart, locale as Locale, {
+                          force: true,
+                        })}
                     </HybridTooltipTrigger>
                     <HybridTooltipContent
                       side="right"
@@ -307,6 +311,7 @@ export default function PlantCard({
                         formatDate(
                           plant.vegetationPhaseStart,
                           locale as Locale,
+                          { force: true },
                         )}
                     </HybridTooltipTrigger>
                     <HybridTooltipContent
@@ -333,7 +338,11 @@ export default function PlantCard({
                         }`}
                       />
                       {plant.floweringPhaseStart &&
-                        formatDate(plant.floweringPhaseStart, locale as Locale)}
+                        formatDate(
+                          plant.floweringPhaseStart,
+                          locale as Locale,
+                          { force: true },
+                        )}
                     </HybridTooltipTrigger>
                     <HybridTooltipContent
                       side="right"
@@ -357,7 +366,9 @@ export default function PlantCard({
                         }`}
                       />
                       {plant.harvestDate &&
-                        formatDate(plant.harvestDate, locale as Locale)}
+                        formatDate(plant.harvestDate, locale as Locale, {
+                          force: true,
+                        })}
                     </HybridTooltipTrigger>
                     <HybridTooltipContent
                       side="right"
@@ -383,7 +394,9 @@ export default function PlantCard({
                         }`}
                       />
                       {plant.curingPhaseStart &&
-                        formatDate(plant.curingPhaseStart, locale as Locale)}
+                        formatDate(plant.curingPhaseStart, locale as Locale, {
+                          force: true,
+                        })}
                     </HybridTooltipTrigger>
                     <HybridTooltipContent
                       side="right"
