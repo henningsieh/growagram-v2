@@ -17,6 +17,7 @@ export type DateFormatOptions = {
   month?: "long" | "short" | "2-digit";
   weekday?: "long" | "short";
   includeYear?: boolean;
+  force?: boolean;
 };
 
 export function formatDate(
@@ -27,7 +28,7 @@ export function formatDate(
   const now = new Date();
   const diffInMinutes = (now.getTime() - date.getTime()) / 6000;
 
-  if (diffInMinutes < 1440) {
+  if (diffInMinutes < 1440 && !options.force) {
     return null;
   } else {
     const { month = "short", weekday, includeYear = true } = options;
@@ -51,12 +52,9 @@ export function formatTime(
   const diffInMinutes = (now.getTime() - time.getTime()) / 6000;
 
   const timeAgo = new TimeAgo(locale);
-  if (diffInMinutes < 60) {
-    return timeAgo.format(time);
-  } else if (diffInMinutes < 1440) {
+  if (diffInMinutes < 1440) {
     return timeAgo.format(time);
   } else {
-    // Use Intl.DateTimeFormat to determine whether the locale defaults to a 12-hour or 24-hour format
     const testFormat = new Intl.DateTimeFormat(locale, { hour: "numeric" });
     const inferredHour12 = testFormat.resolvedOptions().hour12 ?? false;
 
@@ -64,9 +62,14 @@ export function formatTime(
       hour: "2-digit",
       minute: includeMinutes ? "2-digit" : undefined,
       second: includeSeconds ? "2-digit" : undefined,
-      hour12: inferredHour12, // Explicitly use the inferred hour12 setting
+      hour12: inferredHour12,
     };
-    return new Intl.DateTimeFormat(locale, formatOptions).format(time);
+    const timeString = new Intl.DateTimeFormat(locale, formatOptions).format(
+      time,
+    );
+
+    // Add localized time words
+    return locale === "de" ? `um ${timeString} Uhr` : `at ${timeString}`;
   }
 }
 

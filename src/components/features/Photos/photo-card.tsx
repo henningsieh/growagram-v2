@@ -257,10 +257,8 @@ export default function PhotoCard({
                     )}
                   >
                     <UploadCloud size={20} />
-                    {formatDate(photo.createdAt, locale as Locale)}
-                    {locale !== "en" ? " um " : " at "}
+                    {formatDate(photo.createdAt, locale as Locale)}{" "}
                     {formatTime(photo.createdAt, locale as Locale)}
-                    {locale !== "en" && " Uhr"}
                   </p>
                 </TooltipTrigger>
                 <TooltipContent>
@@ -280,10 +278,8 @@ export default function PhotoCard({
                     )}
                   >
                     <Camera size={20} />
-                    {formatDate(photo.captureDate, locale as Locale)}
-                    {locale !== "en" ? " um " : " at "}
+                    {formatDate(photo.captureDate, locale as Locale)}{" "}
                     {formatTime(photo.captureDate, locale as Locale)}
-                    {locale !== "en" && " Uhr"}
                   </p>
                 </TooltipTrigger>
                 <TooltipContent>

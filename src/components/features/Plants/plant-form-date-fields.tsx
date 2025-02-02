@@ -61,7 +61,7 @@ export default function PlantFormDateField<TFieldValues extends FieldValues>({
                 <div className="flex items-center gap-2">
                   <Icon size={20} className={cn("opacity-80", iconClassName)} />
                   {field.value
-                    ? formatDate(field.value, locale as Locale)
+                    ? formatDate(field.value, locale as Locale, { force: true })
                     : "Pick a date"}
                 </div>
                 {field.value && (
