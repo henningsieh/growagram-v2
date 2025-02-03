@@ -9,6 +9,7 @@ import {
 import type { createNotificationSchema } from "~/types/zodSchema";
 
 import { db } from "../db";
+import { getAllParentCommentAuthors } from "../db/utils";
 
 export async function createNotification(
   input: z.infer<typeof createNotificationSchema>,
@@ -85,25 +86,13 @@ export async function createNotification(
       // Add owner of commented post to users to notify
       if (commentedPost) usersToNotify.add(commentedPost.owner.id);
     } else if (input.entityData.type === NotifiableEntityType.COMMENT) {
-      // FIXME: This does not work, because NotifiableEntityType.COMMENT
-      // is never thrown in `commentRouter`
-      const commentedComment = await db.query.comments.findFirst({
-        where: (comments) => eq(comments.id, input.entityData.id),
-        with: {
-          author: true,
-          parentComment: {
-            with: {
-              author: true,
-            },
-          },
-        },
-      });
-      // Add author of commented comment to users to notify
-      if (commentedComment) usersToNotify.add(commentedComment.author.id);
-      // Add author of parent comment to users to notify
-      if (commentedComment?.parentComment) {
-        usersToNotify.add(commentedComment.parentComment.author.id);
-      }
+      // 1. Collect all notification recipients for parent comments
+      const parentAuthors = await getAllParentCommentAuthors(
+        db,
+        input.entityData.id,
+      );
+      // 2. Add all parent comment authors to users to notify
+      parentAuthors.forEach((authorId) => usersToNotify.add(authorId));
     } else if (input.entityData.type === NotifiableEntityType.GROW) {
       const commentedGrow = await db.query.grows.findFirst({
         where: (grows) => eq(grows.id, input.entityData.id),
@@ -135,7 +124,7 @@ export async function createNotification(
   }
 
   // Remove actor from notifications
-  //usersToNotify.delete(input.actorData.id);
+  usersToNotify.delete(input.actorData.id);
 
   // Create notifications for all users
   const createdNotifications = await Promise.all(
