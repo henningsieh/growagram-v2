@@ -2,9 +2,11 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Reply, Trash2, X } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
+import { useSearchParams } from "next/navigation";
 import React, { useEffect, useRef } from "react";
 import SpinningLoader from "~/components/Layouts/loader";
 import CustomAvatar from "~/components/atom/custom-avatar";
+import { HighlightElement } from "~/components/atom/highlight-element";
 import { SocialCardFooter } from "~/components/atom/social-card-footer";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
@@ -34,6 +36,9 @@ export const Comment: React.FC<CommentProps> = ({
   isReplying = false,
   onCancelReply,
 }) => {
+  const searchParams = useSearchParams();
+  const isHighlighted = searchParams.get("commentId") === comment.id;
+
   const { data: session } = useSession();
   const { toast } = useToast();
   const utils = api.useUtils();
@@ -154,7 +159,7 @@ export const Comment: React.FC<CommentProps> = ({
   }, [isReplying]);
 
   return (
-    <>
+    <HighlightElement id={comment.id} isHighlighted={isHighlighted}>
       <motion.div
         initial={{ opacity: 0, y: -30 }}
         animate={{ opacity: 1, y: 0 }}
@@ -181,7 +186,7 @@ export const Comment: React.FC<CommentProps> = ({
                 <Button
                   variant="destructive"
                   size="icon"
-                  className="m-1 ml-auto h-8 w-8 bg-muted"
+                  className="m-1 ml-auto h-8 w-8 bg-destructive/5 text-muted-foreground hover:text-foreground"
                   onClick={handleDeleteComment}
                   disabled={deleteMutation.isPending}
                 >
@@ -260,6 +265,6 @@ export const Comment: React.FC<CommentProps> = ({
           )}
         </AnimatePresence>
       </motion.div>
-    </>
+    </HighlightElement>
   );
 };

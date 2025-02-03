@@ -1,5 +1,6 @@
 // src/hooks/use-comments.tsx:
 import { useSession } from "next-auth/react";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
 import { usePathname } from "~/lib/i18n/routing";
@@ -127,6 +128,32 @@ export const useComments = (
     setReplyingToComment(null);
     setNewComment(""); // Clear the reply input
   };
+
+  const searchParams = useSearchParams();
+  const commentIdToScrollTo = searchParams.get("commentId");
+
+  // Auto-expand comments if commentId is in URL
+  useEffect(() => {
+    if (commentIdToScrollTo) {
+      setIsCommentsOpen(true);
+    }
+  }, [commentIdToScrollTo]);
+
+  // Scroll to comment after comments are loaded
+  useEffect(() => {
+    if (!commentIdToScrollTo || !isCommentsOpen || commentsQuery.isLoading)
+      return;
+
+    const element = document.getElementById(commentIdToScrollTo);
+    if (element) {
+      setTimeout(() => {
+        element.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+      }, 100);
+    }
+  }, [commentIdToScrollTo, isCommentsOpen, commentsQuery.isLoading]);
 
   return {
     // Comment state and queries
