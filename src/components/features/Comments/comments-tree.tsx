@@ -24,7 +24,7 @@ const CommentsTree: React.FC<CommentsTreeProps> = ({
   );
 
   return (
-    <div className={`relative border-l border-muted`}>
+    <div className={`relative`}>
       <Comment
         comment={comment}
         isSocial={isSocial}
@@ -34,7 +34,7 @@ const CommentsTree: React.FC<CommentsTreeProps> = ({
       />
 
       {!isLoading && replies && (
-        <div className="ml-6 mt-4 border-l border-muted">
+        <div className="ml-6 mt-4 border-l border-accent">
           {replies.map((reply) => (
             <CommentsTree key={reply.id} comment={reply} isSocial={isSocial} />
           ))}
