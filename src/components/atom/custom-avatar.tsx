@@ -19,7 +19,7 @@ export default function CustomAvatar({
   ...props
 }: CustomAvatarProps) {
   return (
-    <Avatar className={cn("relative", className)} {...props}>
+    <Avatar className={cn("relative h-max w-max", className)} {...props}>
       {src ? (
         <Image
           src={src}
