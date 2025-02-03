@@ -66,7 +66,7 @@ export default function MobileNavigationMenu() {
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger asChild>
+      <SheetTrigger asChild className="block md:hidden">
         <Button
           variant="ghost"
           size="icon"

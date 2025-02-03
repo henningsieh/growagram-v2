@@ -73,13 +73,13 @@ export const LikeButton = forwardRef<HTMLButtonElement, LikeButtonProps>(
 
         return { variables };
       },
-      onSuccess: (data, variables) => {
-        console.debug("Like toggled successfully:", {
-          liked: data.liked,
-          entityId: variables.entityId,
-          entityType: variables.entityType,
-        });
-      },
+      // onSuccess: (data, variables) => {
+      //   console.debug("Like toggled successfully:", {
+      //     liked: data.liked,
+      //     entityId: variables.entityId,
+      //     entityType: variables.entityType,
+      //   });
+      // },
       onError: (error) => {
         setIsLiked(initialLiked);
         setLikeCount(initialLikeCount);

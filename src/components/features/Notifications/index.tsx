@@ -2,6 +2,7 @@
 
 import { Bell, Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Button } from "~/components/ui/button";
 import {
@@ -19,6 +20,7 @@ import { NotificationItem } from "./notification-item";
 export function Notifications() {
   const { data: session } = useSession();
   const [open, setOpen] = useState(false);
+  const t = useTranslations("Notifications");
 
   const {
     all,
@@ -48,6 +50,7 @@ export function Notifications() {
           size="icon"
           className="relative"
           disabled={!session}
+          title={t("navigation.trigger-button-title")}
         >
           <Bell className="h-5 w-5" />
           {unreadCount > 0 && (

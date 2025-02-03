@@ -205,12 +205,14 @@
     "toggle-menu": "Toggle menu"
   },
   "Notifications": {
+    "entity_comment": "Comment",
     "entity_grow": "Grow",
     "entity_photo": "Photo",
     "entity_plant": "Plant",
     "entity_post": "Post",
     "navigation": {
-      "label": "Notifications"
+      "label": "Notifications",
+      "trigger-button-title": "Notifications"
     },
     "new": "NEW",
     "new_comment": "commented on your ",

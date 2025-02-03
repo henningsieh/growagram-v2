@@ -78,11 +78,6 @@ export const Comment: React.FC<CommentProps> = ({
             sortOrder: commentsSortOrder,
           } satisfies GetCommentsInput);
 
-      console.debug(
-        "previousCommentsOnThisLevel: ",
-        previousCommentsOnThisLevel,
-      );
-
       if (comment.parentCommentId) {
         // Optimistically remove the deleted comment from the other parent's replies
         utils.comments.getReplies.setData(
