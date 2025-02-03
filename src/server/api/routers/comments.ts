@@ -4,8 +4,13 @@ import { and, asc, count, desc, eq, isNull } from "drizzle-orm";
 import { z } from "zod";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
 import { comments, grows, images, plants, posts } from "~/lib/db/schema";
+import { createNotification } from "~/lib/notifications";
 import { protectedProcedure, publicProcedure } from "~/server/api/trpc";
 import { CommentableEntityType } from "~/types/comment";
+import {
+  NotifiableEntityType,
+  NotificationEventType,
+} from "~/types/notification";
 
 export const commentRouter = {
   // Post a new comment (create a new comment)
@@ -54,13 +59,53 @@ export const commentRouter = {
       }
 
       // Insert new comment
-      const newComment = await ctx.db.insert(comments).values({
-        userId,
-        entityId,
-        entityType,
-        commentText,
-        parentCommentId,
+      const [newComment] = await ctx.db
+        .insert(comments)
+        .values({
+          userId,
+          entityId,
+          entityType,
+          commentText,
+          parentCommentId,
+        })
+        .returning();
+
+      // Map CommentableEntityType to NotifiableEntityType
+      const notifiableEntityType = () => {
+        switch (entityType) {
+          case CommentableEntityType.Grow:
+            return NotifiableEntityType.GROW;
+          case CommentableEntityType.Plant:
+            return NotifiableEntityType.PLANT;
+          case CommentableEntityType.Photo:
+            return NotifiableEntityType.PHOTO;
+          case CommentableEntityType.Post:
+            return NotifiableEntityType.POST;
+          // FIXME: NotifiableEntityType.COMMENT is never thrown here!
+          default:
+            throw new TRPCError({
+              code: "INTERNAL_SERVER_ERROR",
+              message: "Invalid commentable entity type",
+            });
+        }
+      };
+
+      // Create notification for comment
+      const noti = await createNotification({
+        notificationType: NotificationEventType.NEW_COMMENT,
+        entityData: {
+          type: notifiableEntityType(),
+          id: entityId,
+        },
+        actorData: {
+          id: ctx.session.user.id,
+          name: ctx.session.user.name,
+          username: ctx.session.user.username ?? null,
+          image: ctx.session.user.image ?? null,
+        },
       });
+
+      console.debug("Notification created", noti);
 
       return { comment: newComment };
     }),

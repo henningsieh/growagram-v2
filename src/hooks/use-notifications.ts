@@ -1,3 +1,4 @@
+import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import * as React from "react";
 import { api } from "~/lib/trpc/react";
@@ -15,12 +16,14 @@ export function useNotifications() {
   >(null);
   const utils = api.useUtils();
   const { toast } = useToast();
+  const { data: session } = useSession();
   const t = useTranslations("Notifications");
 
   const query = api.notifications.getUnread.useQuery(undefined, {
     refetchOnWindowFocus: true,
     refetchOnMount: true,
     staleTime: 10 * 1000,
+    enabled: !!session,
   });
 
   React.useEffect(() => {
@@ -28,9 +31,7 @@ export function useNotifications() {
   }, [query.data]);
 
   const getEntityTypeText = React.useCallback(
-    (entityType?: NotifiableEntityType) => {
-      if (!entityType) throw new Error("Entity type is required");
-
+    (entityType: NotifiableEntityType) => {
       switch (entityType) {
         case NotifiableEntityType.GROW:
           return t("entity_grow");
@@ -40,6 +41,8 @@ export function useNotifications() {
           return t("entity_photo");
         case NotifiableEntityType.POST:
           return t("entity_post");
+        case NotifiableEntityType.COMMENT:
+          return t("entity_comment");
         default:
           return "";
       }
@@ -48,20 +51,16 @@ export function useNotifications() {
   );
 
   const getNotificationText = React.useCallback(
-    (type: NotificationEventType, entityType?: NotifiableEntityType) => {
-      console.debug("Getting notification text for:", { type, entityType });
-
+    (type: NotificationEventType, entityType: NotifiableEntityType) => {
       switch (type) {
         case NotificationEventType.NEW_FOLLOW:
           return t("new_follow");
         case NotificationEventType.NEW_LIKE: {
           const entityText = getEntityTypeText(entityType);
-          console.debug("Like notification:", { entityText });
           return `${t("new_like")} ${entityText}`;
         }
         case NotificationEventType.NEW_COMMENT: {
           const entityText = getEntityTypeText(entityType);
-          console.debug("Comment notification:", { entityText });
           return `${t("new_comment")} ${entityText}`;
         }
         default:
@@ -74,17 +73,12 @@ export function useNotifications() {
   const subscription = api.notifications.onNotification.useSubscription(
     undefined, // No lastEventId needed
     {
+      enabled: !!session,
       onData: (notification) => {
         const notificationText = getNotificationText(
           notification.type,
           notification.entityType,
         );
-        console.debug("Subscription notification:", {
-          type: notification.type,
-          entityType: notification.entityType,
-          text: notificationText,
-        });
-
         toast({
           title: t("new_notification"),
           description: `${notification.actor.name} ${notificationText}`,
