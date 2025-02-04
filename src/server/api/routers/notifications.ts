@@ -63,21 +63,27 @@ class NotificationEventEmitter
 export const ee = new NotificationEventEmitter();
 
 export const notificationRouter = createTRPCRouter({
-  onNotification: protectedProcedure.subscription(async function* (opts) {
-    const iterable = ee.toIterable("notification", {
-      signal: opts.signal,
-    });
+  onNotification: protectedProcedure
+    .input(
+      z.object({
+        lastEventId: z.string().nullable().optional(),
+      }),
+    )
+    .subscription(async function* (opts) {
+      const iterable = ee.toIterable("notification", {
+        signal: opts.signal,
+      });
 
-    try {
-      for await (const [notification] of iterable) {
-        if (notification.userId === opts.ctx.session.user.id) {
-          yield notification;
+      try {
+        for await (const [notification] of iterable) {
+          if (notification.userId === opts.ctx.session.user.id) {
+            yield notification;
+          }
         }
+      } catch (err) {
+        console.error("Notification subscription error:", err);
       }
-    } catch (err) {
-      console.error("Notification subscription error:", err);
-    }
-  }),
+    }),
 
   getUnread: protectedProcedure.query(async ({ ctx }) => {
     console.debug("Executing getUnread query with conditions:", {

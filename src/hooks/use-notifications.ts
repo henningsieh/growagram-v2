@@ -1,3 +1,4 @@
+import { skipToken } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import * as React from "react";
@@ -14,10 +15,20 @@ export function useNotifications() {
   const [allNotifications, setAllNotifications] = React.useState<
     GetUnreadNotificationType[] | null
   >(null);
+  const [lastEventId, setLastEventId] = React.useState<false | null | string>(
+    false,
+  );
   const utils = api.useUtils();
   const { toast } = useToast();
   const { data: session } = useSession();
   const t = useTranslations("Notifications");
+
+  // Set initial lastEventId from notifications
+  React.useEffect(() => {
+    if (allNotifications && lastEventId === false) {
+      setLastEventId(allNotifications.at(-1)?.id ?? null);
+    }
+  }, [allNotifications, lastEventId]);
 
   const query = api.notifications.getUnread.useQuery(undefined, {
     refetchOnWindowFocus: true,
@@ -26,6 +37,7 @@ export function useNotifications() {
     enabled: !!session,
   });
 
+  // Update state from query
   React.useEffect(() => {
     setAllNotifications(query.data ?? null);
   }, [query.data]);
@@ -70,11 +82,13 @@ export function useNotifications() {
     [t, getEntityTypeText],
   );
 
+  // Enhanced subscription with lastEventId and error handling
   const subscription = api.notifications.onNotification.useSubscription(
-    undefined, // No lastEventId needed
+    !session || lastEventId === false ? skipToken : { lastEventId },
     {
-      enabled: !!session,
+      // enabled: !!session,
       onData: (notification) => {
+        setLastEventId(notification.id);
         const notificationText = getNotificationText(
           notification.type,
           notification.entityType,
@@ -83,6 +97,15 @@ export function useNotifications() {
           title: t("new_notification"),
           description: `${notification.actor.name} ${notificationText}`,
         });
+        utils.notifications.getUnread.invalidate();
+      },
+      onError: (err) => {
+        console.error("Subscription error:", err);
+        // Try to resubscribe from last known notification
+        const lastNotificationId = allNotifications?.at(-1)?.id;
+        if (lastNotificationId) {
+          setLastEventId(lastNotificationId);
+        }
         utils.notifications.getUnread.invalidate();
       },
     },
