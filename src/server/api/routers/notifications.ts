@@ -86,17 +86,12 @@ export const notificationRouter = createTRPCRouter({
     }),
 
   getUnread: protectedProcedure.query(async ({ ctx }) => {
-    console.debug("Executing getUnread query with conditions:", {
-      userId: ctx.session.user.id,
-      read: false,
-    });
-
     const results = await ctx.db.query.notifications.findMany({
       orderBy: [desc(notifications.createdAt)],
       where: (notification) =>
         and(
           eq(notification.userId, ctx.session.user.id),
-          eq(notification.read, false), // This should filter out read notifications
+          eq(notification.read, false),
         ),
       columns: {
         actorId: false,

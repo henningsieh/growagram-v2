@@ -52,9 +52,9 @@ import {
   SidebarTrigger,
   useSidebar,
 } from "~/components/ui/sidebar";
+import { useSignOut } from "~/hooks/use-auth";
 import { Link } from "~/lib/i18n/routing";
-import { sidebarItems } from "~/lib/sidebar";
-import { handleSignOut } from "~/server/actions/authActions";
+import { sidebarItems, translateSidebar } from "~/lib/sidebar";
 
 import { NavigationBreadcrumb } from "../Breadcrumbs";
 
@@ -87,29 +87,10 @@ function ProtectedSidebarContent({
   children: React.ReactNode;
 }) {
   const t = useTranslations();
-  //TODO: fix button to open /close sidebar
+  const handleSignOut = useSignOut();
   const { isMobile, toggleSidebar, open } = useSidebar();
 
-  const translatedSidebarItems = {
-    ...sidebarItems,
-    teams: sidebarItems.teams.map((team) => ({
-      ...team,
-      name: t(`Sidebar.teams.${team.name}`),
-      plan: t(`Sidebar.teams.${team.plan}`),
-    })),
-    navMain: sidebarItems.navMain.map((item) => ({
-      ...item,
-      title: t(`Sidebar.navMain.${item.title}.title`),
-      items: item.items?.map((subItem) => ({
-        ...subItem,
-        title: t(`Sidebar.navMain.${item.title}.items.${subItem.title}`),
-      })),
-    })),
-    coming_soon: sidebarItems.coming_soon.map((cs) => ({
-      ...cs,
-      name: t(`Sidebar.coming_soon.${cs.name}`),
-    })),
-  };
+  const translatedSidebarItems = translateSidebar(t, sidebarItems);
 
   return (
     <>
@@ -348,7 +329,7 @@ function ProtectedSidebarContent({
                   <DropdownMenuSeparator />
 
                   {/* Sign Out Action */}
-                  <DropdownMenuItem onClick={async () => await handleSignOut()}>
+                  <DropdownMenuItem onClick={handleSignOut}>
                     <LogOutIcon />
                     {t("Platform.SignOut.buttonLabel")}
                   </DropdownMenuItem>

@@ -20,8 +20,16 @@ export function useNotifications() {
   );
   const utils = api.useUtils();
   const { toast } = useToast();
-  const { data: session } = useSession();
+  const { status } = useSession();
   const t = useTranslations("Notifications");
+
+  // Clear notifications when session ends
+  React.useEffect(() => {
+    if (status === "unauthenticated") {
+      setAllNotifications(null);
+      setLastEventId(false);
+    }
+  }, [status]);
 
   // Set initial lastEventId from notifications
   React.useEffect(() => {
@@ -34,7 +42,8 @@ export function useNotifications() {
     refetchOnWindowFocus: true,
     refetchOnMount: true,
     staleTime: 10 * 1000,
-    enabled: !!session,
+    enabled: status === "authenticated", // Only enable when authenticated
+    retry: false, // Don't retry on error (like 401)
   });
 
   // Update state from query
@@ -84,9 +93,10 @@ export function useNotifications() {
 
   // Enhanced subscription with lastEventId and error handling
   const subscription = api.notifications.onNotification.useSubscription(
-    !session || lastEventId === false ? skipToken : { lastEventId },
+    status !== "authenticated" || lastEventId === false
+      ? skipToken
+      : { lastEventId },
     {
-      // enabled: !!session,
       onData: (notification) => {
         setLastEventId(notification.id);
         const notificationText = getNotificationText(
@@ -101,12 +111,14 @@ export function useNotifications() {
       },
       onError: (err) => {
         console.error("Subscription error:", err);
-        // Try to resubscribe from last known notification
-        const lastNotificationId = allNotifications?.at(-1)?.id;
-        if (lastNotificationId) {
-          setLastEventId(lastNotificationId);
+        // Try to resubscribe if still authenticated
+        if (status === "authenticated") {
+          const lastNotificationId = allNotifications?.at(-1)?.id;
+          if (lastNotificationId) {
+            setLastEventId(lastNotificationId);
+          }
+          utils.notifications.getUnread.invalidate();
         }
-        utils.notifications.getUnread.invalidate();
       },
     },
   );
