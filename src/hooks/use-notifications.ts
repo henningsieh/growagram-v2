@@ -1,3 +1,4 @@
+// src/hooks/use-notifications.ts:
 import { skipToken } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";

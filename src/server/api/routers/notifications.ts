@@ -1,30 +1,14 @@
+// src/server/api/routers/notifications.ts:
 import { and, desc, eq } from "drizzle-orm";
 import EventEmitter, { on } from "node:events";
 import { z } from "zod";
 import { notifications } from "~/lib/db/schema";
-import {
-  NotifiableEntityType,
-  NotificationEventType,
-} from "~/types/notification";
+import { NotificationEvent } from "~/types/notification";
 
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
-export type NotificationType = {
-  id: string;
-  createdAt: Date;
-  userId: string;
-  type: NotificationEventType;
-  entityType: NotifiableEntityType;
-  entityId: string;
-  actor: {
-    id: string;
-    name: string | null;
-    image: string | null;
-  };
-};
-
-export interface NotificationEvents {
-  notification: (data: NotificationType) => void;
+interface NotificationEvents {
+  notification: (data: NotificationEvent) => void;
 }
 
 // Create typed EventEmitter interface
@@ -81,7 +65,10 @@ export const notificationRouter = createTRPCRouter({
           }
         }
       } catch (err) {
-        console.error("Notification subscription error:", err);
+        // Only log real errors, not abortion
+        if (err instanceof Error && err.name !== "AbortError") {
+          console.error("Notification subscription error:", { err });
+        }
       }
     }),
 
