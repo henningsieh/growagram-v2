@@ -474,6 +474,9 @@ export const notifications = pgTable(
       .references(() => users.id, { onDelete: "cascade" }),
     // Type of notification
     type: text("type").$type<NotificationEventType>().notNull(),
+    commentId: text("comment_id").references(() => comments.id, {
+      onDelete: "cascade",
+    }),
     // What entity was acted upon
     entityType: text("entity_type").$type<NotifiableEntityType>().notNull(),
     entityId: text("entity_id").notNull(),
