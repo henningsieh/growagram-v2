@@ -34,6 +34,7 @@ export function NotificationItem({
   return (
     <Link
       href={href}
+      scroll={false}
       onClick={() => setOpen(false)}
       className={cn(
         "flex w-full items-center gap-2 overflow-hidden rounded-sm p-2 text-left transition-colors",

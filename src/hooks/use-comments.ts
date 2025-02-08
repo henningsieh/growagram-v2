@@ -141,15 +141,18 @@ export const useComments = (
     if (!commentIdToScrollTo || !isCommentsOpen || commentsQuery.isLoading)
       return;
 
-    const element = document.getElementById(commentIdToScrollTo);
-    if (element) {
-      setTimeout(() => {
+    // Add a small delay to ensure the DOM has updated
+    const scrollTimer = setTimeout(() => {
+      const element = document.getElementById(commentIdToScrollTo);
+      if (element) {
         element.scrollIntoView({
           behavior: "smooth",
           block: "center",
         });
-      }, 100);
-    }
+      }
+    }, 150);
+
+    return () => clearTimeout(scrollTimer);
   }, [commentIdToScrollTo, isCommentsOpen, commentsQuery.isLoading]);
 
   return {
