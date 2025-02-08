@@ -246,7 +246,7 @@ export const Comment: React.FC<CommentProps> = ({
                     onClick={handleReplySubmit}
                   >
                     {isSubmitting ? (
-                      <SpinningLoader className="h-4 w-4 animate-spin" />
+                      <SpinningLoader className="h-5 w-5 animate-spin text-white" />
                     ) : (
                       <Reply size={20} />
                     )}

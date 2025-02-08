@@ -8,6 +8,7 @@ export default function SpinningLoader({
   return (
     <div className={cn("flex justify-center")}>
       <Loader2
+        strokeWidth={3}
         className={cn("h-10 w-10 animate-spin text-primary", className)}
       />
     </div>
