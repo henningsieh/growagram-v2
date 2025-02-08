@@ -159,10 +159,15 @@ export const Comment: React.FC<CommentProps> = ({
   }, [isReplying]);
 
   return (
-    <HighlightElement id={comment.id} isHighlighted={isHighlighted}>
+    <HighlightElement
+      id={comment.id}
+      isHighlighted={isHighlighted}
+      key={`highlight-${comment.id}-${isHighlighted}`}
+      className="-ml-2 pl-2"
+    >
       <motion.div
-        initial={{ opacity: 0, y: -30 }}
-        animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, x: 0 }}
+        animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.3 }}
       >
         <div className="relative flex gap-2 p-2">
@@ -175,7 +180,7 @@ export const Comment: React.FC<CommentProps> = ({
             />
           </div>
           <div className="flex-1">
-            <div className="flex items-center gap-2">
+            <div className="flex h-10 items-center gap-2">
               <span className="text-sm font-semibold">
                 {comment.author.name}
               </span>
@@ -186,7 +191,7 @@ export const Comment: React.FC<CommentProps> = ({
                 <Button
                   variant="destructive"
                   size="icon"
-                  className="m-1 ml-auto h-8 w-8 bg-destructive/5 text-muted-foreground hover:text-foreground"
+                  className="m-1 ml-auto h-8 w-8 bg-transparent text-muted-foreground hover:text-foreground"
                   onClick={handleDeleteComment}
                   disabled={deleteMutation.isPending}
                 >
@@ -199,7 +204,7 @@ export const Comment: React.FC<CommentProps> = ({
         </div>
 
         <SocialCardFooter
-          className={`pb-2 pr-2 ${isSocial && "ml-14"}`}
+          className={`pb-2 pr-2 ${isSocial && "ml-12"}`}
           entityId={comment.id}
           entityType={LikeableEntityType.Comment}
           initialLiked={isLiked}
