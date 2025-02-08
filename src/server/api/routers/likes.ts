@@ -91,8 +91,6 @@ export const likeRouter = {
           })
           .returning();
 
-        
-
         const notifiableEntityType = () => {
           switch (entityType) {
             case LikeableEntityType.Grow:
@@ -116,8 +114,8 @@ export const likeRouter = {
         };
 
         await createNotification({
-          notificationType: NotificationEventType.NEW_LIKE,
-          entityData: {
+          notificationEventType: NotificationEventType.NEW_LIKE,
+          notifiableEntity: {
             type: notifiableEntityType(),
             id: entityId,
           },

@@ -82,8 +82,9 @@ export const updateTokensSchema = z.object({
 });
 
 export const createNotificationSchema = z.object({
-  notificationType: z.nativeEnum(NotificationEventType),
-  entityData: z.object({
+  notificationEventType: z.nativeEnum(NotificationEventType),
+  commentId: z.string().optional(),
+  notifiableEntity: z.object({
     type: z.nativeEnum(NotifiableEntityType),
     id: z.string(),
   }),

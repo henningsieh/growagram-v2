@@ -66,9 +66,6 @@ export const useComments = (
 
   const postCommentMutation = api.comments.postComment.useMutation({
     onSuccess: async (_, newComment) => {
-      // Refetch top-level comments for entity
-      await commentsQuery.refetch();
-
       // First use optimistic updates...
       utils.comments.getCommentCount.setData(
         {

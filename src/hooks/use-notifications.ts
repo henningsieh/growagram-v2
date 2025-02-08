@@ -74,15 +74,15 @@ export function useNotifications() {
 
   const getNotificationText = React.useCallback(
     (type: NotificationEventType, entityType: NotifiableEntityType) => {
+      const entityText = getEntityTypeText(entityType);
+
       switch (type) {
         case NotificationEventType.NEW_FOLLOW:
           return t("new_follow");
         case NotificationEventType.NEW_LIKE: {
-          const entityText = getEntityTypeText(entityType);
           return `${t("new_like")} ${entityText}`;
         }
         case NotificationEventType.NEW_COMMENT: {
-          const entityText = getEntityTypeText(entityType);
           return `${t("new_comment")} ${entityText}`;
         }
         default:
@@ -140,6 +140,45 @@ export function useNotifications() {
     },
   );
 
+  /**
+   * Get the href for a notification
+   */
+  const getNotificationHref = React.useMemo(() => {
+    return (notification: GetUnreadNotificationType) => {
+      switch (notification.entityType) {
+        case NotifiableEntityType.USER:
+          return `/public/profile/${notification.actor.id}`; // Profile of user who followed
+        case NotifiableEntityType.POST:
+          return `#${notification.entityId}`; // FIXME: Post that was liked or commented on
+        case NotifiableEntityType.GROW:
+          return `/public/grows/${notification.entityId}${
+            notification.commentId ? `?commentId=${notification.commentId}` : ""
+          }`; // Grow that was liked or commented on
+        case NotifiableEntityType.PLANT:
+          return `/public/plants/${notification.entityId}${
+            notification.commentId ? `?commentId=${notification.commentId}` : ""
+          }`; // Plant that was liked or commented on
+        case NotifiableEntityType.PHOTO:
+          return `/public/photos/${notification.entityId}${
+            notification.commentId ? `?commentId=${notification.commentId}` : ""
+          }`; // Photo that was liked or commented on
+        case NotifiableEntityType.COMMENT:
+          // pseudo code: if notification.type === NEW_LIKE,
+          // then return parent CommentableEntityType id #comment-${notification.entityId}
+          const { data: commentableEntity, isLoading } =
+            api.comments.getParentEntity.useQuery({
+              commentId: notification.entityId,
+            });
+          if (isLoading) {
+            return undefined;
+          }
+          return `/public/${commentableEntity?.entityType}s/${commentableEntity?.entityId}?commentId=${notification.entityId}`;
+        default:
+          return "#"; // Fallback
+      }
+    };
+  }, []);
+
   return {
     all: allNotifications ?? [],
     grouped: {
@@ -160,6 +199,7 @@ export function useNotifications() {
     subscriptionStatus: subscription.status,
     subscriptionError: subscription.error,
     getNotificationText,
+    getNotificationHref,
     markAllAsRead,
     markAsRead,
   };

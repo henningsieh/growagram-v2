@@ -305,8 +305,8 @@ export const userRouter = {
         .returning();
 
       await createNotification({
-        notificationType: NotificationEventType.NEW_FOLLOW,
-        entityData: {
+        notificationEventType: NotificationEventType.NEW_FOLLOW,
+        notifiableEntity: {
           type: NotifiableEntityType.USER,
           // user being followed AND notified
           id: input.userId,

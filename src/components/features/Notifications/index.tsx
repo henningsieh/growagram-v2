@@ -15,7 +15,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { useNotifications } from "~/hooks/use-notifications";
 import { cn } from "~/lib/utils";
 
-import { NotificationItem } from "./notification-item";
+import { NotificationItem, NotificationSkeleton } from "./notification-item";
 
 export function Notifications() {
   const { data: session } = useSession();
@@ -120,8 +120,12 @@ export function Notifications() {
 
           <ScrollArea className="h-[min(60vh,400px)]">
             {isLoading ? (
-              <div className="flex h-full items-center justify-center">
-                <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+              <div className="flex flex-col gap-1 p-1">
+                <NotificationSkeleton />
+                <NotificationSkeleton />
+                <NotificationSkeleton />
+                <NotificationSkeleton />
+                <NotificationSkeleton />
               </div>
             ) : subscriptionError || queryError ? (
               <div className="p-4 text-center text-sm text-red-500">

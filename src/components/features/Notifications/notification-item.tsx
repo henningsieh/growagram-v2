@@ -1,16 +1,14 @@
-"use client";
-
 import { SparklesIcon } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import * as React from "react";
+import type * as React from "react";
 import CustomAvatar from "~/components/atom/custom-avatar";
 import { Badge } from "~/components/ui/badge";
+import { Skeleton } from "~/components/ui/skeleton";
 import { useNotifications } from "~/hooks/use-notifications";
 import { Link } from "~/lib/i18n/routing";
 import { cn, formatDate, formatTime } from "~/lib/utils";
-import { GetUnreadNotificationType } from "~/server/api/root";
-import { Locale } from "~/types/locale";
-import { NotifiableEntityType } from "~/types/notification";
+import type { GetUnreadNotificationType } from "~/server/api/root";
+import type { Locale } from "~/types/locale";
 
 interface NotificationItemProps extends GetUnreadNotificationType {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -20,26 +18,18 @@ export function NotificationItem({
   setOpen,
   ...notification
 }: NotificationItemProps) {
-  const { markAsRead, getNotificationText } = useNotifications();
+  const { markAsRead, getNotificationText, getNotificationHref } =
+    useNotifications();
   const t = useTranslations("Notifications");
   const locale = useLocale();
 
-  const href = React.useMemo(() => {
-    switch (notification.entityType) {
-      case NotifiableEntityType.USER:
-        return `/public/profile/${notification.actor.id}`; // Profile of user who followed
-      case NotifiableEntityType.POST:
-        return `#${notification.entityId}`; // FIXME: Post that was liked or commented on
-      case NotifiableEntityType.GROW:
-        return `/public/grows/${notification.entityId}`; // Grow that was liked or commented on
-      case NotifiableEntityType.PLANT:
-        return `/public/plants/${notification.entityId}`; // Plant that was liked or commented on
-      case NotifiableEntityType.PHOTO:
-        return `/public/photos/${notification.entityId}`; // Photo that was liked or commented on
-      default:
-        return "#"; // Fallback
-    }
-  }, [notification]);
+  console.debug(notification);
+
+  const href = getNotificationHref(notification);
+
+  if (!href) {
+    return <NotificationSkeleton />;
+  }
 
   return (
     <Link
@@ -86,3 +76,18 @@ export function NotificationItem({
     </Link>
   );
 }
+
+export const NotificationSkeleton = () => {
+  return (
+    <div className="flex h-16 w-full items-center gap-2 overflow-hidden rounded-sm bg-muted p-2 text-left">
+      <Skeleton className="h-9 w-9 rounded-full" /> {/* Avatar skeleton */}
+      <div className="flex flex-grow flex-col gap-3">
+        <Skeleton className="mb-1 h-4 w-3/4" />{" "}
+        {/* Name and action text skeleton */}
+        <Skeleton className="h-3 w-1/2" /> {/* Date and time skeleton */}
+      </div>
+      <Skeleton className="ml-auto h-5 w-12 rounded-full" />{" "}
+      {/* Badge skeleton */}
+    </div>
+  );
+};

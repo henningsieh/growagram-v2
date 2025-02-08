@@ -22,22 +22,6 @@ export async function getAllParentCommentAuthors(
 ): Promise<Set<string>> {
   const authorIds = new Set<string>();
 
-  // add the author of the original comment
-  const originalComment = await db.query.comments.findFirst({
-    where: eq(comments.id, commentId),
-    with: {
-      author: {
-        columns: {
-          id: true,
-        },
-      },
-    },
-  });
-
-  if (originalComment) {
-    authorIds.add(originalComment.author.id);
-  }
-
   async function getParentAuthors(currentCommentId: string): Promise<void> {
     const comment = await db.query.comments.findFirst({
       where: eq(comments.id, currentCommentId),

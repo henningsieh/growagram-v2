@@ -81,7 +81,6 @@ export const commentRouter = {
             return NotifiableEntityType.PHOTO;
           case CommentableEntityType.Post:
             return NotifiableEntityType.POST;
-          // FIXME: NotifiableEntityType.COMMENT is never thrown here!
           default:
             throw new TRPCError({
               code: "INTERNAL_SERVER_ERROR",
@@ -90,43 +89,44 @@ export const commentRouter = {
         }
       };
 
-      // Create notification for entity owner
-      const ownerNotification = await createNotification({
-        notificationType: NotificationEventType.NEW_COMMENT,
-        entityData: {
-          type: notifiableEntityType(),
-          id: entityId,
-        },
-        actorData: {
-          id: ctx.session.user.id,
-          name: ctx.session.user.name,
-          username: ctx.session.user.username ?? null,
-          image: ctx.session.user.image ?? null,
-        },
-      });
-      console.debug("Notification created", ownerNotification);
-
-      // Create notification for parent comment authors
-      if (input.parentCommentId) {
-        const parentCommentNotifications = await createNotification({
-          notificationType: NotificationEventType.NEW_COMMENT,
-          entityData: {
-            type: NotifiableEntityType.COMMENT,
-            id: input.parentCommentId,
+      // Create notifications for entity owner and parent comment authors
+      const actorData = {
+        id: ctx.session.user.id,
+        name: ctx.session.user.name,
+        username: ctx.session.user.username ?? null,
+        image: ctx.session.user.image ?? null,
+      };
+      if (!newComment.parentCommentId) {
+        // Create notification for entity owner
+        const entityOwnerNotification = await createNotification({
+          notificationEventType: NotificationEventType.NEW_COMMENT,
+          commentId: newComment.id,
+          notifiableEntity: {
+            type: notifiableEntityType(),
+            id: entityId,
           },
-          actorData: {
-            id: ctx.session.user.id,
-            name: ctx.session.user.name,
-            username: ctx.session.user.username ?? null,
-            image: ctx.session.user.image ?? null,
-          },
+          actorData,
         });
         console.debug(
-          "parentCommentNotifications created",
-          parentCommentNotifications,
+          "entityOwnerNotification created",
+          entityOwnerNotification,
+        );
+      } else {
+        // Create notification for parent comment authors
+        const parentCommentAuthorsNotification = await createNotification({
+          notificationEventType: NotificationEventType.NEW_COMMENT,
+          commentId: newComment.id,
+          notifiableEntity: {
+            type: NotifiableEntityType.COMMENT,
+            id: newComment.id,
+          },
+          actorData,
+        });
+        console.debug(
+          "parentCommentAuthorsNotification created",
+          parentCommentAuthorsNotification,
         );
       }
-
       return { comment: newComment };
     }),
 
@@ -268,5 +268,30 @@ export const commentRouter = {
       });
 
       return commentReplies;
+    }),
+
+  // Get parent entity information for a comment
+  getParentEntity: protectedProcedure
+    .input(z.object({ commentId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const comment = await ctx.db.query.comments.findFirst({
+        where: eq(comments.id, input.commentId),
+        columns: {
+          entityId: true,
+          entityType: true,
+        },
+      });
+
+      if (!comment) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Comment not found",
+        });
+      }
+
+      return {
+        entityId: comment.entityId,
+        entityType: comment.entityType,
+      };
     }),
 };
