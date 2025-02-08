@@ -1,4 +1,4 @@
-// src/components/features/Comments/comment-tree.tsx:
+import type React from "react";
 import { useComments } from "~/hooks/use-comments";
 import { api } from "~/lib/trpc/react";
 import type { GetCommentType, GetRepliesInput } from "~/server/api/root";
@@ -24,7 +24,7 @@ const CommentsTree: React.FC<CommentsTreeProps> = ({
   );
 
   return (
-    <div className={`relative`}>
+    <div className="relative">
       <Comment
         comment={comment}
         isSocial={isSocial}
@@ -33,12 +33,17 @@ const CommentsTree: React.FC<CommentsTreeProps> = ({
         onCancelReply={handleCancelReply}
       />
 
-      {!isLoading && replies && (
-        <div className="ml-6 mt-4 border-l border-accent">
-          {replies.map((reply) => (
-            <CommentsTree key={reply.id} comment={reply} isSocial={isSocial} />
-          ))}
-        </div>
+      {!isLoading && replies && replies.length > 0 && (
+        <>
+          <div className="absolute bottom-0 left-6 top-[48px] w-px bg-accent/60" />
+          <ul className="space-y-4 pl-6 pt-2">
+            {replies.map((reply) => (
+              <li key={reply.id}>
+                <CommentsTree comment={reply} isSocial={isSocial} />
+              </li>
+            ))}
+          </ul>
+        </>
       )}
     </div>
   );
