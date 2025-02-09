@@ -58,7 +58,9 @@ export function Notifications() {
               {unreadCount}
             </span>
           )}
-          <span className={statusIndicatorClass} />
+          {process.env.NODE_ENV === "development" && (
+            <span className={statusIndicatorClass} />
+          )}
         </Button>
       </PopoverTrigger>
       <PopoverContent
