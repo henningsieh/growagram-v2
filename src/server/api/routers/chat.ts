@@ -1,5 +1,4 @@
 // src/server/api/routers/chat.ts
-import { observable } from "@trpc/server/observable";
 import EventEmitter from "events";
 import { z } from "zod";
 import { chatMessages } from "~/lib/db/schema";

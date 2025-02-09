@@ -11,7 +11,7 @@ import AvatarCardHeader, {
 import CustomAvatar from "~/components/atom/custom-avatar";
 import { HighlightElement } from "~/components/atom/highlight-element";
 import { SocialCardFooter } from "~/components/atom/social-card-footer";
-import { Button, ButtonProps } from "~/components/ui/button";
+import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { useComments } from "~/hooks/use-comments";
 import { useLikeStatus } from "~/hooks/use-likes";

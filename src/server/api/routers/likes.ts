@@ -82,7 +82,7 @@ export const likeRouter = {
         return { liked: false };
       } else {
         // Like: insert new like
-        const like = await ctx.db
+        await ctx.db
           .insert(likes)
           .values({
             userId,

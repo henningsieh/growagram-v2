@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, Loader2 } from "lucide-react";
+import { Bell } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
