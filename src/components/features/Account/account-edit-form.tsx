@@ -16,7 +16,7 @@ import {
 import type { Session } from "next-auth";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import FormContent from "~/components/Layouts/form-content";
 import SpinningLoader from "~/components/Layouts/loader";
@@ -77,6 +77,12 @@ export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
   const [username, setUsername] = useState(user?.username || "");
   const [usernameModified, setUsernameModified] = useState(false);
 
+  useEffect(() => {
+    if (!!sessionHasBenUpdated) {
+      router.push("/account");
+    }
+  }, [sessionHasBenUpdated, router]);
+
   const form = useForm<GetUserEditInput>({
     mode: "onChange",
     resolver: zodResolver(userEditSchema),
@@ -91,13 +97,12 @@ export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
 
   const editUserMutation = api.users.editUser.useMutation({
     onSuccess: async (updatedUser) => {
-      // Update session immediately
-      setSessionHasBenUpdated(await update(updatedUser));
+      const updatedSession = await update(updatedUser);
+      setSessionHasBenUpdated(updatedSession);
       toast({
         title: "Success",
         description: t("form-save-success-message"),
       });
-      router.push("/account");
     },
     onError: (error) => {
       toast({
