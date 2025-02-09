@@ -36,8 +36,8 @@ import type {
 import { PostableEntityType } from "~/types/post";
 import { postSchema } from "~/types/zodSchema";
 
-import { EmbeddedGrowCard } from "./features/Grows/embedded-grow-card";
-import { EmbeddedPlantCard } from "./features/Plants/embedded-plant-card";
+import { EmbeddedGrowCard } from "../../Grows/embedded-grow-card";
+import { EmbeddedPlantCard } from "../../Plants/embedded-plant-card";
 
 type PostFormValues = z.infer<typeof postSchema>;
 

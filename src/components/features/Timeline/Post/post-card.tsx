@@ -29,6 +29,7 @@ export default function PostCard({ post, isSocialProp = true }: PostCardProps) {
   const { openImageModal } = useImageModal();
   const [isImageHovered, setIsImageHovered] = useState(false);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isSocial, setIsSocial] = useState(isSocialProp);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 

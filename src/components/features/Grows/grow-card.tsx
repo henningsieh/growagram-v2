@@ -6,13 +6,13 @@ import { MessageSquareTextIcon, TentTree } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
-import PostFormModal from "~/components/PostFormModal";
 import AvatarCardHeader from "~/components/atom/avatar-card-header";
 import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
 import { OwnerDropdownMenu } from "~/components/atom/owner-dropdown-menu";
 import { SocialCardFooter } from "~/components/atom/social-card-footer";
 import { Comments } from "~/components/features/Comments/comments";
 import { EmbeddedPlantCard } from "~/components/features/Plants/embedded-plant-card";
+import PostFormModal from "~/components/features/Timeline/Post/post-form-modal";
 import { Button } from "~/components/ui/button";
 import {
   Card,
