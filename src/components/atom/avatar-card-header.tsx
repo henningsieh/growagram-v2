@@ -1,8 +1,15 @@
 "use client";
 
+import type { LucideIcon } from "lucide-react";
 import { DotIcon, MoreHorizontal, ShieldIcon } from "lucide-react";
 import { useLocale } from "next-intl";
+import { Button, type ButtonProps } from "~/components/ui/button";
 import { CardHeader } from "~/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu";
 import { Link } from "~/lib/i18n/routing";
 import { formatDate, formatTime } from "~/lib/utils";
 import type { OwnUserDataType } from "~/server/api/root";
@@ -10,20 +17,35 @@ import { Locale } from "~/types/locale";
 
 import CustomAvatar from "./custom-avatar";
 
+export interface ActionItem {
+  icon: LucideIcon;
+  label: string;
+  onClick: () => void;
+  variant?: ButtonProps["variant"];
+  disabled?: boolean;
+}
+
 interface SocialHeaderProps {
   user: OwnUserDataType;
   date?: Date;
+  showActions?: boolean;
+  actions?: ActionItem[];
 }
 
-function AvatarCardHeader({ user, date }: SocialHeaderProps) {
+function AvatarCardHeader({
+  user,
+  date,
+  showActions,
+  actions,
+}: SocialHeaderProps) {
   const locale = useLocale();
 
   return (
-    <CardHeader className="space-y-0 px-1 py-2">
+    <CardHeader className="space-y-0 py-0 pl-1 pr-0">
       <div className="flex items-start justify-between">
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-2">
           <CustomAvatar
-            size={39}
+            size={38}
             src={user.image ?? undefined}
             alt={user.username ?? "User avatar"}
             fallback={user.name?.[0] || "?"}
@@ -61,9 +83,41 @@ function AvatarCardHeader({ user, date }: SocialHeaderProps) {
             )}
           </div>
         </div>
-        <button className="text-muted-foreground hover:text-foreground">
-          <MoreHorizontal className="h-5 w-5" />
-        </button>
+        {showActions && actions && actions.length > 0 && (
+          <DropdownMenu>
+            <DropdownMenuTrigger
+              asChild
+              className="text-muted-foreground hover:text-foreground"
+            >
+              <Button variant="ghost" size="icon" aria-label="More actions">
+                <MoreHorizontal className="h-5 w-5" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="min-w-6" align="end">
+              {actions.map((action, index) => {
+                const Icon = action.icon;
+                return (
+                  // <DropdownMenuItem
+                  //   className="focus:bg-transparent"
+                  //   asChild
+                  //   >
+                  <Button
+                    key={`${action.label}-${index}`}
+                    size={"sm"}
+                    className="w-full"
+                    variant={action.variant}
+                    disabled={action.disabled}
+                    onClick={action.onClick}
+                  >
+                    <Icon className="mr-2 h-4 w-4" />
+                    {action.label}
+                  </Button>
+                  // </DropdownMenuItem>
+                );
+              })}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
       </div>
     </CardHeader>
   );

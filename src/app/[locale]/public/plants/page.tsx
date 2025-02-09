@@ -43,7 +43,7 @@ export default function PublicPlantsPage() {
     fetchNextPage,
   } = api.plants.getAllPlants.useInfiniteQuery(
     {
-      limit: PaginationItemsPerPage.PLANTS_PER_PAGE,
+      limit: PaginationItemsPerPage.PUBLIC_PLANTS_PER_PAGE,
     } satisfies GetAllPlantsInput,
     {
       initialData,

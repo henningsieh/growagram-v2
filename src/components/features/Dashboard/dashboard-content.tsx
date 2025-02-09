@@ -1,7 +1,7 @@
 // src/components/UserProfile.tsx
 import { useTranslations } from "next-intl";
 import PageHeader from "~/components/Layouts/page-header";
-import { type User } from "~/types/db";
+import { type User } from "~/lib/db/types";
 
 interface UserProfileProps {
   user: User;

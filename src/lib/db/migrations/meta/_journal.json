@@ -120,6 +120,34 @@
       "when": 1737696990504,
       "tag": "0016_chubby_cannonball",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1738332231534,
+      "tag": "0017_melted_ser_duncan",
+      "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1738394331572,
+      "tag": "0018_zippy_madelyne_pryor",
+      "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1738484076373,
+      "tag": "0019_mixed_mysterio",
+      "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1739019169484,
+      "tag": "0020_flat_sunset_bain",
+      "breakpoints": true
     }
   ]
 }

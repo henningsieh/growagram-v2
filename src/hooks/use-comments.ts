@@ -1,5 +1,6 @@
 // src/hooks/use-comments.tsx:
 import { useSession } from "next-auth/react";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
 import { usePathname } from "~/lib/i18n/routing";
@@ -65,9 +66,6 @@ export const useComments = (
 
   const postCommentMutation = api.comments.postComment.useMutation({
     onSuccess: async (_, newComment) => {
-      // Refetch top-level comments for entity
-      await commentsQuery.refetch();
-
       // First use optimistic updates...
       utils.comments.getCommentCount.setData(
         {
@@ -127,6 +125,35 @@ export const useComments = (
     setReplyingToComment(null);
     setNewComment(""); // Clear the reply input
   };
+
+  const searchParams = useSearchParams();
+  const commentIdToScrollTo = searchParams.get("commentId");
+
+  // Auto-expand comments if commentId is in URL
+  useEffect(() => {
+    if (commentIdToScrollTo) {
+      setIsCommentsOpen(true);
+    }
+  }, [commentIdToScrollTo]);
+
+  // Scroll to comment after comments are loaded
+  useEffect(() => {
+    if (!commentIdToScrollTo || !isCommentsOpen || commentsQuery.isLoading)
+      return;
+
+    // Add a small delay to ensure the DOM has updated
+    const scrollTimer = setTimeout(() => {
+      const element = document.getElementById(commentIdToScrollTo);
+      if (element) {
+        element.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+      }
+    }, 150);
+
+    return () => clearTimeout(scrollTimer);
+  }, [commentIdToScrollTo, isCommentsOpen, commentsQuery.isLoading]);
 
   return {
     // Comment state and queries

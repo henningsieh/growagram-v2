@@ -3,21 +3,21 @@ import { TRPCError } from "@trpc/server";
 import { and, eq, not } from "drizzle-orm";
 import { z } from "zod";
 import { hashPassword } from "~/lib/auth/password";
-import { users, verificationTokens } from "~/lib/db/schema";
+import { userFollows, users, verificationTokens } from "~/lib/db/schema";
 import { routing } from "~/lib/i18n/routing";
+import { createNotification } from "~/lib/notifications";
 import { sendVerificationEmail } from "~/server/actions/sendVerificationEmail";
-import {
-  createTRPCRouter,
-  protectedProcedure,
-  publicProcedure,
-} from "~/server/api/trpc";
+import { connectPlantWithImagesQuery } from "~/server/api/routers/plantImages";
+import { protectedProcedure, publicProcedure } from "~/server/api/trpc";
 import type { Locale } from "~/types/locale";
+import {
+  NotifiableEntityType,
+  NotificationEventType,
+} from "~/types/notification";
 import { UserRoles } from "~/types/user";
 import { updateTokensSchema, userEditSchema } from "~/types/zodSchema";
 
-import { connectPlantWithImagesQuery } from "./plantImages";
-
-export const userRouter = createTRPCRouter({
+export const userRouter = {
   // Get public user data by user id (public procedure)
   getPublicUserProfile: publicProcedure
     .input(z.object({ id: z.string() }))
@@ -32,6 +32,30 @@ export const userRouter = createTRPCRouter({
           role: true,
         },
         with: {
+          followers: {
+            with: {
+              follower: {
+                columns: {
+                  id: true,
+                  name: true,
+                  image: true,
+                  username: true,
+                },
+              },
+            },
+          },
+          following: {
+            with: {
+              following: {
+                columns: {
+                  id: true,
+                  name: true,
+                  image: true,
+                  username: true,
+                },
+              },
+            },
+          },
           grows: {
             with: {
               owner: true,
@@ -88,6 +112,7 @@ export const userRouter = createTRPCRouter({
   getOwnUserData: protectedProcedure.query(async ({ ctx }) => {
     const user = await ctx.db.query.users.findFirst({
       where: eq(users.id, ctx.session.user.id),
+      with: {},
       columns: {
         id: true,
         name: true,
@@ -254,17 +279,59 @@ export const userRouter = createTRPCRouter({
         .map((b) => b.toString(16).padStart(2, "0"))
         .join("");
       await ctx.db.insert(verificationTokens).values({
-        identifier: newUser[0].email as string,
+        identifier: newUser[0]?.email as string,
         token: verificationToken,
         expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
       });
 
       await sendVerificationEmail(
-        newUser[0].email as string,
+        newUser[0]?.email as string,
         verificationToken,
         input.locale,
       );
 
       return newUser[0];
     }),
-});
+
+  followUser: protectedProcedure
+    .input(z.object({ userId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const follow = await ctx.db
+        .insert(userFollows)
+        .values({
+          followerId: ctx.session.user.id,
+          followingId: input.userId,
+        })
+        .returning();
+
+      await createNotification({
+        notificationEventType: NotificationEventType.NEW_FOLLOW,
+        notifiableEntity: {
+          type: NotifiableEntityType.USER,
+          // user being followed AND notified
+          id: input.userId,
+        },
+        actorData: {
+          id: ctx.session.user.id,
+          name: ctx.session.user.name,
+          username: ctx.session.user.username ?? null,
+          image: ctx.session.user.image ?? null,
+        },
+      });
+
+      return follow[0];
+    }),
+
+  unfollowUser: protectedProcedure
+    .input(z.object({ userId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db
+        .delete(userFollows)
+        .where(
+          and(
+            eq(userFollows.followerId, ctx.session.user.id),
+            eq(userFollows.followingId, input.userId),
+          ),
+        );
+    }),
+};

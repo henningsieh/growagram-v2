@@ -32,7 +32,9 @@
     "navigation": {
       "label": "Mein Konto"
     },
-    "not-provided": "Nicht angegeben"
+    "not-provided": "Nicht angegeben",
+    "welcome-message-description": "Du musst deinen Benutzernamen zuerst festlegen, bevor Sie die Plattform betreten!",
+    "welcome-message-title": "Willkommen"
   },
   "CardFooter": {
     "Login to see detailed view statistics": "Melde dich an, um detaillierte Statistiken zu sehen.",
@@ -42,9 +44,27 @@
   },
   "Comments": {
     "add-comment-placeholder": "Schreibe einen Kommentar",
+    "buttons": {
+      "deleteComment": {
+        "label": "Löschen"
+      }
+    },
     "loading-comments": "Kommentare werden geladen...",
     "no-comments-yet": "Bisher keine Kommentare.",
-    "reply-to-comment-placeholder": "Schreibe eine Antwort"
+    "reply-to-comment-placeholder": "Schreibe eine Antwort",
+    "toasts": {
+      "errors": {
+        "deleteComment": {
+          "title": "Fehler beim Löschen"
+        }
+      },
+      "success": {
+        "deleteComment": {
+          "description": "Der Kommentar wurde erfolgreich gelöscht",
+          "title": "Bestätigung"
+        }
+      }
+    }
   },
   "Common": {
     "day": "Tag",
@@ -155,6 +175,8 @@
       "label": "E-Mail-Adresse"
     },
     "login-with-discord": "Mit Discord anmelden",
+    "login-with-facebook": "Mit Facebook anmelden",
+    "login-with-github": "Mit GitHub anmelden",
     "login-with-google": "Mit Google anmelden",
     "login-with-twitter": "Mit Twitter anmelden",
     "password": {
@@ -201,9 +223,21 @@
     "toggle-menu": "Menü umschalten"
   },
   "Notifications": {
+    "entity_comment": "Kommentar",
+    "entity_grow": "Grow",
+    "entity_photo": "Foto",
+    "entity_plant": "Pflanze",
+    "entity_post": "Post",
     "navigation": {
-      "label": "Benachrichtigungen"
-    }
+      "label": "Benachrichtigungen",
+      "trigger-button-title": "Benachrichtigungen"
+    },
+    "new": "NEU",
+    "new_comment": "kommentierte dein/deine(n)",
+    "new_follow": "folgt dir jetzt",
+    "new_like": "mag dein/deine(n)",
+    "new_notification": "Neue Benachrichtigung",
+    "new_post": "hat ein Update gepostet"
   },
   "Photos": {
     "DeleteConfirmation": {
@@ -264,6 +298,7 @@
     "uploaded-at": "hochgeladen"
   },
   "Plants": {
+    "NoPlantsFound": "Es konnten keine Pflanzen gefunden werden.",
     "breeder": "Züchter / Breeder",
     "button-label-post-update": "Post zur Pflanze erstellen",
     "curing-start-date": "Startdatum der Aushärtephase",
@@ -310,6 +345,9 @@
     "Delete": "Löschen",
     "LanguageToggle": {
       "toggle-language": "Sprache wechseln"
+    },
+    "SignOut": {
+      "buttonLabel": "Abmelden"
     },
     "asc": "Aufsteigend",
     "coming-soon": "Bald verfügbar",

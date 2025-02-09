@@ -2,14 +2,7 @@
 
 // src/components/features/Plants/plant-form.tsx:
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Leaf,
-  Nut,
-  PillBottle,
-  Sprout,
-  TagIcon,
-  Wheat,
-} from "lucide-react";
+import { Leaf, Nut, PillBottle, Sprout, TagIcon, Wheat } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useForm } from "react-hook-form";

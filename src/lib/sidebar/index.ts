@@ -1,5 +1,6 @@
 // src/lib/sidebar/index.ts:
 import * as Icons from "lucide-react";
+import { type LucideIcon } from "lucide-react";
 import sidebarJsonData from "~/lib/sidebar/data.json";
 import {
   IconComponent,
@@ -51,3 +52,74 @@ export function findCurrentNavItem(path: string, navItems: ProcessedNavItem[]) {
 
 // Export the type for the nav items (replacing PlatformSidebarItems)
 export type PlatformSidebarItems = ProcessedNavItem[];
+
+// ...existing code...
+
+type TranslationFunction = (key: string) => string;
+
+interface SidebarTeam {
+  name: string;
+  logo: LucideIcon;
+  plan: string;
+}
+
+interface SidebarSubItem {
+  title: string;
+  url: string;
+}
+
+interface SidebarNavItem {
+  title: string;
+  icon?: LucideIcon;
+  url?: string;
+  items?: SidebarSubItem[];
+  isActive?: boolean;
+}
+
+interface ComingSoonItem {
+  name: string;
+  icon: LucideIcon;
+}
+
+interface SidebarItems {
+  teams: SidebarTeam[];
+  navMain: SidebarNavItem[];
+  coming_soon: ComingSoonItem[];
+}
+
+export function translateSidebar(
+  t: TranslationFunction,
+  items: SidebarItems,
+  options: {
+    teamPrefix?: string;
+    navPrefix?: string;
+    comingSoonPrefix?: string;
+  } = {
+    teamPrefix: "Sidebar.teams",
+    navPrefix: "Sidebar.navMain",
+    comingSoonPrefix: "Sidebar.coming_soon",
+  },
+) {
+  const { teamPrefix, navPrefix, comingSoonPrefix } = options;
+
+  return {
+    ...items,
+    teams: items.teams.map((team) => ({
+      ...team,
+      name: t(`${teamPrefix}.${team.name}`),
+      plan: t(`${teamPrefix}.${team.plan}`),
+    })),
+    navMain: items.navMain.map((item) => ({
+      ...item,
+      title: t(`${navPrefix}.${item.title}.title`),
+      items: item.items?.map((subItem) => ({
+        ...subItem,
+        title: t(`${navPrefix}.${item.title}.items.${subItem.title}`),
+      })),
+    })),
+    coming_soon: items.coming_soon.map((cs) => ({
+      ...cs,
+      name: t(`${comingSoonPrefix}.${cs.name}`),
+    })),
+  };
+}

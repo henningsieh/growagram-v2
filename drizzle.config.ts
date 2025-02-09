@@ -8,7 +8,7 @@ const drizzleConfig = {
   dbCredentials: {
     url: env.DATABASE_URL,
   },
-  tablesFilter: ["growagram.com_*"],
+  // tablesFilter: ["growagram.com_*"],
 } satisfies Config;
 
 export default defineConfig(drizzleConfig);

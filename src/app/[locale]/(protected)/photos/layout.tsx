@@ -1,14 +1,13 @@
 // src/app/[locale]/(protected)/photos/layout.tsx:
 import { PaginationItemsPerPage } from "~/assets/constants";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
-import { api } from "~/lib/trpc/server";
-import { HydrateClient } from "~/lib/trpc/server";
+import { HydrateClient, api } from "~/lib/trpc/server";
 import type { GetOwnPhotosInput } from "~/server/api/root";
 import { PhotosSortField } from "~/types/image";
 
 export const metadata = {
-  title: "My Photos",
-  description: "My Photos",
+  title: "Grower's Plattform | My Photos",
+  description: "Grower's Plattform | My Photos",
 };
 
 export default async function PhotosLayout({

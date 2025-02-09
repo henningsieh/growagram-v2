@@ -6,15 +6,11 @@ import { PaginationItemsPerPage } from "~/assets/constants";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
 import { plantImages, plants } from "~/lib/db/schema";
 import { connectPlantWithImagesQuery } from "~/server/api/routers/plantImages";
-import {
-  createTRPCRouter,
-  protectedProcedure,
-  publicProcedure,
-} from "~/server/api/trpc";
+import { protectedProcedure, publicProcedure } from "~/server/api/trpc";
 import { PlantsSortField } from "~/types/plant";
 import { plantFormSchema } from "~/types/zodSchema";
 
-export const plantRouter = createTRPCRouter({
+export const plantRouter = {
   // Get paginated plants for the current user
   getOwnPlants: protectedProcedure
     .input(
@@ -305,4 +301,4 @@ export const plantRouter = createTRPCRouter({
         .where(eq(plants.id, input.id));
       return { success: !!deletedImage };
     }),
-});
+};

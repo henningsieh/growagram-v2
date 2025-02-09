@@ -5,7 +5,7 @@ export interface ChatMessage {
   createdAt: Date;
   sender: {
     id: string;
-    name: string | null;
+    name: string;
     image: string | null;
   };
 }

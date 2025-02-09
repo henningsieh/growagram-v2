@@ -89,13 +89,6 @@ This application is self-hosted on [Hetzner Cloud](https://www.hetzner.com/cloud
 - ✅ EXIF data extraction
 - ✅ Many-to-Many relations: Grows <-> Plants <-> Photos
 
-#### Technical Improvements
-
-- ⏳ Unit test coverage (≥80%)
-- ⏳ Performance optimization
-- ⏳ API documentation
-- ⏳ Error boundaries
-
 ### Phase 2: Social Features
 
 #### Community Features
@@ -104,7 +97,7 @@ This application is self-hosted on [Hetzner Cloud](https://www.hetzner.com/cloud
 - ✅ Like functionality
 - ⏳ User mentions in posts/comments
 - ⏳ Advanced search features
-- ⏳ Notifications
+- 🔨 Notifications
 - ⏳ Private messaging
 
 ### Phase 3: Advanced Features
@@ -112,6 +105,13 @@ This application is self-hosted on [Hetzner Cloud](https://www.hetzner.com/cloud
 #### Monetization & Analytics
 
 - ⏳ Sponsoring opportunities for breeders and manufacturers
-- ⏳ AI plant recognition
+- ⏳ AI conversations with your plants :)
 - ⏳ Analytics dashboard
 - ⏳ Premium Features
+
+#### Technical Improvements
+
+- ⏳ Unit test coverage (≥80%)
+- ⏳ Performance optimization
+- ⏳ API documentation
+- ⏳ Error boundaries

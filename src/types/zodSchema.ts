@@ -1,6 +1,7 @@
 // src/types/zodSchema.ts:
 import { z } from "zod";
 
+import { NotifiableEntityType, NotificationEventType } from "./notification";
 import { PostableEntityType } from "./post";
 
 export const plantFormSchema = z.object({
@@ -78,4 +79,19 @@ export const updateTokensSchema = z.object({
   expiresIn: z.number(),
   refreshToken: z.string(),
   refreshTokenExpiresIn: z.number(),
+});
+
+export const createNotificationSchema = z.object({
+  notificationEventType: z.nativeEnum(NotificationEventType),
+  commentId: z.string().optional(),
+  notifiableEntity: z.object({
+    type: z.nativeEnum(NotifiableEntityType),
+    id: z.string(),
+  }),
+  actorData: z.object({
+    id: z.string().min(1),
+    name: z.string().min(1),
+    username: z.string().nullable(),
+    image: z.string().nullable(),
+  }),
 });

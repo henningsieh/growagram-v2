@@ -3,18 +3,17 @@ import { observable } from "@trpc/server/observable";
 import EventEmitter from "events";
 import { z } from "zod";
 import { chatMessages } from "~/lib/db/schema";
+import { protectedProcedure } from "~/server/api/trpc";
 import type { ChatMessage } from "~/types/chat";
-
-import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 const ee = new EventEmitter();
 
-export const chatRouter = createTRPCRouter({
+export const chatRouter = {
   // Send a message
   sendMessage: protectedProcedure
     .input(z.object({ content: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      const message = await ctx.db
+      const [message] = await ctx.db
         .insert(chatMessages)
         .values({
           content: input.content,
@@ -24,7 +23,7 @@ export const chatRouter = createTRPCRouter({
 
       // Create complete message with sender before emitting
       const completeMessage: ChatMessage = {
-        ...message[0],
+        ...message,
         sender: {
           id: ctx.session.user.id,
           name: ctx.session.user.name ?? null,
@@ -63,24 +62,48 @@ export const chatRouter = createTRPCRouter({
   }),
 
   // Subscribe to new messages
-  onMessage: protectedProcedure.subscription(() => {
-    return observable<ChatMessage>((emit) => {
-      let disposed = false;
+  onMessage: protectedProcedure.subscription(async function* () {
+    let disposed = false;
 
-      const onMessage = (message: ChatMessage) => {
-        if (!disposed) emit.next(message);
-      };
+    const messages = new AsyncIterableQueue<ChatMessage>();
 
-      ee.on("sendMessage", onMessage);
+    const onMessage = (message: ChatMessage) => {
+      if (!disposed) messages.push(message);
+    };
 
-      return () => {
-        try {
-          disposed = true;
-          ee.off("sendMessage", onMessage);
-        } catch (error) {
-          console.error("Error during subscription cleanup:", error);
-        }
-      };
-    });
+    ee.on("sendMessage", onMessage);
+
+    try {
+      while (!disposed) {
+        yield await messages.next();
+      }
+    } finally {
+      disposed = true;
+      ee.off("sendMessage", onMessage);
+    }
   }),
-});
+};
+
+// Helper class for async iteration
+class AsyncIterableQueue<T> {
+  private queue: T[] = [];
+  private resolveNext: ((value: T) => void) | null = null;
+
+  push(item: T) {
+    if (this.resolveNext) {
+      this.resolveNext(item);
+      this.resolveNext = null;
+    } else {
+      this.queue.push(item);
+    }
+  }
+
+  async next(): Promise<T> {
+    if (this.queue.length > 0) {
+      return this.queue.shift()!;
+    }
+    return new Promise((resolve) => {
+      this.resolveNext = resolve;
+    });
+  }
+}

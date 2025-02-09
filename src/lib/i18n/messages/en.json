@@ -32,7 +32,9 @@
     "navigation": {
       "label": "My Account"
     },
-    "not-provided": "Not provided"
+    "not-provided": "Not provided",
+    "welcome-message-description": "You must set your username first before entering the platform!",
+    "welcome-message-title": "Welcome"
   },
   "CardFooter": {
     "Login to see detailed view statistics": "Login to see detailed view statistics.",
@@ -42,9 +44,27 @@
   },
   "Comments": {
     "add-comment-placeholder": "Write a comment",
+    "buttons": {
+      "deleteComment": {
+        "label": "Delete"
+      }
+    },
     "loading-comments": "Loading comments...",
     "no-comments-yet": "No comments yet.",
-    "reply-to-comment-placeholder": "Write an answer"
+    "reply-to-comment-placeholder": "Write an answer",
+    "toasts": {
+      "errors": {
+        "deleteComment": {
+          "title": "Error during deletion"
+        }
+      },
+      "success": {
+        "deleteComment": {
+          "description": "The comment was successfully deleted",
+          "title": "Success"
+        }
+      }
+    }
   },
   "Common": {
     "day": "day",
@@ -155,6 +175,8 @@
       "label": "Email address"
     },
     "login-with-discord": "Login with Discord",
+    "login-with-facebook": "Login with Facebook",
+    "login-with-github": "Login with Github",
     "login-with-google": "Login with Google",
     "login-with-twitter": "Login with Twitter",
     "password": {
@@ -201,9 +223,21 @@
     "toggle-menu": "Toggle menu"
   },
   "Notifications": {
+    "entity_comment": "Comment",
+    "entity_grow": "Grow",
+    "entity_photo": "Photo",
+    "entity_plant": "Plant",
+    "entity_post": "Post",
     "navigation": {
-      "label": "Notifications"
-    }
+      "label": "Notifications",
+      "trigger-button-title": "Notifications"
+    },
+    "new": "NEW",
+    "new_comment": "commented on your ",
+    "new_follow": "follows you now",
+    "new_like": "likes your",
+    "new_notification": "New notification",
+    "new_post": "has posted an update"
   },
   "Photos": {
     "DeleteConfirmation": {
@@ -264,6 +298,7 @@
     "uploaded-at": "uploaded on"
   },
   "Plants": {
+    "NoPlantsFound": "No plants could be found.",
     "breeder": "Breeder",
     "button-label-post-update": "Create Post with Plant",
     "curing-start-date": "Curing phase start date",
@@ -310,6 +345,9 @@
     "Delete": "Delete",
     "LanguageToggle": {
       "toggle-language": "Change language"
+    },
+    "SignOut": {
+      "buttonLabel": "Sign out"
     },
     "asc": "Ascending",
     "coming-soon": "Coming soon",

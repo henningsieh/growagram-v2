@@ -3,6 +3,7 @@ import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useEffect } from "react";
 import { RESPONSIVE_IMAGE_SIZES } from "~/components/Layouts/responsive-grid";
+import { useImageModal } from "~/components/features/Photos/modal-provider";
 import {
   Carousel,
   CarouselContent,
@@ -11,7 +12,6 @@ import {
   CarouselPrevious,
 } from "~/components/ui/carousel";
 import { formatDate, formatTime } from "~/lib/utils";
-import { useImageModal } from "~/providers/modal-provider";
 import type { ImageType, PlantImagesType } from "~/server/api/root";
 import { Locale } from "~/types/locale";
 

@@ -21,6 +21,8 @@ import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
 import { OwnerDropdownMenu } from "~/components/atom/owner-dropdown-menu";
 import { SocialCardFooter } from "~/components/atom/social-card-footer";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
+import { Comments } from "~/components/features/Comments/comments";
+import { useImageModal } from "~/components/features/Photos/modal-provider";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardTitle } from "~/components/ui/card";
@@ -36,15 +38,12 @@ import { useToast } from "~/hooks/use-toast";
 import { Link, useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import { cn, formatDate, formatTime } from "~/lib/utils";
-import { useImageModal } from "~/providers/modal-provider";
 import type { GetOwnPhotoType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
 import { PhotosSortField } from "~/types/image";
 import { LikeableEntityType } from "~/types/like";
 import { Locale } from "~/types/locale";
 import { PostableEntityType } from "~/types/post";
-
-import { Comments } from "../Comments/comments";
 
 interface PhotoCardProps {
   photo: GetOwnPhotoType;
@@ -151,7 +150,7 @@ export default function PhotoCard({
       />
       <Card
         className={cn(
-          `relative flex flex-col overflow-hidden border border-input`,
+          `relative flex flex-col overflow-hidden border border-input pt-1`,
           isSocial && "border-none",
         )}
       >

@@ -13,17 +13,12 @@ import { env } from "~/env";
 import cloudinary from "~/lib/cloudinary";
 import { images, plantImages } from "~/lib/db/schema";
 import { s3Client } from "~/lib/minio";
-import {
-  createTRPCRouter,
-  protectedProcedure,
-  publicProcedure,
-} from "~/server/api/trpc";
+import { connectImageWithPlantsQuery } from "~/server/api/routers/plantImages";
+import { protectedProcedure, publicProcedure } from "~/server/api/trpc";
 import { PhotosSortField } from "~/types/image";
 import { imageSchema } from "~/types/zodSchema";
 
-import { connectImageWithPlantsQuery } from "./plantImages";
-
-export const photoRouter = createTRPCRouter({
+export const photoRouter = {
   getOwnPhotos: protectedProcedure
     .input(
       z
@@ -71,7 +66,7 @@ export const photoRouter = createTRPCRouter({
         : undefined;
 
       // Get total count using Drizzle query builder
-      const totalCountResult = await ctx.db
+      const [totalCountResult] = await ctx.db
         .select({ count: count() })
         .from(images)
         .where(
@@ -79,7 +74,7 @@ export const photoRouter = createTRPCRouter({
             ? and(isOwnImageCondition, isNewImageCondition)
             : isOwnImageCondition,
         );
-      const totalCount = Number(totalCountResult[0].count);
+      const totalCount = Number(totalCountResult?.count);
 
       // Get the images with pagination, sorting, and filtering
       const imagesList = await ctx.db.query.images.findMany({
@@ -314,7 +309,7 @@ export const photoRouter = createTRPCRouter({
         });
       }
     }),
-});
+};
 
 /**
  * Deletes an object from S3 storage.

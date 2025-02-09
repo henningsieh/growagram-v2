@@ -1,20 +1,24 @@
 // src/server/api/root.ts:
-import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
-import { photoRouter } from "~/server/api/routers/image";
-import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
+import { createCallerFactory } from "@trpc/server/unstable-core-do-not-import";
+import { RouterInput, RouterOutput } from "~/lib/trpc/react";
 
+import { channelRouter } from "./routers/channel";
 import { chatRouter } from "./routers/chat";
 import { commentRouter } from "./routers/comments";
 import { growRouter } from "./routers/grow";
+import { photoRouter } from "./routers/image";
 import { likeRouter } from "./routers/likes";
+import { messageRouter } from "./routers/message";
 import { plantRouter } from "./routers/plant";
 import { postRouter } from "./routers/post";
 import { userRouter } from "./routers/users";
+import { createTRPCRouter, publicProcedure } from "./trpc";
+import { notificationRouter } from "./routers/notifications";
 
 /**
- * This is the primary router for your server.
+ * This is the primary router for the server.
  *
- * All routers added in /api/routers should be manually added here.
+ * All routers added in /server/api/routers must be added here.
  */
 export const appRouter = createTRPCRouter({
   users: userRouter,
@@ -23,24 +27,38 @@ export const appRouter = createTRPCRouter({
   photos: photoRouter,
   likes: likeRouter,
   comments: commentRouter,
-  posts: postRouter,
+  updates: postRouter,
   chat: chatRouter,
+  channel: channelRouter,
+  message: messageRouter,
+  notifications: notificationRouter,
+
+  healthcheck: publicProcedure.query(() => "yay!"),
+
+  randomNumber: publicProcedure.subscription(async function* () {
+    while (true) {
+      yield Math.random();
+      await new Promise((resolve) => setTimeout(resolve, 500));
+    }
+  }),
 });
 
 // export type definition of API
 export type AppRouter = typeof appRouter;
-type RouterOutput = inferRouterOutputs<AppRouter>;
-type RouterInput = inferRouterInputs<AppRouter>;
+
+// notificationRouter
+//  OUTPUTS:
+export type GetUnreadNotificationType = RouterOutput["notifications"]["getUnread"][number];
 
 // postRouter
 //  OUTPUTS:
-export type GetPostsType = RouterOutput["posts"]["getAll"];
-export type GetPostType = RouterOutput["posts"]["getAll"][number];
-export type GetCreatePostOutput = RouterOutput["posts"]["create"];
+export type GetPostsType = RouterOutput["updates"]["getAll"];
+export type GetPostType = RouterOutput["updates"]["getAll"][number];
+export type GetCreatePostOutput = RouterOutput["updates"]["create"];
 
 //  INPUTS:
-export type GetPostsInput = RouterInput["posts"]["getAll"];
-export type CreatePostInput = RouterInput["posts"]["create"];
+export type GetPostsInput = RouterInput["updates"]["getAll"];
+export type CreatePostInput = RouterInput["updates"]["create"];
 
 // userRouter
 //  OUTPUTS:
@@ -137,4 +155,4 @@ export type GrowDisconnectPlantInput = RouterInput["grows"]["disconnectPlant"];
  *       ^? Post[]
  */
 
-export const createCaller = createCallerFactory(appRouter);
+export const createCaller = createCallerFactory()(appRouter);

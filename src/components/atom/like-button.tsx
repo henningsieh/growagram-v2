@@ -5,14 +5,13 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Heart } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { forwardRef, useEffect, useState } from "react";
+import SpinningLoader from "~/components/Layouts/loader";
 import { Button } from "~/components/ui/button";
 import { useToast } from "~/hooks/use-toast";
 import { api } from "~/lib/trpc/react";
 import { cn } from "~/lib/utils";
-import type { ToggleLikeInput } from "~/server/api/root";
+import { ToggleLikeInput } from "~/server/api/root";
 import { LikeableEntityType } from "~/types/like";
-
-import SpinningLoader from "../Layouts/loader";
 
 interface LikeButtonProps {
   entityId: string;
@@ -74,13 +73,13 @@ export const LikeButton = forwardRef<HTMLButtonElement, LikeButtonProps>(
 
         return { variables };
       },
-      onSuccess: (data, variables) => {
-        console.debug("Like toggled successfully:", {
-          liked: data.liked,
-          entityId: variables.entityId,
-          entityType: variables.entityType,
-        });
-      },
+      // onSuccess: (data, variables) => {
+      //   console.debug("Like toggled successfully:", {
+      //     liked: data.liked,
+      //     entityId: variables.entityId,
+      //     entityType: variables.entityType,
+      //   });
+      // },
       onError: (error) => {
         setIsLiked(initialLiked);
         setLikeCount(initialLikeCount);

@@ -3,14 +3,15 @@ import { TRPCError } from "@trpc/server";
 import { and, eq, sql } from "drizzle-orm";
 import { z } from "zod";
 import { comments, grows, images, likes, plants, posts } from "~/lib/db/schema";
-import {
-  createTRPCRouter,
-  protectedProcedure,
-  publicProcedure,
-} from "~/server/api/trpc";
+import { createNotification } from "~/lib/notifications";
+import { protectedProcedure, publicProcedure } from "~/server/api/trpc";
 import { LikeableEntityType } from "~/types/like";
+import {
+  NotifiableEntityType,
+  NotificationEventType,
+} from "~/types/notification";
 
-export const likeRouter = createTRPCRouter({
+export const likeRouter = {
   toggleLike: protectedProcedure
     .input(
       z.object({
@@ -81,11 +82,51 @@ export const likeRouter = createTRPCRouter({
         return { liked: false };
       } else {
         // Like: insert new like
-        await ctx.db.insert(likes).values({
-          userId,
-          entityId,
-          entityType,
+        const like = await ctx.db
+          .insert(likes)
+          .values({
+            userId,
+            entityId,
+            entityType,
+          })
+          .returning();
+
+        const notifiableEntityType = () => {
+          switch (entityType) {
+            case LikeableEntityType.Grow:
+              return NotifiableEntityType.GROW;
+            case LikeableEntityType.Plant:
+              return NotifiableEntityType.PLANT;
+            case LikeableEntityType.Photo:
+              return NotifiableEntityType.PHOTO;
+            case LikeableEntityType.Comment:
+              return NotifiableEntityType.COMMENT;
+            case LikeableEntityType.Post:
+              return NotifiableEntityType.POST;
+
+            default: {
+              throw new TRPCError({
+                code: "INTERNAL_SERVER_ERROR",
+                message: "Invalid likeable entity type",
+              });
+            }
+          }
+        };
+
+        await createNotification({
+          notificationEventType: NotificationEventType.NEW_LIKE,
+          notifiableEntity: {
+            type: notifiableEntityType(),
+            id: entityId,
+          },
+          actorData: {
+            id: ctx.session.user.id,
+            name: ctx.session.user.name,
+            username: ctx.session.user.username ?? null,
+            image: ctx.session.user.image ?? null,
+          },
         });
+
         return { liked: true };
       }
     }),
@@ -131,4 +172,4 @@ export const likeRouter = createTRPCRouter({
         entityType: like.entityType,
       }));
     }),
-});
+};

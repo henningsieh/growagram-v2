@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Calendar1Icon, TentTreeIcon } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
+import { EmbeddedPlantCard } from "~/components/features/Plants/embedded-plant-card";
 import { Button } from "~/components/ui/button";
 import {
   Card,
@@ -23,8 +24,6 @@ import { Link } from "~/lib/i18n/routing";
 import { type DateFormatOptions, formatDate } from "~/lib/utils";
 import type { GetAllGrowType } from "~/server/api/root";
 import { Locale } from "~/types/locale";
-
-import { EmbeddedPlantCard } from "../Plants/embedded-plant-card";
 
 interface EmbeddedGrowCardProps {
   grow: GetAllGrowType;

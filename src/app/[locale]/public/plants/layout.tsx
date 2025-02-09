@@ -14,7 +14,7 @@ export default async function PublicPlantsLayout({
 }) {
   // Prefetch initial data for the first page
   await api.plants.getAllPlants.prefetchInfinite({
-    limit: PaginationItemsPerPage.PLANTS_PER_PAGE,
+    limit: PaginationItemsPerPage.PUBLIC_PLANTS_PER_PAGE,
   } satisfies GetAllPlantsInput);
 
   return <HydrateClient>{children}</HydrateClient>;

@@ -6,7 +6,7 @@ import {
   ChevronRight,
   ChevronsUpDown,
   Gauge,
-  LogOut,
+  LogOutIcon,
   Plus,
   Sparkles,
   UserPen,
@@ -52,9 +52,9 @@ import {
   SidebarTrigger,
   useSidebar,
 } from "~/components/ui/sidebar";
+import { useSignOut } from "~/hooks/use-auth";
 import { Link } from "~/lib/i18n/routing";
-import { sidebarItems } from "~/lib/sidebar";
-import { handleSignOut } from "~/server/actions/authActions";
+import { sidebarItems, translateSidebar } from "~/lib/sidebar";
 
 import { NavigationBreadcrumb } from "../Breadcrumbs";
 
@@ -70,7 +70,7 @@ export default function ProtectedSidebar({
   const { data: session } = useSession();
 
   return (
-    <SidebarProvider className="relative">
+    <SidebarProvider className="relative min-h-[calc(100svh-7rem)]">
       {/* Main sidebar with floating, collapsible design */}
       <ProtectedSidebarContent session={session}>
         {children}
@@ -87,29 +87,10 @@ function ProtectedSidebarContent({
   children: React.ReactNode;
 }) {
   const t = useTranslations();
-  //TODO: fix button to open /close sidebar
-  const { isMobile, toggleSidebar } = useSidebar();
+  const handleSignOut = useSignOut();
+  const { isMobile, toggleSidebar, open } = useSidebar();
 
-  const translatedSidebarItems = {
-    ...sidebarItems,
-    teams: sidebarItems.teams.map((team) => ({
-      ...team,
-      name: t(`Sidebar.teams.${team.name}`),
-      plan: t(`Sidebar.teams.${team.plan}`),
-    })),
-    navMain: sidebarItems.navMain.map((item) => ({
-      ...item,
-      title: t(`Sidebar.navMain.${item.title}.title`),
-      items: item.items?.map((subItem) => ({
-        ...subItem,
-        title: t(`Sidebar.navMain.${item.title}.items.${subItem.title}`),
-      })),
-    })),
-    coming_soon: sidebarItems.coming_soon.map((cs) => ({
-      ...cs,
-      name: t(`Sidebar.coming_soon.${cs.name}`),
-    })),
-  };
+  const translatedSidebarItems = translateSidebar(t, sidebarItems);
 
   return (
     <>
@@ -152,7 +133,12 @@ function ProtectedSidebarContent({
                   className="group/collapsible"
                 >
                   <SidebarMenuItem>
-                    <CollapsibleTrigger asChild>
+                    <CollapsibleTrigger
+                      asChild
+                      onClick={() => {
+                        if (!open) toggleSidebar();
+                      }}
+                    >
                       {/* <Link href={item.url}> */}
                       <SidebarMenuButton tooltip={item.title}>
                         {item.icon && <item.icon />}
@@ -161,7 +147,11 @@ function ProtectedSidebarContent({
                       </SidebarMenuButton>
                       {/* </Link> */}
                     </CollapsibleTrigger>
-                    <CollapsibleContent onClick={() => toggleSidebar()}>
+                    <CollapsibleContent
+                      onClick={() => {
+                        if (isMobile) toggleSidebar();
+                      }}
+                    >
                       <SidebarMenuSub>
                         {item.items?.map((subItem) => (
                           <SidebarMenuSubItem key={subItem.title}>
@@ -278,7 +268,9 @@ function ProtectedSidebarContent({
 
                 {/* User Profile Dropdown Content */}
                 <DropdownMenuContent
-                  onClick={() => toggleSidebar()}
+                  onClick={function () {
+                    if (isMobile) toggleSidebar();
+                  }}
                   className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-sm"
                   // side="right"
                   side={isMobile ? "bottom" : "right"}
@@ -337,9 +329,9 @@ function ProtectedSidebarContent({
                   <DropdownMenuSeparator />
 
                   {/* Sign Out Action */}
-                  <DropdownMenuItem onClick={async () => await handleSignOut()}>
-                    <LogOut />
-                    {}
+                  <DropdownMenuItem onClick={handleSignOut}>
+                    <LogOutIcon />
+                    {t("Platform.SignOut.buttonLabel")}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

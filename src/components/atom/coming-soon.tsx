@@ -3,9 +3,8 @@
 import { motion } from "framer-motion";
 import { Clock, Rocket } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { Button } from "~/components/ui/button";
 import { Link } from "~/lib/i18n/routing";
-
-import { Button } from "../ui/button";
 
 const containerVariants = {
   hidden: { opacity: 0, y: 20 },

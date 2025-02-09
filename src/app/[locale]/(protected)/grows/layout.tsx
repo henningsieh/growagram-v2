@@ -1,14 +1,13 @@
 // src/app/[locale]/(protected)/grows/layout.tsx:
 import { PaginationItemsPerPage } from "~/assets/constants";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
-// import { HydrateClient } from "~/lib/trpc/server";
 import { HydrateClient, api } from "~/lib/trpc/server";
-import type { GetOwnGrowsInput } from "~/server/api/root";
+import { type GetOwnGrowsInput } from "~/server/api/root";
 import { GrowsSortField } from "~/types/grow";
 
 export const metadata = {
-  title: "My Grows",
-  description: "My Grows",
+  title: "Grower's Plattform | My Grows",
+  description: "Grower's Plattform | My Grows",
 };
 
 export default async function MyGrowsLayout({

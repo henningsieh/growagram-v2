@@ -10,9 +10,10 @@ import AppFooter from "~/components/Layouts/Footer/app-footer";
 import { MainNavigationBar } from "~/components/Layouts/MainNavigationBar";
 import { ThemeProvider } from "~/components/Layouts/theme-provider";
 import { Toaster } from "~/components/ui/toaster";
-import { TRPCReactProvider } from "~/lib/trpc/react";
-import { ImageModalProvider } from "~/providers/modal-provider";
 import "~/styles/globals.css";
+
+import { ImageModalProvider } from "../../components/features/Photos/modal-provider";
+import { TRPCReactProvider } from "../../lib/trpc/react";
 
 const geistSans = localFont({
   src: "../../lib/fonts/GeistMonoVF.woff",

@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import React from "react";
+import { Button } from "~/components/ui/button";
 import { Label } from "~/components/ui/label";
 import {
   Select,
@@ -16,8 +17,6 @@ import {
 } from "~/components/ui/select";
 import { Switch } from "~/components/ui/switch";
 import { cn } from "~/lib/utils";
-
-import { Button } from "../ui/button";
 
 export interface SortOption<T extends string> {
   field: T;

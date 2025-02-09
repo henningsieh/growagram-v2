@@ -1,10 +1,11 @@
 // src/components/atom/social-card-footer.tsx
-import { ChartColumn, MessageCircle, Share } from "lucide-react";
+import { ChartColumn, MessagesSquareIcon, Share } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 // eslint-disable-next-line no-restricted-imports
 import Link from "next/link";
 import React from "react";
+import SpinningLoader from "~/components/Layouts/loader";
 import { LikeButton } from "~/components/atom/like-button";
 import { Button } from "~/components/ui/button";
 import {
@@ -16,8 +17,6 @@ import {
 import { usePathname } from "~/lib/i18n/routing";
 import { cn } from "~/lib/utils";
 import { LikeableEntityType } from "~/types/like";
-
-import SpinningLoader from "../Layouts/loader";
 
 interface CardFooterProps {
   entityId: string;
@@ -78,7 +77,7 @@ export const SocialCardFooter: React.FC<CardFooterProps> = ({
   };
 
   return (
-    <div>
+    <>
       <div className={cn("flex items-center justify-between gap-2", className)}>
         {renderButton(
           <Button
@@ -91,7 +90,7 @@ export const SocialCardFooter: React.FC<CardFooterProps> = ({
             {commentCountLoading ? (
               <SpinningLoader className="h-6 w-6 text-secondary" />
             ) : (
-              <MessageCircle className="h-4 w-4" />
+              <MessagesSquareIcon className="h-4 w-4" />
             )}
             {!commentCountLoading && <span>{stats.comments}</span>}
           </Button>,
@@ -126,7 +125,7 @@ export const SocialCardFooter: React.FC<CardFooterProps> = ({
 
         {renderButton(
           <Button
-            className="flex h-8 w-10 items-center justify-center gap-1"
+            className="flex h-8 w-8 items-center justify-center gap-1"
             variant="ghost"
             size="sm"
             disabled={!user}
@@ -136,6 +135,6 @@ export const SocialCardFooter: React.FC<CardFooterProps> = ({
           t("CardFooter.Please log in to share this content"),
         )}
       </div>
-    </div>
+    </>
   );
 };

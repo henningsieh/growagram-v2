@@ -4,12 +4,15 @@ import { and, asc, count, desc, eq, isNull } from "drizzle-orm";
 import { z } from "zod";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
 import { comments, grows, images, plants, posts } from "~/lib/db/schema";
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { createNotification } from "~/lib/notifications";
+import { protectedProcedure, publicProcedure } from "~/server/api/trpc";
 import { CommentableEntityType } from "~/types/comment";
+import {
+  NotifiableEntityType,
+  NotificationEventType,
+} from "~/types/notification";
 
-import { publicProcedure } from "../trpc";
-
-export const commentRouter = createTRPCRouter({
+export const commentRouter = {
   // Post a new comment (create a new comment)
   postComment: protectedProcedure
     .input(
@@ -56,14 +59,66 @@ export const commentRouter = createTRPCRouter({
       }
 
       // Insert new comment
-      const newComment = await ctx.db.insert(comments).values({
-        userId,
-        entityId,
-        entityType,
-        commentText,
-        parentCommentId,
-      });
+      const [newComment] = await ctx.db
+        .insert(comments)
+        .values({
+          userId,
+          entityId,
+          entityType,
+          commentText,
+          parentCommentId,
+        })
+        .returning();
 
+      // Map CommentableEntityType to NotifiableEntityType
+      const notifiableEntityType = () => {
+        switch (entityType) {
+          case CommentableEntityType.Grow:
+            return NotifiableEntityType.GROW;
+          case CommentableEntityType.Plant:
+            return NotifiableEntityType.PLANT;
+          case CommentableEntityType.Photo:
+            return NotifiableEntityType.PHOTO;
+          case CommentableEntityType.Post:
+            return NotifiableEntityType.POST;
+          default:
+            throw new TRPCError({
+              code: "INTERNAL_SERVER_ERROR",
+              message: "Invalid commentable entity type",
+            });
+        }
+      };
+
+      // Create notifications for entity owner and parent comment authors
+      const actorData = {
+        id: ctx.session.user.id,
+        name: ctx.session.user.name,
+        username: ctx.session.user.username ?? null,
+        image: ctx.session.user.image ?? null,
+      };
+      if (!newComment.parentCommentId) {
+        // Create notification for entity owner
+        await createNotification({
+          notificationEventType: NotificationEventType.NEW_COMMENT,
+          commentId: newComment.id,
+          notifiableEntity: {
+            type: notifiableEntityType(),
+            id: entityId,
+          },
+          actorData,
+        });
+      } else {
+        // Create notification for parent comment authors
+        await createNotification({
+          notificationEventType: NotificationEventType.NEW_COMMENT,
+          commentId: newComment.id,
+          notifiableEntity: {
+            type: NotifiableEntityType.COMMENT,
+            id: newComment.id,
+          },
+          actorData,
+        });
+      }
       return { comment: newComment };
     }),
 
@@ -206,4 +261,29 @@ export const commentRouter = createTRPCRouter({
 
       return commentReplies;
     }),
-});
+
+  // Get parent entity information for a comment
+  getParentEntity: protectedProcedure
+    .input(z.object({ commentId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const comment = await ctx.db.query.comments.findFirst({
+        where: eq(comments.id, input.commentId),
+        columns: {
+          entityId: true,
+          entityType: true,
+        },
+      });
+
+      if (!comment) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Comment not found",
+        });
+      }
+
+      return {
+        entityId: comment.entityId,
+        entityType: comment.entityType,
+      };
+    }),
+};

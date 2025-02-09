@@ -1,4 +1,4 @@
-// src/lib/db/schema.ts:
+import type { InferSelectModel } from "drizzle-orm";
 import { relations, sql } from "drizzle-orm";
 import {
   AnyPgColumn,
@@ -6,8 +6,7 @@ import {
   foreignKey,
   index,
   integer,
-  pgTable,
-  pgTableCreator,
+  pgTable, // pgTableCreator,
   primaryKey,
   text,
   timestamp,
@@ -16,13 +15,66 @@ import {
 import type { AdapterAccountType } from "next-auth/adapters";
 import { CommentableEntityType } from "~/types/comment";
 import { LikeableEntityType } from "~/types/like";
+import {
+  NotifiableEntityType,
+  NotificationEventType,
+} from "~/types/notification";
 import { PostableEntityType } from "~/types/post";
 import { UserRoles } from "~/types/user";
 
-// Creating table with a prefix for multi-project schema
-export const createTable = pgTableCreator((name) => `growagram.com_${name}`);
+export const Message = pgTable("message", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  channelId: text("channel_id")
+    .notNull()
+    .references(() => Channel.id),
 
-// Add this to your schema
+  name: text("name").notNull(),
+  text: text("text").notNull(),
+
+  createdAt: timestamp("created_at", {
+    mode: "date",
+    precision: 3,
+    withTimezone: true,
+  })
+    .notNull()
+    .defaultNow(),
+  updatedAt: timestamp("updated_at", {
+    mode: "date",
+    precision: 3,
+    withTimezone: true,
+  })
+    .notNull()
+    .defaultNow()
+    .$onUpdateFn(() => new Date()),
+});
+export type PostType = InferSelectModel<typeof Message>;
+
+export const Channel = pgTable("channel", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  name: text("name"),
+
+  createdAt: timestamp("created_at", {
+    mode: "date",
+    precision: 3,
+    withTimezone: true,
+  })
+    .notNull()
+    .defaultNow(),
+  updatedAt: timestamp("updated_at", {
+    mode: "date",
+    precision: 3,
+    withTimezone: true,
+  })
+    .notNull()
+    .defaultNow()
+    .$onUpdateFn(() => new Date()),
+});
+export type ChannelType = InferSelectModel<typeof Channel>;
+
 export const chatMessages = pgTable("chat_message", {
   id: text("id")
     .primaryKey()
@@ -380,12 +432,148 @@ export const posts = pgTable("public_post", {
     .notNull(),
 });
 
+export const userFollows = pgTable(
+  "user_follow",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    followerId: text("follower_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    followingId: text("following_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+  },
+  (table) => ({
+    followerIdx: index("follower_idx").on(table.followerId),
+    followingIdx: index("following_idx").on(table.followingId),
+    uniqFollow: uniqueIndex("uniq_follow_idx").on(
+      table.followerId,
+      table.followingId,
+    ),
+  }),
+);
+
+export const notifications = pgTable(
+  "notification",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    // Who receives the notification
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    // Who triggered the notification
+    actorId: text("actor_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    // Type of notification
+    type: text("type").$type<NotificationEventType>().notNull(),
+    commentId: text("comment_id").references(() => comments.id, {
+      onDelete: "cascade",
+    }),
+    // What entity was acted upon
+    entityType: text("entity_type").$type<NotifiableEntityType>().notNull(),
+    entityId: text("entity_id").notNull(),
+    read: boolean("read").default(false).notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+  },
+  (table) => ({
+    // Index for querying user's notifications
+    userIdx: index("notification_user_idx").on(table.userId),
+    // Index for querying by entity
+    entityIdx: index("notification_entity_idx").on(
+      table.entityType,
+      table.entityId,
+    ),
+    // Index for finding unread notifications
+    unreadIdx: index("notification_unread_idx").on(table.userId, table.read),
+  }),
+);
+
 // Drizzle ORM Relations
+
+export const MessageRelations = relations(Message, ({ one }) => ({
+  channel: one(Channel, {
+    fields: [Message.channelId],
+    references: [Channel.id],
+  }),
+}));
+
+export const ChannelRelations = relations(Channel, ({ many }) => ({
+  posts: many(Message),
+}));
+
+export const notificationsRelations = relations(notifications, ({ one }) => ({
+  user: one(users, {
+    relationName: "userNotifications",
+    fields: [notifications.userId],
+    references: [users.id],
+  }),
+  actor: one(users, {
+    relationName: "actorNotifications",
+    fields: [notifications.actorId],
+    references: [users.id],
+  }),
+  // Dynamic relations based on entityType
+  follow: one(users, {
+    fields: [notifications.entityId],
+    references: [users.id],
+  }),
+  grow: one(grows, {
+    fields: [notifications.entityId],
+    references: [grows.id],
+  }),
+  plant: one(plants, {
+    fields: [notifications.entityId],
+    references: [plants.id],
+  }),
+  photo: one(images, {
+    fields: [notifications.entityId],
+    references: [images.id],
+  }),
+  comment: one(comments, {
+    fields: [notifications.entityId],
+    references: [comments.id],
+  }),
+}));
 
 export const usersRelations = relations(users, ({ many }) => ({
   grows: many(grows),
   plants: many(plants),
-  Images: many(images),
+  images: many(images),
+  followers: many(userFollows, {
+    relationName: "userFollowers",
+  }),
+  following: many(userFollows, {
+    relationName: "userFollowing",
+  }),
+  notifications: many(notifications, {
+    relationName: "userNotifications",
+  }),
+  actorNotifications: many(notifications, {
+    relationName: "actorNotifications",
+  }),
+}));
+
+export const userFollowsRelations = relations(userFollows, ({ one }) => ({
+  follower: one(users, {
+    relationName: "userFollowing",
+    fields: [userFollows.followerId],
+    references: [users.id],
+  }),
+  following: one(users, {
+    relationName: "userFollowers",
+    fields: [userFollows.followingId],
+    references: [users.id],
+  }),
 }));
 
 export const commentsRelations = relations(comments, ({ one, many }) => ({
@@ -478,6 +666,10 @@ export const likesRelations = relations(likes, ({ one }) => ({
   comment: one(comments, {
     fields: [likes.entityId],
     references: [comments.id],
+  }),
+  post: one(posts, {
+    fields: [likes.entityId],
+    references: [posts.id],
   }),
 }));
 
