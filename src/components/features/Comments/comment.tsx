@@ -5,10 +5,13 @@ import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import React, { useEffect, useRef } from "react";
 import SpinningLoader from "~/components/Layouts/loader";
+import AvatarCardHeader, {
+  ActionItem,
+} from "~/components/atom/avatar-card-header";
 import CustomAvatar from "~/components/atom/custom-avatar";
 import { HighlightElement } from "~/components/atom/highlight-element";
 import { SocialCardFooter } from "~/components/atom/social-card-footer";
-import { Button } from "~/components/ui/button";
+import { Button, ButtonProps } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { useComments } from "~/hooks/use-comments";
 import { useLikeStatus } from "~/hooks/use-likes";
@@ -61,6 +64,14 @@ export const Comment: React.FC<CommentProps> = ({
     isSubmitting,
     commentsSortOrder,
   } = useComments(comment.entityId, comment.entityType);
+
+  // Focus on the input field when replying
+  useEffect(() => {
+    if (isReplying && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isReplying]);
+
   const handleReplySubmit = () => {
     handleSubmitComment(comment.id);
   };
@@ -110,8 +121,8 @@ export const Comment: React.FC<CommentProps> = ({
     },
     onSuccess: async () => {
       toast({
-        title: "Success",
-        description: "Comment deleted successfully",
+        title: t("toasts.success.deleteComment.title"),
+        description: t("toasts.success.deleteComment.description"),
       });
 
       // Invalidate queries to ensure fresh data
@@ -129,16 +140,13 @@ export const Comment: React.FC<CommentProps> = ({
       }
 
       toast({
-        title: "Error",
+        title: t("toasts.errors.deleteComment.title"),
         description:
           error.message || `Failed to delete comment with ID: ${commentId}`,
         variant: "destructive",
       });
     },
   });
-
-  // Check if the current user is the comment author
-  const isAuthor = session?.user?.id === comment.author.id;
 
   // Handle comment deletion
   const handleDeleteComment = () => {
@@ -151,60 +159,46 @@ export const Comment: React.FC<CommentProps> = ({
     onCancelReply?.();
   };
 
-  // Focus on the input field when replying
-  useEffect(() => {
-    if (isReplying && inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [isReplying]);
+  // Check if the current user is the comment author
+  const isAuthor = session?.user?.id === comment.author.id;
+  const commentActions: ActionItem[] = isAuthor
+    ? [
+        {
+          icon: Trash2,
+          label: t("buttons.deleteComment.label"),
+          onClick: handleDeleteComment,
+          variant: "destructive",
+          disabled: deleteMutation.isPending,
+        },
+      ]
+    : [];
 
   return (
     <HighlightElement
       id={comment.id}
       isHighlighted={isHighlighted}
       key={`highlight-${comment.id}-${isHighlighted}`}
-      className="-ml-2 pl-2"
+      className="-ml-2 px-2"
     >
       <motion.div
         initial={{ opacity: 0, x: 0 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.3 }}
       >
-        <div className="relative flex gap-2 p-2">
-          <div className="flex justify-center">
-            <CustomAvatar
-              size={32}
-              src={comment.author.image || undefined}
-              alt={comment.author.name || "User avatar"}
-              fallback={comment.author.name?.[0] || "?"}
-            />
-          </div>
+        <div className="relative flex gap-2 p-0">
           <div className="flex-1">
-            <div className="flex h-10 items-center gap-2">
-              <span className="text-sm font-semibold">
-                {comment.author.name}
-              </span>
-              <span className="text-xs text-muted-foreground">
-                {new Date(comment.createdAt).toLocaleString()}
-              </span>
-              {isAuthor && (
-                <Button
-                  variant="destructive"
-                  size="icon"
-                  className="m-1 ml-auto h-8 w-8 bg-transparent text-muted-foreground hover:text-foreground"
-                  onClick={handleDeleteComment}
-                  disabled={deleteMutation.isPending}
-                >
-                  <Trash2 size={20} />
-                </Button>
-              )}
-            </div>
-            <p className="text-sm">{comment.commentText}</p>
+            <AvatarCardHeader
+              user={comment.author}
+              date={comment.createdAt}
+              showActions={isAuthor}
+              actions={commentActions}
+            />
+            <p className="ml-12 text-sm">{comment.commentText}</p>
           </div>
         </div>
 
         <SocialCardFooter
-          className={`pb-2 pr-2 ${isSocial && "ml-12"}`}
+          className={`pb-2 pr-0 ${isSocial && "ml-12"}`}
           entityId={comment.id}
           entityType={LikeableEntityType.Comment}
           initialLiked={isLiked}
@@ -221,14 +215,14 @@ export const Comment: React.FC<CommentProps> = ({
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
-              transition={{ duration: 0.3 }}
+              transition={{ duration: 0.15 }}
               exit={{
                 opacity: 0,
                 height: 0,
-                transition: { duration: 0.2 },
+                transition: { duration: 0.15 },
               }}
             >
-              <div className="m-2 flex items-center gap-3 rounded-sm bg-muted p-1">
+              <div className="m-0 flex items-center gap-2 rounded-sm pl-2.5">
                 <CustomAvatar
                   size={32}
                   src={session?.user?.image || undefined}
@@ -241,8 +235,8 @@ export const Comment: React.FC<CommentProps> = ({
                     placeholder={t("reply-to-comment-placeholder")}
                     value={replyComment}
                     onChange={(e) => setReplyComment(e.target.value)}
-                    className="h-8 w-full"
                     disabled={isSubmitting}
+                    className="h-8 w-full bg-background text-sm"
                   />
                   <Button
                     className="shrink-0"

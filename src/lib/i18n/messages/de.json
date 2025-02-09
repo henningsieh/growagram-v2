@@ -44,9 +44,27 @@
   },
   "Comments": {
     "add-comment-placeholder": "Schreibe einen Kommentar",
+    "buttons": {
+      "deleteComment": {
+        "label": "Löschen"
+      }
+    },
     "loading-comments": "Kommentare werden geladen...",
     "no-comments-yet": "Bisher keine Kommentare.",
-    "reply-to-comment-placeholder": "Schreibe eine Antwort"
+    "reply-to-comment-placeholder": "Schreibe eine Antwort",
+    "toasts": {
+      "errors": {
+        "deleteComment": {
+          "title": "Fehler beim Löschen"
+        }
+      },
+      "success": {
+        "deleteComment": {
+          "description": "Der Kommentar wurde erfolgreich gelöscht",
+          "title": "Bestätigung"
+        }
+      }
+    }
   },
   "Common": {
     "day": "Tag",

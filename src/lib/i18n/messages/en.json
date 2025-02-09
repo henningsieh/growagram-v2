@@ -44,9 +44,27 @@
   },
   "Comments": {
     "add-comment-placeholder": "Write a comment",
+    "buttons": {
+      "deleteComment": {
+        "label": "Delete"
+      }
+    },
     "loading-comments": "Loading comments...",
     "no-comments-yet": "No comments yet.",
-    "reply-to-comment-placeholder": "Write an answer"
+    "reply-to-comment-placeholder": "Write an answer",
+    "toasts": {
+      "errors": {
+        "deleteComment": {
+          "title": "Error during deletion"
+        }
+      },
+      "success": {
+        "deleteComment": {
+          "description": "The comment was successfully deleted",
+          "title": "Success"
+        }
+      }
+    }
   },
   "Common": {
     "day": "day",
