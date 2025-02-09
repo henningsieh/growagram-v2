@@ -22,7 +22,7 @@ body {
     --harvest: 24.6 95% 53.1%; /* orange-500 */
     --curing: 217.2 91.2% 59.8%; /* blue-500 */
 
-    --background: 0 0% 95%;
+    --background: 0 0% 92%; /* Slightly darker than before */
     --foreground: 240 10% 20%;
     --card: 0 0% 98%;
     --card-foreground: 240 10% 20%;
@@ -59,11 +59,12 @@ body {
     --flowering: 349.7 89.2% 60.2%; /* rose-500 */
     --harvest: 24.6 95% 53.1%; /* orange-500 */
     --curing: 217.2 91.2% 59.8%; /* blue-500 */
-    --background: 0 0% 3.9%;
+
+    --background: 220 14% 8%;
     --foreground: 0 0% 98%;
-    --card: 20 14.3% 6%;
+    --card: 220 14% 6%;
     --card-foreground: 0 0% 98%;
-    --popover: 20 14.3% 6%;
+    --popover: 220 14% 6%;
     --popover-foreground: 0 0% 98%;
     --primary: 114 64% 28%;
     --primary-foreground: 0 0% 86%;
@@ -78,8 +79,8 @@ body {
     --border: 120 16% 18%;
     --input: 120 16% 28%;
     --ring: 120 61% 54%;
-    --navbar-background: 0 0% 98%;
-    --sidebar-background: 20 14.3% 6%;
+    --navbar-background: 220 14% 6%;
+    --sidebar-background: 220 14% 6%;
     --sidebar-foreground: 0 0% 98%;
     --sidebar-primary: 114 64% 28%;
     --sidebar-primary-foreground: 240 10% 20%;

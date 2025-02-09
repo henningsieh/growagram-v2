@@ -1,8 +1,6 @@
 // src/components/ui/delete-confirmation-dialog.tsx
-import { Trash2, TriangleAlert } from "lucide-react";
+import { AlertTriangle, Trash2, X } from "lucide-react";
 import { useTranslations } from "next-intl";
-import SpinningLoader from "~/components/Layouts/loader";
-import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
 import { Button } from "~/components/ui/button";
 import {
   Dialog,
@@ -12,6 +10,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "~/components/ui/dialog";
+import { cn } from "~/lib/utils";
+
+import SpinningLoader from "../Layouts/loader";
 
 interface DeleteConfirmationDialogProps {
   isOpen: boolean;
@@ -33,36 +34,36 @@ export function DeleteConfirmationDialog({
   alertCautionText,
 }: DeleteConfirmationDialogProps) {
   const t = useTranslations("Platform");
+
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent
         className="sm:max-w-xl"
         onOpenAutoFocus={(e) => e.preventDefault()}
       >
-        <DialogHeader>
-          <DialogTitle className="text-xl font-semibold">{title}</DialogTitle>
-          <DialogDescription className="mt-2 text-sm text-muted-foreground">
+        <DialogHeader className="flex justify-between gap-1 border-b p-4">
+          <DialogTitle className="text-lg font-semibold">{title}</DialogTitle>
+          <DialogDescription className="text-sm text-muted-foreground">
             {description}
           </DialogDescription>
         </DialogHeader>
 
         {alertCautionText && (
-          <Alert variant="destructive">
-            <AlertTitle className="items-gap-1 center flex gap-1 font-semibold text-foreground">
-              <TriangleAlert className="h-8 w-8 text-yellow-400" />
-            </AlertTitle>
-            <AlertDescription className="text-destructive">
-              {alertCautionText}
-            </AlertDescription>
-          </Alert>
+          <div className="m-2 border-l-4 border-destructive bg-destructive/10 p-2">
+            <div className="flex gap-3">
+              <AlertTriangle className="h-5 w-5 flex-shrink-0 text-destructive" />
+              <p className="text-sm text-destructive">{alertCautionText}</p>
+            </div>
+          </div>
         )}
 
-        <DialogFooter className="gap-3 sm:gap-0">
+        <DialogFooter className="flex flex-row items-center justify-end gap-2 p-2">
           <Button
             variant="outline"
             onClick={() => onOpenChange(false)}
             disabled={isDeleting}
             autoFocus={false}
+            className="h-9"
           >
             {t("Cancel")}
           </Button>
@@ -70,6 +71,7 @@ export function DeleteConfirmationDialog({
             variant="destructive"
             onClick={onConfirmDelete}
             disabled={isDeleting}
+            className={cn("h-9", isDeleting && "cursor-not-allowed opacity-50")}
           >
             {isDeleting ? (
               <SpinningLoader className="mr-2 h-4 w-4 animate-spin" />
