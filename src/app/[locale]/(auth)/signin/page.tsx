@@ -97,7 +97,7 @@ export default function Page() {
                   type="button"
                   disabled={isLoading}
                   onClick={() => signIn("google", { callbackUrl })}
-                  className="w-full px-14"
+                  className="w-full"
                 >
                   {isLoading ? (
                     <Loader2 className="mr-2 size-5 animate-spin" />
@@ -113,7 +113,7 @@ export default function Page() {
                   variant="outline"
                   disabled={isLoading}
                   onClick={() => signIn("discord", { callbackUrl })}
-                  className="w-full px-14"
+                  className="w-full"
                 >
                   {isLoading ? (
                     <Loader2 className="mr-2 size-5 animate-spin" />
@@ -123,13 +123,29 @@ export default function Page() {
                   {t("login-with-discord")}
                 </Button>
 
+                {/* Facebook Button */}
+                <Button
+                  variant="outline"
+                  type="button"
+                  disabled={isLoading}
+                  onClick={() => signIn("facebook", { callbackUrl })}
+                  className="w-full"
+                >
+                  {isLoading ? (
+                    <Loader2 className="mr-2 size-5 animate-spin" />
+                  ) : (
+                    <FaFacebook className="mr-2 size-5 text-[#1877F2]" />
+                  )}{" "}
+                  {t("login-with-facebook")}
+                </Button>
+
                 {/* Twitter Button */}
                 <Button
                   variant="outline"
                   type="button"
                   disabled={isLoading}
                   onClick={() => signIn("twitter", { callbackUrl })}
-                  className="w-full px-14"
+                  className="w-full"
                 >
                   {isLoading ? (
                     <Loader2 className="mr-2 size-5 animate-spin" />
@@ -143,30 +159,14 @@ export default function Page() {
                   type="button"
                   disabled={isLoading}
                   onClick={() => signIn("github", { callbackUrl })}
-                  className="w-full justify-between px-14"
+                  className="w-full"
                 >
                   {isLoading ? (
                     <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                   ) : (
-                    <FaGithub className="mr-2 h-4 w-4 text-[#1DA1F2]" />
+                    <FaGithub className="mr-2 h-4 w-4 text-[#fafafa]" />
                   )}{" "}
                   {t("login-with-github")}
-                </Button>
-
-                {/* Facebook Button */}
-                <Button
-                  variant="outline"
-                  type="button"
-                  disabled={isLoading}
-                  onClick={() => signIn("facebook", { callbackUrl })}
-                  className="w-full px-14"
-                >
-                  {isLoading ? (
-                    <Loader2 className="mr-2 size-5 animate-spin" />
-                  ) : (
-                    <FaFacebook className="mr-2 size-5 text-[#1877F2]" />
-                  )}{" "}
-                  {t("login-with-facebook")}
                 </Button>
               </div>
 
