@@ -14,6 +14,7 @@ import { createTRPCReact } from "@trpc/react-query";
 import { type inferRouterInputs, type inferRouterOutputs } from "@trpc/server";
 import { useState } from "react";
 import SuperJSON from "superjson";
+import { TRPC_ENDPOINT } from "~/assets/constants";
 import { env } from "~/env";
 import { createQueryClient } from "~/lib/trpc/query-client";
 import { type AppRouter } from "~/server/api/root";
@@ -69,12 +70,12 @@ export function TRPCReactProvider(
           // uses the httpSubscriptionLink for subscriptions
           condition: (op) => op.type === "subscription",
           true: unstable_httpSubscriptionLink({
-            url: getUrl(),
+            url: getTRPCUrl(),
             transformer: SuperJSON,
           }),
           false: httpBatchLink({
             transformer: SuperJSON,
-            url: getUrl(),
+            url: getTRPCUrl(),
 
             headers: () => {
               const headers = new Headers();
@@ -93,17 +94,17 @@ export function TRPCReactProvider(
         <HydrationBoundary state={props.dehydratedState}>
           {props.children}
         </HydrationBoundary>
-        {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+        <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
     </api.Provider>
   );
 }
 
-const getUrl = () => {
+export const getTRPCUrl = () => {
   const base = (() => {
     if (typeof window !== "undefined") return window.location.origin;
     if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
     return env.NEXTAUTH_URL;
   })();
-  return `${base}/api/trpc`;
+  return `${base}${TRPC_ENDPOINT}`;
 };

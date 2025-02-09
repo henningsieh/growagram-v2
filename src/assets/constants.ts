@@ -94,3 +94,5 @@ export const ACCEPTED_IMAGE_TYPES = [
   "image/gif",
   "image/webp",
 ];
+
+export const TRPC_ENDPOINT = "/api/trpc";

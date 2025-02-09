@@ -1,18 +1,16 @@
 // src/app/api/trpc/[trpc]/route.ts:
-import {
-  FetchCreateContextFnOptions,
-  fetchRequestHandler,
-} from "@trpc/server/adapters/fetch";
+import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 import { type NextRequest } from "next/server";
-import { appRouter } from "~/server/api/root";
-import { createTRPCContext } from "~/server/api/trpc";
+import { TRPC_ENDPOINT } from "~/assets/constants";
+import { appRouter as router } from "~/server/api/root";
+import { createTRPCContext as createContext } from "~/server/api/trpc";
 
 const handler = (req: NextRequest) =>
   fetchRequestHandler({
-    endpoint: "/api/trpc",
     req,
-    router: appRouter,
-    createContext: createTRPCContext,
+    router,
+    createContext,
+    endpoint: TRPC_ENDPOINT,
     onError({ path, error }) {
       console.error(
         `❌ tRPC failed on ${path ?? "<no-path>"}: ${error.message}`,
