@@ -117,7 +117,7 @@ export function GrowCard({
       />
       <Card
         className={cn(
-          `flex flex-col overflow-hidden border border-secondary/70`,
+          `flex flex-col overflow-hidden border border-secondary/70 pt-1`,
           isSocial && "border-none",
         )}
       >

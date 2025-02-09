@@ -150,7 +150,7 @@ export default function PhotoCard({
       />
       <Card
         className={cn(
-          `relative flex flex-col overflow-hidden border border-input`,
+          `relative flex flex-col overflow-hidden border border-input pt-1`,
           isSocial && "border-none",
         )}
       >

@@ -41,7 +41,7 @@ function AvatarCardHeader({
   const locale = useLocale();
 
   return (
-    <CardHeader className="space-y-0 py-2 pl-1 pr-0">
+    <CardHeader className="space-y-0 py-0 pl-1 pr-0">
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-2">
           <CustomAvatar
@@ -85,7 +85,10 @@ function AvatarCardHeader({
         </div>
         {showActions && actions && actions.length > 0 && (
           <DropdownMenu>
-            <DropdownMenuTrigger className="text-muted-foreground hover:text-foreground">
+            <DropdownMenuTrigger
+              asChild
+              className="text-muted-foreground hover:text-foreground"
+            >
               <Button variant="ghost" size="icon" aria-label="More actions">
                 <MoreHorizontal className="h-5 w-5" />
               </Button>

@@ -132,7 +132,7 @@ export default function PlantCard({
       <TouchProvider>
         <Card
           className={cn(
-            `flex flex-col overflow-hidden border border-primary/70`,
+            `flex flex-col overflow-hidden border border-primary/70 pt-1`,
             isSocial && "border-none",
           )}
         >
