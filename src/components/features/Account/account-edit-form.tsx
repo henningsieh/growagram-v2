@@ -67,7 +67,7 @@ export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
   const router = useRouter();
   const t = useTranslations("Account");
   const { toast } = useToast();
-  const { status, update } = useSession();
+  const { data: session, status, update } = useSession();
 
   const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(
     null,
@@ -363,10 +363,10 @@ export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
                               </FormDescription>
                               <FormControl>
                                 <div className="relative mt-2">
-                                  <Mail className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 cursor-not-allowed text-muted-foreground" />
+                                  <Mail className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
                                   <Input
-                                    readOnly
-                                    disabled
+                                    readOnly={!!session.user.email} // Disable input if email is set
+                                    disabled={!!session.user.email} // Disable input if email is set
                                     type="email"
                                     autoComplete="off"
                                     autoCapitalize="off"
