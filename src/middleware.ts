@@ -83,14 +83,17 @@ export default async function middleware(req: NextRequest) {
     return NextResponse.redirect(redirectUrl);
   }
 
-  // If the user is logged in but missing username, redirect to account edit page
+  // If the path is protected and the user is logged in but missing username, redirect to account edit page
   if (
+    isProtectedPath &&
     token &&
     (!token.username || token.username === "") &&
-    pathWithoutLocale !== "/account/edit"
+    pathWithoutLocale !== modulePaths.ACCOUNT.editPath
   ) {
     const accountRedirectUrl = new URL(
-      currentLocale ? `/${currentLocale}/account/edit` : "/account/edit",
+      currentLocale
+        ? `/${currentLocale}${modulePaths.ACCOUNT.editPath}`
+        : modulePaths.ACCOUNT.editPath,
       baseUrl,
     );
     return NextResponse.redirect(accountRedirectUrl);
