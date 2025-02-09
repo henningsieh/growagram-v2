@@ -95,7 +95,6 @@ export const notificationRouter = createTRPCRouter({
       },
     });
 
-    // console.debug("getUnread query results:", results);
     return results;
   }),
 

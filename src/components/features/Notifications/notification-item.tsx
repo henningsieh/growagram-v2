@@ -23,8 +23,6 @@ export function NotificationItem({
   const t = useTranslations("Notifications");
   const locale = useLocale();
 
-  console.debug(notification);
-
   const href = getNotificationHref(notification);
 
   if (!href) {

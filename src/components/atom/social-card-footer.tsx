@@ -77,7 +77,7 @@ export const SocialCardFooter: React.FC<CardFooterProps> = ({
   };
 
   return (
-    <div>
+    <>
       <div className={cn("flex items-center justify-between gap-2", className)}>
         {renderButton(
           <Button
@@ -125,7 +125,7 @@ export const SocialCardFooter: React.FC<CardFooterProps> = ({
 
         {renderButton(
           <Button
-            className="flex h-8 w-10 items-center justify-center gap-1"
+            className="flex h-8 w-8 items-center justify-center gap-1"
             variant="ghost"
             size="sm"
             disabled={!user}
@@ -135,6 +135,6 @@ export const SocialCardFooter: React.FC<CardFooterProps> = ({
           t("CardFooter.Please log in to share this content"),
         )}
       </div>
-    </div>
+    </>
   );
 };

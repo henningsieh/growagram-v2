@@ -98,7 +98,7 @@ export const commentRouter = {
       };
       if (!newComment.parentCommentId) {
         // Create notification for entity owner
-        const entityOwnerNotification = await createNotification({
+        await createNotification({
           notificationEventType: NotificationEventType.NEW_COMMENT,
           commentId: newComment.id,
           notifiableEntity: {
@@ -107,13 +107,9 @@ export const commentRouter = {
           },
           actorData,
         });
-        console.debug(
-          "entityOwnerNotification created",
-          entityOwnerNotification,
-        );
       } else {
         // Create notification for parent comment authors
-        const parentCommentAuthorsNotification = await createNotification({
+        await createNotification({
           notificationEventType: NotificationEventType.NEW_COMMENT,
           commentId: newComment.id,
           notifiableEntity: {
@@ -122,10 +118,6 @@ export const commentRouter = {
           },
           actorData,
         });
-        console.debug(
-          "parentCommentAuthorsNotification created",
-          parentCommentAuthorsNotification,
-        );
       }
       return { comment: newComment };
     }),
