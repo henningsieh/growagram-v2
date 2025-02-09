@@ -12,12 +12,7 @@ export function ChatButton() {
 
   return (
     <>
-      <Button
-        onClick={() => setIsOpen(true)}
-        variant="outline"
-        size="icon"
-        className="fixed bottom-4 right-4 rounded-full"
-      >
+      <Button onClick={() => setIsOpen(true)} variant="ghost" size="icon">
         <MessageCircle className="h-5 w-5" />
       </Button>
       <ChatModal isOpen={isOpen} onClose={() => setIsOpen(false)} />

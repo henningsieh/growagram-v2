@@ -39,7 +39,7 @@ export default function PublicRootLayout({ children }: PropsWithChildren) {
       {/* Left sidebar - hidden on mobile */}
       <aside className="hidden h-screen w-64 md:block md:flex-none">
         <div className="fixed top-0 h-[calc(100svh-4rem)] w-64 overflow-hidden">
-          <div className="sticky top-16 flex flex-col gap-2">
+          <div className="sticky top-16 flex flex-col gap-2 px-2">
             {navItems.map((item) => (
               <Link href={item.href} key={item.href}>
                 <Button
@@ -81,7 +81,7 @@ export default function PublicRootLayout({ children }: PropsWithChildren) {
       </nav>
 
       {/* Main content */}
-      <main className="mx-auto w-full max-w-2xl pr-1 pt-2">
+      <main className="mx-auto w-full max-w-2xl pr-3 pt-2">
         <div className="mx-auto">{children}</div>
       </main>
 
