@@ -193,7 +193,7 @@ export const Comment: React.FC<CommentProps> = ({
               showActions={isAuthor}
               actions={commentActions}
             />
-            <p className="ml-12 text-sm">{comment.commentText}</p>
+            <p className="ml-12 px-1 pb-2 text-sm">{comment.commentText}</p>
           </div>
         </div>
 
