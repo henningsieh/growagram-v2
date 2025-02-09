@@ -86,8 +86,8 @@ export default function PostCard({ post, isSocialProp = true }: PostCardProps) {
       />
       <Card
         className={cn(
-          `flex flex-col overflow-hidden border border-input`,
-          isSocial && "border-none",
+          `flex flex-col overflow-hidden border border-input pt-1`,
+          // isSocial && "border-none",
         )}
       >
         {isSocial && (

@@ -133,7 +133,7 @@ export default function PlantCard({
         <Card
           className={cn(
             `flex flex-col overflow-hidden border border-primary/70 pt-1`,
-            isSocial && "border-none",
+            // isSocial && "border-none",
           )}
         >
           {" "}
