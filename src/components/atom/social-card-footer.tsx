@@ -1,5 +1,5 @@
 // src/components/atom/social-card-footer.tsx
-import { ChartColumn, MessageCircle, Share } from "lucide-react";
+import { ChartColumn, MessagesSquareIcon, Share } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 // eslint-disable-next-line no-restricted-imports
@@ -90,7 +90,7 @@ export const SocialCardFooter: React.FC<CardFooterProps> = ({
             {commentCountLoading ? (
               <SpinningLoader className="h-6 w-6 text-secondary" />
             ) : (
-              <MessageCircle className="h-4 w-4" />
+              <MessagesSquareIcon className="h-4 w-4" />
             )}
             {!commentCountLoading && <span>{stats.comments}</span>}
           </Button>,
