@@ -76,9 +76,9 @@ export default function Page() {
   }, [emailVerified, t, toast]);
 
   return (
-    <Card className="mx-2 my-auto h-[580px] w-full max-w-md xs:mx-auto">
-      <div className="flex h-full flex-col items-center justify-between">
-        <div>
+    <Card className="mx-2 my-auto w-full max-w-md xs:mx-auto">
+      <div className="flex min-h-[680px] flex-col justify-between">
+        <div className="w-full">
           <CardHeader className="space-y-3">
             <CardTitle className="flex justify-center text-xl xs:text-2xl">
               {t("title")}
@@ -245,16 +245,13 @@ export default function Page() {
             </div>
           </CardContent>
         </div>
-
-        <div>
-          <CardFooter className="justify-center text-sm font-semibold">
-            {t("signUp.text")}
-            &nbsp;
-            <Link href="/signup" className="underline underline-offset-4">
-              {t("signUp.link")}{" "}
-            </Link>
-          </CardFooter>
-        </div>
+        <CardFooter className="justify-center text-sm font-semibold">
+          {t("signUp.text")}
+          &nbsp;
+          <Link href="/signup" className="underline underline-offset-4">
+            {t("signUp.link")}{" "}
+          </Link>
+        </CardFooter>
       </div>
     </Card>
   );

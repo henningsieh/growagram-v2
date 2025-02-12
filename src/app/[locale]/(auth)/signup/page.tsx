@@ -50,9 +50,9 @@ export default function RegisterPage() {
   };
 
   return (
-    <Card className="mx-2 my-auto h-[580px] w-full max-w-md xs:mx-auto">
-      <div className="flex h-full flex-col items-center justify-between">
-        <div className="flex h-full w-full flex-col">
+    <Card className="mx-2 my-auto w-full max-w-md xs:mx-auto">
+      <div className="flex min-h-[680px] flex-col justify-between">
+        <div className="w-full">
           <CardHeader className="space-y-3">
             <CardTitle className="flex justify-center text-xl xs:text-2xl">
               {t("title")}
@@ -61,7 +61,7 @@ export default function RegisterPage() {
               {t("description")}
             </CardDescription>
           </CardHeader>
-          <CardContent className="">
+          <CardContent>
             <form onSubmit={handleSubmit} className="grid w-full gap-4">
               <div className="my-4 space-y-3">
                 <div className="grid gap-2">
@@ -123,18 +123,16 @@ export default function RegisterPage() {
             </form>
           </CardContent>
         </div>
-        <div>
-          <CardFooter className="justify-center text-sm font-semibold">
-            {t("login.text")}
-            &nbsp;
-            <Link
-              href={modulePaths.SIGNIN.path}
-              className="underline underline-offset-4"
-            >
-              {t("login.link")}{" "}
-            </Link>
-          </CardFooter>
-        </div>
+        <CardFooter className="justify-center text-sm font-semibold">
+          {t("login.text")}
+          &nbsp;
+          <Link
+            href={modulePaths.SIGNIN.path}
+            className="underline underline-offset-4"
+          >
+            {t("login.link")}{" "}
+          </Link>
+        </CardFooter>
       </div>
     </Card>
   );
