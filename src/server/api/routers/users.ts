@@ -1,16 +1,13 @@
 // src/server/api/routers/users.ts:
-import { TRPCClientError } from "@trpc/client";
 import { TRPCError } from "@trpc/server";
 import { and, eq, not } from "drizzle-orm";
 import { z } from "zod";
 import { hashPassword } from "~/lib/auth/password";
 import { userFollows, users, verificationTokens } from "~/lib/db/schema";
-import { routing } from "~/lib/i18n/routing";
 import { createNotification } from "~/lib/notifications";
 import { sendVerificationEmail } from "~/server/actions/sendVerificationEmail";
 import { connectPlantWithImagesQuery } from "~/server/api/routers/plantImages";
 import { protectedProcedure, publicProcedure } from "~/server/api/trpc";
-import type { Locale } from "~/types/locale";
 import {
   NotifiableEntityType,
   NotificationEventType,
@@ -241,19 +238,23 @@ export const userRouter = {
           }),
         ]);
 
-        if (existingEmail) {
+        if (existingEmail && existingUsername) {
           throw new TRPCError({
             code: "CONFLICT",
-            message: "EMAIL_TAKEN", // Use the message field to pass the error type
+            message: "BOTH_TAKEN",
           });
-        }
-
-        if (existingUsername) {
+        } else if (existingEmail) {
+          throw new TRPCError({
+            code: "CONFLICT",
+            message: "EMAIL_TAKEN",
+          });
+        } else if (existingUsername) {
           throw new TRPCError({
             code: "CONFLICT",
             message: "USERNAME_TAKEN",
           });
         }
+
         const hashedPassword = await hashPassword(input.password);
 
         const newUser = await ctx.db

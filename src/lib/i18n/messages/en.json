@@ -417,6 +417,10 @@
     "email": {
       "label": "Your valid email address"
     },
+    "errors": {
+      "emailTaken": "This Email address is already taken.",
+      "usernameTaken": "This username is already taken."
+    },
     "login": {
       "link": "Login",
       "text": "Already have an account? "

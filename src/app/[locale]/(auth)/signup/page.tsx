@@ -2,13 +2,10 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TRPCClientError } from "@trpc/client";
-import { TRPCError } from "@trpc/server";
-import { getHTTPStatusCodeFromError } from "@trpc/server/http";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { AtSign, ClipboardPenLineIcon, Mail, UserIcon } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { modulePaths } from "~/assets/constants";
 import SpinningLoader from "~/components/Layouts/loader";
 import { Button } from "~/components/ui/button";
@@ -23,7 +20,6 @@ import {
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -74,27 +70,38 @@ export default function RegisterPage() {
     },
     onError: (error) => {
       if (error instanceof TRPCClientError) {
-        const httpStatus = error.data?.httpStatus;
-        console.debug("HTTP Status:", httpStatus);
-        if (httpStatus === 409) {
-          if (error.message === "EMAIL_TAKEN") {
-            form.setError("email", {
-              type: "manual",
-              message: "This email is already registered",
-            });
-          } else if (error.message === "USERNAME_TAKEN") {
-            form.setError("username", {
-              type: "manual",
-              message: "This username is already taken",
-            });
-          }
+        if (error.message === "BOTH_TAKEN") {
+          form.setError("email", {
+            type: "manual",
+            message: t("errors.emailTaken"),
+          });
+          form.setError("username", {
+            type: "manual",
+            message: t("errors.usernameTaken"),
+          });
+        } else if (error.message === "EMAIL_TAKEN") {
+          form.setError("email", {
+            type: "manual",
+            message: t("errors.emailTaken"),
+          });
+        } else if (error.message === "USERNAME_TAKEN") {
+          form.setError("username", {
+            type: "manual",
+            message: t("errors.usernameTaken"),
+          });
         }
       }
     },
   });
 
-  const onSubmit = form.handleSubmit((values) => {
-    registerUserMutation.mutate(values);
+  const onSubmit = form.handleSubmit(async (values) => {
+    try {
+      const user = await registerUserMutation.mutateAsync(values);
+      console.debug("Registered user: ", user);
+    } catch (error) {
+      console.warn("Failed to register user: ", error);
+      return false;
+    }
   });
 
   return (

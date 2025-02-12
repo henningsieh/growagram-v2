@@ -417,6 +417,10 @@
     "email": {
       "label": "Deine E-Mail-Adresse"
     },
+    "errors": {
+      "emailTaken": "Diese E-Mail-Adresse ist bereits registriert.",
+      "usernameTaken": "Dieser Benutzername ist bereits vergeben."
+    },
     "login": {
       "link": "Login",
       "text": "Du hast bereits ein Konto?"
