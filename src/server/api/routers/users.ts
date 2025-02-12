@@ -1,4 +1,5 @@
 // src/server/api/routers/users.ts:
+import { TRPCClientError } from "@trpc/client";
 import { TRPCError } from "@trpc/server";
 import { and, eq, not } from "drizzle-orm";
 import { z } from "zod";
@@ -15,7 +16,11 @@ import {
   NotificationEventType,
 } from "~/types/notification";
 import { UserRoles } from "~/types/user";
-import { updateTokensSchema, userEditSchema } from "~/types/zodSchema";
+import {
+  registerSchema,
+  updateTokensSchema,
+  userEditSchema,
+} from "~/types/zodSchema";
 
 export const userRouter = {
   // Get public user data by user id (public procedure)
@@ -162,7 +167,7 @@ export const userRouter = {
     }),
 
   // refactor method to check if username is taken by another user
-  isUsernameAvailable: protectedProcedure
+  isUsernameAvailable: publicProcedure
     .input(
       z.object({
         username: z.string(),
@@ -170,12 +175,13 @@ export const userRouter = {
       }),
     )
     .query(async ({ ctx, input }) => {
-      const { username, excludeOwn } = input;
+      const { username: username, excludeOwn } = input;
 
       // Determine the condition for excluding the current user
-      const exclusionCondition = excludeOwn
-        ? not(eq(users.id, ctx.session.user.id)) // Exclude current user's ID if `excludeOwn` is true
-        : undefined;
+      const exclusionCondition =
+        ctx.session && excludeOwn
+          ? not(eq(users.id, ctx.session.user.id)) // Exclude current user's ID if `excludeOwn` is true
+          : undefined;
 
       // Fetch user with matching username, applying exclusion condition if needed
       const existingUser = await ctx.db.query.users.findFirst({
@@ -223,74 +229,75 @@ export const userRouter = {
 
   // Register user (public procedure)
   registerUser: publicProcedure
-    .input(
-      z.object({
-        email: z.string().email(),
-        password: z.string().min(6),
-        username: z.string().min(3),
-        name: z.string().optional(),
-        locale: z.enum(routing.locales as [Locale, ...Locale[]]),
-      }),
-    )
+    .input(registerSchema)
     .mutation(async ({ ctx, input }) => {
-      const [existingEmail, existingUsername] = await Promise.all([
-        ctx.db.query.users.findFirst({
-          where: eq(users.email, input.email),
-        }),
-        ctx.db.query.users.findFirst({
-          where: eq(users.username, input.username),
-        }),
-      ]);
+      try {
+        const [existingEmail, existingUsername] = await Promise.all([
+          ctx.db.query.users.findFirst({
+            where: eq(users.email, input.email),
+          }),
+          ctx.db.query.users.findFirst({
+            where: eq(users.username, input.username),
+          }),
+        ]);
 
-      if (existingEmail) {
+        if (existingEmail) {
+          throw new TRPCError({
+            code: "CONFLICT",
+            message: "EMAIL_TAKEN", // Use the message field to pass the error type
+          });
+        }
+
+        if (existingUsername) {
+          throw new TRPCError({
+            code: "CONFLICT",
+            message: "USERNAME_TAKEN",
+          });
+        }
+        const hashedPassword = await hashPassword(input.password);
+
+        const newUser = await ctx.db
+          .insert(users)
+          .values({
+            email: input.email,
+            passwordHash: hashedPassword,
+            username: input.username,
+            name: input.name,
+          })
+          .returning({
+            id: users.id,
+            email: users.email,
+            username: users.username,
+            name: users.name,
+          });
+
+        const randomBytes = new Uint8Array(32);
+        crypto.getRandomValues(randomBytes);
+        const verificationToken = Array.from(randomBytes)
+          .map((b) => b.toString(16).padStart(2, "0"))
+          .join("");
+        await ctx.db.insert(verificationTokens).values({
+          identifier: newUser[0]?.email as string,
+          token: verificationToken,
+          expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
+        });
+
+        await sendVerificationEmail(
+          newUser[0]?.email as string,
+          verificationToken,
+          input.locale,
+        );
+
+        return newUser[0];
+      } catch (error) {
+        if (error instanceof TRPCError) throw error;
+
+        // Handle unexpected errors
         throw new TRPCError({
-          code: "CONFLICT",
-          message: "Email already in use",
+          code: "INTERNAL_SERVER_ERROR",
+          message: "An unexpected error occurred",
         });
       }
-
-      if (existingUsername) {
-        throw new TRPCError({
-          code: "CONFLICT",
-          message: "Username already taken",
-        });
-      }
-
-      const hashedPassword = await hashPassword(input.password);
-
-      const newUser = await ctx.db
-        .insert(users)
-        .values({
-          email: input.email,
-          passwordHash: hashedPassword,
-          username: input.username,
-          name: input.name,
-        })
-        .returning({
-          id: users.id,
-          email: users.email,
-          username: users.username,
-          name: users.name,
-        });
-
-      const randomBytes = new Uint8Array(32);
-      crypto.getRandomValues(randomBytes);
-      const verificationToken = Array.from(randomBytes)
-        .map((b) => b.toString(16).padStart(2, "0"))
-        .join("");
-      await ctx.db.insert(verificationTokens).values({
-        identifier: newUser[0]?.email as string,
-        token: verificationToken,
-        expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
-      });
-
-      await sendVerificationEmail(
-        newUser[0]?.email as string,
-        verificationToken,
-        input.locale,
-      );
-
-      return newUser[0];
     }),
 
   followUser: protectedProcedure

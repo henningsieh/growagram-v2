@@ -1,6 +1,8 @@
 // src/types/zodSchema.ts:
 import { z } from "zod";
+import { routing } from "~/lib/i18n/routing";
 
+import { Locale } from "./locale";
 import { NotifiableEntityType, NotificationEventType } from "./notification";
 import { PostableEntityType } from "./post";
 
@@ -64,6 +66,14 @@ export const userEditSchema = z.object({
     .string({ required_error: "Email is required" })
     .email({ message: "Invalid email address" }),
   image: z.string().url({ message: "Invalid image URL" }).nullable(),
+});
+
+export const registerSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(6),
+  username: z.string().min(3),
+  name: z.string().optional(),
+  locale: z.enum(routing.locales as [Locale, ...Locale[]]),
 });
 
 export const postSchema = z.object({

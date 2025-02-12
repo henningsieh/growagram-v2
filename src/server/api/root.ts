@@ -69,7 +69,8 @@ export type PublicUserProfileType = NonNullable<GetPublicUserProfileType>;
 
 //  INPUTS
 export type GetUserByIdInput = RouterInput["users"]["getOwnUserData"];
-export type GetUserEditInput = RouterInput["users"]["editUser"];
+export type EditUserInput = RouterInput["users"]["editUser"];
+export type RegisterUserInput = RouterInput["users"]["registerUser"];
 export type GetPublicUserProfileInput = RouterInput["users"]["getPublicUserProfile"];
 
 // commentRouter
