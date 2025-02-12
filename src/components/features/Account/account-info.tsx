@@ -53,7 +53,7 @@ export default function AccountInfo({ user }: { user: OwnUserDataType }) {
           className="mx-auto w-full max-w-2xl"
         >
           <FormContent>
-            <Card className="overflow-hidden bg-card/95">
+            <Card className="overflow-hidden">
               <CardContent className="p-6">
                 <motion.div
                   variants={containerVariants}
@@ -63,7 +63,7 @@ export default function AccountInfo({ user }: { user: OwnUserDataType }) {
                 >
                   <motion.div
                     whileHover={{ scale: 1.05 }}
-                    transition={{ type: "spring", stiffness: 300 }}
+                    transition={{ type: "tween", stiffness: 100 }}
                   >
                     <CustomAvatar
                       size={96}
@@ -87,7 +87,7 @@ export default function AccountInfo({ user }: { user: OwnUserDataType }) {
                             {t(`info-${item.label}`)}
                           </span>
                         </div>
-                        <div className="rounded-md bg-muted/50 px-4 py-2.5 font-medium">
+                        <div className="rounded-sm bg-accent/50 px-4 py-2.5 font-medium">
                           {item.value || t("not-provided")}
                         </div>
                       </motion.div>

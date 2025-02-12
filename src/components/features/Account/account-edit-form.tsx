@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import FormContent from "~/components/Layouts/form-content";
 import SpinningLoader from "~/components/Layouts/loader";
@@ -44,11 +44,7 @@ import { useIsMobile } from "~/hooks/use-mobile";
 import { useToast } from "~/hooks/use-toast";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
-import type {
-  GetOwnUserDataType,
-  GetUserEditInput,
-  OwnUserDataType,
-} from "~/server/api/root";
+import type { EditUserInput, OwnUserDataType } from "~/server/api/root";
 import { userEditSchema } from "~/types/zodSchema";
 
 const formVariants = {
@@ -74,15 +70,13 @@ export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
   const { toast } = useToast();
   const { status, update } = useSession();
 
-  // const user = session?.user as GetOwnUserDataType
-
   const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(
     null,
   );
   const [username, setUsername] = useState(user?.username || "");
   const [usernameModified, setUsernameModified] = useState(false);
 
-  const form = useForm<GetUserEditInput>({
+  const form = useForm<EditUserInput>({
     resolver: zodResolver(userEditSchema),
     defaultValues: {
       id: user.id,
@@ -95,7 +89,6 @@ export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
 
   const editUserMutation = api.users.editUser.useMutation({
     onSuccess: async (updatedUser) => {
-      router.push("/account");
       // 1. Update session
       await update({
         name: updatedUser.name,
@@ -103,24 +96,25 @@ export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
       });
 
       // 2. Redirect to account page
-
-      // 3. Show success message
       toast({
         title: "Success",
         description: t("form-save-success-message"),
       });
+
+      // 3. Show success message
+      router.push("/account");
     },
   });
 
-  const onSubmit = (values: GetUserEditInput) => {
+  const onSubmit = (values: EditUserInput) => {
     editUserMutation.mutateAsync(values);
   };
 
   // Check username uniqueness
   const usernameCheck = api.users.isUsernameAvailable.useQuery(
-    { username: username || "", excludeOwn: true },
+    { username: username, excludeOwn: true },
     {
-      enabled: false,
+      enabled: form.formState.dirtyFields.username,
       refetchOnWindowFocus: false,
     },
   );
@@ -148,6 +142,9 @@ export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
     form.trigger("username");
   };
 
+  console.debug("form.formState.errors:", form.formState.errors);
+  console.debug("usernameCheck.data:", usernameCheck.data);
+
   return (
     status === "authenticated" && (
       <PageHeader
@@ -161,7 +158,7 @@ export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
-          className="mx-auto w-full max-w-4xl"
+          className="mx-auto w-full max-w-2xl"
         >
           {!user.username && (
             <Alert className="mb-4 border-2 border-secondary bg-secondary/80">
