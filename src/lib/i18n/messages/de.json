@@ -33,7 +33,7 @@
       "label": "Mein Konto"
     },
     "not-provided": "Nicht angegeben",
-    "welcome-message-description": "Du musst deinen Benutzernamen zuerst festlegen, bevor Sie die Plattform betreten!",
+    "welcome-message-description": "Du musst zuerst deinen Benutzernamen (@username) festlegen, bevor du die Plattform nutzen kannst!",
     "welcome-message-title": "Willkommen"
   },
   "CardFooter": {
