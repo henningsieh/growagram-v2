@@ -14,10 +14,13 @@ import {
 } from "~/types/notification";
 import { UserRoles } from "~/types/user";
 import {
-  registerSchema,
+  createRegisterSchema,
   updateTokensSchema,
   userEditSchema,
 } from "~/types/zodSchema";
+
+// Fake translation function for server-side use of translated ZOD schema messages
+const outsideReactT = (key: string) => key; // Just returns the key, or provide basic English messages
 
 export const userRouter = {
   // Get public user data by user id (public procedure)
@@ -226,7 +229,7 @@ export const userRouter = {
 
   // Register user (public procedure)
   registerUser: publicProcedure
-    .input(registerSchema)
+    .input(createRegisterSchema(outsideReactT))
     .mutation(async ({ ctx, input }) => {
       try {
         const [existingEmail, existingUsername] = await Promise.all([

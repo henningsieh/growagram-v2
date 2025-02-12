@@ -32,7 +32,7 @@ import { Link, useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import { RegisterUserInput } from "~/server/api/root";
 import type { Locale } from "~/types/locale";
-import { createRegisterSchema, registerSchema } from "~/types/zodSchema";
+import { createRegisterSchema } from "~/types/zodSchema";
 
 const formVariants = {
   hidden: { opacity: 0 },
@@ -51,13 +51,16 @@ const itemVariants = {
 };
 
 export default function RegisterPage() {
+  const tSchema = useTranslations();
   const t = useTranslations("RegisterPage");
   const router = useRouter();
   const locale = useLocale() as Locale;
 
   const form = useForm<RegisterUserInput>({
     mode: "onBlur",
-    resolver: zodResolver(useMemo(() => createRegisterSchema(t), [t])),
+    resolver: zodResolver(
+      useMemo(() => createRegisterSchema(tSchema), [tSchema]),
+    ),
     defaultValues: {
       email: "",
       password: "",

@@ -68,45 +68,29 @@ export const userEditSchema = z.object({
   image: z.string().url({ message: "Invalid image URL" }).nullable(),
 });
 
-export const registerSchema = z.object({
-  name: z
-    .string({ required_error: "Name is required" })
-    .min(2, { message: "Name is required and must be at least 2 characters" })
-    .max(24, { message: "Name must be less than 24 characters" }),
-  username: z
-    .string({ required_error: "Username is required" })
-    .min(5, { message: "Username must be at least 5 characters" })
-    .max(20, { message: "Userame must be less than 20 characters" })
-    .regex(/^[a-zA-Z0-9]+$/, {
-      message:
-        "Username must only contain alphanumeric characters with no spaces",
-    }),
-  email: z
-    .string({ required_error: "Email is required" })
-    .email({ message: "Invalid email address" }),
-  password: z.string().min(6),
-  locale: z.enum(routing.locales as [Locale, ...Locale[]]),
-});
-
 export function createRegisterSchema(t: (key: string) => string) {
   return z.object({
     name: z
-      .string({ required_error: t("validation.name.required") })
-      .min(2, { message: t("validation.name.tooShort") })
-      .max(24, { message: t("validation.name.tooLong") }),
+      .string({ required_error: t("RegisterPage.validation.name.required") })
+      .min(2, { message: t("RegisterPage.validation.name.tooShort") })
+      .max(24, { message: t("RegisterPage.validation.name.tooLong") }),
     username: z
-      .string({ required_error: t("validation.username.required") })
-      .min(5, { message: t("validation.username.tooShort") })
-      .max(20, { message: t("validation.username.tooLong") })
+      .string({
+        required_error: t("RegisterPage.validation.username.required"),
+      })
+      .min(5, { message: t("RegisterPage.validation.username.tooShort") })
+      .max(20, { message: t("RegisterPage.validation.username.tooLong") })
       .regex(/^[a-zA-Z0-9]+$/, {
-        message: t("validation.username.invalidFormat"),
+        message: t("RegisterPage.validation.username.invalidFormat"),
       }),
     email: z
-      .string({ required_error: t("validation.email.required") })
-      .email({ message: t("validation.email.invalid") }),
+      .string({ required_error: t("RegisterPage.validation.email.required") })
+      .email({ message: t("RegisterPage.validation.email.invalid") }),
     password: z
-      .string({ required_error: t("validation.password.required") })
-      .min(6, { message: t("validation.password.tooShort") }),
+      .string({
+        required_error: t("RegisterPage.validation.password.required"),
+      })
+      .min(6, { message: t("RegisterPage.validation.password.tooShort") }),
     locale: z.enum(routing.locales as [Locale, ...Locale[]]),
   });
 }
