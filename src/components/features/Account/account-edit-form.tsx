@@ -13,7 +13,6 @@ import {
   UserIcon,
   XIcon,
 } from "lucide-react";
-import type { Session } from "next-auth";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
@@ -41,10 +40,15 @@ import {
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
 import { Separator } from "~/components/ui/separator";
+import { useIsMobile } from "~/hooks/use-mobile";
 import { useToast } from "~/hooks/use-toast";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
-import type { GetUserEditInput, OwnUserDataType } from "~/server/api/root";
+import type {
+  GetOwnUserDataType,
+  GetUserEditInput,
+  OwnUserDataType,
+} from "~/server/api/root";
 import { userEditSchema } from "~/types/zodSchema";
 
 const formVariants = {
@@ -64,59 +68,53 @@ const itemVariants = {
 };
 
 export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
+  const isMobile = useIsMobile();
   const router = useRouter();
   const t = useTranslations("Account");
   const { toast } = useToast();
-  const { data: session, status, update } = useSession();
+  const { status, update } = useSession();
+
+  // const user = session?.user as GetOwnUserDataType
 
   const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(
     null,
   );
-  const [sessionHasBenUpdated, setSessionHasBenUpdated] =
-    useState<Session | null>(null);
   const [username, setUsername] = useState(user?.username || "");
   const [usernameModified, setUsernameModified] = useState(false);
 
-  useEffect(() => {
-    if (!!sessionHasBenUpdated) {
-      router.push("/account");
-    }
-  }, [sessionHasBenUpdated, router]);
-
   const form = useForm<GetUserEditInput>({
-    mode: "onChange",
     resolver: zodResolver(userEditSchema),
     defaultValues: {
-      id: user?.id,
-      name: user?.name || undefined,
-      username: user?.username || "",
-      email: user?.email || "",
-      image: user?.image,
+      id: user.id,
+      name: user.name || "",
+      username: user.username || "",
+      email: user.email || "",
+      image: user.image,
     },
   });
 
   const editUserMutation = api.users.editUser.useMutation({
     onSuccess: async (updatedUser) => {
-      const updatedSession = await update(updatedUser);
-      setSessionHasBenUpdated(updatedSession);
+      router.push("/account");
+      // 1. Update session
+      await update({
+        name: updatedUser.name,
+        username: updatedUser.username,
+      });
+
+      // 2. Redirect to account page
+
+      // 3. Show success message
       toast({
         title: "Success",
         description: t("form-save-success-message"),
       });
     },
-    onError: (error) => {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
-    },
   });
 
-  // Submit the form
-  async function onSubmit(values: GetUserEditInput) {
-    await editUserMutation.mutateAsync(values);
-  }
+  const onSubmit = (values: GetUserEditInput) => {
+    editUserMutation.mutateAsync(values);
+  };
 
   // Check username uniqueness
   const usernameCheck = api.users.isUsernameAvailable.useQuery(
@@ -151,8 +149,7 @@ export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
   };
 
   return (
-    status === "authenticated" &&
-    !sessionHasBenUpdated && (
+    status === "authenticated" && (
       <PageHeader
         title={t("form-edit-profile-title")}
         subtitle={t("form-edit-profile-subtitle")}
@@ -192,7 +189,7 @@ export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
                     />
                   </CardHeader>
                   <Separator className="opacity-50" />
-                  <CardContent className="p-6 sm:p-8">
+                  <CardContent className="p-2 sm:p-8">
                     <motion.div
                       variants={formVariants}
                       initial="hidden"
@@ -370,8 +367,8 @@ export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
                                 <div className="relative mt-2">
                                   <Mail className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
                                   <Input
-                                    readOnly={!!session.user.email} // Disable input if email is set
-                                    disabled={!!session.user.email} // Disable input if email is set
+                                    readOnly={!!user.email} // Disable input if email is set
+                                    disabled={!!user.email} // Disable input if email is set
                                     type="email"
                                     autoComplete="off"
                                     autoCapitalize="off"
@@ -390,8 +387,9 @@ export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
                     </motion.div>
                   </CardContent>
 
-                  <CardFooter className="flex gap-4 p-2 sm:p-8">
+                  <CardFooter className="flex gap-2 p-2 sm:p-8">
                     <Button
+                      size={isMobile ? "sm" : "default"}
                       type="button"
                       variant="outline"
                       onClick={() => {
@@ -406,6 +404,7 @@ export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
                       {t("form-reset-button")}
                     </Button>
                     <Button
+                      size={isMobile ? "sm" : "default"}
                       type="submit"
                       disabled={
                         editUserMutation.isPending ||
