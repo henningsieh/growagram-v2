@@ -413,6 +413,27 @@
     }
   },
   "RegisterPage": {
+    "validation": {
+      "name": {
+        "required": "Name is required",
+        "tooShort": "Name must be at least 2 characters",
+        "tooLong": "Name must be less than 24 characters"
+      },
+      "username": {
+        "required": "Username is required",
+        "tooShort": "Username must be at least 5 characters",
+        "tooLong": "Username must be less than 20 characters",
+        "invalidFormat": "Username must only contain alphanumeric characters with no spaces"
+      },
+      "email": {
+        "required": "Email is required",
+        "invalid": "Invalid email address"
+      },
+      "password": {
+        "required": "Password is required",
+        "tooShort": "Password must be at least 6 characters"
+      }
+    },
     "description": "Fill in all fields below.",
     "email": {
       "label": "Your valid email address"

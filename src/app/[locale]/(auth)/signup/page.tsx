@@ -1,10 +1,12 @@
 "use client";
 
+// src/app/[locale]/(auth)/signup/page.tsx:
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TRPCClientError } from "@trpc/client";
 import { motion } from "framer-motion";
 import { AtSign, ClipboardPenLineIcon, Mail, UserIcon } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
+import { useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { modulePaths } from "~/assets/constants";
 import SpinningLoader from "~/components/Layouts/loader";
@@ -30,7 +32,7 @@ import { Link, useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import { RegisterUserInput } from "~/server/api/root";
 import type { Locale } from "~/types/locale";
-import { registerSchema } from "~/types/zodSchema";
+import { createRegisterSchema, registerSchema } from "~/types/zodSchema";
 
 const formVariants = {
   hidden: { opacity: 0 },
@@ -54,7 +56,8 @@ export default function RegisterPage() {
   const locale = useLocale() as Locale;
 
   const form = useForm<RegisterUserInput>({
-    resolver: zodResolver(registerSchema),
+    mode: "onBlur",
+    resolver: zodResolver(useMemo(() => createRegisterSchema(t), [t])),
     defaultValues: {
       email: "",
       password: "",

@@ -413,6 +413,27 @@
     }
   },
   "RegisterPage": {
+    "validation": {
+      "name": {
+        "required": "Name ist erforderlich",
+        "tooShort": "Name muss mindestens 2 Zeichen lang sein",
+        "tooLong": "Name darf nicht länger als 24 Zeichen sein"
+      },
+      "username": {
+        "required": "Benutzername ist erforderlich",
+        "tooShort": "Benutzername muss mindestens 5 Zeichen lang sein",
+        "tooLong": "Benutzername darf nicht länger als 20 Zeichen sein",
+        "invalidFormat": "Benutzername darf nur alphanumerische Zeichen ohne Leerzeichen enthalten"
+      },
+      "email": {
+        "required": "E-Mail ist erforderlich",
+        "invalid": "Ungültige E-Mail-Adresse"
+      },
+      "password": {
+        "required": "Passwort ist erforderlich",
+        "tooShort": "Passwort muss mindestens 6 Zeichen lang sein"
+      }
+    },
     "description": "Fülle alle Felder unten aus.",
     "email": {
       "label": "Deine E-Mail-Adresse"
@@ -434,7 +455,7 @@
     "submit": "Jetzt registrieren",
     "title": "Registrieren bei GrowAGram",
     "username": {
-      "label": "Username"
+      "label": "Benutzername"
     }
   },
   "Sidebar": {
