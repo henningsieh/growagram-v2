@@ -1,9 +1,9 @@
 {
   "extends": ["next/core-web-vitals", "next/typescript"],
   "rules": {
-    "@typescript-eslint/no-unused-vars": "warn", // only warning!
+    "@typescript-eslint/no-unused-vars": "warn",
 
-    "react/jsx-no-literals": "off", // translation needed
+    "react/jsx-no-literals": "warn",
 
     "no-restricted-imports": "error"
   },
