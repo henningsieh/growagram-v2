@@ -48,7 +48,7 @@ export function FollowButton({
   return (
     <Button
       variant={isFollowing ? "outline" : "primary"}
-      size="default"
+      size="sm"
       className={className}
       onClick={() => (isFollowing ? unfollow({ userId }) : follow({ userId }))}
       disabled={isFollowLoading || isUnfollowLoading}
