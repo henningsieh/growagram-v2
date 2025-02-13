@@ -42,7 +42,7 @@ export const Comments: React.FC<CommentsProps> = ({
   return (
     <div className="mt-2">
       {session && (
-        <div className="m-1 flex items-center gap-2 rounded-sm bg-accent/50 py-1 pl-1 pr-2">
+        <div className="mx-1 my-2 flex items-center gap-2 rounded-sm bg-accent/30 py-1 pl-1 pr-1">
           <div className="flex justify-center">
             <CustomAvatar
               size={38}

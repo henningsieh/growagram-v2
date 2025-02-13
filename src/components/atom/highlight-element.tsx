@@ -4,7 +4,7 @@ import { cn } from "~/lib/utils";
 
 interface HighlightElementProps
   extends Omit<HTMLMotionProps<"div">, "animate" | "transition"> {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   isHighlighted?: boolean;
   className?: string;
 }
@@ -21,11 +21,11 @@ export function HighlightElement({
     if (isHighlighted) {
       void controls.start({
         backgroundColor: [
-          "hsl(var(--accent) / 0.6",
           "hsl(var(--accent) / 0.5",
           "hsl(var(--accent) / 0.4",
+          "hsl(var(--accent) / 0.3",
+          "hsl(var(--accent) / 0.4",
           "hsl(var(--accent) / 0.5",
-          "hsl(var(--accent) / 0.6",
         ],
         scale: [1, 0.99, 0.98, 0.99, 1],
       });
@@ -39,7 +39,10 @@ export function HighlightElement({
 
   return (
     <motion.div
-      className={cn("relative rounded-sm", className)}
+      className={cn(
+        "pointer-events-none absolute inset-0 mx-1 -mt-1 mb-1 rounded-sm",
+        className,
+      )}
       animate={controls}
       transition={{
         duration: 0.45,
