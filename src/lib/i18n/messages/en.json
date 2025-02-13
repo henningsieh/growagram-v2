@@ -49,6 +49,13 @@
         "label": "Delete"
       }
     },
+    "dialogs": {
+      "deleteComment": {
+        "alertCautionText": "This action cannot be undone.",
+        "description": "Possible replies to this comment will lose their reference / context when deleted.",
+        "title": "Are you sure you want to delete this comment?"
+      }
+    },
     "loading-comments": "Loading comments...",
     "no-comments-yet": "No comments yet.",
     "reply-to-comment-placeholder": "Write an answer",

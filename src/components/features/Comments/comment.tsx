@@ -8,6 +8,7 @@ import SpinningLoader from "~/components/Layouts/loader";
 import AvatarCardHeader, {
   ActionItem,
 } from "~/components/atom/avatar-card-header";
+import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
 import CustomAvatar from "~/components/atom/custom-avatar";
 import { HighlightElement } from "~/components/atom/highlight-element";
 import { SocialCardFooter } from "~/components/atom/social-card-footer";
@@ -162,12 +163,13 @@ export const Comment: React.FC<CommentProps> = ({
   // Check if the current user is the comment author
   const hasPermission =
     session?.user?.id === comment.author.id || session?.user?.role === "admin";
+  const [showDeleteDialog, setShowDeleteDialog] = React.useState(false);
   const commentActions: ActionItem[] = hasPermission
     ? [
         {
           icon: Trash2,
           label: t("buttons.deleteComment.label"),
-          onClick: handleDeleteComment,
+          onClick: () => setShowDeleteDialog(true), // Open dialog instead of direct deletion
           variant: "destructive",
           disabled: deleteMutation.isPending,
         },
@@ -175,20 +177,30 @@ export const Comment: React.FC<CommentProps> = ({
     : [];
 
   return (
-    <div className="relative">
+    <>
       <HighlightElement
         id={comment.id}
         isHighlighted={isHighlighted}
         key={`highlight-${comment.id}-${isHighlighted}`}
-        // className="inset-[-8px]"
-        // className="p-4"
+      />
+      <DeleteConfirmationDialog
+        isOpen={showDeleteDialog}
+        onOpenChange={setShowDeleteDialog}
+        onConfirmDelete={async () => {
+          await handleDeleteComment();
+          setShowDeleteDialog(false);
+        }}
+        isDeleting={deleteMutation.isPending}
+        title={t("dialogs.deleteComment.title")}
+        description={t("dialogs.deleteComment.alertCautionText")}
+        alertCautionText={t("dialogs.deleteComment.description")}
       />
       <motion.div
         initial={{ opacity: 0, x: 0 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.3 }}
       >
-        <div className="relative flex gap-2 p-0 pl-1">
+        <div className="relative flex gap-2 p-1 pl-1">
           <div className="flex-1">
             <AvatarCardHeader
               user={comment.author}
@@ -269,6 +281,6 @@ export const Comment: React.FC<CommentProps> = ({
           )}
         </AnimatePresence>
       </motion.div>
-    </div>
+    </>
   );
 };

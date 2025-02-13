@@ -49,6 +49,13 @@
         "label": "Löschen"
       }
     },
+    "dialogs": {
+      "deleteComment": {
+        "alertCautionText": "Diese Aktion kann nicht rückgängig gemacht werden.",
+        "description": "Mögliche Antworten auf diesen Kommentar verlieren durch das Löschen ihren Bezug / Kontext.",
+        "title": "Möchtest du diesen Kommentar wirklich löschen?"
+      }
+    },
     "loading-comments": "Kommentare werden geladen...",
     "no-comments-yet": "Bisher keine Kommentare.",
     "reply-to-comment-placeholder": "Schreibe eine Antwort",
