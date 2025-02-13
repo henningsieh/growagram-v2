@@ -41,7 +41,7 @@ function AvatarCardHeader({
   const locale = useLocale();
 
   return (
-    <CardHeader className="space-y-0 py-0 pl-1 pr-2">
+    <CardHeader className="space-y-0 py-0 pl-1 pr-1">
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-2">
           <CustomAvatar

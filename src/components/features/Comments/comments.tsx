@@ -56,7 +56,7 @@ export const Comments: React.FC<CommentsProps> = ({
               placeholder={t("add-comment-placeholder")}
               value={newComment}
               onChange={(e) => setNewComment?.(e.target.value)}
-              className="h-8 w-full"
+              className="isolate h-8 w-full"
             />
           </div>
           <Button
