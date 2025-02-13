@@ -140,6 +140,18 @@ export function useNotifications() {
     },
   );
 
+  const commentId = allNotifications?.find(
+    (n) => n.entityType === NotifiableEntityType.COMMENT,
+  )?.entityId;
+
+  const { data: commentableEntity, isLoading: isCommentLoading } =
+    api.comments.getParentEntity.useQuery(
+      commentId ? { commentId } : skipToken,
+      {
+        enabled: Boolean(commentId),
+      },
+    );
+
   /**
    * Get the href for a notification
    */
@@ -163,21 +175,16 @@ export function useNotifications() {
             notification.commentId ? `?commentId=${notification.commentId}` : ""
           }`; // Photo that was liked or commented on
         case NotifiableEntityType.COMMENT:
-          // pseudo code: if notification.type === NEW_LIKE,
-          // then return parent CommentableEntityType id #comment-${notification.entityId}
-          const { data: commentableEntity, isLoading } =
-            api.comments.getParentEntity.useQuery({
-              commentId: notification.entityId,
-            });
-          if (isLoading) {
+          if (!commentableEntity || isCommentLoading) {
             return undefined;
           }
-          return `/public/${commentableEntity?.entityType}s/${commentableEntity?.entityId}?commentId=${notification.entityId}`;
+          return `/public/${commentableEntity.entityType}s/${commentableEntity.entityId}?commentId=${notification.entityId}`;
+
         default:
           return "#"; // Fallback
       }
     };
-  }, []);
+  }, [commentableEntity, isCommentLoading]);
 
   return {
     all: allNotifications ?? [],

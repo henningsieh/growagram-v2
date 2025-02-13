@@ -523,23 +523,23 @@ export const notificationsRelations = relations(notifications, ({ one }) => ({
     references: [users.id],
   }),
   // Dynamic relations based on entityType
-  follow: one(users, {
+  entity_follow: one(users, {
     fields: [notifications.entityId],
     references: [users.id],
   }),
-  grow: one(grows, {
+  entity_grow: one(grows, {
     fields: [notifications.entityId],
     references: [grows.id],
   }),
-  plant: one(plants, {
+  entity_plant: one(plants, {
     fields: [notifications.entityId],
     references: [plants.id],
   }),
-  photo: one(images, {
+  entity_photo: one(images, {
     fields: [notifications.entityId],
     references: [images.id],
   }),
-  comment: one(comments, {
+  entity_comment: one(comments, {
     fields: [notifications.entityId],
     references: [comments.id],
   }),

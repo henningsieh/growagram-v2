@@ -88,7 +88,6 @@ export const notificationRouter = createTRPCRouter({
           columns: {
             id: true,
             name: true,
-            // username: true,
             image: true,
           },
         },
