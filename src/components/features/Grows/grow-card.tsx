@@ -214,27 +214,25 @@ export function GrowCard({
           </CardDescription>
           <div className="justify-top flex h-full flex-1 flex-col">
             {/* Plants Grid */}
-            <div className="custom-scrollbar max-h-72 flex-1 overflow-y-auto">
-              <div className="space-y-4">
-                <AnimatePresence>
-                  {grow.plants.map((plant) => (
-                    <motion.div
-                      key={plant.id}
-                      initial={{ opacity: 0, y: -50 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -20 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <EmbeddedPlantCard plant={plant} />
-                    </motion.div>
-                  ))}
-                </AnimatePresence>
-                {grow.plants.length === 0 && (
-                  <div className="py-8 text-center text-muted-foreground">
-                    {t("no-plants-connected")}
-                  </div>
-                )}
-              </div>
+            <div className="custom-scrollbar max-h-72 flex-1 space-y-2 overflow-y-auto">
+              <AnimatePresence>
+                {grow.plants.map((plant) => (
+                  <motion.div
+                    key={plant.id}
+                    initial={{ opacity: 0, y: -30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <EmbeddedPlantCard plant={plant} />
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+              {grow.plants.length === 0 && (
+                <div className="py-8 text-center text-muted-foreground">
+                  {t("no-plants-connected")}
+                </div>
+              )}
             </div>
 
             {/* Post Update Button */}
