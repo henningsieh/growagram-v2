@@ -40,7 +40,7 @@ export function HighlightElement({
   return (
     <motion.div
       className={cn(
-        "pointer-events-none absolute inset-0 mx-1 -mt-1 mb-1 rounded-sm",
+        "pointer-events-none absolute inset-0 mx-1 mb-1 rounded-sm",
         className,
       )}
       animate={controls}

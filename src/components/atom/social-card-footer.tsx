@@ -78,7 +78,14 @@ export const SocialCardFooter: React.FC<CardFooterProps> = ({
 
   return (
     <>
-      <div className={cn("flex items-center justify-between gap-2", className)}>
+      <div
+        className={cn(
+          // `isolate` creates a new stacking context
+          // It prevents the parent's HighlightElement background blending from affecting its children
+          "isolate flex items-center justify-between gap-2",
+          className,
+        )}
+      >
         {renderButton(
           <Button
             className="flex h-8 w-10 items-center justify-center gap-1"

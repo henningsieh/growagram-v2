@@ -81,7 +81,7 @@ export default function PublicRootLayout({ children }: PropsWithChildren) {
       </nav>
 
       {/* Main content */}
-      <main className="mx-auto w-full max-w-2xl pr-3 pt-2">
+      <main className="mx-auto w-full max-w-3xl pl-1 pr-3 pt-2">
         <div className="mx-auto">{children}</div>
       </main>
 
