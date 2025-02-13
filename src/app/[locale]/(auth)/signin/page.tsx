@@ -1,6 +1,6 @@
 "use client";
 
-//src/app/sign-in/page.tsx
+// src/app/[locale]/(auth)/signin/page.tsx:
 import { Loader2, LogInIcon, MailCheckIcon } from "lucide-react";
 import { signIn } from "next-auth/react";
 import { useTranslations } from "next-intl";
