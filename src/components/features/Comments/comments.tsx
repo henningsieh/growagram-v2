@@ -42,10 +42,10 @@ export const Comments: React.FC<CommentsProps> = ({
   return (
     <div className="mt-2">
       {session && (
-        <div className="m-1 flex items-center gap-2 rounded-sm bg-muted p-2 pl-1">
+        <div className="m-1 flex items-center gap-2 rounded-sm bg-accent/50 py-1 pl-1 pr-2">
           <div className="flex justify-center">
             <CustomAvatar
-              size={32}
+              size={38}
               src={session.user?.image || undefined}
               alt={session.user?.name || "User avatar"}
               fallback={session.user?.name?.[0] || "?"}

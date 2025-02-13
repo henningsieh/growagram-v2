@@ -185,7 +185,7 @@ export const Comment: React.FC<CommentProps> = ({
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.3 }}
       >
-        <div className="relative flex gap-2 p-0">
+        <div className="relative flex gap-2 p-0 pl-1">
           <div className="flex-1">
             <AvatarCardHeader
               user={comment.author}
@@ -193,7 +193,9 @@ export const Comment: React.FC<CommentProps> = ({
               showActions={isAuthor}
               actions={commentActions}
             />
-            <p className="ml-12 px-1 pb-2 text-sm">{comment.commentText}</p>
+            <p className="ml-12 px-0.5 pb-1 pt-1 text-sm">
+              {comment.commentText}
+            </p>
           </div>
         </div>
 

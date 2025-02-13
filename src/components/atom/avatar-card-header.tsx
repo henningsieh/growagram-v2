@@ -50,13 +50,13 @@ function AvatarCardHeader({
             alt={user.username ?? "User avatar"}
             fallback={user.name?.[0] || "?"}
           />
-          <div className="flex flex-row gap-1">
+          <div className="flex flex-col gap-0 xs:flex-row xs:gap-1">
             <Link
               href={`/public/profile/${user.id}`}
               className="flex items-center text-sm text-muted-foreground"
               // eslint-disable-next-line react/jsx-no-literals
             >
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1 whitespace-nowrap">
                 <p className="text-sm font-bold text-foreground underline-offset-4 hover:underline">
                   {user.name}
                 </p>
@@ -75,8 +75,8 @@ function AvatarCardHeader({
               </div>
             </Link>
             {date && (
-              <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                <DotIcon size={24} className="-mx-2" />
+              <div className="flex items-center gap-1 whitespace-nowrap text-sm text-muted-foreground">
+                {<DotIcon size={24} className="-mx-2 hidden xs:block" />}
                 {formatDate(date, locale as Locale)}{" "}
                 {formatTime(date, locale as Locale)}
               </div>
