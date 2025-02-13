@@ -160,8 +160,9 @@ export const Comment: React.FC<CommentProps> = ({
   };
 
   // Check if the current user is the comment author
-  const isAuthor = session?.user?.id === comment.author.id;
-  const commentActions: ActionItem[] = isAuthor
+  const hasPermission =
+    session?.user?.id === comment.author.id || session?.user?.role === "admin";
+  const commentActions: ActionItem[] = hasPermission
     ? [
         {
           icon: Trash2,
@@ -174,12 +175,14 @@ export const Comment: React.FC<CommentProps> = ({
     : [];
 
   return (
-    <HighlightElement
-      id={comment.id}
-      isHighlighted={isHighlighted}
-      key={`highlight-${comment.id}-${isHighlighted}`}
-      className="-ml-2 px-2"
-    >
+    <div className="relative">
+      <HighlightElement
+        id={comment.id}
+        isHighlighted={isHighlighted}
+        key={`highlight-${comment.id}-${isHighlighted}`}
+        // className="inset-[-8px]"
+        // className="p-4"
+      />
       <motion.div
         initial={{ opacity: 0, x: 0 }}
         animate={{ opacity: 1, x: 0 }}
@@ -190,7 +193,7 @@ export const Comment: React.FC<CommentProps> = ({
             <AvatarCardHeader
               user={comment.author}
               date={comment.createdAt}
-              showActions={isAuthor}
+              showActions={hasPermission}
               actions={commentActions}
             />
             <p className="ml-12 px-0.5 pb-1 pt-1 text-sm">
@@ -200,7 +203,7 @@ export const Comment: React.FC<CommentProps> = ({
         </div>
 
         <SocialCardFooter
-          className={`pb-2 pr-0 ${isSocial && "ml-12"}`}
+          className={`pb-2 pr-2 ${isSocial && "ml-12"}`}
           entityId={comment.id}
           entityType={LikeableEntityType.Comment}
           initialLiked={isLiked}
@@ -266,6 +269,6 @@ export const Comment: React.FC<CommentProps> = ({
           )}
         </AnimatePresence>
       </motion.div>
-    </HighlightElement>
+    </div>
   );
 };
