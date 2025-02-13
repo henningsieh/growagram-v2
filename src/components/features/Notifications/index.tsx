@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell } from "lucide-react";
+import { Bell, ListChecksIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
@@ -75,38 +75,75 @@ export function Notifications() {
                 value="all"
                 className="text-sm hover:bg-accent/50 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground"
               >
-                All ({all.length})
+                <span className="flex items-center gap-1">
+                  <span className="max-w-[42px] truncate xs:max-w-none">
+                    {t("panel.tabs.label_All")}
+                  </span>
+                  <span>
+                    {`(`}
+                    {all.length}
+                    {`)`}
+                  </span>
+                </span>
               </TabsTrigger>
               <TabsTrigger
                 value="follow"
                 className="text-sm hover:bg-accent/50 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground"
               >
-                Follows ({grouped.follow.length})
+                <span className="flex items-center gap-1">
+                  <span className="max-w-[42px] truncate xs:max-w-none">
+                    {t("panel.tabs.label_Follows")}
+                  </span>
+                  <span>
+                    {`(`}
+                    {grouped.follow.length}
+                    {`)`}
+                  </span>
+                </span>
               </TabsTrigger>
               <TabsTrigger
                 value="like"
                 className="text-sm hover:bg-accent/50 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground"
               >
-                Likes ({grouped.like.length})
+                <span className="flex items-center gap-1">
+                  <span className="max-w-[42px] truncate xs:max-w-none">
+                    {t("panel.tabs.label_Likes")}
+                  </span>
+                  <span>
+                    {`(`}
+                    {grouped.like.length}
+                    {`)`}
+                  </span>
+                </span>
               </TabsTrigger>
               <TabsTrigger
                 value="comment"
                 className="text-sm hover:bg-accent/50 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground"
               >
-                Kommentare ({grouped.comment.length})
+                <span className="flex items-center gap-1">
+                  <span className="max-w-[42px] truncate xs:max-w-none">
+                    {t("panel.tabs.label_Comments")}
+                  </span>
+                  <span>
+                    {`(`}
+                    {grouped.comment.length}
+                    {`)`}
+                  </span>
+                </span>
               </TabsTrigger>
             </TabsList>
           </div>
 
-          <div className="flex justify-between border-b p-2">
-            <Button
+          <div className="flex justify-end border-b p-1">
+            {/* <Button
               variant="outline"
               size="sm"
               // onClick={handleGoToAllNotifications}
             >
               Go to All Notifications
-            </Button>
+            </Button> */}
             <Button
+              className="p-1"
               variant="outline"
               size="sm"
               onClick={(e) => {
@@ -116,7 +153,9 @@ export function Notifications() {
               }}
               disabled={unreadCount === 0}
             >
-              Mark All as Read
+              {/* // Lucide Check list icon */}
+              <ListChecksIcon className="h-4 w-4" />
+              {t("panel.mark-all-as-read")}
             </Button>
           </div>
 
@@ -131,7 +170,7 @@ export function Notifications() {
               </div>
             ) : subscriptionError || queryError ? (
               <div className="p-4 text-center text-sm text-red-500">
-                Failed to load notifications
+                {t("panel.error")}
               </div>
             ) : (
               <div className="flex flex-col gap-1 p-1">
@@ -147,7 +186,7 @@ export function Notifications() {
                       ))
                     ) : (
                       <p className="p-2 text-center text-sm text-muted-foreground">
-                        No notifications
+                        {t("panel.no-notifications")}
                       </p>
                     )}
                   </div>
@@ -165,7 +204,7 @@ export function Notifications() {
                       ))
                     ) : (
                       <p className="p-2 text-center text-sm text-muted-foreground">
-                        No follow notifications
+                        {t("panel.no-follow-notifications")}
                       </p>
                     )}
                   </div>
@@ -183,7 +222,7 @@ export function Notifications() {
                       ))
                     ) : (
                       <p className="p-2 text-center text-sm text-muted-foreground">
-                        No like notifications
+                        {t("panel.no-like-notifications")}
                       </p>
                     )}
                   </div>
@@ -200,7 +239,7 @@ export function Notifications() {
                     ))
                   ) : (
                     <p className="p-2 text-center text-sm text-muted-foreground">
-                      No comment notifications
+                      {t("panel.no-comment-notifications")}
                     </p>
                   )}
                 </TabsContent>

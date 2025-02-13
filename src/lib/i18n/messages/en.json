@@ -237,7 +237,21 @@
     "new_follow": "follows you now",
     "new_like": "likes your",
     "new_notification": "New notification",
-    "new_post": "has posted an update"
+    "new_post": "has posted an update",
+    "panel": {
+      "error": "Error while loading Notifications",
+      "mark-all-as-read": "Mark all as read",
+      "no-comment-notifications": "No new comments",
+      "no-follow-notifications": "No new Follower",
+      "no-like-notifications": "No new likes",
+      "no-notifications": "No new Notifications",
+      "tabs": {
+        "label_All": "All",
+        "label_Comments": "Comments",
+        "label_Follows": "Follows",
+        "label_Likes": "Likes"
+      }
+    }
   },
   "Photos": {
     "DeleteConfirmation": {
@@ -413,27 +427,6 @@
     }
   },
   "RegisterPage": {
-    "validation": {
-      "name": {
-        "required": "Name is required",
-        "tooShort": "Name must be at least 2 characters",
-        "tooLong": "Name must be less than 24 characters"
-      },
-      "username": {
-        "required": "Username is required",
-        "tooShort": "Username must be at least 5 characters",
-        "tooLong": "Username must be less than 20 characters",
-        "invalidFormat": "Username must only contain alphanumeric characters with no spaces"
-      },
-      "email": {
-        "required": "Email is required",
-        "invalid": "Invalid email address"
-      },
-      "password": {
-        "required": "Password is required",
-        "tooShort": "Password must be at least 6 characters"
-      }
-    },
     "description": "Fill in all fields below.",
     "email": {
       "label": "Your valid email address"
@@ -456,6 +449,27 @@
     "title": "Register to GrowAGram",
     "username": {
       "label": "Username"
+    },
+    "validation": {
+      "email": {
+        "invalid": "Invalid email address",
+        "required": "Email is required"
+      },
+      "name": {
+        "required": "Name is required",
+        "tooLong": "Name must be less than 24 characters",
+        "tooShort": "Name must be at least 2 characters"
+      },
+      "password": {
+        "required": "Password is required",
+        "tooShort": "Password must be at least 6 characters"
+      },
+      "username": {
+        "invalidFormat": "Username must only contain alphanumeric characters with no spaces",
+        "required": "Username is required",
+        "tooLong": "Username must be less than 20 characters",
+        "tooShort": "Username must be at least 5 characters"
+      }
     }
   },
   "Sidebar": {

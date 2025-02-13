@@ -237,7 +237,21 @@
     "new_follow": "folgt dir jetzt",
     "new_like": "mag dein/deine(n)",
     "new_notification": "Neue Benachrichtigung",
-    "new_post": "hat ein Update gepostet"
+    "new_post": "hat ein Update gepostet",
+    "panel": {
+      "error": "Fehler beim Laden von Benachrichtigungen",
+      "mark-all-as-read": "Ich habe alle gelesen",
+      "no-comment-notifications": "Keine neuen Kommentare",
+      "no-follow-notifications": "Keine neuen Follower",
+      "no-like-notifications": "Keine neuen Likes",
+      "no-notifications": "Keine neuen Benachrichtigungen",
+      "tabs": {
+        "label_All": "Alle",
+        "label_Comments": "Kommentare",
+        "label_Follows": "Follower",
+        "label_Likes": "Likes"
+      }
+    }
   },
   "Photos": {
     "DeleteConfirmation": {
@@ -413,27 +427,6 @@
     }
   },
   "RegisterPage": {
-    "validation": {
-      "name": {
-        "required": "Name ist erforderlich",
-        "tooShort": "Name muss mindestens 2 Zeichen lang sein",
-        "tooLong": "Name darf nicht länger als 24 Zeichen sein"
-      },
-      "username": {
-        "required": "Benutzername ist erforderlich",
-        "tooShort": "Benutzername muss mindestens 5 Zeichen lang sein",
-        "tooLong": "Benutzername darf nicht länger als 20 Zeichen sein",
-        "invalidFormat": "Benutzername darf nur alphanumerische Zeichen ohne Leerzeichen enthalten"
-      },
-      "email": {
-        "required": "E-Mail ist erforderlich",
-        "invalid": "Ungültige E-Mail-Adresse"
-      },
-      "password": {
-        "required": "Passwort ist erforderlich",
-        "tooShort": "Passwort muss mindestens 6 Zeichen lang sein"
-      }
-    },
     "description": "Fülle alle Felder unten aus.",
     "email": {
       "label": "Deine E-Mail-Adresse"
@@ -456,6 +449,27 @@
     "title": "Registrieren bei GrowAGram",
     "username": {
       "label": "Benutzername"
+    },
+    "validation": {
+      "email": {
+        "invalid": "Ungültige E-Mail-Adresse",
+        "required": "E-Mail ist erforderlich"
+      },
+      "name": {
+        "required": "Name ist erforderlich",
+        "tooLong": "Name darf nicht länger als 24 Zeichen sein",
+        "tooShort": "Name muss mindestens 2 Zeichen lang sein"
+      },
+      "password": {
+        "required": "Passwort ist erforderlich",
+        "tooShort": "Passwort muss mindestens 6 Zeichen lang sein"
+      },
+      "username": {
+        "invalidFormat": "Benutzername darf nur alphanumerische Zeichen ohne Leerzeichen enthalten",
+        "required": "Benutzername ist erforderlich",
+        "tooLong": "Benutzername darf nicht länger als 20 Zeichen sein",
+        "tooShort": "Benutzername muss mindestens 5 Zeichen lang sein"
+      }
     }
   },
   "Sidebar": {
