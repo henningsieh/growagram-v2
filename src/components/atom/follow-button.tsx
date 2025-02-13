@@ -1,6 +1,8 @@
 "use client";
 
+import { UserMinusIcon, UserPlusIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Button } from "~/components/ui/button";
 import { useToast } from "~/hooks/use-toast";
@@ -21,6 +23,7 @@ export function FollowButton({
   const [isFollowing, setIsFollowing] = useState(initialIsFollowing);
   const { toast } = useToast();
   const utils = api.useUtils();
+  const t = useTranslations("Profile");
 
   const { mutate: follow, isPending: isFollowLoading } =
     api.users.followUser.useMutation({
@@ -45,12 +48,22 @@ export function FollowButton({
   return (
     <Button
       variant={isFollowing ? "outline" : "primary"}
-      size="sm"
+      size="default"
       className={className}
       onClick={() => (isFollowing ? unfollow({ userId }) : follow({ userId }))}
       disabled={isFollowLoading || isUnfollowLoading}
     >
-      {isFollowing ? "Unfollow" : "Follow"}
+      {isFollowing ? (
+        <div className="flex w-full items-center justify-center">
+          <UserMinusIcon className="mr-2 h-5 w-5" />
+          <span>{t("FollowButton.unfollow")}</span>
+        </div>
+      ) : (
+        <div className="flex w-full items-center justify-center">
+          <UserPlusIcon className="mr-2 h-5 w-5" />
+          <span>{t("FollowButton.follow")}</span>
+        </div>
+      )}
     </Button>
   );
 }

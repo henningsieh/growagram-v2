@@ -427,6 +427,10 @@
     "unlock-premium-content": "Elevate Your Growing Journey"
   },
   "Profile": {
+    "FollowButton": {
+      "follow": "Follow",
+      "unfollow": "Unfollow"
+    },
     "tabs": {
       "grows": "Grows",
       "plants": "Plants",

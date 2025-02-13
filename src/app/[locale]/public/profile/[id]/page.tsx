@@ -26,17 +26,18 @@ export default async function ProfilePage({
 
   return (
     <>
-      <div className="mb-5 mt-3 flex items-center gap-4 px-2">
+      <div className="mb-5 mt-3 flex items-center gap-4">
         <Avatar className="h-24 w-24">
           <AvatarImage src={profile.image ?? ""} />
           <AvatarFallback>
             {profile.name?.substring(0, 2).toUpperCase() ?? "??"}
           </AvatarFallback>
         </Avatar>
-        <div className="flex flex-col gap-2">
-          <div className="flex items-center gap-4">
+        <div className="flex w-full flex-col gap-2 px-0">
+          <div className="flex justify-between gap-4">
             <h1 className="text-3xl font-bold">{profile.name}</h1>
             <FollowButton
+              className="w-36 p-4"
               userId={profile.id}
               initialIsFollowing={isFollowing}
             />

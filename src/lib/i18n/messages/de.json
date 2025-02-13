@@ -427,6 +427,10 @@
     "unlock-premium-content": "Hebe deine Anbau-Reise auf ein neues Level"
   },
   "Profile": {
+    "FollowButton": {
+      "follow": "Folgen",
+      "unfollow": "Entfolgen"
+    },
     "tabs": {
       "grows": "Grows",
       "plants": "Pflanzen",
