@@ -54,7 +54,7 @@ export function OwnerDropdownMenu({
           </span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent align="end" className="space-y-1">
         {/* <DropdownMenuItem
           className="flex cursor-pointer items-center justify-start"
           onSelect={(e) => e.preventDefault()}
@@ -95,7 +95,7 @@ export function OwnerDropdownMenu({
         </DropdownMenuItem>
         <DropdownMenuItem
           asChild
-          className="bg-destructive/50 text-foreground focus:bg-destructive focus:text-white focus:outline-none"
+          className="bg-destructive/50 text-foreground focus:bg-destructive focus-visible:ring-0"
         >
           <Button
             variant="destructive"
