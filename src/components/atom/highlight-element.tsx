@@ -31,7 +31,7 @@ export function HighlightElement({
       });
     } else {
       void controls.start({
-        backgroundColor: "transparent",
+        backgroundColor: "rgba(0, 0, 0, 0)",
         scale: 1,
       });
     }
