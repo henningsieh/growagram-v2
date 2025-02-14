@@ -90,6 +90,11 @@
     "title": "Seite nicht gefunden"
   },
   "Grows": {
+    "DeleteConfirmation": {
+      "alertCautionText": "Diese Aktion löscht auch Updates und andere Beiträge, wenn dieser Grow deren einzige Referenz ist!",
+      "description": "Keine Pflanze wird durch diese Aktion gelöscht!",
+      "title": "Bist du sicher, dass du diesen Grow löschen möchten?"
+    },
     "NoGrowsFound": "Es wurden keine Grows gefunden.",
     "button-label-create-grow": "Grow erstellen",
     "button-label-post-update": "Update zum Grow erstellen",

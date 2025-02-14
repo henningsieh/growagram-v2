@@ -136,9 +136,9 @@ export function GrowCard({
         onOpenChange={setIsDeleteDialogOpen}
         onConfirmDelete={confirmDelete}
         isDeleting={deleteMutation.isPending}
-        title="Are you sure you want to remove this grow?"
-        description="No plant will be deleted by this action!"
-        alertCautionText="This action also deletes postings and other events if they only refer to this grow!"
+        title={t("DeleteConfirmation.title")}
+        description={t("DeleteConfirmation.description")}
+        alertCautionText={t("DeleteConfirmation.alertCautionText")}
       />
       <PostFormModal
         isOpen={isPostModalOpen}

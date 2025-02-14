@@ -90,6 +90,11 @@
     "title": "Page Not Found"
   },
   "Grows": {
+    "DeleteConfirmation": {
+      "alertCautionText": "This action also deletes Updates and other postings if they have this Grow as their only reference!",
+      "description": "No plant will be deleted by this action!",
+      "title": "Are you sure you want to remove this grow?"
+    },
     "NoGrowsFound": "No grows have been found.",
     "button-label-create-grow": "Create Grow",
     "button-label-post-update": "Create Update for Grow",
