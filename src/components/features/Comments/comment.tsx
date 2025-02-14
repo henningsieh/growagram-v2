@@ -160,7 +160,7 @@ export const Comment: React.FC<CommentProps> = ({
     onCancelReply?.();
   };
 
-  // Check if the current user is the comment author
+  // Check if the current user is the comment author or an admin
   const hasPermission =
     session?.user?.id === comment.author.id || session?.user?.role === "admin";
   const [showDeleteDialog, setShowDeleteDialog] = React.useState(false);
