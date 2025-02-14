@@ -8,6 +8,7 @@ import { CardHeader } from "~/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import { Link } from "~/lib/i18n/routing";
@@ -42,7 +43,7 @@ function AvatarCardHeader({
 
   return (
     <CardHeader className="space-y-0 py-0 pl-1 pr-1">
-      <div className="flex items-start justify-between">
+      <div className="flex items-start justify-between p-1">
         <div className="flex items-center gap-2">
           <CustomAvatar
             size={38}
@@ -90,29 +91,28 @@ function AvatarCardHeader({
               className="text-muted-foreground hover:text-foreground"
             >
               <Button variant="ghost" size="icon" aria-label="More actions">
-                <MoreHorizontal className="h-5 w-5" />
+                <MoreHorizontal className="h-6 w-6" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="min-w-6" align="end">
               {actions.map((action, index) => {
                 const Icon = action.icon;
                 return (
-                  // <DropdownMenuItem
-                  //   className="focus:bg-transparent"
-                  //   asChild
-                  //   >
-                  <Button
+                  <DropdownMenuItem
+                    className="px-0 py-0.5 focus:bg-transparent"
                     key={`${action.label}-${index}`}
-                    size={"sm"}
-                    className="w-full"
-                    variant={action.variant}
-                    disabled={action.disabled}
-                    onClick={action.onClick}
                   >
-                    <Icon className="mr-2 h-4 w-4" />
-                    {action.label}
-                  </Button>
-                  // </DropdownMenuItem>
+                    <Button
+                      size={"sm"}
+                      className="flex w-full items-center justify-start"
+                      variant={action.variant}
+                      disabled={action.disabled}
+                      onClick={action.onClick}
+                    >
+                      <Icon className="mr-2 h-4 w-4" />
+                      {action.label}
+                    </Button>
+                  </DropdownMenuItem>
                 );
               })}
             </DropdownMenuContent>

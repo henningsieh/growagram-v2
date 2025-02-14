@@ -2,13 +2,23 @@
 
 // src/components/features/Grows/grow-card.tsx:
 import { AnimatePresence, motion } from "framer-motion";
-import { MessageSquareTextIcon, TentTree } from "lucide-react";
+import {
+  Calendar1Icon,
+  EditIcon,
+  MessageSquareTextIcon,
+  TentTree,
+  Trash2,
+} from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
-import AvatarCardHeader from "~/components/atom/avatar-card-header";
+import { modulePaths } from "~/assets/constants";
+import AvatarCardHeader, {
+  ActionItem,
+} from "~/components/atom/avatar-card-header";
 import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
 import { OwnerDropdownMenu } from "~/components/atom/owner-dropdown-menu";
+// import { OwnerDropdownMenu } from "~/components/atom/owner-dropdown-menu"; // REMOVE
 import { SocialCardFooter } from "~/components/atom/social-card-footer";
 import { Comments } from "~/components/features/Comments/comments";
 import { EmbeddedPlantCard } from "~/components/features/Plants/embedded-plant-card";
@@ -23,14 +33,9 @@ import {
 import { useComments } from "~/hooks/use-comments";
 import { useLikeStatus } from "~/hooks/use-likes";
 import { useToast } from "~/hooks/use-toast";
-import { Link } from "~/lib/i18n/routing";
+import { Link, useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
-import {
-  type DateFormatOptions,
-  cn,
-  formatDate,
-  formatTime,
-} from "~/lib/utils";
+import { cn, formatDate, formatTime } from "~/lib/utils";
 import type { GetAllGrowType, GetOwnGrowType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
 import { LikeableEntityType } from "~/types/like";
@@ -49,6 +54,7 @@ export function GrowCard({
   const { data: session } = useSession();
   const user = session?.user;
 
+  const router = useRouter();
   const locale = useLocale();
   const utils = api.useUtils();
   const { toast } = useToast();
@@ -98,6 +104,31 @@ export function GrowCard({
     setIsDeleteDialogOpen(false);
   };
 
+  const growActions: ActionItem[] = [];
+
+  // Edit Action (visible to owner only)
+  if (user && user.id === grow.ownerId) {
+    growActions.push({
+      icon: EditIcon,
+      label: t("edit-button-label"),
+      variant: "ghost",
+      onClick: () => {
+        router.push(`${modulePaths.GROWS.path}/${grow.id}/form`);
+      },
+    });
+  }
+
+  // Delete Action (visible to owner and admin)
+  if (user && (user.id === grow.ownerId || user.role === "admin")) {
+    growActions.push({
+      icon: Trash2,
+      label: t("delete-button-label"),
+      variant: "destructive",
+      onClick: handleDelete,
+      disabled: deleteMutation.isPending,
+    });
+  }
+
   return (
     <>
       <DeleteConfirmationDialog
@@ -117,12 +148,17 @@ export function GrowCard({
       />
       <Card
         className={cn(
-          `flex flex-col overflow-hidden border border-secondary/70 pt-1`,
-          // isSocial && "border-none",
+          `flex flex-col overflow-hidden border border-secondary/20 pt-1`,
+          isSocial && "bg-secondary/5",
         )}
       >
         {isSocial && (
-          <AvatarCardHeader user={grow.owner} date={grow.createdAt} />
+          <AvatarCardHeader
+            user={grow.owner}
+            date={grow.createdAt}
+            actions={growActions}
+            showActions={growActions.length > 0}
+          />
         )}
 
         <CardContent
@@ -152,20 +188,17 @@ export function GrowCard({
               <Button
                 asChild
                 variant="link"
-                className="w-full justify-start p-1"
+                className="flex min-w-0 items-center justify-start gap-2 p-1"
               >
-                <Link
-                  href={`/public/grows/${grow.id}`}
-                  className="flex min-w-0 items-center gap-2"
-                >
+                <Link href={`/public/grows/${grow.id}`}>
                   <TentTree className="flex-shrink-0" size={20} />
                   <span className="truncate font-semibold">{grow.name}</span>
                 </Link>
               </Button>
             </CardTitle>
             {/* DropdownMenu for grow's owner */}
-            {user && user.id === grow.ownerId && (
-              <OwnerDropdownMenu
+            {!isSocial && user && user.id === grow.ownerId && (
+              <OwnerDropdownMenu // REMOVE
                 isSocial={isSocial}
                 setIsSocial={setIsSocial}
                 isDeleting={deleteMutation.isPending}
@@ -177,44 +210,43 @@ export function GrowCard({
           </div>
 
           {/* Grow created and updated at Date */}
-          <CardDescription>
-            <span className="block">
-              {
+          <CardDescription className="flex flex-col gap-1 px-1 font-mono text-xs tracking-tighter">
+            <div
+              title={
                 t("grow-card-createdAt")
                 // eslint-disable-next-line react/jsx-no-literals
               }
-              :{" "}
-              {formatDate(
-                grow.createdAt,
-                locale as Locale,
-                {
-                  weekday: "short",
-                  month: "long",
-                } as DateFormatOptions,
-              )}
-            </span>
-            {grow.updatedAt && (
-              <div className="block">
-                {
-                  t("grow-card-updatedAt")
-                  // eslint-disable-next-line react/jsx-no-literals
-                }
-                :{" "}
-                {formatDate(
-                  grow.updatedAt,
-                  locale as Locale,
-                  {
-                    weekday: "short",
-                    month: "long",
-                  } as DateFormatOptions,
-                )}{" "}
+              className="flex items-center gap-2"
+            >
+              <Calendar1Icon size={18} />
+              <span className="block">
+                {formatDate(grow.createdAt, locale as Locale)}{" "}
+                {formatTime(grow.createdAt, locale as Locale)}
+              </span>
+            </div>
+
+            <div
+              title={
+                t("grow-card-updatedAt")
+                // eslint-disable-next-line react/jsx-no-literals
+              }
+              className="flex items-center gap-2"
+            >
+              <EditIcon size={18} />
+              <span className="block">
+                {formatDate(grow.updatedAt, locale as Locale)}{" "}
                 {formatTime(grow.updatedAt, locale as Locale)}
-              </div>
-            )}
+              </span>
+            </div>
           </CardDescription>
           <div className="justify-top flex h-full flex-1 flex-col">
             {/* Plants Grid */}
-            <div className="custom-scrollbar max-h-72 flex-1 space-y-2 overflow-y-auto pr-2">
+            <div
+              className={cn(
+                "custom-scrollbar max-h-72 flex-1 space-y-2 overflow-y-auto",
+                grow.plants.length > 2 && "pr-3",
+              )}
+            >
               <AnimatePresence>
                 {grow.plants.map((plant) => (
                   <motion.div

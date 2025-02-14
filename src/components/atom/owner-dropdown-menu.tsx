@@ -95,7 +95,7 @@ export function OwnerDropdownMenu({
         </DropdownMenuItem>
         <DropdownMenuItem
           asChild
-          className="bg-destructive/50 text-foreground focus:bg-destructive focus-visible:ring-0"
+          className="focus:bg-destructive focus-visible:ring-0"
         >
           <Button
             variant="destructive"
