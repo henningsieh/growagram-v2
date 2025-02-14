@@ -13,11 +13,11 @@ const buttonVariants = cva(
         secondary:
           "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
         timeline: 
-          "bg-input/80 border border-[1px] border-input/60 text-input-foreground shadow-sm hover:bg-input/70",
+          "bg-input/10 border border-[1px] border-input/80 text-foreground shadow-sm hover:bg-input/30",
         grow: 
-          "bg-secondary/80 border border-[1px] border-secondary/60 text-secondary-foreground shadow-sm hover:bg-secondary/70",
+          "bg-secondary/10 border border-[1px] border-secondary/80 text-foreground shadow-sm hover:bg-secondary/30",
         plant: 
-          "bg-primary/80 border border-[1px] border-primary/60 text-primary-foreground shadow-sm hover:bg-primary/70",
+          "bg-primary/10 border border-[1px] border-primary/80 text-foreground shadow-sm hover:bg-primary/30",
         outline:
           "border bg-muted text-muted-foreground border-input shadow-sm hover:bg-background hover:text-white hover:text-foreground",
         ghost: "hover:bg-accent hover:text-accent-foreground",
