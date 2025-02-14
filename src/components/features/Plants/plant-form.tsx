@@ -44,7 +44,7 @@ import PlantFormDateField from "./plant-form-date-fields";
 
 type FormValues = z.infer<typeof plantFormSchema>;
 
-export default function PlantFormPage({ plant }: { plant?: Plant }) {
+export default function PlantForm({ plant }: { plant?: Plant }) {
   const utils = api.useUtils();
   const router = useRouter();
   const { toast } = useToast();
@@ -141,7 +141,7 @@ export default function PlantFormPage({ plant }: { plant?: Plant }) {
                         </FormLabel>
                         <FormControl>
                           <div className="relative">
-                            <TagIcon className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-accent-foreground" />
+                            <TagIcon className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
                             <Input
                               className="bg-muted pl-10 text-foreground md:text-base"
                               placeholder="Enter plant name"

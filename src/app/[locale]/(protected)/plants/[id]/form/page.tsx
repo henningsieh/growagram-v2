@@ -1,12 +1,12 @@
 import { notFound } from "next/navigation";
-import PlantFormPage from "~/components/features/Plants/plant-form";
+import PlantForm from "~/components/features/Plants/plant-form";
 import { api } from "~/lib/trpc/server";
 import type { GetPlantByIdInput, GetPlantByIdType } from "~/server/api/root";
 
 export default async function EditPlantPage({
   params,
 }: {
-  params: Promise<GetPlantByIdInput>;
+  params: Promise<GetPlantByIdInput>; 
 }) {
   const plantId = (await params).id;
 
@@ -16,5 +16,5 @@ export default async function EditPlantPage({
 
   if (plantId !== "new" && plant === undefined) notFound();
 
-  return <PlantFormPage plant={plant} />;
+  return <PlantForm plant={plant} />;
 }
