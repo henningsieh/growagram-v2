@@ -3,6 +3,7 @@
 // src/components/features/plant/plant-card.tsx:
 import {
   DnaIcon,
+  EditIcon,
   Leaf,
   MessageSquareTextIcon,
   Nut,
@@ -10,12 +11,16 @@ import {
   Sprout,
   TagIcon,
   TentTreeIcon,
+  Trash2,
   Wheat,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
-import AvatarCardHeader from "~/components/atom/avatar-card-header";
+import { modulePaths } from "~/assets/constants";
+import AvatarCardHeader, {
+  ActionItem,
+} from "~/components/atom/avatar-card-header";
 import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
 import { OwnerDropdownMenu } from "~/components/atom/owner-dropdown-menu";
 import { SocialCardFooter } from "~/components/atom/social-card-footer";
@@ -41,7 +46,7 @@ import { Progress } from "~/components/ui/progress";
 import { useComments } from "~/hooks/use-comments";
 import { useLikeStatus } from "~/hooks/use-likes";
 import { useToast } from "~/hooks/use-toast";
-import { Link } from "~/lib/i18n/routing";
+import { Link, useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import { cn, formatDate } from "~/lib/utils";
 import { calculateGrowthProgress } from "~/lib/utils/calculateDetailedGrowthProgress";
@@ -62,6 +67,8 @@ export default function PlantCard({
 }: PlantCardProps) {
   const { data: session } = useSession();
   const user = session?.user;
+
+  const router = useRouter();
   const locale = useLocale();
   const utils = api.useUtils();
   const { toast } = useToast();
@@ -112,6 +119,31 @@ export default function PlantCard({
 
   const progress = calculateGrowthProgress(plant);
 
+  const growActions: ActionItem[] = [];
+
+  // Edit Action (visible to owner only)
+  if (user && user.id === plant.ownerId) {
+    growActions.push({
+      icon: EditIcon,
+      label: t("edit-button-label"),
+      variant: "ghost",
+      onClick: () => {
+        router.push(`${modulePaths.PLANTS.path}/${plant.id}/form`);
+      },
+    });
+  }
+
+  // Delete Action (visible to owner and admin)
+  if (user && (user.id === plant.ownerId || user.role === "admin")) {
+    growActions.push({
+      icon: Trash2,
+      label: t("delete-button-label"),
+      variant: "destructive",
+      onClick: handleDelete,
+      disabled: deleteMutation.isPending,
+    });
+  }
+
   return (
     <>
       <DeleteConfirmationDialog
@@ -119,9 +151,9 @@ export default function PlantCard({
         onOpenChange={setIsDeleteDialogOpen}
         onConfirmDelete={confirmDelete}
         isDeleting={deleteMutation.isPending}
-        title="Are you sure you want to remove this plant?"
-        description="No photo will be deleted by this action. But this will also remove all references in any photos where this plant is tagged!"
-        alertCautionText="This action also deletes all feedings and other events referring to this plant!"
+        title={t("DeleteConfirmation.title")}
+        description={t("DeleteConfirmation.description")}
+        alertCautionText={t("DeleteConfirmation.alertCautionText")}
       />
       <PostFormModal
         isOpen={isPostModalOpen}
@@ -132,13 +164,17 @@ export default function PlantCard({
       <TouchProvider>
         <Card
           className={cn(
-            `flex flex-col overflow-hidden border border-primary/70 pt-1`,
-            // isSocial && "border-none",
+            `flex flex-col overflow-hidden border border-primary/20 pt-1`,
+            isSocial && "bg-primary/5",
           )}
         >
-          {" "}
           {isSocial && (
-            <AvatarCardHeader user={plant.owner} date={plant.createdAt} />
+            <AvatarCardHeader
+              user={plant.owner}
+              date={plant.createdAt}
+              actions={growActions}
+              showActions={growActions.length > 0}
+            />
           )}
           <CardContent
             className={`grid gap-2 ${isSocial ? "ml-12 pl-0 pr-2" : "p-2"}`}

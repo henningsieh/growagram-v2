@@ -92,7 +92,7 @@
   "Grows": {
     "NoGrowsFound": "Es wurden keine Grows gefunden.",
     "button-label-create-grow": "Grow erstellen",
-    "button-label-post-update": "Post zum Grow erstellen",
+    "button-label-post-update": "Update zum Grow erstellen",
     "button-label-save-changes": "Änderungen speichern",
     "connect-error": "Fehler beim Verbinden der Pflanze",
     "delete-button-label": "Grow löschen",
@@ -278,7 +278,7 @@
       "save": "Pflanzenauswahl speichern ({count})"
     },
     "button-label-connect-plants": "Pflanze(n) auswählen",
-    "button-label-post-update": "Post zum Foto erstellen",
+    "button-label-post-update": "Update zum Foto erstellen",
     "button-label-upload-photos": "Hochladen",
     "buttonBackLabel": "Zurück",
     "capture-date": "aufgenommen",
@@ -319,9 +319,14 @@
     "uploaded-at": "hochgeladen"
   },
   "Plants": {
+    "DeleteConfirmation": {
+      "alertCautionText": "Diese Aktion löscht auch alle Updates und anderen Beiträge, die sich auf diese Pflanze beziehen!",
+      "description": "Durch diese Aktion wird kein Foto gelöscht. \nDies wird aber auch alle Referenzen in den Fotos entfernen, auf denen diese Pflanze markiert ist!",
+      "title": "Bist du sicher, dass du diese Pflanze löschen möchten?"
+    },
     "NoPlantsFound": "Es konnten keine Pflanzen gefunden werden.",
     "breeder": "Züchter / Breeder",
-    "button-label-post-update": "Post zur Pflanze erstellen",
+    "button-label-post-update": "Update zur Pflanze erstellen",
     "curing-start-date": "Startdatum der Aushärtephase",
     "delete-button-label": "Pflanze löschen",
     "delete-plant-button-label": "Pflanze löschen",

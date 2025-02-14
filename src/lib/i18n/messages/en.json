@@ -92,7 +92,7 @@
   "Grows": {
     "NoGrowsFound": "No grows have been found.",
     "button-label-create-grow": "Create Grow",
-    "button-label-post-update": "Create Post with Grow",
+    "button-label-post-update": "Create Update for Grow",
     "button-label-save-changes": "Save Changes",
     "connect-error": "Error connecting plant",
     "delete-button-label": "Delete Grow",
@@ -278,7 +278,7 @@
       "save": "Save Plant Selection ({count})"
     },
     "button-label-connect-plants": "Select Plant(s)",
-    "button-label-post-update": "Create Post with Photo",
+    "button-label-post-update": "Create Update for Photo",
     "button-label-upload-photos": "Upload",
     "buttonBackLabel": "Back",
     "capture-date": "taken on",
@@ -319,9 +319,14 @@
     "uploaded-at": "uploaded on"
   },
   "Plants": {
+    "DeleteConfirmation": {
+      "alertCautionText": "This action also deletes all Updates and other postings referring to this plant!",
+      "description": "No photo will be deleted by this action. But this will also remove all references in any photos where this plant is tagged!",
+      "title": "Are you sure you want to remove this plant?"
+    },
     "NoPlantsFound": "No plants could be found.",
     "breeder": "Breeder",
-    "button-label-post-update": "Create Post with Plant",
+    "button-label-post-update": "Create Update for Plant",
     "curing-start-date": "Curing phase start date",
     "delete-button-label": "Delete Plant",
     "delete-plant-button-label": "Delete Plant",
