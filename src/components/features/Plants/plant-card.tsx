@@ -3,6 +3,7 @@
 // src/components/features/plant/plant-card.tsx:
 import {
   DnaIcon,
+  DotIcon,
   EditIcon,
   Leaf,
   MessageSquareTextIcon,
@@ -48,7 +49,7 @@ import { useLikeStatus } from "~/hooks/use-likes";
 import { useToast } from "~/hooks/use-toast";
 import { Link, useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
-import { cn, formatDate } from "~/lib/utils";
+import { cn, formatDate, formatTime } from "~/lib/utils";
 import { calculateGrowthProgress } from "~/lib/utils/calculateDetailedGrowthProgress";
 import type { PlantByIdType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
@@ -144,6 +145,18 @@ export default function PlantCard({
     });
   }
 
+  const dateElement = (
+    <Link
+      href={`/public/plants/${plant.id}`}
+      title={t("plant-card-createdAt")}
+      className="flex items-center gap-1 whitespace-nowrap text-sm text-muted-foreground"
+    >
+      {<DotIcon size={24} className="-mx-2 hidden xs:block" />}
+      {formatDate(plant.createdAt, locale as Locale)}{" "}
+      {formatTime(plant.createdAt, locale as Locale)}
+    </Link>
+  );
+
   return (
     <>
       <DeleteConfirmationDialog
@@ -171,7 +184,7 @@ export default function PlantCard({
           {isSocial && (
             <AvatarCardHeader
               user={plant.owner}
-              date={plant.createdAt}
+              dateElement={dateElement}
               actions={growActions}
               showActions={growActions.length > 0}
             />

@@ -161,9 +161,7 @@ export default function PhotoCard({
           </div>
         )}
 
-        {isSocial && (
-          <AvatarCardHeader user={photo.owner} date={photo.captureDate} />
-        )}
+        {isSocial && <AvatarCardHeader user={photo.owner} />}
 
         {/* Photo */}
         <div

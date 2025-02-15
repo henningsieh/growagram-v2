@@ -1,3 +1,5 @@
+import { DotIcon } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useState } from "react";
 import AvatarCardHeader from "~/components/atom/avatar-card-header";
@@ -12,10 +14,11 @@ import { useComments } from "~/hooks/use-comments";
 import { useLikeStatus } from "~/hooks/use-likes";
 import { useToast } from "~/hooks/use-toast";
 import { api } from "~/lib/trpc/react";
-import { cn } from "~/lib/utils";
+import { cn, formatDate, formatTime } from "~/lib/utils";
 import { GetPostType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
 import { LikeableEntityType } from "~/types/like";
+import { Locale } from "~/types/locale";
 import { PostableEntityType } from "~/types/post";
 
 interface PostCardProps {
@@ -25,7 +28,9 @@ interface PostCardProps {
 
 export default function PostCard({ post, isSocialProp = true }: PostCardProps) {
   const utils = api.useUtils();
+  const locale = useLocale();
   const { toast } = useToast();
+  const t = useTranslations("Posts");
   const { openImageModal } = useImageModal();
   const [isImageHovered, setIsImageHovered] = useState(false);
 
@@ -75,6 +80,17 @@ export default function PostCard({ post, isSocialProp = true }: PostCardProps) {
     }
   };
 
+  const dateElement = (
+    <div
+      title={t("post-card-createdAt")}
+      className="flex cursor-default items-center gap-2 whitespace-nowrap text-sm text-muted-foreground"
+    >
+      {<DotIcon size={24} className="-mx-2 hidden xs:block" />}
+      {formatDate(post.createdAt, locale as Locale)}{" "}
+      {formatTime(post.createdAt, locale as Locale)}
+    </div>
+  );
+
   return (
     <>
       <DeleteConfirmationDialog
@@ -92,11 +108,11 @@ export default function PostCard({ post, isSocialProp = true }: PostCardProps) {
         )}
       >
         {isSocial && (
-          <AvatarCardHeader user={post.owner} date={post.createdAt} />
+          <AvatarCardHeader user={post.owner} dateElement={dateElement} />
         )}
 
         <CardContent
-          className={`grid gap-2 ${isSocial ? "ml-12 pl-0 pr-2" : "p-2"}`}
+          className={`flex h-full flex-col gap-2 ${isSocial ? "ml-12 pl-0 pr-2" : "p-2"}`}
         >
           <p>{post.content}</p>
 

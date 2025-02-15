@@ -44,7 +44,7 @@ export function OwnerDropdownMenu({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="icon">
+        <Button variant="outline" size="icon" className="shrink-0">
           <MoreHorizontalIcon className="h-5 w-5" />
           <span
             className="sr-only"

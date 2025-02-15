@@ -1,8 +1,8 @@
 "use client";
 
 import type { LucideIcon } from "lucide-react";
-import { DotIcon, MoreHorizontal, ShieldIcon } from "lucide-react";
-import { useLocale } from "next-intl";
+import { MoreHorizontal, ShieldIcon } from "lucide-react";
+import * as React from "react";
 import { Button, type ButtonProps } from "~/components/ui/button";
 import { CardHeader } from "~/components/ui/card";
 import {
@@ -12,9 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import { Link } from "~/lib/i18n/routing";
-import { formatDate, formatTime } from "~/lib/utils";
 import type { OwnUserDataType } from "~/server/api/root";
-import { Locale } from "~/types/locale";
 
 import CustomAvatar from "./custom-avatar";
 
@@ -28,23 +26,21 @@ export interface ActionItem {
 
 interface SocialHeaderProps {
   user: OwnUserDataType;
-  date?: Date;
+  dateElement?: React.JSX.Element;
   showActions?: boolean;
   actions?: ActionItem[];
 }
 
 function AvatarCardHeader({
   user,
-  date,
+  dateElement,
   showActions,
   actions,
 }: SocialHeaderProps) {
-  const locale = useLocale();
-
   return (
     <CardHeader className="space-y-0 py-0 pl-1 pr-1">
-      <div className="flex items-start justify-between p-1">
-        <div className="flex items-center gap-2">
+      <div className="flex items-start justify-between py-1">
+        <div className="flex items-center gap-1">
           <CustomAvatar
             size={38}
             src={user.image ?? undefined}
@@ -57,7 +53,7 @@ function AvatarCardHeader({
               className="flex items-center text-sm text-muted-foreground"
               // eslint-disable-next-line react/jsx-no-literals
             >
-              <div className="flex items-center gap-1 whitespace-nowrap">
+              <div className="flex items-center gap-2 whitespace-nowrap">
                 <p className="text-sm font-bold text-foreground underline-offset-4 hover:underline">
                   {user.name}
                 </p>
@@ -75,13 +71,7 @@ function AvatarCardHeader({
                 </span>
               </div>
             </Link>
-            {date && (
-              <div className="flex items-center gap-1 whitespace-nowrap text-sm text-muted-foreground">
-                {<DotIcon size={24} className="-mx-2 hidden xs:block" />}
-                {formatDate(date, locale as Locale)}{" "}
-                {formatTime(date, locale as Locale)}
-              </div>
-            )}
+            {dateElement && dateElement}
           </div>
         </div>
         {showActions && actions && actions.length > 0 && (

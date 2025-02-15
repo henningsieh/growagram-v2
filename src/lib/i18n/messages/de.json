@@ -358,6 +358,7 @@
     "no-plants-yet": "Es wurden noch keine Pflanzen hinzugefügt.",
     "overall-progress": "Gesamtfortschritt",
     "phase": "Phasenfortschritt",
+    "plant-card-createdAt": "Erstellt am:",
     "planting-date": "Datum der Aussaat",
     "public-link-label": "Öffnen im neuen Tab",
     "sort-plants-createdAt": "Angelegt am",
@@ -395,6 +396,7 @@
     "delete-button-label": "Update löschen",
     "edit-button-label": "Update bearbeiten",
     "linkedInThisPost": "Mit dem Update verlinkt",
+    "post-card-createdAt": "Gepostet am",
     "public-link-label": "Öffnen im neuen Tab"
   },
   "Premium": {

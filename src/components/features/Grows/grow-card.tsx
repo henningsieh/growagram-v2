@@ -4,6 +4,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import {
   Calendar1Icon,
+  DotIcon,
   EditIcon,
   MessageSquareTextIcon,
   TentTree,
@@ -129,6 +130,18 @@ export function GrowCard({
     });
   }
 
+  const dateElement = (
+    <Link
+      href={`/public/grows/${grow.id}`}
+      title={t("grow-card-updatedAt")}
+      className="flex items-center gap-1 whitespace-nowrap text-sm text-muted-foreground"
+    >
+      {<DotIcon size={24} className="-mx-2 hidden xs:block" />}
+      {formatDate(grow.updatedAt, locale as Locale)}{" "}
+      {formatTime(grow.updatedAt, locale as Locale)}
+    </Link>
+  );
+
   return (
     <>
       <DeleteConfirmationDialog
@@ -155,7 +168,7 @@ export function GrowCard({
         {isSocial && (
           <AvatarCardHeader
             user={grow.owner}
-            date={grow.createdAt}
+            dateElement={dateElement}
             actions={growActions}
             showActions={growActions.length > 0}
           />
@@ -183,8 +196,8 @@ export function GrowCard({
           </div> */}
 
           {/* Title Link */}
-          <div className="flex min-w-0 items-center gap-2">
-            <CardTitle as="h3" className="min-w-0 flex-1">
+          <div className="flex min-w-0 items-center justify-between gap-2">
+            <CardTitle as="h3" className="min-w-0">
               <Button
                 asChild
                 variant="link"
@@ -192,7 +205,9 @@ export function GrowCard({
               >
                 <Link href={`/public/grows/${grow.id}`}>
                   <TentTree className="flex-shrink-0" size={20} />
-                  <span className="truncate font-semibold">{grow.name}</span>
+                  <span className="truncate font-semibold leading-normal">
+                    {grow.name}
+                  </span>
                 </Link>
               </Button>
             </CardTitle>
