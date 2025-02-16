@@ -95,6 +95,7 @@
       "description": "Keine Pflanze wird durch diese Aktion gelöscht!",
       "title": "Bist du sicher, dass du diesen Grow löschen möchten?"
     },
+    "button-label-back": "Zurück",
     "NoGrowsFound": "Es wurden keine Grows gefunden.",
     "button-label-create-grow": "Grow erstellen",
     "button-label-post-update": "Update zum Grow erstellen",
@@ -114,7 +115,7 @@
     "form-page-title-edit": "Grow bearbeiten",
     "form-page-title-new": "Neuen Grow anlegen",
     "form-title-create-new-grow": "Stammdaten deines Grows",
-    "form-title-edit-grow": "Stammdaten des Grows",
+    "form-title-edit-grow": "Stammdaten des neuen Grows",
     "grow-card-createdAt": "Erstellt am",
     "grow-card-updatedAt": "Zuletzt bearbeitet",
     "grow-name": "Name des Grows",
@@ -124,7 +125,7 @@
     "mygrows-page-subtitle": "Anzeige und Verwaltung meiner aktuellen Grows",
     "mygrows-page-title": "Meine Grows",
     "no-grows-yet": "Du hast bisher keine Grows erstellt.",
-    "no-plants-connected": "Bisher keine Pflanzen zugeordnet.",
+    "no-plants-connectable": "Es konnten keine Pflanzen gefunden werden. Entweder sind alle deine Pflanzen anderen Grows zugeordnet oder du hast noch keine Pflanzen.",
     "plants-selected": "{count} Pflanze(n) ausgewählt.",
     "public-link-label": "Öffnen im neuen Tab",
     "reset": "Zurücksetzen",
@@ -267,12 +268,12 @@
   },
   "Photos": {
     "DeleteConfirmation": {
-      "alertCautionText": "Diese Aktion kann nicht rückgängig gemacht werden. \nDadurch wird das Foto dauerhaft aus unserer Cloud bzw. von den Speicherservern gelöscht.",
+      "alertCautionText": "Diese Aktion kann nicht rückgängig gemacht werden. Dadurch wird das Foto dauerhaft aus unserer Cloud bzw. von den Speicherservern gelöscht.",
       "description": "Durch diese Aktion wird keine deiner Pflanzen gelöscht!",
       "title": "Möchtest du dieses Foto wirklich löschen?",
       "toasts": {
         "warning-photo-has-posts": {
-          "description": "Dieses Foto ist mit einem oder mehreren Beiträgen verbunden. \nDu kannst ein Foto nicht löschen, wenn es Beiträge zugeordnet ist.",
+          "description": "Dieses Foto ist mit einem oder mehreren Beiträgen verbunden. Du kannst ein Foto nicht löschen, wenn es Beiträge zugeordnet ist.",
           "title": "Warnung"
         }
       }
@@ -326,7 +327,7 @@
   "Plants": {
     "DeleteConfirmation": {
       "alertCautionText": "Diese Aktion löscht auch alle Updates und anderen Beiträge, die sich auf diese Pflanze beziehen!",
-      "description": "Durch diese Aktion wird kein Foto gelöscht. \nDies wird aber auch alle Referenzen in den Fotos entfernen, auf denen diese Pflanze markiert ist!",
+      "description": "Durch diese Aktion wird kein Foto gelöscht. Dies wird aber auch alle Referenzen in den Fotos entfernen, auf denen diese Pflanze markiert ist!",
       "title": "Bist du sicher, dass du diese Pflanze löschen möchten?"
     },
     "NoPlantsFound": "Es konnten keine Pflanzen gefunden werden.",

@@ -95,6 +95,7 @@
       "description": "No plant will be deleted by this action!",
       "title": "Are you sure you want to remove this grow?"
     },
+    "button-label-back": "Back",
     "NoGrowsFound": "No grows have been found.",
     "button-label-create-grow": "Create Grow",
     "button-label-post-update": "Create Update for Grow",
@@ -114,7 +115,7 @@
     "form-page-title-edit": "Edit Grow",
     "form-page-title-new": "Create Grow",
     "form-title-create-new-grow": "Grow's basic data",
-    "form-title-edit-grow": "Grow's basic data",
+    "form-title-edit-grow": "New Grow's basic data",
     "grow-card-createdAt": "Creation date",
     "grow-card-updatedAt": "Last edited date",
     "grow-name": "The Grow's Name",
@@ -124,7 +125,7 @@
     "mygrows-page-subtitle": "View and manage my current grows",
     "mygrows-page-title": "My Grows",
     "no-grows-yet": "You haven&apos;t created any Grows yet.",
-    "no-plants-connected": "No plants connected yet.",
+    "no-plants-connectable": "No plants could be found. Either all your plants are assigned to other grows or you don't have any plants yet.",
     "plants-selected": "{count} plant(s) selected.",
     "public-link-label": "Open in new Tab",
     "reset": "Reset Form",
@@ -169,7 +170,7 @@
     "HeroSection": {
       "cta-button-pricing": "Explore Grows",
       "cta-button-start": "Get Started for free",
-      "description": "Discover the world of home cannabis cultivation. \nShare your experiences, learn from the community and document your grows in a digital diary.",
+      "description": "Discover the world of home cannabis cultivation. Share your experiences, learn from the community and document your grows in a digital diary.",
       "subtitle": "Your cannabis grow diary",
       "title": "GrowAGram"
     },
@@ -383,7 +384,7 @@
     },
     "asc": "Ascending",
     "coming-soon": "Coming soon",
-    "coming-soon-description": "We are already working on the new function. \nCome by again soon!",
+    "coming-soon-description": "We are already working on the new function. Come by again soon!",
     "desc": "Descending",
     "feature-coming": "New Feature is on its Way!",
     "infinitescroll": "Infinite scrolling",

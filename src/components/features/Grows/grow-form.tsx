@@ -7,10 +7,12 @@ import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { PaginationItemsPerPage } from "~/assets/constants";
+import { PaginationItemsPerPage, modulePaths } from "~/assets/constants";
 import FormContent from "~/components/Layouts/form-content";
+import SpinningLoader from "~/components/Layouts/loader";
 import PageHeader from "~/components/Layouts/page-header";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
+import { Alert } from "~/components/ui/alert";
 import { Button } from "~/components/ui/button";
 import {
   Card,
@@ -39,13 +41,13 @@ import {
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
 import { useToast } from "~/hooks/use-toast";
-import { useRouter } from "~/lib/i18n/routing";
+import { Link, useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import type {
   CreateOrEditGrowInput,
+  GetConnectablePlantsInput,
   GetGrowByIdType,
   GetOwnGrowsInput,
-  GetOwnPlantsInput,
   GrowConnectPlantInput,
   GrowDisconnectPlantInput,
 } from "~/server/api/root";
@@ -55,6 +57,7 @@ import { growSchema } from "~/types/zodSchema";
 type FormValues = z.infer<typeof growSchema>;
 
 export default function GrowFormPage({ grow }: { grow?: GetGrowByIdType }) {
+  const t_nav = useTranslations("Navigation");
   const t = useTranslations("Grows");
 
   // Determine the mode based on the presence of grow
@@ -137,20 +140,19 @@ export default function GrowFormPage({ grow }: { grow?: GetGrowByIdType }) {
     },
   });
 
-  // initial Data fetching
-  const initialData = utils.plants.getOwnPlants.getData({
-    limit: 100,
-    // cursor?: number | null | undefined
-  } satisfies GetOwnPlantsInput);
+  // fetching connectable plants from utils cache
+  const initialData = utils.plants.getConnectablePlants.getData({
+    growId: grow?.id,
+  } satisfies GetConnectablePlantsInput);
 
   // Data fetching and form initialization...
-  //TODO: only fetch "connectable" plants!
-  const { data: plantsData, isLoading } = api.plants.getOwnPlants.useQuery(
-    { limit: 100 } satisfies GetOwnPlantsInput,
-    {
-      initialData: initialData,
-    },
-  );
+  const { data: plantsData, isPending } =
+    api.plants.getConnectablePlants.useQuery(
+      { growId: grow?.id } satisfies GetConnectablePlantsInput,
+      {
+        initialData: initialData,
+      },
+    );
   const plants = useMemo(() => plantsData?.plants || [], [plantsData]);
 
   const initialConnectedPlantIds = useMemo(
@@ -302,6 +304,9 @@ export default function GrowFormPage({ grow }: { grow?: GetGrowByIdType }) {
           ? t("form-page-subtitle-new")
           : t("form-page-subtitle-edit")
       }
+      buttonLabel={t("button-label-back")}
+      buttonVariant={"outline"}
+      buttonLink={modulePaths.GROWS.path}
     >
       <FormContent>
         <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -353,14 +358,24 @@ export default function GrowFormPage({ grow }: { grow?: GetGrowByIdType }) {
                         value={searchQuery}
                         onValueChange={(value) => setSearchQuery(value)}
                       />
-                      {isLoading ? (
-                        <div className="flex justify-center p-4">
-                          <div className="h-8 w-8 animate-spin rounded-full border-2 border-gray-300 border-t-primary" />
-                        </div>
+                      {isPending ? (
+                        <SpinningLoader className="m-4 size-12" />
                       ) : (
                         <CommandList className="min-h-24">
-                          <CommandEmpty>
-                            {t("no-plants-connected")}
+                          <CommandEmpty className="mx-auto my-4 max-w-md space-y-2">
+                            <Alert variant="destructive" role="status">
+                              <div>{t("no-plants-connectable")}</div>
+                            </Alert>
+                            <div className="flex justify-end">
+                              <Button className="p-0" variant="link" asChild>
+                                <Link
+                                  className="roundex-xs h-6 text-sm"
+                                  href={modulePaths.PLANTS.path}
+                                >
+                                  {t_nav("my-plants")}
+                                </Link>
+                              </Button>
+                            </div>
                           </CommandEmpty>
                           <CommandGroup>
                             {filteredPlants.map((plant) => (

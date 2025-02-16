@@ -1,6 +1,6 @@
 // src/server/api/routers/plant.ts:
 import { TRPCError } from "@trpc/server";
-import { count, eq } from "drizzle-orm";
+import { and, count, eq, isNull, or } from "drizzle-orm";
 import { z } from "zod";
 import { PaginationItemsPerPage } from "~/assets/constants";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
@@ -84,6 +84,40 @@ export const plantRouter = {
         nextCursor: nextCursor,
         totalPages: Math.ceil(totalCount / limit),
         count: totalCount,
+      };
+    }),
+
+  // Get "connectable" plants
+  getConnectablePlants: protectedProcedure
+    .input(z.object({ growId: z.string().optional() }))
+    .query(async ({ ctx, input }) => {
+      const connectablePlants = await ctx.db.query.plants.findMany({
+        where: and(
+          eq(plants.ownerId, ctx.session.user.id),
+          or(
+            // input.growId ? eq(plants.growId, input.growId) : undefined,
+            isNull(plants.growId),
+          ),
+        ),
+        with: {
+          owner: true,
+          grow: true,
+          plantImages: connectPlantWithImagesQuery,
+          strain: {
+            columns: {
+              id: true,
+              name: true,
+              thcContent: true,
+              cbdContent: true,
+            },
+            with: { breeder: { columns: { id: true, name: true } } },
+          },
+          headerImage: { columns: { id: true, imageUrl: true } },
+        },
+      });
+
+      return {
+        plants: connectablePlants,
       };
     }),
 

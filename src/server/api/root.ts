@@ -128,6 +128,7 @@ export type GetOwnPlantsInput = RouterInput["plants"]["getOwnPlants"];
 export type GetPlantByIdInput = RouterInput["plants"]["getById"];
 export type CreateOrEditPlantInput = RouterInput["plants"]["createOrEdit"];
 export type GetAllPlantsInput = RouterInput["plants"]["getAllPlants"];
+export type GetConnectablePlantsInput = RouterInput["plants"]["getConnectablePlants"];
 
 // growRouter
 //  OUTPUTS:
