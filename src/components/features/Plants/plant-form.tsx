@@ -2,12 +2,21 @@
 
 // src/components/features/Plants/plant-form.tsx:
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Leaf, Nut, PillBottle, Sprout, TagIcon, Wheat } from "lucide-react";
+import {
+  HomeIcon,
+  Leaf,
+  Nut,
+  PillBottle,
+  Sprout,
+  TagIcon,
+  TentTreeIcon,
+  Wheat,
+} from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { PaginationItemsPerPage } from "~/assets/constants";
+import { PaginationItemsPerPage, modulePaths } from "~/assets/constants";
 import FormContent from "~/components/Layouts/form-content";
 import SpinningLoader from "~/components/Layouts/loader";
 import PageHeader from "~/components/Layouts/page-header";
@@ -30,6 +39,13 @@ import {
   FormMessage,
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
 import { useToast } from "~/hooks/use-toast";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
@@ -59,6 +75,7 @@ export default function PlantForm({ plant }: { plant?: Plant }) {
     defaultValues: {
       id: plant?.id,
       name: plant?.name || "",
+      growId: plant?.growId || null,
       startDate: plant?.startDate,
       seedlingPhaseStart: plant?.seedlingPhaseStart || null,
       vegetationPhaseStart: plant?.vegetationPhaseStart || null,
@@ -68,9 +85,17 @@ export default function PlantForm({ plant }: { plant?: Plant }) {
     },
   });
 
+  const { data: growsData, isPending } = api.grows.getOwnGrows.useQuery(
+    {
+      limit: 1000,
+    },
+    {
+      initialData: utils.grows.getOwnGrows.getData(),
+    },
+  );
+
   const createOrEditPlantMutation = api.plants.createOrEdit.useMutation({
-    onSuccess: async (_, plant) => {
-      console.debug("new or edited plant: ", { plant }); // log the plant values
+    onSuccess: async (createdPlant, variables) => {
       toast({
         title: "Success",
         description: "Your plant has been saved.",
@@ -83,8 +108,8 @@ export default function PlantForm({ plant }: { plant?: Plant }) {
         limit: PaginationItemsPerPage.PLANTS_PER_PAGE,
       } satisfies GetOwnPlantsInput);
 
-      // Now navigate
-      router.push("/plants");
+      // Now navigate to the plants page
+      router.push(modulePaths.PLANTS.path);
     },
     onError: (error) => {
       toast({
@@ -156,6 +181,49 @@ export default function PlantForm({ plant }: { plant?: Plant }) {
                       </FormItem>
                     )}
                   />
+
+                  <FormField
+                    control={form.control}
+                    name="growId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="font-semibold">
+                          {t("form-grow")}
+                        </FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <TentTreeIcon className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+                            {isPending ? (
+                              <SpinningLoader />
+                            ) : (
+                              <Select
+                                value={field.value || undefined}
+                                onValueChange={field.onChange}
+                              >
+                                <SelectTrigger className="bg-muted pl-10 text-foreground md:text-base">
+                                  <SelectValue
+                                    placeholder={t("form-grow-placeholder")}
+                                  />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {growsData?.grows.map((grow) => (
+                                    <SelectItem key={grow.id} value={grow.id}>
+                                      {grow.name}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            )}
+                          </div>
+                        </FormControl>
+                        <FormDescription>
+                          {t("form-grow-description")}
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
                   <div className="grid md:grid-cols-2 md:gap-4 lg:gap-6 xl:gap-8">
                     <FormField
                       control={form.control}

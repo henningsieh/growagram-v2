@@ -20,7 +20,7 @@ export const plantRouter = {
           limit: z
             .number()
             .min(1)
-            .max(100)
+            .max(1000)
             .default(PaginationItemsPerPage.PLANTS_PER_PAGE)
             .optional(),
           sortField: z
@@ -129,7 +129,7 @@ export const plantRouter = {
         limit: z
           .number()
           .min(1)
-          .max(100)
+          .max(1000)
           .default(PaginationItemsPerPage.PLANTS_PER_PAGE)
           .optional(),
         sortField: z
@@ -253,9 +253,9 @@ export const plantRouter = {
       // If an existing plant ID is specified, check the existence
       // of the plant and the ownership of the current user
       if (input.id !== undefined && typeof input.id === "string") {
-        const owenerid = input.id;
+        const plantId = input.id;
         const existingPlant = await ctx.db.query.plants.findFirst({
-          where: (plants, { eq }) => eq(plants.id, owenerid),
+          where: (plants, { eq }) => eq(plants.id, plantId),
         });
 
         // Throw a TRPC not found error if the plant doesn't exist
@@ -275,12 +275,13 @@ export const plantRouter = {
         }
       }
 
-      // Logic to handle image creation
-      const newPlant = await ctx.db
+      const plant = await ctx.db
+        // Logic to create a plant
         .insert(plants)
         .values({
           id: input.id || crypto.randomUUID(),
           name: input.name,
+          growId: input.growId,
           ownerId: ctx.session.user.id,
           startDate: input.startDate,
           seedlingPhaseStart: input.seedlingPhaseStart,
@@ -289,11 +290,12 @@ export const plantRouter = {
           harvestDate: input.harvestDate,
           curingPhaseStart: input.curingPhaseStart,
         })
+        // Logic to edit a plant
         .onConflictDoUpdate({
           target: plants.id,
           set: {
             name: input.name,
-            // ownerId: ctx.session.user.id, // no owner change onUpdate!
+            growId: input.growId,
             startDate: input.startDate,
             seedlingPhaseStart: input.seedlingPhaseStart,
             vegetationPhaseStart: input.vegetationPhaseStart,
@@ -301,9 +303,10 @@ export const plantRouter = {
             harvestDate: input.harvestDate,
             curingPhaseStart: input.curingPhaseStart,
           },
-        });
+        })
+        .returning();
 
-      return newPlant;
+      return plant;
     }),
 
   // Delete plant

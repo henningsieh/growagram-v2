@@ -11,6 +11,7 @@ export const plantFormSchema = z.object({
   name: z.string().min(2, {
     message: "Plant name must be at least 2 characters.",
   }),
+  growId: z.string().nullable().optional(),
   startDate: z
     .union([
       z.date({

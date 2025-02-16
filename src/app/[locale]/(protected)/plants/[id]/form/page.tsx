@@ -6,7 +6,7 @@ import type { GetPlantByIdInput, GetPlantByIdType } from "~/server/api/root";
 export default async function EditPlantPage({
   params,
 }: {
-  params: Promise<GetPlantByIdInput>; 
+  params: Promise<GetPlantByIdInput>;
 }) {
   const plantId = (await params).id;
 
@@ -15,6 +15,11 @@ export default async function EditPlantPage({
   ) satisfies GetPlantByIdType | undefined;
 
   if (plantId !== "new" && plant === undefined) notFound();
+
+  //prefetch own grows into cache
+  await api.grows.getOwnGrows.prefetch({
+    limit: 1000,
+  });
 
   return <PlantForm plant={plant} />;
 }
