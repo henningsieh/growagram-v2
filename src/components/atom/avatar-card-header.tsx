@@ -13,6 +13,7 @@ import {
 } from "~/components/ui/dropdown-menu";
 import { Link } from "~/lib/i18n/routing";
 import type { OwnUserDataType } from "~/server/api/root";
+import { UserRoles } from "~/types/user";
 
 import CustomAvatar from "./custom-avatar";
 
@@ -57,7 +58,7 @@ function AvatarCardHeader({
                 <p className="text-sm font-bold text-foreground underline-offset-4 hover:underline">
                   {user.name}
                 </p>
-                {user.role === "admin" && (
+                {user.role === UserRoles.ADMIN && (
                   <ShieldIcon
                     fill="hsl(var(--planted))"
                     className="h-4 w-4 text-yellow-500"
