@@ -49,6 +49,9 @@
         "label": "Delete"
       }
     },
+    "cardHeader": {
+      "createdAt": "Created at:"
+    },
     "dialogs": {
       "deleteComment": {
         "alertCautionText": "This action cannot be undone.",
@@ -95,8 +98,8 @@
       "description": "No plant will be deleted by this action!",
       "title": "Are you sure you want to remove this grow?"
     },
-    "button-label-back": "Back",
     "NoGrowsFound": "No grows have been found.",
+    "button-label-back": "Back",
     "button-label-create-grow": "Create Grow",
     "button-label-post-update": "Create Update for Grow",
     "button-label-save-changes": "Save Changes",

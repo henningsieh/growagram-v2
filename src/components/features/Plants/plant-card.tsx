@@ -56,6 +56,7 @@ import { CommentableEntityType } from "~/types/comment";
 import { LikeableEntityType } from "~/types/like";
 import { Locale } from "~/types/locale";
 import { PostableEntityType } from "~/types/post";
+import { UserRoles } from "~/types/user";
 
 interface PlantCardProps {
   plant: PlantByIdType;
@@ -135,7 +136,7 @@ export default function PlantCard({
   }
 
   // Delete Action (visible to owner and admin)
-  if (user && (user.id === plant.ownerId || user.role === "admin")) {
+  if (user && (user.id === plant.ownerId || user.role === UserRoles.ADMIN)) {
     growActions.push({
       icon: Trash2,
       label: t("delete-button-label"),

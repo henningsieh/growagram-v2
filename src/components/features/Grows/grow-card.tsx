@@ -42,6 +42,7 @@ import { CommentableEntityType } from "~/types/comment";
 import { LikeableEntityType } from "~/types/like";
 import { Locale } from "~/types/locale";
 import { PostableEntityType } from "~/types/post";
+import { UserRoles } from "~/types/user";
 
 interface GrowCardProps {
   grow: GetOwnGrowType | GetAllGrowType;
@@ -120,7 +121,7 @@ export function GrowCard({
   }
 
   // Delete Action (visible to owner and admin)
-  if (user && (user.id === grow.ownerId || user.role === "admin")) {
+  if (user && (user.id === grow.ownerId || user.role === UserRoles.ADMIN)) {
     growActions.push({
       icon: Trash2,
       label: t("delete-button-label"),
@@ -277,7 +278,7 @@ export function GrowCard({
               </AnimatePresence>
               {grow.plants.length === 0 && (
                 <div className="py-8 text-center text-muted-foreground">
-                  {t("no-plants-connected")}
+                  {t("no-plants-connectable")}
                 </div>
               )}
             </div>
