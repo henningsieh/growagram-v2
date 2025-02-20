@@ -27,7 +27,7 @@ export const photoRouter = {
           limit: z
             .number()
             .min(1)
-            .max(100)
+            .max(PaginationItemsPerPage.MAX_DEFAULT_ITEMS)
             .default(PaginationItemsPerPage.PHOTOS_PER_PAGE)
             .optional(),
           sortField: z

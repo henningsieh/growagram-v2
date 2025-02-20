@@ -26,7 +26,7 @@ export const growRouter = createTRPCRouter({
           limit: z
             .number()
             .min(1)
-            .max(100)
+            .max(PaginationItemsPerPage.MAX_DEFAULT_ITEMS)
             .default(PaginationItemsPerPage.GROWS_PER_PAGE)
             .optional(),
           sortField: z
@@ -106,7 +106,7 @@ export const growRouter = createTRPCRouter({
         limit: z
           .number()
           .min(1)
-          .max(100)
+          .max(1000)
           .default(PaginationItemsPerPage.GROWS_PER_PAGE)
           .optional(),
         sortField: z
