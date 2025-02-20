@@ -95,7 +95,7 @@ export const plantRouter = {
         where: and(
           eq(plants.ownerId, ctx.session.user.id),
           or(
-            // input.growId ? eq(plants.growId, input.growId) : undefined,
+            input.growId ? eq(plants.growId, input.growId) : undefined,
             isNull(plants.growId),
           ),
         ),
