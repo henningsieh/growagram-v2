@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { Reply, Trash2, X } from "lucide-react";
+import { DotIcon, Reply, Trash2, X } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import React, { useEffect, useRef } from "react";
 import SpinningLoader from "~/components/Layouts/loader";
@@ -18,12 +18,15 @@ import { useComments } from "~/hooks/use-comments";
 import { useLikeStatus } from "~/hooks/use-likes";
 import { useToast } from "~/hooks/use-toast";
 import { api } from "~/lib/trpc/react";
+import { formatDate, formatTime } from "~/lib/utils";
 import type {
   GetCommentType,
   GetCommentsInput,
   GetRepliesInput,
 } from "~/server/api/root";
 import { LikeableEntityType } from "~/types/like";
+import { Locale } from "~/types/locale";
+import { UserRoles } from "~/types/user";
 
 interface CommentProps {
   comment: GetCommentType;
@@ -45,6 +48,7 @@ export const Comment: React.FC<CommentProps> = ({
 
   const { data: session } = useSession();
   const { toast } = useToast();
+  const locale = useLocale();
   const utils = api.useUtils();
   const t = useTranslations("Comments");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -162,7 +166,8 @@ export const Comment: React.FC<CommentProps> = ({
 
   // Check if the current user is the comment author or an admin
   const hasPermission =
-    session?.user?.id === comment.author.id || session?.user?.role === "admin";
+    session?.user?.id === comment.author.id ||
+    session?.user?.role === UserRoles.ADMIN;
   const [showDeleteDialog, setShowDeleteDialog] = React.useState(false);
   const commentActions: ActionItem[] = hasPermission
     ? [
@@ -175,6 +180,14 @@ export const Comment: React.FC<CommentProps> = ({
         },
       ]
     : [];
+
+  const dateElement = (
+    <div className="flex items-center gap-1 whitespace-nowrap text-sm text-muted-foreground">
+      {<DotIcon size={24} className="-mx-2 hidden xs:block" />}
+      {formatDate(comment.createdAt, locale as Locale)}{" "}
+      {formatTime(comment.createdAt, locale as Locale)}
+    </div>
+  );
 
   return (
     <>
@@ -204,7 +217,7 @@ export const Comment: React.FC<CommentProps> = ({
           <div className="flex-1">
             <AvatarCardHeader
               user={comment.author}
-              date={comment.createdAt}
+              dateElement={dateElement}
               showActions={hasPermission}
               actions={commentActions}
             />
