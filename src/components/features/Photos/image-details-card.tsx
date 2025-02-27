@@ -37,8 +37,6 @@ export function ImageDetailsCard({ image, locale }: ImageDetailsProps) {
   ];
 
   return (
-    // <div className="overflow-hidden bg-card">
-    //   <div className="bg-muted p-0">
     <Card className="flex flex-col bg-muted md:flex-row">
       <div className="relative aspect-square w-full md:w-2/5">
         <Image
@@ -46,7 +44,7 @@ export function ImageDetailsCard({ image, locale }: ImageDetailsProps) {
           alt={image.originalFilename}
           src={image.imageUrl}
           fill
-          sizes="(min-width: 768px) min(300px, 40vw), min(720px, 100vw)"
+          sizes="100vw, (min-width: 768px) 300px"
           className="object-cover"
         />
       </div>
@@ -71,7 +69,5 @@ export function ImageDetailsCard({ image, locale }: ImageDetailsProps) {
         </CardContent>
       </div>
     </Card>
-    //   </div>
-    // </div>
   );
 }
