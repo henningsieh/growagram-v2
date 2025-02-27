@@ -379,19 +379,37 @@
     "Cancel": "Abbrechen",
     "Dashboard-title": "Dashboard",
     "Delete": "Löschen",
+    "Followers": "Follower",
+    "Following": "Folge ich",
     "LanguageToggle": {
       "toggle-language": "Sprache wechseln"
     },
     "SignOut": {
       "buttonLabel": "Abmelden"
     },
+    "active-plants": "Pflanzenübersicht",
+    "active-plants-description": "Deine lebenden Pflanzen",
+    "activity": "Aktivität",
+    "analytics": "Statistiken",
     "asc": "Aufsteigend",
     "coming-soon": "Bald verfügbar",
     "coming-soon-description": "Wir arbeiten bereits an der neuen Funktion. \nKomm bald wieder vorbei!",
+    "comunity": "Community",
     "desc": "Absteigend",
     "feature-coming": "Neue Funktion ist auf dem Weg!",
+    "grow-environments": "Grows (Gesamt)",
+    "grow-environments-description": "Alle aktiven Grows",
+    "harvested": "geerntet",
     "infinitescroll": "Unendliches Scrollen",
+    "living": "lebend",
     "more": "mehr",
+    "overview": "Überblick",
+    "recent-photos": "Fotoübersicht",
+    "recent-photos-description": "Deine neusten Fotos",
+    "total-photos": "Fotos (Gesamt)",
+    "total-photos-description": "Alle hochgeladenen Fotos",
+    "total-plants": "Pflanzen (Gesamt)",
+    "view-all-photos": "zu deinen Fotos",
     "welcome-to-platform-subttitle": "Willkommen bei der Verwaltung deiner Grows und Pflanzen"
   },
   "Posts": {

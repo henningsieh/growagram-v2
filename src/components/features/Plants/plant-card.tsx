@@ -179,7 +179,7 @@ export default function PlantCard({
         <Card
           className={cn(
             `flex flex-col overflow-hidden border border-primary/20 pt-1`,
-            isSocial && "bg-primary/5",
+            // isSocial && "bg-primary/5",
           )}
         >
           {isSocial && (
@@ -198,18 +198,17 @@ export default function PlantCard({
 
             {/* Title Link */}
             <div className="flex min-w-0 items-center justify-between gap-2">
-              <CardTitle as="h3" className="min-w-0 flex-1">
+              <CardTitle as="h3" className="min-w-0">
                 <Button
                   asChild
                   variant="link"
-                  className="w-full justify-start p-1"
+                  className="flex min-w-0 items-center justify-start gap-2 p-1"
                 >
-                  <Link
-                    href={`/public/plants/${plant.id}`}
-                    className="flex min-w-0 items-center gap-2"
-                  >
+                  <Link href={`/public/plants/${plant.id}`}>
                     <TagIcon className="flex-shrink-0" size={20} />
-                    <span className="truncate font-semibold">{plant.name}</span>
+                    <span className="truncate font-semibold leading-normal">
+                      {plant.name}
+                    </span>
                   </Link>
                 </Button>
               </CardTitle>
