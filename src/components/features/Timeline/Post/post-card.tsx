@@ -134,7 +134,7 @@ export default function PostCard({ post, isSocialProp = true }: PostCardProps) {
                 alt={post.photo.originalFilename}
                 fill
                 className="object-cover transition-transform duration-300"
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                sizes="100vw, (min-width: 768px) 75vw, (min-width: 1024) 720px"
                 style={{
                   transform: isImageHovered ? "scale(1.02)" : "scale(1)",
                 }}
