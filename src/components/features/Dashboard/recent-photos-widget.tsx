@@ -65,7 +65,12 @@ export function RecentPhotosWidget({
               alt={photo.originalFilename || "Plant photo"}
               fill
               className="object-cover transition-transform duration-300 group-hover:scale-110"
-              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 200px"
+              /**
+               * By default, the image will take up 50% of the viewport width (50vw)
+               * When the viewport is at least 640px wide, the image will take up 33% of the viewport width (33vw)
+               * When the viewport is at least 960px wide, the image will be displayed at a fixed width of 200px
+               */
+              sizes="50vw, (min-width: 640px) 33vw, (min-width: 960px) 200px"
             />
           </Link>
         ))}

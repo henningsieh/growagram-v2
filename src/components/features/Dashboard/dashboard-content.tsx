@@ -31,7 +31,7 @@ import { RecentPhotosWidget } from "./recent-photos-widget";
 import { UserStatsCard } from "./user-stats-card";
 
 export function DashboardContent() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const t = useTranslations("Platform");
   const [activeTab, setActiveTab] = useState("overview");
 
@@ -47,7 +47,7 @@ export function DashboardContent() {
 
   const { data: photosData, isLoading: isLoadingPhotos } =
     api.photos.getOwnPhotos.useQuery({
-      limit: 12,
+      limit: 6,
     });
 
   if (!session?.user) return null;
@@ -109,7 +109,7 @@ export function DashboardContent() {
                     <CardTitle className="text-sm font-semibold">
                       {t("grow-environments")}
                     </CardTitle>
-                    <TentTree className="ml-2 h-4 w-4 text-secondary" />
+                    <TentTree className="ml-2 size-4 text-secondary" />
                   </CardHeader>
                   <CardContent className="pb-2">
                     {isLoadingGrows ? (
@@ -118,7 +118,7 @@ export function DashboardContent() {
                       <div className="text-2xl font-bold">{totalGrows}</div>
                     )}
                   </CardContent>
-                  <CardFooter className="pb-4 text-xs text-muted-foreground">
+                  <CardFooter className="text-xs text-muted-foreground">
                     {t("grow-environments-description")}
                   </CardFooter>
                 </Card>
@@ -138,9 +138,18 @@ export function DashboardContent() {
                       <div className="text-2xl font-bold">{totalPlants}</div>
                     )}
                   </CardContent>
-                  <CardFooter className="pb-4 text-xs text-muted-foreground">
-                    {activePlants} {t("living")}, {harvestedPlants}{" "}
-                    {t("harvested")}
+                  <CardFooter className="text-xs text-muted-foreground">
+                    {isLoadingPlants ? (
+                      <>
+                        <Skeleton className="mr-2 h-4 w-16" />
+                        <Skeleton className="h-4 w-16" />
+                      </>
+                    ) : (
+                      <>
+                        {activePlants} {t("living")}, {harvestedPlants}{" "}
+                        {t("harvested")}
+                      </>
+                    )}
                   </CardFooter>
                 </Card>
 
@@ -159,13 +168,13 @@ export function DashboardContent() {
                       <div className="text-2xl font-bold">{totalPhotos}</div>
                     )}
                   </CardContent>
-                  <CardFooter className="pb-4 text-xs text-muted-foreground">
+                  <CardFooter className="text-xs text-muted-foreground">
                     {t("total-photos-description")}
                   </CardFooter>
                 </Card>
 
                 {/* User Stats Card */}
-                <UserStatsCard user={session.user} />
+                <UserStatsCard userId={session.user.id} />
               </div>
 
               {/* 2nd row */}

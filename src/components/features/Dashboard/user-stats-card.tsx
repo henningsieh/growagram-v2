@@ -1,20 +1,29 @@
 import { Users } from "lucide-react";
 import { type Session } from "next-auth";
+import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import CustomAvatar from "~/components/atom/custom-avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
+import { Skeleton } from "~/components/ui/skeleton";
 import { api } from "~/lib/trpc/react";
 
 interface UserStatsCardProps {
-  user: Session["user"];
+  userId: string;
 }
 
-export function UserStatsCard({ user }: UserStatsCardProps) {
+export function UserStatsCard({ userId }: UserStatsCardProps) {
   const t = useTranslations("Platform");
-  const { data: userProfile } = api.users.getPublicUserProfile.useQuery(
-    { id: user.id },
-    { enabled: !!user.id },
-  );
+  const { data: session, status } = useSession();
+
+  if (session === null) {
+    return null;
+  }
+
+  const { data: userProfile, isPending } =
+    api.users.getPublicUserProfile.useQuery(
+      { id: userId },
+      { enabled: status === "authenticated" },
+    );
 
   const followerCount = userProfile?.followers.length || 0;
   const followingCount = userProfile?.following.length || 0;
@@ -23,23 +32,9 @@ export function UserStatsCard({ user }: UserStatsCardProps) {
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0">
         <CardTitle className="text-sm font-medium">{t("comunity")}</CardTitle>
-        <Users className="h-4 w-4 text-muted-foreground" />
+        <Users className="h-4 w-4 text-foreground" />
       </CardHeader>
       <CardContent className="space-y-3">
-        <div className="flex justify-between space-x-4 text-2xl">
-          <div className="space-y-2">
-            <div className="font-bold">{followerCount}</div>
-            <div className="text-xs text-muted-foreground">
-              {t("Followers")}
-            </div>
-          </div>
-          <div className="space-y-2">
-            <div className="font-bold">{followingCount}</div>
-            <div className="whitespace-nowrap text-xs text-muted-foreground">
-              {t("Following")}
-            </div>
-          </div>
-        </div>
         {/* <div className="flex items-center space-x-3">
           <CustomAvatar
             size={36}
@@ -54,6 +49,25 @@ export function UserStatsCard({ user }: UserStatsCardProps) {
             </div>
           </div>
         </div> */}
+        <div className="flex space-x-8 text-2xl">
+          <div className="space-y-2">
+            <div className="font-bold">
+              {isPending ? <Skeleton className="h-8 w-11" /> : followerCount}
+            </div>
+            <div className="text-xs text-muted-foreground">
+              {t("Followers")}
+            </div>
+          </div>
+          <div className="space-y-2">
+            <div className="font-bold">
+              {isPending ? <Skeleton className="h-8 w-11" /> : followingCount}
+            </div>
+            <div className="whitespace-nowrap text-xs text-muted-foreground">
+              {t("Following")}
+            </div>
+          </div>
+        </div>
+        {/*  */}
       </CardContent>
     </Card>
   );
