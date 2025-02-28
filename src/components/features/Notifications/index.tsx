@@ -13,6 +13,7 @@ import {
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { useNotifications } from "~/hooks/use-notifications";
+import { Link } from "~/lib/i18n/routing";
 import { cn } from "~/lib/utils";
 
 import { NotificationItem, NotificationSkeleton } from "./notification-item";
@@ -42,6 +43,9 @@ export function Notifications() {
     },
   );
 
+  // Function to close the popover
+  const closePopover = () => setOpen(false);
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -50,7 +54,7 @@ export function Notifications() {
           size="icon"
           className="relative"
           disabled={!session}
-          title={t("navigation.trigger-button-title")}
+          title={t("Navigation.trigger-button-title")}
         >
           <Bell className="h-5 w-5" />
           {unreadCount > 0 && (
@@ -134,17 +138,15 @@ export function Notifications() {
             </TabsList>
           </div>
 
-          <div className="flex justify-end border-b p-1">
-            {/* <Button
-              variant="outline"
-              size="sm"
-              // onClick={handleGoToAllNotifications}
-            >
-              Go to All Notifications
-            </Button> */}
+          <div className="flex justify-between border-b p-1">
+            <Button variant="outline" size="sm" asChild>
+              <Link href="/dashboard#activity" onClick={closePopover}>
+                Go to Activity Feed
+              </Link>
+            </Button>
             <Button
               className="p-1"
-              variant="outline"
+              variant="ghost"
               size="sm"
               onClick={(e) => {
                 e.preventDefault(); // Prevent link navigation
@@ -153,7 +155,6 @@ export function Notifications() {
               }}
               disabled={unreadCount === 0}
             >
-              {/* // Lucide Check list icon */}
               <ListChecksIcon className="h-4 w-4" />
               {t("panel.mark-all-as-read")}
             </Button>
@@ -162,11 +163,11 @@ export function Notifications() {
           <ScrollArea className="h-[min(60vh,400px)]">
             {isLoading ? (
               <div className="flex flex-col gap-1 p-1">
-                <NotificationSkeleton />
-                <NotificationSkeleton />
-                <NotificationSkeleton />
-                <NotificationSkeleton />
-                <NotificationSkeleton />
+                <NotificationSkeleton className="h-[52px]" />
+                <NotificationSkeleton className="h-[52px]" />
+                <NotificationSkeleton className="h-[52px]" />
+                <NotificationSkeleton className="h-[52px]" />
+                <NotificationSkeleton className="h-[52px]" />
               </div>
             ) : subscriptionError || queryError ? (
               <div className="p-4 text-center text-sm text-red-500">
@@ -180,7 +181,7 @@ export function Notifications() {
                       all.map((notification, key) => (
                         <NotificationItem
                           key={key}
-                          setOpen={setOpen}
+                          close={closePopover}
                           {...notification}
                         />
                       ))
@@ -197,7 +198,7 @@ export function Notifications() {
                     {grouped.follow.length > 0 ? (
                       grouped.follow.map((notification) => (
                         <NotificationItem
-                          setOpen={setOpen}
+                          close={closePopover}
                           key={notification.id}
                           {...notification}
                         />
@@ -216,7 +217,7 @@ export function Notifications() {
                       grouped.like.map((notification, key) => (
                         <NotificationItem
                           key={key}
-                          setOpen={setOpen}
+                          close={closePopover}
                           {...notification}
                         />
                       ))
@@ -233,7 +234,7 @@ export function Notifications() {
                     grouped.comment.map((notification, key) => (
                       <NotificationItem
                         key={key}
-                        setOpen={setOpen}
+                        close={closePopover}
                         {...notification}
                       />
                     ))

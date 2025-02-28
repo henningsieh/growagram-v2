@@ -239,15 +239,20 @@
     "toggle-menu": "Toggle menu"
   },
   "Notifications": {
+    "ActivityFeed": {
+      "label-all": "All Notifications",
+      "no-notifications": "Es konnten keine Benachrichtigungen gefunden werden!",
+      "previous-page": "Previous",
+      "next-page": "Next"
+    },
+    "Navigation": {
+      "trigger-button-title": "Notifications"
+    },
     "entity_comment": "Comment",
     "entity_grow": "Grow",
     "entity_photo": "Photo",
     "entity_plant": "Plant",
     "entity_post": "Post",
-    "navigation": {
-      "label": "Notifications",
-      "trigger-button-title": "Notifications"
-    },
     "new": "NEW",
     "new_comment": "commented on your ",
     "new_follow": "follows you now",
@@ -379,19 +384,39 @@
     "Cancel": "Cancel",
     "Dashboard-title": "Dashboard",
     "Delete": "Delete",
+    "Followers": "Followers",
+    "Following": "Following",
     "LanguageToggle": {
       "toggle-language": "Change language"
     },
     "SignOut": {
       "buttonLabel": "Sign out"
     },
+    "active-plants": "Plant overview",
+    "active-plants-description": "Your living plants",
+    "activity": "Activity",
+    "all-activity": "Platform Activity",
+    "all-activity-description": "All activities on the platform",
+    "analytics": "Statistics",
     "asc": "Ascending",
     "coming-soon": "Coming soon",
     "coming-soon-description": "We are already working on the new function. Come by again soon!",
+    "comunity": "Community",
     "desc": "Descending",
     "feature-coming": "New Feature is on its Way!",
+    "grow-environments": "",
+    "grow-environments-description": "All active Grows",
+    "harvested": "harvested",
     "infinitescroll": "Infinite scrolling",
+    "living": "living",
     "more": "more",
+    "overview": "Overview",
+    "recent-photos": "Photos overview",
+    "recent-photos-description": "Your recent photos",
+    "total-photos": "Total Photos",
+    "total-photos-description": "All photos",
+    "total-plants": "Total plants",
+    "view-all-photos": "to your Photos",
     "welcome-to-platform-subttitle": "Welcome to the Grower's platform where you can manage all your Grows and Plants"
   },
   "Posts": {

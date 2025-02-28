@@ -1,5 +1,5 @@
 // src/server/api/routers/notifications.ts:
-import { and, desc, eq } from "drizzle-orm";
+import { and, count, desc, eq, lt, or } from "drizzle-orm";
 import EventEmitter, { on } from "node:events";
 import { z } from "zod";
 import { notifications } from "~/lib/db/schema";
@@ -72,30 +72,71 @@ export const notificationRouter = createTRPCRouter({
       }
     }),
 
-  getUnread: protectedProcedure.query(async ({ ctx }) => {
-    const results = await ctx.db.query.notifications.findMany({
-      orderBy: [desc(notifications.createdAt)],
-      where: (notification) =>
-        and(
-          eq(notification.userId, ctx.session.user.id),
-          eq(notification.read, false),
-        ),
-      columns: {
-        actorId: false,
-      },
-      with: {
-        actor: {
-          columns: {
-            id: true,
-            name: true,
-            image: true,
+  getAll: protectedProcedure
+    .input(
+      z
+        .object({
+          limit: z.number().min(1).max(100).default(50),
+          page: z.number().min(1).optional(),
+          cursor: z.string().nullish(),
+          onlyUnread: z.boolean().default(false),
+        })
+        .optional(),
+    )
+    .query(async ({ ctx, input }) => {
+      const limit = input?.limit ?? 50;
+      const page = input?.page ?? 1;
+      const onlyUnread = input?.onlyUnread ?? false;
+      const cursor = input?.cursor;
+
+      // Calculate offset based on page number (like in grows)
+      const offset = (page - 1) * limit;
+
+      let whereConditions = and(eq(notifications.userId, ctx.session.user.id));
+
+      // Add read status filter if onlyUnread is true
+      if (onlyUnread) {
+        whereConditions = and(whereConditions, eq(notifications.read, false));
+      }
+
+      // Get total count for pagination
+      const totalCountResult = await ctx.db
+        .select({ count: count() })
+        .from(notifications)
+        .where(whereConditions)
+        .then((result) => result[0]?.count || 0);
+
+      // Get paginated results based on offset
+      const results = await ctx.db.query.notifications.findMany({
+        orderBy: [desc(notifications.createdAt)],
+        where: whereConditions,
+        columns: {
+          actorId: false,
+        },
+        with: {
+          actor: {
+            columns: {
+              id: true,
+              name: true,
+              image: true,
+            },
           },
         },
-      },
-    });
+        limit: limit,
+        offset: offset,
+      });
 
-    return results;
-  }),
+      const totalCount = Number(totalCountResult);
+      const totalPages = Math.ceil(totalCount / limit);
+
+      return {
+        items: results,
+        page,
+        nextPage: page < totalPages ? page + 1 : undefined,
+        totalPages,
+        totalCount,
+      };
+    }),
 
   markAsRead: protectedProcedure
     .input(z.object({ id: z.string() }))

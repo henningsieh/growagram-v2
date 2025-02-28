@@ -239,15 +239,20 @@
     "toggle-menu": "Menü umschalten"
   },
   "Notifications": {
+    "ActivityFeed": {
+      "label-all": "Alle Benachrichtigungen",
+      "no-notifications": "Es konnten keine Benachrichtigungen gefunden werden!",
+      "previous-page": "Vorherige",
+      "next-page": "Nächste"
+    },
+    "Navigation": {
+      "trigger-button-title": "Benachrichtigungen"
+    },
     "entity_comment": "Kommentar",
     "entity_grow": "Grow",
     "entity_photo": "Foto",
     "entity_plant": "Pflanze",
     "entity_post": "Post",
-    "navigation": {
-      "label": "Benachrichtigungen",
-      "trigger-button-title": "Benachrichtigungen"
-    },
     "new": "NEU",
     "new_comment": "kommentierte dein/deine(n)",
     "new_follow": "folgt dir jetzt",
@@ -379,19 +384,39 @@
     "Cancel": "Abbrechen",
     "Dashboard-title": "Dashboard",
     "Delete": "Löschen",
+    "Followers": "Follower",
+    "Following": "Folge ich",
     "LanguageToggle": {
       "toggle-language": "Sprache wechseln"
     },
     "SignOut": {
       "buttonLabel": "Abmelden"
     },
+    "active-plants": "Pflanzenübersicht",
+    "active-plants-description": "Deine lebenden Pflanzen",
+    "activity": "Aktivität",
+    "all-activity": "Plattformaktivität",
+    "all-activity-description": "Alle Aktivitäten auf der Plattform",
+    "analytics": "Statistiken",
     "asc": "Aufsteigend",
     "coming-soon": "Bald verfügbar",
     "coming-soon-description": "Wir arbeiten bereits an der neuen Funktion. \nKomm bald wieder vorbei!",
+    "comunity": "Community",
     "desc": "Absteigend",
     "feature-coming": "Neue Funktion ist auf dem Weg!",
+    "grow-environments": "Grows (Gesamt)",
+    "grow-environments-description": "Alle aktiven Grows",
+    "harvested": "geerntet",
     "infinitescroll": "Unendliches Scrollen",
+    "living": "lebend",
     "more": "mehr",
+    "overview": "Überblick",
+    "recent-photos": "Fotoübersicht",
+    "recent-photos-description": "Deine neusten Fotos",
+    "total-photos": "Fotos (Gesamt)",
+    "total-photos-description": "Alle Fotos",
+    "total-plants": "Pflanzen (Gesamt)",
+    "view-all-photos": "zu deinen Fotos",
     "welcome-to-platform-subttitle": "Willkommen bei der Verwaltung deiner Grows und Pflanzen"
   },
   "Posts": {
