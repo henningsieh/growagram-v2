@@ -239,15 +239,20 @@
     "toggle-menu": "Menü umschalten"
   },
   "Notifications": {
+    "ActivityFeed": {
+      "label-all": "Alle Benachrichtigungen",
+      "no-notifications": "Es konnten keine Benachrichtigungen gefunden werden!",
+      "previous-page": "Vorherige",
+      "next-page": "Nächste"
+    },
+    "Navigation": {
+      "trigger-button-title": "Benachrichtigungen"
+    },
     "entity_comment": "Kommentar",
     "entity_grow": "Grow",
     "entity_photo": "Foto",
     "entity_plant": "Pflanze",
     "entity_post": "Post",
-    "navigation": {
-      "label": "Benachrichtigungen",
-      "trigger-button-title": "Benachrichtigungen"
-    },
     "new": "NEU",
     "new_comment": "kommentierte dein/deine(n)",
     "new_follow": "folgt dir jetzt",
@@ -390,6 +395,8 @@
     "active-plants": "Pflanzenübersicht",
     "active-plants-description": "Deine lebenden Pflanzen",
     "activity": "Aktivität",
+    "all-activity": "Plattformaktivität",
+    "all-activity-description": "Alle Aktivitäten auf der Plattform",
     "analytics": "Statistiken",
     "asc": "Aufsteigend",
     "coming-soon": "Bald verfügbar",

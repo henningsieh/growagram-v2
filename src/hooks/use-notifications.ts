@@ -12,7 +12,8 @@ import {
 
 import { useToast } from "./use-toast";
 
-export function useNotifications() {
+// Add the 'export' keyword in front of the function declaration
+export function useNotifications(onlyUnread = true) {
   const [allNotifications, setAllNotifications] = React.useState<
     GetUnreadNotificationType[] | null
   >(null);
@@ -39,17 +40,22 @@ export function useNotifications() {
     }
   }, [allNotifications, lastEventId]);
 
-  const query = api.notifications.getUnread.useQuery(undefined, {
-    refetchOnWindowFocus: true,
-    refetchOnMount: true,
-    staleTime: 10 * 1000,
-    enabled: status === "authenticated", // Only enable when authenticated
-    retry: false, // Don't retry on error (like 401)
-  });
+  const query = api.notifications.getAll.useQuery(
+    { onlyUnread }, // Pass onlyUnread parameter
+    {
+      refetchOnWindowFocus: true,
+      refetchOnMount: true,
+      staleTime: 10 * 1000,
+      enabled: status === "authenticated", // Only enable when authenticated
+      retry: false, // Don't retry on error (like 401)
+    },
+  );
 
   // Update state from query
   React.useEffect(() => {
-    setAllNotifications(query.data ?? null);
+    if (query.data) {
+      setAllNotifications(query.data.items);
+    }
   }, [query.data]);
 
   const getEntityTypeText = React.useCallback(
@@ -108,7 +114,7 @@ export function useNotifications() {
           title: t("new_notification"),
           description: `${notification.actor.name} ${notificationText}`,
         });
-        utils.notifications.getUnread.invalidate();
+        utils.notifications.getAll.invalidate();
       },
       onError: (err) => {
         console.error("Subscription error:", err);
@@ -118,7 +124,7 @@ export function useNotifications() {
           if (lastNotificationId) {
             setLastEventId(lastNotificationId);
           }
-          utils.notifications.getUnread.invalidate();
+          utils.notifications.getAll.invalidate();
         }
       },
     },
@@ -127,7 +133,7 @@ export function useNotifications() {
   const { mutate: markAsRead } = api.notifications.markAsRead.useMutation({
     onSuccess: (_, { id }) => {
       setAllNotifications((prev) => prev?.filter((n) => n.id !== id) ?? null);
-      utils.notifications.getUnread.invalidate();
+      utils.notifications.getAll.invalidate();
     },
   });
 
@@ -135,7 +141,7 @@ export function useNotifications() {
     {
       onSuccess: () => {
         setAllNotifications([]);
-        utils.notifications.getUnread.invalidate();
+        utils.notifications.getAll.invalidate();
       },
     },
   );
@@ -199,7 +205,9 @@ export function useNotifications() {
         (n) => n.type === NotificationEventType.NEW_COMMENT,
       ),
     },
-    unreadCount: allNotifications?.length ?? 0,
+    unreadCount: onlyUnread
+      ? (allNotifications?.length ?? 0)
+      : (allNotifications?.filter((n) => !n.read).length ?? 0),
     isLoading: query.isLoading,
     isError: query.isError,
     error: query.error,

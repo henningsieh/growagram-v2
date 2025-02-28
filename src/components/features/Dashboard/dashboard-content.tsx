@@ -1,17 +1,11 @@
 "use client";
 
-import {
-  CalendarDays,
-  CameraIcon,
-  TagIcon,
-  TentTree,
-  Wheat,
-} from "lucide-react";
+import { CameraIcon, TagIcon, TentTree, Wheat } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import PageHeader from "~/components/Layouts/page-header";
-import { Button } from "~/components/ui/button";
 import {
   Card,
   CardContent,
@@ -24,16 +18,51 @@ import { Skeleton } from "~/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { api } from "~/lib/trpc/react";
 
+import { DashboardNotificationsFeed } from "../Notifications/notifications-feed";
 import { ActivePlantsCard } from "./active-plants-card";
-import { DashboardActivityFeed } from "./dashboard-activity-feed";
 import { DashboardOverviewChart } from "./dashboard-overview-chart";
 import { RecentPhotosWidget } from "./recent-photos-widget";
 import { UserStatsCard } from "./user-stats-card";
 
 export function DashboardContent() {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const t = useTranslations("Platform");
   const [activeTab, setActiveTab] = useState("overview");
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  // Handle URL hash for tab selection
+  useEffect(() => {
+    // Function to handle hash changes
+    const handleHashChange = () => {
+      const hash = window.location.hash.substring(1);
+      if (hash === "activity" || hash === "analytics" || hash === "overview") {
+        setActiveTab(hash);
+      }
+    };
+
+    // Check hash on initial load
+    handleHashChange();
+
+    // Listen for hash changes from regular navigation
+    window.addEventListener("hashchange", handleHashChange);
+
+    // Also check hash whenever pathname or searchParams change
+    // This catches Next.js client-side navigation changes
+    handleHashChange();
+
+    // Clean up event listener
+    return () => {
+      window.removeEventListener("hashchange", handleHashChange);
+    };
+  }, [pathname, searchParams]); // Add pathname and searchParams as dependencies
+
+  // useEffect(() => {
+  //   const tab = searchParams.get("tab");
+  //   if (tab === "activity" || tab === "analytics" || tab === "overview") {
+  //     setActiveTab(tab);
+  //   }
+  // }, [searchParams]);
 
   const { data: plantsData, isLoading: isLoadingPlants } =
     api.plants.getOwnPlants.useQuery({
@@ -76,7 +105,11 @@ export function DashboardContent() {
           <Tabs
             defaultValue="overview"
             value={activeTab}
-            onValueChange={setActiveTab}
+            onValueChange={(value) => {
+              setActiveTab(value);
+              // Update URL hash without full page reload
+              window.history.replaceState(null, "", `#${value}`);
+            }}
             className="space-y-4"
           >
             <TabsList className="mb-4 sm:mb-0">
@@ -88,15 +121,15 @@ export function DashboardContent() {
               </TabsTrigger>
               <TabsTrigger
                 className="text-base font-medium data-[state=active]:bg-accent data-[state=active]:text-accent-foreground"
-                value="analytics"
-              >
-                {t("analytics")}
-              </TabsTrigger>
-              <TabsTrigger
-                className="text-base font-medium data-[state=active]:bg-accent data-[state=active]:text-accent-foreground"
                 value="activity"
               >
                 {t("activity")}
+              </TabsTrigger>
+              <TabsTrigger
+                className="text-base font-medium data-[state=active]:bg-accent data-[state=active]:text-accent-foreground"
+                value="analytics"
+              >
+                {t("analytics")}
               </TabsTrigger>
             </TabsList>
 
@@ -179,6 +212,12 @@ export function DashboardContent() {
 
               {/* 2nd row */}
               <div className="grid gap-0 space-y-4 sm:grid-cols-2 lg:grid-cols-7 lg:gap-4 lg:space-y-0">
+                {/* Active Plants Card */}
+                <ActivePlantsCard
+                  plantsData={plantsData}
+                  isLoading={isLoadingPlants}
+                />
+
                 <Card className="col-span-4">
                   <CardHeader>
                     <CardTitle>{t("recent-photos")}</CardTitle>
@@ -193,12 +232,6 @@ export function DashboardContent() {
                     />
                   </CardContent>
                 </Card>
-
-                {/* Active Plants Card */}
-                <ActivePlantsCard
-                  plantsData={plantsData}
-                  isLoading={isLoadingPlants}
-                />
               </div>
 
               {/* Recent Photos and Activity Feed */}
@@ -230,6 +263,22 @@ export function DashboardContent() {
                   </CardContent>
                 </Card>
               </div> */}
+            </TabsContent>
+
+            <TabsContent value="activity" className="space-y-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle>{t("all-activity")}</CardTitle>
+                  <CardDescription>
+                    {t("all-activity-description")}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-8">
+                    <DashboardNotificationsFeed />
+                  </div>
+                </CardContent>
+              </Card>
             </TabsContent>
 
             <TabsContent value="analytics" className="space-y-4">
@@ -265,25 +314,6 @@ export function DashboardContent() {
                 </CardHeader>
                 <CardContent className="pl-2">
                   <DashboardOverviewChart plantsData={plantsData?.plants} />
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="activity" className="space-y-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle>{t("all-activity")}</CardTitle>
-                  <CardDescription>
-                    {t("all-activity-description")}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-8">
-                    <DashboardActivityFeed
-                      // userId={session.user.id}
-                      limit={10}
-                    />
-                  </div>
                 </CardContent>
               </Card>
             </TabsContent>

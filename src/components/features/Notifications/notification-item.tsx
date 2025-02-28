@@ -11,11 +11,11 @@ import type { GetUnreadNotificationType } from "~/server/api/root";
 import type { Locale } from "~/types/locale";
 
 interface NotificationItemProps extends GetUnreadNotificationType {
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  close?: () => void; // Changed from setOpen to an optional close function
 }
 
 export function NotificationItem({
-  setOpen,
+  close,
   ...notification
 }: NotificationItemProps) {
   const { markAsRead, getNotificationText, getNotificationHref } =
@@ -33,7 +33,7 @@ export function NotificationItem({
     <Link
       href={href}
       scroll={false}
-      onClick={() => setOpen(false)}
+      onClick={() => close && close()} // Only call close if it exists
       className={cn(
         "flex w-full items-center gap-2 overflow-hidden rounded-sm p-2 text-left transition-colors",
         {
@@ -76,9 +76,17 @@ export function NotificationItem({
   );
 }
 
-export const NotificationSkeleton = () => {
+export const NotificationSkeleton: React.FC<
+  React.HTMLAttributes<HTMLDivElement>
+> = ({ className, ...props }) => {
   return (
-    <div className="flex h-16 w-full items-center gap-2 overflow-hidden rounded-sm bg-muted p-2 text-left">
+    <div
+      className={cn(
+        "flex h-14 w-full items-center gap-2 overflow-hidden rounded-sm bg-muted p-2 text-left",
+        className,
+      )}
+      {...props}
+    >
       <Skeleton className="h-9 w-9 rounded-full" /> {/* Avatar skeleton */}
       <div className="flex flex-grow flex-col gap-3">
         <Skeleton className="mb-1 h-4 w-3/4" />{" "}
