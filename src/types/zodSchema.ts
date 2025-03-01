@@ -12,6 +12,8 @@ export const plantFormSchema = z.object({
     message: "Plant name must be at least 2 characters.",
   }),
   growId: z.string().nullable().optional(),
+  strainId: z.string().nullable().optional(),
+  breederId: z.string().nullable().optional(),
   startDate: z
     .union([
       z.date({
@@ -27,6 +29,25 @@ export const plantFormSchema = z.object({
   floweringPhaseStart: z.date().nullable().optional(),
   harvestDate: z.date().nullable().optional(),
   curingPhaseStart: z.date().nullable().optional(),
+});
+
+// Schema for creating a new breeder
+export const breederFormSchema = z.object({
+  name: z.string().min(2, {
+    message: "Breeder name must be at least 2 characters.",
+  }),
+});
+
+// Schema for creating a new strain
+export const strainFormSchema = z.object({
+  name: z.string().min(2, {
+    message: "Strain name must be at least 2 characters.",
+  }),
+  breederId: z.string().min(1, {
+    message: "Breeder is required.",
+  }),
+  thcContent: z.number().min(0).max(100).optional(),
+  cbdContent: z.number().min(0).max(100).optional(),
 });
 
 export const imageSchema = z.object({

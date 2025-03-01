@@ -351,9 +351,13 @@
     "edit-plant-button-label": "Edit Plant",
     "estimated-harvest": "Estimated harvest",
     "flowering-start-date": "Flowering Start Date",
+    "form-breeder-description": "Select or create a breeder for this strain",
     "form-button-reset": "Reset",
     "form-button-save-changes": "Save Changes",
     "form-button-save-new": "Create Plant",
+    "form-grow": "Grow",
+    "form-grow-description": "The Grow this plant belongs to",
+    "form-grow-placeholder": "Select a Grow",
     "form-heading": "Plant's basic data",
     "form-heading-description": "Edit the plant's nickname and relevant dates.",
     "form-nickname": "Name of the Plant",
@@ -363,6 +367,7 @@
     "form-pagerheader-edit-title": "Edit Plant",
     "form-pagerheader-new-subtitle": "Add a new plant to your collection",
     "form-pagerheader-new-title": "Add New Plant",
+    "form-strain-description": "Select or create a strain for this plant",
     "germination-date": "Germination Date",
     "growth-progress": "Growth Progress",
     "harvest-date": "Harvest date",
@@ -370,6 +375,13 @@
     "no-plants-yet": "No plants have been added yet.",
     "overall-progress": "Overall progress",
     "phase": "Phase progress",
+    "phases": {
+      "flowering": "Flowering",
+      "harvested": "Harvested",
+      "planted": "Planted",
+      "seedling": "Seedling",
+      "vegetation": "Vegetation"
+    },
     "plant-card-createdAt": "Created at:",
     "planting-date": "Seed planting date",
     "public-link-label": "Open in new Tab",
@@ -381,14 +393,7 @@
     "title": "My Plants",
     "until": "until",
     "user-has-no-plants": "You haven&apos;t added any plants yet.",
-    "vegetation-start-date": "Vegetation Start Date",
-    "phases": {
-      "planted": "Planted",
-      "seedling": "Seedling",
-      "vegetation": "Vegetation",
-      "flowering": "Flowering",
-      "harvested": "Harvested"
-    }
+    "vegetation-start-date": "Vegetation Start Date"
   },
   "Platform": {
     "Cancel": "Cancel",

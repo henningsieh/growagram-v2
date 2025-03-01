@@ -11,8 +11,12 @@ export default async function EditPlantPage({
   const plantId = (await params).id;
 
   const plant = (
-    plantId !== "new" ? await api.plants.getById({ id: plantId }) : undefined
+    plantId !== "new"
+      ? await api.plants.getById({ id: plantId } satisfies GetPlantByIdInput)
+      : undefined
   ) satisfies GetPlantByIdType | undefined;
+
+  console.debug("plant", plant);
 
   if (plantId !== "new" && plant === undefined) notFound();
 

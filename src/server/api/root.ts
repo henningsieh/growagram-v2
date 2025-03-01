@@ -153,6 +153,25 @@ export type CreateOrEditGrowInput = RouterInput["grows"]["createOrEdit"];
 export type GrowConnectPlantInput = RouterInput["grows"]["connectPlant"];
 export type GrowDisconnectPlantInput = RouterInput["grows"]["disconnectPlant"];
 
+// breedersRouter
+//  OUTPUTS:
+export type GetBreedersType = RouterOutput["plants"]["getBreeders"];
+export type BreederType = RouterOutput["plants"]["getBreeders"][number];
+export type CreateBreederOutput = RouterOutput["plants"]["createBreeder"];
+
+// INPUTS:
+export type CreateBreederInput = RouterInput["plants"]["createBreeder"];
+
+// strainsRouter
+//  OUTPUTS:
+export type GetStrainsByBreederType = RouterOutput["plants"]["getStrainsByBreeder"];
+export type StrainType = RouterOutput["plants"]["getStrainsByBreeder"][number];
+export type CreateStrainOutput = RouterOutput["plants"]["createStrain"];
+
+//  INPUTS:
+export type GetStrainsByBreederInput = RouterInput["plants"]["getStrainsByBreeder"];
+export type CreateStrainInput = RouterInput["plants"]["createStrain"];
+
 /**
  * Create a server-side caller for the tRPC API.
  * @example

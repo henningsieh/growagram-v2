@@ -4,11 +4,20 @@ import { and, count, eq, isNull, or } from "drizzle-orm";
 import { z } from "zod";
 import { PaginationItemsPerPage } from "~/assets/constants";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
-import { plantImages, plants } from "~/lib/db/schema";
+import {
+  breeders,
+  cannabisStrains,
+  plantImages,
+  plants,
+} from "~/lib/db/schema";
 import { connectPlantWithImagesQuery } from "~/server/api/routers/plantImages";
 import { protectedProcedure, publicProcedure } from "~/server/api/trpc";
 import { PlantsSortField } from "~/types/plant";
-import { plantFormSchema } from "~/types/zodSchema";
+import {
+  breederFormSchema,
+  plantFormSchema,
+  strainFormSchema,
+} from "~/types/zodSchema";
 
 export const plantRouter = {
   // Get paginated plants for the current user
@@ -282,6 +291,7 @@ export const plantRouter = {
           id: input.id || crypto.randomUUID(),
           name: input.name,
           growId: input.growId,
+          strainId: input.strainId,
           ownerId: ctx.session.user.id,
           startDate: input.startDate,
           seedlingPhaseStart: input.seedlingPhaseStart,
@@ -296,6 +306,7 @@ export const plantRouter = {
           set: {
             name: input.name,
             growId: input.growId,
+            strainId: input.strainId,
             startDate: input.startDate,
             seedlingPhaseStart: input.seedlingPhaseStart,
             vegetationPhaseStart: input.vegetationPhaseStart,
@@ -337,5 +348,67 @@ export const plantRouter = {
         .delete(plants)
         .where(eq(plants.id, input.id));
       return { success: !!deletedImage };
+    }),
+
+  // Get all breeders
+  getBreeders: publicProcedure.query(async ({ ctx }) => {
+    const allBreeders = await ctx.db.query.breeders.findMany({
+      orderBy: (breeders, { asc }) => [asc(breeders.name)],
+    });
+
+    return allBreeders;
+  }),
+
+  // Get strains by breeder
+  getStrainsByBreeder: publicProcedure
+    .input(
+      z.object({
+        breederId: z.string().optional(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      if (!input.breederId) {
+        return [];
+      }
+
+      const breederStrains = await ctx.db.query.cannabisStrains.findMany({
+        where: eq(cannabisStrains.breederId, input.breederId),
+        orderBy: (strains, { asc }) => [asc(strains.name)],
+      });
+
+      return breederStrains;
+    }),
+
+  // Create a new breeder
+  createBreeder: protectedProcedure
+    .input(breederFormSchema)
+    .mutation(async ({ ctx, input }) => {
+      const newBreeder = await ctx.db
+        .insert(breeders)
+        .values({
+          id: crypto.randomUUID(),
+          name: input.name,
+        })
+        .returning();
+
+      return newBreeder[0];
+    }),
+
+  // Create a new strain
+  createStrain: protectedProcedure
+    .input(strainFormSchema)
+    .mutation(async ({ ctx, input }) => {
+      const newStrain = await ctx.db
+        .insert(cannabisStrains)
+        .values({
+          id: crypto.randomUUID(),
+          name: input.name,
+          breederId: input.breederId,
+          thcContent: input.thcContent,
+          cbdContent: input.cbdContent,
+        })
+        .returning();
+
+      return newStrain[0];
     }),
 };

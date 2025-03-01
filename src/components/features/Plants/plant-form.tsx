@@ -3,7 +3,8 @@
 // src/components/features/Plants/plant-form.tsx:
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  HomeIcon,
+  BeanIcon,
+  DnaIcon,
   Leaf,
   Nut,
   PillBottle,
@@ -13,7 +14,7 @@ import {
   Wheat,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { PaginationItemsPerPage, modulePaths } from "~/assets/constants";
@@ -29,6 +30,7 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
+import { ComboboxWithCreate } from "~/components/ui/combobox-with-create";
 import {
   Form,
   FormControl,
@@ -50,17 +52,19 @@ import { useToast } from "~/hooks/use-toast";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import type {
+  CreateBreederInput,
   CreateOrEditPlantInput,
+  CreateStrainInput,
   GetOwnPlantsInput,
+  GetPlantByIdType,
 } from "~/server/api/root";
-import type { Plant } from "~/types/db";
 import { plantFormSchema } from "~/types/zodSchema";
 
 import PlantFormDateField from "./plant-form-date-fields";
 
 type FormValues = z.infer<typeof plantFormSchema>;
 
-export default function PlantForm({ plant }: { plant?: Plant }) {
+export default function PlantForm({ plant }: { plant?: GetPlantByIdType }) {
   const utils = api.useUtils();
   const router = useRouter();
   const { toast } = useToast();
@@ -68,6 +72,9 @@ export default function PlantForm({ plant }: { plant?: Plant }) {
   const t = useTranslations("Plants");
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedBreederId, setSelectedBreederId] = useState<
+    string | null | undefined
+  >(plant?.strain?.breeder.id || null);
 
   const form = useForm<FormValues>({
     mode: "onBlur",
@@ -76,6 +83,8 @@ export default function PlantForm({ plant }: { plant?: Plant }) {
       id: plant?.id,
       name: plant?.name || "",
       growId: plant?.growId || null,
+      strainId: plant?.strainId || null,
+      breederId: plant?.strain?.breeder.id || null,
       startDate: plant?.startDate,
       seedlingPhaseStart: plant?.seedlingPhaseStart || null,
       vegetationPhaseStart: plant?.vegetationPhaseStart || null,
@@ -85,17 +94,45 @@ export default function PlantForm({ plant }: { plant?: Plant }) {
     },
   });
 
-  const { data: growsData, isPending } = api.grows.getOwnGrows.useQuery(
-    {
-      limit: 1000,
-    },
-    {
-      initialData: utils.grows.getOwnGrows.getData(),
-    },
-  );
+  // Watch for breeder ID changes
+  const watchedBreederId = form.watch("breederId");
+
+  // Set selected breeder when form value changes
+  useEffect(() => {
+    if (watchedBreederId !== selectedBreederId) {
+      setSelectedBreederId(watchedBreederId);
+      // Reset strain when breeder changes
+      if (selectedBreederId) {
+        form.setValue("strainId", null);
+      }
+    }
+  }, [watchedBreederId, selectedBreederId, form]);
+
+  const { data: growsData, isPending: isGrowsLoading } =
+    api.grows.getOwnGrows.useQuery(
+      {
+        limit: 1000,
+      },
+      {
+        initialData: utils.grows.getOwnGrows.getData(),
+      },
+    );
+
+  const { data: breeders, isPending: isBreedersLoading } =
+    api.plants.getBreeders.useQuery();
+
+  const { data: strains, isLoading: isStrainsLoading } =
+    api.plants.getStrainsByBreeder.useQuery(
+      { breederId: selectedBreederId || undefined },
+      { enabled: !!selectedBreederId },
+    );
+
+  // Mutations for creating new entities
+  const createBreederMutation = api.plants.createBreeder.useMutation();
+  const createStrainMutation = api.plants.createStrain.useMutation();
 
   const createOrEditPlantMutation = api.plants.createOrEdit.useMutation({
-    onSuccess: async (createdPlant, variables) => {
+    onSuccess: async () => {
       toast({
         title: "Success",
         description: "Your plant has been saved.",
@@ -128,6 +165,70 @@ export default function PlantForm({ plant }: { plant?: Plant }) {
       values satisfies CreateOrEditPlantInput,
     );
   }
+
+  // Format breeders for combobox
+  const breederOptions =
+    breeders?.map((breeder) => ({
+      label: breeder.name,
+      value: breeder.id,
+    })) || [];
+
+  // Format strains for combobox
+  const strainOptions =
+    strains?.map((strain) => ({
+      label: strain.name,
+      value: strain.id,
+    })) || [];
+
+  // Handler for creating a new breeder
+  const handleCreateBreeder = async (name: string) => {
+    try {
+      const result = await createBreederMutation.mutateAsync({
+        name,
+      } satisfies CreateBreederInput);
+      // Invalidate queries to refresh the breeders list
+      await utils.plants.getBreeders.invalidate();
+      return result.id;
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to create breeder",
+        variant: "destructive",
+      });
+      throw error;
+    }
+  };
+
+  // Handler for creating a new strain
+  const handleCreateStrain = async (name: string) => {
+    if (!selectedBreederId) {
+      toast({
+        title: "Error",
+        description: "Please select a breeder first",
+        variant: "destructive",
+      });
+      throw new Error("Breeder not selected");
+    }
+
+    try {
+      const result = await createStrainMutation.mutateAsync({
+        name,
+        breederId: selectedBreederId,
+      } satisfies CreateStrainInput);
+      // Invalidate queries to refresh the strains list
+      await utils.plants.getStrainsByBreeder.invalidate({
+        breederId: selectedBreederId,
+      });
+      return result.id;
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to create strain",
+        variant: "destructive",
+      });
+      throw error;
+    }
+  };
 
   return (
     <PageHeader
@@ -182,6 +283,116 @@ export default function PlantForm({ plant }: { plant?: Plant }) {
                     )}
                   />
 
+                  {/* Breeder Selection with Create */}
+                  <FormField
+                    control={form.control}
+                    name="breederId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="font-semibold">
+                          {t("breeder")}
+                        </FormLabel>
+                        <FormControl>
+                          <div>
+                            {isBreedersLoading && !plant?.strain?.breeder ? (
+                              <div className="relative">
+                                <DnaIcon className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+                                <div className="flex h-10 items-center rounded-md border bg-muted pl-10">
+                                  <SpinningLoader className="size-5" />
+                                </div>
+                              </div>
+                            ) : (
+                              <ComboboxWithCreate
+                                options={
+                                  plant?.strain?.breeder && !breeders?.length
+                                    ? [
+                                        {
+                                          label: plant.strain.breeder.name,
+                                          value: plant.strain.breeder.id,
+                                        },
+                                      ]
+                                    : breederOptions
+                                }
+                                value={field.value}
+                                onChange={(value) => field.onChange(value)}
+                                placeholder="Select breeder..."
+                                emptyMessage="No breeders found"
+                                createNewMessage="Create new breeder"
+                                triggerClassName="bg-muted text-foreground md:text-base"
+                                onCreateOption={handleCreateBreeder}
+                                icon={DnaIcon}
+                              />
+                            )}
+                          </div>
+                        </FormControl>
+                        <FormDescription>
+                          {t("form-breeder-description")}
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* Strain Selection with Create */}
+                  <FormField
+                    control={form.control}
+                    name="strainId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="font-semibold">
+                          {t("strain")}
+                        </FormLabel>
+                        <FormControl>
+                          <div>
+                            {/* {isStrainsLoading && !plant?.strain ? ( */}
+                            {isStrainsLoading ? (
+                              <div className="relative">
+                                <BeanIcon className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+                                <div className="flex h-10 items-center rounded-md border bg-muted pl-10">
+                                  <SpinningLoader className="size-5" />
+                                </div>
+                              </div>
+                            ) : (
+                              <ComboboxWithCreate
+                                options={
+                                  plant?.strain && !strains?.length
+                                    ? [
+                                        {
+                                          label: plant.strain.name,
+                                          value: plant.strain.id,
+                                        },
+                                      ]
+                                    : strainOptions
+                                }
+                                value={field.value}
+                                onChange={(value) => field.onChange(value)}
+                                placeholder="Select strain..."
+                                emptyMessage={
+                                  selectedBreederId
+                                    ? "No strains found"
+                                    : "Please select a breeder first"
+                                }
+                                createNewMessage="Create new strain"
+                                triggerClassName="bg-muted text-foreground md:text-base"
+                                disabled={!selectedBreederId}
+                                onCreateOption={
+                                  selectedBreederId
+                                    ? handleCreateStrain
+                                    : undefined
+                                }
+                                icon={BeanIcon}
+                              />
+                            )}
+                          </div>
+                        </FormControl>
+                        <FormDescription>
+                          {t("form-strain-description")}
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
                   <FormField
                     control={form.control}
                     name="growId"
@@ -193,7 +404,7 @@ export default function PlantForm({ plant }: { plant?: Plant }) {
                         <FormControl>
                           <div className="relative">
                             <TentTreeIcon className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
-                            {isPending ? (
+                            {isGrowsLoading ? (
                               <SpinningLoader />
                             ) : (
                               <Select

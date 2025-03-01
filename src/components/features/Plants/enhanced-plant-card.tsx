@@ -112,7 +112,8 @@ export function EnhancedPlantCard({ plant }: EnhancedPlantCardProps) {
                   <HybridTooltipContent className="w-auto bg-harvest p-1">
                     <div className="space-y-0">
                       <p className="text-sm">
-                        {t("Plants.estimated-harvest")}:{" "}
+                        {t("Plants.estimated-harvest")}
+                        {":"}
                       </p>
                       <p className="text-base">
                         {formatDate(progress.estimatedHarvestDate, locale, {
@@ -165,7 +166,8 @@ export function EnhancedPlantCard({ plant }: EnhancedPlantCardProps) {
                     <p className="text-base">
                       {t("Plants.phase")}
                       {": "}
-                      {progress.phaseProgress}%
+                      {progress.phaseProgress}
+                      {"%"}
                     </p>
                   </div>
                 </HybridTooltipContent>
@@ -209,46 +211,40 @@ export function EnhancedPlantCard({ plant }: EnhancedPlantCardProps) {
               </HybridTooltip>
 
               {plant.strain && (
-                <>
-                  <HybridTooltip>
-                    <HybridTooltipTrigger className="flex items-center gap-1">
-                      <BeanIcon className="h-4 w-4 shrink-0" />
-                      <span className="text-sm">
-                        {plant.strain.name ?? "N/A"}
-                      </span>
-                    </HybridTooltipTrigger>
-                    <HybridTooltipContent>
-                      <p>{t("Plants.strain")}</p>
-                    </HybridTooltipContent>
-                  </HybridTooltip>
-
-                  <HybridTooltip>
-                    <HybridTooltipTrigger className="flex items-center gap-1 overflow-hidden whitespace-nowrap">
-                      <Dna className="h-4 w-4 shrink-0" />
-                      <span className="text-sm">
-                        {plant.strain.breeder.name}
-                      </span>
-                    </HybridTooltipTrigger>
-                    <HybridTooltipContent>
-                      <p>{t("Plants.breeder")}</p>
-                    </HybridTooltipContent>
-                  </HybridTooltip>
-
-                  {plant.strain.thcContent && (
-                    <HybridTooltip>
-                      <HybridTooltipTrigger className="hidden items-center gap-1 xs:flex">
-                        <FlaskConical className="h-4 w-4" />
-                        <span className="text-sm">
-                          {plant.strain.thcContent}
-                          {"%"}
+                <HybridTooltip>
+                  <HybridTooltipTrigger>
+                    <Badge
+                      variant="outline"
+                      className="ml-auto flex items-center gap-1"
+                    >
+                      <BeanIcon className="h-3.5 w-3.5" />
+                      <span>{plant.strain.name}</span>
+                    </Badge>
+                  </HybridTooltipTrigger>
+                  <HybridTooltipContent>
+                    <div className="space-y-2 p-1">
+                      <div className="flex items-center gap-2">
+                        <Dna className="h-4 w-4" />
+                        <span>
+                          {t("Plants.breeder")}
+                          {": "}
+                          {plant.strain.breeder.name}
                         </span>
-                      </HybridTooltipTrigger>
-                      <HybridTooltipContent>
-                        <p>{t("Plants.thc-content")}</p>
-                      </HybridTooltipContent>
-                    </HybridTooltip>
-                  )}
-                </>
+                      </div>
+                      {plant.strain.thcContent && (
+                        <div className="flex items-center gap-2">
+                          <FlaskConical className="h-4 w-4" />
+                          <span>
+                            {t("Plants.thc-content")}
+                            {": "}
+                            {plant.strain.thcContent}
+                            {"%"}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </HybridTooltipContent>
+                </HybridTooltip>
               )}
             </CardFooter>
           </motion.div>
