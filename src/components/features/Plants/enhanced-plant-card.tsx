@@ -65,6 +65,9 @@ export function EnhancedPlantCard({ plant }: EnhancedPlantCardProps) {
   // Format time ago
   const startedAt = formatDistanceToNowLocalized(plant.startDate, locale);
 
+  // Get translated phase name
+  const translatedPhaseName = t(`Plants.phases.${currentPhase.name}`);
+
   return (
     <TouchProvider>
       <Card
@@ -147,7 +150,7 @@ export function EnhancedPlantCard({ plant }: EnhancedPlantCardProps) {
                     className={`border-${currentPhase.color} bg-${currentPhase.color}/10 text-${currentPhase.color}`}
                   >
                     <CurrentPhaseIcon className="mr-1 h-3 w-3" />
-                    {currentPhase.name}
+                    {translatedPhaseName}
                   </Badge>
                 </HybridTooltipTrigger>
                 <HybridTooltipContent
@@ -155,10 +158,14 @@ export function EnhancedPlantCard({ plant }: EnhancedPlantCardProps) {
                 >
                   <div className="space-y-0">
                     <p className="text-sm">
-                      {t("Grows.growth-stage")}: {currentPhase.name}
+                      {t("Grows.growth-stage")}
+                      {": "}
+                      {translatedPhaseName}
                     </p>
                     <p className="text-base">
-                      {t("Plants.phase")}: {progress.phaseProgress}%
+                      {t("Plants.phase")}
+                      {": "}
+                      {progress.phaseProgress}%
                     </p>
                   </div>
                 </HybridTooltipContent>
@@ -174,7 +181,8 @@ export function EnhancedPlantCard({ plant }: EnhancedPlantCardProps) {
               className={`h-2 flex-1 bg-muted-foreground/20`}
             />
             <span className="whitespace-nowrap text-xs font-medium">
-              {progress.overallProgress}%
+              {progress.overallProgress}
+              {"%"}
             </span>
           </div>
         </CardContent>
@@ -231,7 +239,8 @@ export function EnhancedPlantCard({ plant }: EnhancedPlantCardProps) {
                       <HybridTooltipTrigger className="hidden items-center gap-1 xs:flex">
                         <FlaskConical className="h-4 w-4" />
                         <span className="text-sm">
-                          {plant.strain.thcContent}%
+                          {plant.strain.thcContent}
+                          {"%"}
                         </span>
                       </HybridTooltipTrigger>
                       <HybridTooltipContent>

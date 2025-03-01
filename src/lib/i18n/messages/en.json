@@ -381,7 +381,14 @@
     "title": "My Plants",
     "until": "until",
     "user-has-no-plants": "You haven&apos;t added any plants yet.",
-    "vegetation-start-date": "Vegetation Start Date"
+    "vegetation-start-date": "Vegetation Start Date",
+    "phases": {
+      "planted": "Planted",
+      "seedling": "Seedling",
+      "vegetation": "Vegetation",
+      "flowering": "Flowering",
+      "harvested": "Harvested"
+    }
   },
   "Platform": {
     "Cancel": "Cancel",

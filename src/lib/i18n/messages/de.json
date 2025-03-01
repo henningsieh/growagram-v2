@@ -370,6 +370,13 @@
     "no-plants-yet": "Es wurden noch keine Pflanzen hinzugefügt.",
     "overall-progress": "Gesamtfortschritt",
     "phase": "Phasenfortschritt",
+    "phases": {
+      "planted": "Gepflanzt",
+      "seedling": "Keimling",
+      "vegetation": "Wachstumsphase",
+      "flowering": "Blütephase",
+      "harvested": "Geerntet"
+    },
     "plant-card-createdAt": "Erstellt am:",
     "planting-date": "Datum der Aussaat",
     "public-link-label": "Öffnen im neuen Tab",
