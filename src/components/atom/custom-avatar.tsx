@@ -1,19 +1,20 @@
 import { User2 } from "lucide-react";
 import Image from "next/image";
-import type { HTMLAttributes } from "react";
+import type { HTMLAttributes, ReactNode } from "react";
 import { Avatar, AvatarFallback } from "~/components/ui/avatar";
 import { cn } from "~/lib/utils";
 
 interface CustomAvatarProps extends HTMLAttributes<HTMLDivElement> {
   src?: string;
   alt: string;
-  fallback: string;
+  fallback?: ReactNode;
   size?: number;
 }
 
 export default function CustomAvatar({
   src,
   alt,
+  fallback,
   size = 40,
   className,
   ...props
@@ -30,7 +31,7 @@ export default function CustomAvatar({
         />
       ) : (
         <AvatarFallback>
-          <User2 className="h-5 w-5" />
+          {fallback || <User2 className="h-5 w-5" />}
         </AvatarFallback>
       )}
     </Avatar>

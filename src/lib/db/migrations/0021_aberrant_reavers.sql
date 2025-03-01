@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX IF NOT EXISTS "breeder_name_unique_idx" ON "breeder" USING btree (lower("name"));

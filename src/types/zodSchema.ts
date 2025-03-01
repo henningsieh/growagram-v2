@@ -33,15 +33,15 @@ export const plantFormSchema = z.object({
 
 // Schema for creating a new breeder
 export const breederFormSchema = z.object({
-  name: z.string().min(2, {
-    message: "Breeder name must be at least 2 characters.",
+  name: z.string().min(5, {
+    message: "Breeder name must be at least 5 characters.",
   }),
 });
 
 // Schema for creating a new strain
 export const strainFormSchema = z.object({
-  name: z.string().min(2, {
-    message: "Strain name must be at least 2 characters.",
+  name: z.string().min(5, {
+    message: "Strain name must be at least 5 characters.",
   }),
   breederId: z.string().min(1, {
     message: "Breeder is required.",

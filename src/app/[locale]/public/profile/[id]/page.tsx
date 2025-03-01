@@ -28,7 +28,7 @@ export default async function ProfilePage({
     <>
       <div className="mb-5 mt-3 flex items-center gap-2 xs:gap-3 sm:gap-4">
         <Avatar className="h-14 w-14 xs:h-16 xs:w-16 sm:h-24 sm:w-24">
-          <AvatarImage src={profile.image ?? ""} />
+          <AvatarImage src={profile.image ?? ""} alt={profile.name ?? ""} />
           <AvatarFallback>
             {profile.name?.substring(0, 2).toUpperCase() ?? "??"}
           </AvatarFallback>

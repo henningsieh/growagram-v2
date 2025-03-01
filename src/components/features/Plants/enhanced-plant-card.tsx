@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
+import CustomAvatar from "~/components/atom/custom-avatar";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import {
@@ -60,7 +60,13 @@ export function EnhancedPlantCard({ plant }: EnhancedPlantCardProps) {
 
   // Get plant image URL
   const imageUrl =
-    plant.plantImages?.[0]?.image?.imageUrl || plant.headerImage?.imageUrl;
+    plant.plantImages && plant.plantImages.length > 0
+      ? plant.plantImages.sort(
+          (a, b) =>
+            new Date(b.image.captureDate).getTime() -
+            new Date(a.image.captureDate).getTime(),
+        )[0].image.imageUrl
+      : plant.headerImage?.imageUrl;
 
   // Format time ago
   const startedAt = formatDistanceToNowLocalized(plant.startDate, locale);
@@ -78,14 +84,17 @@ export function EnhancedPlantCard({ plant }: EnhancedPlantCardProps) {
         <CardHeader className="p-0">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <Avatar className="size-10">
-                <AvatarImage src={imageUrl || ""} alt={plant.name} />
-                <AvatarFallback>
+              <CustomAvatar
+                src={imageUrl || ""}
+                alt={plant.name}
+                size={40}
+                className="size-10"
+                fallback={
                   <CurrentPhaseIcon
                     className={`h-6 w-6 text-${currentPhase.color}`}
                   />
-                </AvatarFallback>
-              </Avatar>
+                }
+              />
 
               <div>
                 <CardTitle as="h2" className="text-base">

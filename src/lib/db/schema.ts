@@ -207,19 +207,28 @@ export const authenticators = pgTable(
 );
 
 // Define the Breeders table
-export const breeders = pgTable("breeder", {
-  id: text("id")
-    .primaryKey()
-    .$defaultFn(() => crypto.randomUUID()),
-  name: text("name").notNull().unique(),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
-  updatedAt: timestamp("updated_at", { withTimezone: true })
-    .$onUpdate(() => new Date())
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
-});
+export const breeders = pgTable(
+  "breeder",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    name: text("name").notNull().unique(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .$onUpdate(() => new Date())
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+  },
+  (table) => ({
+    // Add a unique index with case insensitivity
+    nameUniqueIdx: uniqueIndex("breeder_name_unique_idx").on(
+      sql`lower(${table.name})`,
+    ),
+  }),
+);
 
 // Define the CannabisStrains table
 export const cannabisStrains = pgTable("cannabis_strain", {

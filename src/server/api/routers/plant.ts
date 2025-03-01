@@ -383,15 +383,33 @@ export const plantRouter = {
   createBreeder: protectedProcedure
     .input(breederFormSchema)
     .mutation(async ({ ctx, input }) => {
-      const newBreeder = await ctx.db
-        .insert(breeders)
-        .values({
-          id: crypto.randomUUID(),
-          name: input.name,
-        })
-        .returning();
+      try {
+        const newBreeder = await ctx.db
+          .insert(breeders)
+          .values({
+            id: crypto.randomUUID(),
+            name: input.name,
+          })
+          .returning();
 
-      return newBreeder[0];
+        return newBreeder[0];
+      } catch (error) {
+        // Handle database constraint errors
+        if (error instanceof Error) {
+          // Check for unique constraint violation on name
+          if (
+            error.message.includes("unique constraint") &&
+            error.message.toLowerCase().includes("breeder_name_unique_idx")
+          ) {
+            throw new TRPCError({
+              code: "CONFLICT",
+              message: `Breeder with name "${input.name}" already exists`,
+            });
+          }
+        }
+        // Re-throw other errors
+        throw error;
+      }
     }),
 
   // Create a new strain
