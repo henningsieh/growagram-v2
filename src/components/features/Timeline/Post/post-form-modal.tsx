@@ -6,6 +6,8 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { EmbeddedGrowCard } from "~/components/features/Grows/embedded-grow-card";
+import { EnhancedPlantCard } from "~/components/features/Plants/enhanced-plant-card.tsx";
 import { Button } from "~/components/ui/button";
 import {
   Card,
@@ -35,9 +37,6 @@ import type {
 } from "~/server/api/root";
 import { PostableEntityType } from "~/types/post";
 import { postSchema } from "~/types/zodSchema";
-
-import { EmbeddedGrowCard } from "../../Grows/embedded-grow-card";
-import { EmbeddedPlantCard } from "../../Plants/embedded-plant-card";
 
 type PostFormValues = z.infer<typeof postSchema>;
 
@@ -147,7 +146,7 @@ export default function PostFormModal({
               <EmbeddedGrowCard grow={entity as GetOwnGrowType} />
             )}
             {entityType === PostableEntityType.PLANT && (
-              <EmbeddedPlantCard plant={entity as GetOwnPlantType} />
+              <EnhancedPlantCard plant={entity as GetOwnPlantType} />
             )}
             {entityType === PostableEntityType.PHOTO && (
               <div className="flex items-center space-x-4 overflow-hidden">

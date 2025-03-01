@@ -22,7 +22,7 @@ import { OwnerDropdownMenu } from "~/components/atom/owner-dropdown-menu";
 // import { OwnerDropdownMenu } from "~/components/atom/owner-dropdown-menu"; // REMOVE
 import { SocialCardFooter } from "~/components/atom/social-card-footer";
 import { Comments } from "~/components/features/Comments/comments";
-import { EmbeddedPlantCard } from "~/components/features/Plants/embedded-plant-card";
+import { EnhancedPlantCard } from "~/components/features/Plants/enhanced-plant-card.tsx";
 import PostFormModal from "~/components/features/Timeline/Post/post-form-modal";
 import { Button } from "~/components/ui/button";
 import {
@@ -272,7 +272,7 @@ export function GrowCard({
                     exit={{ opacity: 0, y: -20 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <EmbeddedPlantCard plant={plant} />
+                    <EnhancedPlantCard plant={plant} />
                   </motion.div>
                 ))}
               </AnimatePresence>

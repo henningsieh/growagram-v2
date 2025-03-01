@@ -1,5 +1,7 @@
 // src/lib/utils/index.ts:
 import { type ClassValue, clsx } from "clsx";
+import { formatDistanceToNow as dateFnsFormatDistanceToNow } from "date-fns";
+import { de as deLocale } from "date-fns/locale";
 import TimeAgo from "javascript-time-ago";
 import de from "javascript-time-ago/locale/de";
 import en from "javascript-time-ago/locale/en";
@@ -20,13 +22,18 @@ export type DateFormatOptions = {
   force?: boolean;
 };
 
+export interface TimeFormatOptions {
+  includeSeconds?: boolean;
+  includeMinutes?: boolean;
+}
+
 export function formatDate(
   date: Date,
   locale: Locale,
   options: DateFormatOptions = {},
 ): string | null {
   const now = new Date();
-  const diffInMinutes = (now.getTime() - date.getTime()) / 6000;
+  const diffInMinutes = (now.getTime() - date.getTime()) / 60000;
 
   if (diffInMinutes < 1440 && !options.force) {
     return null;
@@ -49,7 +56,7 @@ export function formatTime(
 ): string {
   const { includeSeconds = false, includeMinutes = true } = options;
   const now = new Date();
-  const diffInMinutes = (now.getTime() - time.getTime()) / 6000;
+  const diffInMinutes = (now.getTime() - time.getTime()) / 60000;
 
   const timeAgo = new TimeAgo(locale);
   if (diffInMinutes < 1440) {
@@ -73,8 +80,24 @@ export function formatTime(
   }
 }
 
-// Example options interface
-interface TimeFormatOptions {
-  includeSeconds?: boolean;
-  includeMinutes?: boolean;
+export function formatDistanceToNowLocalized(
+  date: Date | string,
+  locale: Locale,
+  options: { addSuffix?: boolean } = {},
+): string {
+  const dateObject = date instanceof Date ? date : new Date(date);
+
+  return dateFnsFormatDistanceToNow(dateObject, {
+    addSuffix: options.addSuffix ?? true,
+    locale: locale === "de" ? deLocale : undefined,
+  });
+}
+
+export function formatDaysRemaining(
+  days: number | null,
+  singleDayText: string,
+  pluralDaysText: string,
+): string | null {
+  if (days === null) return null;
+  return days === 1 ? `${days} ${singleDayText}` : `${days} ${pluralDaysText}`;
 }

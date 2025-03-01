@@ -2,6 +2,7 @@
 
 import { Sprout } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { EnhancedPlantCard } from "~/components/features/Plants/enhanced-plant-card";
 import { Button } from "~/components/ui/button";
 import {
   Card,
@@ -12,13 +13,11 @@ import {
 } from "~/components/ui/card";
 import { Skeleton } from "~/components/ui/skeleton";
 import { Link } from "~/lib/i18n/routing";
-import type { PlantByIdType } from "~/server/api/root";
-
-import { PlantGrowthWidget } from "./plant-growth-widget";
+import type { GetOwnPlantsType } from "~/server/api/root";
 
 interface ActivePlantsCardProps {
   plantsData?: {
-    plants: PlantByIdType[];
+    plants: GetOwnPlantsType;
     count?: number;
   };
   isLoading: boolean;
@@ -36,7 +35,7 @@ export function ActivePlantsCard({
     ) || [];
 
   return (
-    <Card className="col-span-3">
+    <Card className="col-span-4 sm:col-span-3">
       <CardHeader>
         <CardTitle>{t("active-plants")}</CardTitle>
         <CardDescription>{t("active-plants-description")}</CardDescription>
@@ -58,7 +57,7 @@ export function ActivePlantsCard({
             : [...activePlants]
                 .sort((a, b) => a.name.localeCompare(b.name))
                 .map((plant) => (
-                  <PlantGrowthWidget key={plant.id} plant={plant} />
+                  <EnhancedPlantCard key={plant.id} plant={plant} />
                 ))}
 
           {!isLoading &&

@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Calendar1Icon, TentTreeIcon } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
-import { EmbeddedPlantCard } from "~/components/features/Plants/embedded-plant-card";
+import { EnhancedPlantCard } from "~/components/features/Plants/enhanced-plant-card.tsx";
 import { Button } from "~/components/ui/button";
 import {
   Card,
@@ -78,7 +78,7 @@ export function EmbeddedGrowCard({ grow }: EmbeddedGrowCardProps) {
           </div>
           <div className="mt-2 space-y-2">
             {grow.plants.map((plant) => (
-              <EmbeddedPlantCard key={plant.id} plant={plant} />
+              <EnhancedPlantCard key={plant.id} plant={plant} />
             ))}
           </div>
         </CardContent>

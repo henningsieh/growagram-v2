@@ -8,7 +8,7 @@ import { SocialCardFooter } from "~/components/atom/social-card-footer";
 import { Comments } from "~/components/features/Comments/comments";
 import { EmbeddedGrowCard } from "~/components/features/Grows/embedded-grow-card";
 import { useImageModal } from "~/components/features/Photos/modal-provider";
-import { EmbeddedPlantCard } from "~/components/features/Plants/embedded-plant-card";
+import { EnhancedPlantCard } from "~/components/features/Plants/enhanced-plant-card.tsx";
 import { Card, CardContent } from "~/components/ui/card";
 import { useComments } from "~/hooks/use-comments";
 import { useLikeStatus } from "~/hooks/use-likes";
@@ -120,7 +120,7 @@ export default function PostCard({ post, isSocialProp = true }: PostCardProps) {
             <EmbeddedGrowCard grow={post.grow} />
           )}
           {post.entityType === PostableEntityType.PLANT && (
-            <EmbeddedPlantCard plant={post.plant} />
+            <EnhancedPlantCard plant={post.plant} />
           )}
           {post.entityType === "image" && (
             <div
