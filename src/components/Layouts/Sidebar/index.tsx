@@ -322,7 +322,7 @@ function ProtectedSidebarContent({
 
                     <DropdownMenuItem>
                       <Bell />
-                      {t("Notifications.navigation.label")}
+                      {t("Notifications.ActivityFeed.label-all")}
                     </DropdownMenuItem>
                   </DropdownMenuGroup>
 

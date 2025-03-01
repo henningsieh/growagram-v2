@@ -241,12 +241,15 @@
   "Notifications": {
     "ActivityFeed": {
       "label-all": "All Notifications",
+      "next-page": "Next",
       "no-notifications": "Es konnten keine Benachrichtigungen gefunden werden!",
-      "previous-page": "Previous",
-      "next-page": "Next"
+      "previous-page": "Previous"
     },
     "Navigation": {
       "trigger-button-title": "Notifications"
+    },
+    "buttonLabel": {
+      "markAsRead": "mark as read"
     },
     "entity_comment": "Comment",
     "entity_grow": "Grow",
@@ -398,11 +401,17 @@
     "all-activity": "Platform Activity",
     "all-activity-description": "All activities on the platform",
     "analytics": "Statistics",
+    "analytics-coming-soon": "Analytics Coming Soon",
+    "analytics-coming-soon-description": "Enhanced analytics features are currently in development and will be available shortly",
+    "analytics-growth-chart-description": "Visualize your platform's growth trends and key performance indicators over time",
+    "analytics-growth-overview": "Growth Overview",
     "asc": "Ascending",
     "coming-soon": "Coming soon",
     "coming-soon-description": "We are already working on the new function. Come by again soon!",
     "comunity": "Community",
     "desc": "Descending",
+    "detailed-analytics-description": "View comprehensive analytics and data insights for your platform",
+    "detailed-statistics": "Detailed Statistics",
     "feature-coming": "New Feature is on its Way!",
     "grow-environments": "",
     "grow-environments-description": "All active Grows",

@@ -241,12 +241,15 @@
   "Notifications": {
     "ActivityFeed": {
       "label-all": "Alle Benachrichtigungen",
+      "next-page": "Nächste",
       "no-notifications": "Es konnten keine Benachrichtigungen gefunden werden!",
-      "previous-page": "Vorherige",
-      "next-page": "Nächste"
+      "previous-page": "Vorherige"
     },
     "Navigation": {
       "trigger-button-title": "Benachrichtigungen"
+    },
+    "buttonLabel": {
+      "markAsRead": "als gelesen markieren"
     },
     "entity_comment": "Kommentar",
     "entity_grow": "Grow",
@@ -398,13 +401,19 @@
     "all-activity": "Plattformaktivität",
     "all-activity-description": "Alle Aktivitäten auf der Plattform",
     "analytics": "Statistiken",
+    "analytics-coming-soon": "Analysen demnächst verfügbar",
+    "analytics-coming-soon-description": "Erweiterte Analysefunktionen werden derzeit entwickelt und werden in Kürze verfügbar sein",
+    "analytics-growth-chart-description": "Visualisiere die Wachstumstrends und wichtigsten Leistungsindikatoren Ihrer Plattform im Zeitverlauf",
+    "analytics-growth-overview": "Wachstumsübersicht",
     "asc": "Aufsteigend",
     "coming-soon": "Bald verfügbar",
     "coming-soon-description": "Wir arbeiten bereits an der neuen Funktion. \nKomm bald wieder vorbei!",
     "comunity": "Community",
     "desc": "Absteigend",
+    "detailed-analytics-description": "Zeigen Sie umfassende Analysen und Dateneinblicke für Ihre Plattform an",
+    "detailed-statistics": "Detaillierte Statistiken",
     "feature-coming": "Neue Funktion ist auf dem Weg!",
-    "grow-environments": "Grows (Gesamt)",
+    "grow-environments": "Grows",
     "grow-environments-description": "Alle aktiven Grows",
     "harvested": "geerntet",
     "infinitescroll": "Unendliches Scrollen",
@@ -413,9 +422,9 @@
     "overview": "Überblick",
     "recent-photos": "Fotoübersicht",
     "recent-photos-description": "Deine neusten Fotos",
-    "total-photos": "Fotos (Gesamt)",
+    "total-photos": "Fotos",
     "total-photos-description": "Alle Fotos",
-    "total-plants": "Pflanzen (Gesamt)",
+    "total-plants": "Pflanzen",
     "view-all-photos": "zu deinen Fotos",
     "welcome-to-platform-subttitle": "Willkommen bei der Verwaltung deiner Grows und Pflanzen"
   },

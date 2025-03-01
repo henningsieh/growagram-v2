@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, ListChecksIcon } from "lucide-react";
+import { ArrowRightIcon, Bell, ListChecksIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
@@ -138,15 +138,16 @@ export function Notifications() {
             </TabsList>
           </div>
 
-          <div className="flex justify-between border-b p-1">
-            <Button variant="outline" size="sm" asChild>
+          <div className="flex justify-between gap-4 border-b px-2 py-1">
+            <Button variant="link" size="sm" asChild>
               <Link href="/dashboard#activity" onClick={closePopover}>
-                Go to Activity Feed
+                {t("ActivityFeed.label-all")}
+                <ArrowRightIcon className="h-4 w-4" />
               </Link>
             </Button>
             <Button
               className="p-1"
-              variant="ghost"
+              variant="outline"
               size="sm"
               onClick={(e) => {
                 e.preventDefault(); // Prevent link navigation
@@ -160,7 +161,7 @@ export function Notifications() {
             </Button>
           </div>
 
-          <ScrollArea className="h-[min(60vh,400px)]">
+          <ScrollArea className="h-[min(60vh,400px)] pr-1">
             {isLoading ? (
               <div className="flex flex-col gap-1 p-1">
                 <NotificationSkeleton className="h-[52px]" />

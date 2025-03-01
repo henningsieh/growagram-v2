@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import PageHeader from "~/components/Layouts/page-header";
+import { DashboardNotificationsFeed } from "~/components/features/Notifications/notifications-feed.tsx";
 import {
   Card,
   CardContent,
@@ -18,7 +19,6 @@ import { Skeleton } from "~/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { api } from "~/lib/trpc/react";
 
-import { DashboardNotificationsFeed } from "../Notifications/notifications-feed";
 import { ActivePlantsCard } from "./active-plants-card";
 import { DashboardOverviewChart } from "./dashboard-overview-chart";
 import { RecentPhotosWidget } from "./recent-photos-widget";
@@ -139,9 +139,7 @@ export function DashboardContent() {
                 {/* Grows Card */}
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0">
-                    <CardTitle className="text-sm font-semibold">
-                      {t("grow-environments")}
-                    </CardTitle>
+                    <CardTitle>{t("grow-environments")}</CardTitle>
                     <TentTree className="ml-2 size-4 text-secondary" />
                   </CardHeader>
                   <CardContent className="pb-2">
@@ -159,9 +157,7 @@ export function DashboardContent() {
                 {/* Plants Card */}
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0">
-                    <CardTitle className="text-sm font-semibold">
-                      {t("total-plants")}
-                    </CardTitle>
+                    <CardTitle>{t("total-plants")}</CardTitle>
                     <TagIcon className="h-4 w-4 text-primary" />
                   </CardHeader>
                   <CardContent className="pb-2">
@@ -189,9 +185,7 @@ export function DashboardContent() {
                 {/* Photos Card */}
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0">
-                    <CardTitle className="text-sm font-semibold">
-                      {t("total-photos")}
-                    </CardTitle>
+                    <CardTitle>{t("total-photos")}</CardTitle>
                     <CameraIcon className="h-4 w-4 text-foreground" />
                   </CardHeader>
                   <CardContent className="pb-2">
@@ -211,7 +205,7 @@ export function DashboardContent() {
               </div>
 
               {/* 2nd row */}
-              <div className="grid gap-0 space-y-4 sm:grid-cols-2 lg:grid-cols-7 lg:gap-4 lg:space-y-0">
+              <div className="grid gap-0 space-y-4 sm:grid-cols-3 lg:grid-cols-7 lg:gap-4 lg:space-y-0">
                 {/* Active Plants Card */}
                 <ActivePlantsCard
                   plantsData={plantsData}
@@ -284,9 +278,9 @@ export function DashboardContent() {
             <TabsContent value="analytics" className="space-y-4">
               <Card>
                 <CardHeader>
-                  <CardTitle>{t("detailed-analytics")}</CardTitle>
+                  <CardTitle>{t("detailed-statistics")}</CardTitle>
                   <CardDescription>
-                    {t("analytics-description")}
+                    {t("detailed-analytics-description")}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="pl-2">
@@ -307,9 +301,9 @@ export function DashboardContent() {
               {/* Growth Chart */}
               <Card className="col-span-4">
                 <CardHeader>
-                  <CardTitle>{t("growth-overview")}</CardTitle>
+                  <CardTitle>{t("analytics-growth-overview")}</CardTitle>
                   <CardDescription>
-                    {t("growth-chart-description")}
+                    {t("analytics-growth-chart-description")}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="pl-2">

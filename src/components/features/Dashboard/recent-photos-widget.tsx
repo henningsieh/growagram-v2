@@ -25,7 +25,7 @@ export function RecentPhotosWidget({
   // Show loading state
   if (isLoading) {
     return (
-      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+      <div className="grid grid-cols-2 gap-2 xs:grid-cols-3">
         {Array(12)
           .fill(0)
           .map((_, i) => (
@@ -53,7 +53,7 @@ export function RecentPhotosWidget({
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+      <div className="grid grid-cols-2 gap-2 xs:grid-cols-3">
         {photos.slice(0, photos.length).map((photo) => (
           <Link
             href={`/photos/${photo.id}/form`}

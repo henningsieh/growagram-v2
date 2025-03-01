@@ -31,7 +31,7 @@ export function UserStatsCard({ userId }: UserStatsCardProps) {
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0">
-        <CardTitle className="text-sm font-medium">{t("comunity")}</CardTitle>
+        <CardTitle>{t("comunity")}</CardTitle>
         <Users className="h-4 w-4 text-foreground" />
       </CardHeader>
       <CardContent className="space-y-3">
