@@ -3,7 +3,6 @@
 // src/components/features/Plants/plant-form.tsx:
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  DnaIcon,
   Leaf,
   Nut,
   PillBottle,

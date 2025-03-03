@@ -9,21 +9,21 @@ const buttonVariants = cva(
     variants: {
       variant: {
         primary:
-          "bg-primary text-primary-foreground shadow hover:bg-primary/80",
+          "bg-primary text-primary-foreground shadow-md hover:bg-primary/80",
         secondary:
-          "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
+          "bg-secondary text-secondary-foreground shadow-md hover:bg-secondary/80",
         timeline: 
-          "bg-input/10 border border-[1px] border-input/80 text-foreground shadow-sm hover:bg-input/30",
+          "bg-input/10 border border-[1px] border-input/80 text-foreground shadow-md hover:bg-input/30",
         grow: 
-          "bg-secondary/10 border border-[1px] border-secondary/80 text-foreground shadow-sm hover:bg-secondary/30",
+          "bg-secondary/10 border border-[1px] border-secondary/80 text-foreground shadow-md hover:bg-secondary/30",
         plant: 
-          "bg-primary/10 border border-[1px] border-primary/80 text-foreground shadow-sm hover:bg-primary/30",
+          "bg-primary/10 border border-[1px] border-primary/80 text-foreground shadow-md hover:bg-primary/30",
         outline:
-          "border bg-muted text-muted-foreground border-input shadow-sm hover:bg-background hover:text-white hover:text-foreground",
+          "border bg-muted text-muted-foreground border-input shadow-md hover:bg-background hover:text-white hover:text-foreground",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "underline-offset-4 hover:underline",
         destructive:
-          "font-bold bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/80",
+          "font-bold bg-destructive text-destructive-foreground shadow-md hover:bg-destructive/80",
       },
       size: {
         default: "h-10 px-4 py-4",
