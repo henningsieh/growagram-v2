@@ -1,7 +1,5 @@
 // src/app/[locale]/(protected)/dashboard/layout.tsx:
 import { DashboardContent } from "~/components/features/Dashboard/dashboard-content";
-import { auth } from "~/lib/auth";
-import { type User } from "~/lib/db/types";
 
 export const metadata = {
   title: "Grower's Plattform",
@@ -9,8 +7,5 @@ export const metadata = {
 };
 
 export default async function Dashboard() {
-  const session = await auth();
-  const user = session?.user as User;
-
   return <DashboardContent />;
 }
