@@ -101,3 +101,19 @@ export function formatDaysRemaining(
   if (days === null) return null;
   return days === 1 ? `${days} ${singleDayText}` : `${days} ${pluralDaysText}`;
 }
+
+/**
+ * Calculate the number of weeks between two dates
+ */
+export function getWeeksBetween(start: Date, end: Date): number {
+  const millisecondsPerWeek = 1000 * 60 * 60 * 24 * 7;
+  return (end.getTime() - start.getTime()) / millisecondsPerWeek;
+}
+
+/**
+ * Calculate the number of days between two dates
+ */
+export function getDaysBetween(start: Date, end: Date): number {
+  const millisecondsPerDay = 1000 * 60 * 60 * 24;
+  return Math.ceil((end.getTime() - start.getTime()) / millisecondsPerDay);
+}

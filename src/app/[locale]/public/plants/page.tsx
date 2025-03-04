@@ -86,7 +86,7 @@ export default function PublicPlantsPage() {
         <SpinningLoader className="text-secondary" />
       ) : plants.length === 0 ? (
         <p className="mt-8 text-center text-muted-foreground">
-          {t("NoPlantsFound")}
+          {t("no-plants-yet")}
         </p>
       ) : (
         // this should be a flex-col timeline with animated plant cards

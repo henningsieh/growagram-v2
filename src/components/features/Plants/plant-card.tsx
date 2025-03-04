@@ -50,7 +50,7 @@ import { useToast } from "~/hooks/use-toast";
 import { Link, useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import { cn, formatDate, formatTime } from "~/lib/utils";
-import { calculateGrowthProgress } from "~/lib/utils/calculateDetailedGrowthProgress";
+import { calculateGrowthProgress } from "~/lib/utils/calculateGrowthProgress";
 import type { PlantByIdType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
 import { LikeableEntityType } from "~/types/like";

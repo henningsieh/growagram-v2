@@ -38,7 +38,7 @@ import {
   formatDaysRemaining,
   formatDistanceToNowLocalized,
 } from "~/lib/utils";
-import { calculateGrowthProgress } from "~/lib/utils/calculateDetailedGrowthProgress";
+import { calculateGrowthProgress } from "~/lib/utils/calculateGrowthProgress";
 import type { GetAllPlantType } from "~/server/api/root";
 import { Locale } from "~/types/locale";
 import { PlantGrowthStages } from "~/types/plant";

@@ -20,7 +20,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { api } from "~/lib/trpc/react";
 
 import { ActivePlantsCard } from "./active-plants-card";
-import { DashboardOverviewChart } from "./dashboard-overview-chart";
+import { PlantsOverviewChart } from "./dashboard-overview-chart";
 import { RecentPhotosWidget } from "./recent-photos-widget";
 
 export function DashboardContent() {
@@ -177,8 +177,9 @@ export function DashboardContent() {
                       </>
                     ) : (
                       <>
-                        {activePlants} {t("living")}, {harvestedPlants}{" "}
-                        {t("harvested")}
+                        {activePlants} {t("living")}
+                        {", "}
+                        {harvestedPlants} {t("harvested")}
                       </>
                     )}
                   </CardFooter>
@@ -357,7 +358,7 @@ export function DashboardContent() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="pl-2">
-                  <DashboardOverviewChart plantsData={plantsData?.plants} />
+                  <PlantsOverviewChart plantsData={plantsData?.plants} />
                 </CardContent>
               </Card>
             </TabsContent>

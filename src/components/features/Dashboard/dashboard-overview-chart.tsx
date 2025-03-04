@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import {
   Bar,
   BarChart,
@@ -9,21 +10,21 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { calculateGrowthProgress } from "~/lib/utils/calculateDetailedGrowthProgress";
+import { calculateGrowthProgress } from "~/lib/utils/calculateGrowthProgress";
 import type { PlantByIdType } from "~/server/api/root";
 
-interface DashboardOverviewChartProps {
+interface PlantsOverviewChartProps {
   plantsData?: PlantByIdType[];
 }
 
-export function DashboardOverviewChart({
-  plantsData,
-}: DashboardOverviewChartProps) {
+export function PlantsOverviewChart({ plantsData }: PlantsOverviewChartProps) {
+  const t = useTranslations("Plants");
+
   // If no data, return placeholder
   if (!plantsData || plantsData.length === 0) {
     return (
       <div className="flex h-[300px] w-full items-center justify-center text-muted-foreground">
-        No plant data available
+        {t("no-plants-yet")}
       </div>
     );
   }
