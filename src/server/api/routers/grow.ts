@@ -102,25 +102,23 @@ export const growRouter = createTRPCRouter({
   getAllGrows: publicProcedure
     .input(
       z.object({
-        cursor: z.number().min(1).default(1).optional(),
+        cursor: z.number().min(1).default(1),
         limit: z
           .number()
           .min(1)
           .max(1000)
-          .default(PaginationItemsPerPage.GROWS_PER_PAGE)
-          .optional(),
+          .default(PaginationItemsPerPage.GROWS_PER_PAGE),
         sortField: z
           .nativeEnum(GrowsSortField)
-          .default(GrowsSortField.CREATED_AT)
-          .optional(),
-        sortOrder: z.nativeEnum(SortOrder).default(SortOrder.DESC).optional(),
+          .default(GrowsSortField.UPDATED_AT),
+        sortOrder: z.nativeEnum(SortOrder).default(SortOrder.DESC),
       }),
     )
     .query(async ({ ctx, input }) => {
-      const limit = input?.limit ?? PaginationItemsPerPage.GROWS_PER_PAGE;
-      const cursor = input?.cursor ?? 1;
-      const sortField = input?.sortField ?? GrowsSortField.CREATED_AT;
-      const sortOrder = input?.sortOrder ?? SortOrder.DESC;
+      const limit = input.limit;
+      const cursor = input.cursor;
+      const sortField = input.sortField;
+      const sortOrder = input.sortOrder;
 
       const offset = (cursor - 1) * limit;
 

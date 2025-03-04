@@ -3,6 +3,7 @@
 export enum GrowsSortField {
   NAME = "name",
   CREATED_AT = "createdAt",
+  UPDATED_AT = "updatedAt",
 }
 
 export enum GrowsViewMode {

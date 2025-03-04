@@ -7,6 +7,7 @@ import { SortOrder } from "~/components/atom/sort-filter-controls";
 import {
   breeders,
   cannabisStrains,
+  grows,
   plantImages,
   plants,
 } from "~/lib/db/schema";
@@ -284,7 +285,7 @@ export const plantRouter = {
         }
       }
 
-      const plant = await ctx.db
+      const [plant] = await ctx.db
         // Logic to create a plant
         .insert(plants)
         .values({
@@ -316,6 +317,16 @@ export const plantRouter = {
           },
         })
         .returning();
+
+      // If plant is connected to a grow, update the grow's updatedAt timestamp
+      if (plant.growId) {
+        await ctx.db
+          .update(grows)
+          .set({
+            updatedAt: new Date(),
+          })
+          .where(eq(grows.id, plant.growId));
+      }
 
       return plant;
     }),

@@ -146,10 +146,11 @@ export function SortFilterControls<T extends string>({
               {t("infinitescroll")}
             </Label>
             <Switch
+              variant={"secondary"}
               id="infinite-scroll"
               checked={viewMode.current === viewMode.options[1]}
               onCheckedChange={onViewModeToggle}
-              className="data-[state=checked]:bg-primary"
+              // className="data-[state=checked]:bg-primary"
             />
             <ScrollText
               className={`h-5 w-5 ${viewMode.current === viewMode.options[1] ? `text-primary` : `text-muted-foreground`}`}

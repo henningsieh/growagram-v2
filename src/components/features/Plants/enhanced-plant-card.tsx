@@ -9,6 +9,7 @@ import {
   FlaskConical,
   type LucideIcon,
   TentTree,
+  TentTreeIcon,
 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
@@ -85,10 +86,10 @@ export function EnhancedPlantCard({ plant }: EnhancedPlantCardProps) {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <CustomAvatar
-                src={imageUrl || ""}
+                src={imageUrl}
                 alt={plant.name}
                 size={40}
-                className="size-10"
+                className="size-10 rounded-md"
                 fallback={
                   <CurrentPhaseIcon
                     className={`h-6 w-6 text-${currentPhase.color}`}
@@ -118,7 +119,7 @@ export function EnhancedPlantCard({ plant }: EnhancedPlantCardProps) {
                   <HybridTooltipTrigger className="cursor-help">
                     <Clock className="h-4 w-4 shrink-0 text-harvest" />
                   </HybridTooltipTrigger>
-                  <HybridTooltipContent className="w-auto bg-harvest p-1">
+                  <HybridTooltipContent className="w-auto p-1 text-harvest">
                     <div className="space-y-0">
                       <p className="text-sm">
                         {t("Plants.estimated-harvest")}
@@ -144,7 +145,7 @@ export function EnhancedPlantCard({ plant }: EnhancedPlantCardProps) {
                   <HybridTooltipTrigger>
                     <Link
                       href={`/public/grows/${plant.grow.id}`}
-                      className="text-muted-foreground hover:text-primary"
+                      className="text-muted-foreground hover:text-secondary"
                     >
                       <TentTree className="h-4 w-4" />
                     </Link>
@@ -219,42 +220,57 @@ export function EnhancedPlantCard({ plant }: EnhancedPlantCardProps) {
                 </HybridTooltipContent>
               </HybridTooltip>
 
-              {plant.strain && (
-                <HybridTooltip>
-                  <HybridTooltipTrigger>
-                    <Badge
-                      variant="outline"
-                      className="ml-auto flex items-center gap-1"
-                    >
-                      <BeanIcon className="h-3.5 w-3.5" />
-                      <span>{plant.strain.name}</span>
-                    </Badge>
-                  </HybridTooltipTrigger>
-                  <HybridTooltipContent>
-                    <div className="space-y-2 p-1">
-                      <div className="flex items-center gap-2">
-                        <Dna className="h-4 w-4" />
-                        <span>
-                          {t("Plants.breeder")}
-                          {": "}
-                          {plant.strain.breeder.name}
-                        </span>
-                      </div>
-                      {plant.strain.thcContent && (
+              <div className="flex items-center justify-end gap-1">
+                {plant.strain && (
+                  <HybridTooltip>
+                    <HybridTooltipTrigger>
+                      <Badge
+                        variant="strain"
+                        className="ml-auto flex items-center gap-1"
+                      >
+                        <BeanIcon className="h-3.5 w-3.5" />
+                        <span>{plant.strain.name}</span>
+                      </Badge>
+                    </HybridTooltipTrigger>
+                    <HybridTooltipContent>
+                      <div className="space-y-2 p-1">
                         <div className="flex items-center gap-2">
-                          <FlaskConical className="h-4 w-4" />
+                          <Dna className="h-4 w-4" />
                           <span>
-                            {t("Plants.thc-content")}
+                            {t("Plants.breeder")}
                             {": "}
-                            {plant.strain.thcContent}
-                            {"%"}
+                            {plant.strain.breeder.name}
                           </span>
                         </div>
-                      )}
-                    </div>
-                  </HybridTooltipContent>
-                </HybridTooltip>
-              )}
+                        {plant.strain.thcContent && (
+                          <div className="flex items-center gap-2">
+                            <FlaskConical className="h-4 w-4" />
+                            <span>
+                              {t("Plants.thc-content")}
+                              {": "}
+                              {plant.strain.thcContent}
+                              {"%"}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </HybridTooltipContent>
+                  </HybridTooltip>
+                )}
+                {plant.grow && (
+                  <Link href={`/public/grows/${plant.grow.id}`}>
+                    <Badge
+                      variant="grow"
+                      className="flex max-w-20 items-center gap-1 overflow-hidden text-ellipsis whitespace-nowrap"
+                    >
+                      <TentTreeIcon className="h-4 w-4 flex-shrink-0" />
+                      <span className="overflow-hidden text-ellipsis">
+                        {plant.grow.name}
+                      </span>
+                    </Badge>
+                  </Link>
+                )}
+              </div>
             </CardFooter>
           </motion.div>
         </AnimatePresence>

@@ -226,21 +226,7 @@ export function GrowCard({
           </div>
 
           {/* Grow created and updated at Date */}
-          <CardDescription className="flex flex-col gap-1 px-1 font-mono text-xs tracking-tighter">
-            <div
-              title={
-                t("grow-card-createdAt")
-                // eslint-disable-next-line react/jsx-no-literals
-              }
-              className="flex items-center gap-2"
-            >
-              <Calendar1Icon size={18} />
-              <span className="block">
-                {formatDate(grow.createdAt, locale as Locale)}{" "}
-                {formatTime(grow.createdAt, locale as Locale)}
-              </span>
-            </div>
-
+          <CardDescription className="flex h-9 flex-row items-center justify-between pr-3 font-mono text-xs tracking-tighter">
             <div
               title={
                 t("grow-card-updatedAt")
@@ -248,10 +234,23 @@ export function GrowCard({
               }
               className="flex items-center gap-2"
             >
-              <EditIcon size={18} />
+              <EditIcon size={16} className="shrink-0" />
               <span className="block">
                 {formatDate(grow.updatedAt, locale as Locale)}{" "}
                 {formatTime(grow.updatedAt, locale as Locale)}
+              </span>
+            </div>
+            <div
+              title={
+                t("grow-card-createdAt")
+                // eslint-disable-next-line react/jsx-no-literals
+              }
+              className="flex items-center gap-2"
+            >
+              <Calendar1Icon size={16} className="shrink-0" />
+              <span className="block">
+                {formatDate(grow.createdAt, locale as Locale)}{" "}
+                {formatTime(grow.createdAt, locale as Locale)}
               </span>
             </div>
           </CardDescription>
