@@ -87,7 +87,6 @@ export const notificationRouter = createTRPCRouter({
       const limit = input?.limit ?? 50;
       const page = input?.page ?? 1;
       const onlyUnread = input?.onlyUnread ?? false;
-      const cursor = input?.cursor;
 
       // Calculate offset based on page number (like in grows)
       const offset = (page - 1) * limit;
