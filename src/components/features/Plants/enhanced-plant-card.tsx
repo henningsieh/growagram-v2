@@ -83,7 +83,7 @@ export function EnhancedPlantCard({ plant }: EnhancedPlantCardProps) {
         onMouseLeave={() => setIsHovered(false)}
       >
         <CardHeader className="p-0">
-          <div className="flex items-center justify-between">
+          <div className="flex items-start justify-between">
             <div className="flex items-center gap-3">
               <CustomAvatar
                 src={imageUrl}
@@ -98,7 +98,7 @@ export function EnhancedPlantCard({ plant }: EnhancedPlantCardProps) {
               />
 
               <div>
-                <CardTitle as="h2" className="text-base">
+                <CardTitle as="h4" className="text-base">
                   <Button
                     asChild
                     variant="link"

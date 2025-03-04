@@ -141,7 +141,7 @@ export function DashboardContent() {
                 {/* Grows Card */}
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0">
-                    <CardTitle>{t("grow-environments")}</CardTitle>
+                    <CardTitle as="h2">{t("grow-environments")}</CardTitle>
                     <TentTree className="ml-2 size-4 text-secondary" />
                   </CardHeader>
                   <CardContent className="pb-2">
@@ -159,7 +159,7 @@ export function DashboardContent() {
                 {/* Plants Card */}
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0">
-                    <CardTitle>{t("total-plants")}</CardTitle>
+                    <CardTitle as="h2">{t("total-plants")}</CardTitle>
                     <TagIcon className="h-4 w-4 text-primary" />
                   </CardHeader>
                   <CardContent className="pb-2">
@@ -188,7 +188,7 @@ export function DashboardContent() {
                 {/* Photos Card */}
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0">
-                    <CardTitle>{t("total-photos")}</CardTitle>
+                    <CardTitle as="h2">{t("total-photos")}</CardTitle>
                     <CameraIcon className="h-4 w-4 text-foreground" />
                   </CardHeader>
                   <CardContent className="pb-2">
@@ -206,7 +206,7 @@ export function DashboardContent() {
                 {/* User Stats Card */}
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0">
-                    <CardTitle>{t("comunity")}</CardTitle>
+                    <CardTitle as="h2">{t("comunity")}</CardTitle>
                     <UsersIcon className="h-4 w-4 text-foreground" />
                   </CardHeader>
                   <CardContent className="space-y-3">

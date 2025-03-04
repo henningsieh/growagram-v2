@@ -28,24 +28,13 @@ const CardHeader = React.forwardRef<
 ))
 CardHeader.displayName = "CardHeader"
 
-// type HeadingLevel = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
-
-// Extract heading element keys from React's JSX types
-// type HeadingLevel = keyof Pick<JSX.IntrinsicElements, 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'>;
-
-// Using React.ElementType
-type HeadingLevel = Extract<
-  React.ElementType,
-  "h1" | "h2" | "h3" | "h4" | "h5" | "h6"
->
-
 interface CardTitleProps extends React.HTMLAttributes<HTMLHeadingElement> {
-  as?: HeadingLevel
+  as?: Extract<keyof React.JSX.IntrinsicElements, `h${number}`>;
 }
 
 const CardTitle = React.forwardRef<HTMLHeadingElement, CardTitleProps>(
   ({ className, as = "h3", ...props }, ref) => {
-    const Heading = as
+    const Heading = as;
 
     return (
       <Heading
@@ -56,11 +45,12 @@ const CardTitle = React.forwardRef<HTMLHeadingElement, CardTitleProps>(
         )}
         {...props}
       />
-    )
-  },
-)
+    );
+  }
+);
 
-CardTitle.displayName = "CardTitle"
+CardTitle.displayName = "CardTitle";
+
 
 const CardDescription = React.forwardRef<
   HTMLDivElement,
