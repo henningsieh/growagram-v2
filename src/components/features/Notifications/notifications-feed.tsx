@@ -1,5 +1,5 @@
 import { useTranslations } from "next-intl";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import ItemsPagination from "~/components/atom/item-pagination";
 import {
   NotificationItem,

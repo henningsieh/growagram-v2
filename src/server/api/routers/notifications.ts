@@ -1,5 +1,5 @@
 // src/server/api/routers/notifications.ts:
-import { and, count, desc, eq, lt, or } from "drizzle-orm";
+import { and, count, desc, eq } from "drizzle-orm";
 import EventEmitter, { on } from "node:events";
 import { z } from "zod";
 import { notifications } from "~/lib/db/schema";
