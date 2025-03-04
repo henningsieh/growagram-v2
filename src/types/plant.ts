@@ -21,7 +21,7 @@ export const PlantGrowthStages = [
   { name: "seedling", color: "seedling", typical_duration: 2 },
   { name: "vegetation", color: "vegetation", typical_duration: 6 },
   { name: "flowering", color: "flowering", typical_duration: 10 },
-  { name: "harvested", color: "harvested", typical_duration: 0 },
+  { name: "harvested", color: "harvest", typical_duration: 0 },
   { name: "curing", color: "curing", typical_duration: Infinity },
 ] as const;
 

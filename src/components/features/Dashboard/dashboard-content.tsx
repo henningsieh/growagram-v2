@@ -1,6 +1,6 @@
 "use client";
 
-import { CameraIcon, TagIcon, TentTree, Wheat } from "lucide-react";
+import { CameraIcon, TagIcon, TentTree, UsersIcon, Wheat } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { usePathname, useSearchParams } from "next/navigation";
@@ -22,14 +22,13 @@ import { api } from "~/lib/trpc/react";
 import { ActivePlantsCard } from "./active-plants-card";
 import { DashboardOverviewChart } from "./dashboard-overview-chart";
 import { RecentPhotosWidget } from "./recent-photos-widget";
-import { UserStatsCard } from "./user-stats-card";
 
 export function DashboardContent() {
-  const { data: session } = useSession();
   const t = useTranslations("Platform");
   const [activeTab, setActiveTab] = useState("overview");
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const { data: session, status } = useSession();
 
   // Handle URL hash for tab selection
   useEffect(() => {
@@ -57,21 +56,18 @@ export function DashboardContent() {
     };
   }, [pathname, searchParams]); // Add pathname and searchParams as dependencies
 
-  // useEffect(() => {
-  //   const tab = searchParams.get("tab");
-  //   if (tab === "activity" || tab === "analytics" || tab === "overview") {
-  //     setActiveTab(tab);
-  //   }
-  // }, [searchParams]);
-
-  const { data: plantsData, isLoading: isLoadingPlants } =
-    api.plants.getOwnPlants.useQuery({
-      // limit: 5,
-    });
+  if (session === null) {
+    return null;
+  }
 
   const { data: growsData, isLoading: isLoadingGrows } =
     api.grows.getOwnGrows.useQuery({
       // limit: 6,
+    });
+
+  const { data: plantsData, isLoading: isLoadingPlants } =
+    api.plants.getOwnPlants.useQuery({
+      // limit: 5,
     });
 
   const { data: photosData, isLoading: isLoadingPhotos } =
@@ -79,11 +75,17 @@ export function DashboardContent() {
       limit: 6,
     });
 
-  if (!session?.user) return null;
+  const { data: userProfile, isPending: userStatsArePending } =
+    api.users.getPublicUserProfile.useQuery(
+      { id: session?.user.id },
+      { enabled: status === "authenticated" },
+    );
 
-  const totalPlants = plantsData?.count || 0;
   const totalGrows = growsData?.count || 0;
+  const totalPlants = plantsData?.count || 0;
   const totalPhotos = photosData?.count || 0;
+  const followerCount = userProfile?.followers.length || 0;
+  const followingCount = userProfile?.following.length || 0;
 
   const activePlants =
     plantsData?.plants.filter(
@@ -144,9 +146,9 @@ export function DashboardContent() {
                   </CardHeader>
                   <CardContent className="pb-2">
                     {isLoadingGrows ? (
-                      <Skeleton className="h-8 w-20" />
+                      <Skeleton className="h-9 w-20" />
                     ) : (
-                      <div className="text-2xl font-bold">{totalGrows}</div>
+                      <div className="text-3xl font-bold">{totalGrows}</div>
                     )}
                   </CardContent>
                   <CardFooter className="text-xs text-muted-foreground">
@@ -162,9 +164,9 @@ export function DashboardContent() {
                   </CardHeader>
                   <CardContent className="pb-2">
                     {isLoadingPlants ? (
-                      <Skeleton className="h-8 w-20" />
+                      <Skeleton className="h-9 w-20" />
                     ) : (
-                      <div className="text-2xl font-bold">{totalPlants}</div>
+                      <div className="text-3xl font-bold">{totalPlants}</div>
                     )}
                   </CardContent>
                   <CardFooter className="text-xs text-muted-foreground">
@@ -190,9 +192,9 @@ export function DashboardContent() {
                   </CardHeader>
                   <CardContent className="pb-2">
                     {isLoadingPhotos ? (
-                      <Skeleton className="h-8 w-20" />
+                      <Skeleton className="h-9 w-20" />
                     ) : (
-                      <div className="text-2xl font-bold">{totalPhotos}</div>
+                      <div className="text-3xl font-bold">{totalPhotos}</div>
                     )}
                   </CardContent>
                   <CardFooter className="text-xs text-muted-foreground">
@@ -201,7 +203,55 @@ export function DashboardContent() {
                 </Card>
 
                 {/* User Stats Card */}
-                <UserStatsCard userId={session.user.id} />
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0">
+                    <CardTitle>{t("comunity")}</CardTitle>
+                    <UsersIcon className="h-4 w-4 text-foreground" />
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    {/* <div className="flex items-center space-x-3">
+                          <CustomAvatar
+                            size={36}
+                            src={user.image || undefined}
+                            alt={user.name || "User avatar"}
+                            fallback="User2"
+                          />
+                          <div>
+                            <div className="font-semibold">{user.name}</div>
+                            <div className="text-xs text-muted-foreground">
+                              @{user.username}
+                            </div>
+                          </div>
+                        </div> */}
+                    <div className="flex space-x-8">
+                      <div className="space-y-2">
+                        <div className="text-3xl font-bold">
+                          {userStatsArePending ? (
+                            <Skeleton className="h-9 w-11" />
+                          ) : (
+                            followerCount
+                          )}
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          {t("Followers")}
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <div className="text-3xl font-bold">
+                          {userStatsArePending ? (
+                            <Skeleton className="h-9 w-11" />
+                          ) : (
+                            followingCount
+                          )}
+                        </div>
+                        <div className="whitespace-nowrap text-xs text-muted-foreground">
+                          {t("Following")}
+                        </div>
+                      </div>
+                    </div>
+                    {/*  */}
+                  </CardContent>
+                </Card>
               </div>
 
               {/* 2nd row */}
