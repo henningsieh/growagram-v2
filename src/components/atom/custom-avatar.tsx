@@ -20,14 +20,17 @@ export default function CustomAvatar({
   ...props
 }: CustomAvatarProps) {
   return (
-    <Avatar className={cn("relative h-max w-max", className)} {...props}>
+    <Avatar
+      className={cn("relative h-max w-max rounded-full", className)}
+      {...props}
+    >
       {src ? (
         <Image
           src={src}
           alt={alt}
           width={size}
           height={size}
-          className="rounded-full object-cover"
+          className="object-cover"
         />
       ) : (
         <AvatarFallback>

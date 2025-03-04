@@ -11,9 +11,9 @@ const switchVariants = cva(
     variants: {
       variant: {
         default:
-          "data-[state=checked]:bg-primary data-[state=unchecked]:bg-input",
+          "data-[state=checked]:bg-primary data-[state=unchecked]:bg-input/50",
         secondary:
-          "data-[state=checked]:bg-secondary data-[state=unchecked]:bg-input",
+          "data-[state=checked]:bg-secondary data-[state=unchecked]:bg-input/50",
         outline:
           "border-input bg-background data-[state=checked]:bg-primary data-[state=unchecked]:bg-transparent",
       },

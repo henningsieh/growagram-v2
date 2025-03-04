@@ -67,8 +67,8 @@ export const HybridTooltipContent = (
   const isTouch = useTouch();
 
   return isTouch ? (
-    <PopoverContent className="bg-primary border-0 text-primary-foreground p-1 w-auto" side="top" align="center" {...props} />
+    <PopoverContent className="bg-background border text-sm text-primary-foreground p-1 w-auto" side="top" align="center" {...props} />
   ) : (
-    <TooltipContent className="bg-primary border-0 text-primary-foreground text-base" side="top" align="center" {...props} />
+    <TooltipContent className="bg-background border text-sm text-primary-foreground " side="top" align="center" {...props} />
   );
 };  
