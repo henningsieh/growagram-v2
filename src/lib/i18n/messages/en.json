@@ -342,7 +342,6 @@
       "description": "No photo will be deleted by this action. But this will also remove all references in any photos where this plant is tagged!",
       "title": "Are you sure you want to remove this plant?"
     },
-    "NoPlantsFound": "No plants could be found.",
     "breeder": "Breeder",
     "button-label-post-update": "Create Update for Plant",
     "curing-start-date": "Curing phase start date",

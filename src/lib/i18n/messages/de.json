@@ -342,7 +342,6 @@
       "description": "Durch diese Aktion wird kein Foto gelöscht. Dies wird aber auch alle Referenzen in den Fotos entfernen, auf denen diese Pflanze markiert ist!",
       "title": "Bist du sicher, dass du diese Pflanze löschen möchten?"
     },
-    "NoPlantsFound": "Es konnten keine Pflanzen gefunden werden.",
     "breeder": "Breeder (Züchter)",
     "button-label-post-update": "Update zur Pflanze erstellen",
     "curing-start-date": "Startdatum der Aushärtephase",
