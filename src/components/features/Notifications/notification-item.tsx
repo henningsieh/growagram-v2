@@ -7,10 +7,10 @@ import { Skeleton } from "~/components/ui/skeleton";
 import { useNotifications } from "~/hooks/use-notifications";
 import { Link } from "~/lib/i18n/routing";
 import { cn, formatDate, formatTime } from "~/lib/utils";
-import type { GetUnreadNotificationType } from "~/server/api/root";
+import type { GetAllNotificationType } from "~/server/api/root";
 import type { Locale } from "~/types/locale";
 
-interface NotificationItemProps extends GetUnreadNotificationType {
+interface NotificationItemProps extends GetAllNotificationType {
   close?: () => void; // Changed from setOpen to an optional close function
 }
 

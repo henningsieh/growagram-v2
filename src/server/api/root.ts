@@ -48,11 +48,12 @@ export type AppRouter = typeof appRouter;
 
 // notificationRouter
 //  OUTPUTS:
-export type GetNotificationsResponseType = RouterOutput["notifications"]["getAll"];
-export type GetUnreadNotificationType = RouterOutput["notifications"]["getAll"]["items"][number];
+export type GetAllNotificationsResponse = RouterOutput["notifications"]["getAll"];
+export type GetAllNotificationsType = RouterOutput["notifications"]["getAll"]["items"];
+export type GetAllNotificationType = RouterOutput["notifications"]["getAll"]["items"][number];
 
 //  INPUTS:
-export type GetNotificationsInput = RouterInput["notifications"]["getAll"];
+export type GetAllNotificationsInput = RouterInput["notifications"]["getAll"];
 
 // postRouter
 //  OUTPUTS:

@@ -4,7 +4,10 @@ import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import * as React from "react";
 import { api } from "~/lib/trpc/react";
-import { type GetUnreadNotificationType } from "~/server/api/root";
+import {
+  type GetAllNotificationType,
+  GetAllNotificationsInput,
+} from "~/server/api/root";
 import {
   NotifiableEntityType,
   NotificationEventType,
@@ -15,7 +18,7 @@ import { useToast } from "./use-toast";
 // Add the 'export' keyword in front of the function declaration
 export function useNotifications(onlyUnread = true) {
   const [allNotifications, setAllNotifications] = React.useState<
-    GetUnreadNotificationType[] | null
+    GetAllNotificationType[] | null
   >(null);
   const [lastEventId, setLastEventId] = React.useState<false | null | string>(
     false,
@@ -41,7 +44,7 @@ export function useNotifications(onlyUnread = true) {
   }, [allNotifications, lastEventId]);
 
   const query = api.notifications.getAll.useQuery(
-    { onlyUnread }, // Pass onlyUnread parameter
+    { onlyUnread } satisfies GetAllNotificationsInput, // Pass onlyUnread parameter
     {
       refetchOnWindowFocus: true,
       refetchOnMount: true,
@@ -162,7 +165,7 @@ export function useNotifications(onlyUnread = true) {
    * Get the href for a notification
    */
   const getNotificationHref = React.useMemo(() => {
-    return (notification: GetUnreadNotificationType) => {
+    return (notification: GetAllNotificationType) => {
       switch (notification.entityType) {
         case NotifiableEntityType.USER:
           return `/public/profile/${notification.actor.id}`; // Profile of user who followed
