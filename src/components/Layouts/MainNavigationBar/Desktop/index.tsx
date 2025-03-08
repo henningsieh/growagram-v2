@@ -30,7 +30,7 @@ function DesktopNavigationMenu() {
             <li className="row-span-3">
               <NavigationMenuLink asChild>
                 <Link
-                  className="nav-item-featured flex h-full w-full select-none flex-col justify-center"
+                  className="nav-item-featured group flex h-full w-full select-none flex-col justify-center"
                   href={content.featured.href}
                 >
                   <div className="mb-2 mt-4 flex items-center text-2xl font-bold text-primary">
@@ -40,7 +40,7 @@ function DesktopNavigationMenu() {
                       })}
                     {t(content.featured.title)}
                   </div>
-                  <p className="text-base leading-tight text-muted-foreground">
+                  <p className="text-base leading-tight text-muted-foreground dark:group-hover:text-accent-foreground">
                     {t(content.featured.description)}
                   </p>
                 </Link>
@@ -71,9 +71,9 @@ function DesktopNavigationMenu() {
           <Link
             ref={ref}
             className={cn(
-              "nav-item",
+              "nav-item group",
               "block select-none space-y-1 leading-none",
-              "text-foreground/90 hover:text-foreground",
+              "text-foreground/80 hover:text-primary",
               className,
             )}
             href={props.href as string}
@@ -86,7 +86,7 @@ function DesktopNavigationMenu() {
                 })}
               {title}
             </div>
-            <p className="line-clamp-2 pt-1 text-sm leading-snug text-muted-foreground">
+            <p className="line-clamp-2 pt-1 text-sm leading-snug text-muted-foreground dark:group-hover:text-accent-foreground">
               {children}
             </p>
           </Link>
@@ -118,7 +118,7 @@ function DesktopNavigationMenu() {
                 <NavigationMenuTrigger
                   className={cn(
                     navigationMenuTriggerStyle(),
-                    "text-lg font-semibold",
+                    "text-lg font-semibold data-[state=open]:bg-accent/70",
                   )}
                 >
                   <div>{t(item.title)}</div>

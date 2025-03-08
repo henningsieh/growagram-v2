@@ -112,9 +112,9 @@ export default function MobileNavigationMenu() {
                   >
                     <AccordionTrigger
                       className={cn(
-                        "rounded-sm px-3 py-3 text-lg font-semibold hover:bg-accent",
-                        "hover:text-foreground data-[state=open]:text-primary",
-                        "hover:no-underline",
+                        "rounded-sm px-3 py-3 text-lg font-semibold",
+                        "hover:bg-accent hover:text-foreground hover:no-underline",
+                        "data-[state=open]:text-primary hover:data-[state=open]:text-accent-foreground",
                       )}
                     >
                       {t(item.title)}
