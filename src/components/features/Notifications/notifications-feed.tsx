@@ -12,25 +12,24 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
-import { api } from "~/lib/trpc/react";
+import { useNotifications } from "~/hooks/use-notifications";
 
-const PAGE_SIZE = 36;
+const PAGE_SIZE = 3;
 
-export function DashboardNotificationsFeed() {
+export function NotificationsFeed() {
   const t = useTranslations("Notifications");
   const [currentPage, setCurrentPage] = useState(1);
 
-  // Get notifications for the current page
-  const { data: notifications, isLoading } = api.notifications.getAll.useQuery({
-    onlyUnread: false,
-    limit: PAGE_SIZE,
-    page: currentPage, // Use page number directly instead of cursor
-  });
+  // Use the useNotifications hook with its default behavior (onlyUnread = true)
+  const { all: notifications, isLoading, error } = useNotifications(false);
 
-  // Calculate total pages
-  const totalPages = notifications?.totalPages ?? 1;
+  // Handle pagination locally instead of via the API
+  const startIndex = (currentPage - 1) * PAGE_SIZE;
+  const endIndex = startIndex + PAGE_SIZE;
+  const paginatedNotifications = notifications.slice(startIndex, endIndex);
+  const totalPages = Math.ceil(notifications.length / PAGE_SIZE);
 
-  // Handle page changes from ItemsPagination - simple page number change
+  // Handle page changes from ItemsPagination
   const handlePageChange = useCallback(
     (page: number) => {
       if (page < 1 || page > totalPages) return;
@@ -53,13 +52,13 @@ export function DashboardNotificationsFeed() {
                 <NotificationSkeleton key={i} />
               ))}
           </div>
-        ) : !notifications?.items.length ? (
+        ) : !notifications.length ? (
           <div className="py-4 text-center text-muted-foreground">
             <p>{t("ActivityFeed.no-notifications")}</p>
           </div>
         ) : (
           <div className="flex flex-col gap-2">
-            {notifications.items.map((notification) => (
+            {paginatedNotifications.map((notification) => (
               <NotificationItem key={notification.id} {...notification} />
             ))}
           </div>
@@ -75,4 +74,9 @@ export function DashboardNotificationsFeed() {
       </CardFooter>
     </Card>
   );
+}
+
+// This is specifically for the dashboard
+export function DashboardNotificationsFeed() {
+  return <NotificationsFeed />;
 }

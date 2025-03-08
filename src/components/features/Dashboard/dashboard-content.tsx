@@ -4,9 +4,9 @@ import { CameraIcon, TagIcon, TentTree, UsersIcon, Wheat } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import * as React from "react";
 import PageHeader from "~/components/Layouts/page-header";
-import { DashboardNotificationsFeed } from "~/components/features/Notifications/notifications-feed.tsx";
+import { NotificationsFeed } from "~/components/features/Notifications/notifications-feed";
 import {
   Card,
   CardContent,
@@ -25,13 +25,13 @@ import { RecentPhotosWidget } from "./recent-photos-widget";
 
 export function DashboardContent() {
   const t = useTranslations("Platform");
-  const [activeTab, setActiveTab] = useState("overview");
+  const [activeTab, setActiveTab] = React.useState("overview");
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { data: session, status } = useSession();
 
   // Handle URL hash for tab selection
-  useEffect(() => {
+  React.useEffect(() => {
     // Function to handle hash changes
     const handleHashChange = () => {
       const hash = window.location.hash.substring(1);
@@ -320,7 +320,16 @@ export function DashboardContent() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-8">
-                    <DashboardNotificationsFeed />
+                    {/* Use a state to control mounting */}
+                    {activeTab === "activity" && (
+                      <React.Suspense
+                        fallback={
+                          <div className="h-96 animate-pulse rounded-md bg-muted/20" />
+                        }
+                      >
+                        <NotificationsFeed />
+                      </React.Suspense>
+                    )}
                   </div>
                 </CardContent>
               </Card>
