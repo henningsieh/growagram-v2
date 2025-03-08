@@ -11,18 +11,21 @@
         "featured": {
           "title": "timeline",
           "href": "/public/timeline",
-          "description": "timeline-description"
+          "description": "timeline-description",
+          "icon": "ListIcon"
         },
         "items": [
           {
             "title": "grows",
             "href": "/public/grows",
-            "description": "grows-description"
+            "description": "grows-description",
+            "icon": "TentTreeIcon"
           },
           {
             "title": "plants",
             "href": "/public/plants",
-            "description": "plants-description"
+            "description": "plants-description",
+            "icon": "Flower2Icon"
           }
         ]
       }
@@ -33,23 +36,27 @@
         "featured": {
           "title": "dashboard",
           "href": "/dashboard",
-          "description": "dashboard-description"
+          "description": "dashboard-description",
+          "icon": "CircleGaugeIcon"
         },
         "items": [
           {
             "title": "my-grows",
             "href": "/grows",
-            "description": "my-grows-subline"
+            "description": "my-grows-subline",
+            "icon": "TentTreeIcon"
           },
           {
             "title": "my-plants",
             "href": "/plants",
-            "description": "my-plants-subline"
+            "description": "my-plants-subline",
+            "icon": "Flower2Icon"
           },
           {
             "title": "my-photos",
             "href": "/photos",
-            "description": "my-photos-subline"
+            "description": "my-photos-subline",
+            "icon": "ImageIcon"
           }
         ]
       }

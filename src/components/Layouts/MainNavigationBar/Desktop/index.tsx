@@ -2,7 +2,7 @@
 
 // src/components/Layouts/MainNavigationBar/Desktop/index.tsx:
 import { useTranslations } from "next-intl";
-import { forwardRef } from "react";
+import * as React from "react";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -13,14 +13,14 @@ import {
   navigationMenuTriggerStyle,
 } from "~/components/ui/navigation-menu";
 import { Link } from "~/lib/i18n/routing";
-import type { NavigationItem } from "~/lib/navigation";
-import navigationData from "~/lib/navigation";
+import { processedNavigation } from "~/lib/navigation";
 import { cn } from "~/lib/utils";
+import type { ProcessedNavigationItem } from "~/types/navigation";
 
 function DesktopNavigationMenu() {
   const t = useTranslations("Navigation");
 
-  const renderMenuContent = (content: NavigationItem["content"]) => {
+  const renderMenuContent = (content: ProcessedNavigationItem["content"]) => {
     if (!content) return null;
 
     return (
@@ -33,7 +33,11 @@ function DesktopNavigationMenu() {
                   className="nav-item-featured flex h-full w-full select-none flex-col justify-center"
                   href={content.featured.href}
                 >
-                  <div className="mb-2 mt-4 text-2xl font-bold text-primary">
+                  <div className="mb-2 mt-4 flex items-center text-2xl font-bold text-primary">
+                    {content.featured.icon &&
+                      React.createElement(content.featured.icon, {
+                        className: "mr-2 h-5 w-5",
+                      })}
                     {t(content.featured.title)}
                   </div>
                   <p className="text-base leading-tight text-muted-foreground">
@@ -53,10 +57,14 @@ function DesktopNavigationMenu() {
     );
   };
 
-  const ListItem = forwardRef<
+  const ListItem = React.forwardRef<
     React.ComponentRef<"a">,
     React.ComponentPropsWithoutRef<"a">
   >(({ className, title, children, ...props }, ref) => {
+    const item = processedNavigation.navigationItems
+      .flatMap((navItem) => navItem.content?.items || [])
+      .find((i) => i.href === props.href);
+
     return (
       <li>
         <NavigationMenuLink asChild>
@@ -71,7 +79,13 @@ function DesktopNavigationMenu() {
             href={props.href as string}
             {...props}
           >
-            <div className="text-lg font-semibold leading-none">{title}</div>
+            <div className="flex items-center text-lg font-semibold leading-none">
+              {item?.icon &&
+                React.createElement(item.icon, {
+                  className: "mr-2 h-5 w-5",
+                })}
+              {title}
+            </div>
             <p className="line-clamp-2 pt-1 text-sm leading-snug text-muted-foreground">
               {children}
             </p>
@@ -85,7 +99,7 @@ function DesktopNavigationMenu() {
   return (
     <NavigationMenu className="hidden items-center md:flex">
       <NavigationMenuList className="gap-1">
-        {navigationData.navigationItems.map((item) => (
+        {processedNavigation.navigationItems.map((item) => (
           <NavigationMenuItem key={item.title}>
             {item.type === "link" ? (
               <Link href={item.href!} passHref>

@@ -3,10 +3,11 @@
 // src/components/features/Plants/plant-form.tsx:
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  Leaf,
-  Nut,
-  PillBottle,
-  Sprout,
+  Flower2Icon,
+  LeafIcon,
+  NutIcon,
+  PillBottleIcon,
+  SproutIcon,
   TagIcon,
   TentTreeIcon,
   Wheat,
@@ -313,7 +314,7 @@ export default function PlantForm({ plant }: { plant?: GetPlantByIdType }) {
                           field={field}
                           label={t("planting-date")}
                           description="When did you plant the seed?"
-                          icon={Nut}
+                          icon={NutIcon}
                           iconClassName="text-planted"
                         />
                       )}
@@ -327,7 +328,7 @@ export default function PlantForm({ plant }: { plant?: GetPlantByIdType }) {
                           field={field}
                           label={t("germination-date")}
                           description="When did you see the seedling for the first time?"
-                          icon={Sprout}
+                          icon={SproutIcon}
                           iconClassName="text-seedling"
                         />
                       )}
@@ -342,8 +343,8 @@ export default function PlantForm({ plant }: { plant?: GetPlantByIdType }) {
                         <PlantFormDateField
                           field={field}
                           label={t("vegetation-start-date")}
-                          description="When did rapid leaf growth start?"
-                          icon={Leaf}
+                          description="When did rapid leafIcon growth start?"
+                          icon={LeafIcon}
                           iconClassName="text-vegetation"
                         />
                       )}
@@ -357,7 +358,7 @@ export default function PlantForm({ plant }: { plant?: GetPlantByIdType }) {
                           field={field}
                           label={t("flowering-start-date")}
                           description="When did you see the first buds?"
-                          icon={TagIcon}
+                          icon={Flower2Icon}
                           iconClassName="text-flowering"
                         />
                       )}
@@ -386,7 +387,7 @@ export default function PlantForm({ plant }: { plant?: GetPlantByIdType }) {
                           field={field}
                           label={t("curing-start-date")}
                           description="When did you start the curing process?"
-                          icon={PillBottle}
+                          icon={PillBottleIcon}
                           iconClassName="text-curing"
                         />
                       )}
