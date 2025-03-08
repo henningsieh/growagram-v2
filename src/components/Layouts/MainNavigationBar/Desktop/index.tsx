@@ -25,21 +25,17 @@ function DesktopNavigationMenu() {
 
     return (
       <NavigationMenuContent>
-        <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
+        <ul className="grid gap-4 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
           {content.featured && (
             <li className="row-span-3">
               <NavigationMenuLink asChild>
                 <Link
-                  className="flex h-full w-full select-none flex-col justify-center rounded-md bg-gradient-to-b from-primary/10 via-primary/5 to-primary/20 p-6 text-foreground no-underline outline-none transition-all hover:from-primary/20 hover:via-primary/15 hover:to-primary/30 hover:text-foreground focus:shadow-md"
+                  className="nav-item-featured flex h-full w-full select-none flex-col justify-center"
                   href={content.featured.href}
-                  scroll={true}
-                  shallow={false}
                 >
-                  {/* Navigation featured item title */}
-                  <div className="mb-2 mt-4 text-2xl font-bold">
+                  <div className="mb-2 mt-4 text-2xl font-bold text-primary">
                     {t(content.featured.title)}
                   </div>
-                  {/* Navigation featured item description */}
                   <p className="text-base leading-tight text-muted-foreground">
                     {t(content.featured.description)}
                   </p>
@@ -67,17 +63,15 @@ function DesktopNavigationMenu() {
           <Link
             ref={ref}
             className={cn(
-              "block select-none space-y-1 rounded-sm p-3 leading-none no-underline outline-none transition-colors",
-              "text-foreground/90 hover:bg-accent hover:text-accent-foreground",
-              "text-foreground hover:text-foreground",
+              "nav-item",
+              "block select-none space-y-1 leading-none",
+              "text-foreground/90 hover:text-foreground",
               className,
             )}
             href={props.href as string}
             {...props}
           >
-            {/* Navigation item title */}
             <div className="text-lg font-semibold leading-none">{title}</div>
-            {/* Navigation item description */}
             <p className="line-clamp-2 pt-1 text-sm leading-snug text-muted-foreground">
               {children}
             </p>

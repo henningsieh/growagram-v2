@@ -34,7 +34,7 @@ export default function MobileNavigationMenu() {
         {content.featured && (
           <Link
             href={content.featured.href}
-            className="flex flex-col justify-center rounded-sm bg-gradient-to-b from-primary/10 via-primary/5 to-primary/20 p-6 text-foreground transition-all hover:from-primary/20 hover:via-primary/15 hover:to-primary/30"
+            className="nav-item-featured flex flex-col justify-center"
             onClick={() => setOpen(false)}
           >
             <div className="text-2xl font-bold text-primary">
@@ -49,7 +49,7 @@ export default function MobileNavigationMenu() {
           <Link
             key={item.title}
             href={item.href}
-            className="block space-y-1 rounded-sm p-3 text-foreground/90 transition-colors hover:bg-accent hover:text-accent-foreground"
+            className="nav-item block space-y-1"
             onClick={() => setOpen(false)}
           >
             <div className="text-lg font-semibold leading-none">

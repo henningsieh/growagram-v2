@@ -123,10 +123,34 @@ const config: Config = {
             height: "0",
           },
         },
+        "border-glow": {
+          "0%, 100%": {
+            "background-position": "0% 50%",
+            "border-color": "hsl(var(--primary) / 0.2)",
+            "box-shadow":
+              "0 0 5px hsl(var(--primary) / 0.15), inset 0 0 8px hsl(var(--primary) / 0.15)",
+          },
+          "50%": {
+            "background-position": "100% 50%",
+            "border-color": "hsl(var(--primary) / 0.6)",
+            "box-shadow":
+              "0 0 10px hsl(var(--primary) / 0.25), inset 0 0 12px hsl(var(--primary) / 0.25)",
+          },
+        },
+        shine: {
+          "0%": {
+            "background-position": "150% 50%",
+          },
+          "100%": {
+            "background-position": "-50% 50%",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "border-glow": "border-glow 1s ease-in-out infinite",
+        shine: "shine 2s linear infinite",
       },
     },
   },

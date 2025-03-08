@@ -152,3 +152,34 @@ body {
     padding-bottom: 0px; /* Add padding to reveal the scrollbar */
   }
 }
+
+@layer components {
+  .nav-item-base {
+    @apply relative overflow-hidden rounded-md border bg-card/30 p-4;
+    @apply transition-all duration-200 ease-out;
+    @apply border-primary/20 shadow-sm;
+    @apply hover:border-primary/40 hover:bg-card/50;
+    @apply hover:scale-[1.01] hover:shadow-sm;
+    @apply hover:animate-border-glow;
+    @apply border-opacity-20 hover:border-opacity-40;
+    @apply [transition-property:transform,background-color,border-color,box-shadow,opacity];
+  }
+
+  .nav-item {
+    @apply nav-item-base;
+    @apply before:absolute before:inset-0;
+    @apply before:bg-[linear-gradient(110deg,transparent_20%,hsl(var(--primary)/0.1)_45%,transparent_70%)];
+    @apply hover:before:animate-shine;
+  }
+
+  .nav-item-featured {
+    @apply nav-item-base;
+    @apply bg-gradient-to-br from-primary/5 via-background to-primary/10;
+    @apply before:absolute before:inset-0;
+    @apply before:bg-[linear-gradient(110deg,transparent_20%,hsl(var(--primary)/0.2)_45%,transparent_70%)];
+    @apply hover:before:animate-shine;
+    @apply after:absolute after:inset-0;
+    @apply after:bg-gradient-to-br after:from-primary/10 after:via-transparent after:to-primary/20;
+    @apply hover:from-primary/10 hover:via-background hover:to-primary/20;
+  }
+}
