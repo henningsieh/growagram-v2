@@ -2,7 +2,7 @@
 
 // src/components/Layouts/MainNavigationBar/Desktop/index.tsx:
 import { useTranslations } from "next-intl";
-import { forwardRef } from "react";
+import * as React from "react";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -13,34 +13,34 @@ import {
   navigationMenuTriggerStyle,
 } from "~/components/ui/navigation-menu";
 import { Link } from "~/lib/i18n/routing";
-import type { NavigationItem } from "~/lib/navigation";
-import navigationData from "~/lib/navigation";
+import { processedNavigation } from "~/lib/navigation";
 import { cn } from "~/lib/utils";
+import type { ProcessedNavigationItem } from "~/types/navigation";
 
 function DesktopNavigationMenu() {
   const t = useTranslations("Navigation");
 
-  const renderMenuContent = (content: NavigationItem["content"]) => {
+  const renderMenuContent = (content: ProcessedNavigationItem["content"]) => {
     if (!content) return null;
 
     return (
       <NavigationMenuContent>
-        <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
+        <ul className="grid gap-4 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
           {content.featured && (
             <li className="row-span-3">
               <NavigationMenuLink asChild>
                 <Link
-                  className="flex h-full w-full select-none flex-col justify-center rounded-md bg-gradient-to-b from-primary/10 via-primary/5 to-primary/20 p-6 text-foreground no-underline outline-none transition-all hover:from-primary/20 hover:via-primary/15 hover:to-primary/30 hover:text-foreground focus:shadow-md"
+                  className="nav-item-featured group flex h-full w-full select-none flex-col justify-center"
                   href={content.featured.href}
-                  scroll={true}
-                  shallow={false}
                 >
-                  {/* Navigation featured item title */}
-                  <div className="mb-2 mt-4 text-2xl font-bold">
+                  <div className="mb-2 mt-4 flex items-center text-2xl font-bold text-primary">
+                    {content.featured.icon &&
+                      React.createElement(content.featured.icon, {
+                        className: "mr-2 h-5 w-5",
+                      })}
                     {t(content.featured.title)}
                   </div>
-                  {/* Navigation featured item description */}
-                  <p className="text-base leading-tight text-muted-foreground">
+                  <p className="text-base leading-tight text-muted-foreground dark:group-hover:text-accent-foreground">
                     {t(content.featured.description)}
                   </p>
                 </Link>
@@ -57,28 +57,36 @@ function DesktopNavigationMenu() {
     );
   };
 
-  const ListItem = forwardRef<
+  const ListItem = React.forwardRef<
     React.ComponentRef<"a">,
     React.ComponentPropsWithoutRef<"a">
   >(({ className, title, children, ...props }, ref) => {
+    const item = processedNavigation.navigationItems
+      .flatMap((navItem) => navItem.content?.items || [])
+      .find((i) => i.href === props.href);
+
     return (
       <li>
         <NavigationMenuLink asChild>
           <Link
             ref={ref}
             className={cn(
-              "block select-none space-y-1 rounded-sm p-3 leading-none no-underline outline-none transition-colors",
-              "text-foreground/90 hover:bg-accent hover:text-accent-foreground",
-              "text-foreground hover:text-foreground",
+              "nav-item group",
+              "block select-none space-y-1 leading-none",
+              "text-foreground/80 hover:text-primary",
               className,
             )}
             href={props.href as string}
             {...props}
           >
-            {/* Navigation item title */}
-            <div className="text-lg font-semibold leading-none">{title}</div>
-            {/* Navigation item description */}
-            <p className="line-clamp-2 pt-1 text-sm leading-snug text-muted-foreground">
+            <div className="flex items-center text-lg font-semibold leading-none">
+              {item?.icon &&
+                React.createElement(item.icon, {
+                  className: "mr-2 h-5 w-5",
+                })}
+              {title}
+            </div>
+            <p className="line-clamp-2 pt-1 text-sm leading-snug text-muted-foreground dark:group-hover:text-accent-foreground">
               {children}
             </p>
           </Link>
@@ -91,7 +99,7 @@ function DesktopNavigationMenu() {
   return (
     <NavigationMenu className="hidden items-center md:flex">
       <NavigationMenuList className="gap-1">
-        {navigationData.navigationItems.map((item) => (
+        {processedNavigation.navigationItems.map((item) => (
           <NavigationMenuItem key={item.title}>
             {item.type === "link" ? (
               <Link href={item.href!} passHref>
@@ -110,7 +118,7 @@ function DesktopNavigationMenu() {
                 <NavigationMenuTrigger
                   className={cn(
                     navigationMenuTriggerStyle(),
-                    "text-lg font-semibold",
+                    "text-lg font-semibold data-[state=open]:bg-accent/70",
                   )}
                 >
                   <div>{t(item.title)}</div>

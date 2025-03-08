@@ -31,7 +31,7 @@
     {
       "title": "Plants",
       "url": "#",
-      "icon": "TagIcon",
+      "icon": "Flower2Icon",
       "items": [
         {
           "title": "My Plants",
@@ -46,7 +46,7 @@
     {
       "title": "Photos",
       "url": "#",
-      "icon": "Camera",
+      "icon": "ImageIcon",
       "items": [
         {
           "title": "My Photos",

@@ -2,14 +2,14 @@
 
 // src/components/Layouts/Sidebar/index.tsx:
 import {
-  Bell,
+  BellIcon,
   ChevronRight,
   ChevronsUpDown,
-  Gauge,
+  CircleGaugeIcon,
   LogOutIcon,
-  Plus,
-  Sparkles,
-  UserPen,
+  PlusIcon,
+  SparklesIcon,
+  UserPenIcon,
 } from "lucide-react";
 import { type Session } from "next-auth";
 import { useSession } from "next-auth/react";
@@ -117,7 +117,7 @@ function ProtectedSidebarContent({
                       <SidebarMenuButton
                         tooltip={t("Platform.Dashboard-title")}
                       >
-                        <Gauge />
+                        <CircleGaugeIcon />
                         <span>{t("Platform.Dashboard-title")}</span>
                         <ChevronRight className="ml-auto transition-transform duration-200" />
                       </SidebarMenuButton>
@@ -305,7 +305,7 @@ function ProtectedSidebarContent({
                   <DropdownMenuGroup>
                     <Link href={modulePaths.PREMIUM.path}>
                       <DropdownMenuItem className="cursor-pointer text-yellow-500 focus:bg-yellow-600/50 focus:text-white">
-                        <Sparkles />
+                        <SparklesIcon />
                         {t("Premium.navigation.label")}
                       </DropdownMenuItem>
                     </Link>
@@ -315,13 +315,13 @@ function ProtectedSidebarContent({
                   <DropdownMenuGroup>
                     <Link href={modulePaths.ACCOUNT.path}>
                       <DropdownMenuItem className="cursor-pointer">
-                        <UserPen />
+                        <UserPenIcon />
                         {t("Account.navigation.label")}
                       </DropdownMenuItem>
                     </Link>
 
                     <DropdownMenuItem>
-                      <Bell />
+                      <BellIcon />
                       {t("Notifications.ActivityFeed.label-all")}
                     </DropdownMenuItem>
                   </DropdownMenuGroup>
@@ -433,7 +433,7 @@ function TeamSwitcher({
             <DropdownMenuSeparator />
             <DropdownMenuItem className="gap-2 p-2">
               <div className="flex size-6 items-center justify-center rounded-sm border bg-background">
-                <Plus className="size-4" />
+                <PlusIcon className="size-4" />
               </div>
               <div className="font-medium text-muted-foreground">Add team</div>
             </DropdownMenuItem>

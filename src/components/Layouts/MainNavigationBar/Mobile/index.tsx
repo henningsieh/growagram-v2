@@ -2,7 +2,7 @@
 
 import { Menu } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import * as React from "react";
 import {
   Accordion,
   AccordionContent,
@@ -19,25 +19,29 @@ import {
   SheetTrigger,
 } from "~/components/ui/sheet";
 import { Link } from "~/lib/i18n/routing";
-import navigationData from "~/lib/navigation";
-import type { NavigationItem } from "~/lib/navigation";
+import { processedNavigation } from "~/lib/navigation";
 import { cn } from "~/lib/utils";
+import type { ProcessedNavigationItem } from "~/types/navigation";
 
 export default function MobileNavigationMenu() {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = React.useState(false);
   const t = useTranslations("Navigation");
 
-  const renderMenuContent = (content: NavigationItem["content"]) => {
+  const renderMenuContent = (content: ProcessedNavigationItem["content"]) => {
     if (!content) return null;
     return (
       <div className="flex flex-col space-y-3 pl-4">
         {content.featured && (
           <Link
             href={content.featured.href}
-            className="flex flex-col justify-center rounded-sm bg-gradient-to-b from-primary/10 via-primary/5 to-primary/20 p-6 text-foreground transition-all hover:from-primary/20 hover:via-primary/15 hover:to-primary/30"
+            className="nav-item-featured flex flex-col justify-center"
             onClick={() => setOpen(false)}
           >
-            <div className="text-2xl font-bold text-primary">
+            <div className="flex items-center text-2xl font-bold text-primary">
+              {content.featured.icon &&
+                React.createElement(content.featured.icon, {
+                  className: "mr-2 h-5 w-5",
+                })}
               {t(content.featured.title)}
             </div>
             <p className="text-base text-muted-foreground">
@@ -49,10 +53,14 @@ export default function MobileNavigationMenu() {
           <Link
             key={item.title}
             href={item.href}
-            className="block space-y-1 rounded-sm p-3 text-foreground/90 transition-colors hover:bg-accent hover:text-accent-foreground"
+            className="nav-item block space-y-1"
             onClick={() => setOpen(false)}
           >
-            <div className="text-lg font-semibold leading-none">
+            <div className="flex items-center text-lg font-semibold leading-none">
+              {item.icon &&
+                React.createElement(item.icon, {
+                  className: "mr-2 h-5 w-5",
+                })}
               {t(item.title)}
             </div>
             <p className="pt-1 text-sm leading-snug text-muted-foreground">
@@ -85,7 +93,7 @@ export default function MobileNavigationMenu() {
         <ScrollArea className="h-[calc(100svh-4rem)]">
           <div className="flex flex-col p-4">
             <Accordion type="single" collapsible className="w-full space-y-1.5">
-              {navigationData.navigationItems.map((item) =>
+              {processedNavigation.navigationItems.map((item) =>
                 item.type === "link" ? (
                   <Button
                     key={item.title}
@@ -104,9 +112,9 @@ export default function MobileNavigationMenu() {
                   >
                     <AccordionTrigger
                       className={cn(
-                        "rounded-sm px-3 py-3 text-lg font-semibold hover:bg-accent",
-                        "hover:text-foreground data-[state=open]:text-primary",
-                        "hover:no-underline",
+                        "rounded-sm px-3 py-3 text-lg font-semibold",
+                        "hover:bg-accent hover:text-foreground hover:no-underline",
+                        "data-[state=open]:text-primary hover:data-[state=open]:text-accent-foreground",
                       )}
                     >
                       {t(item.title)}
