@@ -8,11 +8,13 @@ import {
   Dna,
   FlaskConical,
   type LucideIcon,
+  NutIcon,
   TentTree,
   TentTreeIcon,
 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
+import { modulePaths } from "~/assets/constants";
 import CustomAvatar from "~/components/atom/custom-avatar";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
@@ -34,6 +36,7 @@ import { useIsMobile } from "~/hooks/use-mobile";
 import { Link } from "~/lib/i18n/routing";
 import {
   type DateFormatOptions,
+  cn,
   formatDate,
   formatDaysRemaining,
   formatDistanceToNowLocalized,
@@ -78,18 +81,18 @@ export function EnhancedPlantCard({ plant }: EnhancedPlantCardProps) {
   return (
     <TouchProvider>
       <Card
-        className="space-y-2 overflow-hidden border border-primary/70 bg-muted p-2 transition-all hover:shadow-lg"
+        className="space-y-2 overflow-hidden border border-primary/50 bg-muted p-2 transition-all hover:shadow-lg"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
         <CardHeader className="p-0">
-          <div className="flex items-start justify-between">
-            <div className="flex items-center gap-3">
+          <div className="flex flex-col items-start justify-between xs:flex-row">
+            <div className="flex min-w-0 flex-1 items-center gap-3">
               <CustomAvatar
                 src={imageUrl}
                 alt={plant.name}
                 size={40}
-                className="size-10 rounded-md"
+                className="size-10 shrink-0 rounded-md"
                 fallback={
                   <CurrentPhaseIcon
                     className={`h-6 w-6 text-${currentPhase.color}`}
@@ -97,15 +100,18 @@ export function EnhancedPlantCard({ plant }: EnhancedPlantCardProps) {
                 }
               />
 
-              <div>
+              <div className="min-w-0 flex-1">
                 <CardTitle as="h4" className="text-base">
                   <Button
                     asChild
                     variant="link"
-                    className="h-auto justify-start p-0"
+                    className="h-auto w-full max-w-full justify-start p-0"
                   >
-                    <Link href={`/public/plants/${plant.id}`}>
-                      {plant.name}
+                    <Link
+                      href={`${modulePaths.PUBLICPLANTS.path}/${plant.id}`}
+                      className="block truncate"
+                    >
+                      <span className="block truncate">{plant.name}</span>
                     </Link>
                   </Button>
                 </CardTitle>
@@ -113,7 +119,7 @@ export function EnhancedPlantCard({ plant }: EnhancedPlantCardProps) {
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="ml-2 flex shrink-0 items-center gap-3">
               {progress.estimatedHarvestDate && (
                 <HybridTooltip>
                   <HybridTooltipTrigger className="cursor-help">
@@ -128,6 +134,7 @@ export function EnhancedPlantCard({ plant }: EnhancedPlantCardProps) {
                       <p className="text-base">
                         {formatDate(progress.estimatedHarvestDate, locale, {
                           includeYear: true,
+                          force: true,
                         } as DateFormatOptions)}{" "}
                         {`(in ${formatDaysRemaining(
                           progress.daysUntilNextPhase,
@@ -140,32 +147,41 @@ export function EnhancedPlantCard({ plant }: EnhancedPlantCardProps) {
                 </HybridTooltip>
               )}
 
-              {plant.grow && (
-                <HybridTooltip>
-                  <HybridTooltipTrigger>
-                    <Link
-                      href={`/public/grows/${plant.grow.id}`}
-                      className="text-muted-foreground hover:text-secondary"
-                    >
-                      <TentTree className="h-4 w-4" />
-                    </Link>
-                  </HybridTooltipTrigger>
-                  <HybridTooltipContent>{plant.grow.name}</HybridTooltipContent>
-                </HybridTooltip>
-              )}
-
               <HybridTooltip>
-                <HybridTooltipTrigger className="cursor-help">
+                <HybridTooltipTrigger asChild className="cursor-help">
                   <Badge
                     variant="outline"
-                    className={`border-${currentPhase.color} bg-${currentPhase.color}/10 text-${currentPhase.color}`}
+                    className={cn(
+                      // Replace dynamic interpolation with a mapping approach
+                      currentPhase.color === "harvest" && "border-harvest",
+                      currentPhase.color === "planted" && "border-planted",
+                      currentPhase.color === "seedling" && "border-seedling",
+                      currentPhase.color === "vegetation" &&
+                        "border-vegetation",
+                      currentPhase.color === "flowering" && "border-flowering",
+                      currentPhase.color === "curing" && "border-curing",
+                      // Same for background with opacity
+                      currentPhase.color === "harvest" && "bg-harvest/10",
+                      currentPhase.color === "planted" && "bg-planted/10",
+                      currentPhase.color === "seedling" && "bg-seedling/10",
+                      currentPhase.color === "vegetation" && "bg-vegetation/10",
+                      currentPhase.color === "flowering" && "bg-flowering/10",
+                      currentPhase.color === "curing" && "bg-curing/10",
+                      // And text color
+                      currentPhase.color === "harvest" && "text-harvest",
+                      currentPhase.color === "planted" && "text-planted",
+                      currentPhase.color === "seedling" && "text-seedling",
+                      currentPhase.color === "vegetation" && "text-vegetation",
+                      currentPhase.color === "flowering" && "text-flowering",
+                      currentPhase.color === "curing" && "text-curing",
+                    )}
                   >
-                    <CurrentPhaseIcon className="mr-1 h-3 w-3" />
+                    <CurrentPhaseIcon className="mr-1 h-3 w-3 shrink-0" />
                     {translatedPhaseName}
                   </Badge>
                 </HybridTooltipTrigger>
                 <HybridTooltipContent
-                  className={`w-auto bg-${currentPhase.color} p-1`}
+                  className={`w-auto text-${currentPhase.color} p-1`}
                 >
                   <div className="space-y-0">
                     <p className="text-sm">
@@ -202,14 +218,14 @@ export function EnhancedPlantCard({ plant }: EnhancedPlantCardProps) {
         <AnimatePresence>
           <motion.div
             initial={{ opacity: 0.4 }}
-            animate={{ opacity: isMobile ? 1 : isHovered ? 1 : 0.4 }}
+            animate={{ opacity: isMobile ? 1 : isHovered ? 1 : 0.6 }}
             transition={{ duration: 0.3 }}
           >
             <CardFooter className="flex items-center justify-between p-0 text-muted-foreground">
               <HybridTooltip>
                 <HybridTooltipTrigger className="flex items-center gap-2">
-                  <Calendar1Icon className="h-4 w-4 shrink-0" />
-                  <span className="whitespace-nowrap text-sm">
+                  <NutIcon className="h-4 w-4 shrink-0" />
+                  <span className="whitespace-nowrap text-xs">
                     {formatDate(plant.startDate, locale, {
                       includeYear: false,
                     } as DateFormatOptions)}
@@ -220,10 +236,26 @@ export function EnhancedPlantCard({ plant }: EnhancedPlantCardProps) {
                 </HybridTooltipContent>
               </HybridTooltip>
 
-              <div className="flex items-center justify-end gap-1">
-                {plant.strain && (
+              <div className="flex items-center justify-end gap-4">
+                {plant.grow && (
                   <HybridTooltip>
                     <HybridTooltipTrigger>
+                      <Link
+                        href={`${modulePaths.PUBLICGROWS.path}/${plant.grow.id}`}
+                        className="text-muted-foreground hover:text-secondary"
+                      >
+                        <TentTree className="h-4 w-4" />
+                      </Link>
+                    </HybridTooltipTrigger>
+                    <HybridTooltipContent>
+                      {plant.grow.name}
+                    </HybridTooltipContent>
+                  </HybridTooltip>
+                )}
+
+                {plant.strain && (
+                  <HybridTooltip>
+                    <HybridTooltipTrigger className="cursor-help">
                       <Badge
                         variant="strain"
                         className="ml-auto flex items-center gap-1"
@@ -232,7 +264,7 @@ export function EnhancedPlantCard({ plant }: EnhancedPlantCardProps) {
                         <span>{plant.strain.name}</span>
                       </Badge>
                     </HybridTooltipTrigger>
-                    <HybridTooltipContent>
+                    <HybridTooltipContent className="text-seedling">
                       <div className="space-y-2 p-1">
                         <div className="flex items-center gap-2">
                           <Dna className="h-4 w-4" />
@@ -257,8 +289,11 @@ export function EnhancedPlantCard({ plant }: EnhancedPlantCardProps) {
                     </HybridTooltipContent>
                   </HybridTooltip>
                 )}
-                {plant.grow && (
-                  <Link href={`/public/grows/${plant.grow.id}`}>
+
+                {/* {plant.grow && (
+                  <Link
+                    href={`${modulePaths.PUBLICGROWS.path}/${plant.grow.id}`}
+                  >
                     <Badge
                       variant="grow"
                       className="flex max-w-20 items-center gap-1 overflow-hidden text-ellipsis whitespace-nowrap"
@@ -269,7 +304,7 @@ export function EnhancedPlantCard({ plant }: EnhancedPlantCardProps) {
                       </span>
                     </Badge>
                   </Link>
-                )}
+                )} */}
               </div>
             </CardFooter>
           </motion.div>

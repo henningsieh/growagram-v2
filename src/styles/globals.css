@@ -19,7 +19,7 @@ body {
     --seedling: 292.2 84.1% 45.6%; /* fuchsia-600 */
     --vegetation: 142.1 76.2% 36.3%; /* green-600 */
     --flowering: 346.8 77.2% 49.8%; /* rose-600 */
-    --harvest: 21.7 90.2% 43.2%; /* orange-600 */
+    --harvest: 24.6 95% 53.1%; /* orange-500 */
     --curing: 221.2 83.2% 53.3%; /* blue-600 */
 
     --background: 0 0% 92%; /* Slightly darker than before */
@@ -53,10 +53,10 @@ body {
     --sidebar-ring: 120 61% 34%;
   }
   .dark {
-    --planted: 37.7 92.1% 50.2%; /* yellow-500 */
+    --planted: 45.4 93.4% 47.5%; /* yellow-500 */
     --seedling: 292.2 84.1% 60.6%; /* fuchsia-500 */
     --vegetation: 142.1 76.2% 36.3%; /* green-600 */
-    --flowering: 349.7 89.2% 60.2%; /* rose-500 */
+    --flowering: 346.8 77.2% 49.8%; /* rose-500 */
     --harvest: 24.6 95% 53.1%; /* orange-500 */
     --curing: 217.2 91.2% 59.8%; /* blue-500 */
 

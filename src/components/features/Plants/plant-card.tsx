@@ -5,15 +5,16 @@ import {
   DnaIcon,
   DotIcon,
   EditIcon,
-  Leaf,
+  FlowerIcon,
+  LeafIcon,
   MessageSquareTextIcon,
-  Nut,
-  PillBottle,
-  Sprout,
+  NutIcon,
+  PillBottleIcon,
+  SproutIcon,
   TagIcon,
   TentTreeIcon,
-  Trash2,
-  Wheat,
+  Trash2Icon,
+  WheatIcon,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
@@ -138,7 +139,7 @@ export default function PlantCard({
   // Delete Action (visible to owner and admin)
   if (user && (user.id === plant.ownerId || user.role === UserRoles.ADMIN)) {
     growActions.push({
-      icon: Trash2,
+      icon: Trash2Icon,
       label: t("delete-button-label"),
       variant: "destructive",
       onClick: handleDelete,
@@ -285,7 +286,7 @@ export default function PlantCard({
             <Card className="space-y-4 bg-muted p-2 sm:p-4 md:p-6">
               <CardHeader className="flex w-full flex-col p-0">
                 <div className="mb-1 flex justify-between text-sm">
-                  <span>{t("growth-progress")}</span>
+                  <span>{t("overall-progress")}</span>
                   <span>
                     {
                       progress.overallProgress
@@ -300,7 +301,7 @@ export default function PlantCard({
                 <div className="flex h-4 items-center">
                   <HybridTooltip>
                     <HybridTooltipTrigger className="flex cursor-default items-center font-mono text-sm font-semibold tracking-tighter">
-                      <Nut className={`mr-2 h-4 w-4 text-planted`} />
+                      <NutIcon className={`mr-2 h-4 w-4 text-planted`} />
                       {formatDate(plant.startDate, locale as Locale, {
                         force: true,
                       })}
@@ -321,7 +322,7 @@ export default function PlantCard({
                 <div className="flex h-4 items-center">
                   <HybridTooltip>
                     <HybridTooltipTrigger className="flex cursor-default items-center font-mono text-sm font-semibold tracking-tighter">
-                      <Sprout
+                      <SproutIcon
                         className={`mr-2 h-4 w-4 ${
                           plant.seedlingPhaseStart
                             ? "text-seedling"
@@ -349,7 +350,7 @@ export default function PlantCard({
                 <div className="flex h-4 items-center">
                   <HybridTooltip>
                     <HybridTooltipTrigger className="flex cursor-default items-center font-mono text-sm font-semibold tracking-tighter">
-                      <Leaf
+                      <LeafIcon
                         className={`mr-2 h-4 w-4 ${
                           plant.vegetationPhaseStart
                             ? "text-vegetation"
@@ -379,7 +380,7 @@ export default function PlantCard({
                 <div className="flex h-4 items-center">
                   <HybridTooltip>
                     <HybridTooltipTrigger className="flex cursor-default items-center font-mono text-sm font-semibold tracking-tighter">
-                      <TagIcon
+                      <FlowerIcon
                         className={`mr-2 h-4 w-4 ${
                           plant.floweringPhaseStart
                             ? "text-flowering"
@@ -409,7 +410,7 @@ export default function PlantCard({
                 <div className="flex h-4 items-center">
                   <HybridTooltip>
                     <HybridTooltipTrigger className="flex cursor-default items-center font-mono text-sm font-semibold tracking-tighter">
-                      <Wheat
+                      <WheatIcon
                         className={`mr-2 h-4 w-4 ${
                           plant.harvestDate ? "text-harvest" : "text-harvest/40"
                         }`}
@@ -435,7 +436,7 @@ export default function PlantCard({
                 <div className="flex h-4 items-center">
                   <HybridTooltip>
                     <HybridTooltipTrigger className="flex cursor-default items-center font-mono text-sm font-semibold tracking-tighter">
-                      <PillBottle
+                      <PillBottleIcon
                         className={`mr-2 h-4 w-4 ${
                           plant.curingPhaseStart
                             ? "text-curing"
