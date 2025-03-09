@@ -170,19 +170,16 @@ function ProtectedSidebarContent({
             </SidebarMenu>
           </SidebarGroup>
 
-          {/* Projects Group */}
+          {/* Coming Soon */}
           <SidebarGroup className="text-muted-foreground group-data-[collapsible=icon]:hidden">
             <SidebarGroupLabel>{t("Platform.coming-soon")}</SidebarGroupLabel>
             <SidebarMenu>
               {/* Project Items with Dropdown Actions */}
               {translatedSidebarItems.coming_soon.map((item) => (
-                <SidebarMenuItem
-                  key={item.name}
-                  className="data-[active=true]:bg-primary"
-                >
+                <SidebarMenuItem key={item.name}>
                   <SidebarMenuButton
                     asChild
-                    className="hover:cursor-default hover:bg-transparent"
+                    // className="hover:cursor-default hover:bg-transparent"
                   >
                     <div>
                       {/* <Link href={item.url}> */}
