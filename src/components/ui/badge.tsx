@@ -16,10 +16,10 @@ const badgeVariants = cva(
         plant: 
           "bg-primary/50 border border border-primary text-primary-foreground shadow-sm hover:bg-primary/70",
         strain: 
-          "bg-seedling/50 border border border-seedling text-foreground shadow-sm hover:bg-seedling/70",
+          "bg-fuchsia-600/40 border border border-seedling text-foreground shadow-sm hover:bg-fuchsia-600/50",
         destructive:
           "border-transparent bg-destructive text-destructive-foreground shadow hover:bg-destructive/80",
-        outline: "text-foreground",
+        outline: "bg-card text-foreground",
       },
     },
     defaultVariants: {

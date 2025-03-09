@@ -20,6 +20,7 @@ import {
 
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./tooltip";
+import { cn } from "~/lib/utils";
 
 const TouchContext = createContext<boolean | undefined>(undefined);
 const useTouch = () => useContext(TouchContext);
@@ -65,10 +66,27 @@ export const HybridTooltipContent = (
   props: TooltipContentProps & PopoverContentProps,
 ) => {
   const isTouch = useTouch();
+  const { className, ...restProps } = props;
 
   return isTouch ? (
-    <PopoverContent className="bg-background border text-sm text-primary-foreground p-1 w-auto" side="top" align="center" {...props} />
+    <PopoverContent 
+      className={cn(
+        "bg-card border text-sm text-card-foreground p-1 w-auto",
+        className
+      )} 
+      side="top" 
+      align="center" 
+      {...restProps} 
+    />
   ) : (
-    <TooltipContent className="bg-background border text-sm text-primary-foreground " side="top" align="center" {...props} />
+    <TooltipContent 
+      className={cn(
+        "bg-card border text-sm text-card-foreground",
+        className
+      )} 
+      side="top" 
+      align="center" 
+      {...restProps} 
+    />
   );
-};  
+};
