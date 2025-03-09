@@ -1,6 +1,12 @@
 "use client";
 
-import { CameraIcon, TagIcon, TentTree, UsersIcon, Wheat } from "lucide-react";
+import {
+  Flower2Icon,
+  ImageIcon,
+  TentTree,
+  UsersIcon,
+  Wheat,
+} from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { usePathname, useSearchParams } from "next/navigation";
@@ -142,7 +148,7 @@ export function DashboardContent() {
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0">
                     <CardTitle as="h2">{t("grow-environments")}</CardTitle>
-                    <TentTree className="ml-2 size-4 text-secondary" />
+                    <TentTree className="size-5" />
                   </CardHeader>
                   <CardContent className="pb-2">
                     {isLoadingGrows ? (
@@ -160,7 +166,7 @@ export function DashboardContent() {
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0">
                     <CardTitle as="h2">{t("total-plants")}</CardTitle>
-                    <TagIcon className="h-4 w-4 text-primary" />
+                    <Flower2Icon className="size-5" />
                   </CardHeader>
                   <CardContent className="pb-2">
                     {isLoadingPlants ? (
@@ -189,7 +195,7 @@ export function DashboardContent() {
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0">
                     <CardTitle as="h2">{t("total-photos")}</CardTitle>
-                    <CameraIcon className="h-4 w-4 text-foreground" />
+                    <ImageIcon className="size-5" />
                   </CardHeader>
                   <CardContent className="pb-2">
                     {isLoadingPhotos ? (
@@ -207,7 +213,7 @@ export function DashboardContent() {
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0">
                     <CardTitle as="h2">{t("comunity")}</CardTitle>
-                    <UsersIcon className="h-4 w-4 text-foreground" />
+                    <UsersIcon className="size-5" />
                   </CardHeader>
                   <CardContent className="space-y-3">
                     {/* <div className="flex items-center space-x-3">

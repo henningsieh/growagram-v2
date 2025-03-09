@@ -3,7 +3,7 @@
 // src/components/features/Plants/plant-form.tsx:
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  Flower2Icon,
+  FlowerIcon,
   LeafIcon,
   NutIcon,
   PillBottleIcon,
@@ -358,7 +358,7 @@ export default function PlantForm({ plant }: { plant?: GetPlantByIdType }) {
                           field={field}
                           label={t("flowering-start-date")}
                           description="When did you see the first buds?"
-                          icon={Flower2Icon}
+                          icon={FlowerIcon}
                           iconClassName="text-flowering"
                         />
                       )}
