@@ -6,9 +6,9 @@ import { type DehydratedState, HydrationBoundary } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import {
   httpBatchLink,
+  httpSubscriptionLink,
   loggerLink,
   splitLink,
-  unstable_httpSubscriptionLink,
 } from "@trpc/client";
 import { createTRPCReact } from "@trpc/react-query";
 import { type inferRouterInputs, type inferRouterOutputs } from "@trpc/server";
@@ -69,7 +69,7 @@ export function TRPCReactProvider(
         splitLink({
           // uses the httpSubscriptionLink for subscriptions
           condition: (op) => op.type === "subscription",
-          true: unstable_httpSubscriptionLink({
+          true: httpSubscriptionLink({
             url: getTRPCUrl(),
             transformer: SuperJSON,
           }),
