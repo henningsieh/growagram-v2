@@ -78,7 +78,7 @@ export function NotificationItem({
           </Button>
           <div title={t("new")}>
             <SparklesIcon
-              className="mr-1 size-5 fill-yellow-600 text-orange-500"
+              className="mr-1 size-6 fill-yellow-400 text-orange-500"
               aria-label={t("new")}
             />
           </div>

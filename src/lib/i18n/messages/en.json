@@ -100,7 +100,7 @@
     },
     "NoGrowsFound": "No grows have been found.",
     "button-label-back": "Back",
-    "button-label-create-grow": "Create Grow",
+    "button-label-create-grow": "Create New Grow",
     "button-label-post-update": "Create Update for Grow",
     "button-label-save-changes": "Save Changes",
     "connect-error": "Error connecting plant",
@@ -116,7 +116,7 @@
     "form-page-subtitle-edit": "Edit this grow from your collection",
     "form-page-subtitle-new": "Add a new grow to your collection",
     "form-page-title-edit": "Edit Grow",
-    "form-page-title-new": "Create Grow",
+    "form-page-title-new": "Create New Grow",
     "form-title-create-new-grow": "Grow's basic data",
     "form-title-edit-grow": "New Grow's basic data",
     "grow-card-createdAt": "Creation date",
@@ -375,11 +375,11 @@
     "overall-progress": "Overall progress",
     "phase": "Phase progress",
     "phases": {
-      "flowering": "Flowering",
-      "harvested": "Harvested",
       "planted": "Planted",
       "seedling": "Seedling",
-      "vegetation": "Vegetation"
+      "vegetation": "Vegetation",
+      "flowering": "Flowering",
+      "harvested": "Harvested"
     },
     "plant-card-createdAt": "Created at:",
     "planting-date": "Seed planting date",
@@ -554,7 +554,7 @@
     "navMain": {
       "Grows": {
         "items": {
-          "Create New Grow": "Create New Grow",
+          "Create New Grow": "Create Grow",
           "My Grows": "My Grows"
         },
         "title": "Grows"

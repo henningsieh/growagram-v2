@@ -4,8 +4,8 @@
 import {
   Camera,
   FileIcon,
+  Flower2Icon,
   MessageSquareTextIcon,
-  TagIcon,
   TagsIcon,
   UploadCloud,
 } from "lucide-react";
@@ -25,7 +25,12 @@ import { useImageModal } from "~/components/features/Photos/modal-provider";
 import PostFormModal from "~/components/features/Timeline/Post/post-form-modal";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
-import { Card, CardContent, CardTitle } from "~/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardTitle,
+} from "~/components/ui/card";
 import {
   Tooltip,
   TooltipContent,
@@ -192,7 +197,7 @@ export default function PhotoCard({
               <Button
                 asChild
                 variant="link"
-                className="w-full justify-start p-1"
+                className="w-full justify-start p-0"
               >
                 <Link
                   href={`/public${modulePaths.PHOTOS.path}/${photo.id}`}
@@ -230,61 +235,50 @@ export default function PhotoCard({
                 >
                   <Badge
                     variant="plant"
-                    className="flex items-center gap-1 whitespace-nowrap"
+                    className="flex items-center gap-2 whitespace-nowrap"
                   >
-                    <TagIcon className="h-4 w-4" />
+                    <Flower2Icon className="h-4 w-4" />
                     {plantImage.plant.name}
                   </Badge>
                 </Link>
               ))}
           </div>
 
-          {/* Photo Upload and Capture Date */}
-          <TooltipProvider>
-            <div className="flex flex-col text-sm">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <p
-                    className={cn(
-                      "flex items-center gap-2 px-1",
-                      currentQuery &&
-                        currentQuery.sortField === PhotosSortField.UPLOAD_DATE
-                        ? "text-secondary"
-                        : "text-accent-foreground",
-                    )}
-                  >
-                    <UploadCloud size={20} />
-                    {formatDate(photo.createdAt, locale as Locale)}{" "}
-                    {formatTime(photo.createdAt, locale as Locale)}
-                  </p>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>{t("uploaded-at")}</p>
-                </TooltipContent>
-              </Tooltip>
-
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <p
-                    className={cn(
-                      "flex items-center gap-2 px-1",
-                      currentQuery &&
-                        currentQuery.sortField === PhotosSortField.CAPTURE_DATE
-                        ? "text-secondary"
-                        : "text-accent-foreground",
-                    )}
-                  >
-                    <Camera size={20} />
-                    {formatDate(photo.captureDate, locale as Locale)}{" "}
-                    {formatTime(photo.captureDate, locale as Locale)}
-                  </p>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>{t("capture-date")}</p>
-                </TooltipContent>
-              </Tooltip>
+          {/* Photo Upload and Capture Dates */}
+          <CardDescription className="flex h-9 flex-row items-center justify-between pr-3 font-mono text-xs tracking-tighter">
+            <div
+              title={t("uploaded-at")}
+              className={cn(
+                "flex items-center gap-2",
+                currentQuery &&
+                  currentQuery.sortField === PhotosSortField.UPLOAD_DATE
+                  ? "text-secondary"
+                  : "",
+              )}
+            >
+              <UploadCloud size={16} className="shrink-0" />
+              <span className="block">
+                {formatDate(photo.createdAt, locale as Locale)}{" "}
+                {formatTime(photo.createdAt, locale as Locale)}
+              </span>
             </div>
-          </TooltipProvider>
+            <div
+              title={t("capture-date")}
+              className={cn(
+                "flex items-center gap-2",
+                currentQuery &&
+                  currentQuery.sortField === PhotosSortField.CAPTURE_DATE
+                  ? "text-secondary"
+                  : "",
+              )}
+            >
+              <Camera size={16} className="shrink-0" />
+              <span className="block">
+                {formatDate(photo.captureDate, locale as Locale)}{" "}
+                {formatTime(photo.captureDate, locale as Locale)}
+              </span>
+            </div>
+          </CardDescription>
 
           {!!photo.plantImages.length && !isSocial && (
             <Button

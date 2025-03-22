@@ -120,21 +120,24 @@ export function DashboardContent() {
             }}
             className="space-y-4"
           >
-            <TabsList className="mb-4 sm:mb-0">
+            <TabsList className="mb-4 w-full font-bold sm:mb-0">
               <TabsTrigger
-                className="text-base font-medium data-[state=active]:bg-accent data-[state=active]:text-accent-foreground"
+                // className="text-base font-medium data-[state=active]:bg-accent data-[state=active]:text-accent-foreground"
+                className="w-full data-[state=active]:font-bold"
                 value="overview"
               >
                 {t("overview")}
               </TabsTrigger>
               <TabsTrigger
-                className="text-base font-medium data-[state=active]:bg-accent data-[state=active]:text-accent-foreground"
+                // className="text-base font-medium data-[state=active]:bg-accent data-[state=active]:text-accent-foreground"
+                className="w-full data-[state=active]:font-bold"
                 value="activity"
               >
                 {t("activity")}
               </TabsTrigger>
               <TabsTrigger
-                className="text-base font-medium data-[state=active]:bg-accent data-[state=active]:text-accent-foreground"
+                // className="text-base font-medium data-[state=active]:bg-accent data-[state=active]:text-accent-foreground"
+                className="w-full data-[state=active]:font-bold"
                 value="analytics"
               >
                 {t("analytics")}

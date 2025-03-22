@@ -79,7 +79,7 @@ export function SortFilterControls<T extends string>({
           onValueChange={handleSortFieldChange}
           disabled={isFetching}
         >
-          <SelectTrigger className="h-8 w-40 bg-muted">
+          <SelectTrigger className="h-8 w-40 border-input">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -99,7 +99,7 @@ export function SortFilterControls<T extends string>({
           onValueChange={handleSortOrderChange}
           disabled={isFetching}
         >
-          <SelectTrigger className="h-8 w-40 bg-muted">
+          <SelectTrigger className="h-8 w-40 border-input">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -119,10 +119,10 @@ export function SortFilterControls<T extends string>({
 
         {filterLabel && (
           <Button
-            variant="outline"
+            variant="ghost"
             size="sm"
             className={cn(
-              "relative border border-input text-muted-foreground",
+              "relative border border-secondary text-secondary-foreground",
               filterEnabled &&
                 "bg-secondary/80 text-secondary-foreground hover:bg-secondary/90",
             )}
@@ -131,6 +131,7 @@ export function SortFilterControls<T extends string>({
           >
             <FilterIcon className="mr-2 h-4 w-4" />
             {filterLabel}
+            abc
           </Button>
         )}
       </div>

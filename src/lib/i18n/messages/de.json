@@ -100,7 +100,7 @@
     },
     "NoGrowsFound": "Es wurden keine Grows gefunden.",
     "button-label-back": "Zurück",
-    "button-label-create-grow": "Grow erstellen",
+    "button-label-create-grow": "Neuen Grow anlegen",
     "button-label-post-update": "Update zum Grow erstellen",
     "button-label-save-changes": "Änderungen speichern",
     "connect-error": "Fehler beim Verbinden der Pflanze",
@@ -375,11 +375,11 @@
     "overall-progress": "Gesamtfortschritt",
     "phase": "Phasenfortschritt",
     "phases": {
-      "flowering": "Blütephase",
-      "harvested": "Geerntet",
       "planted": "Gepflanzt",
       "seedling": "Keimling",
-      "vegetation": "Wachstumsphase"
+      "vegetation": "Wachstumsphase",
+      "flowering": "Blütephase",
+      "harvested": "Geerntet"
     },
     "plant-card-createdAt": "Erstellt am:",
     "planting-date": "Datum der Aussaat",
@@ -554,7 +554,7 @@
     "navMain": {
       "Grows": {
         "items": {
-          "Create New Grow": "Grow erstellen",
+          "Create New Grow": "Grow anlegen",
           "My Grows": "Meine Grows"
         },
         "title": "Grows"
