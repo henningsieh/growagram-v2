@@ -3,11 +3,11 @@ import { HashtagIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { Suspense } from "react";
 import { twMerge } from "tailwind-merge";
+
+import { CreateChannelDialog } from "~/app/Chat/channels/create-channel";
 import { buttonVariants } from "~/components/button";
 import { SignedIn, SignedOut } from "~/lib/auth/index";
 import { api } from "~/lib/trpc/server";
-
-import { CreateChannelDialog } from "./channels/create-channel";
 
 export default async function Home() {
   const channels = await api.channel.list();

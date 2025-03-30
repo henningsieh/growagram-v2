@@ -2,9 +2,8 @@
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import NextAuth, { Session } from "next-auth";
 import { cache } from "react";
-
-import { db } from "../db";
-import authConfig from "./auth.config";
+import authConfig from "~/lib/auth/auth.config.ts";
+import { db } from "~/lib/db";
 
 export const {
   handlers,

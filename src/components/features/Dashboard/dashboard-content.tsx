@@ -11,7 +11,11 @@ import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { usePathname, useSearchParams } from "next/navigation";
 import * as React from "react";
+
 import PageHeader from "~/components/Layouts/page-header";
+import { ActivePlantsCard } from "~/components/features/Dashboard/active-plants-card";
+import { PlantsOverviewChart } from "~/components/features/Dashboard/dashboard-overview-chart";
+import { RecentPhotosWidget } from "~/components/features/Dashboard/recent-photos-widget";
 import { NotificationsFeed } from "~/components/features/Notifications/notifications-feed";
 import {
   Card,
@@ -24,10 +28,6 @@ import {
 import { Skeleton } from "~/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { api } from "~/lib/trpc/react";
-
-import { ActivePlantsCard } from "./active-plants-card";
-import { PlantsOverviewChart } from "./dashboard-overview-chart";
-import { RecentPhotosWidget } from "./recent-photos-widget";
 
 export function DashboardContent() {
   const t = useTranslations("Platform");

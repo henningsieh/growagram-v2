@@ -2,10 +2,9 @@
 import { getToken } from "next-auth/jwt";
 import createMiddleware from "next-intl/middleware";
 import { NextRequest, NextResponse } from "next/server";
-
-import { PROTECTED_PATHS, modulePaths } from "./assets/constants";
-import { env } from "./env";
-import { routing } from "./lib/i18n/routing";
+import { PROTECTED_PATHS, modulePaths } from "~/assets/constants";
+import { env } from "~/env";
+import { routing } from "~/lib/i18n/routing";
 
 const languages = routing.locales;
 

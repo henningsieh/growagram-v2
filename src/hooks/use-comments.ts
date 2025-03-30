@@ -3,12 +3,11 @@ import { useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
+import { useToast } from "~/hooks/use-toast";
 import { usePathname } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import type { GetCommentsInput, GetCommentsType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
-
-import { useToast } from "./use-toast";
 
 export const useComments = (
   entityId: string,

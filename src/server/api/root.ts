@@ -1,19 +1,20 @@
 // src/server/api/root.ts:
-import { createCallerFactory } from "@trpc/server/unstable-core-do-not-import";
-import { RouterInput, RouterOutput } from "~/lib/trpc/react";
 
-import { channelRouter } from "./routers/channel";
-import { chatRouter } from "./routers/chat";
-import { commentRouter } from "./routers/comments";
-import { growRouter } from "./routers/grow";
-import { photoRouter } from "./routers/image";
-import { likeRouter } from "./routers/likes";
-import { messageRouter } from "./routers/message";
-import { plantRouter } from "./routers/plant";
-import { postRouter } from "./routers/post";
-import { userRouter } from "./routers/users";
-import { createTRPCRouter, publicProcedure } from "./trpc";
-import { notificationRouter } from "./routers/notifications";
+import { RouterInput, RouterOutput } from "~/lib/trpc/react";
+import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+
+import { channelRouter } from "~/server/api/routers/channel";
+import { chatRouter } from "~/server/api/routers/chat";
+import { commentRouter } from "~/server/api/routers/comments";
+import { growRouter } from "~/server/api/routers/grow";
+import { photoRouter } from "~/server/api/routers/image";
+import { likeRouter } from "~/server/api/routers/likes";
+import { messageRouter } from "~/server/api/routers/message";
+import { plantRouter } from "~/server/api/routers/plant";
+import { postRouter } from "~/server/api/routers/post";
+import { userRouter } from "~/server/api/routers/users";
+import { notificationRouter } from "~/server/api/routers/notifications";
+import { createCallerFactory } from "@trpc/server/unstable-core-do-not-import";
 
 /**
  * This is the primary router for the server.

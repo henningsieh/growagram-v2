@@ -2,14 +2,14 @@
 
 // src/components/navbar/index.tsx:
 import Image from "next/image";
+
+import DesktopNavigationManu from "~/components/Layouts/MainNavigationBar/Desktop";
+import MobileNavigationMenu from "~/components/Layouts/MainNavigationBar/Mobile";
+import { LanguageToggle } from "~/components/Layouts/MainNavigationBar/language-toggler";
 import { ThemeToggle } from "~/components/Layouts/MainNavigationBar/theme-toggler";
 import { ChatButton } from "~/components/features/Chat/chat-button";
 import { Notifications } from "~/components/features/Notifications";
 import { Link } from "~/lib/i18n/routing";
-
-import DesktopNavigationManu from "./Desktop";
-import MobileNavigationMenu from "./Mobile";
-import { LanguageToggle } from "./language-toggler";
 
 export function MainNavigationBar() {
   return (

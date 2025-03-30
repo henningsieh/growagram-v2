@@ -1,7 +1,7 @@
+// src/app/not-found.tsx:
 import { useLocale } from "next-intl";
+import AppLayout from "~/app/[locale]/layout";
 import { NotFoundWithPath } from "~/components/atom/notfound-withpath";
-
-import AppLayout from "./[locale]/layout";
 
 export default function LocalizedErrorLayout() {
   const locale = useLocale();

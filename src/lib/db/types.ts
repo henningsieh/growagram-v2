@@ -12,7 +12,7 @@ import {
   sessions,
   users,
   verificationTokens,
-} from "./schema";
+} from "~/lib/db/schema";
 
 // Base User type from schema
 type FullUser = InferSelectModel<typeof users>;

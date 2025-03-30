@@ -2,9 +2,11 @@
 import { TRPCError } from "@trpc/server";
 import { and, count, eq } from "drizzle-orm";
 import { z } from "zod";
+
 import { PaginationItemsPerPage } from "~/assets/constants";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
 import { grows, plants } from "~/lib/db/schema";
+import { connectPlantWithImagesQuery } from "~/server/api/routers/plantImages";
 import {
   createTRPCRouter,
   protectedProcedure,
@@ -12,8 +14,6 @@ import {
 } from "~/server/api/trpc";
 import { GrowsSortField } from "~/types/grow";
 import { growSchema } from "~/types/zodSchema";
-
-import { connectPlantWithImagesQuery } from "./plantImages";
 
 export const growRouter = createTRPCRouter({
   // Get paginated grows for the current user

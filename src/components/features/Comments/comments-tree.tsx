@@ -1,9 +1,9 @@
 import type React from "react";
+
+import { Comment } from "~/components/features/Comments/comment";
 import { useComments } from "~/hooks/use-comments";
 import { api } from "~/lib/trpc/react";
 import type { GetCommentType, GetRepliesInput } from "~/server/api/root";
-
-import { Comment } from "./comment";
 
 interface CommentsTreeProps {
   comment: GetCommentType;

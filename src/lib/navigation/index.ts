@@ -1,8 +1,7 @@
 // src/lib/navigation/index.ts
+import navigationData from "~/lib/navigation/data.json";
 import { getIconComponent } from "~/lib/utils/icons";
 import type { NavigationData, NavigationItem } from "~/types/navigation";
-
-import navigationData from "./data.json";
 
 export function getProcessedNavigationData() {
   return {

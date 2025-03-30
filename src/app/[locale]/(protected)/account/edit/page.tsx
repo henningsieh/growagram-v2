@@ -1,7 +1,7 @@
 "use client";
 
-import { useSession } from "next-auth/react";
 // src/app/[locale]/(protected)/account/edit/page.tsx:
+import { useSession } from "next-auth/react";
 import AccountEditForm from "~/components/features/Account/account-edit-form";
 import type { GetOwnUserDataType } from "~/server/api/root";
 

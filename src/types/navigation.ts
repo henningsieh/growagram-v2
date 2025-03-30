@@ -1,4 +1,4 @@
-import type { IconComponent } from "./icons";
+import type { IconComponent } from "~/types/icons";
 
 // Raw types (for JSON data)
 export type NavigationItem = {

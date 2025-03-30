@@ -3,6 +3,8 @@
 import type { LucideIcon } from "lucide-react";
 import { MoreHorizontal, ShieldIcon } from "lucide-react";
 import * as React from "react";
+
+import CustomAvatar from "~/components/atom/custom-avatar";
 import { Button, type ButtonProps } from "~/components/ui/button";
 import { CardHeader } from "~/components/ui/card";
 import {
@@ -14,8 +16,6 @@ import {
 import { Link } from "~/lib/i18n/routing";
 import type { OwnUserDataType } from "~/server/api/root";
 import { UserRoles } from "~/types/user";
-
-import CustomAvatar from "./custom-avatar";
 
 export interface ActionItem {
   icon: LucideIcon;

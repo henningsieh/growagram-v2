@@ -3,14 +3,14 @@ import { Send } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import React from "react";
+
 import SpinningLoader from "~/components/Layouts/loader";
 import CustomAvatar from "~/components/atom/custom-avatar";
+import CommentsTree from "~/components/features/Comments/comments-tree";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { useComments } from "~/hooks/use-comments";
 import { CommentableEntityType } from "~/types/comment";
-
-import CommentsTree from "./comments-tree";
 
 interface CommentsProps {
   entityId: string;

@@ -3,6 +3,7 @@ import { skipToken } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import * as React from "react";
+import { useToast } from "~/hooks/use-toast";
 import { api } from "~/lib/trpc/react";
 import {
   type GetAllNotificationType,
@@ -12,8 +13,6 @@ import {
   NotifiableEntityType,
   NotificationEventType,
 } from "~/types/notification";
-
-import { useToast } from "./use-toast";
 
 // Add the 'export' keyword in front of the function declaration
 export function useNotifications(onlyUnread = true) {

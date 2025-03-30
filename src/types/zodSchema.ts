@@ -1,10 +1,13 @@
 // src/types/zodSchema.ts:
 import { z } from "zod";
-import { routing } from "~/lib/i18n/routing";
 
-import { Locale } from "./locale";
-import { NotifiableEntityType, NotificationEventType } from "./notification";
-import { PostableEntityType } from "./post";
+import { routing } from "~/lib/i18n/routing";
+import { Locale } from "~/types/locale";
+import {
+  NotifiableEntityType,
+  NotificationEventType,
+} from "~/types/notification";
+import { PostableEntityType } from "~/types/post";
 
 export const plantFormSchema = z.object({
   id: z.string().optional(),

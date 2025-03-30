@@ -3,9 +3,8 @@ import { and, count, desc, eq } from "drizzle-orm";
 import EventEmitter, { on } from "node:events";
 import { z } from "zod";
 import { notifications } from "~/lib/db/schema";
+import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { NotificationEvent } from "~/types/notification";
-
-import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 interface NotificationEvents {
   notification: (data: NotificationEvent) => void;

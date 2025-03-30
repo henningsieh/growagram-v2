@@ -7,13 +7,20 @@ import { cx } from "class-variance-authority";
 import { format, formatDistanceToNow, isToday } from "date-fns";
 import { signIn, useSession } from "next-auth/react";
 import * as React from "react";
+
+import {
+  useLivePosts,
+  useThrottledIsTypingMutation,
+} from "~/app/Chat/channels/[channelId]/hooks";
+import {
+  listWithAnd,
+  pluralize,
+  run,
+} from "~/app/Chat/channels/[channelId]/utils";
 import { Avatar } from "~/components/avatar";
 import { Button } from "~/components/button";
 import { Textarea } from "~/components/input";
 import { api } from "~/lib/trpc/react";
-
-import { useLivePosts, useThrottledIsTypingMutation } from "./hooks";
-import { listWithAnd, pluralize, run } from "./utils";
 
 type SubscriptionError = TRPCClientErrorLike<{
   input: {

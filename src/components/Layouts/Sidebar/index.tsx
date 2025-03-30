@@ -15,7 +15,9 @@ import { type Session } from "next-auth";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
+
 import { modulePaths } from "~/assets/constants";
+import { NavigationBreadcrumb } from "~/components/Layouts/Breadcrumbs";
 import CustomAvatar from "~/components/atom/custom-avatar";
 import {
   Collapsible,
@@ -55,8 +57,6 @@ import {
 import { useSignOut } from "~/hooks/use-auth";
 import { Link } from "~/lib/i18n/routing";
 import { sidebarItems, translateSidebar } from "~/lib/sidebar";
-
-import { NavigationBreadcrumb } from "../Breadcrumbs";
 
 /**
  * ProtectedSidebar: Main sidebar component for authenticated users

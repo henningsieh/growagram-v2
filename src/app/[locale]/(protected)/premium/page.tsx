@@ -2,13 +2,12 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { useTranslations } from "next-intl";
+import { PremiumBenefits } from "~/app/[locale]/(protected)/premium/PremiumBenefits";
+import { PremiumFAQ } from "~/app/[locale]/(protected)/premium/PremiumFAQ";
 import FormContent from "~/components/Layouts/form-content";
 import PageHeader from "~/components/Layouts/page-header";
 import ConnectSteadyHQButton from "~/components/atom/steady-connect-button";
 import { Card, CardContent } from "~/components/ui/card";
-
-import { PremiumBenefits } from "./PremiumBenefits";
-import { PremiumFAQ } from "./PremiumFAQ";
 
 const containerVariants = {
   hidden: { opacity: 0 },

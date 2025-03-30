@@ -10,9 +10,8 @@ import Twitter from "next-auth/providers/twitter";
 import { modulePaths } from "~/assets/constants";
 import { env } from "~/env";
 import { comparePasswords } from "~/lib/auth/password";
+import { db } from "~/lib/db";
 import { UserRoles } from "~/types/user";
-
-import { db } from "../db";
 
 // Notice this is only an object, not a full Auth.js
 // instance... in order to get "Auth on Edge" running.

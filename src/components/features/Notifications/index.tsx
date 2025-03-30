@@ -4,6 +4,11 @@ import { ArrowRightIcon, Bell, ListChecksIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
+
+import {
+  NotificationItem,
+  NotificationSkeleton,
+} from "~/components/features/Notifications/notification-item";
 import { Button } from "~/components/ui/button";
 import {
   Popover,
@@ -15,8 +20,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { useNotifications } from "~/hooks/use-notifications";
 import { Link } from "~/lib/i18n/routing";
 import { cn } from "~/lib/utils";
-
-import { NotificationItem, NotificationSkeleton } from "./notification-item";
 
 export function Notifications() {
   const { data: session } = useSession();

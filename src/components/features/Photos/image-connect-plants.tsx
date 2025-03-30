@@ -6,10 +6,12 @@ import { Check, TagIcon } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
+
 import { modulePaths } from "~/assets/constants";
 import FormContent from "~/components/Layouts/form-content";
 import SpinningLoader from "~/components/Layouts/loader";
 import PageHeader from "~/components/Layouts/page-header";
+import { ImageDetailsCard } from "~/components/features/Photos/image-details-card";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import {
@@ -32,8 +34,6 @@ import { useToast } from "~/hooks/use-toast";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import type { GetOwnPlantsInput, GetPhotoByIdType } from "~/server/api/root";
-
-import { ImageDetailsCard } from "./image-details-card";
 
 interface ImageConnectPlantsProps {
   image: GetPhotoByIdType;

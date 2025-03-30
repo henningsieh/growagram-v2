@@ -1,16 +1,15 @@
 import { TRPCError } from "@trpc/server";
 import { eq } from "drizzle-orm";
 import type { z } from "zod";
+import { db } from "~/lib/db";
 import { notifications } from "~/lib/db/schema";
+import { getAllParentCommentAuthors } from "~/lib/db/utils";
 import { ee } from "~/server/api/routers/notifications";
 import {
   NotifiableEntityType,
   NotificationEventType,
 } from "~/types/notification";
 import type { createNotificationSchema } from "~/types/zodSchema";
-
-import { db } from "../db";
-import { getAllParentCommentAuthors } from "../db/utils";
 
 export async function createNotification(
   input: z.infer<typeof createNotificationSchema>,

@@ -1,5 +1,6 @@
-import { Suspense } from 'react';
-import { Chat } from './chat';
+import { Suspense } from "react";
+
+import { Chat } from "~/app/Chat/channels/[channelId]/chat";
 
 export default async function Home(
   props: Readonly<{ params: Promise<{ channelId: string }> }>,

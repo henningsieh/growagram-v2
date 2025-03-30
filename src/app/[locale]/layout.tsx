@@ -5,15 +5,15 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import localFont from "next/font/local";
 import NextTopLoader from "nextjs-toploader";
+
 import { APP_SETTINGS } from "~/assets/constants";
 import AppFooter from "~/components/Layouts/Footer/app-footer";
 import { MainNavigationBar } from "~/components/Layouts/MainNavigationBar";
 import { ThemeProvider } from "~/components/Layouts/theme-provider";
+import { ImageModalProvider } from "~/components/features/Photos/modal-provider";
 import { Toaster } from "~/components/ui/toaster";
+import { TRPCReactProvider } from "~/lib/trpc/react";
 import "~/styles/globals.css";
-
-import { ImageModalProvider } from "../../components/features/Photos/modal-provider";
-import { TRPCReactProvider } from "../../lib/trpc/react";
 
 const geistSans = localFont({
   src: "../../lib/fonts/GeistMonoVF.woff",
