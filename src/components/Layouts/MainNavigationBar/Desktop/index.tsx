@@ -1,8 +1,8 @@
 "use client";
 
 // src/components/Layouts/MainNavigationBar/Desktop/index.tsx:
-import { useTranslations } from "next-intl";
 import * as React from "react";
+import { useTranslations } from "next-intl";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -30,17 +30,17 @@ function DesktopNavigationMenu() {
             <li className="row-span-3">
               <NavigationMenuLink asChild>
                 <Link
-                  className="nav-item-featured group flex h-full w-full select-none flex-col justify-center"
+                  className="nav-item-featured group flex h-full w-full flex-col justify-center select-none"
                   href={content.featured.href}
                 >
-                  <div className="mb-2 mt-4 flex items-center text-2xl font-bold text-primary">
+                  <div className="text-primary mt-4 mb-2 flex items-center text-2xl font-bold">
                     {content.featured.icon &&
                       React.createElement(content.featured.icon, {
                         className: "mr-2 h-5 w-5",
                       })}
                     {t(content.featured.title)}
                   </div>
-                  <p className="text-base leading-tight text-muted-foreground dark:group-hover:text-accent-foreground">
+                  <p className="text-muted-foreground dark:group-hover:text-accent-foreground text-base leading-tight">
                     {t(content.featured.description)}
                   </p>
                 </Link>
@@ -72,21 +72,21 @@ function DesktopNavigationMenu() {
             ref={ref}
             className={cn(
               "nav-item group",
-              "block select-none space-y-1 leading-none",
+              "block space-y-1 leading-none select-none",
               "text-foreground/80 hover:text-primary",
               className,
             )}
             href={props.href as string}
             {...props}
           >
-            <div className="flex items-center text-lg font-semibold leading-none">
+            <div className="flex items-center text-lg leading-none font-semibold">
               {item?.icon &&
                 React.createElement(item.icon, {
                   className: "mr-2 h-5 w-5",
                 })}
               {title}
             </div>
-            <p className="line-clamp-2 pt-1 text-sm leading-snug text-muted-foreground dark:group-hover:text-accent-foreground">
+            <p className="text-muted-foreground dark:group-hover:text-accent-foreground line-clamp-2 pt-1 text-sm leading-snug">
               {children}
             </p>
           </Link>
@@ -118,7 +118,7 @@ function DesktopNavigationMenu() {
                 <NavigationMenuTrigger
                   className={cn(
                     navigationMenuTriggerStyle(),
-                    "text-lg font-semibold data-[state=open]:bg-accent/70",
+                    "data-[state=open]:bg-accent/70 text-lg font-semibold",
                   )}
                 >
                   <div>{t(item.title)}</div>

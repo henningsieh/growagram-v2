@@ -1,7 +1,8 @@
-import { DotIcon } from "lucide-react";
+import * as React from "react";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
-import { useState } from "react";
+import { DotIcon } from "lucide-react";
+import { toast } from "sonner";
 import AvatarCardHeader from "~/components/atom/avatar-card-header";
 import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
 import { SocialCardFooter } from "~/components/atom/social-card-footer";
@@ -12,7 +13,6 @@ import { EnhancedPlantCard } from "~/components/features/Plants/enhanced-plant-c
 import { Card, CardContent } from "~/components/ui/card";
 import { useComments } from "~/hooks/use-comments";
 import { useLikeStatus } from "~/hooks/use-likes";
-import { useToast } from "~/hooks/use-toast";
 import { api } from "~/lib/trpc/react";
 import { cn, formatDate, formatTime } from "~/lib/utils";
 import { GetPostType } from "~/server/api/root";
@@ -29,14 +29,14 @@ interface PostCardProps {
 export default function PostCard({ post, isSocialProp = true }: PostCardProps) {
   const utils = api.useUtils();
   const locale = useLocale();
-  const { toast } = useToast();
+
   const t = useTranslations("Posts");
   const { openImageModal } = useImageModal();
-  const [isImageHovered, setIsImageHovered] = useState(false);
+  const [isImageHovered, setIsImageHovered] = React.useState(false);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [isSocial, setIsSocial] = useState(isSocialProp);
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isSocial, setIsSocial] = React.useState(isSocialProp);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);
 
   const {
     isLiked,
@@ -50,17 +50,14 @@ export default function PostCard({ post, isSocialProp = true }: PostCardProps) {
   // Initialize delete mutation
   const deleteMutation = api.updates.deleteById.useMutation({
     onSuccess: async () => {
-      toast({
-        title: "Success",
-        description: "Post deleted successfully",
+      toast("Success", {
+        description: t("post-deleted-successfully"),
       });
       await utils.updates.getAll.invalidate();
     },
     onError: (error) => {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to delete post",
-        variant: "destructive",
+      toast.error("Error", {
+        description: error.message || t("error-default"),
       });
     },
   });
@@ -83,9 +80,9 @@ export default function PostCard({ post, isSocialProp = true }: PostCardProps) {
   const dateElement = (
     <div
       title={t("post-card-createdAt")}
-      className="flex cursor-default items-center gap-2 whitespace-nowrap text-sm text-muted-foreground"
+      className="text-muted-foreground flex cursor-default items-center gap-2 text-sm whitespace-nowrap"
     >
-      {<DotIcon size={24} className="-mx-2 hidden xs:block" />}
+      {<DotIcon size={24} className="xs:block -mx-2 hidden" />}
       {formatDate(post.createdAt, locale as Locale)}{" "}
       {formatTime(post.createdAt, locale as Locale)}
     </div>
@@ -103,7 +100,7 @@ export default function PostCard({ post, isSocialProp = true }: PostCardProps) {
       />
       <Card
         className={cn(
-          `flex flex-col overflow-hidden border border-input pt-1`,
+          `border-input flex flex-col overflow-hidden border pt-1`,
           // isSocial && "border-none",
         )}
       >
@@ -112,7 +109,7 @@ export default function PostCard({ post, isSocialProp = true }: PostCardProps) {
         )}
 
         <CardContent
-          className={`flex h-full flex-col gap-2 ${isSocial ? "ml-12 pl-0 pr-2" : "p-2"}`}
+          className={`flex h-full flex-col gap-2 ${isSocial ? "ml-12 pr-2 pl-0" : "p-2"}`}
         >
           <p>{post.content}</p>
 
@@ -145,7 +142,7 @@ export default function PostCard({ post, isSocialProp = true }: PostCardProps) {
 
         {isSocial && (
           <SocialCardFooter
-            className={`pb-2 pr-2 ${isSocial && "ml-12"}`}
+            className={`pr-2 pb-2 ${isSocial && "ml-12"}`}
             entityId={post.id}
             entityType={LikeableEntityType.Post}
             initialLiked={isLiked}

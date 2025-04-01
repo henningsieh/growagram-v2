@@ -1,6 +1,10 @@
 "use client";
 
 // src/components/Layouts/Sidebar/index.tsx:
+import * as React from "react";
+import type { Session } from "next-auth";
+import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import {
   BellIcon,
   ChevronRight,
@@ -11,14 +15,9 @@ import {
   SparklesIcon,
   UserPenIcon,
 } from "lucide-react";
-import { type Session } from "next-auth";
-import { useSession } from "next-auth/react";
-import { useTranslations } from "next-intl";
-import { useState } from "react";
-
 import { modulePaths } from "~/assets/constants";
 import { NavigationBreadcrumb } from "~/components/Layouts/Breadcrumbs";
-import CustomAvatar from "~/components/atom/custom-avatar";
+import { CustomAvatar } from "~/components/atom/custom-avatar";
 import {
   Collapsible,
   CollapsibleContent,
@@ -97,7 +96,7 @@ function ProtectedSidebarContent({
       <Sidebar
         collapsible="icon"
         variant="floating"
-        className="sticky top-14 h-[calc(100svh-4rem)] flex-shrink-0"
+        className="sticky top-14 h-[calc(100svh-4rem)] shrink-0"
       >
         {/* Sidebar Header: Team Switcher */}
         <SidebarHeader>
@@ -268,7 +267,7 @@ function ProtectedSidebarContent({
                   onClick={function () {
                     if (isMobile) toggleSidebar();
                   }}
-                  className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-sm"
+                  className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-sm"
                   // side="right"
                   side={isMobile ? "bottom" : "right"}
                   align="end"
@@ -343,7 +342,7 @@ function ProtectedSidebarContent({
       {/* Sidebar Inset: Content Area */}
       <SidebarInset className="min-h-[calc(100svh-5rem)]">
         {/* Sticky Header with Sidebar Toggle and Breadcrumbs */}
-        <header className="sticky top-14 flex h-14 shrink-0 items-center justify-between gap-2 bg-background/90 backdrop-blur">
+        <header className="bg-background/90 sticky top-14 flex h-14 shrink-0 items-center justify-between gap-2 backdrop-blur-xs">
           <div className="flex items-center gap-2 pl-2 md:pl-1 lg:pl-3 xl:pl-5">
             <SidebarTrigger className="text-primary" />
             <Separator orientation="vertical" className="h-5" />
@@ -374,7 +373,7 @@ function TeamSwitcher({
   }[];
 }) {
   const { isMobile } = useSidebar();
-  const [activeTeam, setActiveTeam] = useState(teams[0]);
+  const [activeTeam, setActiveTeam] = React.useState(teams[0]);
 
   return (
     <SidebarMenu>
@@ -387,7 +386,7 @@ function TeamSwitcher({
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               {/* Active team logo and details */}
-              <div className="flex aspect-square size-8 items-center justify-center rounded-sm bg-sidebar-primary text-sidebar-primary-foreground">
+              <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-sm">
                 <activeTeam.logo className="size-4" />
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
@@ -402,12 +401,12 @@ function TeamSwitcher({
 
           {/* Team selection dropdown content */}
           <DropdownMenuContent
-            className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-sm"
+            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-sm"
             align="start"
             side={isMobile ? "bottom" : "right"}
             sideOffset={4}
           >
-            <DropdownMenuLabel className="text-xs text-muted-foreground">
+            <DropdownMenuLabel className="text-muted-foreground text-xs">
               Teams
             </DropdownMenuLabel>
 
@@ -429,10 +428,10 @@ function TeamSwitcher({
             {/* Add team option */}
             <DropdownMenuSeparator />
             <DropdownMenuItem className="gap-2 p-2">
-              <div className="flex size-6 items-center justify-center rounded-sm border bg-background">
+              <div className="bg-background flex size-6 items-center justify-center rounded-sm border">
                 <PlusIcon className="size-4" />
               </div>
-              <div className="font-medium text-muted-foreground">Add team</div>
+              <div className="text-muted-foreground font-medium">Add team</div>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

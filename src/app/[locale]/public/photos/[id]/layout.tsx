@@ -1,5 +1,5 @@
 // src/app/[locale]/(protected)/grows/[id]/form/layout.tsx:
-import React from "react";
+import * as React from "react";
 import { api } from "~/lib/trpc/server";
 import type { GetPhotoByIdInput } from "~/server/api/root";
 

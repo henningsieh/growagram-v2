@@ -1,8 +1,8 @@
 "use client";
 
-import { Maximize, Minimize, X } from "lucide-react";
+import * as React from "react";
 import Image from "next/image";
-import { createContext, useContext, useState } from "react";
+import { Maximize, Minimize, X } from "lucide-react";
 import { createPortal } from "react-dom";
 import { Button } from "~/components/ui/button";
 import { Switch } from "~/components/ui/switch";
@@ -12,18 +12,26 @@ interface ImageModalContextType {
   closeImageModal: () => void;
 }
 
-const ImageModalContext = createContext<ImageModalContextType | undefined>(
-  undefined,
-);
+const ImageModalContext = React.createContext<
+  ImageModalContextType | undefined
+>(undefined);
+
+export const useImageModal = () => {
+  const context = React.useContext(ImageModalContext);
+  if (!context) {
+    throw new Error("useImageModal must be used within an ImageModalProvider");
+  }
+  return context;
+};
 
 export function ImageModalProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [imageUrl, setImageUrl] = useState("");
-  const [isUnrestrictedView, setIsUnrestrictedView] = useState(false);
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [imageUrl, setImageUrl] = React.useState("");
+  const [isUnrestrictedView, setIsUnrestrictedView] = React.useState(false);
 
   const openImageModal = (url: string) => {
     setImageUrl(url);
@@ -61,14 +69,14 @@ export function ImageModalProvider({
               <Button
                 variant="secondary"
                 onClick={closeImageModal}
-                className="fixed right-4 top-2 z-10 h-6 p-1"
+                className="fixed top-2 right-4 z-10 h-6 p-1"
                 aria-label="Close modal"
               >
                 <X size={20} />
               </Button>
 
               <div
-                className="fixed left-1/2 top-2 z-10 flex -translate-x-1/2 items-center gap-2 rounded-sm bg-secondary bg-opacity-50 p-1 text-white"
+                className="bg-secondary bg-opacity-50 fixed top-2 left-1/2 z-10 flex -translate-x-1/2 items-center gap-2 rounded-sm p-1 text-white"
                 onClick={handleSwitchContainerClick}
               >
                 <div
@@ -109,11 +117,3 @@ export function ImageModalProvider({
     </ImageModalContext.Provider>
   );
 }
-
-export const useImageModal = () => {
-  const context = useContext(ImageModalContext);
-  if (!context) {
-    throw new Error("useImageModal must be used within an ImageModalProvider");
-  }
-  return context;
-};

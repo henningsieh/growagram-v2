@@ -1,10 +1,10 @@
 // src/hooks/use-comments.tsx:
+import * as React from "react";
 import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
-import { useToast } from "~/hooks/use-toast";
-import { usePathname } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import type { GetCommentsInput, GetCommentsType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
@@ -14,20 +14,26 @@ export const useComments = (
   entityType: CommentableEntityType,
 ) => {
   const { data: session } = useSession();
-  const { toast } = useToast();
   const utils = api.useUtils();
+  const t = useTranslations();
 
-  const [newComment, setNewComment] = useState<string>("");
-  const [commentCount, setCommentCount] = useState<number>(0);
-  const [isCommentsOpen, setIsCommentsOpen] = useState<boolean>(false);
-  const [replyingToComment, setReplyingToComment] = useState<string | null>(
-    null,
-  );
+  const [newComment, setNewComment] = React.useState<string>("");
+  const [commentCount, setCommentCount] = React.useState<number>(0);
+  const [isCommentsOpen, setIsCommentsOpen] = React.useState<boolean>(false);
+  const [replyingToComment, setReplyingToComment] = React.useState<
+    string | null
+  >(null);
 
   const commentCountQuery = api.comments.getCommentCount.useQuery({
     entityId,
     entityType,
   });
+
+  React.useEffect(() => {
+    if (commentCountQuery.data) {
+      setCommentCount(commentCountQuery.data.count);
+    }
+  }, [commentCountQuery.data]);
 
   const commentsSortOrder = SortOrder.DESC satisfies SortOrder;
 
@@ -42,23 +48,13 @@ export const useComments = (
     },
   );
 
-  useEffect(() => {
-    if (commentCountQuery.data) {
-      setCommentCount(commentCountQuery.data.count);
-    }
-  }, [commentCountQuery.data]);
-
-  const pathname = usePathname();
-
   const toggleComments = () => {
     // Only allow opening comments if user is logged in
     if (session?.user) {
       setIsCommentsOpen(!isCommentsOpen);
     } else {
-      toast({
-        title: "Login Required",
-        description: `Please log in to like content. URL:${pathname}`,
-        variant: "secondary",
+      toast("Login Required", {
+        description: t("CardFooter.Sign in to view and add comments"),
       });
     }
   };
@@ -95,11 +91,8 @@ export const useComments = (
       setReplyingToComment(null);
     },
     onError: (error) => {
-      console.error("Failed to post comment:", error);
-      toast({
-        title: "Error",
-        description: "Failed to post comment",
-        variant: "destructive",
+      toast.error("Error", {
+        description: error.message || "Failed to post comment",
       });
     },
   });
@@ -129,14 +122,14 @@ export const useComments = (
   const commentIdToScrollTo = searchParams.get("commentId");
 
   // Auto-expand comments if commentId is in URL
-  useEffect(() => {
+  React.useEffect(() => {
     if (commentIdToScrollTo) {
       setIsCommentsOpen(true);
     }
   }, [commentIdToScrollTo]);
 
   // Scroll to comment after comments are loaded
-  useEffect(() => {
+  React.useEffect(() => {
     if (!commentIdToScrollTo || !isCommentsOpen || commentsQuery.isLoading)
       return;
 

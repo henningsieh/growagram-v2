@@ -1,4 +1,5 @@
-import React from "react";
+// src/components/Layouts/form-content.tsx:
+import * as React from "react";
 
 export default function FormContent({
   children,

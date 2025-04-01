@@ -1,10 +1,10 @@
 "use client";
 
 // src/app/[locale]/(protected)/plants/page.tsx:
-import { Infinity, Calendar, TagIcon } from "lucide-react";
+import * as React from "react";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { Infinity, Calendar, TagIcon } from "lucide-react";
 import PageHeader from "~/components/Layouts/page-header";
 import {
   SortFilterControls,
@@ -21,22 +21,22 @@ export default function MyPlantsPage() {
   const t = useTranslations("Plants");
 
   // Manage view mode state
-  const [viewMode, setViewMode] = useState<PlantsViewMode>(
+  const [viewMode, setViewMode] = React.useState<PlantsViewMode>(
     (localStorage.getItem("plantViewMode") as PlantsViewMode) ||
       PlantsViewMode.PAGINATION,
   );
 
   // Shared state for sorting
-  const [sortField, setSortField] = useState<PlantsSortField>(
+  const [sortField, setSortField] = React.useState<PlantsSortField>(
     (searchParams?.get("sortField") as PlantsSortField) || PlantsSortField.NAME,
   );
-  const [sortOrder, setSortOrder] = useState<SortOrder>(
+  const [sortOrder, setSortOrder] = React.useState<SortOrder>(
     (searchParams?.get("sortOrder") as SortOrder) || SortOrder.ASC,
   );
-  const [isFetching, setIsFetching] = useState<boolean>(false);
+  const [isFetching, setIsFetching] = React.useState<boolean>(false);
 
   // Update URL parameters
-  const updateUrlParams = useCallback(() => {
+  const updateUrlParams = React.useCallback(() => {
     const params = new URLSearchParams(searchParams?.toString());
 
     if (viewMode === PlantsViewMode.PAGINATION) {
@@ -54,7 +54,7 @@ export default function MyPlantsPage() {
   }, [searchParams, sortField, sortOrder, router, viewMode]);
 
   // Sync state with URL
-  useEffect(() => {
+  React.useEffect(() => {
     updateUrlParams();
   }, [sortField, sortOrder, viewMode, updateUrlParams]);
 

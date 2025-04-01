@@ -1,22 +1,23 @@
-import { AnimatePresence, motion } from "framer-motion";
-import { DotIcon, Reply, Trash2, X } from "lucide-react";
+//src/components/features/Comments/comment.tsx:
+import * as React from "react";
 import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
-import React, { useEffect, useRef } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { DotIcon, Reply, Trash2, X } from "lucide-react";
+import { toast } from "sonner";
 import SpinningLoader from "~/components/Layouts/loader";
 import AvatarCardHeader, {
   ActionItem,
 } from "~/components/atom/avatar-card-header";
 import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
-import CustomAvatar from "~/components/atom/custom-avatar";
+import { CustomAvatar } from "~/components/atom/custom-avatar";
 import { HighlightElement } from "~/components/atom/highlight-element";
 import { SocialCardFooter } from "~/components/atom/social-card-footer";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { useComments } from "~/hooks/use-comments";
 import { useLikeStatus } from "~/hooks/use-likes";
-import { useToast } from "~/hooks/use-toast";
 import { api } from "~/lib/trpc/react";
 import { formatDate, formatTime } from "~/lib/utils";
 import type {
@@ -47,11 +48,11 @@ export const Comment: React.FC<CommentProps> = ({
   const isHighlighted = searchParams.get("commentId") === comment.id;
 
   const { data: session } = useSession();
-  const { toast } = useToast();
+
   const locale = useLocale();
   const utils = api.useUtils();
   const t = useTranslations("Comments");
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = React.useRef<HTMLInputElement>(null);
 
   const {
     isLiked,
@@ -71,7 +72,7 @@ export const Comment: React.FC<CommentProps> = ({
   } = useComments(comment.entityId, comment.entityType);
 
   // Focus on the input field when replying
-  useEffect(() => {
+  React.useEffect(() => {
     if (isReplying && inputRef.current) {
       inputRef.current.focus();
     }
@@ -125,8 +126,7 @@ export const Comment: React.FC<CommentProps> = ({
       return { previousCommentsOnThisLevel };
     },
     onSuccess: async () => {
-      toast({
-        title: t("toasts.success.deleteComment.title"),
+      toast(t("toasts.success.deleteComment.title"), {
         description: t("toasts.success.deleteComment.description"),
       });
 
@@ -144,11 +144,8 @@ export const Comment: React.FC<CommentProps> = ({
         );
       }
 
-      toast({
-        title: t("toasts.errors.deleteComment.title"),
-        description:
-          error.message || `Failed to delete comment with ID: ${commentId}`,
-        variant: "destructive",
+      toast.error(t("toasts.errors.deleteComment.title"), {
+        description: `${t("toasts.errors.deleteComment.description")} ${error.message || `Failed to delete comment with ID: ${commentId}`}`,
       });
     },
   });
@@ -182,8 +179,8 @@ export const Comment: React.FC<CommentProps> = ({
     : [];
 
   const dateElement = (
-    <div className="flex items-center gap-1 whitespace-nowrap text-sm text-muted-foreground">
-      {<DotIcon size={24} className="-mx-2 hidden xs:block" />}
+    <div className="text-muted-foreground flex items-center gap-1 text-sm whitespace-nowrap">
+      {<DotIcon size={24} className="xs:block -mx-2 hidden" />}
       {formatDate(comment.createdAt, locale as Locale)}{" "}
       {formatTime(comment.createdAt, locale as Locale)}
     </div>
@@ -221,14 +218,14 @@ export const Comment: React.FC<CommentProps> = ({
               showActions={hasPermission}
               actions={commentActions}
             />
-            <p className="ml-12 px-0.5 pb-1 pt-1 text-sm">
+            <p className="ml-12 px-0.5 pt-1 pb-1 text-sm">
               {comment.commentText}
             </p>
           </div>
         </div>
 
         <SocialCardFooter
-          className={`pb-2 pr-2 ${isSocial && "ml-12"}`}
+          className={`pr-2 pb-2 ${isSocial && "ml-12"}`}
           entityId={comment.id}
           entityType={LikeableEntityType.Comment}
           initialLiked={isLiked}
@@ -266,7 +263,7 @@ export const Comment: React.FC<CommentProps> = ({
                     value={replyComment}
                     onChange={(e) => setReplyComment(e.target.value)}
                     disabled={isSubmitting}
-                    className="h-8 w-full bg-background text-sm"
+                    className="bg-background h-8 w-full text-sm"
                   />
                   <Button
                     className="shrink-0"

@@ -1,21 +1,25 @@
 "use client";
 
+import * as React from "react";
+import { useLocale, useTranslations } from "next-intl";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   BeanIcon,
-  Calendar1Icon,
   Clock,
   Dna,
   FlaskConical,
   type LucideIcon,
   NutIcon,
   TentTree,
-  TentTreeIcon,
 } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
-import { useState } from "react";
 import { modulePaths } from "~/assets/constants";
-import CustomAvatar from "~/components/atom/custom-avatar";
+import { CustomAvatar } from "~/components/atom/custom-avatar";
+import {
+  HybridTooltip,
+  HybridTooltipContent,
+  HybridTooltipTrigger,
+  TouchProvider,
+} from "~/components/atom/hybrid-tooltip";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import {
@@ -25,12 +29,6 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
-import {
-  HybridTooltip,
-  HybridTooltipContent,
-  HybridTooltipTrigger,
-  TouchProvider,
-} from "~/components/ui/hybrid-tooltip";
 import { Progress } from "~/components/ui/progress";
 import { useIsMobile } from "~/hooks/use-mobile";
 import { Link } from "~/lib/i18n/routing";
@@ -54,7 +52,7 @@ export function EnhancedPlantCard({ plant }: EnhancedPlantCardProps) {
   const locale = useLocale() as Locale;
   const t = useTranslations();
   const isMobile = useIsMobile();
-  const [isHovered, setIsHovered] = useState(false);
+  const [isHovered, setIsHovered] = React.useState(false);
 
   const progress = calculateGrowthProgress(plant);
   const CurrentPhaseIcon = progress.phaseIcon satisfies LucideIcon;
@@ -81,12 +79,12 @@ export function EnhancedPlantCard({ plant }: EnhancedPlantCardProps) {
   return (
     <TouchProvider>
       <Card
-        className="space-y-2 overflow-hidden border border-primary/50 bg-muted/30 p-2 transition-all hover:shadow-lg"
+        className="border-primary/50 bg-muted/30 gap-0 space-y-2 overflow-hidden border p-2 transition-all hover:shadow-lg"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
         <CardHeader className="p-0">
-          <div className="flex flex-col items-start justify-between xs:flex-row">
+          <div className="xs:flex-row flex flex-col items-start justify-between">
             <div className="flex min-w-0 flex-1 items-center gap-3">
               <CustomAvatar
                 src={imageUrl}
@@ -115,7 +113,7 @@ export function EnhancedPlantCard({ plant }: EnhancedPlantCardProps) {
                     </Link>
                   </Button>
                 </CardTitle>
-                <p className="text-xs text-muted-foreground">{startedAt}</p>
+                <p className="text-muted-foreground text-xs">{startedAt}</p>
               </div>
             </div>
 
@@ -123,9 +121,9 @@ export function EnhancedPlantCard({ plant }: EnhancedPlantCardProps) {
               {progress.estimatedHarvestDate && (
                 <HybridTooltip>
                   <HybridTooltipTrigger className="cursor-help">
-                    <Clock className="h-4 w-4 shrink-0 text-harvest" />
+                    <Clock className="text-harvest h-4 w-4 shrink-0" />
                   </HybridTooltipTrigger>
-                  <HybridTooltipContent className="w-auto p-1 text-harvest">
+                  <HybridTooltipContent className="text-harvest w-auto p-1">
                     <div className="space-y-0">
                       <p className="text-sm">
                         {t("Plants.estimated-harvest")}
@@ -202,13 +200,13 @@ export function EnhancedPlantCard({ plant }: EnhancedPlantCardProps) {
           </div>
         </CardHeader>
 
-        <CardContent className="p-0 pt-2">
+        <CardContent className="p-0 pb-2">
           <div className="flex items-center gap-2">
             <Progress
               value={progress.overallProgress}
-              className={`h-2 flex-1 bg-muted-foreground/20`}
+              className={`bg-muted-foreground/20 h-2 flex-1`}
             />
-            <span className="whitespace-nowrap text-xs font-medium">
+            <span className="text-xs font-medium whitespace-nowrap">
               {progress.overallProgress}
               {"%"}
             </span>
@@ -221,11 +219,11 @@ export function EnhancedPlantCard({ plant }: EnhancedPlantCardProps) {
             animate={{ opacity: isMobile ? 1 : isHovered ? 1 : 0.6 }}
             transition={{ duration: 0.3 }}
           >
-            <CardFooter className="flex items-center justify-between p-0 text-muted-foreground">
+            <CardFooter className="text-muted-foreground flex items-center justify-between p-0">
               <HybridTooltip>
                 <HybridTooltipTrigger className="flex items-center gap-2">
                   <NutIcon className="h-4 w-4 shrink-0" />
-                  <span className="whitespace-nowrap text-xs">
+                  <span className="text-xs whitespace-nowrap">
                     {formatDate(plant.startDate, locale, {
                       includeYear: false,
                     } as DateFormatOptions)}
@@ -298,7 +296,7 @@ export function EnhancedPlantCard({ plant }: EnhancedPlantCardProps) {
                       variant="grow"
                       className="flex max-w-20 items-center gap-1 overflow-hidden text-ellipsis whitespace-nowrap"
                     >
-                      <TentTreeIcon className="h-4 w-4 flex-shrink-0" />
+                      <TentTreeIcon className="h-4 w-4 shrink-0" />
                       <span className="overflow-hidden text-ellipsis">
                         {plant.grow.name}
                       </span>

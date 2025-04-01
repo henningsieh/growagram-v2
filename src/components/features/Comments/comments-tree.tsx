@@ -1,5 +1,5 @@
+// src/components/features/Comments/comments-tree.tsx:
 import type React from "react";
-
 import { Comment } from "~/components/features/Comments/comment";
 import { useComments } from "~/hooks/use-comments";
 import { api } from "~/lib/trpc/react";
@@ -35,8 +35,8 @@ const CommentsTree: React.FC<CommentsTreeProps> = ({
 
       {!isLoading && replies && replies.length > 0 && (
         <>
-          <div className="absolute bottom-1 left-[30px] top-[3rem] w-px bg-accent/60" />
-          <ul className="space-y-4 pl-5 pt-2">
+          <div className="bg-accent/60 absolute top-[3rem] bottom-1 left-[30px] w-px" />
+          <ul className="space-y-4 pt-2 pl-5">
             {replies.map((reply) => (
               <li key={reply.id}>
                 <CommentsTree comment={reply} isSocial={isSocial} />

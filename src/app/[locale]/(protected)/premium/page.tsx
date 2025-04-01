@@ -1,7 +1,7 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
 import { useTranslations } from "next-intl";
+import { AnimatePresence, motion } from "framer-motion";
 import { PremiumBenefits } from "~/app/[locale]/(protected)/premium/PremiumBenefits";
 import { PremiumFAQ } from "~/app/[locale]/(protected)/premium/PremiumFAQ";
 import FormContent from "~/components/Layouts/form-content";
@@ -39,7 +39,7 @@ export default function PremiumPage() {
           className="mx-auto w-full max-w-4xl"
         >
           <FormContent>
-            <Card className="overflow-hidden border-2 bg-card/95 backdrop-blur-sm">
+            <Card className="bg-card/95 overflow-hidden border-2 backdrop-blur-xs">
               <CardContent className="p-6 sm:p-8">
                 <motion.div
                   variants={containerVariants}
@@ -51,7 +51,7 @@ export default function PremiumPage() {
                     <h2 className="mb-4 text-2xl font-bold">
                       {t("unlock-premium-content")}
                     </h2>
-                    <p className="mb-4 text-xl text-muted-foreground">
+                    <p className="text-muted-foreground mb-4 text-xl">
                       {t("get-exclusive-access")}
                     </p>
                   </motion.div>

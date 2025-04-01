@@ -20,6 +20,7 @@
     "form-reset-button": "Zurücksetzen",
     "form-save-button": "Speichern",
     "form-save-success-message": "Deine Accountdetails wurden aktualisiert.",
+    "form-save-success-title": "Erfolg",
     "form-username-checking": "Verfügbarkeit des Benutzernamens wird geprüft...",
     "form-username-description": "Wähle einen eindeutigen Benutzernamen für deinen Account.",
     "form-username-label": "Benutzername",
@@ -33,6 +34,10 @@
       "label": "Mein Konto"
     },
     "not-provided": "Nicht angegeben",
+    "toast-error-save": {
+      "description": "Beim Aktualisieren des Accounts ist ein Fehler aufgetreten. Bitte versuche es erneut.",
+      "title": "Fehler"
+    },
     "welcome-message-description": "Du musst zuerst deinen Benutzernamen (@username) festlegen, bevor du die Plattform nutzen kannst!",
     "welcome-message-title": "Willkommen"
   },
@@ -65,6 +70,7 @@
     "toasts": {
       "errors": {
         "deleteComment": {
+          "description": "Fehler beim Löschen des Kommentars. Bitte versuche es erneut.",
           "title": "Fehler beim Löschen"
         }
       },
@@ -96,6 +102,8 @@
     "DeleteConfirmation": {
       "alertCautionText": "Diese Aktion löscht auch Updates und andere Beiträge, wenn dieser Grow deren einzige Referenz ist!",
       "description": "Keine Pflanze wird durch diese Aktion gelöscht!",
+      "success-description": "Der Grow wurde erfolgreich gelöscht.",
+      "success-title": "Erfolg!",
       "title": "Bist du sicher, dass du diesen Grow löschen möchten?"
     },
     "NoGrowsFound": "Es wurden keine Grows gefunden.",
@@ -142,6 +150,16 @@
     "success-description-create": "Der Grow wurde erfolgreich erstellt.",
     "success-description-edit": "Der Grow wurde erfolgreich aktualisiert.",
     "success-title": "Erfolg!",
+    "toasts": {
+      "connect-success": {
+        "description": "Die Pflanze wurde erfolgreich mit dem Grow verbunden",
+        "title": "Pflanze verbunden"
+      },
+      "disconnect-success": {
+        "description": "Die Pflanze wurde erfolgreich vom Grow entfernt",
+        "title": "Pflanze entfernt"
+      }
+    },
     "unexpected-error": "Ein unerwarteter Fehler ist aufgetreten."
   },
   "HomePage": {
@@ -182,6 +200,14 @@
       "description": "Wähle das passende Paket für deine Bedürfnisse.",
       "title": "Faire Preise für jeden Grower"
     }
+  },
+  "Likes": {
+    "error-title": "Fehler",
+    "liked-success": "Du hast den Inhalt erfolgreich geliked.",
+    "login-required-description": "Du musst eingeloggt sein, um diesen Inhalt zu liken.",
+    "login-required-title": "Login erforderlich",
+    "success-title": "Erfolg",
+    "unliked-success": "Du hast den Like erfolgreich entfernt."
   },
   "LoginPage": {
     "Email-verified-description": "Deine E-Mail-Adresse wurde erfolgreich verifiziert.",
@@ -243,8 +269,9 @@
     "ActivityFeed": {
       "label-all": "Alle Benachrichtigungen",
       "next-page": "Nächste",
-      "no-notifications": "Es konnten keine Benachrichtigungen gefunden werden!",
-      "previous-page": "Vorherige"
+      "previous-page": "Vorherige",
+      "error-no-notifications": "Fehler beim Laden der Benachrichtigungen",
+      "no-notifications": "Keine Benachrichtigungen gefunden"
     },
     "Navigation": {
       "trigger-button-title": "Benachrichtigungen"
@@ -284,6 +311,14 @@
       "description": "Durch diese Aktion wird keine deiner Pflanzen gelöscht!",
       "title": "Möchtest du dieses Foto wirklich löschen?",
       "toasts": {
+        "error": {
+          "description": "Beim Löschen des Fotos ist ein Fehler aufgetreten. Bitte versuche es erneut.",
+          "title": "Fehler"
+        },
+        "success": {
+          "description": "Das Foto wurde erfolgreich gelöscht.",
+          "title": "Erfolg"
+        },
         "warning-photo-has-posts": {
           "description": "Dieses Foto ist mit einem oder mehreren Beiträgen verbunden. Du kannst ein Foto nicht löschen, wenn es Beiträge zugeordnet ist.",
           "title": "Warnung"
@@ -315,13 +350,44 @@
       "description": "Wähle jede Pflanze aus, die du auf dem Foto sehen kannst!",
       "title": "Pflanzenauswahl"
     },
-    "public-link-label": "Öffnen im neuen Tab",
     "search": {
-      "noResults": "Keine Ergebnisse gefunden.",
+      "noResults": "Keine Pflanzen gefunden",
       "placeholder": "Pflanzen suchen..."
     },
     "subtitle": "Welche Pflanzen siehst du auf diesem Foto?",
     "title": "Pflanzen identifizieren",
+    "toasts": {
+      "errors": {
+        "connectPlants": {
+          "description": "Die Pflanzen konnten nicht mit dem Foto verbunden werden",
+          "title": "Verbindung fehlgeschlagen"
+        }
+      },
+      "success": {
+        "connectPlants": {
+          "description": "Pflanzen wurden erfolgreich mit dem Foto verbunden",
+          "title": "Pflanzen verbunden"
+        }
+      },
+      "upload": {
+        "error": {
+          "description": "Bilder konnten nicht hochgeladen werden",
+          "title": "Upload fehlgeschlagen"
+        },
+        "file-too-large": {
+          "description": "{filename} überschreitet das Limit von {maxSize} MB",
+          "title": "Datei zu groß"
+        },
+        "invalid-type": {
+          "description": "{filename} ist kein unterstützter Bildtyp",
+          "title": "Ungültiger Dateityp"
+        },
+        "success": {
+          "description": "{count} Bild(er) erfolgreich hochgeladen!",
+          "title": "Upload abgeschlossen"
+        }
+      }
+    },
     "upload": {
       "buttonLabel-files": "Dateien",
       "buttonLabel-upload": "Hochladen",
@@ -332,9 +398,26 @@
         "filename-label": "Dateiname:",
         "filesize-label": "Dateigröße:",
         "filesize-unit": "Megabyte (MB)"
+      },
+      "toasts": {
+        "error": {
+          "description": "Bilder konnten nicht hochgeladen werden",
+          "title": "Upload fehlgeschlagen"
+        },
+        "file-too-large": {
+          "description": "{filename} überschreitet das Limit von {maxSize} MB",
+          "title": "Datei zu groß"
+        },
+        "invalid-type": {
+          "description": "{filename} ist kein unterstützter Bildtyp",
+          "title": "Ungültiger Dateityp"
+        },
+        "success": {
+          "description": "{count} Bild(er) erfolgreich hochgeladen!",
+          "title": "Upload abgeschlossen"
+        }
       }
-    },
-    "uploaded-at": "hochgeladen"
+    }
   },
   "Plants": {
     "DeleteConfirmation": {
@@ -343,12 +426,16 @@
       "title": "Bist du sicher, dass du diese Pflanze löschen möchten?"
     },
     "breeder": "Breeder (Züchter)",
+    "breeder-create-error-title": "Fehler beim Erstellen des Breeders",
+    "breeder-create-success-description": "Neuer Breeder wurde erfolgreich erstellt.",
+    "breeder-create-success-title": "Breeder erstellt",
     "button-label-post-update": "Update zur Pflanze erstellen",
     "curing-start-date": "Startdatum der Aushärtephase",
     "delete-button-label": "Pflanze löschen",
     "delete-plant-button-label": "Pflanze löschen",
     "edit-button-label": "Pflanze bearbeiten",
     "edit-plant-button-label": "Pflanze bearbeiten",
+    "error-default": "Beim Löschen der Pflanze ist ein Fehler aufgetreten. Bitte versuche es erneut.",
     "estimated-harvest": "Voraussichtliche Ernte",
     "flowering-start-date": "Startdatum der Blüte",
     "form-breeder-description": "Wähle oder erstelle den Breeder (Züchter) dieser Sorte.",
@@ -368,6 +455,9 @@
     "form-pagerheader-new-subtitle": "Füge deiner Sammlung eine neue Pflanze hinzu",
     "form-pagerheader-new-title": "Neue Pflanze hinzufügen",
     "form-strain-description": "Wähle oder erstelle den Strain (die Sorte) für diese Pflanze.",
+    "form-toast-error-title": "Fehler beim Speichern",
+    "form-toast-success-description": "Deine Pflanze wurde erfolgreich gespeichert.",
+    "form-toast-success-title": "Pflanze gespeichert",
     "germination-date": "Datum der Keimung",
     "harvest-date": "Datum der Ernte",
     "linkUploadButtonLabel": "Pflanze hinzufügen",
@@ -375,17 +465,23 @@
     "overall-progress": "Gesamtfortschritt",
     "phase": "Phasenfortschritt",
     "phases": {
+      "flowering": "Blütephase",
+      "harvested": "Geerntet",
       "planted": "Gepflanzt",
       "seedling": "Keimling",
-      "vegetation": "Wachstumsphase",
-      "flowering": "Blütephase",
-      "harvested": "Geerntet"
+      "vegetation": "Wachstumsphase"
     },
     "plant-card-createdAt": "Erstellt am:",
+    "plant-deleted-successfully": "Die Pflanze wurde erfolgreich gelöscht.",
     "planting-date": "Datum der Aussaat",
     "public-link-label": "Öffnen im neuen Tab",
     "sort-plants-createdAt": "Angelegt am",
     "strain": "Strain (Sorte)",
+    "strain-breeder-required-error-description": "Du musst zuerst einen Breeder auswählen, bevor du einen Strain erstellen kannst.",
+    "strain-breeder-required-error-title": "Breeder erforderlich",
+    "strain-create-error-title": "Fehler beim Erstellen des Strains",
+    "strain-create-success-description": "Neuer Strain wurde erfolgreich erstellt.",
+    "strain-create-success-title": "Strain erstellt",
     "subtitle": "Verwalte deine Pflanzen",
     "thc": "THC",
     "thc-content": "THC-Gehalt",
@@ -446,6 +542,9 @@
     "edit-button-label": "Update bearbeiten",
     "linkedInThisPost": "Mit dem Update verlinkt",
     "post-card-createdAt": "Gepostet am",
+    "post-created-successfully": "Post erfolgreich erstellt",
+    "post-delete-failed": "Das Löschen des Posts ist fehlgeschlagen. Bitte versuche es erneut.",
+    "post-deleted-successfully": "Post erfolgreich gelöscht",
     "public-link-label": "Öffnen im neuen Tab"
   },
   "Premium": {
@@ -490,7 +589,11 @@
   "Profile": {
     "FollowButton": {
       "follow": "Folgen",
-      "unfollow": "Entfolgen"
+      "follow-success-description": "Du folgst diesem Benutzer jetzt.",
+      "follow-success-title": "Folgst du",
+      "unfollow": "Entfolgen",
+      "unfollow-success-description": "Du folgst diesem Benutzer nicht mehr.",
+      "unfollow-success-title": "Entfolgt"
     },
     "tabs": {
       "grows": "Grows",

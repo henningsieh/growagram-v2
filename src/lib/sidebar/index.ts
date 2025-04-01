@@ -1,6 +1,6 @@
 // src/lib/sidebar/index.ts:
 import * as Icons from "lucide-react";
-import { type LucideIcon } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import sidebarJsonData from "~/lib/sidebar/data.json";
 import {
   IconComponent,

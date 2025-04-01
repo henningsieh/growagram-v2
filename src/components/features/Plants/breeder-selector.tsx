@@ -1,9 +1,12 @@
 "use client";
 
-import { DnaIcon } from "lucide-react";
-import { useState } from "react";
-import { ComboboxWithCreate } from "~/components/ui/combobox-with-create";
-import type { ComboboxOption } from "~/components/ui/combobox-with-create";
+import * as React from "react";
+import { useTranslations } from "next-intl";
+import { BriefcaseIcon } from "lucide-react";
+import { toast } from "sonner";
+import SpinningLoader from "~/components/Layouts/loader";
+import { ComboboxWithCreate } from "~/components/atom/combobox-with-create";
+import type { ComboboxOption } from "~/components/atom/combobox-with-create";
 import { FormError } from "~/components/ui/form-error";
 import { api } from "~/lib/trpc/react";
 
@@ -18,7 +21,10 @@ export function BreederSelector({
   onChange,
   disabled = false,
 }: BreederSelectorProps) {
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = React.useState<string | null>(null);
+  const t = useTranslations("Plants");
+
+  const utils = api.useUtils();
 
   // Fetch breeders
   const { data: breeders = [] } = api.plants.getBreeders.useQuery();
@@ -34,9 +40,17 @@ export function BreederSelector({
     onSuccess: (data) => {
       onChange(data.id);
       setError(null);
+      // Show success toast
+      toast(t("breeder-create-success-title"), {
+        description: t("breeder-create-success-description"),
+      });
+      // Invalidate queries to refresh the breeders list
+      void utils.plants.getBreeders.invalidate();
     },
     onError: (error) => {
-      setError(error.message);
+      toast.error(t("breeder-create-error-title"), {
+        description: error.message || t("breeder-create-error-description"),
+      });
     },
   });
 
@@ -58,7 +72,7 @@ export function BreederSelector({
         createNewMessage="Create new breeder"
         disabled={disabled || createBreederMutation.isPending}
         onCreateOption={handleCreateBreeder}
-        icon={DnaIcon}
+        icon={BriefcaseIcon}
       />
       {error && <FormError message={error} />}
     </div>

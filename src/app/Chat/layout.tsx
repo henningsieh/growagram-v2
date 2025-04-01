@@ -3,10 +3,8 @@ import { SessionProvider } from "next-auth/react";
 import { Inter } from "next/font/google";
 // eslint-disable-next-line no-restricted-imports
 import Link from "next/link";
-
 import { auth } from "~/lib/auth";
 import { TRPCReactProvider } from "~/lib/trpc/react";
-
 import "../../styles/globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
@@ -28,7 +26,7 @@ export default async function RootLayout({
         <SessionProvider session={session}>
           <TRPCReactProvider>
             <div className="flex h-screen flex-col bg-gray-100 dark:bg-gray-950">
-              <header className="flex h-14 items-center justify-between border-b bg-white px-4 dark:border-gray-800 dark:bg-gray-900 sm:px-6 lg:px-8">
+              <header className="flex h-14 items-center justify-between border-b bg-white px-4 sm:px-6 lg:px-8 dark:border-gray-800 dark:bg-gray-900">
                 <Link className="flex items-center gap-2" href="/Chat">
                   <svg viewBox="0 0 512 512" fill="none" className="size-6">
                     <rect width="512" height="512" rx="150" fill="#398CCB" />

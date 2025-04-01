@@ -1,9 +1,8 @@
 "use client";
 
-import { MoonIcon, SunIcon } from "@radix-ui/react-icons";
-import { ComputerIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
+import { ComputerIcon, MoonIcon, SunIcon } from "lucide-react";
 import { Button } from "~/components/ui/button";
 import {
   DropdownMenu,
@@ -22,15 +21,17 @@ export function ThemeToggle() {
       <DropdownMenuTrigger asChild>
         <Button
           size="icon"
-          variant="ghost"
+          variant="outline"
           aria-haspopup="menu"
           title={t("toggle-theme")}
         >
-          <SunIcon width="20" height="20" className="scale-100 dark:scale-0" />
+          <SunIcon
+            strokeWidth={2.4}
+            className="size-6 scale-100 dark:scale-0"
+          />
           <MoonIcon
-            width="20"
-            height="20"
-            className="absolute scale-0 dark:scale-100"
+            strokeWidth={2.4}
+            className="absolute size-6 scale-0 dark:scale-100"
           />
           <span className="sr-only">{t("toggle-theme")}</span>
         </Button>

@@ -1,5 +1,5 @@
-import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
+import { eq } from "drizzle-orm";
 import { modulePaths } from "~/assets/constants";
 import { env } from "~/env";
 import { db } from "~/lib/db";

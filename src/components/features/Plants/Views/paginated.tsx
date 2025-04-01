@@ -1,15 +1,9 @@
 "use client";
 
 // src/components/features/Plants/Views/paginated.tsx:
+import * as React from "react";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
-import {
-  type Dispatch,
-  type SetStateAction,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
 import { PaginationItemsPerPage } from "~/assets/constants";
 import SpinningLoader from "~/components/Layouts/loader";
 import ResponsiveGrid from "~/components/Layouts/responsive-grid";
@@ -28,7 +22,7 @@ export default function PaginatedPlantsView({
 }: {
   sortField: PlantsSortField;
   sortOrder: SortOrder;
-  setIsFetching: Dispatch<SetStateAction<boolean>>;
+  setIsFetching: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -36,12 +30,12 @@ export default function PaginatedPlantsView({
   const t = useTranslations("Plants");
 
   // Initialize state from URL query params
-  const [currentPage, setCurrentPage] = useState(
+  const [currentPage, setCurrentPage] = React.useState(
     parseInt(searchParams?.get("page") || "1"),
   );
 
   // Function to update URL query params
-  const updateUrlParams = useCallback(() => {
+  const updateUrlParams = React.useCallback(() => {
     const params = new URLSearchParams();
     params.set("page", currentPage.toString());
     params.set("sortField", sortField);
@@ -50,7 +44,7 @@ export default function PaginatedPlantsView({
   }, [currentPage, sortField, sortOrder, router]);
 
   // Sync state with URL query params
-  useEffect(() => {
+  React.useEffect(() => {
     updateUrlParams();
   }, [currentPage, sortField, sortOrder, updateUrlParams]);
 
@@ -76,7 +70,7 @@ export default function PaginatedPlantsView({
   );
 
   // Directly update the parent's isFetching state
-  useEffect(() => {
+  React.useEffect(() => {
     setIsFetching(isFetching);
   }, [isFetching, setIsFetching]);
 
@@ -93,7 +87,7 @@ export default function PaginatedPlantsView({
       {isLoading ? (
         <SpinningLoader className="text-secondary" />
       ) : userPlants.length === 0 ? (
-        <p className="mt-8 text-center text-muted-foreground">
+        <p className="text-muted-foreground mt-8 text-center">
           {t("no-plants-yet")}
         </p>
       ) : (

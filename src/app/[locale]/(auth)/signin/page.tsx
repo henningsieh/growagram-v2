@@ -1,14 +1,14 @@
 "use client";
 
 // src/app/[locale]/(auth)/signin/page.tsx:
-import { Loader2, LogInIcon, MailCheckIcon } from "lucide-react";
+import * as React from "react";
 import { signIn } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
-import * as React from "react";
-import { useEffect } from "react";
+import { Loader2, LogInIcon, MailCheckIcon } from "lucide-react";
 import { FaDiscord, FaFacebook, FaGithub, FaTwitter } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
+import { toast } from "sonner";
 import { modulePaths } from "~/assets/constants";
 import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
 import { Button } from "~/components/ui/button";
@@ -22,14 +22,12 @@ import {
 } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
-import { useToast } from "~/hooks/use-toast";
 import { Link, useRouter } from "~/lib/i18n/routing";
 
 export default function Page() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const t = useTranslations("LoginPage");
-  const { toast } = useToast();
 
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [error, setError] = React.useState<string | null>(null);
@@ -56,34 +54,30 @@ export default function Page() {
     if (result?.error) {
       setError(result.error);
     } else if (result?.ok) {
-      toast({
-        title: "Login successful",
+      toast("Login successful", {
         description: "You have been logged in successfully",
-        variant: "primary",
       });
       router.push(callbackUrl);
     }
   }
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (emailVerified) {
-      toast({
-        title: t("Email-verified-title"),
+      toast(t("Email-verified-title"), {
         description: t("Email-verified-description"),
-        variant: "primary",
       });
     }
-  }, [emailVerified, t, toast]);
+  }, [emailVerified, t]);
 
   return (
-    <Card className="mx-2 my-auto w-full max-w-md xs:mx-auto">
+    <Card className="xs:mx-auto mx-2 my-auto w-full max-w-md">
       <div className="flex min-h-[680px] flex-col justify-between">
         <div className="w-full">
           <CardHeader className="space-y-3">
-            <CardTitle className="flex justify-center text-xl xs:text-2xl">
+            <CardTitle className="xs:text-2xl flex justify-center text-xl">
               {t("title")}
             </CardTitle>
-            <CardDescription className="flex justify-center text-base xs:text-lg">
+            <CardDescription className="xs:text-lg flex justify-center text-base">
               {t("description")}
             </CardDescription>
           </CardHeader>
@@ -176,14 +170,14 @@ export default function Page() {
                   <span className="w-full border-t" />
                 </div>
                 <div className="relative flex justify-center text-sm">
-                  <span className="bg-card px-2 text-muted-foreground">
+                  <span className="bg-card text-muted-foreground px-2">
                     {t("continue-with-email")}
                   </span>
                 </div>
               </div>
               {emailVerified && (
                 <Alert
-                  className="mx-auto max-w-lg bg-accent text-primary-foreground"
+                  className="bg-accent text-primary-foreground mx-auto max-w-lg"
                   variant={"default"}
                 >
                   <MailCheckIcon className="size-5" />

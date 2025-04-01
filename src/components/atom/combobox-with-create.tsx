@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+// src/components/atom/combobox-with-create.tsx:
+import * as React from "react";
 import { Check, ChevronsUpDown, Plus } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
-
-import { cn } from "~/lib/utils";
 import { Button } from "~/components/ui/button";
 import {
   Command,
@@ -18,6 +17,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "~/components/ui/popover";
+import { cn } from "~/lib/utils";
 
 export type ComboboxOption = {
   label: string;
@@ -53,27 +53,27 @@ export function ComboboxWithCreate({
   icon: Icon,
   iconClassName,
 }: ComboboxWithCreateProps) {
-  const [open, setOpen] = useState(false);
-  const [inputValue, setInputValue] = useState("");
-  const [isCreating, setIsCreating] = useState(false);
-  
+  const [open, setOpen] = React.useState(false);
+  const [inputValue, setInputValue] = React.useState("");
+  const [isCreating, setIsCreating] = React.useState(false);
+
   const selectedOption = options.find((option) => option.value === value);
-  
+
   // Initialize and update inputValue when selectedOption changes
-  useEffect(() => {
+  React.useEffect(() => {
     if (selectedOption && !open) {
       setInputValue(selectedOption.label);
     }
   }, [selectedOption, open]);
 
   // Get filtered options based on input
-  const filteredOptions = options.filter((option) => 
-    option.label.toLowerCase().includes(inputValue.toLowerCase())
+  const filteredOptions = options.filter((option) =>
+    option.label.toLowerCase().includes(inputValue.toLowerCase()),
   );
-  
+
   const handleCreateNew = async () => {
     if (!inputValue.trim() || isCreating) return;
-    
+
     setIsCreating(true);
     try {
       if (onCreateOption) {
@@ -90,10 +90,10 @@ export function ComboboxWithCreate({
       setIsCreating(false);
     }
   };
-  
+
   // Check if the exact input matches any existing option
   const exactMatch = options.some(
-    option => option.label.toLowerCase() === inputValue.toLowerCase()
+    (option) => option.label.toLowerCase() === inputValue.toLowerCase(),
   );
 
   return (
@@ -106,9 +106,9 @@ export function ComboboxWithCreate({
           disabled={disabled}
           className={cn(
             "w-full justify-between",
-            Icon && "pl-10 relative",
+            Icon && "relative pl-10",
             disabled ? "opacity-70" : "",
-            triggerClassName
+            triggerClassName,
           )}
           onClick={() => {
             // Clear input when opening if no selection
@@ -118,18 +118,22 @@ export function ComboboxWithCreate({
           }}
         >
           {Icon && (
-            <span className="absolute left-3 top-1/2 -translate-y-1/2">
-              <Icon className={cn("h-5 w-5 text-muted-foreground", iconClassName)} />
+            <span className="absolute top-1/2 left-3 -translate-y-1/2">
+              <Icon
+                className={cn("text-muted-foreground h-5 w-5", iconClassName)}
+              />
             </span>
           )}
           {selectedOption ? selectedOption.label : placeholder}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className={cn("w-[var(--radix-popover-trigger-width)]", className)}>
+      <PopoverContent
+        className={cn("w-[var(--radix-popover-trigger-width)]", className)}
+      >
         <Command shouldFilter={false}>
-          <CommandInput 
-            placeholder={placeholder} 
+          <CommandInput
+            placeholder={placeholder}
             onValueChange={setInputValue}
             value={inputValue}
           />
@@ -138,20 +142,23 @@ export function ComboboxWithCreate({
               <CommandEmpty>
                 {emptyMessage}
                 {inputValue && onCreateOption && !exactMatch && (
-                  <Button 
-                    variant="ghost" 
+                  <Button
+                    variant="ghost"
                     className="mt-2 w-full justify-start"
                     onClick={handleCreateNew}
                     disabled={isCreating}
                   >
                     <Plus className="mr-2 h-4 w-4" />
-                    {createNewMessage}{': "'}{inputValue}{'"'}
+                    {createNewMessage}
+                    {': "'}
+                    {inputValue}
+                    {'"'}
                     {isCreating && "..."}
                   </Button>
                 )}
               </CommandEmpty>
             )}
-            
+
             {filteredOptions.length > 0 && (
               <CommandGroup>
                 {filteredOptions.map((option) => (
@@ -167,7 +174,7 @@ export function ComboboxWithCreate({
                     <Check
                       className={cn(
                         "mr-2 h-4 w-4",
-                        value === option.value ? "opacity-100" : "opacity-0"
+                        value === option.value ? "opacity-100" : "opacity-0",
                       )}
                     />
                     {option.label}
@@ -175,19 +182,28 @@ export function ComboboxWithCreate({
                 ))}
               </CommandGroup>
             )}
-            
-            {inputValue && onCreateOption && !exactMatch && filteredOptions.length > 0 && (
-              <>
-                <CommandSeparator />
-                <CommandGroup>
-                  <CommandItem onSelect={handleCreateNew} disabled={isCreating}>
-                    <Plus className="mr-2 h-4 w-4" />
-                    {createNewMessage}{': "'}{inputValue}{'"'}
-                    {isCreating && "..."}
-                  </CommandItem>
-                </CommandGroup>
-              </>
-            )}
+
+            {inputValue &&
+              onCreateOption &&
+              !exactMatch &&
+              filteredOptions.length > 0 && (
+                <>
+                  <CommandSeparator />
+                  <CommandGroup>
+                    <CommandItem
+                      onSelect={handleCreateNew}
+                      disabled={isCreating}
+                    >
+                      <Plus className="mr-2 h-4 w-4" />
+                      {createNewMessage}
+                      {': "'}
+                      {inputValue}
+                      {'"'}
+                      {isCreating && "..."}
+                    </CommandItem>
+                  </CommandGroup>
+                </>
+              )}
           </CommandList>
         </Command>
       </PopoverContent>

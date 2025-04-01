@@ -1,7 +1,7 @@
-import { CameraIcon } from "lucide-react";
+import * as React from "react";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
-import { useEffect } from "react";
+import { CameraIcon } from "lucide-react";
 import { RESPONSIVE_IMAGE_SIZES } from "~/components/Layouts/responsive-grid";
 import { useImageModal } from "~/components/features/Photos/modal-provider";
 import {
@@ -23,7 +23,7 @@ export const ImageCarousel = ({
   const { openImageModal } = useImageModal();
   const t = useTranslations();
 
-  useEffect(() => {
+  React.useEffect(() => {
     plantImages.forEach((plantImage) => {
       const imageLoader = new window.Image();
       imageLoader.src = plantImage.image.imageUrl;
@@ -35,7 +35,7 @@ export const ImageCarousel = ({
   if (!plantImages.length)
     return (
       <div className="relative aspect-video w-full">
-        <div className="flex h-full items-center justify-center bg-muted text-muted-foreground">
+        <div className="bg-muted text-muted-foreground flex h-full items-center justify-center">
           {t("Photos.no-photos-yet")}
         </div>
       </div>
@@ -60,10 +60,10 @@ export const ImageCarousel = ({
         priority={isPriority}
         src={image.imageUrl}
         alt={`Plant image captured on ${image.captureDate.toLocaleDateString()}`}
-        className="object-cover"
+        className="rounded-sm object-cover"
         loading={isPriority ? undefined : "eager"}
       />
-      <div className="absolute bottom-0 left-0 right-0 bg-accent/50 p-2 text-accent-foreground">
+      <div className="bg-accent/50 text-accent-foreground absolute right-0 bottom-0 left-0 p-2">
         <div className="flex items-center gap-2 font-mono text-sm">
           <CameraIcon size={16} />
           <span>

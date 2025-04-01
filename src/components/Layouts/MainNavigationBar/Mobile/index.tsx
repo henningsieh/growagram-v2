@@ -1,8 +1,8 @@
 "use client";
 
-import { Menu } from "lucide-react";
-import { useTranslations } from "next-intl";
 import * as React from "react";
+import { useTranslations } from "next-intl";
+import { MenuIcon } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -37,14 +37,14 @@ export default function MobileNavigationMenu() {
             className="nav-item-featured flex flex-col justify-center"
             onClick={() => setOpen(false)}
           >
-            <div className="flex items-center text-2xl font-bold text-primary">
+            <div className="text-primary flex items-center text-2xl font-bold">
               {content.featured.icon &&
                 React.createElement(content.featured.icon, {
                   className: "mr-2 h-5 w-5",
                 })}
               {t(content.featured.title)}
             </div>
-            <p className="text-base text-muted-foreground">
+            <p className="text-muted-foreground text-base">
               {t(content.featured.description)}
             </p>
           </Link>
@@ -56,14 +56,14 @@ export default function MobileNavigationMenu() {
             className="nav-item block space-y-1"
             onClick={() => setOpen(false)}
           >
-            <div className="flex items-center text-lg font-semibold leading-none">
+            <div className="flex items-center text-lg leading-none font-semibold">
               {item.icon &&
                 React.createElement(item.icon, {
                   className: "mr-2 h-5 w-5",
                 })}
               {t(item.title)}
             </div>
-            <p className="pt-1 text-sm leading-snug text-muted-foreground">
+            <p className="text-muted-foreground pt-1 text-sm leading-snug">
               {t(item.description)}
             </p>
           </Link>
@@ -76,17 +76,17 @@ export default function MobileNavigationMenu() {
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild className="block md:hidden">
         <Button
-          variant="ghost"
+          variant="outline"
           size="icon"
-          // className="hover:bg-primary/10 hover:text-primary md:hidden"
+          className="flex items-center has-[>svg]:m-auto has-[>svg]:px-0"
         >
-          <Menu size={32} />
+          <MenuIcon strokeWidth={2.0} className="size-8" />
           <span className="sr-only">{t("toggle-menu")}</span>
         </Button>
       </SheetTrigger>
       <SheetContent side="right" className="w-full border-l p-0">
-        <SheetHeader className="flex items-center justify-between border-b border-border p-6">
-          <SheetTitle className="text-2xl font-bold text-primary">
+        <SheetHeader className="border-border flex items-center justify-between border-b p-6">
+          <SheetTitle className="text-primary text-2xl font-bold">
             {t("navigation")}
           </SheetTitle>
         </SheetHeader>
@@ -97,8 +97,9 @@ export default function MobileNavigationMenu() {
                 item.type === "link" ? (
                   <Button
                     key={item.title}
+                    asChild
                     variant="ghost"
-                    className="w-full justify-start p-3 text-lg font-semibold hover:bg-accent hover:text-foreground"
+                    className="hover:bg-accent hover:text-foreground w-full justify-start p-3 text-lg font-semibold"
                   >
                     <Link href={item.href!} onClick={() => setOpen(false)}>
                       {t(item.title)}
@@ -119,7 +120,7 @@ export default function MobileNavigationMenu() {
                     >
                       {t(item.title)}
                     </AccordionTrigger>
-                    <AccordionContent className="pb-1 pt-3">
+                    <AccordionContent className="pt-3 pb-1">
                       {renderMenuContent(item.content)}
                     </AccordionContent>
                   </AccordionItem>

@@ -1,10 +1,11 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { ShareIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ShareIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 import { EmbeddedGrowCard } from "~/components/features/Grows/embedded-grow-card";
 import { EnhancedPlantCard } from "~/components/features/Plants/enhanced-plant-card.tsx";
@@ -27,7 +28,6 @@ import {
 } from "~/components/ui/form";
 import { Modal } from "~/components/ui/modal";
 import { Textarea } from "~/components/ui/textarea";
-import { useToast } from "~/hooks/use-toast";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import type {
@@ -58,13 +58,12 @@ interface PostFormModalProps {
  * @param {object} entity - The entity to which the new post will be connected.
  * @param {PostableEntityType} entityType - The type of the entity.
  */
-export default function PostFormModal({
+export function PostFormModal({
   isOpen,
   onClose,
   entity,
   entityType,
 }: PostFormModalProps) {
-  const { toast } = useToast();
   const router = useRouter();
   const t = useTranslations("Posts");
 
@@ -78,18 +77,15 @@ export default function PostFormModal({
 
   const createPostMutation = api.updates.create.useMutation({
     onSuccess: () => {
-      toast({
-        title: "Success",
-        description: "Post created successfully",
+      toast("Success", {
+        description: t("post-created-successfully"),
       });
       router.push("/public/timeline");
       onClose();
     },
-    onError: (error) => {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
+    onError: () => {
+      toast.error("Error", {
+        description: t("toast-errors.update-submission-error"),
       });
     },
   });

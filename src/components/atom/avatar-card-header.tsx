@@ -1,11 +1,11 @@
 "use client";
 
+import * as React from "react";
+import type { VariantProps } from "class-variance-authority";
 import type { LucideIcon } from "lucide-react";
 import { MoreHorizontal, ShieldIcon } from "lucide-react";
-import * as React from "react";
-
-import CustomAvatar from "~/components/atom/custom-avatar";
-import { Button, type ButtonProps } from "~/components/ui/button";
+import { CustomAvatar } from "~/components/atom/custom-avatar";
+import { Button, buttonVariants } from "~/components/ui/button";
 import { CardHeader } from "~/components/ui/card";
 import {
   DropdownMenu,
@@ -21,7 +21,7 @@ export interface ActionItem {
   icon: LucideIcon;
   label: string;
   onClick: () => void;
-  variant?: ButtonProps["variant"];
+  variant?: VariantProps<typeof buttonVariants>["variant"];
   disabled?: boolean;
 }
 
@@ -39,23 +39,23 @@ function AvatarCardHeader({
   actions,
 }: SocialHeaderProps) {
   return (
-    <CardHeader className="space-y-0 py-0 pl-1 pr-1">
+    <CardHeader className="space-y-0 px-1 py-0">
       <div className="flex items-start justify-between py-1">
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-2">
           <CustomAvatar
-            size={38}
+            size={36}
             src={user.image ?? undefined}
             alt={user.username ?? "User avatar"}
             fallback={user.name?.[0] || "?"}
           />
-          <div className="flex flex-col gap-0 xs:flex-row xs:gap-1">
+          <div className="xs:flex-row xs:gap-1 flex flex-col gap-0">
             <Link
               href={`/public/profile/${user.id}`}
-              className="flex items-center text-sm text-muted-foreground"
+              className="text-muted-foreground flex items-center text-sm"
               // eslint-disable-next-line react/jsx-no-literals
             >
               <div className="flex items-center gap-2 whitespace-nowrap">
-                <p className="text-sm font-bold text-foreground underline-offset-4 hover:underline">
+                <p className="text-foreground text-sm font-bold underline-offset-4 hover:underline">
                   {user.name}
                 </p>
                 {user.role === UserRoles.ADMIN && (

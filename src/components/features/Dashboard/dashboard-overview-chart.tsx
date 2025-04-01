@@ -23,7 +23,7 @@ export function PlantsOverviewChart({ plantsData }: PlantsOverviewChartProps) {
   // If no data, return placeholder
   if (!plantsData || plantsData.length === 0) {
     return (
-      <div className="flex h-[300px] w-full items-center justify-center text-muted-foreground">
+      <div className="text-muted-foreground flex h-[300px] w-full items-center justify-center">
         {t("no-plants-yet")}
       </div>
     );

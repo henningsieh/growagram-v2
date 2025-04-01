@@ -1,5 +1,5 @@
-import { X } from "lucide-react";
 import { useLocale } from "next-intl";
+import { X } from "lucide-react";
 import type { ControllerRenderProps, FieldValues, Path } from "react-hook-form";
 import { Button } from "~/components/ui/button";
 import { Calendar } from "~/components/ui/calendar";
@@ -53,9 +53,9 @@ export default function PlantFormDateField<TFieldValues extends FieldValues>({
               <Button
                 variant="outline"
                 className={cn(
-                  "w-full justify-between pl-2 pr-1 text-left font-normal md:text-base",
+                  "w-full justify-between pr-1 pl-2 text-left font-normal md:text-base",
                   field.value && "text-foreground",
-                  "focus-visible:outline-1 focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-0",
+                  "focus-visible:ring-ring focus-visible:ring-1 focus-visible:ring-offset-0 focus-visible:outline-1",
                 )}
               >
                 <div className="flex items-center gap-2">
@@ -76,7 +76,7 @@ export default function PlantFormDateField<TFieldValues extends FieldValues>({
               </Button>
             </FormControl>
           </PopoverTrigger>
-          <PopoverContent className="w-auto border-primary p-0" align="start">
+          <PopoverContent className="border-primary w-auto p-0" align="start">
             <Calendar
               mode="single"
               selected={field.value}

@@ -1,9 +1,8 @@
-import { HashtagIcon } from "@heroicons/react/24/outline";
+import * as React from "react";
 // eslint-disable-next-line no-restricted-imports
 import Link from "next/link";
-import { Suspense } from "react";
+import { HashtagIcon } from "@heroicons/react/24/outline";
 import { twMerge } from "tailwind-merge";
-
 import { CreateChannelDialog } from "~/app/Chat/channels/create-channel";
 import { buttonVariants } from "~/components/button";
 import { SignedIn, SignedOut } from "~/lib/auth/index";
@@ -52,14 +51,14 @@ export default async function Home() {
             <h2 className="text-lg font-medium text-gray-950 dark:text-gray-50">
               Channels
             </h2>
-            <Suspense>
+            <React.Suspense>
               <SignedIn>
                 <CreateChannelDialog />
               </SignedIn>
               <SignedOut>
                 <Link href="/api/auth/signin">Login</Link>
               </SignedOut>
-            </Suspense>
+            </React.Suspense>
           </div>
           <div className="flex w-full flex-col items-start">
             {channels.map((channel) => (

@@ -1,17 +1,18 @@
-import { User2 } from "lucide-react";
+// src/components/atom/custom-avatar.tsx:
+import * as React from "react";
 import Image from "next/image";
-import type { HTMLAttributes, ReactNode } from "react";
+import { User2 } from "lucide-react";
 import { Avatar, AvatarFallback } from "~/components/ui/avatar";
 import { cn } from "~/lib/utils";
 
-interface CustomAvatarProps extends HTMLAttributes<HTMLDivElement> {
+interface CustomAvatarProps extends React.HTMLAttributes<HTMLDivElement> {
   src?: string;
   alt: string;
-  fallback?: ReactNode;
+  fallback?: React.ReactNode;
   size?: number;
 }
 
-export default function CustomAvatar({
+export function CustomAvatar({
   src,
   alt,
   fallback,

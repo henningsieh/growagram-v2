@@ -1,9 +1,9 @@
 // src/hooks/use-notifications.ts:
-import { skipToken } from "@tanstack/react-query";
+import * as React from "react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
-import * as React from "react";
-import { useToast } from "~/hooks/use-toast";
+import { skipToken } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { api } from "~/lib/trpc/react";
 import {
   type GetAllNotificationType,
@@ -23,7 +23,6 @@ export function useNotifications(onlyUnread = true) {
     false,
   );
   const utils = api.useUtils();
-  const { toast } = useToast();
   const { status } = useSession();
   const t = useTranslations("Notifications");
 
@@ -112,8 +111,7 @@ export function useNotifications(onlyUnread = true) {
           notification.type,
           notification.entityType,
         );
-        toast({
-          title: t("new_notification"),
+        toast(t("new_notification"), {
           description: `${notification.actor.name} ${notificationText}`,
         });
         utils.notifications.getAll.invalidate();

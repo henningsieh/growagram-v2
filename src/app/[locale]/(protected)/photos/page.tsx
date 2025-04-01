@@ -1,10 +1,10 @@
 "use client";
 
 // src/app/[locale]/(protected)/photos/page.tsx:
-import { Infinity, Camera, UploadCloud } from "lucide-react";
+import * as React from "react";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { Infinity, Camera, UploadCloud } from "lucide-react";
 import { modulePaths } from "~/assets/constants";
 import PageHeader from "~/components/Layouts/page-header";
 import {
@@ -22,26 +22,26 @@ export default function MyImagesPage() {
   const t = useTranslations("Photos");
 
   // Manage view mode state
-  const [viewMode, setViewMode] = useState<string>(
+  const [viewMode, setViewMode] = React.useState<string>(
     (localStorage.getItem("photoViewMode") as PhotosViewMode) ||
       PhotosViewMode.PAGINATION,
   );
 
   // Shared state for sorting and filtering
-  const [sortField, setSortField] = useState<PhotosSortField>(
+  const [sortField, setSortField] = React.useState<PhotosSortField>(
     (searchParams?.get("sortField") as PhotosSortField) ||
       PhotosSortField.UPLOAD_DATE,
   );
-  const [sortOrder, setSortOrder] = useState<SortOrder>(
+  const [sortOrder, setSortOrder] = React.useState<SortOrder>(
     (searchParams?.get("sortOrder") as SortOrder) || SortOrder.DESC,
   );
-  const [filterNotConnected, setFilterNotConnected] = useState(
+  const [filterNotConnected, setFilterNotConnected] = React.useState(
     searchParams?.get("filterNotConnected") === "true",
   );
-  const [isFetching, setIsFetching] = useState<boolean>(false);
+  const [isFetching, setIsFetching] = React.useState<boolean>(false);
 
   // Update URL parameters
-  const updateUrlParams = useCallback(() => {
+  const updateUrlParams = React.useCallback(() => {
     const params = new URLSearchParams();
     if (viewMode === PhotosViewMode.PAGINATION) {
       params.set("page", searchParams?.get("page") || "1");
@@ -65,7 +65,7 @@ export default function MyImagesPage() {
   ]);
 
   // Sync state with URL
-  useEffect(() => {
+  React.useEffect(() => {
     updateUrlParams();
   }, [sortField, sortOrder, filterNotConnected, updateUrlParams]);
 

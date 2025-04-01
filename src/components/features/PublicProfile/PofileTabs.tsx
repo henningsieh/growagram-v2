@@ -14,11 +14,11 @@ export const ProfileTabs = ({ profile }: ProfileTabsProps) => {
   const t = useTranslations();
   return (
     <Tabs defaultValue="grows" className="w-full">
-      <TabsList className="grid w-full grid-cols-3 bg-muted font-extrabold text-muted-foreground">
+      <TabsList className="bg-muted text-muted-foreground grid w-full grid-cols-3 font-extrabold">
         <TabsTrigger value="timeline" disabled>
           {t("Profile.tabs.timeline")}
           <span
-            className="ml-2 text-xs text-muted-foreground"
+            className="text-muted-foreground ml-2 text-xs"
             // eslint-disable-next-line react/jsx-no-literals
           >
             (
@@ -31,7 +31,7 @@ export const ProfileTabs = ({ profile }: ProfileTabsProps) => {
         </TabsTrigger>
         <TabsTrigger
           value="grows"
-          className="font-semibold data-[state=active]:bg-primary data-[state=active]:font-bold data-[state=active]:text-primary-foreground"
+          className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-semibold data-[state=active]:font-bold"
         >
           {t("Profile.tabs.grows")}
           {
@@ -49,7 +49,7 @@ export const ProfileTabs = ({ profile }: ProfileTabsProps) => {
         </TabsTrigger>
         <TabsTrigger
           value="plants"
-          className="font-semibold data-[state=active]:bg-primary data-[state=active]:font-bold data-[state=active]:text-primary-foreground"
+          className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-semibold data-[state=active]:font-bold"
         >
           {
             t("Profile.tabs.plants")

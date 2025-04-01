@@ -1,12 +1,12 @@
 "use client";
 
 // src/app/[locale]/(auth)/signup/page.tsx:
+import * as React from "react";
+import { useLocale, useTranslations } from "next-intl";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TRPCClientError } from "@trpc/client";
 import { motion } from "framer-motion";
 import { AtSign, ClipboardPenLineIcon, Mail, UserIcon } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
-import { useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { modulePaths } from "~/assets/constants";
 import SpinningLoader from "~/components/Layouts/loader";
@@ -59,7 +59,7 @@ export default function RegisterPage() {
   const form = useForm<RegisterUserInput>({
     mode: "onBlur",
     resolver: zodResolver(
-      useMemo(() => createRegisterSchema(tSchema), [tSchema]),
+      React.useMemo(() => createRegisterSchema(tSchema), [tSchema]),
     ),
     defaultValues: {
       email: "",
@@ -111,14 +111,14 @@ export default function RegisterPage() {
   });
 
   return (
-    <Card className="mx-2 my-auto w-full max-w-md xs:mx-auto">
+    <Card className="xs:mx-auto mx-2 my-auto w-full max-w-md">
       <div className="flex min-h-[680px] flex-col justify-between">
         <div className="w-full">
           <CardHeader className="space-y-3">
-            <CardTitle className="flex justify-center text-xl xs:text-2xl">
+            <CardTitle className="xs:text-2xl flex justify-center text-xl">
               {t("title")}
             </CardTitle>
-            <CardDescription className="flex justify-center text-base xs:text-lg">
+            <CardDescription className="xs:text-lg flex justify-center text-base">
               {t("description")}
             </CardDescription>
           </CardHeader>
@@ -141,7 +141,7 @@ export default function RegisterPage() {
                           <FormLabel>{t("email.label")}</FormLabel>
                           <FormControl>
                             <div className="relative">
-                              <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-foreground" />
+                              <Mail className="text-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
                               <Input
                                 className="pl-10"
                                 placeholder="weedwarrior@gmail.com"
@@ -165,7 +165,7 @@ export default function RegisterPage() {
                           <FormLabel>{t("username.label")}</FormLabel>
                           <FormControl>
                             <div className="relative">
-                              <AtSign className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-foreground" />
+                              <AtSign className="text-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
                               <Input
                                 className="pl-10"
                                 placeholder="weedwarrior"
@@ -189,7 +189,7 @@ export default function RegisterPage() {
                           <FormLabel>{t("name.label")}</FormLabel>
                           <FormControl>
                             <div className="relative">
-                              <UserIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-foreground" />
+                              <UserIcon className="text-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
                               <Input
                                 className="pl-10"
                                 placeholder="Weed Warrior"

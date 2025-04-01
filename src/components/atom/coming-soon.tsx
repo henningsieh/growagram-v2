@@ -1,8 +1,8 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import { Clock, Rocket } from "lucide-react";
-import { useTranslations } from "next-intl";
 import { Button } from "~/components/ui/button";
 import { Link } from "~/lib/i18n/routing";
 
@@ -50,11 +50,11 @@ export default function ComingSoon() {
           variants={itemVariants}
           className="flex items-center justify-center gap-6"
         >
-          <Clock className="h-24 w-24 text-primary" />
+          <Clock className="text-primary h-24 w-24" />
           <motion.div
             variants={pulseVariants}
             animate="pulse"
-            className="text-4xl font-bold text-primary"
+            className="text-primary text-4xl font-bold"
           >
             {t("coming-soon")}
           </motion.div>
@@ -62,14 +62,14 @@ export default function ComingSoon() {
 
         <motion.h1
           variants={itemVariants}
-          className="text-2xl font-bold tracking-tight text-foreground"
+          className="text-foreground text-2xl font-bold tracking-tight"
         >
           {t("feature-coming")}
         </motion.h1>
 
         <motion.p
           variants={itemVariants}
-          className="text-lg text-muted-foreground"
+          className="text-muted-foreground text-lg"
         >
           {t("coming-soon-description")}
         </motion.p>

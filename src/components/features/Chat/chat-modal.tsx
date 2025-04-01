@@ -1,12 +1,12 @@
 "use client";
 
 // src/components/features/Chat/chat-modal.tsx:
+import * as React from "react";
+import { useSession } from "next-auth/react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Loader2, Send, X } from "lucide-react";
-import { useSession } from "next-auth/react";
-import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import CustomAvatar from "~/components/atom/custom-avatar";
+import { CustomAvatar } from "~/components/atom/custom-avatar";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { EnhancedScrollArea } from "~/components/ui/enhanced-scroll-area";
@@ -21,9 +21,9 @@ export function ChatModal({
   onClose: () => void;
 }) {
   const { data: session, status } = useSession();
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const scrollViewportRef = useRef<HTMLDivElement>(null);
+  const [message, setMessage] = React.useState("");
+  const [error, setError] = React.useState<string | null>(null);
+  const scrollViewportRef = React.useRef<HTMLDivElement>(null);
   const utils = api.useUtils();
 
   const { data: messages } = api.chat.getMessages.useQuery(undefined, {
@@ -45,7 +45,7 @@ export function ChatModal({
   });
 
   // Cleanup subscription when modal closes
-  useEffect(() => {
+  React.useEffect(() => {
     if (!isOpen) {
       utils.chat.getMessages.reset();
     }
@@ -76,7 +76,7 @@ export function ChatModal({
     }
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (isOpen && scrollViewportRef.current) {
       const scrollContainer = scrollViewportRef.current;
       scrollContainer.scrollTop = scrollContainer.scrollHeight;
@@ -134,7 +134,7 @@ export function ChatModal({
                       size={40}
                     />
                     <div
-                      className={`max-w-[75%] break-words rounded-sm px-4 py-2 ${
+                      className={`max-w-[75%] rounded-sm px-4 py-2 break-words ${
                         msg.senderId === session?.user.id
                           ? "bg-muted text-muted-foreground"
                           : "bg-accent text-accent-foreground"

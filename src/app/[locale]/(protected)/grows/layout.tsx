@@ -2,7 +2,7 @@
 import { PaginationItemsPerPage } from "~/assets/constants";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
 import { HydrateClient, api } from "~/lib/trpc/server";
-import { type GetOwnGrowsInput } from "~/server/api/root";
+import type { GetOwnGrowsInput } from "~/server/api/root";
 import { GrowsSortField } from "~/types/grow";
 
 export const metadata = {

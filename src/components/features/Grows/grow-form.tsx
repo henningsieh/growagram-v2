@@ -1,11 +1,12 @@
 "use client";
 
+import * as React from "react";
+import { useTranslations } from "next-intl";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TRPCClientError } from "@trpc/client";
 import { Check, TagIcon, TentTree } from "lucide-react";
-import { useTranslations } from "next-intl";
-import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 import { PaginationItemsPerPage, modulePaths } from "~/assets/constants";
 import FormContent from "~/components/Layouts/form-content";
@@ -40,7 +41,6 @@ import {
   FormMessage,
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
-import { useToast } from "~/hooks/use-toast";
 import { Link, useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import type {
@@ -84,30 +84,22 @@ export default function GrowFormPage({ grow }: { grow?: GetGrowByIdType }) {
 
   const utils = api.useUtils();
   const router = useRouter();
-  const { toast } = useToast();
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [searchQuery, setSearchQuery] = React.useState("");
 
   /**
    * Handle TRPC errors and display appropriate toast messages
    */
   const handleTRPCError = (error: unknown) => {
     if (error instanceof TRPCClientError) {
-      // Extract the error message, defaulting to a generic error
       const errorMessage = error.message || t("error-default");
-
-      toast({
-        title: t("error-title"),
+      toast.error(t("error-title"), {
         description: errorMessage,
-        variant: "destructive",
       });
     } else {
-      // Handle any other unexpected errors
-      toast({
-        title: t("error-title"),
+      toast.error(t("error-title"), {
         description: t("unexpected-error"),
-        variant: "destructive",
       });
     }
   };
@@ -120,8 +112,15 @@ export default function GrowFormPage({ grow }: { grow?: GetGrowByIdType }) {
       // Invalidate and refetch relevant queries
       await utils.grows.getOwnGrows.invalidate();
       await utils.plants.getOwnPlants.invalidate();
+
+      toast(t("toasts.connect-success.title"), {
+        description: t("toasts.connect-success.description"),
+      });
     },
     onError: (error) => {
+      toast.error(t("error-title"), {
+        description: t("connect-error"),
+      });
       handleTRPCError(error);
     },
   });
@@ -134,8 +133,15 @@ export default function GrowFormPage({ grow }: { grow?: GetGrowByIdType }) {
       // Invalidate and refetch relevant queries
       await utils.grows.getOwnGrows.invalidate();
       await utils.plants.getOwnPlants.invalidate();
+
+      toast(t("toasts.disconnect-success.title"), {
+        description: t("toasts.disconnect-success.description"),
+      });
     },
     onError: (error) => {
+      toast.error(t("error-title"), {
+        description: t("disconnect-error"),
+      });
       handleTRPCError(error);
     },
   });
@@ -153,17 +159,17 @@ export default function GrowFormPage({ grow }: { grow?: GetGrowByIdType }) {
         initialData: initialData,
       },
     );
-  const plants = useMemo(() => plantsData?.plants || [], [plantsData]);
+  const plants = React.useMemo(() => plantsData?.plants || [], [plantsData]);
 
-  const initialConnectedPlantIds = useMemo(
+  const initialConnectedPlantIds = React.useMemo(
     () => grow?.plants?.map((plant) => plant.id) || [],
     [grow?.plants],
   );
-  const [selectedPlantIds, setSelectedPlantIds] = useState<string[]>(
+  const [selectedPlantIds, setSelectedPlantIds] = React.useState<string[]>(
     initialConnectedPlantIds,
   );
 
-  const filteredPlants = useMemo(() => {
+  const filteredPlants = React.useMemo(() => {
     if (!plants.length) return [];
     return plants.filter(
       (p) =>
@@ -235,8 +241,7 @@ export default function GrowFormPage({ grow }: { grow?: GetGrowByIdType }) {
           throw new Error(errorMessages.join("; "));
         }
 
-        toast({
-          title: pageTexts.successToast.title,
+        toast(pageTexts.successToast.title, {
           description: pageTexts.successToast.description,
         });
 
@@ -257,14 +262,18 @@ export default function GrowFormPage({ grow }: { grow?: GetGrowByIdType }) {
         // Navigate to grows page
         router.push("/grows"); //TODO: add paginated parameters?
       } catch (error) {
-        // Handle specific error types
+        toast.error(t("error-title"), {
+          description: t("error-default"),
+        });
         handleTRPCError(error);
       } finally {
         setIsSubmitting(false);
       }
     },
     onError: (error) => {
-      // Handle mutation creation/edit errors
+      toast.error(t("error-title"), {
+        description: t("error-default"),
+      });
       handleTRPCError(error);
       setIsSubmitting(false);
     },
@@ -279,6 +288,9 @@ export default function GrowFormPage({ grow }: { grow?: GetGrowByIdType }) {
       );
     } catch (error) {
       // Catch any unexpected errors during submission
+      toast.error(t("error-title"), {
+        description: t("error-default"),
+      });
       handleTRPCError(error);
       setIsSubmitting(false);
     }
@@ -328,7 +340,7 @@ export default function GrowFormPage({ grow }: { grow?: GetGrowByIdType }) {
                         </FormLabel>
                         <FormControl>
                           <div className="relative">
-                            <TentTree className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+                            <TentTree className="text-muted-foreground absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2" />
                             <Input
                               className="pl-10"
                               placeholder={t("grow-name-placeholder")}
@@ -384,7 +396,7 @@ export default function GrowFormPage({ grow }: { grow?: GetGrowByIdType }) {
                                 onSelect={() => togglePlantSelection(plant.id)}
                                 className={`cursor-pointer ${
                                   selectedPlantIds.includes(plant.id)
-                                    ? "font-bold text-secondary"
+                                    ? "text-secondary font-bold"
                                     : ""
                                 }`}
                               >
@@ -396,7 +408,7 @@ export default function GrowFormPage({ grow }: { grow?: GetGrowByIdType }) {
                                   }`}
                                 >
                                   {selectedPlantIds.includes(plant.id) && (
-                                    <Check className="h-3 w-3 text-primary-foreground" />
+                                    <Check className="text-primary-foreground h-3 w-3" />
                                   )}
                                 </div>
                                 <TagIcon className="mr-2 h-4 w-4" />

@@ -1,5 +1,6 @@
 "use client";
 
+import * as React from "react";
 import {
   PopoverContentProps,
   PopoverProps,
@@ -10,32 +11,29 @@ import {
   TooltipProps,
   TooltipTriggerProps,
 } from "@radix-ui/react-tooltip";
-import {
-  PropsWithChildren,
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
-
-import { Popover, PopoverContent, PopoverTrigger } from "./popover";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./tooltip";
 import { cn } from "~/lib/utils";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip";
 
-const TouchContext = createContext<boolean | undefined>(undefined);
-const useTouch = () => useContext(TouchContext);
+const TouchContext = React.createContext<boolean | undefined>(undefined);
+const useTouch = () => React.useContext(TouchContext);
 
-export const TouchProvider = (props: PropsWithChildren) => {
-  const [isTouch, setTouch] = useState<boolean>(true);
+export const TouchProvider = (props: React.PropsWithChildren) => {
+  const [isTouch, setTouch] = React.useState<boolean>(true);
 
-  useEffect(() => {
+  React.useEffect(() => {
     const mediaQuery = window.matchMedia("(pointer: coarse)");
-  
+
     const updateTouch = () => setTouch(mediaQuery.matches);
     updateTouch(); // Set the initial value
-    
+
     mediaQuery.addEventListener("change", updateTouch);
-    
+
     return () => {
       mediaQuery.removeEventListener("change", updateTouch);
     };
@@ -47,7 +45,13 @@ export const TouchProvider = (props: PropsWithChildren) => {
 export const HybridTooltip = (props: TooltipProps & PopoverProps) => {
   const isTouch = useTouch();
 
-  return isTouch ? <Popover  {...props} /> : <TooltipProvider><Tooltip {...props} /></TooltipProvider>;
+  return isTouch ? (
+    <Popover {...props} />
+  ) : (
+    <TooltipProvider>
+      <Tooltip {...props} />
+    </TooltipProvider>
+  );
 };
 
 export const HybridTooltipTrigger = (
@@ -69,24 +73,21 @@ export const HybridTooltipContent = (
   const { className, ...restProps } = props;
 
   return isTouch ? (
-    <PopoverContent 
+    <PopoverContent
       className={cn(
-        "bg-card border text-sm text-card-foreground p-1 w-auto",
-        className
-      )} 
-      side="top" 
-      align="center" 
-      {...restProps} 
+        "bg-card text-card-foreground w-auto border p-1 text-sm",
+        className,
+      )}
+      side="top"
+      align="center"
+      {...restProps}
     />
   ) : (
-    <TooltipContent 
-      className={cn(
-        "bg-card border text-sm text-card-foreground",
-        className
-      )} 
-      side="top" 
-      align="center" 
-      {...restProps} 
+    <TooltipContent
+      className={cn("bg-card text-card-foreground border text-sm", className)}
+      side="top"
+      align="center"
+      {...restProps}
     />
   );
 };

@@ -1,8 +1,8 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeftIcon, HomeIcon, XCircle } from "lucide-react";
-import { useTranslations } from "next-intl";
 import { Button } from "~/components/ui/button";
 import { Link, usePathname, useRouter } from "~/lib/i18n/routing";
 
@@ -51,8 +51,8 @@ export function NotFoundWithPath() {
             variants={itemVariants}
             className="flex items-center justify-center gap-6"
           >
-            <XCircle className="h-32 w-32 text-destructive" />
-            <p className="text-6xl text-destructive">
+            <XCircle className="text-destructive h-32 w-32" />
+            <p className="text-destructive text-6xl">
               {
                 // eslint-disable-next-line react/jsx-no-literals
                 "404"
@@ -62,13 +62,13 @@ export function NotFoundWithPath() {
 
           <motion.h1
             variants={itemVariants}
-            className="text-5xl font-bold tracking-tight text-foreground"
+            className="text-foreground text-5xl font-bold tracking-tight"
           >
             {t("title")}
           </motion.h1>
 
           <motion.div variants={pathVariants}>
-            <h2 className="flex flex-col items-center text-lg font-medium text-muted-foreground">
+            <h2 className="text-muted-foreground flex flex-col items-center text-lg font-medium">
               <span>
                 {t("path")}
                 {
@@ -80,7 +80,7 @@ export function NotFoundWithPath() {
                 initial={{ opacity: 0, scale: 0.2 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.4, duration: 0.6 }}
-                className="mt-2 inline-block rounded-sm bg-muted px-3 py-1 font-mono text-sm text-foreground shadow-sm"
+                className="bg-muted text-foreground mt-2 inline-block rounded-sm px-3 py-1 font-mono text-sm shadow-2xs"
               >
                 {pathname}
               </motion.span>
@@ -89,7 +89,7 @@ export function NotFoundWithPath() {
 
           <motion.p
             variants={itemVariants}
-            className="text-lg text-muted-foreground"
+            className="text-muted-foreground text-lg"
           >
             {t("message")}
           </motion.p>

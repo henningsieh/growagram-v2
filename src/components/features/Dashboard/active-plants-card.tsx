@@ -1,7 +1,7 @@
 "use client";
 
-import { Sprout } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { Sprout } from "lucide-react";
 import { EnhancedPlantCard } from "~/components/features/Plants/enhanced-plant-card";
 import { Button } from "~/components/ui/button";
 import {
@@ -35,9 +35,11 @@ export function ActivePlantsCard({
     ) || [];
 
   return (
-    <Card className="col-span-4 sm:col-span-3">
+    <Card className="col-span-1 md:col-span-4">
       <CardHeader>
-        <CardTitle>{t("active-plants")}</CardTitle>
+        <CardTitle as="h3" className="text-xl font-semibold">
+          {t("active-plants")}
+        </CardTitle>
         <CardDescription>{t("active-plants-description")}</CardDescription>
       </CardHeader>
       <CardContent>
@@ -62,7 +64,7 @@ export function ActivePlantsCard({
 
           {!isLoading &&
             (!plantsData?.plants.length || activePlants.length === 0) && (
-              <div className="py-4 text-center text-muted-foreground">
+              <div className="text-muted-foreground py-4 text-center">
                 <Sprout className="mx-auto mb-2 h-8 w-8 opacity-50" />
                 <p>{t("no-active-plants")}</p>
                 <Button variant="link" asChild className="mt-2">

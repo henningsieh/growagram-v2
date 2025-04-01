@@ -1,6 +1,5 @@
 // src/types/zodSchema.ts:
 import { z } from "zod";
-
 import { routing } from "~/lib/i18n/routing";
 import { Locale } from "~/types/locale";
 import {

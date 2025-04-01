@@ -1,6 +1,6 @@
+import * as React from "react";
 import * as Headless from "@headlessui/react";
 import { cx } from "class-variance-authority";
-import * as React from "react";
 
 export function Input({
   className,
@@ -16,7 +16,7 @@ export function Input({
       type={type}
       className={cx(
         "block w-full rounded-lg border-none bg-gray-300/5 px-3 py-2 text-sm/6 dark:text-white",
-        "focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-gray-950 dark:data-[focus]:outline-gray-300",
+        "focus:outline-hidden data-focus:outline-2 data-focus:-outline-offset-2 data-focus:outline-gray-950 dark:data-focus:outline-gray-300",
         className,
       )}
       ref={ref}
@@ -39,7 +39,7 @@ export function Label({
       {...props}
       className={cx(
         className,
-        "select-none text-base/6 text-zinc-950 data-[disabled]:opacity-50 dark:text-white sm:text-sm/6",
+        "text-base/6 text-zinc-950 select-none data-disabled:opacity-50 sm:text-sm/6 dark:text-white",
       )}
     />
   );
@@ -58,7 +58,7 @@ export function Textarea({
       className={cx(
         className,
         "block min-h-[80px] w-full resize-none rounded-lg border-none bg-gray-300/5 px-3 py-2 text-sm/6 dark:text-white",
-        "focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-gray-950 dark:data-[focus]:outline-gray-300",
+        "focus:outline-hidden data-focus:outline-2 data-focus:-outline-offset-2 data-focus:outline-gray-950 dark:data-focus:outline-gray-300",
       )}
       ref={ref}
       {...props}

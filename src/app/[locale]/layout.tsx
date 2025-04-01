@@ -5,13 +5,12 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import localFont from "next/font/local";
 import NextTopLoader from "nextjs-toploader";
-
 import { APP_SETTINGS } from "~/assets/constants";
 import AppFooter from "~/components/Layouts/Footer/app-footer";
 import { MainNavigationBar } from "~/components/Layouts/MainNavigationBar";
 import { ThemeProvider } from "~/components/Layouts/theme-provider";
 import { ImageModalProvider } from "~/components/features/Photos/modal-provider";
-import { Toaster } from "~/components/ui/toaster";
+import { Toaster } from "~/components/ui/sonner";
 import { TRPCReactProvider } from "~/lib/trpc/react";
 import "~/styles/globals.css";
 
@@ -51,7 +50,7 @@ export default async function AppLayout(props: AppLayoutProps) {
       suppressHydrationWarning
     >
       <body
-        className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-background font-sans antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} bg-background min-h-screen font-sans antialiased`}
       >
         <ThemeProvider
           attribute="class"
@@ -70,7 +69,7 @@ export default async function AppLayout(props: AppLayoutProps) {
             <SessionProvider>
               <TRPCReactProvider>
                 <ImageModalProvider>
-                  <Toaster />
+                  <Toaster richColors />
                   <div className="relative mx-auto flex max-w-7xl flex-col">
                     <MainNavigationBar />
                     <div className="flex min-h-[calc(100svh-7rem)] flex-1">

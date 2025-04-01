@@ -1,10 +1,10 @@
 "use client";
 
-import * as Headless from "@headlessui/react";
-import { PlusIcon } from "@heroicons/react/24/outline";
+import * as React from "react";
 // eslint-disable-next-line no-restricted-imports
 import { useRouter } from "next/navigation";
-import * as React from "react";
+import * as Headless from "@headlessui/react";
+import { PlusIcon } from "@heroicons/react/24/outline";
 import { Button } from "~/components/button";
 import {
   Dialog,
@@ -30,7 +30,7 @@ export function CreateChannelDialog() {
 
   return (
     <>
-      <Button size="icon" className="!size-8" onClick={() => setOpen(true)}>
+      <Button size="icon" className="size-8!" onClick={() => setOpen(true)}>
         <PlusIcon className="size-4" />
       </Button>
       <Dialog open={open} onClose={() => setOpen(false)}>

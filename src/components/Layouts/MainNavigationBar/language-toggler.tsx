@@ -1,10 +1,10 @@
 "use client";
 
 // src/components/Layouts/MainNavigationBar/language-toggler.tsx:
-import { LanguagesIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useParams } from "next/navigation";
+import { LanguagesIcon } from "lucide-react";
 import { APP_SETTINGS } from "~/assets/constants";
 import { Button } from "~/components/ui/button";
 import {
@@ -45,11 +45,12 @@ export function LanguageToggle() {
       <DropdownMenuTrigger asChild>
         <Button
           size="icon"
-          variant="ghost"
+          variant="outline"
           aria-haspopup="menu"
           title={t("LanguageToggle.toggle-language")}
+          className="p-0"
         >
-          <LanguagesIcon size={24} strokeWidth={1.6} />
+          <LanguagesIcon strokeWidth={1.8} className="size-6" />
           <span className="sr-only">{t("LanguageToggle.toggle-language")}</span>
         </Button>
       </DropdownMenuTrigger>

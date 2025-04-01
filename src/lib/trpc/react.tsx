@@ -1,6 +1,7 @@
 "use client";
 
 // src/lib/trpc/react.tsx:
+import * as React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { type DehydratedState, HydrationBoundary } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
@@ -12,7 +13,6 @@ import {
 } from "@trpc/client";
 import { createTRPCReact } from "@trpc/react-query";
 import { type inferRouterInputs, type inferRouterOutputs } from "@trpc/server";
-import { useState } from "react";
 import SuperJSON from "superjson";
 import { TRPC_ENDPOINT } from "~/assets/constants";
 import { env } from "~/env";
@@ -57,7 +57,7 @@ export function TRPCReactProvider(
   //       render if it suspends and there is no boundary
   const queryClient = getQueryClient();
 
-  const [trpcClient] = useState(() =>
+  const [trpcClient] = React.useState(() =>
     api.createClient({
       links: [
         // adds pretty logs to your console in development and logs errors in production

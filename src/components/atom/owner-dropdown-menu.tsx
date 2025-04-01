@@ -1,10 +1,10 @@
+import { useTranslations } from "next-intl";
 import {
   EditIcon,
   ExternalLinkIcon,
   MoreHorizontalIcon,
   Trash2Icon,
 } from "lucide-react";
-import { useTranslations } from "next-intl";
 import SpinningLoader from "~/components/Layouts/loader";
 import { Button } from "~/components/ui/button";
 import {

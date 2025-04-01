@@ -1,13 +1,12 @@
 "use client";
 
+import * as React from "react";
+import { signIn, useSession } from "next-auth/react";
 import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
 import { TRPCClientErrorLike } from "@trpc/client";
 import { DefaultErrorShape } from "@trpc/server/unstable-core-do-not-import";
 import { cx } from "class-variance-authority";
 import { format, formatDistanceToNow, isToday } from "date-fns";
-import { signIn, useSession } from "next-auth/react";
-import * as React from "react";
-
 import {
   useLivePosts,
   useThrottledIsTypingMutation,
@@ -130,7 +129,7 @@ export function Chat(props: Readonly<{ channelId: string }>) {
         {/* connection status indicator */}
         <div className="relative flex items-center justify-center gap-2 p-4 sm:p-6 lg:p-8">
           {/* connection status indicator - centered */}
-          <div className="absolute right-0 top-0 flex items-center justify-center gap-2 rounded-full p-2 text-sm">
+          <div className="absolute top-0 right-0 flex items-center justify-center gap-2 rounded-full p-2 text-sm">
             <SubscriptionStatus subscription={livePosts.subscription} />
           </div>
         </div>
@@ -207,7 +206,7 @@ export function Chat(props: Readonly<{ channelId: string }>) {
                 );
               })}
             </div>
-            <p className="text-sm italic text-gray-400">
+            <p className="text-sm text-gray-400 italic">
               {currentlyTyping.data?.length ? (
                 `${listWithAnd(currentlyTyping.data)} ${pluralize(
                   currentlyTyping.data.length,
@@ -314,7 +313,7 @@ function AddMessageForm(props: {
           autoFocus
         />
         <Button
-          className="absolute right-2 top-2"
+          className="absolute top-2 right-2"
           size="icon"
           type="submit"
           variant="ghost"
