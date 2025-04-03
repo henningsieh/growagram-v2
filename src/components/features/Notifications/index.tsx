@@ -81,7 +81,7 @@ export function Notifications() {
             <TabsList className="grid w-full grid-cols-4 gap-1">
               <TabsTrigger
                 value="all"
-                className="hover:bg-accent/50 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground text-sm"
+                // className="hover:bg-accent/50 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground text-sm"
               >
                 <span className="flex items-center gap-1">
                   <span className="xs:max-w-none max-w-[42px] truncate">
@@ -96,7 +96,7 @@ export function Notifications() {
               </TabsTrigger>
               <TabsTrigger
                 value="follow"
-                className="hover:bg-accent/50 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground text-sm"
+                // className="hover:bg-accent/50 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground text-sm"
               >
                 <span className="flex items-center gap-1">
                   <span className="xs:max-w-none max-w-[42px] truncate">
@@ -111,7 +111,7 @@ export function Notifications() {
               </TabsTrigger>
               <TabsTrigger
                 value="like"
-                className="hover:bg-accent/50 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground text-sm"
+                // className="hover:bg-accent/50 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground text-sm"
               >
                 <span className="flex items-center gap-1">
                   <span className="xs:max-w-none max-w-[42px] truncate">
@@ -126,7 +126,7 @@ export function Notifications() {
               </TabsTrigger>
               <TabsTrigger
                 value="comment"
-                className="hover:bg-accent/50 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground text-sm"
+                // className="hover:bg-accent/50 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground text-sm"
               >
                 <span className="flex items-center gap-1">
                   <span className="xs:max-w-none max-w-[42px] truncate">

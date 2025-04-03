@@ -53,12 +53,10 @@ export default function ItemsPagination({
     <div className="my-4 flex justify-center">
       <Pagination>
         <PaginationContent>
-          <PaginationItem>
+          <PaginationItem hidden={currentPage === 1}>
             <PaginationPrevious
-              size="icon"
               className="p-0"
               onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage === 1 || isFetching}
             >
               <ChevronLeftIcon className="h-4 w-4" />
             </PaginationPrevious>
@@ -66,15 +64,17 @@ export default function ItemsPagination({
 
           {getPaginationNumbers().map((page, index) =>
             page === "..." ? (
-              <PaginationItem key={`ellipsis-${index}`}>
+              <PaginationItem
+                key={`ellipsis-${index}`}
+                className="cursor-default"
+              >
                 <PaginationEllipsis />
               </PaginationItem>
             ) : (
-              <PaginationItem key={page}>
+              <PaginationItem key={page} className="cursor-pointer">
                 <PaginationLink
                   onClick={() => handlePageChange(page as number)}
                   isActive={currentPage === page}
-                  disabled={isFetching}
                 >
                   <p>{page}</p>
                 </PaginationLink>
@@ -82,12 +82,10 @@ export default function ItemsPagination({
             ),
           )}
 
-          <PaginationItem>
+          <PaginationItem hidden={currentPage === totalPages}>
             <PaginationNext
-              size="icon"
               className="p-0"
               onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === totalPages || isFetching}
             >
               <ChevronRightIcon className="h-4 w-4" />
             </PaginationNext>

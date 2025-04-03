@@ -1,489 +1,167 @@
-/* src/app/globals.css */
-
 @import "tailwindcss";
 
 @custom-variant dark (&:is(.dark *));
 
-@theme {
-  --breakpoint-xs: 480px;
-  --breakpoint-lg: 960px;
-
-  --text-xs: 0.75rem;
-  --text-xs--line-height: 1rem;
-  --text-sm: 0.875rem;
-  --text-sm--line-height: 1.25rem;
-  --text-base: 1rem;
-  --text-base--line-height: 1.5rem;
-  --text-lg: 1.125rem;
-  --text-lg--line-height: 1.75rem;
-  --text-xl: 1.25rem;
-  --text-xl--line-height: 1.75rem;
-  --text-2xl: 1.5rem;
-  --text-2xl--line-height: 2rem;
-  --text-3xl: 1.875rem;
-  --text-3xl--line-height: 2.25rem;
-  --text-4xl: 2.25rem;
-  --text-4xl--line-height: 2.5rem;
-  --text-5xl: 3rem;
-  --text-5xl--line-height: 1;
-  --text-6xl: 3.75rem;
-  --text-6xl--line-height: 1;
-  --text-7xl: 4.5rem;
-  --text-7xl--line-height: 1;
-  --text-8xl: 6rem;
-  --text-8xl--line-height: 1;
-  --text-9xl: 8rem;
-  --text-9xl--line-height: 1;
-
-  --color-planted: hsl(var(--planted));
-  --color-seedling: hsl(var(--seedling));
-  --color-vegetation: hsl(var(--vegetation));
-  --color-flowering: hsl(var(--flowering));
-  --color-harvest: hsl(var(--harvest));
-  --color-curing: hsl(var(--curing));
-  --color-background: hsl(var(--background));
-  --color-foreground: hsl(var(--foreground));
-
-  --color-card: hsl(var(--card));
-  --color-card-foreground: hsl(var(--card-foreground));
-
-  --color-popover: hsl(var(--popover));
-  --color-popover-foreground: hsl(var(--popover-foreground));
-
-  --color-primary: hsl(var(--primary));
-  --color-primary-foreground: hsl(var(--primary-foreground));
-
-  --color-secondary: hsl(var(--secondary));
-  --color-secondary-foreground: hsl(var(--secondary-foreground));
-
-  --color-muted: hsl(var(--muted));
-  --color-muted-foreground: hsl(var(--muted-foreground));
-
-  --color-accent: hsl(var(--accent));
-  --color-accent-foreground: hsl(var(--accent-foreground));
-
-  --color-destructive: hsl(var(--destructive));
-  --color-destructive-foreground: hsl(var(--destructive-foreground));
-
-  --color-border: hsl(var(--border));
-  --color-input: hsl(var(--input));
-  --color-ring: hsl(var(--ring));
-
-  --color-chart-1: hsl(var(--chart-1));
-  --color-chart-2: hsl(var(--chart-2));
-  --color-chart-3: hsl(var(--chart-3));
-  --color-chart-4: hsl(var(--chart-4));
-  --color-chart-5: hsl(var(--chart-5));
-
-  --color-sidebar: hsl(var(--sidebar-background));
-  --color-sidebar-foreground: hsl(var(--sidebar-foreground));
-  --color-sidebar-primary: hsl(var(--sidebar-primary));
-  --color-sidebar-accent: hsl(var(--sidebar-accent));
-  --color-sidebar-border: hsl(var(--sidebar-border));
-  --color-sidebar-ring: hsl(var(--sidebar-ring));
-  --color-sidebar-primary-foreground: hsl(var(--sidebar-primary-foreground));
-  --color-sidebar-accent-foreground: hsl(var(--sidebar-accent-foreground));
-
-  --radius-lg: var(--radius);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-sm: calc(var(--radius) - 4px);
-
-  --animate-accordion-down: accordion-down 0.2s ease-out;
-  --animate-accordion-up: accordion-up 0.2s ease-out;
-  --animate-border-glow: border-glow 1s ease-in-out infinite;
-  --animate-shine: shine 2s linear infinite;
-
-  @keyframes accordion-down {
-    from {
-      height: 0;
-    }
-    to {
-      height: var(--radix-accordion-content-height);
-    }
-  }
-  @keyframes accordion-up {
-    from {
-      height: var(--radix-accordion-content-height);
-    }
-    to {
-      height: 0;
-    }
-  }
-  @keyframes border-glow {
-    0%,
-    100% {
-      background-position: 0% 50%;
-      border-color: hsl(var(--primary) / 0.2);
-      box-shadow:
-        0 0 5px hsl(var(--primary) / 0.15),
-        inset 0 0 8px hsl(var(--primary) / 0.15);
-    }
-    50% {
-      background-position: 100% 50%;
-      border-color: hsl(var(--primary) / 0.6);
-      box-shadow:
-        0 0 10px hsl(var(--primary) / 0.25),
-        inset 0 0 12px hsl(var(--primary) / 0.25);
-    }
-  }
-  @keyframes shine {
-    0% {
-      background-position: 150% 50%;
-    }
-    100% {
-      background-position: -50% 50%;
-    }
-  }
+:root {
+  --background: oklch(0.93 0.03 85.56);
+  --foreground: oklch(0.41 0.08 78.87);
+  --card: oklch(0.92 0.04 84.58);
+  --card-foreground: oklch(0.41 0.08 74.05);
+  --popover: oklch(0.92 0.04 84.58);
+  --popover-foreground: oklch(0.41 0.08 74.05);
+  --primary: oklch(0.6 0.16 141.98);
+  --primary-foreground: oklch(0.98 0.01 1.98);
+  --secondary: oklch(0.76 0.17 57.7);
+  --secondary-foreground: oklch(0.98 0.01 1.98);
+  --muted: oklch(0.86 0.06 82.95);
+  --muted-foreground: oklch(0.51 0.08 74.79);
+  --accent: oklch(0.86 0.05 85.13);
+  --accent-foreground: oklch(0.41 0.08 74.05);
+  --destructive: oklch(0.63 0.24 29.21);
+  --destructive-foreground: oklch(0.97 0.02 351.14);
+  --border: oklch(0.74 0.06 79.65);
+  --input: oklch(0.91 0.05 82.79);
+  --ring: oklch(0.6 0.16 141.98);
+  --chart-1: oklch(0.66 0.19 41.68);
+  --chart-2: oklch(0.7 0.12 183.6);
+  --chart-3: oklch(0.48 0.08 211.31);
+  --chart-4: oklch(0.84 0.17 85);
+  --chart-5: oklch(0.74 0.17 59.96);
+  --sidebar: oklch(0.92 0.04 84.58);
+  --sidebar-foreground: oklch(0.41 0.08 74.05);
+  --sidebar-primary: oklch(0.6 0.16 141.98);
+  --sidebar-primary-foreground: oklch(0.98 0.01 1.98);
+  --sidebar-accent: oklch(0.86 0.05 85.13);
+  --sidebar-accent-foreground: oklch(0.41 0.08 74.05);
+  --sidebar-border: oklch(0.74 0.06 79.65);
+  --sidebar-ring: oklch(0.6 0.16 141.98);
+  --font-sans:
+    var(--font-nunito), system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, sans-serif;
+  --font-heading: var(--font-grandstander), Georgia, serif;
+  --font-serif: Merriweather, serif;
+  --font-mono: Roboto Mono, monospace;
+  --radius: 0.625rem;
+  --shadow-2xs: 0px 8px 16px -4px hsl(0 0% 0% / 0.04);
+  --shadow-xs: 0px 8px 16px -4px hsl(0 0% 0% / 0.04);
+  --shadow-sm:
+    0px 8px 16px -4px hsl(0 0% 0% / 0.08), 0px 1px 2px -5px hsl(0 0% 0% / 0.08);
+  --shadow:
+    0px 8px 16px -4px hsl(0 0% 0% / 0.08), 0px 1px 2px -5px hsl(0 0% 0% / 0.08);
+  --shadow-md:
+    0px 8px 16px -4px hsl(0 0% 0% / 0.08), 0px 2px 4px -5px hsl(0 0% 0% / 0.08);
+  --shadow-lg:
+    0px 8px 16px -4px hsl(0 0% 0% / 0.08), 0px 4px 6px -5px hsl(0 0% 0% / 0.08);
+  --shadow-xl:
+    0px 8px 16px -4px hsl(0 0% 0% / 0.08), 0px 8px 10px -5px hsl(0 0% 0% / 0.08);
+  --shadow-2xl: 0px 8px 16px -4px hsl(0 0% 0% / 0.2);
 }
 
-@utility container {
-  margin-inline: auto;
-  padding-inline: 1rem;
-  @media (width >= --theme(--breakpoint-xs)) {
-    max-width: none;
-  }
-  @media (min-width: 640px) {
-    max-width: 640px;
-  }
-  @media (min-width: 768px) {
-    max-width: 768px;
-  }
-  @media (min-width: 1024px) {
-    max-width: 1024px;
-  }
-  @media (min-width: 1280px) {
-    max-width: 1280px;
-  }
-  @media (min-width: 1536px) {
-    max-width: 1536px;
-  }
-}
-
-/*
-  The default border color has changed to `currentColor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks the same as it did with Tailwind CSS v3.
-
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
-*/
-@layer base {
-  *,
-  ::after,
-  ::before,
-  ::backdrop,
-  ::file-selector-button {
-    border-color: var(--color-gray-200, currentColor);
-  }
-
-  .border {
-    border-width: 2px !important;
-  }
-  .border-l {
-    border-left-width: 2px !important;
-  }
-  .border-r {
-    border-right-width: 2px !important;
-  }
-  .border-t {
-    border-top-width: 2px !important;
-  }
-  .border-b {
-    border-bottom-width: 2px !important;
-  }
-  .shadow-primary {
-    box-shadow: 0 2px 0 0 var(--primary-border);
-  }
-  .shadow-destructive {
-    box-shadow: 0 2px 0 0 var(--destructive);
-  }
-  .shadow-destructive-border {
-    box-shadow: 0 2px 0 0 var(--destructive-border);
-  }
-  .texture {
-    background-image: url(/images/texture.png);
-    background-size: cover;
-    background-repeat: repeat;
-    opacity: 0.2;
-    mix-blend-mode: multiply;
-    z-index: 1; /* Lower z-index to ensure NextTopLoader is visible */
-    isolation: isolate;
-    position: fixed;
-    inset: 0;
-    width: 100vw;
-    height: 100vh;
-    pointer-events: none;
-  }
-}
-
-@utility text-balance {
-  text-wrap: balance;
-}
-
-@utility nav-item-base {
-  @apply bg-card/30 relative overflow-hidden rounded-md border p-4;
-  @apply transition-all duration-200 ease-out;
-  @apply border-primary/20 shadow-xs;
-  @apply hover:border-primary/40 hover:bg-card/50;
-  @apply hover:scale-[1.01] hover:shadow-xs;
-  @apply hover:animate-border-glow;
-  @apply border-primary/20 hover:border-primary/40;
-  @apply [transition-property:transform,background-color,border-color,box-shadow,opacity];
-}
-
-@utility nav-item {
-  @apply nav-item-base;
-  @apply before:absolute before:inset-0;
-  @apply before:bg-[linear-gradient(110deg,transparent_20%,hsl(var(--primary)/0.1)_45%,transparent_70%)];
-  @apply hover:before:animate-shine;
-}
-
-@utility nav-item-featured {
-  @apply nav-item-base;
-  @apply from-primary/5 via-background to-primary/10 bg-linear-to-br;
-  @apply before:absolute before:inset-0;
-  @apply before:bg-[linear-gradient(110deg,transparent_20%,hsl(var(--primary)/0.2)_45%,transparent_70%)];
-  @apply hover:before:animate-shine;
-  @apply after:absolute after:inset-0;
-  @apply after:from-primary/10 after:to-primary/20 after:bg-linear-to-br after:via-transparent;
-  @apply hover:from-primary/10 hover:via-background hover:to-primary/20;
-}
-
-@layer base {
-  :root {
-    --background: oklch(0.93 0.03 85.56);
-    --foreground: oklch(0.41 0.08 78.87);
-    --card: oklch(0.92 0.04 84.58);
-    --card-foreground: oklch(0.41 0.08 74.05);
-    --popover: oklch(0.92 0.04 84.58);
-    --popover-foreground: oklch(0.41 0.08 74.05);
-    --primary: oklch(0.6 0.16 141.98);
-    --primary-foreground: oklch(0.98 0.01 1.98);
-    --secondary: oklch(0.76 0.17 57.7);
-    --secondary-foreground: oklch(0.98 0.01 1.98);
-    --muted: oklch(0.86 0.06 82.95);
-    --muted-foreground: oklch(0.51 0.08 74.79);
-    --accent: oklch(0.86 0.05 85.13);
-    --accent-foreground: oklch(0.26 0.02 356.69);
+.dark {
+  --background: oklch(0.17 0.02 87.73);
+  --foreground: oklch(0.95 0.02 87.51);
+  --card: oklch(0.2 0.03 82.37);
+  --card-foreground: oklch(0.95 0.02 87.51);
+  --popover: oklch(0.2 0.03 82.37);
+  --popover-foreground: oklch(0.86 0.05 85.13);
+  --primary: oklch(0.57 0.19 141.69);
+  --primary-foreground: oklch(0.95 0.02 87.51);
+  --secondary: oklch(0.67 0.22 37.95);
+  --secondary-foreground: oklch(0.98 0.01 1.98);
+  --muted: oklch(0.22 0.03 79.07);
+  --muted-foreground: oklch(0.57 0.09 76.9);
+  --accent: oklch(0.37 0.06 76.03);
+  --accent-foreground: oklch(0.86 0.05 85.13)
     --destructive: oklch(0.63 0.24 29.21);
-    --destructive-foreground: oklch(0.97 0.02 355.1);
-    --border: oklch(0.74 0.06 79.65);
-    --input: oklch(0.91 0.05 82.79);
-    --ring: oklch(0.51 0.08 74.79);
-    --chart-1: oklch(0.66 0.19 41.68);
-    --chart-2: oklch(0.7 0.12 183.59);
-    --chart-3: oklch(0.48 0.08 211.37);
-    --chart-4: oklch(0.84 0.17 85);
-    --chart-5: oklch(0.74 0.17 60.02);
-    --sidebar: oklch(0.92 0.04 84.58);
-    --sidebar-foreground: oklch(0.41 0.08 74.05);
-    --sidebar-primary: oklch(0.6 0.16 141.98);
-    --sidebar-primary-foreground: oklch(0.98 0.01 1.98);
-    --sidebar-accent: oklch(0.86 0.05 85.13);
-    --sidebar-accent-foreground: oklch(0.26 0.02 356.69);
-    --sidebar-border: oklch(0.74 0.06 79.65);
-    --sidebar-ring: oklch(0.51 0.08 74.79);
-    --font-sans:
-      var(--font-nunito), system-ui, -apple-system, BlinkMacSystemFont,
-      "Segoe UI", Roboto, sans-serif;
-    --font-serif: Merriweather, serif;
-    --font-mono: Roboto Mono, monospace;
-    --radius: 0.625rem;
-    --shadow-2xs: 2px 2px 6px 2.5px hsl(37.36 63.86% 16.27% / 0.1);
-    --shadow-xs: 2px 2px 6px 2.5px hsl(37.36 63.86% 16.27% / 0.1);
-    --shadow-sm:
-      2px 2px 6px 2.5px hsl(37.36 63.86% 16.27% / 0.2),
-      2px 1px 2px 1.5px hsl(37.36 63.86% 16.27% / 0.2);
-    --shadow:
-      2px 2px 6px 2.5px hsl(37.36 63.86% 16.27% / 0.2),
-      2px 1px 2px 1.5px hsl(37.36 63.86% 16.27% / 0.2);
-    --shadow-md:
-      2px 2px 6px 2.5px hsl(37.36 63.86% 16.27% / 0.2),
-      2px 2px 4px 1.5px hsl(37.36 63.86% 16.27% / 0.2);
-    --shadow-lg:
-      2px 2px 6px 2.5px hsl(37.36 63.86% 16.27% / 0.2),
-      2px 4px 6px 1.5px hsl(37.36 63.86% 16.27% / 0.2);
-    --shadow-xl:
-      2px 2px 6px 2.5px hsl(37.36 63.86% 16.27% / 0.2),
-      2px 8px 10px 1.5px hsl(37.36 63.86% 16.27% / 0.2);
-    --shadow-2xl: 2px 2px 6px 2.5px hsl(37.36 63.86% 16.27% / 0.5);
-  }
-
-  .dark {
-    --background: oklch(0.17 0.02 87.73);
-    --foreground: oklch(0.95 0.02 87.15);
-    --card: oklch(0.2 0.03 82.37);
-    --card-foreground: oklch(0.86 0.05 85.13);
-    --popover: oklch(0.2 0.03 82.37);
-    --popover-foreground: oklch(0.86 0.05 85.13);
-    --primary: oklch(0.57 0.19 141.69);
-    --primary-foreground: oklch(0.95 0.02 87.15);
-    --secondary: oklch(0.67 0.22 37.95);
-    --secondary-foreground: oklch(0.98 0.01 1.98);
-    --muted: oklch(0.22 0.03 79.07);
-    --muted-foreground: oklch(0.57 0.09 76.55);
-    --accent: oklch(0.25 0.04 79.7);
-    --accent-foreground: oklch(0.86 0.05 85.13);
-    --destructive: oklch(0.63 0.24 29.21);
-    --destructive-foreground: oklch(0.97 0.02 355.1);
-    --border: oklch(0.37 0.06 76.03);
-    --input: oklch(0.37 0.06 76.03);
-    --ring: oklch(0.51 0.08 74.26);
-    --chart-1: oklch(0.66 0.19 41.68);
-    --chart-2: oklch(0.7 0.12 183.59);
-    --chart-3: oklch(0.48 0.08 211.37);
-    --chart-4: oklch(0.84 0.17 85);
-    --chart-5: oklch(0.74 0.17 60.02);
-    --sidebar: oklch(0.2 0.03 82.37);
-    --sidebar-foreground: oklch(0.86 0.05 85.13);
-    --sidebar-primary: oklch(0.57 0.19 141.69);
-    --sidebar-primary-foreground: oklch(0.95 0.02 87.15);
-    --sidebar-accent: oklch(0.25 0.04 79.7);
-    --sidebar-accent-foreground: oklch(0.86 0.05 85.13);
+  --destructive-foreground: oklch(0.97 0.02 351.14);
+  --border: oklch(0.37 0.06 76.03);
+  --input: oklch(0.37 0.06 76.03);
+  --ring: oklch(0.57 0.19 141.69);
+  --chart-1: oklch(0.66 0.19 41.68);
+  --chart-2: oklch(0.7 0.12 183.6);
+  --chart-3: oklch(0.48 0.08 211.31);
+  --chart-4: oklch(0.84 0.17 85);
+  --chart-5: oklch(0.74 0.17 59.96);
+  --sidebar: oklch(0.2 0.03 82.37);
+  --sidebar-foreground: oklch(0.95 0.02 87.51);
+  --sidebar-primary: oklch(0.57 0.19 141.69);
+  --sidebar-primary-foreground: oklch(0.95 0.02 87.51);
+  --sidebar-accent: oklch(0.37 0.06 76.03);
+  --sidebar-accent-foreground: oklch(0.86 0.05 85.13)
     --sidebar-border: oklch(0.37 0.06 76.03);
-    --sidebar-ring: oklch(0.51 0.08 74.26);
-    --font-sans:
-      var(--font-nunito), system-ui, -apple-system, BlinkMacSystemFont,
-      "Segoe UI", Roboto, sans-serif;
-    --font-serif: Merriweather, serif;
-    --font-mono: Roboto Mono, monospace;
-    --radius: 0.625rem;
-    --shadow-2xs: 2px 2px 6px 2.5px hsl(29.62 100% 15.49% / 0.1);
-    --shadow-xs: 2px 2px 6px 2.5px hsl(29.62 100% 15.49% / 0.1);
-    --shadow-sm:
-      2px 2px 6px 2.5px hsl(29.62 100% 15.49% / 0.2),
-      2px 1px 2px 1.5px hsl(29.62 100% 15.49% / 0.2);
-    --shadow:
-      2px 2px 6px 2.5px hsl(29.62 100% 15.49% / 0.2),
-      2px 1px 2px 1.5px hsl(29.62 100% 15.49% / 0.2);
-    --shadow-md:
-      2px 2px 6px 2.5px hsl(29.62 100% 15.49% / 0.2),
-      2px 2px 4px 1.5px hsl(29.62 100% 15.49% / 0.2);
-    --shadow-lg:
-      2px 2px 6px 2.5px hsl(29.62 100% 15.49% / 0.2),
-      2px 4px 6px 1.5px hsl(29.62 100% 15.49% / 0.2);
-    --shadow-xl:
-      2px 2px 6px 2.5px hsl(29.62 100% 15.49% / 0.2),
-      2px 8px 10px 1.5px hsl(29.62 100% 15.49% / 0.2);
-    --shadow-2xl: 2px 2px 6px 2.5px hsl(29.62 100% 15.49% / 0.5);
-  }
-
-  @theme inline {
-    --color-background: var(--background);
-    --color-foreground: var(--foreground);
-    --color-card: var(--card);
-    --color-card-foreground: var(--card-foreground);
-    --color-popover: var(--popover);
-    --color-popover-foreground: var(--popover-foreground);
-    --color-primary: var(--primary);
-    --color-primary-foreground: var(--primary-foreground);
-    --color-secondary: var(--secondary);
-    --color-secondary-foreground: var(--secondary-foreground);
-    --color-muted: var(--muted);
-    --color-muted-foreground: var(--muted-foreground);
-    --color-accent: var(--accent);
-    --color-accent-foreground: var(--accent-foreground);
-    --color-destructive: var(--destructive);
-    --color-destructive-foreground: var(--destructive-foreground);
-    --color-border: var(--border);
-    --color-input: var(--input);
-    --color-ring: var(--ring);
-    --color-chart-1: var(--chart-1);
-    --color-chart-2: var(--chart-2);
-    --color-chart-3: var(--chart-3);
-    --color-chart-4: var(--chart-4);
-    --color-chart-5: var(--chart-5);
-    --color-sidebar: var(--sidebar);
-    --color-sidebar-foreground: var(--sidebar-foreground);
-    --color-sidebar-primary: var(--sidebar-primary);
-    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-    --color-sidebar-accent: var(--sidebar-accent);
-    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-    --color-sidebar-border: var(--sidebar-border);
-    --color-sidebar-ring: var(--sidebar-ring);
-
-    --font-sans: var(--font-sans);
-    --font-mono: var(--font-mono);
-    --font-serif: var(--font-serif);
-
-    --radius-sm: calc(var(--radius) - 4px);
-    --radius-md: calc(var(--radius) - 2px);
-    --radius-lg: var(--radius);
-    --radius-xl: calc(var(--radius) + 4px);
-
-    --shadow-2xs: var(--shadow-2xs);
-    --shadow-xs: var(--shadow-xs);
-    --shadow-sm: var(--shadow-sm);
-    --shadow: var(--shadow);
-    --shadow-md: var(--shadow-md);
-    --shadow-lg: var(--shadow-lg);
-    --shadow-xl: var(--shadow-xl);
-    --shadow-2xl: var(--shadow-2xl);
-  }
+  --sidebar-ring: oklch(0.57 0.19 141.69);
+  --font-sans:
+    var(--font-nunito), system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, sans-serif;
+  --font-serif: Merriweather, serif;
+  --font-mono: Roboto Mono, monospace;
+  --radius: 0.625rem;
+  --shadow-2xs: 0px 8px 16px -4px hsl(0 0% 0% / 0.04);
+  --shadow-xs: 0px 8px 16px -4px hsl(0 0% 0% / 0.04);
+  --shadow-sm:
+    0px 8px 16px -4px hsl(0 0% 0% / 0.08), 0px 1px 2px -5px hsl(0 0% 0% / 0.08);
+  --shadow:
+    0px 8px 16px -4px hsl(0 0% 0% / 0.08), 0px 1px 2px -5px hsl(0 0% 0% / 0.08);
+  --shadow-md:
+    0px 8px 16px -4px hsl(0 0% 0% / 0.08), 0px 2px 4px -5px hsl(0 0% 0% / 0.08);
+  --shadow-lg:
+    0px 8px 16px -4px hsl(0 0% 0% / 0.08), 0px 4px 6px -5px hsl(0 0% 0% / 0.08);
+  --shadow-xl:
+    0px 8px 16px -4px hsl(0 0% 0% / 0.08), 0px 8px 10px -5px hsl(0 0% 0% / 0.08);
+  --shadow-2xl: 0px 8px 16px -4px hsl(0 0% 0% / 0.2);
 }
 
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-}
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
 
-@layer utilities {
-  /* Remove the default focus styles */
-  *:focus {
-    outline: none;
-  }
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+  --font-serif: var(--font-serif);
 
-  /* Add your custom focus styles */
-  *:focus-visible {
-    outline: 2px solid var(--ring);
-    outline-offset: 2px;
-  }
-  .custom-scrollbar-container {
-    position: relative;
-    padding-bottom: 4px;
-    margin-bottom: -4px; /* Compensate for the padding */
-  }
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
 
-  .custom-scrollbar {
-    /* Firefox */
-    scrollbar-width: thin;
-    scrollbar-color: hsl(var(--primary)) transparent;
-  }
-
-  .custom-scrollbar::-webkit-scrollbar {
-    height: 4px;
-    width: 4px;
-  }
-
-  .custom-scrollbar::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    background-color: hsl(var(--primary) / 0.7);
-    border-radius: calc(var(--radius) * 0.25);
-  }
-
-  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background-color: hsl(var(--primary));
-  }
-
-  /* Specific adjustments for Firefox */
-  @supports (scrollbar-width: thin) {
-    .custom-scrollbar-container {
-      overflow: hidden;
-    }
-
-    .custom-scrollbar {
-      /* direction: rtl; */
-      margin-bottom: -4px; /* Pull the scrollbar up in Firefox */
-      padding-bottom: 0px; /* Add padding to reveal the scrollbar */
-    }
-  }
+  --shadow-2xs: var(--shadow-2xs);
+  --shadow-xs: var(--shadow-xs);
+  --shadow-sm: var(--shadow-sm);
+  --shadow: var(--shadow);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+  --shadow-xl: var(--shadow-xl);
+  --shadow-2xl: var(--shadow-2xl);
 }
 
 @layer base {
@@ -492,5 +170,14 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+  /* Apply Grandstander to all heading elements */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-heading);
   }
 }
