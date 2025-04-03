@@ -45,7 +45,7 @@ export function LanguageToggle() {
       <DropdownMenuTrigger asChild>
         <Button
           size="icon"
-          variant="outline"
+          variant="ghost"
           aria-haspopup="menu"
           title={t("LanguageToggle.toggle-language")}
           className="p-0"

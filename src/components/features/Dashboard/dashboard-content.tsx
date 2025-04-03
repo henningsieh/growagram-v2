@@ -77,7 +77,7 @@ export function DashboardContent() {
 
   const { data: photosData, isLoading: isLoadingPhotos } =
     api.photos.getOwnPhotos.useQuery({
-      limit: 6,
+      limit: 12,
     });
 
   const { data: userProfile, isPending: userStatsArePending } =

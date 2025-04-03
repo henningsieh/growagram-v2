@@ -11,7 +11,7 @@ export function ChatButton() {
 
   return (
     <>
-      <Button onClick={() => setIsOpen(true)} variant="outline" size="icon">
+      <Button onClick={() => setIsOpen(true)} variant="ghost" size="icon">
         <MessageCircleIcon strokeWidth={1.8} className="size-6" />
         <span className="sr-only">{"Chat"}</span>
       </Button>

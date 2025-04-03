@@ -51,7 +51,7 @@ export default function LandingPage() {
         exit="hidden"
         className="relative overflow-hidden"
       >
-        <div className="bg-muted dark:bg-accent flex h-[calc(100svh-9rem)] items-center lg:overflow-hidden lg:pb-14">
+        <div className="bg-accent dark:bg-accent flex h-[calc(100svh-9rem)] items-center lg:overflow-hidden lg:pb-14">
           <div className="mx-auto max-w-7xl px-6 py-12 sm:py-16 lg:px-8">
             <div className="lg:grid lg:grid-cols-2 lg:gap-8">
               <motion.div
@@ -59,15 +59,15 @@ export default function LandingPage() {
                 className="mx-auto max-w-md sm:max-w-2xl sm:text-center lg:flex lg:items-center lg:text-left"
               >
                 <div className="lg:py-24">
-                  <h1 className="text-foreground mt-4 space-y-4 font-bold tracking-tight sm:mt-5 lg:mt-6">
-                    <span className="block text-4xl sm:text-6xl xl:text-6xl">
+                  <div className="text-foreground mt-4 space-y-4 font-bold tracking-tight sm:mt-5 lg:mt-6">
+                    <h1 className="block text-4xl sm:text-6xl xl:text-6xl">
                       {t("HeroSection.title")}
-                    </span>
-                    <span className="text-primary block pb-3 text-3xl sm:pb-5 sm:text-5xl xl:text-5xl">
+                    </h1>
+                    <h2 className="text-primary block pb-3 text-3xl sm:pb-5 sm:text-5xl xl:text-5xl">
                       {t("HeroSection.subtitle")}
-                    </span>
-                  </h1>
-                  <p className="text-muted-foreground dark:text-accent-foreground mt-3 text-base sm:mt-5 sm:text-xl lg:text-lg xl:text-xl">
+                    </h2>
+                  </div>
+                  <p className="text-muted-foreground mt-3 text-base sm:mt-5 sm:text-xl lg:text-lg xl:text-xl">
                     {t("HeroSection.description")}
                   </p>
                   <div className="mt-10 sm:mt-12">

@@ -1,4 +1,4 @@
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { X } from "lucide-react";
 import type { ControllerRenderProps, FieldValues, Path } from "react-hook-form";
 import { Button } from "~/components/ui/button";
@@ -33,6 +33,7 @@ export default function PlantFormDateField<TFieldValues extends FieldValues>({
   iconClassName,
 }: PlantFormDateFieldProps<TFieldValues>) {
   const locale = useLocale();
+  const t = useTranslations("Plants");
 
   const handleDateSelect = (date: Date | undefined) => {
     field.onChange(date);
@@ -62,7 +63,7 @@ export default function PlantFormDateField<TFieldValues extends FieldValues>({
                   <Icon size={20} className={cn("opacity-80", iconClassName)} />
                   {field.value
                     ? formatDate(field.value, locale as Locale, { force: true })
-                    : "Pick a date"}
+                    : t("form-pick-a-date")}
                 </div>
                 {field.value && (
                   <div

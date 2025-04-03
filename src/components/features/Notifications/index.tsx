@@ -52,8 +52,10 @@ export function Notifications() {
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
-          variant="outline"
           size="icon"
+          variant="ghost"
+          aria-haspopup="dialog"
+          aria-expanded={open}
           className="relative"
           disabled={!session}
           title={t("Navigation.trigger-button-title")}

@@ -1,5 +1,5 @@
-// src/components/atom/combobox-with-create.tsx:
 import * as React from "react";
+import { useTranslations } from "next-intl";
 import { Check, ChevronsUpDown, Plus } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { Button } from "~/components/ui/button";
@@ -43,9 +43,9 @@ export function ComboboxWithCreate({
   options,
   value,
   onChange,
-  placeholder = "Select an option...",
-  emptyMessage = "No options found.",
-  createNewMessage = "Create new option",
+  placeholder,
+  emptyMessage,
+  createNewMessage,
   disabled = false,
   className,
   triggerClassName,
@@ -56,6 +56,13 @@ export function ComboboxWithCreate({
   const [open, setOpen] = React.useState(false);
   const [inputValue, setInputValue] = React.useState("");
   const [isCreating, setIsCreating] = React.useState(false);
+  const t = useTranslations("Common");
+
+  // Use translations with fallbacks to props
+  const translatedPlaceholder = placeholder || t("combobox-placeholder");
+  const translatedEmptyMessage = emptyMessage || t("combobox-empty-message");
+  const translatedCreateNewMessage =
+    createNewMessage || t("combobox-create-message");
 
   const selectedOption = options.find((option) => option.value === value);
 
@@ -124,7 +131,10 @@ export function ComboboxWithCreate({
               />
             </span>
           )}
-          {selectedOption ? selectedOption.label : placeholder}
+          <span className={cn("pl-7", selectedOption && "font-bold")}>
+            {selectedOption ? selectedOption.label : translatedPlaceholder}
+          </span>
+
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -133,14 +143,14 @@ export function ComboboxWithCreate({
       >
         <Command shouldFilter={false}>
           <CommandInput
-            placeholder={placeholder}
+            placeholder={translatedPlaceholder}
             onValueChange={setInputValue}
             value={inputValue}
           />
           <CommandList>
             {filteredOptions.length === 0 && (
               <CommandEmpty>
-                {emptyMessage}
+                {translatedEmptyMessage}
                 {inputValue && onCreateOption && !exactMatch && (
                   <Button
                     variant="ghost"
@@ -149,7 +159,7 @@ export function ComboboxWithCreate({
                     disabled={isCreating}
                   >
                     <Plus className="mr-2 h-4 w-4" />
-                    {createNewMessage}
+                    {translatedCreateNewMessage}
                     {': "'}
                     {inputValue}
                     {'"'}
@@ -195,7 +205,7 @@ export function ComboboxWithCreate({
                       disabled={isCreating}
                     >
                       <Plus className="mr-2 h-4 w-4" />
-                      {createNewMessage}
+                      {translatedCreateNewMessage}
                       {': "'}
                       {inputValue}
                       {'"'}

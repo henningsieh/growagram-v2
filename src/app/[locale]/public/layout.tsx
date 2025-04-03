@@ -3,7 +3,7 @@
 import * as React from "react";
 import { useTranslations } from "next-intl";
 import type { VariantProps } from "class-variance-authority";
-import { Clock, TagIcon, TentTree } from "lucide-react";
+import { ClockIcon, Flower2Icon, TentTree } from "lucide-react";
 import { modulePaths } from "~/assets/constants";
 import { Button, buttonVariants } from "~/components/ui/button";
 import { ScrollArea } from "~/components/ui/scroll-area";
@@ -19,7 +19,7 @@ export default function PublicRootLayout({
   const navItems = [
     {
       href: modulePaths.PUBLICTIMELINE.path,
-      icon: Clock,
+      icon: ClockIcon,
       label: modulePaths.PUBLICTIMELINE.name,
       variant: "timeline" as VariantProps<typeof buttonVariants>["variant"],
     },
@@ -31,7 +31,7 @@ export default function PublicRootLayout({
     },
     {
       href: modulePaths.PUBLICPLANTS.path,
-      icon: TagIcon,
+      icon: Flower2Icon,
       label: modulePaths.PUBLICPLANTS.name,
       variant: "plant" as VariantProps<typeof buttonVariants>["variant"],
     },
@@ -44,17 +44,19 @@ export default function PublicRootLayout({
         <div className="fixed top-0 h-[calc(100svh-4rem)] w-64 overflow-hidden">
           <div className="sticky top-16 flex flex-col gap-2 px-2">
             {navItems.map((item) => (
-              <Link href={item.href} key={item.href}>
-                <Button
-                  variant={
-                    pathname.startsWith(item.href) ? item.variant : "outline"
-                  }
-                  className={cn("w-full justify-start text-base")}
-                >
+              <Button
+                key={item.href}
+                asChild
+                variant={
+                  pathname.startsWith(item.href) ? item.variant : "outline"
+                }
+                className={cn("w-full justify-start text-base")}
+              >
+                <Link href={item.href}>
                   <item.icon className="mr-2 h-4 w-4" />
                   {t(item.label)}
-                </Button>
-              </Link>
+                </Link>
+              </Button>
             ))}
           </div>
         </div>
@@ -65,19 +67,21 @@ export default function PublicRootLayout({
         <ScrollArea className="w-full">
           <div className="flex w-full">
             {navItems.map((item) => (
-              <Link href={item.href} key={item.href} className="flex-1">
-                <Button
-                  variant={
-                    pathname.startsWith(item.href) ? item.variant : "outline"
-                  }
-                  className={
-                    "xs:text-sm h-10 w-full rounded-none border-0 p-2 text-xs font-semibold"
-                  }
-                >
+              <Button
+                key={item.href}
+                asChild
+                variant={
+                  pathname.startsWith(item.href) ? item.variant : "outline"
+                }
+                className={
+                  "xs:text-sm h-10 w-full rounded-none border-0 p-2 text-xs font-semibold"
+                }
+              >
+                <Link href={item.href} className="flex-1">
                   <item.icon className="h-4 w-4" />
                   {t(`Timelines.${item.label}`)}
-                </Button>
-              </Link>
+                </Link>
+              </Button>
             ))}
           </div>
         </ScrollArea>

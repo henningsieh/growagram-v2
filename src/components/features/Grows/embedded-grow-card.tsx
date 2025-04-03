@@ -38,13 +38,17 @@ export function EmbeddedGrowCard({ grow }: EmbeddedGrowCardProps) {
   return (
     <TouchProvider>
       <Card
-        className="border-secondary/70 bg-secondary/10 space-y-2 overflow-hidden border p-2 pt-0 transition-all hover:shadow-lg"
+        className="border-secondary/30 bg-secondary/05 gap-0 space-y-2 overflow-hidden rounded-md border p-2 pt-0 transition-all hover:shadow-lg"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
         <CardHeader className="p-0">
           <CardTitle as="h2" className="flex items-center justify-between">
-            <Button asChild variant="link" className="p-0">
+            <Button
+              asChild
+              variant="link"
+              className="text-secondary has-[>svg]:px-0"
+            >
               <Link
                 href={`/public/grows/${grow.id}`}
                 className="items-center gap-2"
@@ -56,26 +60,6 @@ export function EmbeddedGrowCard({ grow }: EmbeddedGrowCardProps) {
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0">
-          <div className="text-muted-foreground flex justify-start text-xs">
-            <HybridTooltip>
-              <HybridTooltipTrigger className="flex items-center gap-2">
-                <Calendar1Icon className="h-4 w-4 shrink-0" />
-                <span className="text-sm whitespace-nowrap">
-                  {formatDate(
-                    grow.createdAt,
-                    locale as Locale,
-                    {
-                      includeYear: false,
-                      force: true,
-                    } as DateFormatOptions,
-                  )}
-                </span>
-              </HybridTooltipTrigger>
-              <HybridTooltipContent>
-                <p>{t("Grows.grow-card-createdAt")}</p>
-              </HybridTooltipContent>
-            </HybridTooltip>
-          </div>
           <div className="mt-2 space-y-2">
             {grow.plants.map((plant) => (
               <EnhancedPlantCard key={plant.id} plant={plant} />
@@ -90,7 +74,26 @@ export function EmbeddedGrowCard({ grow }: EmbeddedGrowCardProps) {
             transition={{ duration: 0.3 }}
           >
             <CardFooter className="text-muted-foreground flex items-center justify-between p-0">
-              {/* Additional footer content if needed */}
+              <div className="text-muted-foreground flex justify-start text-xs">
+                <HybridTooltip>
+                  <HybridTooltipTrigger className="flex items-center gap-2">
+                    <Calendar1Icon className="h-4 w-4 shrink-0" />
+                    <span className="text-sm whitespace-nowrap">
+                      {formatDate(
+                        grow.createdAt,
+                        locale as Locale,
+                        {
+                          includeYear: false,
+                          force: true,
+                        } as DateFormatOptions,
+                      )}
+                    </span>
+                  </HybridTooltipTrigger>
+                  <HybridTooltipContent>
+                    <p>{t("Grows.grow-card-createdAt")}</p>
+                  </HybridTooltipContent>
+                </HybridTooltip>
+              </div>
             </CardFooter>
           </motion.div>
         </AnimatePresence>

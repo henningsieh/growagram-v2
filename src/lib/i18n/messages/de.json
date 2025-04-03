@@ -83,6 +83,9 @@
     }
   },
   "Common": {
+    "combobox-create-message": "Neue Option erstellen",
+    "combobox-empty-message": "Keine Optionen gefunden.",
+    "combobox-placeholder": "Option auswählen...",
     "day": "Tag",
     "days": "Tagen"
   },
@@ -267,11 +270,11 @@
   },
   "Notifications": {
     "ActivityFeed": {
+      "error-no-notifications": "Fehler beim Laden der Benachrichtigungen",
       "label-all": "Alle Benachrichtigungen",
       "next-page": "Nächste",
-      "previous-page": "Vorherige",
-      "error-no-notifications": "Fehler beim Laden der Benachrichtigungen",
-      "no-notifications": "Keine Benachrichtigungen gefunden"
+      "no-notifications": "Keine Benachrichtigungen gefunden",
+      "previous-page": "Vorherige"
     },
     "Navigation": {
       "trigger-button-title": "Benachrichtigungen"
@@ -350,6 +353,7 @@
       "description": "Wähle jede Pflanze aus, die du auf dem Foto sehen kannst!",
       "title": "Pflanzenauswahl"
     },
+    "public-link-label": "Öffnen im neuen Tab",
     "search": {
       "noResults": "Keine Pflanzen gefunden",
       "placeholder": "Pflanzen suchen..."
@@ -417,7 +421,8 @@
           "title": "Upload abgeschlossen"
         }
       }
-    }
+    },
+    "uploaded-at": "hochgeladen am"
   },
   "Plants": {
     "DeleteConfirmation": {
@@ -426,9 +431,13 @@
       "title": "Bist du sicher, dass du diese Pflanze löschen möchten?"
     },
     "breeder": "Breeder (Züchter)",
+    "breeder-create-error-description": "Ein unbekannter Fehler trat beim Speichern des neuen Züchters in die Datenbank auf.",
     "breeder-create-error-title": "Fehler beim Erstellen des Breeders",
+    "breeder-create-message": "Neuen Züchter anlegen",
     "breeder-create-success-description": "Neuer Breeder wurde erfolgreich erstellt.",
     "breeder-create-success-title": "Breeder erstellt",
+    "breeder-empty-message": "Keine Züchter gefunden",
+    "breeder-placeholder": "Wähle einen Züchter...",
     "button-label-post-update": "Update zur Pflanze erstellen",
     "curing-start-date": "Startdatum der Aushärtephase",
     "delete-button-label": "Pflanze löschen",
@@ -454,6 +463,7 @@
     "form-pagerheader-edit-title": "Pflanze bearbeiten",
     "form-pagerheader-new-subtitle": "Füge deiner Sammlung eine neue Pflanze hinzu",
     "form-pagerheader-new-title": "Neue Pflanze hinzufügen",
+    "form-pick-a-date": "Datum auswählen",
     "form-strain-description": "Wähle oder erstelle den Strain (die Sorte) für diese Pflanze.",
     "form-toast-error-title": "Fehler beim Speichern",
     "form-toast-success-description": "Deine Pflanze wurde erfolgreich gespeichert.",
@@ -480,8 +490,12 @@
     "strain-breeder-required-error-description": "Du musst zuerst einen Breeder auswählen, bevor du einen Strain erstellen kannst.",
     "strain-breeder-required-error-title": "Breeder erforderlich",
     "strain-create-error-title": "Fehler beim Erstellen des Strains",
+    "strain-create-message": "Neue Sorte anlegen",
     "strain-create-success-description": "Neuer Strain wurde erfolgreich erstellt.",
     "strain-create-success-title": "Strain erstellt",
+    "strain-empty-message-no-breeder": "Wähle zuerst einen Züchter aus oder lege einen neuen an",
+    "strain-empty-message-with-breeder": "Dieser Züchter hat noch keine Sorten.",
+    "strain-placeholder": "Wähle eine Sorte...",
     "subtitle": "Verwalte deine Pflanzen",
     "thc": "THC",
     "thc-content": "THC-Gehalt",

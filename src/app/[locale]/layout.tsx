@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { SessionProvider } from "next-auth/react";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
-import localFont from "next/font/local";
+import { Nunito } from "next/font/google";
 import NextTopLoader from "nextjs-toploader";
 import { APP_SETTINGS } from "~/assets/constants";
 import AppFooter from "~/components/Layouts/Footer/app-footer";
@@ -14,16 +14,11 @@ import { Toaster } from "~/components/ui/sonner";
 import { TRPCReactProvider } from "~/lib/trpc/react";
 import "~/styles/globals.css";
 
-const geistSans = localFont({
-  src: "../../lib/fonts/GeistMonoVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-
-const geistMono = localFont({
-  src: "../../lib/fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
+const nunito = Nunito({
+  variable: "--font-nunito",
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["400", "500", "600", "700"], // Include all weights you need
 });
 
 export const metadata: Metadata = {
@@ -45,13 +40,11 @@ type AppLayoutProps = {
 export default async function AppLayout(props: AppLayoutProps) {
   return (
     <html
-      className="scroll-smooth"
+      className={`scroll-smooth ${nunito.variable}`}
       lang={(await props.params).locale}
       suppressHydrationWarning
     >
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} bg-background min-h-screen font-sans antialiased`}
-      >
+      <body className="bg-background min-h-screen font-sans antialiased">
         <ThemeProvider
           attribute="class"
           defaultTheme={APP_SETTINGS.DEFAULT_THEME}
@@ -63,7 +56,9 @@ export default async function AppLayout(props: AppLayoutProps) {
             speed={900}
             showSpinner={false}
             initialPosition={0.28}
+            zIndex={9999}
           />
+          {/* <div className="texture"></div> */}
           {/* Providing all messages to the client */}
           <NextIntlClientProvider messages={await getMessages()}>
             <SessionProvider>

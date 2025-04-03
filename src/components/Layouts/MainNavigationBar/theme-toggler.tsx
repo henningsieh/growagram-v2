@@ -21,7 +21,7 @@ export function ThemeToggle() {
       <DropdownMenuTrigger asChild>
         <Button
           size="icon"
-          variant="outline"
+          variant="ghost"
           aria-haspopup="menu"
           title={t("toggle-theme")}
         >

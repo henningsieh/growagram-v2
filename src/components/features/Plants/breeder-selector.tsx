@@ -1,5 +1,3 @@
-"use client";
-
 import * as React from "react";
 import { useTranslations } from "next-intl";
 import { BriefcaseIcon } from "lucide-react";
@@ -67,9 +65,9 @@ export function BreederSelector({
         options={breederOptions}
         value={value}
         onChange={onChange}
-        placeholder="Select a breeder..."
-        emptyMessage="No breeders found"
-        createNewMessage="Create new breeder"
+        placeholder={t("breeder-placeholder")}
+        emptyMessage={t("breeder-empty-message")}
+        createNewMessage={t("breeder-create-message")}
         disabled={disabled || createBreederMutation.isPending}
         onCreateOption={handleCreateBreeder}
         icon={BriefcaseIcon}

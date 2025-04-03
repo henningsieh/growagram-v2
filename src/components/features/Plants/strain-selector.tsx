@@ -114,11 +114,13 @@ export function StrainSelector({
         options={strainOptions}
         value={value}
         onChange={onChange}
-        placeholder="Select strain..."
+        placeholder={t("strain-placeholder")}
         emptyMessage={
-          breederId ? "No strains found" : "Please select a breeder first"
+          breederId
+            ? t("strain-empty-message-with-breeder")
+            : t("strain-empty-message-no-breeder")
         }
-        createNewMessage="Create new strain"
+        createNewMessage={t("strain-create-message")}
         triggerClassName="bg-muted text-foreground md:text-base"
         disabled={disabled || !breederId || createStrainMutation.isPending}
         onCreateOption={handleCreateStrain}
