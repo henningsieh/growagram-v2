@@ -31,8 +31,8 @@ GrowAGram is a modern social platform for plant enthusiasts to document and shar
 
 ### Frontend
 
-- ⚛️ React 19 (Server Components)
-- 📱 Next.js 15 (App Router)
+- ⚛️ React 19
+- 📱 Next.js 15
 - 🎨 Tailwind CSS v4 + shadcn/ui
 - 🌐 next-intl for i18n
 
@@ -43,15 +43,11 @@ GrowAGram is a modern social platform for plant enthusiasts to document and shar
 - 📊 PostgreSQL with Drizzle ORM
 - 🖼️ S3-compatible MinIO Instance in Hetzner Cloud
 
-### DevOps
+## 🚀 Deployment & DevOps
 
-- 🐳 Docker containerization
-- 🔄 CI/CD with GitHub Actions
-- 📦 Self-hosted in Hetzner Cloud via Coolify
-
-## 🚀 Deployment
-
-This application is self-hosted on [Hetzner Cloud](https://www.hetzner.com/cloud) using [Coolify](https://coolify.io/). Deployment is automated with Coolify’s Git integration and container orchestration.
+- 🐳 **Docker** containerization
+- 🔄 **CI/CD** via [Coolify](https://coolify.io/) for automated deployment
+- 📦 **Self-hosted** on [Hetzner Cloud](https://www.hetzner.com/cloud)
 
 **Beta instance:** [beta.growagram.com](https://beta.growagram.com)
 
