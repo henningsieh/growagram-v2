@@ -328,6 +328,11 @@
         }
       }
     },
+    "ImageModal": {
+      "fit-to-screen": "Photo im Vollbild anzeigen",
+      "toggle-view-mode": "Anzeigemodus umschalten",
+      "zoom-and-drag": "Bild zoomen und verschieben"
+    },
     "button": {
       "connecting": "Pflanzen werden verbunden...",
       "removeAll": "Alle Pflanzen entfernen",

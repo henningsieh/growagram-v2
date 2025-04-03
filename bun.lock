@@ -40,7 +40,6 @@
         "@radix-ui/react-tooltip": "^1.1.8",
         "@svgr/webpack": "^8.1.0",
         "@t3-oss/env-nextjs": "^0.11.1",
-        "@tailwindcss/postcss": "^4.1.1",
         "@tanstack/react-query": "^5.71.5",
         "@tanstack/react-query-devtools": "^5.71.5",
         "@trpc/client": "^11.0.1",
@@ -60,6 +59,7 @@
         "embla-carousel-react": "^8.5.2",
         "exif-reader": "^2.0.2",
         "exifreader": "^4.27.0",
+        "focus-trap-react": "^11.0.3",
         "framer-motion": "^11.18.2",
         "input-otp": "^1.4.2",
         "javascript-time-ago": "^2.5.11",
@@ -1416,6 +1416,10 @@
     "flat-cache": ["flat-cache@3.2.0", "", { "dependencies": { "flatted": "^3.2.9", "keyv": "^4.5.3", "rimraf": "^3.0.2" } }, "sha512-CYcENa+FtcUKLmhhqyctpclsq7QF38pKjZHsGNiSQF5r4FtoKDWabFDl3hzaEQMvT1LHEysw5twgLvpYYb4vbw=="],
 
     "flatted": ["flatted@3.3.3", "", {}, "sha512-GX+ysw4PBCz0PzosHDepZGANEuFCMLrnRTiEy9McGjmkCQYwRq4A/X786G/fjM/+OjsWSU1ZrY5qyARZmO/uwg=="],
+
+    "focus-trap": ["focus-trap@7.6.4", "", { "dependencies": { "tabbable": "^6.2.0" } }, "sha512-xx560wGBk7seZ6y933idtjJQc1l+ck+pI3sKvhKozdBV1dRZoKhkW5xoCaFv9tQiX5RH1xfSxjuNu6g+lmN/gw=="],
+
+    "focus-trap-react": ["focus-trap-react@11.0.3", "", { "dependencies": { "focus-trap": "^7.6.4", "tabbable": "^6.2.0" }, "peerDependencies": { "@types/react": "^18.0.0 || ^19.0.0", "@types/react-dom": "^18.0.0 || ^19.0.0", "react": "^18.0.0 || ^19.0.0", "react-dom": "^18.0.0 || ^19.0.0" } }, "sha512-tS1+enWS/gwCHk2WIF3KpM2oz7Y3HsnRImzHZNRgCBLWXzNG4XQVlJgbqdLr4lBKRXGdDBjQYitSh1bf2xe4Ag=="],
 
     "follow-redirects": ["follow-redirects@1.15.9", "", {}, "sha512-gew4GsXizNgdoRyqmyfMHyAmXsZDk6mHkSxZFCzW9gwlbtOW44CDtYavM+y+72qD/Vq2l550kMF52DT8fOLJqQ=="],
 

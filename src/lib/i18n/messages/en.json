@@ -328,6 +328,11 @@
         }
       }
     },
+    "ImageModal": {
+      "fit-to-screen": "Show photo in fullscreen",
+      "toggle-view-mode": "Toggle viewmode",
+      "zoom-and-drag": "Zoom and move image"
+    },
     "button": {
       "connecting": "Connecting plants...",
       "removeAll": "Remove all plants",

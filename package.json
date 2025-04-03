@@ -75,6 +75,7 @@
     "embla-carousel-react": "^8.5.2",
     "exif-reader": "^2.0.2",
     "exifreader": "^4.27.0",
+    "focus-trap-react": "^11.0.3",
     "framer-motion": "^11.18.2",
     "input-otp": "^1.4.2",
     "javascript-time-ago": "^2.5.11",
