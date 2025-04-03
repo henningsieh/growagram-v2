@@ -1,7 +1,9 @@
+import { useState } from "react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { ArrowRight, ImageIcon } from "lucide-react";
 import { modulePaths } from "~/assets/constants";
+import { useImageModal } from "~/components/features/Photos/modal-provider";
 import { Button } from "~/components/ui/button";
 import {
   Card,
@@ -28,6 +30,8 @@ export function RecentPhotosWidget({
   isLoading,
 }: RecentPhotosWidgetProps) {
   const t = useTranslations("Platform");
+  const { openImageModal } = useImageModal();
+  const [hoveredPhotoId, setHoveredPhotoId] = useState<string | null>(null);
 
   return (
     <Card className="col-span-1 md:col-span-4">
@@ -65,10 +69,12 @@ export function RecentPhotosWidget({
             <>
               <div className="xs:grid-cols-3 grid grid-cols-2 gap-2">
                 {photos.map((photo) => (
-                  <Link
-                    href={`/photos/${photo.id}/form`}
+                  <div
                     key={photo.id}
-                    className="group relative aspect-square overflow-hidden rounded-md"
+                    className="group relative aspect-square cursor-pointer overflow-hidden rounded-md"
+                    onClick={() => openImageModal(photo.imageUrl)}
+                    onMouseEnter={() => setHoveredPhotoId(photo.id)}
+                    onMouseLeave={() => setHoveredPhotoId(null)}
                   >
                     <Image
                       src={photo.imageUrl}
@@ -81,8 +87,14 @@ export function RecentPhotosWidget({
                        * When the viewport is at least 960px wide, the image will be displayed at a fixed width of 200px
                        */
                       sizes="50vw, (min-width: 640px) 33vw, (min-width: 960px) 200px"
+                      style={{
+                        transform:
+                          hoveredPhotoId === photo.id
+                            ? "scale(1.02)"
+                            : "scale(1)",
+                      }}
                     />
-                  </Link>
+                  </div>
                 ))}
               </div>
 
