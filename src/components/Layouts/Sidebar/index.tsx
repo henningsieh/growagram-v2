@@ -108,22 +108,6 @@ function ProtectedSidebarContent({
           <SidebarGroup>
             {/* Main Navigation Menu with Collapsible Items */}
             <SidebarMenu>
-              {/* Dashboard Button */}
-              <Collapsible asChild className="group/collapsible">
-                <SidebarMenuItem>
-                  <CollapsibleTrigger asChild>
-                    <Link href={modulePaths.DASHBOARD.path}>
-                      <SidebarMenuButton
-                        tooltip={t("Platform.Dashboard-title")}
-                      >
-                        <CircleGaugeIcon />
-                        <span>{t("Platform.Dashboard-title")}</span>
-                        <ChevronRight className="ml-auto transition-transform duration-200" />
-                      </SidebarMenuButton>
-                    </Link>
-                  </CollapsibleTrigger>
-                </SidebarMenuItem>
-              </Collapsible>
               {translatedSidebarItems.navMain.map((item) => (
                 <Collapsible
                   key={item.title}
@@ -138,31 +122,35 @@ function ProtectedSidebarContent({
                         if (!open) toggleSidebar();
                       }}
                     >
-                      {/* <Link href={item.url}> */}
-                      <SidebarMenuButton tooltip={item.title}>
-                        {item.icon && <item.icon />}
-                        <span>{item.title}</span>
-                        <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-                      </SidebarMenuButton>
-                      {/* </Link> */}
+                      <Link href={item.url}>
+                        <SidebarMenuButton tooltip={item.title}>
+                          {item.icon && <item.icon />}
+                          <span>{item.title}</span>
+                          {item.items && (
+                            <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                          )}
+                        </SidebarMenuButton>
+                      </Link>
                     </CollapsibleTrigger>
-                    <CollapsibleContent
-                      onClick={() => {
-                        if (isMobile) toggleSidebar();
-                      }}
-                    >
-                      <SidebarMenuSub>
-                        {item.items?.map((subItem) => (
-                          <SidebarMenuSubItem key={subItem.title}>
-                            <SidebarMenuSubButton asChild>
-                              <Link href={subItem.url}>
-                                <span>{subItem.title}</span>
-                              </Link>
-                            </SidebarMenuSubButton>
-                          </SidebarMenuSubItem>
-                        ))}
-                      </SidebarMenuSub>
-                    </CollapsibleContent>
+                    {item.items && (
+                      <CollapsibleContent
+                        onClick={() => {
+                          if (isMobile) toggleSidebar();
+                        }}
+                      >
+                        <SidebarMenuSub>
+                          {item.items?.map((subItem) => (
+                            <SidebarMenuSubItem key={subItem.title}>
+                              <SidebarMenuSubButton asChild>
+                                <Link href={subItem.url}>
+                                  <span>{subItem.title}</span>
+                                </Link>
+                              </SidebarMenuSubButton>
+                            </SidebarMenuSubItem>
+                          ))}
+                        </SidebarMenuSub>
+                      </CollapsibleContent>
+                    )}
                   </SidebarMenuItem>
                 </Collapsible>
               ))}

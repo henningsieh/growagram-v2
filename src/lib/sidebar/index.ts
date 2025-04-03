@@ -71,7 +71,7 @@ interface SidebarSubItem {
 interface SidebarNavItem {
   title: string;
   icon?: LucideIcon;
-  url?: string;
+  url: string;
   items?: SidebarSubItem[];
   isActive?: boolean;
 }

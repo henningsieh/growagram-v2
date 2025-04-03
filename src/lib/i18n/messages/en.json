@@ -669,6 +669,9 @@
       "Plant Sizes": "Plant Sizes"
     },
     "navMain": {
+      "Dashboard": {
+        "title": "Dashboard"
+      },
       "Grows": {
         "items": {
           "Create New Grow": "Create Grow",
