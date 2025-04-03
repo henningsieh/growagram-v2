@@ -5,7 +5,7 @@ import { Link } from "~/lib/i18n/routing";
 const AppFooter = () => {
   return (
     <footer className="border-t py-4">
-      <div className="container flex items-center justify-between px-4">
+      <div className="flex items-center justify-between px-4">
         <span className="text-muted-foreground text-sm">
           {
             // eslint-disable-next-line react/jsx-no-literals

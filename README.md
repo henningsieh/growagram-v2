@@ -13,19 +13,19 @@ GrowAGram is a modern social platform for plant enthusiasts to document and shar
 
 ## 🛠️ Tech Stack
 
-[![Next.js](https://img.shields.io/badge/Next.js-15.1.5-black.svg)](https://nextjs.org/)
-[![React](https://img.shields.io/badge/React-19.0.0-61dafb.svg)](https://react.dev/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.7.3-blue.svg)](https://www.typescriptlang.org/)
-[![TailwindCSS](https://img.shields.io/badge/Tailwind-3.4.17-38bdf8.svg)](https://tailwindcss.com)
+[![Next.js](https://img.shields.io/badge/Next.js-15.2.4-black.svg)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19.1.0-61dafb.svg)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.8.2-blue.svg)](https://www.typescriptlang.org/)
+[![TailwindCSS](https://img.shields.io/badge/Tailwind-4.1.1-38bdf8.svg)](https://tailwindcss.com)
 [![shadcn/ui](https://img.shields.io/badge/shadcn/ui-Latest-000000.svg)](https://ui.shadcn.com)
-[![tRPC](https://img.shields.io/badge/tRPC-11.0.0--rc.700-2596be.svg)](https://trpc.io)
-[![@tanstack/react-query](https://img.shields.io/badge/@tanstack/react--query-5.64.2-ff4154.svg)](https://tanstack.com/query/latest)
+[![tRPC](https://img.shields.io/badge/tRPC-11.0.1-2596be.svg)](https://trpc.io)
+[![@tanstack/react-query](https://img.shields.io/badge/@tanstack/react--query-5.71.5-ff4154.svg)](https://tanstack.com/query/latest)
 [![Auth.js](https://img.shields.io/badge/Auth.js-5.0.0--beta.25-000000.svg)](https://authjs.dev)
-[![framer-motion](https://img.shields.io/badge/framer--motion-11.18.0-0055FF.svg)](https://www.framer.com/motion/)
+[![framer-motion](https://img.shields.io/badge/framer--motion-11.18.2-0055FF.svg)](https://www.framer.com/motion/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-316192.svg)](https://www.postgresql.org/)
 [![Drizzle](https://img.shields.io/badge/Drizzle-0.35.3-c5f74f.svg)](https://orm.drizzle.team)
-[![next-intl](https://img.shields.io/badge/next--intl-3.26.3-black.svg)](https://next-intl-docs.vercel.app/)
-[![Cloudinary](https://img.shields.io/badge/Cloudinary-2.5.1-4285f4.svg)](https://cloudinary.com)
+[![next-intl](https://img.shields.io/badge/next--intl-3.26.5-black.svg)](https://next-intl-docs.vercel.app/)
+[![MinIO](https://img.shields.io/badge/MinIO-S3--compatible-c72c48.svg)](https://min.io)
 [![Docker](https://img.shields.io/badge/Docker-Latest-2496ed.svg)](https://docker.com)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
@@ -33,7 +33,7 @@ GrowAGram is a modern social platform for plant enthusiasts to document and shar
 
 - ⚛️ React 19 (Server Components)
 - 📱 Next.js 15 (App Router)
-- 🎨 Tailwind CSS + shadcn/ui
+- 🎨 Tailwind CSS v4 + shadcn/ui
 - 🌐 next-intl for i18n
 
 ### Backend
@@ -97,7 +97,7 @@ This application is self-hosted on [Hetzner Cloud](https://www.hetzner.com/cloud
 - ✅ Like functionality
 - ⏳ User mentions in posts/comments
 - ⏳ Advanced search features
-- 🔨 Notifications
+- ✅ Notifications
 - ⏳ Private messaging
 
 ### Phase 3: Advanced Features
@@ -106,7 +106,7 @@ This application is self-hosted on [Hetzner Cloud](https://www.hetzner.com/cloud
 
 - ⏳ Sponsoring opportunities for breeders and manufacturers
 - ⏳ AI conversations with your plants :)
-- ⏳ Analytics dashboard
+- 🔨 Analytics dashboard
 - ⏳ Premium Features
 
 #### Technical Improvements
