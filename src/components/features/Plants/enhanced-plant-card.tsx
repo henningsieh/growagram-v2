@@ -79,7 +79,7 @@ export function EnhancedPlantCard({ plant }: EnhancedPlantCardProps) {
   return (
     <TouchProvider>
       <Card
-        className="border-primary/50 bg-muted/30 gap-0 space-y-2 overflow-hidden border p-2 transition-all hover:shadow-lg"
+        className="border-primary/50 bg-muted/30 z-10 gap-0 space-y-2 overflow-hidden border p-2 transition-all hover:shadow-lg"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
