@@ -39,7 +39,7 @@ export default function PremiumPage() {
           className="mx-auto w-full max-w-4xl"
         >
           <FormContent>
-            <Card className="bg-card/95 overflow-hidden border-2 backdrop-blur-xs">
+            <Card className="bg-card/95 overflow-hidden border-2 backdrop-blur">
               <CardContent className="p-6 sm:p-8">
                 <motion.div
                   variants={containerVariants}

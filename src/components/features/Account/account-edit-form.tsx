@@ -177,7 +177,7 @@ export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
           <FormContent>
             <form onSubmit={form.handleSubmit(onSubmit)}>
               <Form {...form}>
-                <Card className="bg-card/95 overflow-hidden border-2 backdrop-blur-xs">
+                <Card className="bg-card/95 overflow-hidden border-2 backdrop-blur">
                   <CardHeader className="relative">
                     <motion.div
                       initial={{ opacity: 0, scale: 0.95 }}

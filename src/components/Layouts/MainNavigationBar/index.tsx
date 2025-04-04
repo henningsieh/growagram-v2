@@ -12,7 +12,7 @@ import { Link } from "~/lib/i18n/routing";
 
 export function MainNavigationBar() {
   return (
-    <header className="bg-background/90 sticky top-0 z-20 w-full border-b backdrop-blur-xs">
+    <header className="bg-background/90 sticky top-0 z-20 w-full border-b backdrop-blur">
       <div className="relative flex h-14 items-center justify-center">
         {/* Navigation Left:  Main Logo */}
         <div className="absolute top-0 left-4 flex items-center">
