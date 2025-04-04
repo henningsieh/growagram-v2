@@ -10,7 +10,7 @@ export default function SpinningLoader({
     <div className={cn("flex justify-center")}>
       <Loader2
         strokeWidth={3}
-        className={cn("text-primary h-10 w-10 animate-spin", className)}
+        className={cn("text-foreground h-10 w-10 animate-spin", className)}
       />
     </div>
   );

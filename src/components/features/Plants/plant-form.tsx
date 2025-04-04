@@ -396,13 +396,13 @@ export default function PlantForm({ plant }: { plant?: GetPlantByIdType }) {
                   title="Reset"
                   variant="outline"
                   onClick={() => form.reset()}
-                  className="w-full"
+                  className="flex-1"
                 >
                   {t("form-button-reset")}
                 </Button>
                 <Button
                   type="submit"
-                  className="w-full"
+                  className="flex-1"
                   disabled={isSubmitting}
                 >
                   {isSubmitting && <SpinningLoader className="mr-2 h-4 w-4" />}

@@ -398,9 +398,9 @@ export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
                         setUsername(user?.username || "");
                         setUsernameModified(false);
                       }}
-                      className="group relative w-full overflow-hidden"
+                      className="group relative flex-1 overflow-hidden"
                     >
-                      <div className="from-background/0 via-background/40 to-background/0 absolute inset-0 translate-x-[-100%] bg-linear-to-r transition-transform duration-500 group-hover:translate-x-[100%]" />
+                      {/* <div className="from-background/0 via-background/40 to-background/0 absolute inset-0 translate-x-[-100%] bg-linear-to-r transition-transform duration-500 group-hover:translate-x-[100%]" /> */}
                       <RotateCcw className="mr-2 h-4 w-4" />
                       {t("form-reset-button")}
                     </Button>
@@ -412,9 +412,9 @@ export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
                         (usernameModified &&
                           (!usernameCheck.data?.isUnique || !username.trim()))
                       }
-                      className="group bg-primary hover:bg-primary/90 relative w-full overflow-hidden"
+                      className="group relative flex-1 overflow-hidden"
                     >
-                      <div className="from-primary-foreground/0 via-primary-foreground/20 to-primary-foreground/0 absolute inset-0 translate-x-[-100%] bg-linear-to-r transition-transform duration-500 group-hover:translate-x-[100%]" />
+                      {/* <div className="from-primary-foreground/0 via-primary-foreground/20 to-primary-foreground/0 absolute inset-0 translate-x-[-100%] bg-linear-to-r transition-transform duration-500 group-hover:translate-x-[100%]" /> */}
                       {editUserMutation.isPending ? (
                         <SpinningLoader className="mr-2 h-4 w-4 animate-spin" />
                       ) : (
