@@ -18,14 +18,14 @@ const nunito = Nunito({
   variable: "--font-nunito",
   subsets: ["latin"],
   display: "swap",
-  weight: ["400", "500", "600", "700"], // Include all weights you need
+  weight: ["400", "500", "600", "700"],
 });
 
 const grandstander = Grandstander({
   variable: "--font-grandstander",
   subsets: ["latin"],
   display: "swap",
-  weight: ["400", "500", "600", "700"], // Include weights you need
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -37,6 +37,12 @@ export const metadata: Metadata = {
     shortcut: "/favicon-32x32.png",
   },
   manifest: "/site.webmanifest",
+  openGraph: {
+    title: "Grow A Gram 🪴",
+    description: "Show your Grow",
+    type: "website",
+    siteName: "Grow A Gram",
+  },
 };
 
 type AppLayoutProps = {
