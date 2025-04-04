@@ -331,7 +331,12 @@
     "ImageModal": {
       "fit-to-screen": "Photo im Vollbild anzeigen",
       "toggle-view-mode": "Anzeigemodus umschalten",
-      "zoom-and-drag": "Bild zoomen und verschieben"
+      "zoom-and-drag": "Bild zoomen und verschieben",
+      "keyboard-shortcuts": "Tastaturkürzel:",
+      "close": "Schließen",
+      "toggle-zoom-mode": "Zoommodus umschalten",
+      "zoom-in-out": "Vergrößern/Verkleinern",
+      "reset-zoom": "Zoom zurücksetzen"
     },
     "button": {
       "connecting": "Pflanzen werden verbunden...",

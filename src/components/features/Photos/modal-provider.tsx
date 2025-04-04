@@ -34,7 +34,7 @@ export function ImageModalProvider({
 }) {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [imageUrl, setImageUrl] = React.useState("");
-  const [isUnrestrictedView, setIsUnrestrictedView] = React.useState(false);
+  const [isZoomedView, setIsZoomedView] = React.useState(false);
 
   const modalRef = React.useRef<HTMLDivElement>(null);
   const imageRef = React.useRef<HTMLDivElement>(null);
@@ -51,7 +51,7 @@ export function ImageModalProvider({
     setIsModalOpen(true);
     setScale(1);
     setPosition({ x: 0, y: 0 });
-    setIsUnrestrictedView(false);
+    setIsZoomedView(false);
     document.body.style.overflow = "hidden";
   }, []);
 
@@ -60,52 +60,89 @@ export function ImageModalProvider({
     document.body.style.overflow = "";
   }, []);
 
+  const toggleZoomedView = React.useCallback(() => {
+    setIsZoomedView((prev) => !prev);
+    setScale(1);
+    setPosition({ x: 0, y: 0 });
+
+    // Make sure we reset any transform-related styles when toggling
+    if (imageRef.current) {
+      imageRef.current.style.transition = "transform 0.3s ease-out";
+    }
+  }, []);
+
   const handleKeyDown = React.useCallback(
     (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         closeImageModal();
-      } else if ((e.key === "+" || e.key === "=") && isUnrestrictedView) {
+      } else if ((e.key === "+" || e.key === "=") && isZoomedView) {
         const newScale = Math.min(scale + 0.1, 4);
-        setScale(newScale);
+
         if (imageRef.current) {
-          const rect = imageRef.current.getBoundingClientRect();
-          const centerX = rect.width / 2;
-          const centerY = rect.height / 2;
-          const scaleChange = newScale - scale;
-          setPosition((prev) => ({
-            x: prev.x - (centerX * scaleChange) / scale,
-            y: prev.y - (centerY * scaleChange) / scale,
-          }));
+          // Get the viewport center
+          const viewportWidth = window.innerWidth;
+          const viewportHeight = window.innerHeight;
+          const viewportCenterX = viewportWidth / 2;
+          const viewportCenterY = viewportHeight / 2;
+
+          // Calculate how the position should change to keep the viewport center fixed
+          const scaleFactor = newScale / scale;
+          const newX =
+            viewportCenterX - (viewportCenterX - position.x) * scaleFactor;
+          const newY =
+            viewportCenterY - (viewportCenterY - position.y) * scaleFactor;
+
+          setPosition({ x: newX, y: newY });
         }
-        e.preventDefault();
-      } else if (e.key === "-" && isUnrestrictedView) {
-        const newScale = Math.max(scale - 0.1, 1);
+
         setScale(newScale);
+        e.preventDefault();
+      } else if (e.key === "-" && isZoomedView) {
+        const newScale = Math.max(scale - 0.1, 1);
 
-        // If we're approaching scale = 1, progressively center the image
-        const centeringStrength = 1 - (newScale - 1) / 3; // Stronger centering as scale approaches 1
+        if (imageRef.current) {
+          // Get the viewport center
+          const viewportWidth = window.innerWidth;
+          const viewportHeight = window.innerHeight;
+          const viewportCenterX = viewportWidth / 2;
+          const viewportCenterY = viewportHeight / 2;
 
-        setPosition((prev) => {
+          // Calculate how the position should change to keep the viewport center fixed
+          const scaleFactor = newScale / scale;
+
+          // If we're approaching scale = 1, progressively center the image
           if (newScale <= 1.05) {
             // When very close to scale 1, snap to center
-            return { x: 0, y: 0 };
+            setPosition({ x: 0, y: 0 });
           } else {
-            // Otherwise, adjust position with gradual centering
-            return {
-              x: prev.x * (1 - 0.1 * centeringStrength),
-              y: prev.y * (1 - 0.1 * centeringStrength),
-            };
+            const centeringStrength = 1 - (newScale - 1) / 3; // Stronger centering as scale approaches 1
+            const newX =
+              viewportCenterX -
+              (viewportCenterX - position.x) *
+                scaleFactor *
+                (1 - 0.1 * centeringStrength);
+            const newY =
+              viewportCenterY -
+              (viewportCenterY - position.y) *
+                scaleFactor *
+                (1 - 0.1 * centeringStrength);
+            setPosition({ x: newX, y: newY });
           }
-        });
+        }
 
+        setScale(newScale);
         e.preventDefault();
-      } else if (e.key === "0" && isUnrestrictedView) {
+      } else if (e.key === "0" && isZoomedView) {
         setScale(1);
         setPosition({ x: 0, y: 0 });
         e.preventDefault();
+      } else if (e.key === "z") {
+        // Toggle zoom view when pressing 'z'
+        toggleZoomedView();
+        e.preventDefault();
       }
     },
-    [closeImageModal, scale, isUnrestrictedView],
+    [closeImageModal, scale, isZoomedView, position, toggleZoomedView],
   );
 
   React.useEffect(() => {
@@ -146,7 +183,7 @@ export function ImageModalProvider({
 
   const handleMouseDown = React.useCallback(
     (e: React.MouseEvent | React.TouchEvent) => {
-      if (!isUnrestrictedView) return;
+      if (!isZoomedView) return;
       isDragging.current = true;
 
       // Handle both mouse and touch events
@@ -167,19 +204,19 @@ export function ImageModalProvider({
         e.preventDefault();
       }
     },
-    [isUnrestrictedView, position.x, position.y],
+    [isZoomedView, position.x, position.y],
   );
 
   const handleWheel = (e: React.WheelEvent) => {
-    if (!isUnrestrictedView) return;
+    if (!isZoomedView) return;
     e.preventDefault();
     const delta = e.deltaY * -0.002;
     const newScale = Math.max(1, Math.min(4, scale * (1 + delta)));
 
     if (imageRef.current) {
-      const rect = imageRef.current.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
+      // Get the mouse position relative to the viewport
+      const mouseX = e.clientX;
+      const mouseY = e.clientY;
 
       // When zooming out to scale = 1, progressively center the image
       if (delta < 0 && newScale <= 1.1) {
@@ -196,10 +233,10 @@ export function ImageModalProvider({
           }));
         }
       } else {
-        // Normal zoom operation
-        const scaleChange = newScale / scale;
-        const newX = x - (x - position.x) * scaleChange;
-        const newY = y - (y - position.y) * scaleChange;
+        // Calculate how the position should change to keep the mouse position fixed
+        const scaleFactor = newScale / scale;
+        const newX = mouseX - (mouseX - position.x) * scaleFactor;
+        const newY = mouseY - (mouseY - position.y) * scaleFactor;
         setPosition({ x: newX, y: newY });
       }
     }
@@ -207,22 +244,22 @@ export function ImageModalProvider({
     setScale(newScale);
   };
 
-  const toggleViewMode = () => {
-    setIsUnrestrictedView((prev) => !prev);
-    setScale(1);
-    setPosition({ x: 0, y: 0 });
-
-    // Make sure we reset any transform-related styles when toggling
-    if (imageRef.current) {
-      imageRef.current.style.transition = "transform 0.3s ease-out";
-    }
-  };
-
-  const handleDoubleClick = () => {
-    if (isUnrestrictedView) {
+  const handleDoubleClick = (e: React.MouseEvent) => {
+    if (isZoomedView) {
       if (scale === 1) {
-        setScale(2);
+        // Zoom in to 2x at the point where the user double-clicked
+        const newScale = 2;
+        const mouseX = e.clientX;
+        const mouseY = e.clientY;
+
+        // Calculate position to keep the double-clicked point fixed
+        const newX = mouseX - (mouseX - position.x) * (newScale / scale);
+        const newY = mouseY - (mouseY - position.y) * (newScale / scale);
+
+        setScale(newScale);
+        setPosition({ x: newX, y: newY });
       } else {
+        // Reset to scale 1
         setScale(1);
         setPosition({ x: 0, y: 0 });
       }
@@ -319,19 +356,75 @@ export function ImageModalProvider({
                   <X size={18} />
                 </Button>
 
-                {/* Controls */}
+                {/* Scale indicator */}
+                {isZoomedView && (
+                  <div className="bg-background/80 absolute top-4 left-1/2 z-10 -translate-x-1/2 rounded-full px-3 py-1 text-xs font-medium backdrop-blur-sm">
+                    {Math.round(scale * 100)}%
+                  </div>
+                )}
+
+                {/* Image container */}
                 <div
-                  className="bg-muted absolute top-4 left-1/2 z-10 flex -translate-x-1/2 items-center gap-2 rounded-md px-2 py-1 backdrop-blur-sm"
+                  className={cn(
+                    "h-full w-full",
+                    isZoomedView
+                      ? "cursor-grab touch-none overflow-hidden"
+                      : "overflow-hidden",
+                    isDragging.current && "cursor-grabbing",
+                  )}
+                  style={{
+                    touchAction: isZoomedView ? "none" : "auto",
+                  }}
+                  onMouseDown={handleMouseDown}
+                  onTouchStart={handleMouseDown}
+                  onWheel={handleWheel}
+                  onDoubleClick={handleDoubleClick}
+                >
+                  <div
+                    ref={imageRef}
+                    className={cn(
+                      "relative transition-transform duration-300 ease-out",
+                      isZoomedView
+                        ? "h-[300vh] w-[300vh]" // Use much larger size to ensure plenty of dragging space
+                        : "m-14 h-[calc(100%-112px)]", // Add 24px (m-6) margin on all sides when in restricted view
+                    )}
+                    style={{
+                      transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
+                      transformOrigin: "50% 50%", // Set origin to center instead of top-left
+                      willChange: isZoomedView ? "transform" : "auto",
+                      // Center the very large container in the viewport
+                      left: isZoomedView ? "calc(-150vh + 50%)" : 0,
+                      top: isZoomedView ? "calc(-150vh + 50%)" : 0,
+                    }}
+                  >
+                    <Image
+                      src={imageUrl || "/placeholder.svg"}
+                      alt="Image preview"
+                      fill
+                      sizes="100vw"
+                      priority
+                      className={cn(
+                        isZoomedView ? "object-cover" : "object-contain",
+                      )}
+                      unoptimized={isZoomedView}
+                      onDragStart={(e) => e.preventDefault()}
+                    />
+                  </div>
+                </div>
+
+                {/* Zooming Controls */}
+                <div
+                  className="bg-muted absolute bottom-4 left-1/2 z-10 flex -translate-x-1/2 items-center gap-2 rounded-md px-2 py-1 backdrop-blur-sm"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <Button
                     variant="ghost"
                     title={t("ImageModal.fit-to-screen")}
                     aria-label={t("ImageModal.fit-to-screen")}
-                    onClick={() => setIsUnrestrictedView(false)}
+                    onClick={() => setIsZoomedView(false)}
                     className={cn(
                       "size-6 p-0",
-                      !isUnrestrictedView &&
+                      !isZoomedView &&
                         "bg-primary text-primary-foreground hover:bg-primary/90",
                     )}
                   >
@@ -344,8 +437,8 @@ export function ImageModalProvider({
                   <Switch
                     className="h-5 flex-shrink-0"
                     title={t("ImageModal.toggle-view-mode")}
-                    checked={isUnrestrictedView}
-                    onCheckedChange={toggleViewMode}
+                    checked={isZoomedView}
+                    onCheckedChange={toggleZoomedView}
                     aria-label={t("ImageModal.toggle-view-mode")}
                   />
                   <span className="sr-only">
@@ -356,10 +449,10 @@ export function ImageModalProvider({
                     variant="ghost"
                     title={t("ImageModal.zoom-and-drag")}
                     aria-label={t("ImageModal.zoom-and-drag")}
-                    onClick={() => setIsUnrestrictedView(true)}
+                    onClick={() => setIsZoomedView(true)}
                     className={cn(
                       "size-6 p-0",
-                      isUnrestrictedView &&
+                      isZoomedView &&
                         "bg-primary text-primary-foreground hover:bg-primary/90",
                     )}
                   >
@@ -370,73 +463,40 @@ export function ImageModalProvider({
                   </Button>
                 </div>
 
-                {/* Image container */}
-                <div
-                  className={cn(
-                    "h-full w-full",
-                    isUnrestrictedView
-                      ? "cursor-grab touch-none overflow-hidden"
-                      : "overflow-hidden",
-                    isDragging.current && "cursor-grabbing",
-                  )}
-                  style={{
-                    touchAction: isUnrestrictedView ? "none" : "auto",
-                  }}
-                  onMouseDown={handleMouseDown}
-                  onTouchStart={handleMouseDown}
-                  onWheel={handleWheel}
-                  onDoubleClick={handleDoubleClick}
-                >
-                  <div
-                    ref={imageRef}
-                    className={cn(
-                      "relative transition-transform duration-300 ease-out",
-                      isUnrestrictedView
-                        ? "h-[300vh] w-[300vh]" // Use much larger size to ensure plenty of dragging space
-                        : "m-14 h-[calc(100%-112px)] w-[calc(100%-48px)]", // Add 24px (m-6) margin on all sides when in restricted view
-                    )}
-                    style={{
-                      transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
-                      transformOrigin: "50% 50%", // Set origin to center instead of top-left
-                      willChange: isUnrestrictedView ? "transform" : "auto",
-                      // Center the very large container in the viewport
-                      left: isUnrestrictedView ? "calc(-150vh + 50%)" : 0,
-                      top: isUnrestrictedView ? "calc(-150vh + 50%)" : 0,
-                    }}
-                  >
-                    <Image
-                      src={imageUrl}
-                      alt="Image preview"
-                      fill
-                      sizes="100vw"
-                      priority
-                      className={cn(
-                        isUnrestrictedView ? "object-cover" : "object-contain",
-                      )}
-                      unoptimized={isUnrestrictedView}
-                      onDragStart={(e) => e.preventDefault()}
-                    />
-                  </div>
-                </div>
-
-                {/* Scale indicator */}
-                {isUnrestrictedView && (
-                  <div className="bg-background/80 absolute bottom-4 left-1/2 z-10 -translate-x-1/2 rounded-full px-3 py-1 text-xs font-medium backdrop-blur-sm">
-                    {Math.round(scale * 100)}%
-                  </div>
-                )}
-
                 {/* Keyboard shortcuts help */}
-                {isUnrestrictedView && (
-                  <div className="bg-muted absolute top-4 left-4 z-10 hidden rounded-lg p-2 text-xs backdrop-blur-sm md:block">
-                    <p className="text-sm font-semibold">Keyboard shortcuts:</p>
-                    <div className="mt-1 grid grid-cols-2 gap-x-4">
-                      <span>ESC</span>
-                      <span>Close</span>
-                      <span>+/-</span>
-                      <span>Zoom in/out</span>
-                      <span>0</span>
-                      <span>Reset zoom</span>
+                {true && (
+                  <div className="bg-muted absolute top-4 left-4 z-10 hidden rounded-lg p-3 text-xs backdrop-blur-sm md:block">
+                    <p className="text-accent-foreground mb-2 text-sm font-semibold">
+                      {t("ImageModal.keyboard-shortcuts")}
+                    </p>
+                    <div className="mt-1 grid grid-cols-2 gap-x-4 gap-y-1">
+                      <span className="text-accent-foreground font-medium">
+                        {"ESC"}
+                      </span>
+                      <span className="text-accent-foreground">
+                        {t("ImageModal.close")}
+                      </span>
+
+                      <span className="text-muted-foreground font-medium">
+                        {"z"}
+                      </span>
+                      <span className="text-muted-foreground">
+                        {t("ImageModal.toggle-zoom-mode")}
+                      </span>
+
+                      <span className="text-muted-foreground font-medium">
+                        {"+/-"}
+                      </span>
+                      <span className="text-muted-foreground">
+                        {t("ImageModal.zoom-in-out")}
+                      </span>
+
+                      <span className="text-muted-foreground font-medium">
+                        {"0"}
+                      </span>
+                      <span className="text-muted-foreground">
+                        {t("ImageModal.reset-zoom")}
+                      </span>
                     </div>
                   </div>
                 )}

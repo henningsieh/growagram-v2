@@ -331,7 +331,12 @@
     "ImageModal": {
       "fit-to-screen": "Show photo in fullscreen",
       "toggle-view-mode": "Toggle viewmode",
-      "zoom-and-drag": "Zoom and move image"
+      "zoom-and-drag": "Zoom and move image",
+      "keyboard-shortcuts": "Keyboard shortcuts:",
+      "close": "Close",
+      "toggle-zoom-mode": "Toggle zoom mode",
+      "zoom-in-out": "Zoom in/out",
+      "reset-zoom": "Reset zoom"
     },
     "button": {
       "connecting": "Connecting plants...",
