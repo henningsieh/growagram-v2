@@ -80,7 +80,7 @@ export function SortFilterControls<T extends string>({
           onValueChange={handleSortFieldChange}
           disabled={isFetching}
         >
-          <SelectTrigger className="border-input h-8 w-40">
+          <SelectTrigger size="sm" className="border-input w-40">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -100,7 +100,7 @@ export function SortFilterControls<T extends string>({
           onValueChange={handleSortOrderChange}
           disabled={isFetching}
         >
-          <SelectTrigger className="border-input h-8 w-40">
+          <SelectTrigger size="sm" className="border-input w-40">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -147,7 +147,7 @@ export function SortFilterControls<T extends string>({
               {t("infinitescroll")}
             </Label>
             <Switch
-              variant={"secondary"}
+              // variant={""}
               id="infinite-scroll"
               checked={viewMode.current === viewMode.options[1]}
               onCheckedChange={onViewModeToggle}
