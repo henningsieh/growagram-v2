@@ -49,6 +49,11 @@ export function ImageModalProvider({
   const t = useTranslations("Photos");
   const isMobile = useIsMobile();
 
+  // Helper function to determine if zoom should be disabled
+  const isZoomDisabled = React.useMemo(() => {
+    return isMobile && !isZoomedView;
+  }, [isMobile, isZoomedView]);
+
   const openImageModal = React.useCallback((url: string) => {
     setImageUrl(url);
     setIsModalOpen(true);
@@ -209,7 +214,9 @@ export function ImageModalProvider({
   );
 
   const handleWheel = (e: React.WheelEvent) => {
-    if (!isZoomedView) return;
+    // Prevent zoom when disabled
+    if (isZoomDisabled || !isZoomedView) return;
+
     e.preventDefault();
     const delta = e.deltaY * -0.002;
     const newScale = Math.max(1, Math.min(4, scale * (1 + delta)));
@@ -246,6 +253,9 @@ export function ImageModalProvider({
   };
 
   const handleDoubleClick = (e: React.MouseEvent) => {
+    // Prevent zoom when disabled
+    if (isZoomDisabled) return;
+
     if (isZoomedView) {
       if (scale === 1) {
         // Zoom in to 2x at the point where the user double-clicked
@@ -291,6 +301,14 @@ export function ImageModalProvider({
   const handleTouchStart = (e: React.TouchEvent) => {
     if (!isZoomedView) return;
 
+    // Prevent pinch zoom when disabled
+    if (isZoomDisabled && e.touches.length === 2) {
+      if (e.cancelable) {
+        e.preventDefault();
+      }
+      return;
+    }
+
     // Store touch points for pinch detection
     if (e.touches.length === 2) {
       // Use type assertion to convert to React.Touch[]
@@ -313,6 +331,14 @@ export function ImageModalProvider({
   // Handle touch move for pinch-to-zoom
   const handleTouchMove = (e: React.TouchEvent) => {
     if (!isZoomedView) return;
+
+    // Block pinch zoom when disabled
+    if (isZoomDisabled && e.touches.length === 2) {
+      if (e.cancelable) {
+        e.preventDefault();
+      }
+      return;
+    }
 
     if (e.touches.length === 2) {
       // Prevent default to disable browser pinch zoom
@@ -399,6 +425,29 @@ export function ImageModalProvider({
     }
   };
 
+  // Effect to add global touch event listener to block browser zoom when disabled
+  React.useEffect(() => {
+    // Block browser zooming on mobile when zoom should be disabled
+    const preventZoom = (e: TouchEvent) => {
+      if (isZoomDisabled && e.touches.length > 1) {
+        if (e.cancelable) {
+          e.preventDefault();
+        }
+      }
+    };
+
+    if (isModalOpen && isZoomDisabled) {
+      // Add passive: false to ensure preventDefault works
+      document.addEventListener("touchstart", preventZoom, { passive: false });
+      document.addEventListener("touchmove", preventZoom, { passive: false });
+    }
+
+    return () => {
+      document.removeEventListener("touchstart", preventZoom);
+      document.removeEventListener("touchmove", preventZoom);
+    };
+  }, [isModalOpen, isZoomDisabled]);
+
   // Handle global mouse events for better drag experience
   React.useEffect(() => {
     const handleGlobalMouseMove = (e: MouseEvent | TouchEvent) => {
@@ -408,6 +457,14 @@ export function ImageModalProvider({
           e.preventDefault();
         }
         handleMouseMove(e);
+      } else if (
+        "touches" in e &&
+        e.touches.length > 1 &&
+        isZoomDisabled &&
+        e.cancelable
+      ) {
+        // Prevent pinch zoom when zoom is disabled
+        e.preventDefault();
       }
     };
 
@@ -433,7 +490,7 @@ export function ImageModalProvider({
       window.removeEventListener("touchmove", handleGlobalMouseMove);
       window.removeEventListener("touchend", handleGlobalMouseUp);
     };
-  }, [isModalOpen, handleMouseMove, handleMouseUp]);
+  }, [isModalOpen, handleMouseMove, handleMouseUp, isZoomDisabled]);
 
   // Consolidate all body overflow management into a single effect
   React.useEffect(() => {
@@ -478,6 +535,10 @@ export function ImageModalProvider({
               role="dialog"
               aria-modal="true"
               aria-labelledby="image-modal-title"
+              style={{
+                // Prevent browser zooming on the modal when zoom is disabled
+                touchAction: isZoomDisabled ? "pan-x pan-y" : "auto",
+              }}
             >
               <div className="relative h-full w-full">
                 {/* Close button */}
@@ -512,7 +573,11 @@ export function ImageModalProvider({
                     isDragging.current && "cursor-grabbing",
                   )}
                   style={{
-                    touchAction: isZoomedView ? "none" : "auto",
+                    touchAction: isZoomDisabled
+                      ? "pan-x pan-y"
+                      : isZoomedView
+                        ? "none"
+                        : "auto",
                   }}
                   onMouseDown={handleMouseDown}
                   onTouchStart={handleTouchStart}
