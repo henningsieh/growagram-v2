@@ -270,12 +270,21 @@ export function ImageModalProvider({
   // Track touch points for pinch-to-zoom
   const touchPoints = React.useRef<React.Touch[]>([]);
   const lastDistance = React.useRef<number>(0);
+  const lastMidpoint = React.useRef<{ x: number; y: number }>({ x: 0, y: 0 });
 
   // Calculate distance between two touch points
   const getDistance = (touch1: React.Touch, touch2: React.Touch) => {
     const dx = touch1.clientX - touch2.clientX;
     const dy = touch1.clientY - touch2.clientY;
     return Math.sqrt(dx * dx + dy * dy);
+  };
+
+  // Calculate midpoint between two touch points
+  const getMidpoint = (touch1: React.Touch, touch2: React.Touch) => {
+    return {
+      x: (touch1.clientX + touch2.clientX) / 2,
+      y: (touch1.clientY + touch2.clientY) / 2,
+    };
   };
 
   // Handle touch start for pinch detection
@@ -287,6 +296,7 @@ export function ImageModalProvider({
       // Use type assertion to convert to React.Touch[]
       touchPoints.current = Array.from(e.touches) as React.Touch[];
       lastDistance.current = getDistance(e.touches[0], e.touches[1]);
+      lastMidpoint.current = getMidpoint(e.touches[0], e.touches[1]);
 
       // Disable dragging when pinching
       isDragging.current = false;
@@ -312,27 +322,59 @@ export function ImageModalProvider({
 
       // Calculate new distance between touch points
       const newDistance = getDistance(e.touches[0], e.touches[1]);
+      const newMidpoint = getMidpoint(e.touches[0], e.touches[1]);
 
       // Calculate pinch delta and apply zoom
       const delta = newDistance / lastDistance.current;
       const newScale = Math.max(1, Math.min(4, scale * delta));
 
       if (newScale !== scale) {
-        // Calculate the midpoint between the two touches
-        const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
-        const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
-
-        // Calculate new position to keep the pinch center fixed
+        // Calculate how the position should change to keep the pinch center fixed
         const scaleFactor = newScale / scale;
-        const newX = midX - (midX - position.x) * scaleFactor;
-        const newY = midY - (midY - position.y) * scaleFactor;
 
-        // Update state
+        // Calculate the position adjustment needed to keep the midpoint fixed
+        // This is the key improvement - we need to account for both the scale change
+        // and the movement of the midpoint
+        const midpointDeltaX = newMidpoint.x - lastMidpoint.current.x;
+        const midpointDeltaY = newMidpoint.y - lastMidpoint.current.y;
+
+        // The new position needs to:
+        // 1. Account for the scale change (like we did before)
+        // 2. Account for the movement of the midpoint (add the delta)
+        const newX =
+          newMidpoint.x -
+          (newMidpoint.x - position.x) * scaleFactor +
+          midpointDeltaX;
+        const newY =
+          newMidpoint.y -
+          (newMidpoint.y - position.y) * scaleFactor +
+          midpointDeltaY;
+
+        // When zooming out to scale = 1, progressively center the image
+        if (delta < 1 && newScale <= 1.1) {
+          const centeringFactor = 1 - (newScale - 1) / 0.1;
+
+          if (newScale <= 1.01) {
+            // When very close to scale 1, snap to center
+            setPosition({ x: 0, y: 0 });
+          } else {
+            // Progressive centering
+            setPosition({
+              x: newX * (1 - 0.2 * centeringFactor),
+              y: newY * (1 - 0.2 * centeringFactor),
+            });
+          }
+        } else {
+          // Update position
+          setPosition({ x: newX, y: newY });
+        }
+
+        // Update scale
         setScale(newScale);
-        setPosition({ x: newX, y: newY });
 
-        // Update reference for next move
+        // Update references for next move
         lastDistance.current = newDistance;
+        lastMidpoint.current = newMidpoint;
       }
     } else if (e.touches.length === 1 && isDragging.current) {
       // Single touch - handle as drag
