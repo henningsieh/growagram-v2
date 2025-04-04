@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -69,10 +70,10 @@
   --secondary: oklch(0.67 0.22 37.95);
   --secondary-foreground: oklch(0.98 0.01 1.98);
   --muted: oklch(0.22 0.03 79.07);
-  --muted-foreground: oklch(0.57 0.09 76.9);
+  --muted-foreground: oklch(0.73 0.09 78.17);
   --accent: oklch(0.37 0.06 76.03);
-  --accent-foreground: oklch(0.86 0.05 85.13)
-    --destructive: oklch(0.63 0.24 29.21);
+  --accent-foreground: oklch(0.86 0.05 85.13);
+  --destructive: oklch(0.63 0.24 29.21);
   --destructive-foreground: oklch(0.97 0.02 351.14);
   --border: oklch(0.37 0.06 76.03);
   --input: oklch(0.37 0.06 76.03);
@@ -87,8 +88,8 @@
   --sidebar-primary: oklch(0.57 0.19 141.69);
   --sidebar-primary-foreground: oklch(0.95 0.02 87.51);
   --sidebar-accent: oklch(0.37 0.06 76.03);
-  --sidebar-accent-foreground: oklch(0.86 0.05 85.13)
-    --sidebar-border: oklch(0.37 0.06 76.03);
+  --sidebar-accent-foreground: oklch(0.86 0.05 85.13);
+  --sidebar-border: oklch(0.37 0.06 76.03);
   --sidebar-ring: oklch(0.57 0.19 141.69);
   --font-sans:
     var(--font-nunito), system-ui, -apple-system, BlinkMacSystemFont,
