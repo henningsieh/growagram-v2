@@ -1,10 +1,10 @@
 // src/components/atom/social-card-footer.tsx
-import { ChartColumn, MessagesSquareIcon, Share } from "lucide-react";
+import * as React from "react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 // eslint-disable-next-line no-restricted-imports
 import Link from "next/link";
-import React from "react";
+import { ChartColumn, MessagesSquareIcon, Share } from "lucide-react";
 import SpinningLoader from "~/components/Layouts/loader";
 import { LikeButton } from "~/components/atom/like-button";
 import { Button } from "~/components/ui/button";
@@ -60,7 +60,7 @@ export const SocialCardFooter: React.FC<CardFooterProps> = ({
           <TooltipTrigger asChild>{ButtonComponent}</TooltipTrigger>
           <TooltipContent
             side="top"
-            className="flex max-w-64 flex-col items-center space-y-2 bg-secondary p-2"
+            className="bg-secondary flex max-w-64 flex-col items-center space-y-2 p-2"
           >
             <p className="text-center text-sm font-semibold">
               {tooltipMessage}
@@ -95,7 +95,7 @@ export const SocialCardFooter: React.FC<CardFooterProps> = ({
             disabled={!user || commentCountLoading}
           >
             {commentCountLoading ? (
-              <SpinningLoader className="h-6 w-6 text-secondary" />
+              <SpinningLoader className="text-secondary h-6 w-6" />
             ) : (
               <MessagesSquareIcon className="h-4 w-4" />
             )}

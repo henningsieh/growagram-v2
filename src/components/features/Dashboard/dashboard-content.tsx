@@ -1,5 +1,9 @@
 "use client";
 
+import * as React from "react";
+import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
+import { usePathname, useSearchParams } from "next/navigation";
 import {
   Flower2Icon,
   ImageIcon,
@@ -7,11 +11,6 @@ import {
   UsersIcon,
   Wheat,
 } from "lucide-react";
-import { useSession } from "next-auth/react";
-import { useTranslations } from "next-intl";
-import { usePathname, useSearchParams } from "next/navigation";
-import * as React from "react";
-
 import PageHeader from "~/components/Layouts/page-header";
 import { ActivePlantsCard } from "~/components/features/Dashboard/active-plants-card";
 import { PlantsOverviewChart } from "~/components/features/Dashboard/dashboard-overview-chart";
@@ -78,7 +77,7 @@ export function DashboardContent() {
 
   const { data: photosData, isLoading: isLoadingPhotos } =
     api.photos.getOwnPhotos.useQuery({
-      limit: 6,
+      limit: 12,
     });
 
   const { data: userProfile, isPending: userStatsArePending } =
@@ -109,7 +108,7 @@ export function DashboardContent() {
         title={t("Dashboard-title")}
         subtitle={t("welcome-to-platform-subttitle")}
       >
-        <div className="flex-1 space-y-4 pb-2 pt-6">
+        <div className="flex-1 space-y-4 pt-6 pb-2">
           <Tabs
             defaultValue="overview"
             value={activeTab}
@@ -122,26 +121,13 @@ export function DashboardContent() {
           >
             <TabsList className="mb-4 w-full font-bold sm:mb-0">
               <TabsTrigger
-                // className="text-base font-medium data-[state=active]:bg-accent data-[state=active]:text-accent-foreground"
-                className="w-full data-[state=active]:font-bold"
+                // className="dark:data-[state=active]:bg-background"
                 value="overview"
               >
                 {t("overview")}
               </TabsTrigger>
-              <TabsTrigger
-                // className="text-base font-medium data-[state=active]:bg-accent data-[state=active]:text-accent-foreground"
-                className="w-full data-[state=active]:font-bold"
-                value="activity"
-              >
-                {t("activity")}
-              </TabsTrigger>
-              <TabsTrigger
-                // className="text-base font-medium data-[state=active]:bg-accent data-[state=active]:text-accent-foreground"
-                className="w-full data-[state=active]:font-bold"
-                value="analytics"
-              >
-                {t("analytics")}
-              </TabsTrigger>
+              <TabsTrigger value="activity">{t("activity")}</TabsTrigger>
+              <TabsTrigger value="analytics">{t("analytics")}</TabsTrigger>
             </TabsList>
 
             <TabsContent value="overview" className="space-y-4">
@@ -150,8 +136,10 @@ export function DashboardContent() {
                 {/* Grows Card */}
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0">
-                    <CardTitle as="h2">{t("grow-environments")}</CardTitle>
-                    <TentTree className="size-5" />
+                    <CardTitle as="h2" className="text-2xl font-semibold">
+                      {t("grow-environments")}
+                    </CardTitle>
+                    <TentTree className="size-6" />
                   </CardHeader>
                   <CardContent className="pb-2">
                     {isLoadingGrows ? (
@@ -160,7 +148,7 @@ export function DashboardContent() {
                       <div className="text-3xl font-bold">{totalGrows}</div>
                     )}
                   </CardContent>
-                  <CardFooter className="text-xs text-muted-foreground">
+                  <CardFooter className="text-muted-foreground text-xs">
                     {t("grow-environments-description")}
                   </CardFooter>
                 </Card>
@@ -168,7 +156,9 @@ export function DashboardContent() {
                 {/* Plants Card */}
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0">
-                    <CardTitle as="h2">{t("total-plants")}</CardTitle>
+                    <CardTitle as="h2" className="text-2xl font-semibold">
+                      {t("total-plants")}
+                    </CardTitle>
                     <Flower2Icon className="size-5" />
                   </CardHeader>
                   <CardContent className="pb-2">
@@ -178,7 +168,7 @@ export function DashboardContent() {
                       <div className="text-3xl font-bold">{totalPlants}</div>
                     )}
                   </CardContent>
-                  <CardFooter className="text-xs text-muted-foreground">
+                  <CardFooter className="text-muted-foreground text-xs">
                     {isLoadingPlants ? (
                       <>
                         <Skeleton className="mr-2 h-4 w-16" />
@@ -197,7 +187,9 @@ export function DashboardContent() {
                 {/* Photos Card */}
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0">
-                    <CardTitle as="h2">{t("total-photos")}</CardTitle>
+                    <CardTitle as="h2" className="text-2xl font-semibold">
+                      {t("total-photos")}
+                    </CardTitle>
                     <ImageIcon className="size-5" />
                   </CardHeader>
                   <CardContent className="pb-2">
@@ -207,7 +199,7 @@ export function DashboardContent() {
                       <div className="text-3xl font-bold">{totalPhotos}</div>
                     )}
                   </CardContent>
-                  <CardFooter className="text-xs text-muted-foreground">
+                  <CardFooter className="text-muted-foreground text-xs">
                     {t("total-photos-description")}
                   </CardFooter>
                 </Card>
@@ -215,7 +207,9 @@ export function DashboardContent() {
                 {/* User Stats Card */}
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0">
-                    <CardTitle as="h2">{t("comunity")}</CardTitle>
+                    <CardTitle as="h2" className="text-2xl font-semibold">
+                      {t("comunity")}
+                    </CardTitle>
                     <UsersIcon className="size-5" />
                   </CardHeader>
                   <CardContent className="space-y-3">
@@ -242,7 +236,7 @@ export function DashboardContent() {
                             followerCount
                           )}
                         </div>
-                        <div className="text-xs text-muted-foreground">
+                        <div className="text-muted-foreground text-xs">
                           {t("Followers")}
                         </div>
                       </div>
@@ -254,7 +248,7 @@ export function DashboardContent() {
                             followingCount
                           )}
                         </div>
-                        <div className="whitespace-nowrap text-xs text-muted-foreground">
+                        <div className="text-muted-foreground text-xs whitespace-nowrap">
                           {t("Following")}
                         </div>
                       </div>
@@ -265,58 +259,18 @@ export function DashboardContent() {
               </div>
 
               {/* 2nd row */}
-              <div className="grid gap-0 space-y-4 sm:grid-cols-3 lg:grid-cols-7 lg:gap-4 lg:space-y-0">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-8">
                 {/* Active Plants Card */}
                 <ActivePlantsCard
                   plantsData={plantsData}
                   isLoading={isLoadingPlants}
                 />
 
-                <Card className="col-span-4">
-                  <CardHeader>
-                    <CardTitle>{t("recent-photos")}</CardTitle>
-                    <CardDescription>
-                      {t("recent-photos-description")}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <RecentPhotosWidget
-                      photos={photosData?.images}
-                      isLoading={isLoadingPhotos}
-                    />
-                  </CardContent>
-                </Card>
+                <RecentPhotosWidget
+                  photos={photosData?.images}
+                  isLoading={isLoadingPhotos}
+                />
               </div>
-
-              {/* Recent Photos and Activity Feed */}
-              {/* <div className="grid gap-0 space-y-4 sm:grid-cols-2 lg:grid-cols-7 lg:gap-4 lg:space-y-0">
-                <Card className="col-span-4">
-                  <CardHeader>
-                    <CardTitle>{t("recent-photos")}</CardTitle>
-                    <CardDescription>
-                      {t("recent-photos-description")}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <RecentPhotosWidget
-                      photos={photosData?.images}
-                      isLoading={isLoadingPhotos}
-                    />
-                  </CardContent>
-                </Card>
-
-                <Card className="col-span-3">
-                  <CardHeader>
-                    <CardTitle>{t("recent-activity")}</CardTitle>
-                    <CardDescription>
-                      {t("recent-activity-description")}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <DashboardActivityFeed />
-                  </CardContent>
-                </Card>
-              </div> */}
             </TabsContent>
 
             <TabsContent value="activity" className="space-y-4">
@@ -333,7 +287,7 @@ export function DashboardContent() {
                     {activeTab === "activity" && (
                       <React.Suspense
                         fallback={
-                          <div className="h-96 animate-pulse rounded-md bg-muted/20" />
+                          <div className="bg-muted/20 h-96 animate-pulse rounded-md" />
                         }
                       >
                         <NotificationsFeed />
@@ -355,11 +309,11 @@ export function DashboardContent() {
                 <CardContent className="pl-2">
                   <div className="flex h-[300px] items-center justify-center rounded-md border-2 border-dashed">
                     <div className="space-y-2 text-center">
-                      <Wheat className="mx-auto h-8 w-8 text-muted-foreground" />
+                      <Wheat className="text-muted-foreground mx-auto h-8 w-8" />
                       <h3 className="font-medium">
                         {t("analytics-coming-soon")}
                       </h3>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-muted-foreground text-sm">
                         {t("analytics-coming-soon-description")}
                       </p>
                     </div>

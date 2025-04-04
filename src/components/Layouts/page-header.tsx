@@ -1,6 +1,7 @@
 // src/components/Layouts/page-header.tsx:
 import { ReadonlyURLSearchParams } from "next/navigation";
-import { Button, type ButtonProps } from "~/components/ui/button";
+import type { VariantProps } from "class-variance-authority";
+import { Button, buttonVariants } from "~/components/ui/button";
 import { Link } from "~/lib/i18n/routing";
 
 interface IPageHeader {
@@ -10,7 +11,7 @@ interface IPageHeader {
   buttonLink?: string | null;
   buttonLabel?: string;
   searchParams?: ReadonlyURLSearchParams;
-  buttonVariant?: ButtonProps["variant"];
+  buttonVariant?: VariantProps<typeof buttonVariants>["variant"];
 }
 
 export default function Component({
@@ -27,7 +28,7 @@ export default function Component({
     : undefined;
 
   return (
-    <div className="mx-auto space-y-4 pl-3 pr-4 md:pl-2 lg:pl-4 xl:pl-6">
+    <div className="mx-auto space-y-4 pr-4 pl-3 md:pl-2 lg:pl-4 xl:pl-6">
       <div className="space-y-2">
         <div className="flex justify-between">
           <div className="flex flex-col space-y-2">

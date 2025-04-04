@@ -1,6 +1,8 @@
 "use client";
 
 // src/components/features/Plants/plant-form.tsx:
+import * as React from "react";
+import { useTranslations } from "next-intl";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   FlowerIcon,
@@ -12,11 +14,9 @@ import {
   TentTreeIcon,
   Wheat,
 } from "lucide-react";
-import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
-
 import { PaginationItemsPerPage, modulePaths } from "~/assets/constants";
 import FormContent from "~/components/Layouts/form-content";
 import SpinningLoader from "~/components/Layouts/loader";
@@ -47,7 +47,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-import { useToast } from "~/hooks/use-toast";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import type {
@@ -56,7 +55,6 @@ import type {
   GetPlantByIdType,
 } from "~/server/api/root";
 import { plantFormSchema } from "~/types/zodSchema";
-
 import { BreederSelector } from "./breeder-selector";
 import PlantFormDateField from "./plant-form-date-fields";
 import { StrainSelector } from "./strain-selector";
@@ -66,12 +64,11 @@ type FormValues = z.infer<typeof plantFormSchema>;
 export default function PlantForm({ plant }: { plant?: GetPlantByIdType }) {
   const utils = api.useUtils();
   const router = useRouter();
-  const { toast } = useToast();
 
   const t = useTranslations("Plants");
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [selectedBreederId, setSelectedBreederId] = useState<
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [selectedBreederId, setSelectedBreederId] = React.useState<
     string | null | undefined
   >(plant?.strain?.breeder.id || null);
 
@@ -97,7 +94,7 @@ export default function PlantForm({ plant }: { plant?: GetPlantByIdType }) {
   const watchedBreederId = form.watch("breederId");
 
   // Set selected breeder when form value changes
-  useEffect(() => {
+  React.useEffect(() => {
     if (watchedBreederId !== selectedBreederId) {
       setSelectedBreederId(watchedBreederId);
       // Reset strain when breeder changes
@@ -119,9 +116,8 @@ export default function PlantForm({ plant }: { plant?: GetPlantByIdType }) {
 
   const createOrEditPlantMutation = api.plants.createOrEdit.useMutation({
     onSuccess: async () => {
-      toast({
-        title: "Success",
-        description: "Your plant has been saved.",
+      toast(t("form-toast-success-title"), {
+        description: t("form-toast-success-description"),
       });
 
       // Reset the infinite query
@@ -135,12 +131,9 @@ export default function PlantForm({ plant }: { plant?: GetPlantByIdType }) {
       router.push(modulePaths.PLANTS.path);
     },
     onError: (error) => {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
+      toast.error(t("form-toast-error-title"), {
+        description: error.message || t("form-toast-error-description"),
       });
-      setIsSubmitting(false);
     },
   });
 
@@ -189,9 +182,9 @@ export default function PlantForm({ plant }: { plant?: GetPlantByIdType }) {
                         </FormLabel>
                         <FormControl>
                           <div className="relative">
-                            <TagIcon className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+                            <TagIcon className="text-muted-foreground absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2" />
                             <Input
-                              className="bg-muted pl-10 text-foreground md:text-base"
+                              className="bg-muted text-foreground pl-10 md:text-base"
                               placeholder="Enter plant name"
                               {...field}
                             />
@@ -274,7 +267,7 @@ export default function PlantForm({ plant }: { plant?: GetPlantByIdType }) {
                         </FormLabel>
                         <FormControl>
                           <div className="relative">
-                            <TentTreeIcon className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+                            <TentTreeIcon className="text-muted-foreground absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2" />
                             {isGrowsLoading ? (
                               <SpinningLoader />
                             ) : (
@@ -282,7 +275,7 @@ export default function PlantForm({ plant }: { plant?: GetPlantByIdType }) {
                                 value={field.value || undefined}
                                 onValueChange={field.onChange}
                               >
-                                <SelectTrigger className="bg-muted pl-10 text-foreground md:text-base">
+                                <SelectTrigger className="bg-muted text-foreground pl-10 md:text-base">
                                   <SelectValue
                                     placeholder={t("form-grow-placeholder")}
                                   />
@@ -403,13 +396,13 @@ export default function PlantForm({ plant }: { plant?: GetPlantByIdType }) {
                   title="Reset"
                   variant="outline"
                   onClick={() => form.reset()}
-                  className="w-full"
+                  className="flex-1"
                 >
                   {t("form-button-reset")}
                 </Button>
                 <Button
                   type="submit"
-                  className="w-full"
+                  className="flex-1"
                   disabled={isSubmitting}
                 >
                   {isSubmitting && <SpinningLoader className="mr-2 h-4 w-4" />}

@@ -1,7 +1,6 @@
 // src/components/ui/delete-confirmation-dialog.tsx
-import { AlertTriangle, Trash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
-
+import { AlertTriangle, Trash2 } from "lucide-react";
 import SpinningLoader from "~/components/Layouts/loader";
 import { Button } from "~/components/ui/button";
 import {
@@ -43,16 +42,16 @@ export function DeleteConfirmationDialog({
       >
         <DialogHeader className="flex justify-between gap-1 border-b p-4">
           <DialogTitle className="text-lg font-semibold">{title}</DialogTitle>
-          <DialogDescription className="text-sm text-muted-foreground">
+          <DialogDescription className="text-muted-foreground text-sm">
             {description}
           </DialogDescription>
         </DialogHeader>
 
         {alertCautionText && (
-          <div className="m-2 border-l-4 border-destructive bg-destructive/10 p-2">
+          <div className="border-destructive bg-destructive/10 m-2 border-l-4 p-2">
             <div className="flex gap-3">
-              <AlertTriangle className="h-5 w-5 flex-shrink-0 text-destructive" />
-              <p className="text-sm text-destructive">{alertCautionText}</p>
+              <AlertTriangle className="text-destructive h-5 w-5 shrink-0" />
+              <p className="text-destructive text-sm">{alertCautionText}</p>
             </div>
           </div>
         )}

@@ -1,12 +1,12 @@
 "use client";
 
 // src/components/features/Images/image-details-card.tsx:
-import { TRPCClientError } from "@trpc/client";
-import { Check, TagIcon } from "lucide-react";
+import * as React from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
-import { useCallback, useMemo, useState } from "react";
-
+import { TRPCClientError } from "@trpc/client";
+import { Check, Flower2Icon } from "lucide-react";
+import { toast } from "sonner";
 import { modulePaths } from "~/assets/constants";
 import FormContent from "~/components/Layouts/form-content";
 import SpinningLoader from "~/components/Layouts/loader";
@@ -30,7 +30,6 @@ import {
   CommandItem,
   CommandList,
 } from "~/components/ui/command";
-import { useToast } from "~/hooks/use-toast";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import type { GetOwnPlantsInput, GetPhotoByIdType } from "~/server/api/root";
@@ -40,7 +39,6 @@ interface ImageConnectPlantsProps {
 }
 
 export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
-  const { toast } = useToast();
   const router = useRouter();
   const locale = useLocale();
   const utils = api.useUtils();
@@ -84,21 +82,21 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
   );
 
   // Move plants array into useMemo to ensure stable reference
-  const plants = useMemo(() => plantsData?.plants || [], [plantsData]);
+  const plants = React.useMemo(() => plantsData?.plants || [], [plantsData]);
 
   // Initialize with connected plants
-  const initialSelectedPlantIds = useMemo(
+  const initialSelectedPlantIds = React.useMemo(
     () => image.plantImages.map((plantImage) => plantImage.plant.id),
     [image.plantImages],
   );
 
-  const [selectedPlantIds, setSelectedPlantIds] = useState<string[]>(
+  const [selectedPlantIds, setSelectedPlantIds] = React.useState<string[]>(
     initialSelectedPlantIds,
   );
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = React.useState("");
 
   // Create filtered plants list using useMemo
-  const filteredPlants = useMemo(() => {
+  const filteredPlants = React.useMemo(() => {
     if (!plants.length) return [];
     return plants.filter(
       (p) =>
@@ -107,9 +105,9 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
     );
   }, [plants, searchQuery]);
 
-  const [selectAll, setSelectAll] = useState(false);
+  const [selectAll, setSelectAll] = React.useState(false);
 
-  const handleSelectAll = useCallback(() => {
+  const handleSelectAll = React.useCallback(() => {
     setSelectAll(!selectAll);
     setSelectedPlantIds(
       selectAll ? [] : filteredPlants.map((plant) => plant.id),
@@ -129,7 +127,7 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
    * @function handleConnectPlants
    * @returns {Promise<void>} A promise that resolves when the operations complete.
    */
-  const handleConnectPlants = useCallback(async () => {
+  const handleConnectPlants = React.useCallback(async () => {
     if (!image.id) return;
 
     const currentConnectedPlants = new Set(
@@ -160,35 +158,32 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
       ]);
 
       // Show success toast only after all operations complete successfully
-      toast({
-        title: "Success",
-        description: "Plants updated successfully",
+      toast(t("toasts.success.connectPlants.title"), {
+        description: t("toasts.success.connectPlants.description"),
       });
       await utils.photos.getOwnPhotos.invalidate();
       router.push(modulePaths.PHOTOS.path);
     } catch (error) {
       // Show error toast when any operation fails
-      toast({
-        title: "Error",
+      toast.error(t("toasts.errors.connectPlants.title"), {
         description:
           error instanceof TRPCClientError
             ? error.message
-            : "Failed to update connected plants",
-        variant: "destructive",
+            : t("toasts.errors.connectPlants.description"),
       });
     }
   }, [
     image.id,
     image.plantImages,
     selectedPlantIds,
+    t,
+    utils.photos.getOwnPhotos,
+    router,
     connectToPlantMutation,
     disconnectFromPlantMutation,
-    toast,
-    router,
-    utils.photos.getOwnPhotos,
   ]);
 
-  const togglePlantSelection = useCallback((plantId: string) => {
+  const togglePlantSelection = React.useCallback((plantId: string) => {
     setSelectedPlantIds((prev) =>
       prev.includes(plantId)
         ? prev.filter((id) => id !== plantId)
@@ -205,7 +200,7 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
       searchParams={allPhotosQuery ?? undefined}
     >
       <FormContent>
-        <Card>
+        <Card className="rounded-md py-2">
           <CardHeader className="p-3 pb-0 md:p-7 md:pb-0">
             <CardTitle as="h2">{t("plantSelection.title")}</CardTitle>
             <CardDescription>{t("plantSelection.description")}</CardDescription>
@@ -217,7 +212,7 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
             >
               <div className="flex w-full items-center border-b pl-1">
                 <Checkbox
-                  className="m-2 border-secondary data-[state=checked]:bg-secondary data-[state=checked]:text-secondary-foreground"
+                  className="border-secondary data-[state=checked]:bg-secondary data-[state=checked]:text-secondary-foreground m-2"
                   onCheckedChange={handleSelectAll}
                 />
                 <CommandInput
@@ -239,10 +234,10 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
                       <CommandItem
                         key={plant.id}
                         onSelect={() => togglePlantSelection(plant.id)}
-                        className={`data[] cursor-pointer data-[selected=true]:font-bold ${
+                        className={`data[] hover:text-accent-foreground cursor-pointer ${
                           selectedPlantIds.includes(plant.id)
-                            ? "font-bold text-secondary data-[selected=true]:text-secondary"
-                            : "data-[selected=true]:text-foreground"
+                            ? "text-secondary font-bold"
+                            : "data-[selected=true]:text-accent-foreground"
                         }`}
                       >
                         <div
@@ -253,15 +248,15 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
                           }`}
                         >
                           {selectedPlantIds.includes(plant.id) && (
-                            <Check className="h-3 w-3 text-primary-foreground" />
+                            <Check className="text-primary-foreground h-3 w-3" />
                           )}
                         </div>
-                        <TagIcon className="mr-2 h-4 w-4" />
+                        <Flower2Icon className="mr-2 h-4 w-4" />
                         <span>{plant.name}</span>
                         {plant.strain?.name && (
                           <Badge
                             variant="outline"
-                            className="ml-auto bg-seedling uppercase text-white"
+                            className="bg-seedling ml-auto text-white uppercase"
                           >
                             {plant.strain?.name}
                           </Badge>

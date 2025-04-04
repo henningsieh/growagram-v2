@@ -1,7 +1,7 @@
 // src/app/api/steadyhq/callback/route.ts:
-import axios from "axios";
 import "next-auth";
 import { NextResponse } from "next/server";
+import axios from "axios";
 import { modulePaths } from "~/assets/constants";
 import { env } from "~/env";
 import { auth } from "~/lib/auth";

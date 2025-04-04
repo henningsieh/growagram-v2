@@ -1,6 +1,10 @@
 "use client";
 
 // src/components/features/Photos/photo-card.tsx:
+import { useState } from "react";
+import { useSession } from "next-auth/react";
+import { useLocale, useTranslations } from "next-intl";
+import Image from "next/image";
 import {
   Camera,
   FileIcon,
@@ -9,10 +13,7 @@ import {
   TagsIcon,
   UploadCloud,
 } from "lucide-react";
-import { useSession } from "next-auth/react";
-import { useLocale, useTranslations } from "next-intl";
-import Image from "next/image";
-import { useState } from "react";
+import { toast } from "sonner";
 import { modulePaths } from "~/assets/constants";
 import { RESPONSIVE_IMAGE_SIZES } from "~/components/Layouts/responsive-grid";
 import AvatarCardHeader from "~/components/atom/avatar-card-header";
@@ -22,15 +23,10 @@ import { SocialCardFooter } from "~/components/atom/social-card-footer";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
 import { Comments } from "~/components/features/Comments/comments";
 import { useImageModal } from "~/components/features/Photos/modal-provider";
-import PostFormModal from "~/components/features/Timeline/Post/post-form-modal";
+import { PostFormModal } from "~/components/features/Timeline/Post/post-form-modal";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardTitle,
-} from "~/components/ui/card";
+import { Card, CardContent, CardTitle } from "~/components/ui/card";
 import {
   Tooltip,
   TooltipContent,
@@ -39,7 +35,6 @@ import {
 } from "~/components/ui/tooltip";
 import { useComments } from "~/hooks/use-comments";
 import { useLikeStatus } from "~/hooks/use-likes";
-import { useToast } from "~/hooks/use-toast";
 import { Link, useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import { cn, formatDate, formatTime } from "~/lib/utils";
@@ -72,7 +67,6 @@ export default function PhotoCard({
   const router = useRouter();
   const utils = api.useUtils();
   const t = useTranslations("Photos");
-  const { toast } = useToast();
 
   const { isLiked, likeCount, isLoading } = useLikeStatus(
     photo.id,
@@ -89,9 +83,8 @@ export default function PhotoCard({
   // Initialize delete mutation
   const deleteMutation = api.photos.deletePhoto.useMutation({
     onSuccess: async () => {
-      toast({
-        title: "Success",
-        description: "Image deleted successfully",
+      toast(t("DeleteConfirmation.toasts.success.title"), {
+        description: t("DeleteConfirmation.toasts.success.description"),
       });
       // Invalidate and prefetch the images query to refresh the list
       await utils.photos.getOwnPhotos.invalidate();
@@ -100,10 +93,9 @@ export default function PhotoCard({
       router.refresh();
     },
     onError: (error) => {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to delete image",
-        variant: "destructive",
+      toast.error(t("DeleteConfirmation.toasts.error.title"), {
+        description:
+          error.message || t("DeleteConfirmation.toasts.error.description"),
       });
     },
   });
@@ -114,12 +106,10 @@ export default function PhotoCard({
 
   const confirmDelete = async () => {
     if (photo.posts.length > 0) {
-      toast({
-        title: t("DeleteConfirmation.toasts.warning-photo-has-posts.title"),
+      toast(t("DeleteConfirmation.toasts.warning-photo-has-posts.title"), {
         description: t(
           "DeleteConfirmation.toasts.warning-photo-has-posts.description",
         ),
-        variant: "destructive",
       });
       setIsDeleteDialogOpen(false);
       return;
@@ -155,13 +145,13 @@ export default function PhotoCard({
       />
       <Card
         className={cn(
-          `relative flex flex-col overflow-hidden border border-input pt-1`,
+          `border-input relative flex flex-col overflow-hidden border py-1`,
           isSocial && "border-none",
         )}
       >
         {/* "NEW" Banner */}
         {!!!photo.plantImages.length && (
-          <div className="absolute right-[-40px] top-[15px] z-10 w-[120px] rotate-[45deg] cursor-default bg-secondary px-[40px] py-[1px] text-[12px] font-semibold tracking-widest text-white">
+          <div className="bg-secondary absolute top-[15px] right-[-40px] z-10 w-[120px] rotate-[45deg] cursor-default px-[40px] py-[1px] text-[12px] font-semibold tracking-widest text-white">
             {t("newNotConnteched")}
           </div>
         )}
@@ -189,7 +179,7 @@ export default function PhotoCard({
         </div>
 
         <CardContent
-          className={`grid gap-2 p-2 ${isSocial && "ml-12 pl-0 pr-2"}`}
+          className={`grid gap-2 p-2 ${isSocial && "ml-12 pr-2 pl-0"}`}
         >
           {/* Title Link and OwnerDropdownMenu */}
           <div className="flex min-w-0 items-center justify-between gap-2">
@@ -245,40 +235,51 @@ export default function PhotoCard({
           </div>
 
           {/* Photo Upload and Capture Dates */}
-          <CardDescription className="flex h-9 flex-row items-center justify-between pr-3 font-mono text-xs tracking-tighter">
-            <div
-              title={t("uploaded-at")}
-              className={cn(
-                "flex items-center gap-2",
-                currentQuery &&
-                  currentQuery.sortField === PhotosSortField.UPLOAD_DATE
-                  ? "text-secondary"
-                  : "",
-              )}
-            >
-              <UploadCloud size={16} className="shrink-0" />
-              <span className="block">
-                {formatDate(photo.createdAt, locale as Locale)}{" "}
-                {formatTime(photo.createdAt, locale as Locale)}
-              </span>
+          <TooltipProvider>
+            <div className="flex flex-col text-sm">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <p
+                    className={cn(
+                      "flex items-center gap-2 px-1",
+                      currentQuery &&
+                        currentQuery.sortField === PhotosSortField.UPLOAD_DATE
+                        ? "text-secondary"
+                        : "text-accent-foreground",
+                    )}
+                  >
+                    <UploadCloud size={20} />
+                    {formatDate(photo.createdAt, locale as Locale)}{" "}
+                    {formatTime(photo.createdAt, locale as Locale)}
+                  </p>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{t("uploaded-at")}</p>
+                </TooltipContent>
+              </Tooltip>
+
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <p
+                    className={cn(
+                      "flex items-center gap-2 px-1",
+                      currentQuery &&
+                        currentQuery.sortField === PhotosSortField.CAPTURE_DATE
+                        ? "text-secondary"
+                        : "text-accent-foreground",
+                    )}
+                  >
+                    <Camera size={20} />
+                    {formatDate(photo.captureDate, locale as Locale)}{" "}
+                    {formatTime(photo.captureDate, locale as Locale)}
+                  </p>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{t("capture-date")}</p>
+                </TooltipContent>
+              </Tooltip>
             </div>
-            <div
-              title={t("capture-date")}
-              className={cn(
-                "flex items-center gap-2",
-                currentQuery &&
-                  currentQuery.sortField === PhotosSortField.CAPTURE_DATE
-                  ? "text-secondary"
-                  : "",
-              )}
-            >
-              <Camera size={16} className="shrink-0" />
-              <span className="block">
-                {formatDate(photo.captureDate, locale as Locale)}{" "}
-                {formatTime(photo.captureDate, locale as Locale)}
-              </span>
-            </div>
-          </CardDescription>
+          </TooltipProvider>
 
           {!!photo.plantImages.length && !isSocial && (
             <Button
@@ -309,7 +310,7 @@ export default function PhotoCard({
 
         {isSocial && (
           <SocialCardFooter
-            className={`pb-2 pr-2 ${isSocial && "ml-12"}`}
+            className={`pr-2 pb-2 ${isSocial && "ml-12"}`}
             entityId={photo.id}
             entityType={LikeableEntityType.Photo}
             initialLiked={isLiked}

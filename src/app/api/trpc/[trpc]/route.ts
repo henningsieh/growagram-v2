@@ -1,6 +1,6 @@
 // src/app/api/trpc/[trpc]/route.ts:
+import type { NextRequest } from "next/server";
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
-import { type NextRequest } from "next/server";
 import { TRPC_ENDPOINT } from "~/assets/constants";
 import { appRouter as router } from "~/server/api/root";
 import { createTRPCContext as createContext } from "~/server/api/trpc";

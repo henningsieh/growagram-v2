@@ -1,7 +1,7 @@
+import * as React from "react";
+import Link from "next/link";
 import { HashtagIcon } from "@heroicons/react/24/outline";
 import { cx } from "class-variance-authority";
-import Link from "next/link";
-import { Suspense } from "react";
 import { CreateChannelDialog } from "~/app/Chat/channels/create-channel";
 import { Button } from "~/components/button";
 import { SignedIn, SignedOut, auth, signIn, signOut } from "~/lib/auth/index";
@@ -19,17 +19,17 @@ export default async function Home(
 
   return (
     <div className="flex flex-1 overflow-hidden">
-      <nav className="hidden w-64 flex-col border-r bg-white p-4 dark:border-gray-800 dark:bg-gray-900 sm:flex">
+      <nav className="hidden w-64 flex-col border-r bg-white p-4 sm:flex dark:border-gray-800 dark:bg-gray-900">
         <div className="mb-4 flex items-center justify-between">
           <div className="flex items-center gap-1">
             <HashtagIcon className="size-4 text-gray-500 dark:text-gray-400" />
             <span className="text-sm font-medium">Channels</span>
           </div>
-          <Suspense>
+          <React.Suspense>
             <SignedIn>
               <CreateChannelDialog />
             </SignedIn>
-          </Suspense>
+          </React.Suspense>
         </div>
         <div className="flex flex-1 flex-col gap-2 overflow-y-auto">
           {channels.map((channel) => (
@@ -49,7 +49,7 @@ export default async function Home(
         </div>
         <div className="mt-auto">
           <div className="flex items-center justify-between">
-            <Suspense>
+            <React.Suspense>
               <SignedIn>
                 <span className="text-sm font-medium">
                   Hello, {session?.user?.name} 👋
@@ -78,7 +78,7 @@ export default async function Home(
                   </Button>
                 </form>
               </SignedOut>
-            </Suspense>
+            </React.Suspense>
           </div>
         </div>
       </nav>

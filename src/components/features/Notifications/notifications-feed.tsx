@@ -1,5 +1,8 @@
+import * as React from "react";
+import { useEffect } from "react";
 import { useTranslations } from "next-intl";
-import { useCallback, useState } from "react";
+import { AlertCircle } from "lucide-react";
+import { toast } from "sonner";
 import ItemsPagination from "~/components/atom/item-pagination";
 import {
   NotificationItem,
@@ -18,10 +21,21 @@ const PAGE_SIZE = 3;
 
 export function NotificationsFeed() {
   const t = useTranslations("Notifications");
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = React.useState(1);
 
   // Use the useNotifications hook with its default behavior (onlyUnread = true)
   const { all: notifications, isLoading, error } = useNotifications(false);
+
+  // Handle error with toast notification
+  useEffect(() => {
+    if (error) {
+      toast.error(t("panel.error"), {
+        description:
+          error instanceof Error ? error.message : "Unknown error occurred",
+        icon: <AlertCircle className="h-4 w-4" />,
+      });
+    }
+  }, [error, t]);
 
   // Handle pagination locally instead of via the API
   const startIndex = (currentPage - 1) * PAGE_SIZE;
@@ -30,7 +44,7 @@ export function NotificationsFeed() {
   const totalPages = Math.ceil(notifications.length / PAGE_SIZE);
 
   // Handle page changes from ItemsPagination
-  const handlePageChange = useCallback(
+  const handlePageChange = React.useCallback(
     (page: number) => {
       if (page < 1 || page > totalPages) return;
       setCurrentPage(page);
@@ -52,8 +66,12 @@ export function NotificationsFeed() {
                 <NotificationSkeleton key={i} />
               ))}
           </div>
+        ) : error ? (
+          <div className="text-destructive py-4 text-center">
+            <p>{t("ActivityFeed.error-no-notifications")}</p>
+          </div>
         ) : !notifications.length ? (
-          <div className="py-4 text-center text-muted-foreground">
+          <div className="text-muted-foreground py-4 text-center">
             <p>{t("ActivityFeed.no-notifications")}</p>
           </div>
         ) : (

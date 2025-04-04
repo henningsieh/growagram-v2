@@ -1,11 +1,11 @@
 "use client";
 
-import { UserMinusIcon, UserPlusIcon } from "lucide-react";
+import * as React from "react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { UserMinusIcon, UserPlusIcon } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "~/components/ui/button";
-import { useToast } from "~/hooks/use-toast";
 import { api } from "~/lib/trpc/react";
 
 interface FollowButtonProps {
@@ -20,8 +20,7 @@ export function FollowButton({
   className,
 }: FollowButtonProps) {
   const { data: session } = useSession();
-  const [isFollowing, setIsFollowing] = useState(initialIsFollowing);
-  const { toast } = useToast();
+  const [isFollowing, setIsFollowing] = React.useState(initialIsFollowing);
   const utils = api.useUtils();
   const t = useTranslations("Profile");
 
@@ -29,7 +28,9 @@ export function FollowButton({
     api.users.followUser.useMutation({
       onSuccess: () => {
         setIsFollowing(true);
-        toast({ title: "Successfully followed user" });
+        toast(t("FollowButton.follow-success-title"), {
+          description: t("FollowButton.follow-success-description"),
+        });
         utils.users.getPublicUserProfile.invalidate();
       },
     });
@@ -38,7 +39,9 @@ export function FollowButton({
     api.users.unfollowUser.useMutation({
       onSuccess: () => {
         setIsFollowing(false);
-        toast({ title: "Successfully unfollowed user" });
+        toast(t("FollowButton.unfollow-success-title"), {
+          description: t("FollowButton.unfollow-success-description"),
+        });
         utils.users.getPublicUserProfile.invalidate();
       },
     });

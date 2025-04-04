@@ -1,11 +1,10 @@
 // src/components/features/Comments/comments.tsx:
-import { Send } from "lucide-react";
+import * as React from "react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
-import React from "react";
-
+import { Send } from "lucide-react";
 import SpinningLoader from "~/components/Layouts/loader";
-import CustomAvatar from "~/components/atom/custom-avatar";
+import { CustomAvatar } from "~/components/atom/custom-avatar";
 import CommentsTree from "~/components/features/Comments/comments-tree";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
@@ -42,7 +41,7 @@ export const Comments: React.FC<CommentsProps> = ({
   return (
     <div className="mt-2">
       {session && (
-        <div className="mx-1 my-2 flex items-center gap-2 rounded-sm bg-accent/30 py-1 pl-1 pr-1">
+        <div className="bg-accent/30 mx-1 my-2 flex items-center gap-2 rounded-sm py-1 pr-1 pl-1">
           <div className="flex justify-center">
             <CustomAvatar
               size={38}
@@ -78,12 +77,12 @@ export const Comments: React.FC<CommentsProps> = ({
         ))}
       </div>
       {comments?.length === 0 && (
-        <div className="p-4 text-center text-muted-foreground">
+        <div className="text-muted-foreground p-4 text-center">
           {t("no-comments-yet")}
         </div>
       )}
       {commentsLoading && (
-        <div className="p-4 text-center text-muted-foreground">
+        <div className="text-muted-foreground p-4 text-center">
           {t("loading-comments")}
         </div>
       )}

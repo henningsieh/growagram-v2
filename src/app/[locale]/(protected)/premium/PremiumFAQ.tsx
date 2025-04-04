@@ -34,7 +34,7 @@ export function PremiumFAQ() {
       <h2 className="mb-8 text-center text-3xl font-semibold">
         {t("faq.title")}
       </h2>
-      <Accordion type="single" collapsible className="mx-auto w-[520]">
+      <Accordion type="single" collapsible className="mx-auto w-520">
         {faqItems.map((item, index) => (
           <AccordionItem key={index} value={`item-${index}`}>
             <AccordionTrigger>{item.question}</AccordionTrigger>

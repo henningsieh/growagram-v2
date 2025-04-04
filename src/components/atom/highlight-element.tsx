@@ -1,5 +1,6 @@
+// src/components/atom/highlight-element.tsx:
+import * as React from "react";
 import { HTMLMotionProps, motion, useAnimation } from "framer-motion";
-import { useEffect } from "react";
 import { cn } from "~/lib/utils";
 
 interface HighlightElementProps
@@ -17,7 +18,7 @@ export function HighlightElement({
 }: HighlightElementProps) {
   const controls = useAnimation();
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (isHighlighted) {
       void controls.start({
         backgroundColor: [

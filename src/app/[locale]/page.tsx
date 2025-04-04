@@ -1,9 +1,9 @@
 "use client";
 
 // src/app/[locale]/page.tsx:
-import { AnimatePresence, motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
+import { AnimatePresence, motion } from "framer-motion";
 import { modulePaths } from "~/assets/constants";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
@@ -39,7 +39,7 @@ export default function LandingPage() {
           exit={{ height: 0 }}
           transition={{ duration: 0.3, ease: "easeIn" }}
           // className="hidden h-0 w-full bg-primary sm:block sm:h-2"
-          className="h-2 bg-primary"
+          className="bg-primary h-2"
         />
       </AnimatePresence>
 
@@ -51,7 +51,7 @@ export default function LandingPage() {
         exit="hidden"
         className="relative overflow-hidden"
       >
-        <div className="flex h-[calc(100svh-9rem)] items-center bg-muted dark:bg-accent lg:overflow-hidden lg:pb-14">
+        <div className="bg-muted flex h-[calc(100svh-9rem)] items-center lg:overflow-hidden lg:pb-14">
           <div className="mx-auto max-w-7xl px-6 py-12 sm:py-16 lg:px-8">
             <div className="lg:grid lg:grid-cols-2 lg:gap-8">
               <motion.div
@@ -59,19 +59,19 @@ export default function LandingPage() {
                 className="mx-auto max-w-md sm:max-w-2xl sm:text-center lg:flex lg:items-center lg:text-left"
               >
                 <div className="lg:py-24">
-                  <h1 className="mt-4 space-y-4 font-bold tracking-tight text-foreground sm:mt-5 lg:mt-6">
-                    <span className="block text-4xl sm:text-6xl xl:text-6xl">
+                  <div className="text-foreground mt-4 space-y-4 font-bold tracking-tight sm:mt-5 lg:mt-6">
+                    <h1 className="block text-4xl sm:text-6xl xl:text-6xl">
                       {t("HeroSection.title")}
-                    </span>
-                    <span className="block pb-3 text-3xl text-primary sm:pb-5 sm:text-5xl xl:text-5xl">
+                    </h1>
+                    <h2 className="text-primary block pb-3 text-3xl sm:pb-5 sm:text-5xl xl:text-5xl">
                       {t("HeroSection.subtitle")}
-                    </span>
-                  </h1>
-                  <p className="mt-3 text-base text-muted-foreground dark:text-accent-foreground sm:mt-5 sm:text-xl lg:text-lg xl:text-xl">
+                    </h2>
+                  </div>
+                  <p className="text-muted-foreground mt-3 text-base sm:mt-5 sm:text-xl lg:text-lg xl:text-xl">
                     {t("HeroSection.description")}
                   </p>
                   <div className="mt-10 sm:mt-12">
-                    <div className="flex w-full flex-col justify-center gap-4 xs:flex-row">
+                    <div className="xs:flex-row flex w-full flex-col justify-center gap-4">
                       <Button asChild size="lg" variant="primary">
                         <Link href={modulePaths.DASHBOARD.path}>
                           {t("HeroSection.cta-button-start")}
@@ -122,7 +122,7 @@ export default function LandingPage() {
           viewBox="0 0 1440 58"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          className="absolute top-0 w-full text-accent"
+          className="text-accent absolute top-0 w-full"
         >
           <path
             d="M-100 58C-100 58 218.416 36.3297 693.5 36.3297C1168.58 36.3297 1487 58 1487 58V-3.8147e-06H-100V58Z"
@@ -134,13 +134,13 @@ export default function LandingPage() {
           <div className="mx-auto max-w-3xl text-center">
             <motion.h2
               variants={itemVariants}
-              className="text-3xl font-bold tracking-tight text-primary sm:text-5xl"
+              className="text-primary text-3xl font-bold tracking-tight sm:text-5xl"
             >
               {t("FeaturesSection.title")}
             </motion.h2>
             <motion.p
               variants={itemVariants}
-              className="mt-6 text-lg leading-8 text-accent-foreground"
+              className="text-foreground mt-6 text-lg leading-8"
             >
               {t("FeaturesSection.description")}
             </motion.p>
@@ -214,12 +214,12 @@ function FeatureCard({
 }) {
   return (
     <motion.div variants={itemVariants}>
-      <Card className="flex flex-col bg-accent p-6">
-        <dt className="flex items-center gap-x-3 text-lg font-semibold leading-7 text-foreground">
+      <Card className="bg-accent flex flex-col p-6">
+        <dt className="text-foreground flex items-center gap-x-3 text-lg leading-7 font-semibold">
           <span className="text-3xl">{icon}</span>
           {title}
         </dt>
-        <dd className="mt-4 flex flex-auto flex-col text-base leading-7 text-accent-foreground">
+        <dd className="text-accent-foreground mt-4 flex flex-auto flex-col text-base leading-7">
           <p className="flex-auto">{description}</p>
         </dd>
       </Card>

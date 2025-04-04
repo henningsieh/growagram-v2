@@ -1,13 +1,14 @@
 "use client";
 
 // src/components/atom/like-button.tsx:
+import * as React from "react";
+import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import { AnimatePresence, motion } from "framer-motion";
 import { Heart } from "lucide-react";
-import { useSession } from "next-auth/react";
-import { forwardRef, useEffect, useState } from "react";
+import { toast } from "sonner";
 import SpinningLoader from "~/components/Layouts/loader";
 import { Button } from "~/components/ui/button";
-import { useToast } from "~/hooks/use-toast";
 import { api } from "~/lib/trpc/react";
 import { cn } from "~/lib/utils";
 import { ToggleLikeInput } from "~/server/api/root";
@@ -23,7 +24,7 @@ interface LikeButtonProps {
   className?: string;
 }
 
-export const LikeButton = forwardRef<HTMLButtonElement, LikeButtonProps>(
+export const LikeButton = React.forwardRef<HTMLButtonElement, LikeButtonProps>(
   (
     {
       entityId,
@@ -39,13 +40,13 @@ export const LikeButton = forwardRef<HTMLButtonElement, LikeButtonProps>(
   ) => {
     const { data: session } = useSession();
     const user = session?.user;
+    const t = useTranslations("Likes");
 
-    const { toast } = useToast();
-    const [isLiked, setIsLiked] = useState(initialLiked);
-    const [likeCount, setLikeCount] = useState(initialLikeCount);
-    const [isAnimating, setIsAnimating] = useState(false);
+    const [isLiked, setIsLiked] = React.useState(initialLiked);
+    const [likeCount, setLikeCount] = React.useState(initialLikeCount);
+    const [isAnimating, setIsAnimating] = React.useState(false);
 
-    useEffect(() => {
+    React.useEffect(() => {
       setIsLiked(initialLiked);
       setLikeCount(initialLikeCount);
     }, [initialLiked, initialLikeCount]);
@@ -54,10 +55,8 @@ export const LikeButton = forwardRef<HTMLButtonElement, LikeButtonProps>(
       onMutate: (variables) => {
         // Prevent like actions for unauthenticated users
         if (!user) {
-          toast({
-            title: "Login Required",
-            description: "Please log in to like content.",
-            variant: "primary",
+          toast(t("login-required-title"), {
+            description: t("login-required-description"),
           });
           return null;
         }
@@ -73,30 +72,24 @@ export const LikeButton = forwardRef<HTMLButtonElement, LikeButtonProps>(
 
         return { variables };
       },
-      // onSuccess: (data, variables) => {
-      //   console.debug("Like toggled successfully:", {
-      //     liked: data.liked,
-      //     entityId: variables.entityId,
-      //     entityType: variables.entityType,
-      //   });
-      // },
+      onSuccess: (data) => {
+        toast(t("success-title"), {
+          description: data.liked ? t("liked-success") : t("unliked-success"),
+        });
+      },
       onError: (error) => {
         setIsLiked(initialLiked);
         setLikeCount(initialLikeCount);
-        toast({
-          title: "Error",
+        toast.error(t("error-title"), {
           description: error.message,
-          variant: "destructive",
         });
       },
     });
 
     const handleLikeToggle = () => {
       if (!user) {
-        toast({
-          title: "Login Required",
-          description: "Please log in to like content.",
-          variant: "destructive",
+        toast(t("login-required-title"), {
+          description: t("login-required-description"),
         });
         return;
       }
@@ -117,12 +110,12 @@ export const LikeButton = forwardRef<HTMLButtonElement, LikeButtonProps>(
         disabled={!isAnimating && (disabled || toggleLikeMutation.isPending)}
         className={cn(
           className,
-          "group flex cursor-default items-center gap-1 hover:text-foreground",
+          "group hover:text-foreground flex cursor-default items-center gap-1",
           // !user ? "cursor-not-allowed opacity-50" : "cursor-pointer",
         )}
       >
         {isLikeStatusLoading ? (
-          <SpinningLoader className="h-6 w-6 text-secondary" />
+          <SpinningLoader className="text-secondary h-6 w-6" />
         ) : (
           <>
             <Heart

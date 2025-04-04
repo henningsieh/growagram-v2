@@ -1,15 +1,9 @@
 "use client";
 
+import * as React from "react";
 import { useTranslations } from "next-intl";
 // src/components/features/Photos/Views/paginated.tsx:
 import { useSearchParams } from "next/navigation";
-import {
-  type Dispatch,
-  type SetStateAction,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
 import { PaginationItemsPerPage } from "~/assets/constants";
 import SpinningLoader from "~/components/Layouts/loader";
 import ResponsiveGrid from "~/components/Layouts/responsive-grid";
@@ -30,19 +24,19 @@ export default function PhotosPaginatedView({
   sortField: PhotosSortField;
   sortOrder: SortOrder;
   filterNotConnected: boolean;
-  setIsFetching: Dispatch<SetStateAction<boolean>>;
+  setIsFetching: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const utils = api.useUtils();
   const t = useTranslations("Photos");
 
-  const [currentPage, setCurrentPage] = useState(
+  const [currentPage, setCurrentPage] = React.useState(
     parseInt(searchParams?.get("page") || "1"),
   );
 
   // Function to update URL query params
-  const updateUrlParams = useCallback(() => {
+  const updateUrlParams = React.useCallback(() => {
     const params = new URLSearchParams();
     params.set("page", currentPage.toString());
     params.set("sortField", sortField);
@@ -52,7 +46,7 @@ export default function PhotosPaginatedView({
   }, [currentPage, sortField, sortOrder, filterNotConnected, router]);
 
   // Sync state with URL query params
-  useEffect(() => {
+  React.useEffect(() => {
     updateUrlParams();
   }, [currentPage, sortField, sortOrder, filterNotConnected, updateUrlParams]);
 
@@ -79,7 +73,7 @@ export default function PhotosPaginatedView({
     },
   );
   // Directly update the parent's isFetching state
-  useEffect(() => {
+  React.useEffect(() => {
     setIsFetching(isFetching);
   }, [isFetching, setIsFetching]);
 
@@ -96,7 +90,7 @@ export default function PhotosPaginatedView({
       {isLoading ? (
         <SpinningLoader className="text-secondary" />
       ) : userPhotos.length === 0 ? (
-        <p className="mt-8 text-center text-muted-foreground">
+        <p className="text-muted-foreground mt-8 text-center">
           {filterNotConnected
             ? t("no-photos-yet-filtered")
             : t("no-photos-yet")}

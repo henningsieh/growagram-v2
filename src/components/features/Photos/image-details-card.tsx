@@ -1,8 +1,8 @@
 // src/components/features/Images/image-details-card.tsx:
-import { Camera, FileIcon, UploadCloud } from "lucide-react";
+import * as React from "react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import React from "react";
+import { CameraIcon, FileIcon, UploadCloudIcon } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { formatDate, formatTime } from "~/lib/utils";
 import type { GetOwnPhotoType } from "~/server/api/root";
@@ -23,21 +23,21 @@ export function ImageDetailsCard({ image, locale }: ImageDetailsProps) {
       content: image.originalFilename,
     },
     {
-      icon: <Camera className="h-5 w-5" />,
+      icon: <CameraIcon className="h-5 w-5" />,
       title: "Capture Date",
-      content: `${formatDate(image.captureDate, locale as Locale)} {" "}
+      content: `${formatDate(image.captureDate, locale as Locale)} 
       ${formatTime(image.captureDate, locale as Locale)}`,
     },
     {
-      icon: <UploadCloud className="h-5 w-5" />,
+      icon: <UploadCloudIcon className="h-5 w-5" />,
       title: "Upload Date",
-      content: `${formatDate(image.createdAt, locale as Locale)}{" "}
+      content: `${formatDate(image.createdAt, locale as Locale)}
       ${formatTime(image.createdAt, locale as Locale)}`,
     },
   ];
 
   return (
-    <Card className="flex flex-col bg-muted md:flex-row">
+    <Card className="bg-muted/50 flex flex-col rounded-md p-4 md:flex-row">
       <div className="relative aspect-square w-full md:w-2/5">
         <Image
           priority
@@ -45,7 +45,7 @@ export function ImageDetailsCard({ image, locale }: ImageDetailsProps) {
           src={image.imageUrl}
           fill
           sizes="100vw, (min-width: 768px) 300px"
-          className="object-cover"
+          className="rounded-sm object-cover"
         />
       </div>
       <div className="w-full p-0 md:w-3/5 md:px-0">
@@ -57,11 +57,11 @@ export function ImageDetailsCard({ image, locale }: ImageDetailsProps) {
         <CardContent className="space-y-4">
           {detailItems.map((item, index) => (
             <div key={index} className="space-y-1">
-              <div className="flex items-center space-x-2 text-muted-foreground">
+              <div className="text-muted-foreground flex items-center space-x-2">
                 {item.icon}
                 <h3 className="font-medium">{item.title}</h3>
               </div>
-              <p className="break-all pl-7 font-mono tracking-tighter md:text-lg">
+              <p className="pl-7 font-mono tracking-tighter break-all md:text-lg">
                 {item.content}
               </p>
             </div>

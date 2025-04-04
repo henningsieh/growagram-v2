@@ -1,7 +1,7 @@
 // src/lib/auth/index.ts:
-import { DrizzleAdapter } from "@auth/drizzle-adapter";
+import * as React from "react";
 import NextAuth, { Session } from "next-auth";
-import { cache } from "react";
+import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import authConfig from "~/lib/auth/auth.config.ts";
 import { db } from "~/lib/db";
 
@@ -16,7 +16,7 @@ export const {
   ...authConfig,
 });
 
-export const auth = cache(uncachedAuth);
+export const auth = React.cache(uncachedAuth);
 
 export async function SignedIn(props: {
   children:

@@ -1,6 +1,6 @@
 // src/app/api/getSignedURL/route.ts:
-import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { NextRequest, NextResponse } from "next/server";
+import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl, s3Client } from "~/lib/minio";
 
 export async function POST(req: NextRequest) {

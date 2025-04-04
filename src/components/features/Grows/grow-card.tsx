@@ -1,6 +1,9 @@
 "use client";
 
 // src/components/features/Grows/grow-card.tsx:
+import * as React from "react";
+import { useSession } from "next-auth/react";
+import { useLocale, useTranslations } from "next-intl";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   Calendar1Icon,
@@ -10,9 +13,7 @@ import {
   TentTree,
   Trash2,
 } from "lucide-react";
-import { useSession } from "next-auth/react";
-import { useLocale, useTranslations } from "next-intl";
-import { useState } from "react";
+import { toast } from "sonner";
 import { modulePaths } from "~/assets/constants";
 import AvatarCardHeader, {
   ActionItem,
@@ -23,7 +24,7 @@ import { OwnerDropdownMenu } from "~/components/atom/owner-dropdown-menu";
 import { SocialCardFooter } from "~/components/atom/social-card-footer";
 import { Comments } from "~/components/features/Comments/comments";
 import { EnhancedPlantCard } from "~/components/features/Plants/enhanced-plant-card.tsx";
-import PostFormModal from "~/components/features/Timeline/Post/post-form-modal";
+import { PostFormModal } from "~/components/features/Timeline/Post/post-form-modal";
 import { Button } from "~/components/ui/button";
 import {
   Card,
@@ -33,7 +34,6 @@ import {
 } from "~/components/ui/card";
 import { useComments } from "~/hooks/use-comments";
 import { useLikeStatus } from "~/hooks/use-likes";
-import { useToast } from "~/hooks/use-toast";
 import { Link, useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import { cn, formatDate, formatTime } from "~/lib/utils";
@@ -59,13 +59,13 @@ export function GrowCard({
   const router = useRouter();
   const locale = useLocale();
   const utils = api.useUtils();
-  const { toast } = useToast();
+
   const t = useTranslations("Grows");
 
-  const [isSocial, setIsSocial] = useState(isSocialProp);
+  const [isSocial, setIsSocial] = React.useState(isSocialProp);
   // const [isImageHovered, setIsImageHovered] = useState(false);
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [isPostModalOpen, setIsPostModalOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);
+  const [isPostModalOpen, setIsPostModalOpen] = React.useState(false);
 
   const {
     isLiked,
@@ -79,9 +79,8 @@ export function GrowCard({
   // Initialize delete mutation
   const deleteMutation = api.grows.deleteById.useMutation({
     onSuccess: async () => {
-      toast({
-        title: "Success",
-        description: "Grow deleted successfully",
+      toast(t("DeleteConfirmation.success-title"), {
+        description: t("DeleteConfirmation.success-description"),
       });
       // Invalidate and prefetch the plants query to refresh the list
       await utils.grows.getOwnGrows.invalidate();
@@ -89,10 +88,8 @@ export function GrowCard({
       // router.refresh();
     },
     onError: (error) => {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to delete grow",
-        variant: "destructive",
+      toast.error(t("error-title"), {
+        description: `${t("error-default")} ${error.message || ""}`,
       });
     },
   });
@@ -135,9 +132,9 @@ export function GrowCard({
     <Link
       href={`/public/grows/${grow.id}`}
       title={t("grow-card-updatedAt")}
-      className="flex items-center gap-1 whitespace-nowrap text-sm text-muted-foreground"
+      className="text-muted-foreground flex items-center gap-1 text-sm whitespace-nowrap"
     >
-      {<DotIcon size={24} className="-mx-2 hidden xs:block" />}
+      {<DotIcon size={24} className="xs:block -mx-2 hidden" />}
       {formatDate(grow.updatedAt, locale as Locale)}{" "}
       {formatTime(grow.updatedAt, locale as Locale)}
     </Link>
@@ -162,7 +159,7 @@ export function GrowCard({
       />
       <Card
         className={cn(
-          `flex flex-col overflow-hidden border border-secondary/50 pt-1`,
+          `border-secondary flex flex-col overflow-hidden rounded-md border py-1`,
           // isSocial && "bg-secondary/5",
         )}
       >
@@ -176,7 +173,7 @@ export function GrowCard({
         )}
 
         <CardContent
-          className={`flex h-full flex-col gap-2 ${isSocial ? "ml-12 pl-0 pr-2" : "p-2"}`}
+          className={`flex h-full flex-col gap-2 ${isSocial ? "ml-12 pr-2 pl-0" : "p-2"}`}
         >
           {/* Grow HeaderImage */}
           {/* <div
@@ -205,8 +202,8 @@ export function GrowCard({
                 className="flex min-w-0 items-center justify-start gap-2 p-1"
               >
                 <Link href={`/public/grows/${grow.id}`}>
-                  <TentTree className="flex-shrink-0" size={20} />
-                  <span className="truncate font-semibold leading-normal">
+                  <TentTree className="shrink-0" size={20} />
+                  <span className="truncate leading-normal font-semibold">
                     {grow.name}
                   </span>
                 </Link>
@@ -276,7 +273,7 @@ export function GrowCard({
                 ))}
               </AnimatePresence>
               {grow.plants.length === 0 && (
-                <div className="py-8 text-center text-muted-foreground">
+                <div className="text-muted-foreground py-8 text-center">
                   {t("no-plants-connectable")}
                 </div>
               )}
@@ -300,7 +297,7 @@ export function GrowCard({
 
         {isSocial && (
           <SocialCardFooter
-            className={`pb-2 pr-2 ${isSocial && "ml-12"}`}
+            className={`pr-2 pb-2 ${isSocial && "ml-12"}`}
             entityId={grow.id}
             entityType={LikeableEntityType.Grow}
             initialLiked={isLiked}

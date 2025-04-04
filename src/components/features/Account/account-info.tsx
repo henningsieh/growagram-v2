@@ -1,11 +1,11 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { AnimatePresence, motion } from "framer-motion";
 import { AtSign, Edit, Mail, Shield, User } from "lucide-react";
-import { useTranslations } from "next-intl";
 import FormContent from "~/components/Layouts/form-content";
 import PageHeader from "~/components/Layouts/page-header";
-import CustomAvatar from "~/components/atom/custom-avatar";
+import { CustomAvatar } from "~/components/atom/custom-avatar";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
 import { useIsMobile } from "~/hooks/use-mobile";
@@ -70,7 +70,7 @@ export default function AccountInfo({ user }: { user: OwnUserDataType }) {
                       src={user.image || undefined}
                       alt={user.name || "User avatar"}
                       fallback={user.name?.[0] || "?"}
-                      className="border-2 border-primary/10"
+                      className="border-primary/10 border-2"
                     />
                   </motion.div>
 
@@ -81,13 +81,13 @@ export default function AccountInfo({ user }: { user: OwnUserDataType }) {
                         variants={itemVariants}
                         className="space-y-1.5"
                       >
-                        <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+                        <div className="text-muted-foreground flex items-center gap-2 text-sm font-medium">
                           <item.icon className="h-4 w-4" />
                           <span className="capitalize">
                             {t(`info-${item.label}`)}
                           </span>
                         </div>
-                        <div className="rounded-sm bg-accent/50 px-4 py-2.5 font-medium">
+                        <div className="bg-accent/50 rounded-sm px-4 py-2.5 font-medium">
                           {item.value || t("not-provided")}
                         </div>
                       </motion.div>

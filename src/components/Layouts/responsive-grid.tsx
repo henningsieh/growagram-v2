@@ -1,4 +1,5 @@
-import React from "react";
+// src/components/Layouts/responsive-grid.tsx:
+import * as React from "react";
 
 export default function ResponsiveGrid({
   children,

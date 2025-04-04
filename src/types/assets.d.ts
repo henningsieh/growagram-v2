@@ -1,6 +1,6 @@
 // src/types/assets.d.ts
 declare module "*.svg" {
-  import type { ComponentProps, FC } from "react";
-  const content: FC<ComponentProps<"svg">>;
+  import * as React from "react";
+  const content: React.FC<React.ComponentProps<"svg">>;
   export default content;
 }

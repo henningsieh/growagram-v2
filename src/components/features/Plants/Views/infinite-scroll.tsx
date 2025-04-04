@@ -1,14 +1,8 @@
 "use client";
 
-import { useTranslations } from "next-intl";
 // src/components/features/Plants/Views/infinite-scroll.tsx:
-import {
-  type Dispatch,
-  type SetStateAction,
-  useCallback,
-  useEffect,
-  useRef,
-} from "react";
+import * as React from "react";
+import { useTranslations } from "next-intl";
 import { PaginationItemsPerPage, modulePaths } from "~/assets/constants";
 import InfiniteScrollLoader from "~/components/Layouts/InfiniteScrollLoader";
 import SpinningLoader from "~/components/Layouts/loader";
@@ -27,13 +21,13 @@ export default function InfiniteScrollPlantsView({
 }: {
   sortField: PlantsSortField;
   sortOrder: SortOrder;
-  setIsFetching: Dispatch<SetStateAction<boolean>>;
+  setIsFetching: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const router = useRouter();
   const utils = api.useUtils();
   const t = useTranslations("Plants");
 
-  useEffect(() => {
+  React.useEffect(() => {
     router.replace(
       modulePaths.PLANTS.path, // Use only the base path
     );
@@ -67,7 +61,7 @@ export default function InfiniteScrollPlantsView({
   );
 
   // Directly update the parent's isFetching state
-  useEffect(() => {
+  React.useEffect(() => {
     setIsFetching(isFetching);
   }, [isFetching, setIsFetching]);
 
@@ -77,7 +71,7 @@ export default function InfiniteScrollPlantsView({
     [];
 
   // Intersection Observer callback
-  const onIntersect = useCallback(
+  const onIntersect = React.useCallback(
     (entries: IntersectionObserverEntry[]) => {
       const firstEntry = entries[0];
       if (firstEntry.isIntersecting && hasNextPage && !isFetchingNextPage) {
@@ -88,8 +82,8 @@ export default function InfiniteScrollPlantsView({
   );
 
   // Set up intersection observer
-  const loadingRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
+  const loadingRef = React.useRef<HTMLDivElement>(null);
+  React.useEffect(() => {
     const observer = new IntersectionObserver(onIntersect, {
       root: null, // Use viewport as root
       rootMargin: "0px",
@@ -106,7 +100,7 @@ export default function InfiniteScrollPlantsView({
       {isLoading ? (
         <SpinningLoader className="text-secondary" />
       ) : plants.length === 0 ? (
-        <p className="mt-8 text-center text-muted-foreground">
+        <p className="text-muted-foreground mt-8 text-center">
           {t("no-plants-yet")}
         </p>
       ) : (

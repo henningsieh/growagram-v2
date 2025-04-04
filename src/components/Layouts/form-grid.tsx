@@ -1,4 +1,5 @@
-import React from "react";
+// src/components/Layouts/form-grid.tsx:
+import * as React from "react";
 
 export default function FormGrid({ children }: { children: React.ReactNode }) {
   return (

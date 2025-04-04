@@ -20,6 +20,7 @@
     "form-reset-button": "Reset",
     "form-save-button": "Save Changes",
     "form-save-success-message": "Your account details have been updated.",
+    "form-save-success-title": "Success",
     "form-username-checking": "Checking username availability...",
     "form-username-description": "Choose a unique username for your account.",
     "form-username-label": "Username",
@@ -33,6 +34,10 @@
       "label": "My Account"
     },
     "not-provided": "Not provided",
+    "toast-error-save": {
+      "description": "Failed to update account. Please try again.",
+      "title": "Error"
+    },
     "welcome-message-description": "You must set your username first before entering the platform!",
     "welcome-message-title": "Welcome"
   },
@@ -65,6 +70,7 @@
     "toasts": {
       "errors": {
         "deleteComment": {
+          "description": "Failed to delete the comment. Please try again.",
           "title": "Error during deletion"
         }
       },
@@ -77,6 +83,9 @@
     }
   },
   "Common": {
+    "combobox-create-message": "Create new option",
+    "combobox-empty-message": "No options found.",
+    "combobox-placeholder": "Select an option...",
     "day": "day",
     "days": "days"
   },
@@ -96,6 +105,8 @@
     "DeleteConfirmation": {
       "alertCautionText": "This action also deletes Updates and other postings if they have this Grow as their only reference!",
       "description": "No plant will be deleted by this action!",
+      "success-description": "The grow has been successfully deleted.",
+      "success-title": "Success!",
       "title": "Are you sure you want to remove this grow?"
     },
     "NoGrowsFound": "No grows have been found.",
@@ -142,6 +153,16 @@
     "success-description-create": "The grow environment has been created successfully.",
     "success-description-edit": "The grow environment has been updated successfully.",
     "success-title": "Success!",
+    "toasts": {
+      "connect-success": {
+        "description": "Plant was successfully connected to the grow",
+        "title": "Plant Connected"
+      },
+      "disconnect-success": {
+        "description": "Plant was successfully removed from the grow",
+        "title": "Plant Removed"
+      }
+    },
     "unexpected-error": "Unexpected error occurred."
   },
   "HomePage": {
@@ -182,6 +203,14 @@
       "description": "Choose the right package for your needs.",
       "title": "Fair prices for every grower"
     }
+  },
+  "Likes": {
+    "error-title": "Error",
+    "liked-success": "You liked the content successfully.",
+    "login-required-description": "You need to be logged in to like this content.",
+    "login-required-title": "Login Required",
+    "success-title": "Success",
+    "unliked-success": "You unliked the content successfully."
   },
   "LoginPage": {
     "Email-verified-description": "Your email address has been verified successfully.",
@@ -241,9 +270,10 @@
   },
   "Notifications": {
     "ActivityFeed": {
+      "error-no-notifications": "Error loading notifications",
       "label-all": "All Notifications",
       "next-page": "Next",
-      "no-notifications": "Es konnten keine Benachrichtigungen gefunden werden!",
+      "no-notifications": "No notifications found",
       "previous-page": "Previous"
     },
     "Navigation": {
@@ -280,61 +310,129 @@
   },
   "Photos": {
     "DeleteConfirmation": {
-      "alertCautionText": "This action cannot be undone. This will permanently delete the photo from our cloud storage servers.",
+      "alertCautionText": "This action cannot be undone. The photo will be permanently deleted from our cloud and storage servers.",
       "description": "This action will not delete any of your plants!",
-      "title": "Are you sure you want to delete this photo?",
+      "title": "Do you really want to delete this photo?",
       "toasts": {
+        "error": {
+          "description": "An error occurred while deleting the photo. Please try again.",
+          "title": "Error"
+        },
+        "success": {
+          "description": "The photo was successfully deleted.",
+          "title": "Success"
+        },
         "warning-photo-has-posts": {
-          "description": "This photo is associated with one or more Posts. You cannot delete a photo if it has posts associated with it.",
+          "description": "This photo is linked to one or more posts. You cannot delete a photo if it is associated with posts.",
           "title": "Warning"
         }
       }
     },
+    "ImageModal": {
+      "fit-to-screen": "Show photo in fullscreen",
+      "toggle-view-mode": "Toggle viewmode",
+      "zoom-and-drag": "Zoom and move image",
+      "keyboard-shortcuts": "Keyboard shortcuts:",
+      "close": "Close",
+      "toggle-zoom-mode": "Toggle zoom mode",
+      "zoom-in-out": "Zoom in/out",
+      "reset-zoom": "Reset zoom"
+    },
     "button": {
       "connecting": "Connecting plants...",
-      "removeAll": "Remove All Plants",
-      "save": "Save Plant Selection ({count})"
+      "removeAll": "Remove all plants",
+      "save": "Save plant selection ({count})"
     },
-    "button-label-connect-plants": "Select Plant(s)",
-    "button-label-post-update": "Create Update for Photo",
+    "button-label-connect-plants": "Select plant(s)",
+    "button-label-post-update": "Create update for photo",
     "button-label-upload-photos": "Upload",
     "buttonBackLabel": "Back",
-    "capture-date": "taken on",
+    "capture-date": "taken",
     "connectPlants": {
-      "photo-details-metadata": "Photo Details / Metadata"
+      "photo-details-metadata": "Photo details / metadata"
     },
-    "delete-button-label": "Delete Photo",
-    "edit-button-label": "Edit Photo",
-    "filter-label-not-connected": "NEW ONLY",
+    "delete-button-label": "Delete photo",
+    "edit-button-label": "Edit photo",
+    "filter-label-not-connected": "ONLY NEW",
     "my-Photos": "My photos",
-    "my-Photos-subtitle": "Display and manage my photos",
+    "my-Photos-subtitle": "View and manage my photos",
     "newNotConnteched": "NEW",
     "no-photos-yet": "No photos have been uploaded yet.",
-    "no-photos-yet-filtered": "No new images (without connected plants) have been found.",
+    "no-photos-yet-filtered": "No new images (without linked plants) were found.",
     "plantSelection": {
-      "description": "Select each plant you can see in the photo!",
-      "title": "Plant Selection"
+      "description": "Select every plant you can see in the photo!",
+      "title": "Plant selection"
     },
-    "public-link-label": "Open in new Tab",
+    "public-link-label": "Öffnen im neuen Tab",
     "search": {
-      "noResults": "No results found.",
+      "noResults": "No plants found",
       "placeholder": "Search plants..."
     },
-    "subtitle": "Which plants did you spot in this photo?",
-    "title": "Identify Plants",
+    "subtitle": "Which plants do you see in this photo?",
+    "title": "Identify plants",
+    "toasts": {
+      "errors": {
+        "connectPlants": {
+          "description": "Failed to connect plants to the photo",
+          "title": "Connection failed"
+        }
+      },
+      "success": {
+        "connectPlants": {
+          "description": "Plants successfully connected to the photo",
+          "title": "Plants connected"
+        }
+      },
+      "upload": {
+        "error": {
+          "description": "Images could not be uploaded.",
+          "title": "Upload failed"
+        },
+        "file-too-large": {
+          "description": "{filename} exceeds the limit of {maxSize} MB.",
+          "title": "File too large"
+        },
+        "invalid-type": {
+          "description": "{filename} is not a supported image type.",
+          "title": "Invalid file type"
+        },
+        "success": {
+          "description": "{count} image(s) successfully uploaded!",
+          "title": "Upload complete"
+        }
+      }
+    },
     "upload": {
-      "buttonLabel-files": "files",
+      "buttonLabel-files": "Files",
       "buttonLabel-upload": "Upload",
-      "dropzone-description": "Imagefiles (JPG, PNG, GIF, WebP up to 10MB)",
-      "dropzone-title": "Drag & Drop your photos here",
+      "dropzone-description": "Image files (JPG, PNG, GIF, WebP up to 10MB)",
+      "dropzone-title": "Drag & drop your photos here",
       "preview": {
         "capturedate-label": "Capture date:",
         "filename-label": "Filename:",
-        "filesize-label": "Filesize:",
-        "filesize-unit": "Megabyte (MB)"
+        "filesize-label": "File size:",
+        "filesize-unit": "Megabytes (MB)"
+      },
+      "toasts": {
+        "error": {
+          "description": "Images could not be uploaded.",
+          "title": "Upload failed"
+        },
+        "file-too-large": {
+          "description": "{filename} exceeds the limit of {maxSize} MB.",
+          "title": "File too large"
+        },
+        "invalid-type": {
+          "description": "{filename} is not a supported image type.",
+          "title": "Invalid file type"
+        },
+        "success": {
+          "description": "{count} image(s) successfully uploaded!",
+          "title": "Upload complete"
+        }
       }
     },
-    "uploaded-at": "uploaded on"
+    "uploaded-at": "Uploaded at"
   },
   "Plants": {
     "DeleteConfirmation": {
@@ -343,12 +441,20 @@
       "title": "Are you sure you want to remove this plant?"
     },
     "breeder": "Breeder",
+    "breeder-create-error-description": "An unknown error occured while saving the new breeder into the database.",
+    "breeder-create-error-title": "Error Creating Breeder",
+    "breeder-create-message": "Create a new breeder",
+    "breeder-create-success-description": "New breeder has been created successfully.",
+    "breeder-create-success-title": "Breeder Created",
+    "breeder-empty-message": "No breeders found",
+    "breeder-placeholder": "Select a breeder...",
     "button-label-post-update": "Create Update for Plant",
     "curing-start-date": "Curing phase start date",
     "delete-button-label": "Delete Plant",
     "delete-plant-button-label": "Delete Plant",
     "edit-button-label": "Edit Plant",
     "edit-plant-button-label": "Edit Plant",
+    "error-default": "An error occurred while deleting the plant. Please try again.",
     "estimated-harvest": "Estimated harvest",
     "flowering-start-date": "Flowering Start Date",
     "form-breeder-description": "Select or create a breeder for this strain.",
@@ -367,7 +473,11 @@
     "form-pagerheader-edit-title": "Edit Plant",
     "form-pagerheader-new-subtitle": "Add a new plant to your collection.",
     "form-pagerheader-new-title": "Add New Plant",
+    "form-pick-a-date": "Pick a date",
     "form-strain-description": "Select or create a strain for this plant.",
+    "form-toast-error-title": "Error Saving Plant",
+    "form-toast-success-description": "Your plant has been saved successfully.",
+    "form-toast-success-title": "Plant Saved",
     "germination-date": "Germination Date",
     "harvest-date": "Harvest date",
     "linkUploadButtonLabel": "Add New Plant",
@@ -375,17 +485,27 @@
     "overall-progress": "Overall progress",
     "phase": "Phase progress",
     "phases": {
+      "flowering": "Flowering",
+      "harvested": "Harvested",
       "planted": "Planted",
       "seedling": "Seedling",
-      "vegetation": "Vegetation",
-      "flowering": "Flowering",
-      "harvested": "Harvested"
+      "vegetation": "Vegetation"
     },
     "plant-card-createdAt": "Created at:",
+    "plant-deleted-successfully": "The plant has been deleted successfully.",
     "planting-date": "Seed planting date",
     "public-link-label": "Open in new Tab",
     "sort-plants-createdAt": "Created at",
     "strain": "Strain",
+    "strain-breeder-required-error-description": "You must select a breeder before creating a strain.",
+    "strain-breeder-required-error-title": "Breeder Required",
+    "strain-create-error-title": "Error Creating Strain",
+    "strain-create-message": "Create a new Strain",
+    "strain-create-success-description": "New strain has been created successfully.",
+    "strain-create-success-title": "Strain Created",
+    "strain-empty-message-no-breeder": "First select or create a breeder",
+    "strain-empty-message-with-breeder": "This breeder has no strains yet.",
+    "strain-placeholder": "Select a Strain...",
     "subtitle": "Manage your plants",
     "thc": "THC",
     "thc-content": "THC Content",
@@ -446,6 +566,9 @@
     "edit-button-label": "Edit Update",
     "linkedInThisPost": "Linked in this Update",
     "post-card-createdAt": "Posted at",
+    "post-created-successfully": "Post created successfully",
+    "post-delete-failed": "Failed to delete the post. Please try again.",
+    "post-deleted-successfully": "Post deleted successfully",
     "public-link-label": "Open in new Tab"
   },
   "Premium": {
@@ -490,7 +613,11 @@
   "Profile": {
     "FollowButton": {
       "follow": "Follow",
-      "unfollow": "Unfollow"
+      "follow-success-description": "You are now following this user.",
+      "follow-success-title": "Following",
+      "unfollow": "Unfollow",
+      "unfollow-success-description": "You have unfollowed this user.",
+      "unfollow-success-title": "Unfollowed"
     },
     "tabs": {
       "grows": "Grows",
@@ -552,6 +679,9 @@
       "Plant Sizes": "Plant Sizes"
     },
     "navMain": {
+      "Dashboard": {
+        "title": "Dashboard"
+      },
       "Grows": {
         "items": {
           "Create New Grow": "Create Grow",

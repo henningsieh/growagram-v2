@@ -1,7 +1,7 @@
-import { SparklesIcon, SquareCheckBigIcon } from "lucide-react";
+import * as React from "react";
 import { useLocale, useTranslations } from "next-intl";
-import type * as React from "react";
-import CustomAvatar from "~/components/atom/custom-avatar";
+import { SparklesIcon, SquareCheckBigIcon } from "lucide-react";
+import { CustomAvatar } from "~/components/atom/custom-avatar";
 import { Button } from "~/components/ui/button";
 import { Skeleton } from "~/components/ui/skeleton";
 import { useNotifications } from "~/hooks/use-notifications";
@@ -55,7 +55,7 @@ export function NotificationItem({
             {getNotificationText(notification.type, notification.entityType)}
           </span>
         </p>
-        <span className="text-xs text-muted-foreground">
+        <span className="text-muted-foreground text-xs">
           {formatDate(notification.createdAt, locale as Locale)}{" "}
           {formatTime(notification.createdAt, locale as Locale)}
         </span>
@@ -94,13 +94,13 @@ export const NotificationSkeleton: React.FC<
   return (
     <div
       className={cn(
-        "flex h-14 w-full items-center gap-2 overflow-hidden rounded-sm bg-muted p-2 text-left",
+        "bg-muted flex h-14 w-full items-center gap-2 overflow-hidden rounded-sm p-2 text-left",
         className,
       )}
       {...props}
     >
       <Skeleton className="h-9 w-9 rounded-full" /> {/* Avatar skeleton */}
-      <div className="flex flex-grow flex-col gap-3">
+      <div className="flex grow flex-col gap-3">
         <Skeleton className="mb-1 h-4 w-3/4" />{" "}
         {/* Name and action text skeleton */}
         <Skeleton className="h-3 w-1/2" /> {/* Date and time skeleton */}

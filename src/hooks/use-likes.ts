@@ -1,6 +1,6 @@
 // src/hooks/use-likes.tsx:
+import * as React from "react";
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
 import { api } from "~/lib/trpc/react";
 import { LikeableEntityType } from "~/types/like";
 
@@ -11,8 +11,8 @@ export const useLikeStatus = (
   const { data: session } = useSession();
   const user = session?.user;
 
-  const [userHasLiked, setUserHasLiked] = useState(false);
-  const [likeCount, setLikeCount] = useState(0);
+  const [userHasLiked, setUserHasLiked] = React.useState(false);
+  const [likeCount, setLikeCount] = React.useState(0);
 
   const likeCountQuery = api.likes.getLikeCount.useQuery({
     entityId,
@@ -27,7 +27,7 @@ export const useLikeStatus = (
 
   //TODO: this different behavior for "getLikeCount" and "getUserLikedEntities" is not clean!!!
 
-  useEffect(() => {
+  React.useEffect(() => {
     // Reset state if no user
     if (!user) {
       setUserHasLiked(false);

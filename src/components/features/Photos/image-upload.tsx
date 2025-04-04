@@ -1,10 +1,11 @@
 "use client";
 
 // src/components/features/Photos/image-upload.tsx:
-import { CloudUpload, Upload, X } from "lucide-react";
+import * as React from "react";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { CloudUpload, Upload, X } from "lucide-react";
+import { toast } from "sonner";
 import {
   ACCEPTED_IMAGE_TYPES,
   MAX_UPLOAD_FILE_SIZE,
@@ -15,7 +16,6 @@ import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardFooter } from "~/components/ui/card";
 import { Label } from "~/components/ui/label";
 import { Progress as ProgressBar } from "~/components/ui/progress";
-import { useToast } from "~/hooks/use-toast";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import { cn, formatDate, formatTime } from "~/lib/utils";
@@ -62,15 +62,14 @@ const getSignedUrlForUpload = async (file: File) => {
 
 export default function PhotoUpload() {
   const locale = useLocale();
-  const [uploading, setUploading] = useState(false);
-  const [previews, setPreviews] = useState<FilePreview[]>([]);
-  const [isDragging, setIsDragging] = useState(false);
+  const [uploading, setUploading] = React.useState(false);
+  const [previews, setPreviews] = React.useState<FilePreview[]>([]);
+  const [isDragging, setIsDragging] = React.useState(false);
   const router = useRouter();
   const utils = api.useUtils();
-  const { toast } = useToast();
 
-  const formRef = useRef<HTMLFormElement>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const formRef = React.useRef<HTMLFormElement>(null);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const saveImageMutation = api.photos.createPhoto.useMutation();
 
@@ -106,9 +105,10 @@ export default function PhotoUpload() {
         }),
       );
 
-      toast({
-        title: "Success",
-        description: `${uploadedImages.length} image(s) uploaded successfully!`,
+      toast(t("Photos.upload.toasts.success.title"), {
+        description: t("Photos.upload.toasts.success.description", {
+          count: uploadedImages.length,
+        }),
       });
 
       formRef.current?.reset();
@@ -117,18 +117,18 @@ export default function PhotoUpload() {
       router.push(modulePaths.PHOTOS.path);
     } catch (error) {
       console.error("Error uploading images:", error);
-      toast({
-        title: "Error",
+      toast.error(t("Photos.upload.toasts.error.title"), {
         description:
-          error instanceof Error ? error.message : "Failed to upload images",
-        variant: "destructive",
+          error instanceof Error
+            ? error.message
+            : t("Photos.upload.toasts.error.description"),
       });
     } finally {
       setUploading(false);
     }
   };
 
-  const dragCounter = useRef(0);
+  const dragCounter = React.useRef(0);
 
   const handleDragIn = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -184,17 +184,18 @@ export default function PhotoUpload() {
       const isValidSize = file.size <= MAX_UPLOAD_FILE_SIZE;
 
       if (!isValid) {
-        toast({
-          title: "Invalid file type",
-          description: `${file.name} is not an accepted image type`,
-          variant: "destructive",
+        toast.error(t("Photos.upload.toasts.invalid-type.title"), {
+          description: t("Photos.upload.toasts.invalid-type.description", {
+            filename: file.name,
+          }),
         });
       }
       if (!isValidSize) {
-        toast({
-          title: "File too large",
-          description: `${file.name} exceeds the ${MAX_UPLOAD_FILE_SIZE / 1000000} MB limit`,
-          variant: "destructive",
+        toast.error(t("Photos.upload.toasts.file-too-large.title"), {
+          description: t("Photos.upload.toasts.file-too-large.description", {
+            filename: file.name,
+            maxSize: MAX_UPLOAD_FILE_SIZE / 1000000,
+          }),
         });
       }
 
@@ -218,7 +219,7 @@ export default function PhotoUpload() {
     setPreviews((current) => [...current, ...newPreviews]);
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     return () => {
       previews.forEach((preview) => URL.revokeObjectURL(preview.preview));
     };
@@ -241,7 +242,7 @@ export default function PhotoUpload() {
               onDragLeave={handleDragOut}
               onDrop={handleDrop}
               className={cn(
-                "cursor-pointer rounded-sm border-2 border-dashed bg-muted/20 p-8 text-center transition-colors duration-200",
+                "bg-muted/20 cursor-pointer rounded-sm border-2 border-dashed p-8 text-center transition-colors duration-200",
                 isDragging
                   ? "border-primary bg-primary/5"
                   : "border-muted-foreground/25",
@@ -249,16 +250,16 @@ export default function PhotoUpload() {
               )}
             >
               <div className="flex flex-col items-center gap-2">
-                <CloudUpload className="h-10 w-10 text-muted-foreground" />
+                <CloudUpload className="text-muted-foreground h-10 w-10" />
 
-                <div className="text-lg text-muted-foreground">
+                <div className="text-muted-foreground text-lg">
                   <span className="font-semibold">
                     {" "}
                     {t("upload.dropzone-title")}
                   </span>
                 </div>
 
-                <div className="text-xs text-muted-foreground">
+                <div className="text-muted-foreground text-xs">
                   {t("upload.dropzone-description")}
                 </div>
               </div>
@@ -288,7 +289,7 @@ export default function PhotoUpload() {
                       width={320}
                       height={160}
                     />
-                    <div className="absolute bottom-1 left-1 right-1 mt-2 flex flex-col rounded-sm bg-accent p-1 text-xs font-semibold text-foreground">
+                    <div className="bg-accent text-foreground absolute right-1 bottom-1 left-1 mt-2 flex flex-col rounded-sm p-1 text-xs font-semibold">
                       <div className="flex justify-between gap-2">
                         <span>{t("upload.preview.filename-label")}</span>
                         <span className="overflow-x-hidden whitespace-nowrap">
@@ -319,7 +320,7 @@ export default function PhotoUpload() {
                         </div>
                       )}
                     </div>
-                    <div className="absolute -bottom-3 left-0 right-0">
+                    <div className="absolute right-0 -bottom-3 left-0">
                       <ProgressBar value={preview.progress} />
                     </div>
                     <Button
@@ -327,7 +328,7 @@ export default function PhotoUpload() {
                       type="button"
                       disabled={uploading}
                       variant="destructive"
-                      className="absolute right-2 top-2"
+                      className="absolute top-2 right-2"
                       onClick={() => handleRemoveFile(index)}
                     >
                       <X />

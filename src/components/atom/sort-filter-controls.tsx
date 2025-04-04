@@ -1,11 +1,12 @@
+// src/components/atom/sort-filter-controls.tsx:
+import * as React from "react";
+import { useTranslations } from "next-intl";
 import {
   ArrowDown01Icon,
   ArrowUp10Icon,
   FilterIcon,
   ScrollText,
 } from "lucide-react";
-import { useTranslations } from "next-intl";
-import React from "react";
 import { Button } from "~/components/ui/button";
 import { Label } from "~/components/ui/label";
 import {
@@ -79,7 +80,7 @@ export function SortFilterControls<T extends string>({
           onValueChange={handleSortFieldChange}
           disabled={isFetching}
         >
-          <SelectTrigger className="h-8 w-40 border-input">
+          <SelectTrigger size="sm" className="border-input w-40">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -99,7 +100,7 @@ export function SortFilterControls<T extends string>({
           onValueChange={handleSortOrderChange}
           disabled={isFetching}
         >
-          <SelectTrigger className="h-8 w-40 border-input">
+          <SelectTrigger size="sm" className="border-input w-40">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -122,7 +123,7 @@ export function SortFilterControls<T extends string>({
             variant="ghost"
             size="sm"
             className={cn(
-              "relative border border-secondary text-secondary-foreground",
+              "border-secondary text-secondary-foreground relative border",
               filterEnabled &&
                 "bg-secondary/80 text-secondary-foreground hover:bg-secondary/90",
             )}
@@ -131,7 +132,6 @@ export function SortFilterControls<T extends string>({
           >
             <FilterIcon className="mr-2 h-4 w-4" />
             {filterLabel}
-            abc
           </Button>
         )}
       </div>
@@ -139,7 +139,7 @@ export function SortFilterControls<T extends string>({
       {/* Infinite Scroll Toggle Group - Visually separated */}
       {viewMode && (
         <div className="flex justify-end">
-          <div className="flex h-8 items-center gap-3 rounded-sm border border-input bg-muted p-2">
+          <div className="border-input bg-muted flex h-8 items-center gap-3 rounded-sm border p-2">
             <Label
               htmlFor="infinite-scroll"
               className="cursor-pointer text-sm font-medium"
@@ -147,7 +147,7 @@ export function SortFilterControls<T extends string>({
               {t("infinitescroll")}
             </Label>
             <Switch
-              variant={"secondary"}
+              // variant={""}
               id="infinite-scroll"
               checked={viewMode.current === viewMode.options[1]}
               onCheckedChange={onViewModeToggle}

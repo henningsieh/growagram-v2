@@ -1,6 +1,9 @@
 "use client";
 
 // src/components/features/Account/edit-form.tsx:
+import * as React from "react";
+import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AnimatePresence, motion } from "framer-motion";
 import { debounce } from "lodash";
@@ -13,10 +16,8 @@ import {
   UserIcon,
   XIcon,
 } from "lucide-react";
-import { useSession } from "next-auth/react";
-import { useTranslations } from "next-intl";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import FormContent from "~/components/Layouts/form-content";
 import SpinningLoader from "~/components/Layouts/loader";
 import PageHeader from "~/components/Layouts/page-header";
@@ -41,7 +42,6 @@ import {
 import { Input } from "~/components/ui/input";
 import { Separator } from "~/components/ui/separator";
 import { useIsMobile } from "~/hooks/use-mobile";
-import { useToast } from "~/hooks/use-toast";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import type { EditUserInput, OwnUserDataType } from "~/server/api/root";
@@ -67,14 +67,13 @@ export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
   const isMobile = useIsMobile();
   const router = useRouter();
   const t = useTranslations("Account");
-  const { toast } = useToast();
+
   const { status, update } = useSession();
 
-  const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(
-    null,
-  );
-  const [username, setUsername] = useState(user?.username || "");
-  const [usernameModified, setUsernameModified] = useState(false);
+  const [typingTimeout, setTypingTimeout] =
+    React.useState<NodeJS.Timeout | null>(null);
+  const [username, setUsername] = React.useState(user?.username || "");
+  const [usernameModified, setUsernameModified] = React.useState(false);
 
   const form = useForm<EditUserInput>({
     resolver: zodResolver(userEditSchema),
@@ -95,14 +94,19 @@ export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
         username: updatedUser.username,
       });
 
-      // 2. Redirect to account page
-      toast({
-        title: "Success",
+      // 2. Show success message
+      toast(t("form-save-success-title"), {
         description: t("form-save-success-message"),
       });
 
-      // 3. Show success message
+      // 3. Redirect to account page
       router.push("/account");
+    },
+    onError: (error) => {
+      toast.error(t("toast-error-save.title"), {
+        description: t("toast-error-save.description"),
+      });
+      console.error("Error updating user:", error);
     },
   });
 
@@ -161,11 +165,11 @@ export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
           className="mx-auto w-full max-w-2xl"
         >
           {!user.username && (
-            <Alert className="mb-4 border-2 border-secondary bg-secondary/80">
-              <AlertTitle className="text-lg text-accent-foreground">
+            <Alert className="border-secondary bg-secondary/80 mb-4 border-2">
+              <AlertTitle className="text-accent-foreground text-lg">
                 {t("welcome-message-title")}
               </AlertTitle>
-              <AlertDescription className="text-base text-accent-foreground">
+              <AlertDescription className="text-accent-foreground text-base">
                 {t("welcome-message-description")}
               </AlertDescription>
             </Alert>
@@ -173,13 +177,13 @@ export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
           <FormContent>
             <form onSubmit={form.handleSubmit(onSubmit)}>
               <Form {...form}>
-                <Card className="overflow-hidden border-2 bg-card/95 backdrop-blur-sm">
+                <Card className="bg-card/95 overflow-hidden border-2 backdrop-blur">
                   <CardHeader className="relative">
                     <motion.div
                       initial={{ opacity: 0, scale: 0.95 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ duration: 0.5 }}
-                      className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent"
+                      className="from-primary/10 absolute inset-0 bg-linear-to-br to-transparent"
                     />
                     <AvatarCardHeader
                       user={{ ...form.watch(), role: user.role }}
@@ -199,7 +203,7 @@ export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
                           control={form.control}
                           name="name"
                           render={({ field }) => (
-                            <FormItem className="overflow-hidden rounded-sm bg-muted/50 p-4 transition-colors hover:bg-muted/70">
+                            <FormItem className="bg-muted/50 hover:bg-muted/70 overflow-hidden rounded-sm p-4 transition-colors">
                               <FormLabel className="text-base">
                                 {t("form-name-label")}
                               </FormLabel>
@@ -230,9 +234,9 @@ export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
                               </AnimatePresence>
                               <FormControl>
                                 <div className="relative mt-2">
-                                  <UserIcon className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-foreground" />
+                                  <UserIcon className="text-foreground absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2" />
                                   <Input
-                                    className="bg-background/50 pl-10 font-medium transition-colors focus:bg-background"
+                                    className="bg-background/50 focus:bg-background pl-10 font-medium transition-colors"
                                     placeholder={t("form-name-placeholder")}
                                     {...field}
                                   />
@@ -249,7 +253,7 @@ export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
                           control={form.control}
                           name="username"
                           render={({ field }) => (
-                            <FormItem className="overflow-hidden rounded-sm bg-muted/50 p-4 transition-colors hover:bg-muted/70">
+                            <FormItem className="bg-muted/50 hover:bg-muted/70 overflow-hidden rounded-sm p-4 transition-colors">
                               <FormLabel
                                 className={`text-base ${
                                   usernameCheck.data &&
@@ -267,7 +271,7 @@ export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
                                     animate={{ opacity: 1 }}
                                     exit={{ opacity: 0 }}
                                   >
-                                    <div className="text-sm text-muted-foreground">
+                                    <div className="text-muted-foreground text-sm">
                                       {t("form-username-checking")}
                                     </div>
                                   </motion.div>
@@ -279,7 +283,7 @@ export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
                                     animate={{ opacity: 1 }}
                                     exit={{ opacity: 0 }}
                                   >
-                                    <div className="text-sm font-medium text-destructive">
+                                    <div className="text-destructive text-sm font-medium">
                                       {t("form-username-taken")}
                                     </div>
                                   </motion.div>
@@ -293,9 +297,9 @@ export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
                               </AnimatePresence>
                               <FormControl>
                                 <div className="relative mt-2 flex items-center">
-                                  <AtSign className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-foreground" />
+                                  <AtSign className="text-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
                                   <Input
-                                    className="bg-background/50 pl-10 pr-10 font-medium transition-colors focus:bg-background"
+                                    className="bg-background/50 focus:bg-background pr-10 pl-10 font-medium transition-colors"
                                     autoComplete="off"
                                     autoCorrect="off"
                                     autoCapitalize="off"
@@ -326,7 +330,7 @@ export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
                                             animate={{ opacity: 1, scale: 1 }}
                                             exit={{ opacity: 0, scale: 0.8 }}
                                           >
-                                            <XIcon className="h-6 w-6 text-destructive" />
+                                            <XIcon className="text-destructive h-6 w-6" />
                                           </motion.div>
                                         )
                                       ) : (
@@ -353,8 +357,8 @@ export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
                           control={form.control}
                           name="email"
                           render={({ field }) => (
-                            <FormItem className="overflow-hidden rounded-sm bg-muted/50 p-4 transition-colors hover:bg-muted/70">
-                              <FormLabel className="text-base text-muted-foreground">
+                            <FormItem className="bg-muted/50 hover:bg-muted/70 overflow-hidden rounded-sm p-4 transition-colors">
+                              <FormLabel className="text-muted-foreground text-base">
                                 {t("form-email-label")}
                               </FormLabel>
                               <FormDescription>
@@ -362,7 +366,7 @@ export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
                               </FormDescription>
                               <FormControl>
                                 <div className="relative mt-2">
-                                  <Mail className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+                                  <Mail className="text-muted-foreground absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2" />
                                   <Input
                                     readOnly={!!user.email} // Disable input if email is set
                                     disabled={!!user.email} // Disable input if email is set
@@ -394,9 +398,9 @@ export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
                         setUsername(user?.username || "");
                         setUsernameModified(false);
                       }}
-                      className="group relative w-full overflow-hidden"
+                      className="group relative flex-1 overflow-hidden"
                     >
-                      <div className="absolute inset-0 translate-x-[-100%] bg-gradient-to-r from-background/0 via-background/40 to-background/0 transition-transform duration-500 group-hover:translate-x-[100%]" />
+                      {/* <div className="from-background/0 via-background/40 to-background/0 absolute inset-0 translate-x-[-100%] bg-linear-to-r transition-transform duration-500 group-hover:translate-x-[100%]" /> */}
                       <RotateCcw className="mr-2 h-4 w-4" />
                       {t("form-reset-button")}
                     </Button>
@@ -408,9 +412,9 @@ export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
                         (usernameModified &&
                           (!usernameCheck.data?.isUnique || !username.trim()))
                       }
-                      className="group relative w-full overflow-hidden bg-primary hover:bg-primary/90"
+                      className="group relative flex-1 overflow-hidden"
                     >
-                      <div className="absolute inset-0 translate-x-[-100%] bg-gradient-to-r from-primary-foreground/0 via-primary-foreground/20 to-primary-foreground/0 transition-transform duration-500 group-hover:translate-x-[100%]" />
+                      {/* <div className="from-primary-foreground/0 via-primary-foreground/20 to-primary-foreground/0 absolute inset-0 translate-x-[-100%] bg-linear-to-r transition-transform duration-500 group-hover:translate-x-[100%]" /> */}
                       {editUserMutation.isPending ? (
                         <SpinningLoader className="mr-2 h-4 w-4 animate-spin" />
                       ) : (

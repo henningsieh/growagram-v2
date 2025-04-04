@@ -1,10 +1,9 @@
 "use client";
 
-import { ArrowRightIcon, Bell, ListChecksIcon } from "lucide-react";
+import * as React from "react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
-
+import { ArrowRightIcon, BellIcon, ListChecksIcon } from "lucide-react";
 import {
   NotificationItem,
   NotificationSkeleton,
@@ -23,7 +22,7 @@ import { cn } from "~/lib/utils";
 
 export function Notifications() {
   const { data: session } = useSession();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = React.useState(false);
   const t = useTranslations("Notifications");
 
   const {
@@ -53,15 +52,17 @@ export function Notifications() {
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
-          variant="ghost"
           size="icon"
+          variant="ghost"
+          aria-haspopup="dialog"
+          aria-expanded={open}
           className="relative"
           disabled={!session}
           title={t("Navigation.trigger-button-title")}
         >
-          <Bell className="h-5 w-5" />
+          <BellIcon strokeWidth={1.8} className="size-6" />
           {unreadCount > 0 && (
-            <span className="absolute right-0 top-0 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] text-white">
+            <span className="absolute top-0 right-0 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] text-white">
               {unreadCount}
             </span>
           )}
@@ -75,15 +76,15 @@ export function Notifications() {
         className="w-svw p-0 sm:w-[28rem]"
         sideOffset={8}
       >
-        <Tabs defaultValue="all" className="w-full">
+        <Tabs defaultValue="all" className="w-full gap-0">
           <div className="border-b">
             <TabsList className="grid w-full grid-cols-4 gap-1">
               <TabsTrigger
                 value="all"
-                className="text-sm hover:bg-accent/50 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground"
+                // className="hover:bg-accent/50 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground text-sm"
               >
                 <span className="flex items-center gap-1">
-                  <span className="max-w-[42px] truncate xs:max-w-none">
+                  <span className="xs:max-w-none max-w-[42px] truncate">
                     {t("panel.tabs.label_All")}
                   </span>
                   <span>
@@ -95,10 +96,10 @@ export function Notifications() {
               </TabsTrigger>
               <TabsTrigger
                 value="follow"
-                className="text-sm hover:bg-accent/50 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground"
+                // className="hover:bg-accent/50 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground text-sm"
               >
                 <span className="flex items-center gap-1">
-                  <span className="max-w-[42px] truncate xs:max-w-none">
+                  <span className="xs:max-w-none max-w-[42px] truncate">
                     {t("panel.tabs.label_Follows")}
                   </span>
                   <span>
@@ -110,10 +111,10 @@ export function Notifications() {
               </TabsTrigger>
               <TabsTrigger
                 value="like"
-                className="text-sm hover:bg-accent/50 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground"
+                // className="hover:bg-accent/50 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground text-sm"
               >
                 <span className="flex items-center gap-1">
-                  <span className="max-w-[42px] truncate xs:max-w-none">
+                  <span className="xs:max-w-none max-w-[42px] truncate">
                     {t("panel.tabs.label_Likes")}
                   </span>
                   <span>
@@ -125,10 +126,10 @@ export function Notifications() {
               </TabsTrigger>
               <TabsTrigger
                 value="comment"
-                className="text-sm hover:bg-accent/50 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground"
+                // className="hover:bg-accent/50 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground text-sm"
               >
                 <span className="flex items-center gap-1">
-                  <span className="max-w-[42px] truncate xs:max-w-none">
+                  <span className="xs:max-w-none max-w-[42px] truncate">
                     {t("panel.tabs.label_Comments")}
                   </span>
                   <span>
@@ -141,16 +142,20 @@ export function Notifications() {
             </TabsList>
           </div>
 
-          <div className="flex justify-between gap-4 border-b px-2 py-1">
-            <Button variant="link" size="sm" asChild>
-              <Link href="/dashboard#activity" onClick={closePopover}>
+          <div className="flex justify-between border-b p-2">
+            <Button variant="link" asChild size="sm" className="px-0">
+              <Link
+                className="px-0"
+                href="/dashboard#activity"
+                onClick={closePopover}
+              >
                 {t("ActivityFeed.label-all")}
                 <ArrowRightIcon className="h-4 w-4" />
               </Link>
             </Button>
             <Button
               className="p-1"
-              variant="outline"
+              variant="primary"
               size="sm"
               onClick={(e) => {
                 e.preventDefault(); // Prevent link navigation
@@ -190,7 +195,7 @@ export function Notifications() {
                         />
                       ))
                     ) : (
-                      <p className="p-2 text-center text-sm text-muted-foreground">
+                      <p className="text-muted-foreground p-2 text-center text-sm">
                         {t("panel.no-notifications")}
                       </p>
                     )}
@@ -208,7 +213,7 @@ export function Notifications() {
                         />
                       ))
                     ) : (
-                      <p className="p-2 text-center text-sm text-muted-foreground">
+                      <p className="text-muted-foreground p-2 text-center text-sm">
                         {t("panel.no-follow-notifications")}
                       </p>
                     )}
@@ -226,7 +231,7 @@ export function Notifications() {
                         />
                       ))
                     ) : (
-                      <p className="p-2 text-center text-sm text-muted-foreground">
+                      <p className="text-muted-foreground p-2 text-center text-sm">
                         {t("panel.no-like-notifications")}
                       </p>
                     )}
@@ -243,7 +248,7 @@ export function Notifications() {
                       />
                     ))
                   ) : (
-                    <p className="p-2 text-center text-sm text-muted-foreground">
+                    <p className="text-muted-foreground p-2 text-center text-sm">
                       {t("panel.no-comment-notifications")}
                     </p>
                   )}

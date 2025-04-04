@@ -1,6 +1,6 @@
+import type React from "react";
 import * as Headless from "@headlessui/react";
 import { cx } from "class-variance-authority";
-import type React from "react";
 
 const sizes = {
   xs: "sm:max-w-xs",
@@ -37,7 +37,7 @@ export function Dialog({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 flex w-screen justify-center overflow-y-auto bg-gray-950/25 px-2 py-2 focus:outline-0 dark:bg-gray-950/50 sm:px-6 sm:py-8 lg:px-8 lg:py-16" />
+          <div className="fixed inset-0 flex w-screen justify-center overflow-y-auto bg-gray-950/25 px-2 py-2 focus:outline-0 sm:px-6 sm:py-8 lg:px-8 lg:py-16 dark:bg-gray-950/50" />
         </Headless.TransitionChild>
 
         <div className="fixed inset-0 w-screen overflow-y-auto pt-6 sm:pt-0">
@@ -54,7 +54,7 @@ export function Dialog({
                 className={cx(
                   className,
                   sizes[size],
-                  "row-start-2 w-full min-w-0 rounded-t-3xl bg-white p-[--gutter] shadow-lg ring-1 ring-gray-950/10 [--gutter:theme(spacing.8)] dark:bg-gray-900 dark:ring-white/10 sm:mb-auto sm:rounded-2xl forced-colors:outline",
+                  "row-start-2 w-full min-w-0 rounded-t-3xl bg-white p-(--gutter) shadow-lg ring-1 ring-gray-950/10 [--gutter:--spacing(8)] sm:mb-auto sm:rounded-2xl dark:bg-gray-900 dark:ring-white/10 forced-colors:outline",
                 )}
               >
                 {children}
@@ -76,7 +76,7 @@ export function DialogTitle({
       {...props}
       className={cx(
         className,
-        "text-balance text-lg/6 font-semibold text-zinc-950 dark:text-white sm:text-base/6",
+        "text-lg/6 font-semibold text-balance text-zinc-950 sm:text-base/6 dark:text-white",
       )}
     />
   );

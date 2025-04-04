@@ -1,6 +1,9 @@
 "use client";
 
 // src/components/features/plant/plant-card.tsx:
+import * as React from "react";
+import { useSession } from "next-auth/react";
+import { useLocale, useTranslations } from "next-intl";
 import {
   DnaIcon,
   DotIcon,
@@ -16,19 +19,23 @@ import {
   Trash2Icon,
   WheatIcon,
 } from "lucide-react";
-import { useSession } from "next-auth/react";
-import { useLocale, useTranslations } from "next-intl";
-import { useState } from "react";
+import { toast } from "sonner";
 import { modulePaths } from "~/assets/constants";
 import AvatarCardHeader, {
   ActionItem,
 } from "~/components/atom/avatar-card-header";
 import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
+import {
+  HybridTooltip,
+  HybridTooltipContent,
+  HybridTooltipTrigger,
+  TouchProvider,
+} from "~/components/atom/hybrid-tooltip";
 import { OwnerDropdownMenu } from "~/components/atom/owner-dropdown-menu";
 import { SocialCardFooter } from "~/components/atom/social-card-footer";
 import { Comments } from "~/components/features/Comments/comments";
 import { ImageCarousel } from "~/components/features/Plants/image-carousel";
-import PostFormModal from "~/components/features/Timeline/Post/post-form-modal";
+import { PostFormModal } from "~/components/features/Timeline/Post/post-form-modal";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import {
@@ -38,16 +45,9 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
-import {
-  HybridTooltip,
-  HybridTooltipContent,
-  HybridTooltipTrigger,
-  TouchProvider,
-} from "~/components/ui/hybrid-tooltip";
 import { Progress } from "~/components/ui/progress";
 import { useComments } from "~/hooks/use-comments";
 import { useLikeStatus } from "~/hooks/use-likes";
-import { useToast } from "~/hooks/use-toast";
 import { Link, useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
 import { cn, formatDate, formatTime } from "~/lib/utils";
@@ -74,12 +74,12 @@ export default function PlantCard({
   const router = useRouter();
   const locale = useLocale();
   const utils = api.useUtils();
-  const { toast } = useToast();
+
   const t = useTranslations("Plants");
 
-  const [isSocial, setIsSocial] = useState(isSocialProp);
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [isPostModalOpen, setIsPostModalOpen] = useState(false);
+  const [isSocial, setIsSocial] = React.useState(isSocialProp);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);
+  const [isPostModalOpen, setIsPostModalOpen] = React.useState(false);
 
   const {
     isLiked,
@@ -93,9 +93,8 @@ export default function PlantCard({
   // Initialize delete mutation
   const deleteMutation = api.plants.deleteById.useMutation({
     onSuccess: async () => {
-      toast({
-        title: "Success",
-        description: "Plant deleted successfully",
+      toast("Success", {
+        description: t("plant-deleted-successfully"),
       });
       // Invalidate and prefetch the plants query to refresh the list
       await utils.plants.getOwnPlants.invalidate();
@@ -103,10 +102,8 @@ export default function PlantCard({
       // router.refresh();
     },
     onError: (error) => {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to delete plant",
-        variant: "destructive",
+      toast.error("Error", {
+        description: error.message || t("error-default"),
       });
     },
   });
@@ -151,9 +148,9 @@ export default function PlantCard({
     <Link
       href={`/public/plants/${plant.id}`}
       title={t("plant-card-createdAt")}
-      className="flex items-center gap-1 whitespace-nowrap text-sm text-muted-foreground"
+      className="text-muted-foreground flex items-center gap-1 text-sm whitespace-nowrap"
     >
-      {<DotIcon size={24} className="-mx-2 hidden xs:block" />}
+      {<DotIcon size={24} className="xs:block -mx-2 hidden" />}
       {formatDate(plant.createdAt, locale as Locale)}{" "}
       {formatTime(plant.createdAt, locale as Locale)}
     </Link>
@@ -179,7 +176,7 @@ export default function PlantCard({
       <TouchProvider>
         <Card
           className={cn(
-            `flex flex-col overflow-hidden border border-primary/20 pt-1`,
+            `border-primary/20 flex flex-col overflow-hidden border py-1`,
             // isSocial && "bg-primary/5",
           )}
         >
@@ -192,11 +189,10 @@ export default function PlantCard({
             />
           )}
           <CardContent
-            className={`grid gap-2 ${isSocial ? "ml-12 pl-0 pr-2" : "p-2"}`}
+            className={`grid gap-2 ${isSocial ? "ml-12 pr-2 pl-0" : "p-2"}`}
           >
             {/* Image Carousel */}
             <ImageCarousel plantImages={plant.plantImages} />
-
             {/* Title Link */}
             <div className="flex min-w-0 items-center justify-between gap-2">
               <CardTitle as="h3" className="min-w-0">
@@ -206,8 +202,8 @@ export default function PlantCard({
                   className="flex min-w-0 items-center justify-start gap-2 p-1"
                 >
                   <Link href={`/public/plants/${plant.id}`}>
-                    <TagIcon className="flex-shrink-0" size={20} />
-                    <span className="truncate font-semibold leading-normal">
+                    <TagIcon className="shrink-0" size={20} />
+                    <span className="truncate leading-normal font-semibold">
                       {plant.name}
                     </span>
                   </Link>
@@ -225,7 +221,6 @@ export default function PlantCard({
                 />
               )}
             </div>
-
             {/* Strain Info */}
             <CardDescription>
               <div className="flex min-h-6 items-center justify-between gap-2 p-0">
@@ -271,7 +266,7 @@ export default function PlantCard({
                         variant="grow"
                         className="flex max-w-32 items-center gap-1 overflow-hidden text-ellipsis whitespace-nowrap"
                       >
-                        <TentTreeIcon className="h-4 w-4 flex-shrink-0" />
+                        <TentTreeIcon className="h-4 w-4 shrink-0" />
                         <span className="overflow-hidden text-ellipsis">
                           {plant.grow.name}
                         </span>
@@ -281,9 +276,8 @@ export default function PlantCard({
                 )}
               </div>
             </CardDescription>
-
             {/* Plant Progress and Dates */}
-            <Card className="space-y-4 bg-muted p-2 sm:p-4 md:p-6">
+            <Card className="bg-muted/30 space-y-4 rounded-md p-2 sm:p-4 md:p-6">
               <CardHeader className="flex w-full flex-col p-0">
                 <div className="mb-1 flex justify-between text-sm">
                   <span>{t("overall-progress")}</span>
@@ -301,7 +295,7 @@ export default function PlantCard({
                 <div className="flex h-4 items-center">
                   <HybridTooltip>
                     <HybridTooltipTrigger className="flex cursor-default items-center font-mono text-sm font-semibold tracking-tighter">
-                      <NutIcon className={`mr-2 h-4 w-4 text-planted`} />
+                      <NutIcon className={`text-planted mr-2 h-4 w-4`} />
                       {formatDate(plant.startDate, locale as Locale, {
                         force: true,
                       })}
@@ -312,7 +306,7 @@ export default function PlantCard({
                     >
                       <Badge
                         variant={"outline"}
-                        className="whitespace-nowrap border-0 bg-planted text-sm text-white"
+                        className="bg-planted border-0 text-sm whitespace-nowrap text-white"
                       >
                         {t("planting-date")}
                       </Badge>
@@ -340,7 +334,7 @@ export default function PlantCard({
                     >
                       <Badge
                         variant={"outline"}
-                        className="whitespace-nowrap border-0 bg-seedling text-sm text-white"
+                        className="bg-seedling border-0 text-sm whitespace-nowrap text-white"
                       >
                         {t("germination-date")}
                       </Badge>
@@ -370,7 +364,7 @@ export default function PlantCard({
                     >
                       <Badge
                         variant={"outline"}
-                        className="whitespace-nowrap border-0 bg-vegetation text-sm text-white"
+                        className="bg-vegetation border-0 text-sm whitespace-nowrap text-white"
                       >
                         {t("vegetation-start-date")}
                       </Badge>
@@ -400,7 +394,7 @@ export default function PlantCard({
                     >
                       <Badge
                         variant={"outline"}
-                        className="whitespace-nowrap border-0 bg-flowering text-sm text-white"
+                        className="bg-flowering border-0 text-sm whitespace-nowrap text-white"
                       >
                         {t("flowering-start-date")}
                       </Badge>
@@ -426,7 +420,7 @@ export default function PlantCard({
                     >
                       <Badge
                         variant={"outline"}
-                        className="whitespace-nowrap bg-harvest text-sm text-white"
+                        className="bg-harvest text-sm whitespace-nowrap text-white"
                       >
                         {t("harvest-date")}
                       </Badge>
@@ -454,7 +448,7 @@ export default function PlantCard({
                     >
                       <Badge
                         variant={"outline"}
-                        className="whitespace-nowrap bg-curing text-sm text-white"
+                        className="bg-curing text-sm whitespace-nowrap text-white"
                       >
                         {t("curing-start-date")}
                       </Badge>
@@ -477,7 +471,7 @@ export default function PlantCard({
           {
             isSocial && (
               <SocialCardFooter
-                className={`pb-2 pr-2 ${isSocial && "ml-12"}`}
+                className={`pr-2 pb-2 ${isSocial && "ml-12"}`}
                 entityId={plant.id}
                 entityType={LikeableEntityType.Plant}
                 initialLiked={isLiked}

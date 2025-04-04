@@ -2,7 +2,6 @@
 
 // src/components/navbar/index.tsx:
 import Image from "next/image";
-
 import DesktopNavigationManu from "~/components/Layouts/MainNavigationBar/Desktop";
 import MobileNavigationMenu from "~/components/Layouts/MainNavigationBar/Mobile";
 import { LanguageToggle } from "~/components/Layouts/MainNavigationBar/language-toggler";
@@ -13,10 +12,10 @@ import { Link } from "~/lib/i18n/routing";
 
 export function MainNavigationBar() {
   return (
-    <header className="sticky top-0 z-20 w-full border-b bg-background/90 backdrop-blur">
+    <header className="bg-background/90 sticky top-0 z-20 w-full border-b backdrop-blur">
       <div className="relative flex h-14 items-center justify-center">
         {/* Navigation Left:  Main Logo */}
-        <div className="absolute left-4 top-0 flex items-center">
+        <div className="absolute top-0 left-4 flex items-center">
           <Link href={"/"}>
             <Image
               src="/images/grow-a-gram-high-resolution-logo.webp"
@@ -33,7 +32,7 @@ export function MainNavigationBar() {
         <DesktopNavigationManu />
 
         {/* Navigation Right Side: Toggles */}
-        <div className="absolute right-4 top-1/2 flex -translate-y-1/2 items-center space-x-1">
+        <div className="absolute top-1/2 right-4 flex -translate-y-1/2 items-center space-x-1">
           {/* Chat Button */}
           <ChatButton />
 

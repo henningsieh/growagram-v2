@@ -1,5 +1,5 @@
 // src/components/Layouts/InfiniteScrollLoader.tsx:
-import { forwardRef } from "react";
+import * as React from "react";
 import SpinningLoader from "~/components/Layouts/loader";
 
 interface InfiniteScrollLoaderProps {
@@ -11,7 +11,7 @@ interface InfiniteScrollLoaderProps {
   className?: string;
 }
 
-const InfiniteScrollLoader = forwardRef<
+const InfiniteScrollLoader = React.forwardRef<
   HTMLDivElement,
   InfiniteScrollLoaderProps
 >(
@@ -37,7 +37,7 @@ const InfiniteScrollLoader = forwardRef<
 
         {/* No more items message */}
         {!hasNextPage && itemsLength > 0 && (
-          <p className="mt-8 text-center text-muted-foreground">
+          <p className="text-muted-foreground mt-8 text-center">
             {noMoreMessage}
           </p>
         )}

@@ -13,6 +13,11 @@
   ],
   "navMain": [
     {
+      "title": "Dashboard",
+      "url": "/dashboard",
+      "icon": "CircleGauge"
+    },
+    {
       "title": "Grows",
       "url": "#",
       "icon": "TentTree",

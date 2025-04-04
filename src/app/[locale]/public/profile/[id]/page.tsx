@@ -26,16 +26,16 @@ export default async function ProfilePage({
 
   return (
     <>
-      <div className="mb-5 mt-3 flex items-center gap-2 xs:gap-3 sm:gap-4">
-        <Avatar className="h-14 w-14 xs:h-16 xs:w-16 sm:h-24 sm:w-24">
+      <div className="xs:gap-3 mt-3 mb-5 flex items-center gap-2 sm:gap-4">
+        <Avatar className="xs:h-16 xs:w-16 h-14 w-14 sm:h-24 sm:w-24">
           <AvatarImage src={profile.image ?? ""} alt={profile.name ?? ""} />
           <AvatarFallback>
             {profile.name?.substring(0, 2).toUpperCase() ?? "??"}
           </AvatarFallback>
         </Avatar>
-        <div className="flex w-full flex-col gap-0.5 px-0 xs:gap-1 sm:gap-2">
+        <div className="xs:gap-1 flex w-full flex-col gap-0.5 px-0 sm:gap-2">
           <div className="flex justify-between gap-4">
-            <h1 className="whitespace-nowrap text-base font-bold xs:text-xl sm:text-2xl">
+            <h1 className="xs:text-xl text-base font-bold whitespace-nowrap sm:text-2xl">
               {profile.name}
             </h1>
             <FollowButton

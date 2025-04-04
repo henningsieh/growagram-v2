@@ -1,12 +1,13 @@
 "use client";
 
+import * as React from "react";
+import { useTranslations } from "next-intl";
 import { BeanIcon } from "lucide-react";
-import { useState } from "react";
+import { toast } from "sonner";
 import SpinningLoader from "~/components/Layouts/loader";
-import { ComboboxWithCreate } from "~/components/ui/combobox-with-create";
-import type { ComboboxOption } from "~/components/ui/combobox-with-create";
+import { ComboboxWithCreate } from "~/components/atom/combobox-with-create";
+import type { ComboboxOption } from "~/components/atom/combobox-with-create";
 import { FormError } from "~/components/ui/form-error";
-import { useToast } from "~/hooks/use-toast";
 import { api } from "~/lib/trpc/react";
 
 interface StrainSelectorProps {
@@ -24,8 +25,9 @@ export function StrainSelector({
   disabled = false,
   existingStrain,
 }: StrainSelectorProps) {
-  const [error, setError] = useState<string | null>(null);
-  const { toast } = useToast();
+  const [error, setError] = React.useState<string | null>(null);
+  const t = useTranslations("Plants");
+
   const utils = api.useUtils();
 
   // Fetch strains for the selected breeder
@@ -58,25 +60,29 @@ export function StrainSelector({
     onSuccess: (data) => {
       onChange(data.id);
       setError(null);
+      // Show success toast
+      toast(t("strain-create-success-title"), {
+        description: t("strain-create-success-description"),
+      });
       // Invalidate queries to refresh the strains list
       void utils.plants.getStrainsByBreeder.invalidate({
         breederId: breederId || undefined,
       });
     },
     onError: (error) => {
-      setError(error.message);
+      toast.error(t("strain-create-error-title"), {
+        description: error.message || t("strain-create-error-description"),
+      });
     },
   });
 
-  // Handle create new strain
+  // Verify breeder is selected before creating strain
   const handleCreateStrain = async (name: string) => {
     if (!breederId) {
-      toast({
-        title: "Error",
-        description: "Please select a breeder first",
-        variant: "destructive",
+      toast.error(t("strain-breeder-required-error-title"), {
+        description: t("strain-breeder-required-error-description"),
       });
-      throw new Error("Breeder not selected");
+      return "";
     }
 
     setError(null);
@@ -94,8 +100,8 @@ export function StrainSelector({
   if (isStrainsLoading) {
     return (
       <div className="relative">
-        <BeanIcon className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
-        <div className="flex h-10 items-center rounded-md border bg-muted pl-10">
+        <BeanIcon className="text-muted-foreground absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2" />
+        <div className="bg-muted flex h-10 items-center rounded-md border pl-10">
           <SpinningLoader className="size-5" />
         </div>
       </div>
@@ -108,11 +114,13 @@ export function StrainSelector({
         options={strainOptions}
         value={value}
         onChange={onChange}
-        placeholder="Select strain..."
+        placeholder={t("strain-placeholder")}
         emptyMessage={
-          breederId ? "No strains found" : "Please select a breeder first"
+          breederId
+            ? t("strain-empty-message-with-breeder")
+            : t("strain-empty-message-no-breeder")
         }
-        createNewMessage="Create new strain"
+        createNewMessage={t("strain-create-message")}
         triggerClassName="bg-muted text-foreground md:text-base"
         disabled={disabled || !breederId || createStrainMutation.isPending}
         onCreateOption={handleCreateStrain}

@@ -1,5 +1,5 @@
-import { CheckCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { CheckCircle } from "lucide-react";
 
 const benefits = [
   "Exclusive premium content",
@@ -20,7 +20,7 @@ export function PremiumBenefits() {
         {benefits.map((benefit, index) => (
           <li
             key={index}
-            className="flex items-center space-x-2 rounded-lg bg-secondary p-4"
+            className="bg-secondary flex items-center space-x-2 rounded-lg p-4"
           >
             <CheckCircle className="text-primary" />
             <span>{benefit}</span>
