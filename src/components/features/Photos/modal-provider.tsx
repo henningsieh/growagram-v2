@@ -38,6 +38,7 @@ export function ImageModalProvider({
 
   const modalRef = React.useRef<HTMLDivElement>(null);
   const imageRef = React.useRef<HTMLDivElement>(null);
+  const originalBodyOverflowRef = React.useRef<string>("");
 
   const [scale, setScale] = React.useState(1);
   const [position, setPosition] = React.useState({ x: 0, y: 0 });
@@ -52,12 +53,10 @@ export function ImageModalProvider({
     setScale(1);
     setPosition({ x: 0, y: 0 });
     setIsZoomedView(false);
-    document.body.style.overflow = "hidden";
   }, []);
 
   const closeImageModal = React.useCallback(() => {
     setIsModalOpen(false);
-    document.body.style.overflow = "";
   }, []);
 
   const toggleZoomedView = React.useCallback(() => {
@@ -302,22 +301,27 @@ export function ImageModalProvider({
     };
   }, [isModalOpen, handleMouseMove, handleMouseUp]);
 
-  // Ensure we reset overflow when component unmounts
-  React.useEffect(() => {
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, []);
-
-  // Prevent body scrolling when modal is open
+  // Consolidate all body overflow management into a single effect
   React.useEffect(() => {
     if (isModalOpen) {
-      const originalStyle = window.getComputedStyle(document.body).overflow;
+      // Save the current overflow style before changing it
+      originalBodyOverflowRef.current = window.getComputedStyle(
+        document.body,
+      ).overflow;
+
+      // Apply hidden overflow to prevent background scrolling
       document.body.style.overflow = "hidden";
-      return () => {
-        document.body.style.overflow = originalStyle;
-      };
+    } else if (originalBodyOverflowRef.current) {
+      // Restore the original overflow style when modal closes
+      document.body.style.overflow = originalBodyOverflowRef.current;
     }
+
+    // Cleanup function to ensure overflow is always restored when component unmounts
+    return () => {
+      if (originalBodyOverflowRef.current) {
+        document.body.style.overflow = originalBodyOverflowRef.current;
+      }
+    };
   }, [isModalOpen]);
 
   const handleModalBackdropClick = (e: React.MouseEvent) => {
@@ -359,7 +363,8 @@ export function ImageModalProvider({
                 {/* Scale indicator */}
                 {isZoomedView && (
                   <div className="bg-background/80 absolute top-4 left-1/2 z-10 -translate-x-1/2 rounded-full px-3 py-1 text-xs font-medium backdrop-blur-sm">
-                    {Math.round(scale * 100)}%
+                    {Math.round(scale * 100)}
+                    {"%"}
                   </div>
                 )}
 
