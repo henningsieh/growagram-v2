@@ -8,6 +8,7 @@ import { ExpandIcon, MaximizeIcon, X } from "lucide-react";
 import { createPortal } from "react-dom";
 import { Button } from "~/components/ui/button";
 import { Switch } from "~/components/ui/switch";
+import { useIsMobile } from "~/hooks/use-mobile";
 import { cn } from "~/lib/utils";
 
 interface ImageModalContextType {
@@ -46,6 +47,7 @@ export function ImageModalProvider({
   const dragStart = React.useRef({ x: 0, y: 0 });
 
   const t = useTranslations("Photos");
+  const isMobile = useIsMobile();
 
   const openImageModal = React.useCallback((url: string) => {
     setImageUrl(url);
@@ -152,7 +154,7 @@ export function ImageModalProvider({
   }, [isModalOpen, handleKeyDown]);
 
   const handleMouseMove = React.useCallback(
-    (e: React.MouseEvent | MouseEvent | TouchEvent) => {
+    (e: React.MouseEvent | MouseEvent | TouchEvent | React.TouchEvent) => {
       if (!isDragging.current) return;
 
       // Prevent default browser behavior for touch events
@@ -262,6 +264,96 @@ export function ImageModalProvider({
         setScale(1);
         setPosition({ x: 0, y: 0 });
       }
+    }
+  };
+
+  // Track touch points for pinch-to-zoom
+  const touchPoints = React.useRef<React.Touch[]>([]);
+  const lastDistance = React.useRef<number>(0);
+
+  // Calculate distance between two touch points
+  const getDistance = (touch1: React.Touch, touch2: React.Touch) => {
+    const dx = touch1.clientX - touch2.clientX;
+    const dy = touch1.clientY - touch2.clientY;
+    return Math.sqrt(dx * dx + dy * dy);
+  };
+
+  // Handle touch start for pinch detection
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (!isZoomedView) return;
+
+    // Store touch points for pinch detection
+    if (e.touches.length === 2) {
+      // Use type assertion to convert to React.Touch[]
+      touchPoints.current = Array.from(e.touches) as React.Touch[];
+      lastDistance.current = getDistance(e.touches[0], e.touches[1]);
+
+      // Disable dragging when pinching
+      isDragging.current = false;
+
+      if (imageRef.current) {
+        imageRef.current.style.transition = "none";
+      }
+    } else if (e.touches.length === 1) {
+      // Single touch - handle as drag
+      handleMouseDown(e);
+    }
+  };
+
+  // Handle touch move for pinch-to-zoom
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isZoomedView) return;
+
+    if (e.touches.length === 2) {
+      // Prevent default to disable browser pinch zoom
+      if (e.cancelable) {
+        e.preventDefault();
+      }
+
+      // Calculate new distance between touch points
+      const newDistance = getDistance(e.touches[0], e.touches[1]);
+
+      // Calculate pinch delta and apply zoom
+      const delta = newDistance / lastDistance.current;
+      const newScale = Math.max(1, Math.min(4, scale * delta));
+
+      if (newScale !== scale) {
+        // Calculate the midpoint between the two touches
+        const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+        const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+
+        // Calculate new position to keep the pinch center fixed
+        const scaleFactor = newScale / scale;
+        const newX = midX - (midX - position.x) * scaleFactor;
+        const newY = midY - (midY - position.y) * scaleFactor;
+
+        // Update state
+        setScale(newScale);
+        setPosition({ x: newX, y: newY });
+
+        // Update reference for next move
+        lastDistance.current = newDistance;
+      }
+    } else if (e.touches.length === 1 && isDragging.current) {
+      // Single touch - handle as drag
+      handleMouseMove(e);
+    }
+  };
+
+  // Handle touch end
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (e.touches.length < 2) {
+      // Reset touch tracking when fewer than 2 touches
+      touchPoints.current = [];
+
+      if (imageRef.current) {
+        imageRef.current.style.transition = "transform 0.2s ease-out";
+      }
+    }
+
+    // If no touches left, end dragging
+    if (e.touches.length === 0) {
+      handleMouseUp();
     }
   };
 
@@ -381,7 +473,9 @@ export function ImageModalProvider({
                     touchAction: isZoomedView ? "none" : "auto",
                   }}
                   onMouseDown={handleMouseDown}
-                  onTouchStart={handleMouseDown}
+                  onTouchStart={handleTouchStart}
+                  onTouchMove={handleTouchMove}
+                  onTouchEnd={handleTouchEnd}
                   onWheel={handleWheel}
                   onDoubleClick={handleDoubleClick}
                 >
@@ -391,7 +485,7 @@ export function ImageModalProvider({
                       "relative transition-transform duration-300 ease-out",
                       isZoomedView
                         ? "h-[300vh] w-[300vh]" // Use much larger size to ensure plenty of dragging space
-                        : "m-14 h-[calc(100%-112px)]", // Add 24px (m-6) margin on all sides when in restricted view
+                        : "m-4 h-[calc(100%-32px)]", // Add 16px (m-4) margin on all sides when in restricted view
                     )}
                     style={{
                       transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
@@ -469,36 +563,28 @@ export function ImageModalProvider({
                 </div>
 
                 {/* Keyboard shortcuts help */}
-                {true && (
-                  <div className="bg-muted absolute top-4 left-4 z-10 hidden rounded-lg p-3 text-xs backdrop-blur-sm md:block">
+                {!isMobile && (
+                  <div className="bg-muted absolute top-4 left-4 z-10 rounded-lg p-3 text-xs backdrop-blur-sm">
                     <p className="text-accent-foreground mb-2 text-sm font-semibold">
                       {t("ImageModal.keyboard-shortcuts")}
                     </p>
-                    <div className="mt-1 grid grid-cols-2 gap-x-4 gap-y-1">
-                      <span className="text-accent-foreground font-medium">
-                        {"ESC"}
-                      </span>
+                    <div className="mt-1 grid grid-cols-2 gap-x-4 gap-y-1 font-bold">
+                      <span className="text-accent-foreground">{"ESC"}</span>
                       <span className="text-accent-foreground">
                         {t("ImageModal.close")}
                       </span>
 
-                      <span className="text-muted-foreground font-medium">
-                        {"z"}
-                      </span>
-                      <span className="text-muted-foreground">
+                      <span className="text-accent-foreground">{"z"}</span>
+                      <span className="text-accent-foreground">
                         {t("ImageModal.toggle-zoom-mode")}
                       </span>
 
-                      <span className="text-muted-foreground font-medium">
-                        {"+/-"}
-                      </span>
+                      <span className="text-muted-foreground">{"+/-"}</span>
                       <span className="text-muted-foreground">
                         {t("ImageModal.zoom-in-out")}
                       </span>
 
-                      <span className="text-muted-foreground font-medium">
-                        {"0"}
-                      </span>
+                      <span className="text-muted-foreground">{"0"}</span>
                       <span className="text-muted-foreground">
                         {t("ImageModal.reset-zoom")}
                       </span>
