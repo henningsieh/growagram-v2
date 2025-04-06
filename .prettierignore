@@ -1,3 +1,4 @@
+src/lib/db/migrations
 src/server/api/root.ts
 src/components/ui
-src/lib/db/migrations
+components.json

@@ -1,7 +1,7 @@
 "use client";
 
 // src/app/[locale]/(public)/public/timeline/page.tsx:
-import SpinningLoader from "~/components/Layouts/loader";
+import SpinningLoader from "~/components/atom/spinning-loader";
 import PostCard from "~/components/features/Timeline/Post/post-card";
 import { api } from "~/lib/trpc/react";
 

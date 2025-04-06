@@ -10,9 +10,9 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { PaginationItemsPerPage, modulePaths } from "~/assets/constants";
 import FormContent from "~/components/Layouts/form-content";
-import SpinningLoader from "~/components/Layouts/loader";
 import PageHeader from "~/components/Layouts/page-header";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
+import SpinningLoader from "~/components/atom/spinning-loader";
 import { Alert } from "~/components/ui/alert";
 import { Button } from "~/components/ui/button";
 import {

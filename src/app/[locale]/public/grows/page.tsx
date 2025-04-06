@@ -5,8 +5,8 @@ import { useTranslations } from "next-intl";
 import type { InfiniteData } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { PaginationItemsPerPage } from "~/assets/constants";
-import InfiniteScrollLoader from "~/components/Layouts/InfiniteScrollLoader";
-import SpinningLoader from "~/components/Layouts/loader";
+import InfiniteScrollLoader from "~/components/atom/infinite-scroll-loader";
+import SpinningLoader from "~/components/atom/spinning-loader";
 import { GrowCard } from "~/components/features/Grows/grow-card";
 import { api } from "~/lib/trpc/react";
 import type {

@@ -2,8 +2,8 @@ import * as React from "react";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { CameraIcon, ZoomIn } from "lucide-react";
+import { useImageModal } from "~/components/Layouts/photo-modal-provider";
 import { RESPONSIVE_IMAGE_SIZES } from "~/components/Layouts/responsive-grid";
-import { useImageModal } from "~/components/features/Photos/modal-provider";
 import {
   Carousel,
   CarouselContent,

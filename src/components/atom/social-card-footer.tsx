@@ -5,8 +5,8 @@ import { useTranslations } from "next-intl";
 // eslint-disable-next-line no-restricted-imports
 import Link from "next/link";
 import { ChartColumn, MessagesSquareIcon, Share } from "lucide-react";
-import SpinningLoader from "~/components/Layouts/loader";
 import { LikeButton } from "~/components/atom/like-button";
+import SpinningLoader from "~/components/atom/spinning-loader";
 import { Button } from "~/components/ui/button";
 import {
   Tooltip,

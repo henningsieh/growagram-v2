@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { modulePaths } from "~/assets/constants";
+import { useImageModal } from "~/components/Layouts/photo-modal-provider";
 import { RESPONSIVE_IMAGE_SIZES } from "~/components/Layouts/responsive-grid";
 import AvatarCardHeader from "~/components/atom/avatar-card-header";
 import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
@@ -22,7 +23,6 @@ import { OwnerDropdownMenu } from "~/components/atom/owner-dropdown-menu";
 import { SocialCardFooter } from "~/components/atom/social-card-footer";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
 import { Comments } from "~/components/features/Comments/comments";
-import { useImageModal } from "~/components/features/Photos/modal-provider";
 import { PostFormModal } from "~/components/features/Timeline/Post/post-form-modal";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";

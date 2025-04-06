@@ -3,7 +3,7 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { ArrowRight, ImageIcon } from "lucide-react";
 import { modulePaths } from "~/assets/constants";
-import { useImageModal } from "~/components/features/Photos/modal-provider";
+import { useImageModal } from "~/components/Layouts/photo-modal-provider";
 import { Button } from "~/components/ui/button";
 import {
   Card,

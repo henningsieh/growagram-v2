@@ -9,7 +9,7 @@ import { motion } from "framer-motion";
 import { AtSign, ClipboardPenLineIcon, Mail, UserIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { modulePaths } from "~/assets/constants";
-import SpinningLoader from "~/components/Layouts/loader";
+import SpinningLoader from "~/components/atom/spinning-loader";
 import { Button } from "~/components/ui/button";
 import {
   Card,

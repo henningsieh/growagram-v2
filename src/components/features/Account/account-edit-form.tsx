@@ -19,9 +19,9 @@ import {
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import FormContent from "~/components/Layouts/form-content";
-import SpinningLoader from "~/components/Layouts/loader";
 import PageHeader from "~/components/Layouts/page-header";
 import AvatarCardHeader from "~/components/atom/avatar-card-header";
+import SpinningLoader from "~/components/atom/spinning-loader";
 import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
 import { Button } from "~/components/ui/button";
 import {

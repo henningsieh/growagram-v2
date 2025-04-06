@@ -7,7 +7,7 @@ import { useTranslations } from "next-intl";
 import { AnimatePresence, motion } from "framer-motion";
 import { Heart } from "lucide-react";
 import { toast } from "sonner";
-import SpinningLoader from "~/components/Layouts/loader";
+import SpinningLoader from "~/components/atom/spinning-loader";
 import { Button } from "~/components/ui/button";
 import { api } from "~/lib/trpc/react";
 import { cn } from "~/lib/utils";

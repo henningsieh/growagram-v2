@@ -11,7 +11,7 @@ import {
   MAX_UPLOAD_FILE_SIZE,
   modulePaths,
 } from "~/assets/constants";
-import SpinningLoader from "~/components/Layouts/loader";
+import SpinningLoader from "~/components/atom/spinning-loader";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardFooter } from "~/components/ui/card";
 import { Label } from "~/components/ui/label";

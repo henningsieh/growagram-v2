@@ -28,7 +28,7 @@ export const useImageModal = () => {
   return context;
 };
 
-export function ImageModalProvider({
+export function PhotoModalProvider({
   children,
 }: {
   children: React.ReactNode;

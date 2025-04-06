@@ -20,7 +20,7 @@ const progressOptions: Partial<BProgressOptions> = {
 };
 
 // Create an enhanced provider with proper configuration
-export default function EnhancedProgressProvider(
+export function EnhancedProgressProvider(
   props: React.ComponentProps<typeof ProgressProvider>,
 ) {
   return <ProgressProvider options={progressOptions} {...props} />;

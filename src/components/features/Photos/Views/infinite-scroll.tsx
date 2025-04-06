@@ -3,10 +3,10 @@
 // src/components/features/Photos/Views/infinite-scroll.tsx:
 import * as React from "react";
 import { PaginationItemsPerPage, modulePaths } from "~/assets/constants";
-import InfiniteScrollLoader from "~/components/Layouts/InfiniteScrollLoader";
-import SpinningLoader from "~/components/Layouts/loader";
 import ResponsiveGrid from "~/components/Layouts/responsive-grid";
+import InfiniteScrollLoader from "~/components/atom/infinite-scroll-loader";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
+import SpinningLoader from "~/components/atom/spinning-loader";
 import PhotoCard from "~/components/features/Photos/photo-card";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";

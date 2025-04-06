@@ -2,7 +2,7 @@
 import * as React from "react";
 import { Link } from "~/lib/i18n/routing";
 
-const AppFooter = () => {
+export const AppFooter = () => {
   return (
     <footer className="border-t py-4">
       <div className="flex items-center justify-between px-4">
@@ -23,5 +23,3 @@ const AppFooter = () => {
     </footer>
   );
 };
-
-export default AppFooter;

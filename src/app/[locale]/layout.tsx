@@ -5,11 +5,11 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { Grandstander, Nunito } from "next/font/google";
 import { APP_SETTINGS } from "~/assets/constants";
-import AppFooter from "~/components/Layouts/Footer/app-footer";
+import { AppFooter } from "~/components/Layouts/Footer/app-footer";
 import { MainNavigationBar } from "~/components/Layouts/MainNavigationBar";
-import EnhancedProgressProvider from "~/components/Layouts/progress-provider";
+import { PhotoModalProvider } from "~/components/Layouts/photo-modal-provider";
+import { EnhancedProgressProvider } from "~/components/Layouts/progress-provider";
 import { ThemeProvider } from "~/components/Layouts/theme-provider";
-import { ImageModalProvider } from "~/components/features/Photos/modal-provider";
 import { Toaster } from "~/components/ui/sonner";
 import { TRPCReactProvider } from "~/lib/trpc/react";
 import "~/styles/globals.css";
@@ -74,7 +74,7 @@ export default async function AppLayout(props: AppLayoutProps) {
             <NextIntlClientProvider messages={await getMessages()}>
               <SessionProvider>
                 <TRPCReactProvider>
-                  <ImageModalProvider>
+                  <PhotoModalProvider>
                     <Toaster richColors />
                     <div className="relative mx-auto flex max-w-7xl flex-col">
                       <MainNavigationBar />
@@ -83,7 +83,7 @@ export default async function AppLayout(props: AppLayoutProps) {
                       </div>
                       <AppFooter />
                     </div>
-                  </ImageModalProvider>
+                  </PhotoModalProvider>
                 </TRPCReactProvider>
               </SessionProvider>
             </NextIntlClientProvider>

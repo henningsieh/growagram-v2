@@ -5,7 +5,7 @@ import {
   MoreHorizontalIcon,
   Trash2Icon,
 } from "lucide-react";
-import SpinningLoader from "~/components/Layouts/loader";
+import SpinningLoader from "~/components/atom/spinning-loader";
 import { Button } from "~/components/ui/button";
 import {
   DropdownMenu,

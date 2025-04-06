@@ -4,10 +4,10 @@
 import * as React from "react";
 import { useTranslations } from "next-intl";
 import { PaginationItemsPerPage, modulePaths } from "~/assets/constants";
-import InfiniteScrollLoader from "~/components/Layouts/InfiniteScrollLoader";
-import SpinningLoader from "~/components/Layouts/loader";
 import ResponsiveGrid from "~/components/Layouts/responsive-grid";
+import InfiniteScrollLoader from "~/components/atom/infinite-scroll-loader";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
+import SpinningLoader from "~/components/atom/spinning-loader";
 import { GrowCard } from "~/components/features/Grows/grow-card";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";

@@ -6,7 +6,6 @@ import { useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { DotIcon, Reply, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
-import SpinningLoader from "~/components/Layouts/loader";
 import AvatarCardHeader, {
   ActionItem,
 } from "~/components/atom/avatar-card-header";
@@ -14,6 +13,7 @@ import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
 import { CustomAvatar } from "~/components/atom/custom-avatar";
 import { HighlightElement } from "~/components/atom/highlight-element";
 import { SocialCardFooter } from "~/components/atom/social-card-footer";
+import SpinningLoader from "~/components/atom/spinning-loader";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { useComments } from "~/hooks/use-comments";

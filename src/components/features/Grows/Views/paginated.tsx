@@ -5,10 +5,10 @@ import { useTranslations } from "next-intl";
 // src/components/features/Grows/Views/paginated.tsx:
 import { useSearchParams } from "next/navigation";
 import { PaginationItemsPerPage } from "~/assets/constants";
-import SpinningLoader from "~/components/Layouts/loader";
 import ResponsiveGrid from "~/components/Layouts/responsive-grid";
 import ItemsPagination from "~/components/atom/item-pagination";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
+import SpinningLoader from "~/components/atom/spinning-loader";
 import { GrowCard } from "~/components/features/Grows/grow-card";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
