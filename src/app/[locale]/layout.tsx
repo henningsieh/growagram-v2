@@ -59,8 +59,10 @@ export default async function AppLayout(props: AppLayoutProps) {
     >
       <body className="bg-background min-h-screen font-sans antialiased">
         <EnhancedProgressProvider
-          height="4px"
+          className="spinner-size-md"
+          height="5px"
           color="var(--primary)"
+          spinnerPosition="top-left"
           shallowRouting
         >
           <ThemeProvider
@@ -69,7 +71,7 @@ export default async function AppLayout(props: AppLayoutProps) {
             enableSystem
             disableTransitionOnChange={false}
           >
-            {/* <div className="texture"></div> */}
+            <div className="texture"></div>
             {/* Providing all messages to the client */}
             <NextIntlClientProvider messages={await getMessages()}>
               <SessionProvider>

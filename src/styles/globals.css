@@ -3,6 +3,15 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@layer utilities {
+  .spinner-size-md {
+    --bprogress-spinner-size: 32px;
+    --bprogress-spinner-border-size: 5px;
+    --bprogress-spinner-top: 13px;
+    --bprogress-spinner-left: 102px;
+  }
+}
+
 :root {
   --background: oklch(0.93 0.03 85.56);
   --foreground: oklch(0.41 0.08 78.87);
