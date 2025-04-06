@@ -4,10 +4,10 @@ import { SessionProvider } from "next-auth/react";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { Grandstander, Nunito } from "next/font/google";
-import NextTopLoader from "nextjs-toploader";
 import { APP_SETTINGS } from "~/assets/constants";
 import AppFooter from "~/components/Layouts/Footer/app-footer";
 import { MainNavigationBar } from "~/components/Layouts/MainNavigationBar";
+import EnhancedProgressProvider from "~/components/Layouts/progress-provider";
 import { ThemeProvider } from "~/components/Layouts/theme-provider";
 import { ImageModalProvider } from "~/components/features/Photos/modal-provider";
 import { Toaster } from "~/components/ui/sonner";
@@ -58,38 +58,37 @@ export default async function AppLayout(props: AppLayoutProps) {
       suppressHydrationWarning
     >
       <body className="bg-background min-h-screen font-sans antialiased">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme={APP_SETTINGS.DEFAULT_THEME}
-          enableSystem
-          disableTransitionOnChange={false}
+        <EnhancedProgressProvider
+          height="4px"
+          color="var(--primary)"
+          shallowRouting
         >
-          <NextTopLoader
-            color="hsl(var(--primary))"
-            speed={900}
-            showSpinner={false}
-            initialPosition={0.28}
-            zIndex={9999}
-          />
-          {/* <div className="texture"></div> */}
-          {/* Providing all messages to the client */}
-          <NextIntlClientProvider messages={await getMessages()}>
-            <SessionProvider>
-              <TRPCReactProvider>
-                <ImageModalProvider>
-                  <Toaster richColors />
-                  <div className="relative mx-auto flex max-w-7xl flex-col">
-                    <MainNavigationBar />
-                    <div className="flex min-h-[calc(100svh-7rem)] flex-1">
-                      {props.children}
+          <ThemeProvider
+            attribute="class"
+            defaultTheme={APP_SETTINGS.DEFAULT_THEME}
+            enableSystem
+            disableTransitionOnChange={false}
+          >
+            {/* <div className="texture"></div> */}
+            {/* Providing all messages to the client */}
+            <NextIntlClientProvider messages={await getMessages()}>
+              <SessionProvider>
+                <TRPCReactProvider>
+                  <ImageModalProvider>
+                    <Toaster richColors />
+                    <div className="relative mx-auto flex max-w-7xl flex-col">
+                      <MainNavigationBar />
+                      <div className="flex min-h-[calc(100svh-7rem)] flex-1">
+                        {props.children}
+                      </div>
+                      <AppFooter />
                     </div>
-                    <AppFooter />
-                  </div>
-                </ImageModalProvider>
-              </TRPCReactProvider>
-            </SessionProvider>
-          </NextIntlClientProvider>
-        </ThemeProvider>
+                  </ImageModalProvider>
+                </TRPCReactProvider>
+              </SessionProvider>
+            </NextIntlClientProvider>
+          </ThemeProvider>
+        </EnhancedProgressProvider>
       </body>
     </html>
   );

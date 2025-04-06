@@ -1,0 +1,27 @@
+"use client";
+
+import { BProgressOptions } from "@bprogress/core";
+import { ProgressProvider } from "@bprogress/next/app";
+
+// Configure the ProgressProvider
+const progressOptions: Partial<BProgressOptions> = {
+  minimum: 0.08, // Start with slight progress to show immediate feedback
+  maximum: 1.0,
+  easing: "ease", // Smoother animation than 'linear'
+  speed: 300, // Slightly faster animation
+  trickle: true, // Continue incrementing
+  trickleSpeed: 250, // Speed of the trickle
+  showSpinner: true,
+  barSelector: ".bar",
+  spinnerSelector: ".spinner",
+  parent: "body",
+  direction: "ltr",
+  indeterminate: false, // Use determinate progress bar for better UX
+};
+
+// Create an enhanced provider with proper configuration
+export default function EnhancedProgressProvider(
+  props: React.ComponentProps<typeof ProgressProvider>,
+) {
+  return <ProgressProvider options={progressOptions} {...props} />;
+}
