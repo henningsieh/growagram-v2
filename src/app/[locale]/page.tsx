@@ -2,6 +2,7 @@
 
 // src/app/[locale]/page.tsx:
 import { useTranslations } from "next-intl";
+import { useTheme } from "next-themes";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { modulePaths } from "~/assets/constants";
@@ -29,6 +30,7 @@ const itemVariants = {
 
 export default function LandingPage() {
   const t = useTranslations("LandingPage");
+  const { theme } = useTheme();
 
   return (
     <div className="relative w-full">
@@ -51,7 +53,7 @@ export default function LandingPage() {
         exit="hidden"
         className="relative overflow-hidden"
       >
-        <div className="bg-muted flex h-[calc(100svh-9rem)] items-center lg:overflow-hidden lg:pb-14">
+        <div className="bg-muted flex min-h-[calc(100svh-9rem)] lg:pb-14">
           <div className="mx-auto max-w-7xl px-6 py-12 sm:py-16 lg:px-8">
             <div className="lg:grid lg:grid-cols-2 lg:gap-8">
               <motion.div
@@ -60,10 +62,10 @@ export default function LandingPage() {
               >
                 <div className="lg:py-24">
                   <div className="text-foreground mt-4 space-y-4 font-bold tracking-tight sm:mt-5 lg:mt-6">
-                    <h1 className="block text-4xl sm:text-6xl xl:text-6xl">
+                    <h1 className="block text-5xl sm:text-6xl md:text-7xl">
                       {t("HeroSection.title")}
                     </h1>
-                    <h2 className="text-primary block pb-3 text-3xl sm:pb-5 sm:text-5xl xl:text-5xl">
+                    <h2 className="text-primary block pb-3 text-2xl sm:pb-5 sm:text-3xl xl:text-4xl">
                       {t("HeroSection.subtitle")}
                     </h2>
                   </div>
@@ -93,16 +95,26 @@ export default function LandingPage() {
               </motion.div>
               <motion.div
                 variants={itemVariants}
-                className="mt-12 hidden lg:block"
+                className="relative mt-12 hidden lg:block"
               >
-                <div className="relative h-[699px] w-[955px]">
-                  <Image
-                    src="/images/growagram-saas-preview.png"
-                    alt="GrowAGram App Preview"
-                    className="rounded-md shadow-xl"
-                    fill
-                    priority
-                  />
+                <div className="sticky top-24">
+                  <div className="relative h-[min(820px,80vh)] w-[1138px] -translate-y-12 overflow-visible">
+                    <Image
+                      fill
+                      priority
+                      style={{
+                        objectFit: "contain",
+                        objectPosition: "left center",
+                      }}
+                      src={
+                        theme === "light"
+                          ? "/images/growagram-saas-preview-dark.png"
+                          : "/images/growagram-saas-preview.png"
+                      }
+                      alt="GrowAGram App Preview"
+                      className="rounded-md shadow-xl"
+                    />
+                  </div>
                 </div>
               </motion.div>
             </div>
