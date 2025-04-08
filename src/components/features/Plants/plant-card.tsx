@@ -5,7 +5,6 @@ import * as React from "react";
 import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
 import {
-  DnaIcon,
   DotIcon,
   EditIcon,
   MessageSquareTextIcon,
@@ -19,14 +18,10 @@ import AvatarCardHeader, {
 } from "~/components/atom/avatar-card-header";
 import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
 import { EntityDateInfo } from "~/components/atom/entity-date-info";
-import {
-  HybridTooltip,
-  HybridTooltipContent,
-  HybridTooltipTrigger,
-  TouchProvider,
-} from "~/components/atom/hybrid-tooltip";
+import { TouchProvider } from "~/components/atom/hybrid-tooltip";
 import { OwnerDropdownMenu } from "~/components/atom/owner-dropdown-menu";
 import { SocialCardFooter } from "~/components/atom/social-card-footer";
+import StrainBadge from "~/components/atom/strain-badge";
 import { Comments } from "~/components/features/Comments/comments";
 import { ImageCarousel } from "~/components/features/Plants/image-carousel";
 import { PlantProgressAndDates } from "~/components/features/Plants/plant-progress-and-dates";
@@ -225,44 +220,7 @@ export default function PlantCard({
               <div className="flex min-h-6 items-center justify-between gap-2 p-0">
                 {/* Strain Tooltip */}
                 <div>
-                  {plant.strain && (
-                    <HybridTooltip>
-                      <HybridTooltipTrigger
-                        className={`flex cursor-help items-center gap-2`}
-                      >
-                        <Badge
-                          variant="strain"
-                          className="flex items-center gap-1 rounded-sm border"
-                        >
-                          <DnaIcon
-                            className={`h-4 w-4`}
-                            // eslint-disable-next-line react/jsx-no-literals
-                          />
-                          Strain
-                        </Badge>
-                      </HybridTooltipTrigger>
-                      <HybridTooltipContent
-                        className={`w-auto border-fuchsia-700 bg-fuchsia-500 p-1 text-fuchsia-200`}
-                      >
-                        <div>
-                          <span className="block">
-                            {
-                              t("strain")
-                              // eslint-disable-next-line react/jsx-no-literals
-                            }
-                            : {plant.strain?.name ?? "Unknown"}
-                          </span>
-                          <span className="block">
-                            {
-                              t("breeder")
-                              // eslint-disable-next-line react/jsx-no-literals
-                            }
-                            : {plant.strain?.breeder.name ?? "Unknown"}
-                          </span>
-                        </div>
-                      </HybridTooltipContent>
-                    </HybridTooltip>
-                  )}
+                  {plant.strain && <StrainBadge strain={plant.strain} />}
                 </div>
                 {/* Grow Badge-Link */}
                 {plant.grow && (

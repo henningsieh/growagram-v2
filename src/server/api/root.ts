@@ -167,12 +167,15 @@ export type CreateBreederInput = RouterInput["plants"]["createBreeder"];
 // strainsRouter
 //  OUTPUTS:
 export type GetStrainsByBreederType = RouterOutput["plants"]["getStrainsByBreeder"];
-export type StrainType = RouterOutput["plants"]["getStrainsByBreeder"][number];
+
+export type GetStrainByIdType = RouterOutput["plants"]["getStrainById"];
+export type StrainType = NonNullable<GetStrainByIdType>;
 export type CreateStrainOutput = RouterOutput["plants"]["createStrain"];
 
 //  INPUTS:
 export type GetStrainsByBreederInput = RouterInput["plants"]["getStrainsByBreeder"];
 export type CreateStrainInput = RouterInput["plants"]["createStrain"];
+export type GetStrainByIdInput = RouterInput["plants"]["getStrainById"];
 
 /**
  * Create a server-side caller for the tRPC API.

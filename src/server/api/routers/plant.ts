@@ -370,6 +370,23 @@ export const plantRouter = {
     return allBreeders;
   }),
 
+  // Get strain by id
+  getStrainById: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const strain = await ctx.db.query.cannabisStrains.findFirst({
+        where: eq(cannabisStrains.id, input.id),
+        columns: { id: true, name: true, thcContent: true, cbdContent: true },
+        with: {
+          breeder: {
+            columns: { id: true, name: true },
+          },
+        },
+      });
+
+      return strain;
+    }),
+
   // Get strains by breeder
   getStrainsByBreeder: publicProcedure
     .input(

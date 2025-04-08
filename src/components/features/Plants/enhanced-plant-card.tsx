@@ -3,15 +3,7 @@
 import * as React from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { AnimatePresence, motion } from "framer-motion";
-import {
-  BeanIcon,
-  Clock,
-  Dna,
-  FlaskConical,
-  type LucideIcon,
-  NutIcon,
-  TentTree,
-} from "lucide-react";
+import { Clock, type LucideIcon, NutIcon } from "lucide-react";
 import { modulePaths } from "~/assets/constants";
 import { CustomAvatar } from "~/components/atom/custom-avatar";
 import {
@@ -20,6 +12,7 @@ import {
   HybridTooltipTrigger,
   TouchProvider,
 } from "~/components/atom/hybrid-tooltip";
+import StrainBadge from "~/components/atom/strain-badge";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import {
@@ -119,42 +112,7 @@ export function EnhancedPlantCard({ plant }: EnhancedPlantCardProps) {
             </div>
 
             <div className="flex items-center justify-end gap-4">
-              {plant.strain && (
-                <HybridTooltip>
-                  <HybridTooltipTrigger className="cursor-help">
-                    <Badge
-                      variant="strain"
-                      className="ml-auto flex items-center gap-1"
-                    >
-                      <BeanIcon className="h-3.5 w-3.5" />
-                      <span>{plant.strain.name}</span>
-                    </Badge>
-                  </HybridTooltipTrigger>
-                  <HybridTooltipContent className="text-seedling">
-                    <div className="space-y-2 p-1">
-                      <div className="flex items-center gap-2">
-                        <Dna className="h-4 w-4" />
-                        <span>
-                          {t("Plants.breeder")}
-                          {": "}
-                          {plant.strain.breeder.name}
-                        </span>
-                      </div>
-                      {plant.strain.thcContent && (
-                        <div className="flex items-center gap-2">
-                          <FlaskConical className="h-4 w-4" />
-                          <span>
-                            {t("Plants.thc-content")}
-                            {": "}
-                            {plant.strain.thcContent}
-                            {"%"}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  </HybridTooltipContent>
-                </HybridTooltip>
-              )}
+              {plant.strain && <StrainBadge strain={plant.strain} />}
             </div>
 
             {/* {plant.grow && (
