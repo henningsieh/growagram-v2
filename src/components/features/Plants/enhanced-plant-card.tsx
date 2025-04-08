@@ -79,124 +79,105 @@ export function EnhancedPlantCard({ plant }: EnhancedPlantCardProps) {
   return (
     <TouchProvider>
       <Card
-        className="border-primary/50 bg-muted/30 z-10 gap-0 space-y-2 overflow-hidden border p-2 transition-all hover:shadow-lg"
+        className="border-primary/60 bg-muted/30 z-10 gap-0 space-y-2 overflow-hidden rounded-sm border p-2 transition-all hover:shadow-lg"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
         <CardHeader className="p-0">
-          <div className="xs:flex-row flex flex-col items-start justify-between">
-            <div className="flex min-w-0 flex-1 items-center gap-3">
-              <CustomAvatar
-                src={imageUrl}
-                alt={plant.name}
-                size={40}
-                className="size-10 shrink-0 rounded-md"
-                fallback={
-                  <CurrentPhaseIcon
-                    className={`h-6 w-6 text-${currentPhase.color}`}
-                  />
-                }
-              />
+          <div className="flex w-full items-start gap-2">
+            <CustomAvatar
+              src={imageUrl}
+              alt={plant.name}
+              size={40}
+              className="size-10 shrink-0 rounded-md"
+              fallback={
+                <CurrentPhaseIcon
+                  className={`h-6 w-6 text-${currentPhase.color}`}
+                />
+              }
+            />
 
-              <div className="min-w-0 flex-1">
-                <CardTitle as="h4" className="text-base">
-                  <Button
-                    asChild
-                    variant="link"
-                    className="h-auto w-full max-w-full justify-start p-0"
+            {/* Middle section with plant name - will shrink as needed */}
+            <div className="w-0 min-w-0 flex-1">
+              <CardTitle as="h4" className="truncate text-base">
+                <Button
+                  asChild
+                  variant="link"
+                  className="h-auto w-full justify-start p-0"
+                >
+                  <Link
+                    href={`${modulePaths.PUBLICPLANTS.path}/${plant.id}`}
+                    className="truncate"
                   >
-                    <Link
-                      href={`${modulePaths.PUBLICPLANTS.path}/${plant.id}`}
-                      className="block truncate"
-                    >
-                      <span className="block truncate">{plant.name}</span>
-                    </Link>
-                  </Button>
-                </CardTitle>
-                <p className="text-muted-foreground text-xs">{startedAt}</p>
-              </div>
+                    <span className="block truncate">{plant.name}</span>
+                  </Link>
+                </Button>
+              </CardTitle>
+              <p className="text-muted-foreground truncate text-xs">
+                {startedAt}
+              </p>
             </div>
 
-            <div className="ml-2 flex shrink-0 items-center gap-3">
-              {progress.estimatedHarvestDate && (
+            <div className="flex items-center justify-end gap-4">
+              {plant.strain && (
                 <HybridTooltip>
                   <HybridTooltipTrigger className="cursor-help">
-                    <Clock className="text-harvest h-4 w-4 shrink-0" />
+                    <Badge
+                      variant="strain"
+                      className="ml-auto flex items-center gap-1"
+                    >
+                      <BeanIcon className="h-3.5 w-3.5" />
+                      <span>{plant.strain.name}</span>
+                    </Badge>
                   </HybridTooltipTrigger>
-                  <HybridTooltipContent className="text-harvest w-auto p-1">
-                    <div className="space-y-0">
-                      <p className="text-sm">
-                        {t("Plants.estimated-harvest")}
-                        {":"}
-                      </p>
-                      <p className="text-base">
-                        {formatDate(progress.estimatedHarvestDate, locale, {
-                          includeYear: true,
-                          force: true,
-                        } as DateFormatOptions)}{" "}
-                        {`(in ${formatDaysRemaining(
-                          progress.daysUntilNextPhase,
-                          t("Common.day"),
-                          t("Common.days"),
-                        )})`}
-                      </p>
+                  <HybridTooltipContent className="text-seedling">
+                    <div className="space-y-2 p-1">
+                      <div className="flex items-center gap-2">
+                        <Dna className="h-4 w-4" />
+                        <span>
+                          {t("Plants.breeder")}
+                          {": "}
+                          {plant.strain.breeder.name}
+                        </span>
+                      </div>
+                      {plant.strain.thcContent && (
+                        <div className="flex items-center gap-2">
+                          <FlaskConical className="h-4 w-4" />
+                          <span>
+                            {t("Plants.thc-content")}
+                            {": "}
+                            {plant.strain.thcContent}
+                            {"%"}
+                          </span>
+                        </div>
+                      )}
                     </div>
                   </HybridTooltipContent>
                 </HybridTooltip>
               )}
-
-              <HybridTooltip>
-                <HybridTooltipTrigger asChild className="cursor-help">
-                  <Badge
-                    variant="outline"
-                    className={cn(
-                      // Replace dynamic interpolation with a mapping approach
-                      currentPhase.color === "harvest" && "border-harvest",
-                      currentPhase.color === "planted" && "border-planted",
-                      currentPhase.color === "seedling" && "border-seedling",
-                      currentPhase.color === "vegetation" &&
-                        "border-vegetation",
-                      currentPhase.color === "flowering" && "border-flowering",
-                      currentPhase.color === "curing" && "border-curing",
-                      // Same for background with opacity
-                      currentPhase.color === "harvest" && "bg-harvest/10",
-                      currentPhase.color === "planted" && "bg-planted/10",
-                      currentPhase.color === "seedling" && "bg-seedling/10",
-                      currentPhase.color === "vegetation" && "bg-vegetation/10",
-                      currentPhase.color === "flowering" && "bg-flowering/10",
-                      currentPhase.color === "curing" && "bg-curing/10",
-                      // And text color
-                      currentPhase.color === "harvest" && "text-harvest",
-                      currentPhase.color === "planted" && "text-planted",
-                      currentPhase.color === "seedling" && "text-seedling",
-                      currentPhase.color === "vegetation" && "text-vegetation",
-                      currentPhase.color === "flowering" && "text-flowering",
-                      currentPhase.color === "curing" && "text-curing",
-                    )}
-                  >
-                    <CurrentPhaseIcon className="mr-1 h-3 w-3 shrink-0" />
-                    {translatedPhaseName}
-                  </Badge>
-                </HybridTooltipTrigger>
-                <HybridTooltipContent
-                  className={`w-auto text-${currentPhase.color} p-1`}
-                >
-                  <div className="space-y-0">
-                    <p className="text-sm">
-                      {t("Grows.growth-stage")}
-                      {": "}
-                      {translatedPhaseName}
-                    </p>
-                    <p className="text-base">
-                      {t("Plants.phase")}
-                      {": "}
-                      {progress.phaseProgress}
-                      {"%"}
-                    </p>
-                  </div>
-                </HybridTooltipContent>
-              </HybridTooltip>
             </div>
+
+            {/* {plant.grow && (
+              <HybridTooltip>
+                <HybridTooltipTrigger>
+                  <Button
+                    asChild
+                    size={"icon"}
+                    variant="outline"
+                    className="text-muted-foreground hover:text-secondary size-4 rounded-sm p-3"
+                    aria-label={t("Account.account-info-title")}
+                  >
+                    <Link
+                      href={`${modulePaths.PUBLICGROWS.path}/${plant.grow.id}`}
+                      className="text-muted-foreground hover:text-secondary"
+                    >
+                      <TentTree className="h-4 w-4" />
+                    </Link>
+                  </Button>
+                </HybridTooltipTrigger>
+                <HybridTooltipContent>{plant.grow.name}</HybridTooltipContent>
+              </HybridTooltip>
+            )} */}
           </div>
         </CardHeader>
 
@@ -219,7 +200,7 @@ export function EnhancedPlantCard({ plant }: EnhancedPlantCardProps) {
             animate={{ opacity: isMobile ? 1 : isHovered ? 1 : 0.6 }}
             transition={{ duration: 0.3 }}
           >
-            <CardFooter className="text-muted-foreground flex items-center justify-between p-0">
+            <CardFooter className="text-muted-foreground flex h-7 items-center justify-between p-0">
               <HybridTooltip>
                 <HybridTooltipTrigger className="flex items-center gap-2">
                   <NutIcon className="h-4 w-4 shrink-0" />
@@ -234,75 +215,89 @@ export function EnhancedPlantCard({ plant }: EnhancedPlantCardProps) {
                 </HybridTooltipContent>
               </HybridTooltip>
 
-              <div className="flex items-center justify-end gap-4">
-                {plant.grow && (
-                  <HybridTooltip>
-                    <HybridTooltipTrigger>
-                      <Link
-                        href={`${modulePaths.PUBLICGROWS.path}/${plant.grow.id}`}
-                        className="text-muted-foreground hover:text-secondary"
-                      >
-                        <TentTree className="h-4 w-4" />
-                      </Link>
-                    </HybridTooltipTrigger>
-                    <HybridTooltipContent>
-                      {plant.grow.name}
-                    </HybridTooltipContent>
-                  </HybridTooltip>
-                )}
-
-                {plant.strain && (
+              {/* Right icons - fixed width, won't shrink */}
+              <div className="flex shrink-0 items-center gap-2">
+                {progress.estimatedHarvestDate && (
                   <HybridTooltip>
                     <HybridTooltipTrigger className="cursor-help">
-                      <Badge
-                        variant="strain"
-                        className="ml-auto flex items-center gap-1"
-                      >
-                        <BeanIcon className="h-3.5 w-3.5" />
-                        <span>{plant.strain.name}</span>
-                      </Badge>
+                      <Clock className="text-harvest h-4 w-4 shrink-0" />
                     </HybridTooltipTrigger>
-                    <HybridTooltipContent className="text-seedling">
-                      <div className="space-y-2 p-1">
-                        <div className="flex items-center gap-2">
-                          <Dna className="h-4 w-4" />
-                          <span>
-                            {t("Plants.breeder")}
-                            {": "}
-                            {plant.strain.breeder.name}
-                          </span>
-                        </div>
-                        {plant.strain.thcContent && (
-                          <div className="flex items-center gap-2">
-                            <FlaskConical className="h-4 w-4" />
-                            <span>
-                              {t("Plants.thc-content")}
-                              {": "}
-                              {plant.strain.thcContent}
-                              {"%"}
-                            </span>
-                          </div>
-                        )}
+                    <HybridTooltipContent className="text-harvest w-auto p-1">
+                      <div className="space-y-0">
+                        <p className="text-sm">
+                          {t("Plants.estimated-harvest")}
+                          {":"}
+                        </p>
+                        <p className="text-base">
+                          {formatDate(progress.estimatedHarvestDate, locale, {
+                            includeYear: true,
+                            force: true,
+                          } as DateFormatOptions)}{" "}
+                          {`(in ${formatDaysRemaining(
+                            progress.daysUntilNextPhase,
+                            t("Common.day"),
+                            t("Common.days"),
+                          )})`}
+                        </p>
                       </div>
                     </HybridTooltipContent>
                   </HybridTooltip>
                 )}
 
-                {/* {plant.grow && (
-                  <Link
-                    href={`${modulePaths.PUBLICGROWS.path}/${plant.grow.id}`}
-                  >
+                <HybridTooltip>
+                  <HybridTooltipTrigger asChild className="cursor-help">
                     <Badge
-                      variant="grow"
-                      className="flex max-w-20 items-center gap-1 overflow-hidden text-ellipsis whitespace-nowrap"
+                      variant="outline"
+                      className={cn(
+                        // Replace dynamic interpolation with a mapping approach
+                        currentPhase.color === "harvest" && "border-harvest",
+                        currentPhase.color === "planted" && "border-planted",
+                        currentPhase.color === "seedling" && "border-seedling",
+                        currentPhase.color === "vegetation" &&
+                          "border-vegetation",
+                        currentPhase.color === "flowering" &&
+                          "border-flowering",
+                        currentPhase.color === "curing" && "border-curing",
+                        // Same for background with opacity
+                        currentPhase.color === "harvest" && "bg-harvest/10",
+                        currentPhase.color === "planted" && "bg-planted/10",
+                        currentPhase.color === "seedling" && "bg-seedling/10",
+                        currentPhase.color === "vegetation" &&
+                          "bg-vegetation/10",
+                        currentPhase.color === "flowering" && "bg-flowering/10",
+                        currentPhase.color === "curing" && "bg-curing/10",
+                        // And text color
+                        currentPhase.color === "harvest" && "text-harvest",
+                        currentPhase.color === "planted" && "text-planted",
+                        currentPhase.color === "seedling" && "text-seedling",
+                        currentPhase.color === "vegetation" &&
+                          "text-vegetation",
+                        currentPhase.color === "flowering" && "text-flowering",
+                        currentPhase.color === "curing" && "text-curing",
+                      )}
                     >
-                      <TentTreeIcon className="h-4 w-4 shrink-0" />
-                      <span className="overflow-hidden text-ellipsis">
-                        {plant.grow.name}
-                      </span>
+                      <CurrentPhaseIcon className="mr-1 h-3 w-3 shrink-0" />
+                      {translatedPhaseName}
                     </Badge>
-                  </Link>
-                )} */}
+                  </HybridTooltipTrigger>
+                  <HybridTooltipContent
+                    className={`w-auto text-${currentPhase.color} p-1`}
+                  >
+                    <div className="space-y-0">
+                      <p className="text-sm">
+                        {t("Grows.growth-stage")}
+                        {": "}
+                        {translatedPhaseName}
+                      </p>
+                      <p className="text-base">
+                        {t("Plants.phase")}
+                        {": "}
+                        {progress.phaseProgress}
+                        {"%"}
+                      </p>
+                    </div>
+                  </HybridTooltipContent>
+                </HybridTooltip>
               </div>
             </CardFooter>
           </motion.div>

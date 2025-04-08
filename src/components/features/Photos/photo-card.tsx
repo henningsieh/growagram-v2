@@ -19,6 +19,7 @@ import { useImageModal } from "~/components/Layouts/photo-modal-provider";
 import { RESPONSIVE_IMAGE_SIZES } from "~/components/Layouts/responsive-grid";
 import AvatarCardHeader from "~/components/atom/avatar-card-header";
 import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
+import { EntityDateInfo } from "~/components/atom/entity-date-info";
 import { OwnerDropdownMenu } from "~/components/atom/owner-dropdown-menu";
 import { SocialCardFooter } from "~/components/atom/social-card-footer";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
@@ -145,61 +146,43 @@ export default function PhotoCard({
       />
       <Card
         className={cn(
-          `border-input relative flex flex-col overflow-hidden border py-1`,
+          `border-input relative flex flex-col overflow-hidden rounded-md border py-0 shadow-none`,
           isSocial && "border-none",
         )}
       >
         {/* "NEW" Banner */}
-        {!!!photo.plantImages.length && (
-          <div className="bg-secondary absolute top-[15px] right-[-40px] z-10 w-[120px] rotate-[45deg] cursor-default px-[40px] py-[1px] text-[12px] font-semibold tracking-widest text-white">
+        {!isSocial && !!!photo.plantImages.length && (
+          <div className="bg-secondary absolute top-[12px] left-[-36px] z-10 w-[110px] rotate-[-45deg] cursor-default px-[40px] py-[1px] text-[14px] font-semibold tracking-widest text-white">
             {t("newNotConnteched")}
           </div>
         )}
 
         {isSocial && <AvatarCardHeader user={photo.owner} />}
 
-        {/* Photo */}
-        <div
-          className="relative aspect-video cursor-pointer"
-          onClick={handleImageClick}
-          onMouseEnter={() => setIsImageHovered(true)}
-          onMouseLeave={() => setIsImageHovered(false)}
-        >
-          <Image
-            src={photo.imageUrl}
-            alt={photo.originalFilename}
-            fill
-            priority
-            className="object-contain transition-transform duration-300"
-            sizes={RESPONSIVE_IMAGE_SIZES}
-            style={{
-              transform: isImageHovered ? "scale(1.02)" : "scale(1)",
-            }}
-          />
-        </div>
-
         <CardContent
           className={`grid gap-2 p-2 ${isSocial && "ml-12 pr-2 pl-0"}`}
         >
-          {/* Title Link and OwnerDropdownMenu */}
           <div className="flex min-w-0 items-center justify-between gap-2">
+            {/* Title Link */}
             <CardTitle as="h3" className="min-w-0 flex-1">
               <Button
                 asChild
                 variant="link"
-                className="w-full justify-start p-0"
+                className="text-primary decoration-primary flex min-w-0 items-center justify-start gap-2 px-0"
               >
                 <Link
                   href={`/public${modulePaths.PHOTOS.path}/${photo.id}`}
                   className="flex min-w-0 items-center gap-2"
                 >
                   <FileIcon className="flex-shrink-0" size={20} />
-                  <span className="truncate font-mono font-semibold">
+                  <span className="truncate text-xl leading-normal font-semibold">
                     {photo.originalFilename}
                   </span>
                 </Link>
               </Button>
             </CardTitle>
+
+            {/* DropdownMenu for plant's owner */}
             {user && user.id === photo.ownerId && (
               <div className="w-8 flex-none">
                 <OwnerDropdownMenu
@@ -214,6 +197,33 @@ export default function PhotoCard({
             )}
           </div>
 
+          {/* Date Information */}
+          <EntityDateInfo
+            createdAt={photo.createdAt}
+            updatedAt={photo.updatedAt}
+            namespace="Photos"
+          />
+
+          {/* Photo */}
+          <div
+            className="relative aspect-video cursor-pointer"
+            onClick={handleImageClick}
+            onMouseEnter={() => setIsImageHovered(true)}
+            onMouseLeave={() => setIsImageHovered(false)}
+          >
+            <Image
+              src={photo.imageUrl}
+              alt={photo.originalFilename}
+              fill
+              priority
+              className="object-contain transition-transform duration-300"
+              sizes={RESPONSIVE_IMAGE_SIZES}
+              style={{
+                transform: isImageHovered ? "scale(1.02)" : "scale(1)",
+              }}
+            />
+          </div>
+
           {/* Plant Badges */}
           <div className="custom-scrollbar flex min-h-8 gap-2 overflow-x-auto px-1 pb-2">
             {photo.plantImages
@@ -225,10 +235,13 @@ export default function PhotoCard({
                 >
                   <Badge
                     variant="plant"
-                    className="flex items-center gap-2 whitespace-nowrap"
+                    className="flex max-w-32 items-center gap-1 overflow-hidden rounded-sm text-ellipsis whitespace-nowrap"
                   >
-                    <Flower2Icon className="h-4 w-4" />
-                    {plantImage.plant.name}
+                    <Flower2Icon className="h-4 w-4 shrink-0" />
+
+                    <span className="overflow-hidden text-left text-ellipsis">
+                      {plantImage.plant.name}
+                    </span>
                   </Badge>
                 </Link>
               ))}

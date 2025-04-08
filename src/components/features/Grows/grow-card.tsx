@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
 import { AnimatePresence, motion } from "framer-motion";
 import {
+  AlertCircle,
   Calendar1Icon,
   DotIcon,
   EditIcon,
@@ -19,12 +20,13 @@ import AvatarCardHeader, {
   ActionItem,
 } from "~/components/atom/avatar-card-header";
 import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
+import { EntityDateInfo } from "~/components/atom/entity-date-info";
 import { OwnerDropdownMenu } from "~/components/atom/owner-dropdown-menu";
-// import { OwnerDropdownMenu } from "~/components/atom/owner-dropdown-menu"; // REMOVE
 import { SocialCardFooter } from "~/components/atom/social-card-footer";
 import { Comments } from "~/components/features/Comments/comments";
 import { EnhancedPlantCard } from "~/components/features/Plants/enhanced-plant-card.tsx";
 import { PostFormModal } from "~/components/features/Timeline/Post/post-form-modal";
+import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
 import { Button } from "~/components/ui/button";
 import {
   Card,
@@ -63,7 +65,6 @@ export function GrowCard({
   const t = useTranslations("Grows");
 
   const [isSocial, setIsSocial] = React.useState(isSocialProp);
-  // const [isImageHovered, setIsImageHovered] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);
   const [isPostModalOpen, setIsPostModalOpen] = React.useState(false);
 
@@ -76,16 +77,12 @@ export function GrowCard({
   const { commentCount, commentCountLoading, isCommentsOpen, toggleComments } =
     useComments(grow.id, CommentableEntityType.Grow);
 
-  // Initialize delete mutation
   const deleteMutation = api.grows.deleteById.useMutation({
     onSuccess: async () => {
       toast(t("DeleteConfirmation.success-title"), {
         description: t("DeleteConfirmation.success-description"),
       });
-      // Invalidate and prefetch the plants query to refresh the list
       await utils.grows.getOwnGrows.invalidate();
-      // await utils.grows.getOwnGrows.prefetch();
-      // router.refresh();
     },
     onError: (error) => {
       toast.error(t("error-title"), {
@@ -105,7 +102,6 @@ export function GrowCard({
 
   const growActions: ActionItem[] = [];
 
-  // Edit Action (visible to owner only)
   if (user && user.id === grow.ownerId) {
     growActions.push({
       icon: EditIcon,
@@ -117,7 +113,6 @@ export function GrowCard({
     });
   }
 
-  // Delete Action (visible to owner and admin)
   if (user && (user.id === grow.ownerId || user.role === UserRoles.ADMIN)) {
     growActions.push({
       icon: Trash2,
@@ -131,7 +126,7 @@ export function GrowCard({
   const dateElement = (
     <Link
       href={`/public/grows/${grow.id}`}
-      title={t("grow-card-updatedAt")}
+      title={t("updated-at")}
       className="text-muted-foreground flex items-center gap-1 text-sm whitespace-nowrap"
     >
       {<DotIcon size={24} className="xs:block -mx-2 hidden" />}
@@ -159,8 +154,7 @@ export function GrowCard({
       />
       <Card
         className={cn(
-          `border-secondary flex flex-col overflow-hidden rounded-md border py-1`,
-          // isSocial && "bg-secondary/5",
+          `border-secondary/60 flex flex-col gap-0 overflow-hidden rounded-md border py-0 shadow-none`,
         )}
       >
         {isSocial && (
@@ -173,45 +167,24 @@ export function GrowCard({
         )}
 
         <CardContent
-          className={`flex h-full flex-col gap-2 ${isSocial ? "ml-12 pr-2 pl-0" : "p-2"}`}
+          className={`flex h-full flex-col gap-1 ${isSocial ? "ml-12 pr-2 pl-0" : "p-2"}`}
         >
-          {/* Grow HeaderImage */}
-          {/* <div
-            className="relative aspect-video overflow-hidden"
-            onMouseEnter={() => setIsImageHovered(true)}
-            onMouseLeave={() => setIsImageHovered(false)}
-          >
-            <Image
-              src={headerImagePlaceholder || "/placeholder.svg"}
-              alt={grow.name}
-              fill
-              className="object-cover transition-transform duration-300"
-              sizes={RESPONSIVE_IMAGE_SIZES}
-              style={{
-                transform: isImageHovered ? "scale(1.05)" : "scale(1)",
-              }}
-            />
-          </div> */}
-
-          {/* Title Link */}
           <div className="flex min-w-0 items-center justify-between gap-2">
             <CardTitle as="h3" className="min-w-0">
               <Button
                 asChild
                 variant="link"
-                className="flex min-w-0 items-center justify-start gap-2 p-1"
+                className="text-secondary decoration-secondary flex min-w-0 items-center justify-start gap-2 px-0"
               >
-                <Link href={`/public/grows/${grow.id}`}>
-                  <TentTree className="shrink-0" size={20} />
-                  <span className="truncate leading-normal font-semibold">
+                <Link href={`${modulePaths.PUBLICGROWS.path}/${grow.id}`}>
+                  <span className="truncate text-2xl leading-normal font-semibold">
                     {grow.name}
                   </span>
                 </Link>
               </Button>
             </CardTitle>
-            {/* DropdownMenu for grow's owner */}
             {!isSocial && user && user.id === grow.ownerId && (
-              <OwnerDropdownMenu // REMOVE
+              <OwnerDropdownMenu
                 isSocial={isSocial}
                 setIsSocial={setIsSocial}
                 isDeleting={deleteMutation.isPending}
@@ -222,37 +195,13 @@ export function GrowCard({
             )}
           </div>
 
-          {/* Grow created and updated at Date */}
-          <CardDescription className="flex h-9 flex-row items-center justify-between pr-3 font-mono text-xs tracking-tighter">
-            <div
-              title={
-                t("grow-card-updatedAt")
-                // eslint-disable-next-line react/jsx-no-literals
-              }
-              className="flex items-center gap-2"
-            >
-              <EditIcon size={16} className="shrink-0" />
-              <span className="block">
-                {formatDate(grow.updatedAt, locale as Locale)}{" "}
-                {formatTime(grow.updatedAt, locale as Locale)}
-              </span>
-            </div>
-            <div
-              title={
-                t("grow-card-createdAt")
-                // eslint-disable-next-line react/jsx-no-literals
-              }
-              className="flex items-center gap-2"
-            >
-              <Calendar1Icon size={16} className="shrink-0" />
-              <span className="block">
-                {formatDate(grow.createdAt, locale as Locale)}{" "}
-                {formatTime(grow.createdAt, locale as Locale)}
-              </span>
-            </div>
-          </CardDescription>
+          <EntityDateInfo
+            createdAt={grow.createdAt}
+            updatedAt={grow.updatedAt}
+            namespace="Grows"
+          />
+
           <div className="justify-top flex h-full flex-1 flex-col">
-            {/* Plants Grid */}
             <div
               className={cn(
                 "custom-scrollbar max-h-72 flex-1 space-y-2 overflow-y-auto",
@@ -260,26 +209,41 @@ export function GrowCard({
               )}
             >
               <AnimatePresence>
-                {grow.plants.map((plant) => (
-                  <motion.div
-                    key={plant.id}
-                    initial={{ opacity: 0, y: -30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <EnhancedPlantCard plant={plant} />
-                  </motion.div>
-                ))}
+                {grow.plants.length ? (
+                  grow.plants.map((plant) => (
+                    <motion.div
+                      key={plant.id}
+                      initial={{ opacity: 0, y: -30 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <EnhancedPlantCard plant={plant} />
+                    </motion.div>
+                  ))
+                ) : (
+                  <Alert variant="destructive" className="bg-accent/20">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertTitle>{t("no-plants-connected")}</AlertTitle>
+                    <AlertDescription>
+                      {/* {t("connect-plants-description")} */}
+                      <Button
+                        variant="link"
+                        className="text-primary p-0 font-semibold"
+                        asChild
+                      >
+                        <Link
+                          href={`${modulePaths.GROWS.path}/${grow.id}/form`}
+                        >
+                          {t("button-label-connect-plants")}
+                        </Link>
+                      </Button>
+                    </AlertDescription>
+                  </Alert>
+                )}
               </AnimatePresence>
-              {grow.plants.length === 0 && (
-                <div className="text-muted-foreground py-8 text-center">
-                  {t("no-plants-connectable")}
-                </div>
-              )}
             </div>
 
-            {/* Post Update Button */}
             {!isSocial && (
               <div className="mt-4">
                 <Button

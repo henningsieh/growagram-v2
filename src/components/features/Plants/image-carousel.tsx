@@ -30,14 +30,12 @@ export const ImageCarousel = ({
     });
   }, [plantImages]);
 
-  const locale = useLocale();
+  const locale = useLocale() as Locale;
 
   if (!plantImages.length)
     return (
-      <div className="relative aspect-video w-full">
-        <div className="bg-muted text-muted-foreground flex h-full items-center justify-center">
-          {t("Photos.no-photos-yet")}
-        </div>
+      <div className="bg-muted text-muted-foreground relative flex aspect-video h-full w-full items-center justify-center rounded-sm text-sm">
+        {t("Photos.no-photos-yet")}
       </div>
     );
 
@@ -55,7 +53,7 @@ export const ImageCarousel = ({
       onClick={() => openImageModal(image.imageUrl)}
       role="button"
       tabIndex={0}
-      aria-label={`View full size image from ${formatDate(image.captureDate, locale as Locale)}`}
+      aria-label={`View full size image from ${formatDate(image.captureDate, locale)}`}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
           openImageModal(image.imageUrl);
@@ -69,13 +67,13 @@ export const ImageCarousel = ({
         priority={isPriority}
         src={image.imageUrl}
         alt={`Plant image captured on ${image.captureDate.toLocaleDateString()}`}
-        className="object-cover transition-all duration-300 group-hover:brightness-105"
+        className="rounded-sm object-cover transition-all duration-150 group-hover:brightness-105"
         loading={isPriority ? undefined : "eager"}
       />
 
       {/* Zoom indicator */}
-      <div className="bg-background/70 absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-full opacity-0 shadow-sm backdrop-blur-sm transition-opacity duration-200 group-hover:opacity-100">
-        <ZoomIn size={18} className="text-foreground" />
+      <div className="bg-secondary absolute top-2 right-2 flex h-8 w-8 items-center justify-center rounded-full opacity-0 shadow-none backdrop-blur-sm transition-opacity duration-200 group-hover:opacity-100">
+        <ZoomIn size={18} className="secondary-foreground" />
       </div>
 
       {/* Date overlay */}
@@ -83,10 +81,8 @@ export const ImageCarousel = ({
         <div className="flex items-center gap-2 font-mono text-sm">
           <CameraIcon size={16} />
           <span>
-            {formatDate(image.captureDate, locale as Locale)}
-            {locale !== "en" ? " um " : " at "}
+            {formatDate(image.captureDate, locale as Locale)}{" "}
             {formatTime(image.captureDate, locale as Locale)}
-            {locale !== "en" && " Uhr"}
           </span>
         </div>
       </div>
