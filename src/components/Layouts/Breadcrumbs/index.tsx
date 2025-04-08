@@ -21,7 +21,7 @@ export function NavigationBreadcrumb({ className }: NavigationBreadcrumbProps) {
   const currentNav = findCurrentNavItem(pathname, sidebarItems.navMain);
   return (
     <Breadcrumb className={className}>
-      <BreadcrumbList>
+      <BreadcrumbList className="text-sm font-semibold">
         <BreadcrumbItem className="hidden md:block">
           <BreadcrumbLink asChild>
             <Link href={modulePaths.DASHBOARD.path}>
@@ -41,7 +41,9 @@ export function NavigationBreadcrumb({ className }: NavigationBreadcrumbProps) {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>{currentNav.sub.title}</BreadcrumbPage>
+              <BreadcrumbPage className="text-sm font-semibold">
+                {currentNav.sub.title}
+              </BreadcrumbPage>
             </BreadcrumbItem>
           </>
         )}

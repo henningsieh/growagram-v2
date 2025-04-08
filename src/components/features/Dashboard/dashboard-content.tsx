@@ -134,7 +134,7 @@ export function DashboardContent() {
               {/* Summary Cards */}
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 {/* Grows Card */}
-                <Card>
+                <Card className="gap-2">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0">
                     <CardTitle as="h2" className="text-2xl font-semibold">
                       {t("grow-environments")}
@@ -154,12 +154,12 @@ export function DashboardContent() {
                 </Card>
 
                 {/* Plants Card */}
-                <Card>
+                <Card className="gap-2">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0">
                     <CardTitle as="h2" className="text-2xl font-semibold">
                       {t("total-plants")}
                     </CardTitle>
-                    <Flower2Icon className="size-5" />
+                    <Flower2Icon className="size-6" />
                   </CardHeader>
                   <CardContent className="pb-2">
                     {isLoadingPlants ? (
@@ -185,12 +185,12 @@ export function DashboardContent() {
                 </Card>
 
                 {/* Photos Card */}
-                <Card>
+                <Card className="gap-2">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0">
                     <CardTitle as="h2" className="text-2xl font-semibold">
                       {t("total-photos")}
                     </CardTitle>
-                    <ImageIcon className="size-5" />
+                    <ImageIcon className="size-6" />
                   </CardHeader>
                   <CardContent className="pb-2">
                     {isLoadingPhotos ? (
@@ -205,12 +205,12 @@ export function DashboardContent() {
                 </Card>
 
                 {/* User Stats Card */}
-                <Card>
+                <Card className="gap-2">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0">
                     <CardTitle as="h2" className="text-2xl font-semibold">
                       {t("comunity")}
                     </CardTitle>
-                    <UsersIcon className="size-5" />
+                    <UsersIcon className="size-6" />
                   </CardHeader>
                   <CardContent className="space-y-3">
                     {/* <div className="flex items-center space-x-3">
@@ -228,7 +228,7 @@ export function DashboardContent() {
                           </div>
                         </div> */}
                     <div className="flex space-x-8">
-                      <div className="space-y-2">
+                      <div className="space-y-4">
                         <div className="text-3xl font-bold">
                           {userStatsArePending ? (
                             <Skeleton className="h-9 w-11" />
@@ -240,7 +240,7 @@ export function DashboardContent() {
                           {t("Followers")}
                         </div>
                       </div>
-                      <div className="space-y-2">
+                      <div className="space-y-4">
                         <div className="text-3xl font-bold">
                           {userStatsArePending ? (
                             <Skeleton className="h-9 w-11" />
