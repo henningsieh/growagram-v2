@@ -17,7 +17,10 @@
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "clean-dev": "rm -rf .next-dev out",
+    "clean-prod": "rm -rf .next-prod out",
+    "clean-all": "rm -rf .next-dev .next-prod out"
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^1.8.0",

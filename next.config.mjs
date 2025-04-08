@@ -8,6 +8,8 @@ const nextConfig = {
       bodySizeLimit: "30mb",
     },
   },
+  // Set different output directories based on environment
+  distDir: process.env.NODE_ENV === "production" ? ".next-prod" : ".next-dev",
   allowedDevOrigins: ["192.168.178.114"],
   images: {
     remotePatterns: [
