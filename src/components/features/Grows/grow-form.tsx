@@ -4,7 +4,13 @@ import * as React from "react";
 import { useTranslations } from "next-intl";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TRPCClientError } from "@trpc/client";
-import { Check, TagIcon, TentTree } from "lucide-react";
+import {
+  ArrowRight,
+  Check,
+  CircleAlertIcon,
+  TagIcon,
+  TentTree,
+} from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -374,9 +380,10 @@ export default function GrowFormPage({ grow }: { grow?: GetGrowByIdType }) {
                         <SpinningLoader className="m-4 size-12" />
                       ) : (
                         <CommandList className="min-h-24">
-                          <CommandEmpty className="mx-auto my-4 max-w-md space-y-2">
-                            <Alert variant="destructive" role="status">
-                              <div>{t("no-plants-connectable")}</div>
+                          <CommandEmpty className="mx-auto my-4 w-full space-y-2 p-4">
+                            <Alert variant="destructive">
+                              <CircleAlertIcon className="size-5" />
+                              {t("no-plants-connectable")}
                             </Alert>
                             <div className="flex justify-end">
                               <Button className="p-0" variant="link" asChild>
@@ -385,6 +392,7 @@ export default function GrowFormPage({ grow }: { grow?: GetGrowByIdType }) {
                                   href={modulePaths.PLANTS.path}
                                 >
                                   {t_nav("my-plants")}
+                                  <ArrowRight className="ml-1 h-4 w-4" />
                                 </Link>
                               </Button>
                             </div>
@@ -441,13 +449,13 @@ export default function GrowFormPage({ grow }: { grow?: GetGrowByIdType }) {
                     setSelectedPlantIds(initialConnectedPlantIds);
                     setSearchQuery("");
                   }}
-                  className="w-full"
+                  className="flex-1"
                 >
                   {t("reset")}
                 </Button>
                 <Button
                   type="submit"
-                  className="w-full"
+                  className="flex-1"
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? t("saving") : pageTexts.submitButtonText}
