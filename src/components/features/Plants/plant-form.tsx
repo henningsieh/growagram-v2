@@ -275,7 +275,7 @@ export default function PlantForm({ plant }: { plant?: GetPlantByIdType }) {
                                 value={field.value || undefined}
                                 onValueChange={field.onChange}
                               >
-                                <SelectTrigger className="bg-muted text-foreground pl-10 md:text-base">
+                                <SelectTrigger className="bg-muted text-foreground w-full pl-10 md:text-base">
                                   <SelectValue
                                     placeholder={t("form-grow-placeholder")}
                                   />
@@ -299,7 +299,8 @@ export default function PlantForm({ plant }: { plant?: GetPlantByIdType }) {
                     )}
                   />
 
-                  <div className="grid md:grid-cols-2 md:gap-4 lg:gap-6 xl:gap-8">
+                  <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-4 lg:gap-6 xl:gap-8">
+                    {/* Planting Phase */}
                     <FormField
                       control={form.control}
                       name="startDate"
@@ -307,7 +308,7 @@ export default function PlantForm({ plant }: { plant?: GetPlantByIdType }) {
                         <PlantFormDateField
                           field={field}
                           label={t("planting-date")}
-                          description="When did you plant the seed?"
+                          description={t("form-date-planted-description")}
                           icon={NutIcon}
                           iconClassName="text-planted"
                         />
@@ -321,15 +322,14 @@ export default function PlantForm({ plant }: { plant?: GetPlantByIdType }) {
                         <PlantFormDateField
                           field={field}
                           label={t("germination-date")}
-                          description="When did you see the seedling for the first time?"
+                          description={t("form-date-seedling-description")}
                           icon={SproutIcon}
                           iconClassName="text-seedling"
                         />
                       )}
                     />
-                  </div>
 
-                  <div className="grid md:grid-cols-2 md:gap-4 lg:gap-6 xl:gap-8">
+                    {/* Growth Phase */}
                     <FormField
                       control={form.control}
                       name="vegetationPhaseStart"
@@ -337,7 +337,7 @@ export default function PlantForm({ plant }: { plant?: GetPlantByIdType }) {
                         <PlantFormDateField
                           field={field}
                           label={t("vegetation-start-date")}
-                          description="When did rapid leafIcon growth start?"
+                          description={t("form-date-vegetation-description")}
                           icon={LeafIcon}
                           iconClassName="text-vegetation"
                         />
@@ -351,15 +351,14 @@ export default function PlantForm({ plant }: { plant?: GetPlantByIdType }) {
                         <PlantFormDateField
                           field={field}
                           label={t("flowering-start-date")}
-                          description="When did you see the first buds?"
+                          description={t("form-date-flowering-description")}
                           icon={FlowerIcon}
                           iconClassName="text-flowering"
                         />
                       )}
                     />
-                  </div>
 
-                  <div className="grid md:grid-cols-2 md:gap-4 lg:gap-6 xl:gap-8">
+                    {/* Harvest Phase */}
                     <FormField
                       control={form.control}
                       name="harvestDate"
@@ -367,12 +366,13 @@ export default function PlantForm({ plant }: { plant?: GetPlantByIdType }) {
                         <PlantFormDateField
                           field={field}
                           label={t("harvest-date")}
-                          description="When did you cut down your plant?"
+                          description={t("form-date-harvest-description")}
                           icon={Wheat}
                           iconClassName="text-harvest"
                         />
                       )}
                     />
+
                     <FormField
                       control={form.control}
                       name="curingPhaseStart"
@@ -380,7 +380,7 @@ export default function PlantForm({ plant }: { plant?: GetPlantByIdType }) {
                         <PlantFormDateField
                           field={field}
                           label={t("curing-start-date")}
-                          description="When did you start the curing process?"
+                          description={t("form-date-curing-description")}
                           icon={PillBottleIcon}
                           iconClassName="text-curing"
                         />

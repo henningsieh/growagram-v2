@@ -87,7 +87,7 @@ export default function PlantFormDateField<TFieldValues extends FieldValues>({
           </PopoverContent>
         </Popover>
       </div>
-      <FormDescription>{description}</FormDescription>
+      <FormDescription className="px-1">{description}</FormDescription>
     </FormItem>
   );
 }

@@ -55,7 +55,7 @@ export function BreederSelector({
   // Handle create new breeder
   const handleCreateBreeder = async (name: string) => {
     setError(null);
-    await createBreederMutation.mutate({ name });
+    createBreederMutation.mutate({ name });
     return createBreederMutation.data?.id || "";
   };
 
@@ -68,6 +68,7 @@ export function BreederSelector({
         placeholder={t("breeder-placeholder")}
         emptyMessage={t("breeder-empty-message")}
         createNewMessage={t("breeder-create-message")}
+        triggerClassName="bg-muted text-foreground md:text-base"
         disabled={disabled || createBreederMutation.isPending}
         onCreateOption={handleCreateBreeder}
         icon={BriefcaseIcon}
