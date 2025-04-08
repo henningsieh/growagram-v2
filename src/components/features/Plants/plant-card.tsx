@@ -137,7 +137,7 @@ export default function PlantCard({
   const dateElement = (
     <Link
       href={`${modulePaths.PUBLICPLANTS.path}/${plant.id}`}
-      title={t("plant-card-createdAt")}
+      title={t("created-at")}
       className="text-muted-foreground flex items-center gap-1 text-sm whitespace-nowrap"
     >
       {<DotIcon size={24} className="xs:block -mx-2 hidden" />}

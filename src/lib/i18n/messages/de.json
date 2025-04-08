@@ -116,6 +116,7 @@
     "button-label-post-update": "Update zum Grow erstellen",
     "button-label-save-changes": "Änderungen speichern",
     "connect-error": "Fehler beim Verbinden der Pflanze",
+    "created-at": "Erstellt am",
     "delete-button-label": "Grow löschen",
     "delete-grow-button-label": "Grow löschen",
     "disconnect-error": "Fehler beim Trennen der Pflanze",
@@ -131,8 +132,6 @@
     "form-page-title-new": "Neuen Grow anlegen",
     "form-title-create-new-grow": "Stammdaten deines Grows",
     "form-title-edit-grow": "Stammdaten des neuen Grows",
-    "created-at": "Erstellt am",
-    "updated-at": "Zuletzt bearbeitet",
     "grow-name": "Name des Grows",
     "grow-name-description": "Gib deinem Grow einen Namen.",
     "grow-name-placeholder": "Gib den Namen des Grows ein",
@@ -165,7 +164,8 @@
         "title": "Pflanze entfernt"
       }
     },
-    "unexpected-error": "Ein unerwarteter Fehler ist aufgetreten."
+    "unexpected-error": "Ein unerwarteter Fehler ist aufgetreten.",
+    "updated-at": "Zuletzt bearbeitet"
   },
   "HomePage": {
     "about": "gehe zur Zeitleiste",
@@ -331,14 +331,14 @@
       }
     },
     "ImageModal": {
-      "fit-to-screen": "Photo im Vollbild anzeigen",
-      "toggle-view-mode": "Anzeigemodus umschalten",
-      "zoom-and-drag": "Bild zoomen und verschieben",
-      "keyboard-shortcuts": "Tastaturkürzel:",
       "close": "Schließen",
+      "fit-to-screen": "Photo im Vollbild anzeigen",
+      "keyboard-shortcuts": "Tastaturkürzel:",
+      "reset-zoom": "Zoom zurücksetzen",
+      "toggle-view-mode": "Anzeigemodus umschalten",
       "toggle-zoom-mode": "Zoommodus umschalten",
-      "zoom-in-out": "Vergrößern/Verkleinern",
-      "reset-zoom": "Zoom zurücksetzen"
+      "zoom-and-drag": "Bild zoomen und verschieben",
+      "zoom-in-out": "Vergrößern/Verkleinern"
     },
     "button": {
       "connecting": "Pflanzen werden verbunden...",
@@ -451,6 +451,7 @@
     "breeder-empty-message": "Keine Züchter gefunden",
     "breeder-placeholder": "Wähle einen Züchter...",
     "button-label-post-update": "Update zur Pflanze erstellen",
+    "created-at": "Erstellt am",
     "curing-start-date": "Startdatum der Aushärtephase",
     "delete-button-label": "Pflanze löschen",
     "delete-plant-button-label": "Pflanze löschen",
@@ -487,15 +488,13 @@
     "overall-progress": "Gesamtfortschritt",
     "phase": "Phasenfortschritt",
     "phases": {
-      "planted": "Gepflanzt",
-      "seedling": "Keimlingsphase",
-      "vegetation": "Wachstumsphase",
+      "curing": "Aushärtephase",
       "flowering": "Blütephase",
       "harvested": "Trockenphase",
-      "curing": "Aushärtephase"
+      "planted": "Gepflanzt",
+      "seedling": "Keimlingsphase",
+      "vegetation": "Wachstumsphase"
     },
-    "created-at": "Erstellt am",
-    "updated-at": "Zuletzt bearbeitet",
     "plant-deleted-successfully": "Die Pflanze wurde erfolgreich gelöscht.",
     "planting-date": "Datum der Aussaat",
     "public-link-label": "Öffnen im neuen Tab",
@@ -515,6 +514,7 @@
     "thc-content": "THC-Gehalt",
     "title": "Meine Pflanzen",
     "until": "bis",
+    "updated-at": "Zuletzt bearbeitet",
     "user-has-no-plants": "Du hast bisher keine Pflanzen hinzugefügt.",
     "vegetation-start-date": "Startdatum der Wachstumsphase"
   },

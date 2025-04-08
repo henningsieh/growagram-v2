@@ -116,6 +116,7 @@
     "button-label-post-update": "Create Update for Grow",
     "button-label-save-changes": "Save Changes",
     "connect-error": "Error connecting plant",
+    "created-at": "Creation date",
     "delete-button-label": "Delete Grow",
     "delete-grow-button-label": "Delete Grow",
     "disconnect-error": "Error disconnecting plant",
@@ -131,8 +132,6 @@
     "form-page-title-new": "Create New Grow",
     "form-title-create-new-grow": "Grow's basic data",
     "form-title-edit-grow": "New Grow's basic data",
-    "created-at": "Creation date",
-    "updated-at": "Last edited date",
     "grow-name": "The Grow's Name",
     "grow-name-description": "Give a descriptive name to your grow.",
     "grow-name-placeholder": "Enter the Grow's Name",
@@ -165,7 +164,8 @@
         "title": "Plant Removed"
       }
     },
-    "unexpected-error": "Unexpected error occurred."
+    "unexpected-error": "Unexpected error occurred.",
+    "updated-at": "Last edited at"
   },
   "HomePage": {
     "about": "go to Timeline",
@@ -331,14 +331,14 @@
       }
     },
     "ImageModal": {
-      "fit-to-screen": "Show photo in fullscreen",
-      "toggle-view-mode": "Toggle viewmode",
-      "zoom-and-drag": "Zoom and move image",
-      "keyboard-shortcuts": "Keyboard shortcuts:",
       "close": "Close",
+      "fit-to-screen": "Show photo in fullscreen",
+      "keyboard-shortcuts": "Keyboard shortcuts:",
+      "reset-zoom": "Reset zoom",
+      "toggle-view-mode": "Toggle viewmode",
       "toggle-zoom-mode": "Toggle zoom mode",
-      "zoom-in-out": "Zoom in/out",
-      "reset-zoom": "Reset zoom"
+      "zoom-and-drag": "Zoom and move image",
+      "zoom-in-out": "Zoom in/out"
     },
     "button": {
       "connecting": "Connecting plants...",
@@ -451,6 +451,7 @@
     "breeder-empty-message": "No breeders found",
     "breeder-placeholder": "Select a breeder...",
     "button-label-post-update": "Create Update for Plant",
+    "created-at": "Created at",
     "curing-start-date": "Curing phase start date",
     "delete-button-label": "Delete Plant",
     "delete-plant-button-label": "Delete Plant",
@@ -487,14 +488,13 @@
     "overall-progress": "Overall progress",
     "phase": "Phase progress",
     "phases": {
-      "planted": "Planted",
-      "seedling": "Seedling Phase",
-      "vegetation": "Vegetative Phase",
+      "curing": "Curing Phase",
       "flowering": "Flowering Phase",
       "harvested": "Drying Phase",
-      "curing": "Curing Phase"
+      "planted": "Planted",
+      "seedling": "Seedling Phase",
+      "vegetation": "Vegetative Phase"
     },
-    "plant-card-createdAt": "Created at:",
     "plant-deleted-successfully": "The plant has been deleted successfully.",
     "planting-date": "Seed planting date",
     "public-link-label": "Open in new Tab",
@@ -514,6 +514,7 @@
     "thc-content": "THC Content",
     "title": "My Plants",
     "until": "until",
+    "updated-at": "Last edited at",
     "user-has-no-plants": "You haven&apos;t added any plants yet.",
     "vegetation-start-date": "Vegetation Start Date"
   },
