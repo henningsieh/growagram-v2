@@ -13,13 +13,13 @@ const badgeVariants = cva(
           "border-transparent bg-primary text-primary-foreground [a&]:hover:bg-primary/90",
         secondary:
           "border-transparent bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90",
-          grow: 
-          "bg-secondary/50 border border border-secondary text-secondary-foreground shadow-2xs hover:bg-secondary/70",
+        grow: 
+          "bg-secondary/80 border border border-secondary text-secondary-foreground shadow-2xs hover:bg-secondary/60",
         plant: 
-          "bg-primary/50 border border border-primary text-primary-foreground shadow-2xs hover:bg-primary/70",
+          "bg-primary/80 border border border-primary text-primary-foreground shadow-2xs hover:bg-primary/60",
         strain: 
-          "bg-fuchsia-600/40 border border border-seedling text-foreground shadow-2xs hover:bg-fuchsia-600/50",
-         destructive:
+          "bg-fuchsia-300/80 border border border-fuchsia-400 text-foreground shadow-2xs hover:bg-fuchsia-400/60",
+        destructive:
           "border-transparent bg-destructive text-white [a&]:hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
         outline:
           "text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground",
