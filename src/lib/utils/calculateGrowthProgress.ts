@@ -23,7 +23,24 @@ export function calculateGrowthProgress(
 ): CalculateGrowthProgressParameters {
   const now = new Date();
 
-  // Handle harvested plants immediately
+  // Use the utility function from plant.ts to build phases object
+  const phases = buildPlantGrowthPhases(plant);
+
+  // Handle curing phase if a plant has been harvested AND moved to curing
+  if (plant.harvestDate && plant.curingPhaseStart) {
+    const curingStage = getGrowthStage("curing");
+    return {
+      currentPhase: "curing",
+      overallProgress: 100,
+      phaseProgress: 100,
+      estimatedHarvestDate: null,
+      daysUntilNextPhase: null,
+      nextPhase: null,
+      phaseIcon: curingStage.icon,
+    };
+  }
+
+  // Handle harvested plants
   if (plant.harvestDate) {
     const harvestStage = getGrowthStage("harvested");
     return {
@@ -36,9 +53,6 @@ export function calculateGrowthProgress(
       phaseIcon: harvestStage.icon,
     };
   }
-
-  // Use the utility function from plant.ts to build phases object
-  const phases = buildPlantGrowthPhases(plant);
 
   // Determine currentPhase by finding the last phase with a non-null date
   let currentPhaseIndex = 0;
@@ -74,7 +88,8 @@ export function calculateGrowthProgress(
   if (
     currentPhaseStartDate &&
     currentStage.typical_duration &&
-    currentStage.typical_duration > 0
+    currentStage.typical_duration > 0 &&
+    isFinite(currentStage.typical_duration)
   ) {
     const elapsedWeeks = getWeeksBetween(currentPhaseStartDate, now);
     phaseProgress = Math.min(
@@ -90,7 +105,7 @@ export function calculateGrowthProgress(
   if (
     currentPhaseStartDate &&
     currentStage.typical_duration &&
-    currentStage.typical_duration !== Infinity
+    isFinite(currentStage.typical_duration)
   ) {
     const phaseDurationDays = currentStage.typical_duration * 7;
     const elapsedDays = getDaysBetween(currentPhaseStartDate, now);
