@@ -71,16 +71,15 @@ export function SortFilterControls<T extends string>({
   const t = useTranslations("Platform");
 
   return (
-    <div className="mb-5 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-      {/* Sorting Controls Group */}
-      <div className="flex flex-wrap items-center gap-2">
-        {/* <div className="flex items-center space-x-2 rounded-md border bg-card p-1"> */}
+    <div className="xs:grid-cols-2 mb-5 grid grid-cols-1 gap-4 lg:grid-cols-4 lg:items-center">
+      {/* Sort Field Select */}
+      <div className="flex items-center gap-2">
         <Select
           value={sortField}
           onValueChange={handleSortFieldChange}
           disabled={isFetching}
         >
-          <SelectTrigger size="sm" className="border-input w-40">
+          <SelectTrigger size="sm" className="border-input w-full">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -94,13 +93,16 @@ export function SortFilterControls<T extends string>({
             ))}
           </SelectContent>
         </Select>
+      </div>
 
+      {/* Sort Order Select */}
+      <div className="flex items-center gap-2">
         <Select
           value={sortOrder}
           onValueChange={handleSortOrderChange}
           disabled={isFetching}
         >
-          <SelectTrigger size="sm" className="border-input w-40">
+          <SelectTrigger size="sm" className="border-input w-full">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -116,47 +118,45 @@ export function SortFilterControls<T extends string>({
             </SelectItem>
           </SelectContent>
         </Select>
-        {/* </div> */}
-
-        {filterLabel && (
-          <Button
-            variant="ghost"
-            size="sm"
-            className={cn(
-              "border-secondary text-secondary-foreground relative border",
-              filterEnabled &&
-                "bg-secondary/80 text-secondary-foreground hover:bg-secondary/90",
-            )}
-            onClick={() => onFilterChange?.(!filterEnabled)}
-            disabled={isFetching}
-          >
-            <FilterIcon className="mr-2 h-4 w-4" />
-            {filterLabel}
-          </Button>
-        )}
       </div>
 
-      {/* Infinite Scroll Toggle Group - Visually separated */}
+      {/* Filter Toggle */}
+      {filterLabel && (
+        <div className="border-input bg-muted flex h-8 items-center justify-between rounded-sm border p-2">
+          <div className="flex items-center gap-2">
+            <FilterIcon
+              className={`h-5 w-5 ${filterEnabled ? "text-secondary" : "text-muted-foreground"}`}
+            />
+            <Label htmlFor="filter-toggle" className="text-sm font-medium">
+              {filterLabel}
+            </Label>
+          </div>
+          <Switch
+            id="filter-toggle"
+            checked={filterEnabled}
+            onCheckedChange={onFilterChange}
+            className="data-[state=checked]:bg-secondary data-[state=unchecked]:hover:bg-secondary/50 dark:data-[state=unchecked]:hover:bg-secondary/50"
+            disabled={isFetching}
+          />
+        </div>
+      )}
+
+      {/* Infinite Scroll Toggle */}
       {viewMode && (
-        <div className="flex justify-end">
-          <div className="border-input bg-muted flex h-8 items-center gap-3 rounded-sm border p-2">
-            <Label
-              htmlFor="infinite-scroll"
-              className="cursor-pointer text-sm font-medium"
-            >
+        <div className="border-input bg-muted flex h-8 items-center justify-between rounded-sm border p-2">
+          <div className="flex items-center gap-2">
+            <ScrollText
+              className={`h-5 w-5 ${viewMode.current === viewMode.options[1] ? "text-primary" : "text-muted-foreground"}`}
+            />
+            <Label htmlFor="infinite-scroll" className="text-sm font-medium">
               {t("infinitescroll")}
             </Label>
-            <Switch
-              // variant={""}
-              id="infinite-scroll"
-              checked={viewMode.current === viewMode.options[1]}
-              onCheckedChange={onViewModeToggle}
-              // className="data-[state=checked]:bg-primary"
-            />
-            <ScrollText
-              className={`h-5 w-5 ${viewMode.current === viewMode.options[1] ? `text-primary` : `text-muted-foreground`}`}
-            />
           </div>
+          <Switch
+            id="infinite-scroll"
+            checked={viewMode.current === viewMode.options[1]}
+            onCheckedChange={onViewModeToggle}
+          />
         </div>
       )}
     </div>
