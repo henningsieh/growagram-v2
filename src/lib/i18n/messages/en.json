@@ -243,11 +243,11 @@
       "All Updates": "All Updates"
     },
     "dashboard": "Dashboard",
-    "dashboard-description": "Track your grows and your plants, including photo uploads.",
+    "dashboard-description": "Keep an eye on your grows, your plants and your photos.",
     "discover": "Discover",
     "grower-menu": "Grower's Platform",
     "grows": "All Grows",
-    "grows-description": "Take a look at other growers' grows and get inspired.",
+    "grows-description": "Explore other growers' environments and get inspired.",
     "home": "Home",
     "my-grows": "My Grows",
     "my-grows-subline": "Manage and group your plants in Grows.",
@@ -257,9 +257,9 @@
     "my-plants-subline": "Manage and edit your plants.",
     "navigation": "Navigation",
     "plants": "All Plants",
-    "plants-description": "Check out what other growers are cultivating and get some new ideas.",
-    "timeline": "Timeline | All updates",
-    "timeline-description": "Social media timeline with the latest updates from you and others.",
+    "plants-description": "Discover what varieties others are growing and learn from their experiences.",
+    "timeline": "Community Timeline",
+    "timeline-description": "See latest updates from you and the community in one feed.",
     "toggle-menu": "Toggle menu"
   },
   "Notifications": {

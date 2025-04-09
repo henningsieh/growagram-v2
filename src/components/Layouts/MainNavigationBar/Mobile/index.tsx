@@ -3,12 +3,6 @@
 import * as React from "react";
 import { useTranslations } from "next-intl";
 import { MenuIcon } from "lucide-react";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "~/components/ui/accordion";
 import { Button } from "~/components/ui/button";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import {
@@ -19,58 +13,14 @@ import {
   SheetTrigger,
 } from "~/components/ui/sheet";
 import { Link } from "~/lib/i18n/routing";
-import { processedNavigation } from "~/lib/navigation";
+import { getProcessedNavigationData } from "~/lib/navigation";
 import { cn } from "~/lib/utils";
 import type { ProcessedNavigationItem } from "~/types/navigation";
 
 export default function MobileNavigationMenu() {
   const [open, setOpen] = React.useState(false);
   const t = useTranslations("Navigation");
-
-  const renderMenuContent = (content: ProcessedNavigationItem["content"]) => {
-    if (!content) return null;
-    return (
-      <div className="flex flex-col space-y-3 pl-4">
-        {content.featured && (
-          <Link
-            href={content.featured.href}
-            className="nav-item-featured flex flex-col justify-center"
-            onClick={() => setOpen(false)}
-          >
-            <div className="text-primary flex items-center text-2xl font-bold">
-              {content.featured.icon &&
-                React.createElement(content.featured.icon, {
-                  className: "mr-2 h-5 w-5",
-                })}
-              {t(content.featured.title)}
-            </div>
-            <p className="text-muted-foreground text-base">
-              {t(content.featured.description)}
-            </p>
-          </Link>
-        )}
-        {content.items?.map((item) => (
-          <Link
-            key={item.title}
-            href={item.href}
-            className="nav-item block space-y-1"
-            onClick={() => setOpen(false)}
-          >
-            <div className="flex items-center text-lg leading-none font-semibold">
-              {item.icon &&
-                React.createElement(item.icon, {
-                  className: "mr-2 h-5 w-5",
-                })}
-              {t(item.title)}
-            </div>
-            <p className="text-muted-foreground pt-1 text-sm leading-snug">
-              {t(item.description)}
-            </p>
-          </Link>
-        ))}
-      </div>
-    );
-  };
+  const processedNavigation = getProcessedNavigationData();
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -85,48 +35,97 @@ export default function MobileNavigationMenu() {
         </Button>
       </SheetTrigger>
       <SheetContent side="right" className="w-full border-l p-0">
-        <SheetHeader className="border-border flex items-center justify-between border-b p-6">
-          <SheetTitle className="text-primary text-2xl font-bold">
+        <SheetHeader className="border-border flex items-center justify-between border-b p-4">
+          <SheetTitle className="text-primary text-xl font-bold">
             {t("navigation")}
           </SheetTitle>
         </SheetHeader>
         <ScrollArea className="h-[calc(100svh-4rem)]">
           <div className="flex flex-col p-4">
-            <Accordion type="single" collapsible className="w-full space-y-1.5">
-              {processedNavigation.navigationItems.map((item) =>
-                item.type === "link" ? (
-                  <Button
-                    key={item.title}
-                    asChild
-                    variant="ghost"
-                    className="hover:bg-accent hover:text-foreground w-full justify-start p-3 text-lg font-semibold"
-                  >
-                    <Link href={item.href!} onClick={() => setOpen(false)}>
+            {/* Direct navigation items first with h3 heading but preserving hover effect */}
+            {processedNavigation.navigationItems
+              .filter((item) => item.type === "link")
+              .map((item: ProcessedNavigationItem) => (
+                <div key={item.title}>
+                  <h3 className="text-lg font-bold">
+                    <Link
+                      href={item.href!}
+                      onClick={() => setOpen(false)}
+                      className="text-primary hover:bg-accent hover:text-accent-foreground flex w-full items-center rounded-md p-3 transition-colors"
+                    >
+                      {/* Only render icon if it exists on the type */}
+                      {"icon" in item &&
+                        item.icon &&
+                        React.createElement(item.icon, {
+                          className: "mr-2 h-5 w-5",
+                        })}
                       {t(item.title)}
                     </Link>
-                  </Button>
-                ) : (
-                  <AccordionItem
-                    key={item.title}
-                    value={item.title}
-                    className="border-none"
-                  >
-                    <AccordionTrigger
-                      className={cn(
-                        "rounded-sm px-3 py-3 text-lg font-semibold",
-                        "hover:bg-accent hover:text-foreground hover:no-underline",
-                        "data-[state=open]:text-primary hover:data-[state=open]:text-accent-foreground",
-                      )}
+                  </h3>
+                </div>
+              ))}
+
+            {/* Divider */}
+            <div className="border-border my-1 border-b" />
+
+            {/* Section for drop-down menus expanded directly */}
+            {processedNavigation.navigationItems
+              .filter((item) => item.type !== "link" && item.content)
+              .map((item: ProcessedNavigationItem) => (
+                <div key={item.title}>
+                  <h3 className="text-primary mb-2 px-3 text-lg font-bold">
+                    {/* Don't reference item.icon here */}
+                    {t(item.title)}
+                  </h3>
+
+                  {/* Featured item */}
+                  {item.content?.featured && (
+                    <Link
+                      href={item.content.featured.href}
+                      onClick={() => setOpen(false)}
+                      className="bg-muted hover:bg-accent mx-3 mb-2 flex items-center rounded-md p-3 transition-colors"
                     >
-                      {t(item.title)}
-                    </AccordionTrigger>
-                    <AccordionContent className="pt-3 pb-1">
-                      {renderMenuContent(item.content)}
-                    </AccordionContent>
-                  </AccordionItem>
-                ),
-              )}
-            </Accordion>
+                      {item.content.featured.icon &&
+                        React.createElement(item.content.featured.icon, {
+                          className: "mr-2 h-5 w-5 text-primary",
+                        })}
+                      <div className="flex flex-col">
+                        <span className="font-medium">
+                          {t(item.content.featured.title)}
+                        </span>
+                        <span className="text-muted-foreground text-xs">
+                          {t(item.content.featured.description)}
+                        </span>
+                      </div>
+                    </Link>
+                  )}
+
+                  {/* Regular menu items */}
+                  <div className="space-y-1 pl-2">
+                    {item.content?.items?.map((subItem) => (
+                      <Link
+                        key={subItem.title}
+                        href={subItem.href}
+                        onClick={() => setOpen(false)}
+                        className="hover:bg-accent flex rounded-md px-3 py-2 transition-colors"
+                      >
+                        {subItem.icon &&
+                          React.createElement(subItem.icon, {
+                            className: "mr-2 h-5 w-5 text-primary",
+                          })}
+                        <div className="flex flex-col">
+                          <span className="font-medium">
+                            {t(subItem.title)}
+                          </span>
+                          <span className="text-muted-foreground text-xs">
+                            {t(subItem.description)}
+                          </span>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              ))}
           </div>
         </ScrollArea>
       </SheetContent>

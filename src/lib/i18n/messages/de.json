@@ -243,11 +243,11 @@
       "All Updates": "Alle Updates"
     },
     "dashboard": "Dashboard",
-    "dashboard-description": "Erfasse deine Grows und deine Pflanzen einschließlich Hochladen der Fotos.",
+    "dashboard-description": "Behalte deine Grows, deine Pflanzen und deine Fotos im Blick.",
     "discover": "Entdecken",
-    "grower-menu": "Anbauplattform",
+    "grower-menu": "Grower-Bereich",
     "grows": "Alle Grows",
-    "grows-description": "Hier siehst du, was andere anbauen und wie sie es machen.",
+    "grows-description": "Entdecke andere Grow-Umgebungen und lass dich inspirieren.",
     "home": "Home",
     "my-grows": "Meine Grows",
     "my-grows-subline": "Verwalte und gruppiere deine Pflanzen in Grows.",
@@ -257,9 +257,9 @@
     "my-plants-subline": "Verwalte und bearbeite deine Pflanzen.",
     "navigation": "Navigation",
     "plants": "Alle Pflanzen",
-    "plants-description": "Entdecke, welche Pflanzen andere gerade großziehen.",
-    "timeline": "Zeitleiste | Alle Updates",
-    "timeline-description": "Social Media Zeitachse mit den neuesten Updates von dir und anderen.",
+    "plants-description": "Entdecke, welche Sorten andere anbauen und lerne von ihren Erfahrungen.",
+    "timeline": "Community-Zeitleiste",
+    "timeline-description": "Sieh die neuesten Updates von dir und der Community in einem Feed.",
     "toggle-menu": "Menü umschalten"
   },
   "Notifications": {
