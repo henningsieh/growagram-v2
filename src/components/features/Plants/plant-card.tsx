@@ -62,6 +62,7 @@ export default function PlantCard({
   const locale = useLocale();
   const utils = api.useUtils();
 
+  const tCommon = useTranslations("Platform");
   const t = useTranslations("Plants");
 
   const [isSocial, setIsSocial] = React.useState(isSocialProp);
@@ -132,7 +133,7 @@ export default function PlantCard({
   const dateElement = (
     <Link
       href={`${modulePaths.PUBLICPLANTS.path}/${plant.id}`}
-      title={t("created-at")}
+      title={tCommon("created-at")}
       className="text-muted-foreground flex items-center gap-1 text-sm whitespace-nowrap"
     >
       {<DotIcon size={24} className="xs:block -mx-2 hidden" />}
