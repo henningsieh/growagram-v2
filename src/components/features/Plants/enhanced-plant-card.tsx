@@ -92,7 +92,7 @@ export function EnhancedPlantCard({ plant }: EnhancedPlantCardProps) {
 
             {/* Middle section with plant name - will shrink as needed */}
             <div className="w-0 min-w-0 flex-1">
-              <CardTitle as="h3" className="truncate text-base">
+              <CardTitle as="h3" className="truncate">
                 <Button
                   asChild
                   variant="link"
@@ -102,7 +102,7 @@ export function EnhancedPlantCard({ plant }: EnhancedPlantCardProps) {
                     href={`${modulePaths.PUBLICPLANTS.path}/${plant.id}`}
                     className="truncate"
                   >
-                    <span className="block truncate">{plant.name}</span>
+                    <span className="block truncate text-lg">{plant.name}</span>
                   </Link>
                 </Button>
               </CardTitle>

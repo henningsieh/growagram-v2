@@ -258,8 +258,8 @@
     "navigation": "Navigation",
     "plants": "All Plants",
     "plants-description": "Check out what other growers are cultivating and get some new ideas.",
-    "timeline": "Timeline",
-    "timeline-description": "Social media timeline (feature coming soon)",
+    "timeline": "Timeline | All updates",
+    "timeline-description": "Social media timeline with the latest updates from you and others.",
     "toggle-menu": "Toggle menu"
   },
   "Notifications": {
