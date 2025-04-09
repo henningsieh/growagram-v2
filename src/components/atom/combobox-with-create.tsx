@@ -56,7 +56,7 @@ export function ComboboxWithCreate({
   const [open, setOpen] = React.useState(false);
   const [inputValue, setInputValue] = React.useState("");
   const [isCreating, setIsCreating] = React.useState(false);
-  const t = useTranslations("Common");
+  const t = useTranslations("Platform");
 
   // Use translations with fallbacks to props
   const translatedPlaceholder = placeholder || t("combobox-placeholder");

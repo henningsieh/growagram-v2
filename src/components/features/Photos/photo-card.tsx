@@ -201,7 +201,6 @@ export default function PhotoCard({
           <EntityDateInfo
             createdAt={photo.createdAt}
             updatedAt={photo.updatedAt}
-            namespace="Photos"
           />
 
           {/* Photo */}

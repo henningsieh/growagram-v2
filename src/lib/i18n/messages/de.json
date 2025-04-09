@@ -82,13 +82,6 @@
       }
     }
   },
-  "Common": {
-    "combobox-create-message": "Neue Option erstellen",
-    "combobox-empty-message": "Keine Optionen gefunden.",
-    "combobox-placeholder": "Option auswählen...",
-    "day": "Tag",
-    "days": "Tagen"
-  },
   "Dashboard": {
     "Grows": {
       "your-grows": "deine Grows"
@@ -116,7 +109,6 @@
     "button-label-post-update": "Update zum Grow erstellen",
     "button-label-save-changes": "Änderungen speichern",
     "connect-error": "Fehler beim Verbinden der Pflanze",
-    "created-at": "Erstellt am",
     "delete-button-label": "Grow löschen",
     "delete-grow-button-label": "Grow löschen",
     "disconnect-error": "Fehler beim Trennen der Pflanze",
@@ -404,6 +396,7 @@
         }
       }
     },
+    "updated-at": "Zuletzt bearbeitet",
     "upload": {
       "buttonLabel-files": "Dateien",
       "buttonLabel-upload": "Hochladen",
@@ -451,7 +444,6 @@
     "breeder-empty-message": "Keine Züchter gefunden",
     "breeder-placeholder": "Wähle einen Züchter...",
     "button-label-post-update": "Update zur Pflanze erstellen",
-    "created-at": "Erstellt am",
     "curing-start-date": "Startdatum der Aushärtephase",
     "delete-button-label": "Pflanze löschen",
     "delete-plant-button-label": "Pflanze löschen",
@@ -548,9 +540,15 @@
     "analytics-growth-chart-description": "Visualisiere die Wachstumstrends und wichtigsten Leistungsindikatoren Ihrer Plattform im Zeitverlauf",
     "analytics-growth-overview": "Wachstumsübersicht",
     "asc": "Aufsteigend",
+    "combobox-create-message": "Neue Option erstellen",
+    "combobox-empty-message": "Keine Optionen gefunden.",
+    "combobox-placeholder": "Option auswählen...",
     "coming-soon": "Bald verfügbar",
     "coming-soon-description": "Wir arbeiten bereits an der neuen Funktion. \nKomm bald wieder vorbei!",
     "comunity": "Community",
+    "created-at": "Erstellt am",
+    "day": "Tag",
+    "days": "Tagen",
     "desc": "Absteigend",
     "detailed-analytics-description": "Zeigen Sie umfassende Analysen und Dateneinblicke für Ihre Plattform an",
     "detailed-statistics": "Detaillierte Statistiken",
@@ -567,6 +565,7 @@
     "total-photos": "Fotos",
     "total-photos-description": "Alle Fotos",
     "total-plants": "Pflanzen",
+    "updated-at": "aktualisiert am",
     "view-all-photos": "zu deinen Fotos",
     "welcome-to-platform-subttitle": "Willkommen bei der Verwaltung deiner Grows und Pflanzen"
   },

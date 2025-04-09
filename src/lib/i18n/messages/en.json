@@ -82,13 +82,6 @@
       }
     }
   },
-  "Common": {
-    "combobox-create-message": "Create new option",
-    "combobox-empty-message": "No options found.",
-    "combobox-placeholder": "Select an option...",
-    "day": "day",
-    "days": "days"
-  },
   "Dashboard": {
     "Grows": {
       "your-grows": "Your Grows"
@@ -116,7 +109,6 @@
     "button-label-post-update": "Create Update for Grow",
     "button-label-save-changes": "Save Changes",
     "connect-error": "Error connecting plant",
-    "created-at": "Creation date",
     "delete-button-label": "Delete Grow",
     "delete-grow-button-label": "Delete Grow",
     "disconnect-error": "Error disconnecting plant",
@@ -404,6 +396,7 @@
         }
       }
     },
+    "updated-at": "Last edited at",
     "upload": {
       "buttonLabel-files": "Files",
       "buttonLabel-upload": "Upload",
@@ -451,7 +444,6 @@
     "breeder-empty-message": "No breeders found",
     "breeder-placeholder": "Select a breeder...",
     "button-label-post-update": "Create Update for Plant",
-    "created-at": "Created at",
     "curing-start-date": "Curing phase start date",
     "delete-button-label": "Delete Plant",
     "delete-plant-button-label": "Delete Plant",
@@ -548,9 +540,15 @@
     "analytics-growth-chart-description": "Visualize your platform's growth trends and key performance indicators over time",
     "analytics-growth-overview": "Growth Overview",
     "asc": "Ascending",
+    "combobox-create-message": "Create new option",
+    "combobox-empty-message": "No options found.",
+    "combobox-placeholder": "Select an option...",
     "coming-soon": "Coming soon",
     "coming-soon-description": "We are already working on the new function. Come by again soon!",
     "comunity": "Community",
+    "created-at": "Created on",
+    "day": "day",
+    "days": "days",
     "desc": "Descending",
     "detailed-analytics-description": "View comprehensive analytics and data insights for your platform",
     "detailed-statistics": "Detailed Statistics",
@@ -567,6 +565,7 @@
     "total-photos": "Total Photos",
     "total-photos-description": "All photos",
     "total-plants": "Total plants",
+    "updated-at": "updated on",
     "view-all-photos": "to your Photos",
     "welcome-to-platform-subttitle": "Welcome to the Grower's platform where you can manage all your Grows and Plants"
   },

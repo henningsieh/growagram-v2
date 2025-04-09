@@ -10,7 +10,6 @@ interface EntityDateInfoProps {
   createdAt: Date;
   updatedAt?: Date;
   className?: string;
-  namespace?: string; // Translation namespace
 }
 
 /**
@@ -21,10 +20,9 @@ export function EntityDateInfo({
   createdAt,
   updatedAt,
   className = "",
-  namespace = "",
 }: EntityDateInfoProps) {
   const locale = useLocale() as Locale;
-  const t = useTranslations(namespace || "Common");
+  const t = useTranslations("Platform");
 
   return (
     <CardDescription

@@ -198,7 +198,6 @@ export function GrowCard({
           <EntityDateInfo
             createdAt={grow.createdAt}
             updatedAt={grow.updatedAt}
-            namespace="Grows"
           />
 
           <div className="justify-top flex h-full flex-1 flex-col">

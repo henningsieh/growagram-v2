@@ -210,7 +210,6 @@ export default function PlantCard({
             <EntityDateInfo
               createdAt={plant.createdAt}
               updatedAt={plant.updatedAt}
-              namespace="Plants"
             />
 
             {/* Image Carousel */}
