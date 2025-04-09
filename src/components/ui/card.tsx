@@ -7,7 +7,7 @@ function Card({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="card"
       className={cn(
-        "bg-card py-6 text-card-foreground flex flex-col gap-6 rounded-xl border shadow-sm",
+        "bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm",
         className
       )}
       {...props}
@@ -26,9 +26,41 @@ function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
       {...props}
     />
   )
+}/**
+ * Enhanced CardTitle Component
+ *
+ * Changes from original shadcn/ui CardTitle:
+ * - Added polymorphic "as" prop to render as different heading elements (h1-h6)
+ * - Implemented TypeScript generics to maintain proper type safety
+ * - Default element remains "div" for backward compatibility
+ *
+ * Original component only rendered as a div element with no flexibility for
+ * semantic heading levels. This enhancement allows for proper document structure
+ * while maintaining the same visual styling.
+ *
+ * Usage:
+ * <CardTitle>Default (renders as div)</CardTitle>
+ * <CardTitle as="h1">Primary Heading</CardTitle>
+ * <CardTitle as="h3">Section Heading</CardTitle>
+ */
+
+// Define the polymorphic component types
+type AsProp<C extends React.ElementType> = {
+  as?: C
 }
 
-function CardTitle({ className, as: Component = "div", ...props }: { className?: string; as?: React.ElementType; } & React.ComponentPropsWithoutRef<React.ElementType>) {
+type PropsWithAs<C extends React.ElementType, Props = object> = AsProp<C> &
+  Omit<React.ComponentPropsWithoutRef<C>, keyof AsProp<C> | keyof Props> &
+  Props
+
+// The CardTitle component with polymorphic "as" prop
+function CardTitle<C extends React.ElementType = "div">({
+  as,
+  className,
+  ...props
+}: PropsWithAs<C, { className?: string }>) {
+  const Component = as || "div"
+
   return (
     <Component
       data-slot="card-title"
