@@ -92,11 +92,11 @@ export function EnhancedPlantCard({ plant }: EnhancedPlantCardProps) {
 
             {/* Middle section with plant name - will shrink as needed */}
             <div className="w-0 min-w-0 flex-1">
-              <CardTitle as="h4" className="truncate text-base">
+              <CardTitle as="h3" className="truncate text-base">
                 <Button
                   asChild
                   variant="link"
-                  className="h-auto w-full justify-start p-0"
+                  className="h-auto justify-start p-0"
                 >
                   <Link
                     href={`${modulePaths.PUBLICPLANTS.path}/${plant.id}`}
@@ -193,8 +193,8 @@ export function EnhancedPlantCard({ plant }: EnhancedPlantCardProps) {
                           } as DateFormatOptions)}{" "}
                           {`(in ${formatDaysRemaining(
                             progress.daysUntilNextPhase,
-                            t("Common.day"),
-                            t("Common.days"),
+                            t("Platform.day"),
+                            t("Platform.days"),
                           )})`}
                         </p>
                       </div>

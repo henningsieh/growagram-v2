@@ -257,7 +257,7 @@ export default function PhotoCard({
                       currentQuery &&
                         currentQuery.sortField === PhotosSortField.UPLOAD_DATE
                         ? "text-secondary"
-                        : "text-accent-foreground",
+                        : "text-muted-foreground/60",
                     )}
                   >
                     <UploadCloud size={20} />
@@ -278,7 +278,7 @@ export default function PhotoCard({
                       currentQuery &&
                         currentQuery.sortField === PhotosSortField.CAPTURE_DATE
                         ? "text-secondary"
-                        : "text-accent-foreground",
+                        : "text-muted-foreground/60",
                     )}
                   >
                     <Camera size={20} />
