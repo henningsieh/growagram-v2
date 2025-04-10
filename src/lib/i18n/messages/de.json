@@ -167,7 +167,7 @@
     "FeaturesSection": {
       "cards": {
         "community": {
-          "description": "Tausche dich mit anderen Growers aus und lerne von ihren Erfahrungen.",
+          "description": "Vernetze dich mit anderen Growern und profitiere von einem Netzwerk voller Cannabis-Anbau-Wissen.",
           "title": "Community"
         },
         "connections": {
@@ -175,11 +175,11 @@
           "title": "Verknüpfungen"
         },
         "growDiary": {
-          "description": "Dokumentiere jeden Schritt deines Grows. Von der Keimung bis zur Ernte.",
+          "description": "Dokumentiere deine Anbau-Reise vom Samen bis zum Erfolg und erschaffe eine visuelle Geschichte deines Grows.",
           "title": "Grow Tagebuch"
         },
         "growStats": {
-          "description": "Behalte den Überblick über deine Wachstumsfortschritte und Ernten.",
+          "description": "Verfolge deine Erfolge im Anbau mit Präzision und feiere jede gelungene Ernte.",
           "title": "Grow Stats"
         }
       },
@@ -190,7 +190,7 @@
       "cta-button-pricing": "Grows erkunden",
       "cta-button-start": "Kostenlos starten",
       "description": "Entdecke die Welt des Cannabis Eigenanbaus. Teile deine                     Erfahrungen, lerne von der Community und dokumentiere deine Grows in einem digitalen Tagebuch.",
-      "subtitle": "Dein Cannabis Grow Tagebuch",
+      "subtitle": "Anbauen, dokumentieren, vernetzen - dein kompletter Grow-Begleiter",
       "title": "GrowAGram"
     },
     "PricingSection": {
@@ -247,7 +247,7 @@
     "discover": "Entdecken",
     "grower-menu": "Grower-Bereich",
     "grows": "Alle Grows",
-    "grows-description": "Entdecke andere Grow-Umgebungen und lass dich inspirieren.",
+    "grows-description": "Entdecke vielfältige Anbauumgebungen und hole dir Inspiration von anderen Growern.",
     "home": "Home",
     "my-grows": "Meine Grows",
     "my-grows-subline": "Verwalte und gruppiere deine Pflanzen in Grows.",
@@ -259,7 +259,7 @@
     "plants": "Alle Pflanzen",
     "plants-description": "Entdecke, welche Sorten andere anbauen und lerne von ihren Erfahrungen.",
     "timeline": "Community-Zeitleiste",
-    "timeline-description": "Sieh die neuesten Updates von dir und der Community in einem Feed.",
+    "timeline-description": "Erlebe die gemeinsame Anbau-Reise mit Updates von dir und der Community.",
     "toggle-menu": "Menü umschalten"
   },
   "Notifications": {
@@ -594,31 +594,31 @@
     "connect-with-steady": "Mit Steady verbinden",
     "faq": {
       "cancel-subscription": {
-        "answer": "Ja, du kannst dein Abonnement jederzeit über deinen Steady-Account kündigen. Dein Premium-Zugang bleibt bis zum Ende deiner aktuellen Abrechnungsperiode bestehen.",
+        "answer": "Ja, du kannst dein Abonnement jederzeit über dein Steady-Konto kündigen. Dein Premium-Zugang bleibt bis zum Ende deiner aktuellen Abrechnungsperiode bestehen.",
         "question": "Kann ich mein Abonnement jederzeit kündigen?"
       },
       "free-trial": {
-        "answer": "Derzeit bieten wir keine kostenlose Testphase an, aber du kannst unsere kostenlosen Inhalte ausprobieren, um einen Eindruck von unserem Angebot zu bekommen, bevor du abonnierst.",
-        "question": "Gibt es eine kostenlose Testphase?"
+        "answer": "Wir bieten derzeit keine kostenlose Testversion an, aber du kannst unsere kostenlosen Inhalte überprüfen, um einen Eindruck von unserem Angebot zu bekommen, bevor du ein Abonnement abschließt.",
+        "question": "Gibt es eine kostenlose Testversion?"
       },
       "how-subscription-works": {
-        "answer": "Unser Premium-Abonnement wird über Steady verwaltet. Sobald du deinen Steady-Account verbunden hast, erhältst du sofortigen Zugang zu allen Premium-Funktionen.",
+        "answer": "Unser Premium-Abonnement wird über Steady verwaltet. Sobald du dein Steady-Konto verbunden hast, erhältst du sofortigen Zugang zu allen Premium-Funktionen.",
         "question": "Wie funktioniert das Premium-Abonnement?"
       },
       "payment-methods": {
-        "answer": "Steady unterstützt verschiedene Zahlungsmethoden, einschließlich Kreditkarten, PayPal und SEPA-Lastschrift. Du kannst deine bevorzugte Methode während des Abonnement-Prozesses auswählen.",
+        "answer": "Steady unterstützt verschiedene Zahlungsmethoden, darunter Kreditkarten, PayPal und SEPA-Lastschrift. Du kannst während des Abonnementvorgangs deine bevorzugte Methode wählen.",
         "question": "Welche Zahlungsmethoden werden akzeptiert?"
       },
       "title": "Häufig gestellte Fragen"
     },
-    "get-exclusive-access": "Erhalte exklusiven Zugang zu Premium-Funktionen und unterstütze unsere Community!",
+    "get-exclusive-access": "Schalte Master-Grower Tools frei und werde Teil unseres Premium-Cultivators-Kreises!",
     "navigation": {
       "label": "Upgrade auf Pro"
     },
     "premium-subtitle": "Verbessere deine Anbau-Erfahrung mit exklusiven Vorteilen",
     "premium-title": "Premium-Funktionen freischalten",
-    "ready-to-go-premium": "Bereit für Premium?",
-    "unlock-premium-content": "Hebe deine Anbau-Reise auf ein neues Level"
+    "ready-to-go-premium": "Bereit, deine Anbau-Erfahrung zu transformieren?",
+    "unlock-premium-content": "Bringe deinen Cannabis-Anbau auf die nächste Stufe"
   },
   "Profile": {
     "FollowButton": {

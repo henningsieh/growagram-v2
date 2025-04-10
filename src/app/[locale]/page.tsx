@@ -54,7 +54,7 @@ export default function LandingPage() {
         className="relative overflow-hidden"
       >
         <div className="bg-muted flex min-h-[calc(100svh-9rem)] lg:pb-14">
-          <div className="mx-auto max-w-7xl px-6 py-12 sm:py-16 lg:px-8">
+          <div className="mx-auto my-auto max-w-7xl px-6 py-12 sm:py-16 lg:px-8">
             <div className="lg:grid lg:grid-cols-2 lg:gap-8">
               <motion.div
                 variants={itemVariants}

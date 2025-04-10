@@ -167,7 +167,7 @@
     "FeaturesSection": {
       "cards": {
         "community": {
-          "description": "Exchange ideas with other growers and learn from their experiences.",
+          "description": "Connect with fellow cultivators and tap into a network of cannabis growing wisdom.",
           "title": "Community"
         },
         "connections": {
@@ -175,11 +175,11 @@
           "title": "Connections"
         },
         "growDiary": {
-          "description": "Document every step of your grow. From germination to harvest.",
+          "description": "Capture your cultivation journey from seed to success, creating a visual story of your grow.",
           "title": "Grow Diary"
         },
         "growStats": {
-          "description": "Keep track of your growth progress and harvests.",
+          "description": "Track your green thumb triumphs with precision and celebrate each successful harvest.",
           "title": "Grow Stats"
         }
       },
@@ -190,7 +190,7 @@
       "cta-button-pricing": "Explore Grows",
       "cta-button-start": "Get Started for free",
       "description": "Discover the world of home cannabis cultivation. Share your experiences, learn from the community and document your grows in a digital diary.",
-      "subtitle": "Your cannabis grow diary",
+      "subtitle": "Cultivate, document, connect - your complete grow companion",
       "title": "GrowAGram"
     },
     "PricingSection": {
@@ -247,19 +247,15 @@
     "discover": "Discover",
     "grower-menu": "Grower's Platform",
     "grows": "All Grows",
-    "grows-description": "Explore other growers' environments and get inspired.",
+    "grows-description": "Explore diverse cultivation environments and draw inspiration from fellow growers.",
     "home": "Home",
     "my-grows": "My Grows",
     "my-grows-subline": "Manage and group your plants in Grows.",
-    "my-photos": "My Photos",
-    "my-photos-subline": "Manage your photos and connect them with plants.",
-    "my-plants": "My Plants",
-    "my-plants-subline": "Manage and edit your plants.",
     "navigation": "Navigation",
     "plants": "All Plants",
     "plants-description": "Discover what varieties others are growing and learn from their experiences.",
     "timeline": "Community Timeline",
-    "timeline-description": "See latest updates from you and the community in one feed.",
+    "timeline-description": "Experience the collective growing journey with updates from you and the community.",
     "toggle-menu": "Toggle menu"
   },
   "Notifications": {
@@ -611,14 +607,14 @@
       },
       "title": "Frequently Asked Questions"
     },
-    "get-exclusive-access": "Get exclusive access to premium features and support our community!",
+    "get-exclusive-access": "Unlock master grower tools and join our premium cultivators circle!",
     "navigation": {
       "label": "Upgrade to Pro"
     },
     "premium-subtitle": "Enhance your growing experience with exclusive benefits",
     "premium-title": "Unlock Premium Features",
-    "ready-to-go-premium": "Ready to Go Premium?",
-    "unlock-premium-content": "Elevate Your Growing Journey"
+    "ready-to-go-premium": "Ready to Transform Your Growing Experience?",
+    "unlock-premium-content": "Elevate Your Cannabis Cultivation Journey"
   },
   "Profile": {
     "FollowButton": {
