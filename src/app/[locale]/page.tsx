@@ -182,31 +182,6 @@ export default function LandingPage() {
                       alt="GrowAGram App Preview"
                       className="relative rounded-md shadow-xl"
                     />
-
-                    {/* Floating highlight dots */}
-                    <motion.div
-                      className="bg-primary absolute top-10 right-20 size-4 rounded-full opacity-70"
-                      animate={{
-                        y: [0, -15, 0],
-                      }}
-                      transition={{
-                        duration: 3,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                      }}
-                    />
-                    <motion.div
-                      className="bg-secondary absolute top-40 right-40 size-2 rounded-full opacity-70"
-                      animate={{
-                        y: [0, -10, 0],
-                      }}
-                      transition={{
-                        duration: 2.5,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                        delay: 0.5,
-                      }}
-                    />
                   </motion.div>
                 </div>
               </motion.div>
