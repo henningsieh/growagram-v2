@@ -164,7 +164,23 @@
     "title": "Hello world!"
   },
   "LandingPage": {
+    "AdditionalFeatures": {
+      "analyticsFeature": {
+        "description": "Track progress with beautiful visualizations and insightful statistics.",
+        "title": "Growth Analytics"
+      },
+      "communityFeature": {
+        "description": "Share experiences and learn from others in our growing community.",
+        "title": "Community Support"
+      },
+      "learnMore": "Learn more",
+      "privacyFeature": {
+        "description": "Your growth data stays yours. Track everything without compromising privacy.",
+        "title": "Privacy-First Tracking"
+      }
+    },
     "FeaturesSection": {
+      "badge": "Features",
       "cards": {
         "community": {
           "description": "Connect with fellow cultivators and tap into a network of cannabis growing wisdom.",
@@ -187,6 +203,7 @@
       "title": "Everything for your successful grow"
     },
     "HeroSection": {
+      "badge": "Show Your Grow!",
       "cta-button-pricing": "Explore Grows",
       "cta-button-start": "Get Started for free",
       "description": "Discover the world of home cannabis cultivation. Share your experiences, learn from the community and document your grows in a digital diary.",
@@ -251,6 +268,10 @@
     "home": "Home",
     "my-grows": "My Grows",
     "my-grows-subline": "Manage and group your plants in Grows.",
+    "my-photos": "",
+    "my-photos-subline": "",
+    "my-plants": "",
+    "my-plants-subline": "",
     "navigation": "Navigation",
     "plants": "All Plants",
     "plants-description": "Discover what varieties others are growing and learn from their experiences.",

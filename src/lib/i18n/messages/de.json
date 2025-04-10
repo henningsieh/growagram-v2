@@ -164,10 +164,26 @@
     "title": "Hallo Welt!"
   },
   "LandingPage": {
+    "AdditionalFeatures": {
+      "analyticsFeature": {
+        "description": "Verfolge Fortschritte mit schönen Visualisierungen und aufschlussreichen Statistiken.",
+        "title": "Wachstumsanalyse"
+      },
+      "communityFeature": {
+        "description": "Teile Erfahrungen und lerne von anderen in unserer wachsenden Community.",
+        "title": "Community-Unterstützung"
+      },
+      "learnMore": "Mehr erfahren",
+      "privacyFeature": {
+        "description": "Deine Wachstumsdaten bleiben deine. Dokumentiere alles ohne Kompromisse beim Datenschutz.",
+        "title": "Datenschutz an erster Stelle"
+      }
+    },
     "FeaturesSection": {
+      "badge": "Funktionen",
       "cards": {
         "community": {
-          "description": "Vernetze dich mit anderen Growern und profitiere von einem Netzwerk voller Cannabis-Anbau-Wissen.",
+          "description": "Vernetze dich mit anderen Growern und profitiere von einem Netzwerk voller Wissen zum Cannabisanbau.",
           "title": "Community"
         },
         "connections": {
@@ -175,11 +191,11 @@
           "title": "Verknüpfungen"
         },
         "growDiary": {
-          "description": "Dokumentiere deine Anbau-Reise vom Samen bis zum Erfolg und erschaffe eine visuelle Geschichte deines Grows.",
+          "description": "Dokumentiere deinen Anbaufortschritt von der Keimung bis zur Ernte und erstelle eine visuelle Dokumentation.",
           "title": "Grow Tagebuch"
         },
         "growStats": {
-          "description": "Verfolge deine Erfolge im Anbau mit Präzision und feiere jede gelungene Ernte.",
+          "description": "Erfasse präzise deine Erträge und feiere jede gelungene Ernte.",
           "title": "Grow Stats"
         }
       },
@@ -187,9 +203,10 @@
       "title": "Alles für deinen erfolgreichen Grow"
     },
     "HeroSection": {
+      "badge": "Show Your Grow!",
       "cta-button-pricing": "Grows erkunden",
       "cta-button-start": "Kostenlos starten",
-      "description": "Entdecke die Welt des Cannabis Eigenanbaus. Teile deine                     Erfahrungen, lerne von der Community und dokumentiere deine Grows in einem digitalen Tagebuch.",
+      "description": "Entdecke die Welt des Cannabis Eigenanbaus. Teile deine Erfahrungen, lerne von der Community und dokumentiere deine Grows in einem digitalen Tagebuch.",
       "subtitle": "Anbauen, dokumentieren, vernetzen - dein kompletter Grow-Begleiter",
       "title": "GrowAGram"
     },
