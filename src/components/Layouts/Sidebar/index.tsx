@@ -9,9 +9,9 @@ import {
   BellIcon,
   ChevronRight,
   ChevronsUpDown,
-  CircleGaugeIcon,
   LogOutIcon,
   PlusIcon,
+  ServerCogIcon,
   SparklesIcon,
   UserPenIcon,
 } from "lucide-react";
@@ -56,6 +56,7 @@ import {
 import { useSignOut } from "~/hooks/use-auth";
 import { Link } from "~/lib/i18n/routing";
 import { sidebarItems, translateSidebar } from "~/lib/sidebar";
+import { UserRoles } from "~/types/user";
 
 /**
  * ProtectedSidebar: Main sidebar component for authenticated users
@@ -239,11 +240,9 @@ function ProtectedSidebarContent({
                       <span className="truncate font-semibold">
                         {session?.user.name as string}
                       </span>
-                      <span
-                        className="truncate text-xs"
-                        // eslint-disable-next-line react/jsx-no-literals
-                      >
-                        @{session?.user.username as string}
+                      <span className="truncate text-xs">
+                        {"@"}
+                        {session?.user.username as string}
                       </span>
                     </div>
                     <ChevronsUpDown className="ml-auto size-4" />
@@ -287,6 +286,14 @@ function ProtectedSidebarContent({
                   {/* User Account Actions */}
                   <DropdownMenuSeparator />
                   <DropdownMenuGroup>
+                    {session?.user.role === UserRoles.ADMIN && (
+                      <Link href="/admin">
+                        <DropdownMenuItem className="cursor-pointer text-red-500 focus:bg-red-600/50 focus:text-white">
+                          <ServerCogIcon />
+                          {t("Admin.navigation.label")}
+                        </DropdownMenuItem>
+                      </Link>
+                    )}
                     <Link href={modulePaths.PREMIUM.path}>
                       <DropdownMenuItem className="cursor-pointer text-yellow-500 focus:bg-yellow-600/50 focus:text-white">
                         <SparklesIcon />

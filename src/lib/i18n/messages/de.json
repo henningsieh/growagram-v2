@@ -41,6 +41,39 @@
     "welcome-message-description": "Du musst zuerst deinen Benutzernamen (@username) festlegen, bevor du die Plattform nutzen kannst!",
     "welcome-message-title": "Willkommen"
   },
+  "Admin": {
+    "navigation": {
+      "label": "Admin-Bereich"
+    }
+  },
+  "AdminArea": {
+    "description": "Benutzer und Plattformeinstellungen verwalten",
+    "settings-coming-soon": "Admin-Einstellungen bald verfügbar",
+    "settings-tab": "Einstellungen",
+    "title": "Administration",
+    "user-management": {
+      "column-selector": "Spalten",
+      "columns": {
+        "actions": "Aktionen",
+        "createdAt": "Beitrittsdatum",
+        "email": "E-Mail",
+        "emailVerified": "Verifiziert",
+        "name": "Name",
+        "role": "Rolle",
+        "select": "Auswählen",
+        "username": "Benutzername"
+      },
+      "description": "Benutzer, Rollen und Berechtigungen verwalten",
+      "next": "Weiter",
+      "no-results": "Keine Ergebnisse gefunden",
+      "no-users": "Keine Benutzer gefunden",
+      "previous": "Zurück",
+      "search-placeholder": "Nach E-Mail suchen...",
+      "selected-count": "{count} Benutzer ausgewählt",
+      "title": "Benutzerverwaltung"
+    },
+    "users-tab": "Benutzer"
+  },
   "CardFooter": {
     "Login to see detailed view statistics": "Melde dich an, um detaillierte Statistiken zu sehen.",
     "Please log in to like this content": "Melde dich an, um diesen Inhalt zu liken.",

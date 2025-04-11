@@ -49,28 +49,29 @@ export default function LandingPage() {
             <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-8">
               <motion.div
                 variants={itemVariants}
-                className="flex max-w-2xl flex-col space-y-6"
+                className="flex max-w-2xl flex-col space-y-8"
               >
-                <div className="bg-primary/5 border-primary/20 text-primary inline-flex items-center self-start rounded-full border px-4 py-1.5 text-sm font-medium">
+                <div className="bg-primary/10 border-primary/50 text-primary inline-flex items-center self-start rounded-full border px-4 py-1.5 text-base font-medium">
                   <span className="mr-3 inline-block animate-pulse">🚀</span>
                   {t("HeroSection.badge")}
                   <span className="ml-3 inline-block animate-pulse">🪴</span>
                 </div>
 
-                <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-                  {t("HeroSection.title")}
-                </h1>
+                <div className="flex flex-col space-y-4">
+                  <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
+                    {t("HeroSection.title")}
+                  </h1>
 
-                <p className="text-primary text-xl font-medium">
-                  {t("HeroSection.subtitle")}
-                </p>
-
+                  <p className="text-primary text-xl font-medium">
+                    {t("HeroSection.subtitle")}
+                  </p>
+                </div>
                 <p className="text-muted-foreground text-lg">
                   {t("HeroSection.description")}
                 </p>
 
                 <div className="flex flex-col gap-4 pt-4 sm:flex-row">
-                  <Button asChild size="lg">
+                  <Button asChild size="lg" variant="secondary">
                     <Link href={modulePaths.DASHBOARD.path}>
                       {t("HeroSection.cta-button-start")}
                       <ChevronRight className="ml-2 h-4 w-4" />

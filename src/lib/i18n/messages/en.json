@@ -41,6 +41,39 @@
     "welcome-message-description": "You must set your username first before entering the platform!",
     "welcome-message-title": "Welcome"
   },
+  "Admin": {
+    "navigation": {
+      "label": "Admin Area"
+    }
+  },
+  "AdminArea": {
+    "description": "Manage users and platform settings",
+    "settings-coming-soon": "Admin settings coming soon",
+    "settings-tab": "Settings",
+    "title": "Administration",
+    "user-management": {
+      "column-selector": "Columns",
+      "columns": {
+        "actions": "Actions",
+        "createdAt": "Joined Date",
+        "email": "Email",
+        "emailVerified": "Verified",
+        "name": "Name",
+        "role": "Role",
+        "select": "Select",
+        "username": "Username"
+      },
+      "description": "Manage users, roles, and permissions",
+      "next": "Next",
+      "no-results": "No results found",
+      "no-users": "No users found",
+      "previous": "Previous",
+      "search-placeholder": "Search by email...",
+      "selected-count": "{count} users selected",
+      "title": "User Management"
+    },
+    "users-tab": "Users"
+  },
   "CardFooter": {
     "Login to see detailed view statistics": "Login to see detailed view statistics.",
     "Please log in to like this content": "Please log in to like this content.",
