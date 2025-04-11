@@ -70,7 +70,17 @@
       "previous": "Previous",
       "search-placeholder": "Search by email...",
       "selected-count": "{count} users selected",
-      "title": "User Management"
+      "title": "User Management",
+      "buttons": {
+        "copy-id": "Copy User ID",
+        "view-profile": "View User Profile",
+        "edit-details": "Edit User Details",
+        "delete-user": "Delete User"
+      },
+      "toasts": {
+        "copy-success": "User ID copied to clipboard",
+        "copy-error": "Failed to copy to clipboard. This feature may not be supported in your browser."
+      }
     },
     "users-tab": "Users"
   },

@@ -70,7 +70,17 @@
       "previous": "Zurück",
       "search-placeholder": "Nach E-Mail suchen...",
       "selected-count": "{count} Benutzer ausgewählt",
-      "title": "Benutzerverwaltung"
+      "title": "Benutzerverwaltung",
+      "buttons": {
+        "copy-id": "Benutzer-ID kopieren",
+        "view-profile": "Benutzerprofil anzeigen",
+        "edit-details": "Benutzerdetails bearbeiten",
+        "delete-user": "Benutzer löschen"
+      },
+      "toasts": {
+        "copy-success": "Benutzer-ID in die Zwischenablage kopiert",
+        "copy-error": "Kopieren in die Zwischenablage fehlgeschlagen. Diese Funktion wird möglicherweise von Ihrem Browser nicht unterstützt."
+      }
     },
     "users-tab": "Benutzer"
   },

@@ -2,21 +2,14 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown } from "lucide-react";
 import { CustomAvatar } from "~/components/atom/custom-avatar";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Checkbox } from "~/components/ui/checkbox";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu";
 import type { AdminUserListItem } from "~/server/api/root";
 import { UserRoles } from "~/types/user";
+import { ActionsCell } from "./components/actions-cell";
 
 export const columns: ColumnDef<AdminUserListItem>[] = [
   {
@@ -49,7 +42,7 @@ export const columns: ColumnDef<AdminUserListItem>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Name
+          {"Name"}
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
@@ -74,12 +67,17 @@ export const columns: ColumnDef<AdminUserListItem>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Username
+          {"Username"}
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
-    cell: ({ row }) => <div>@{row.original.username}</div>,
+    cell: ({ row }) => (
+      <div>
+        {"@"}
+        {row.original.username}
+      </div>
+    ),
   },
   {
     accessorKey: "email",
@@ -89,7 +87,7 @@ export const columns: ColumnDef<AdminUserListItem>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Email
+          {"Email"}
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
@@ -104,7 +102,7 @@ export const columns: ColumnDef<AdminUserListItem>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Role
+          {"Role"}
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
@@ -132,7 +130,7 @@ export const columns: ColumnDef<AdminUserListItem>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Verified
+          {"Verified"}
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
@@ -154,7 +152,7 @@ export const columns: ColumnDef<AdminUserListItem>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Joined Date
+          {"Joined Date"}
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
@@ -166,34 +164,6 @@ export const columns: ColumnDef<AdminUserListItem>[] = [
   },
   {
     id: "actions",
-    cell: ({ row }) => {
-      const user = row.original;
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(user.id)}
-            >
-              Copy User ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View User Profile</DropdownMenuItem>
-            <DropdownMenuItem>Edit User Details</DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-destructive">
-              Delete User
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
+    cell: ({ row }) => <ActionsCell user={row.original} />,
   },
 ];
