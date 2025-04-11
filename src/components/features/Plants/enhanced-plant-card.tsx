@@ -3,7 +3,7 @@
 import * as React from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { AnimatePresence, motion } from "framer-motion";
-import { Clock, type LucideIcon, NutIcon } from "lucide-react";
+import { Clock, type LucideIcon, NutIcon, TentTreeIcon } from "lucide-react";
 import { modulePaths } from "~/assets/constants";
 import { CustomAvatar } from "~/components/atom/custom-avatar";
 import {
@@ -102,7 +102,9 @@ export function EnhancedPlantCard({ plant }: EnhancedPlantCardProps) {
                     href={`${modulePaths.PUBLICPLANTS.path}/${plant.id}`}
                     className="truncate"
                   >
-                    <span className="block truncate text-lg">{plant.name}</span>
+                    <span className="block truncate text-base">
+                      {plant.name}
+                    </span>
                   </Link>
                 </Button>
               </CardTitle>
@@ -115,27 +117,27 @@ export function EnhancedPlantCard({ plant }: EnhancedPlantCardProps) {
               {plant.strain && <StrainBadge strain={plant.strain} />}
             </div>
 
-            {/* {plant.grow && (
+            {plant.grow && (
               <HybridTooltip>
                 <HybridTooltipTrigger>
                   <Button
                     asChild
                     size={"icon"}
-                    variant="outline"
-                    className="text-muted-foreground hover:text-secondary size-4 rounded-sm p-3"
+                    variant="grow"
+                    className="size-5.5 rounded-sm"
                     aria-label={t("Account.account-info-title")}
                   >
                     <Link
                       href={`${modulePaths.PUBLICGROWS.path}/${plant.grow.id}`}
-                      className="text-muted-foreground hover:text-secondary"
+                      // className="text-muted-foreground hover:text-secondary"
                     >
-                      <TentTree className="h-4 w-4" />
+                      <TentTreeIcon className="h-4 w-4" />
                     </Link>
                   </Button>
                 </HybridTooltipTrigger>
                 <HybridTooltipContent>{plant.grow.name}</HybridTooltipContent>
               </HybridTooltip>
-            )} */}
+            )}
           </div>
         </CardHeader>
 

@@ -47,7 +47,7 @@ export function EmbeddedGrowCard({ grow }: EmbeddedGrowCardProps) {
             <Button
               asChild
               variant="link"
-              className="text-secondary has-[>svg]:px-0"
+              className="text-secondary text-lg has-[>svg]:px-0"
             >
               <Link
                 href={`/public/grows/${grow.id}`}
@@ -90,7 +90,7 @@ export function EmbeddedGrowCard({ grow }: EmbeddedGrowCardProps) {
                     </span>
                   </HybridTooltipTrigger>
                   <HybridTooltipContent>
-                    <p>{t("Grows.grow-card-createdAt")}</p>
+                    <p>{t("Platform.created-at")}</p>
                   </HybridTooltipContent>
                 </HybridTooltip>
               </div>

@@ -142,7 +142,7 @@ export default function PostCard({ post, isSocialProp = true }: PostCardProps) {
 
         {isSocial && (
           <SocialCardFooter
-            className={`pr-2 pb-2 ${isSocial && "ml-12"}`}
+            className={`${isSocial && "ml-12"}`}
             entityId={post.id}
             entityType={LikeableEntityType.Post}
             initialLiked={isLiked}
