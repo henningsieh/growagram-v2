@@ -91,7 +91,7 @@ export default function LandingPage() {
         exit="hidden"
         className="relative z-10 overflow-hidden"
       >
-        <div className="bg-muted/60 relative flex min-h-[calc(100svh-9rem)] backdrop-blur-sm lg:pb-14">
+        <div className="glass-effect relative flex min-h-[calc(100svh-9rem)] lg:pb-14">
           {/* Subtle grid background */}
           <div className="bg-grid-pattern absolute inset-0 opacity-5" />
 
@@ -117,9 +117,9 @@ export default function LandingPage() {
                     <h1 className="block text-5xl drop-shadow-sm sm:text-6xl md:text-7xl">
                       {t("HeroSection.title")}
                     </h1>
-                    <h2 className="text-primary block pb-3 text-2xl sm:pb-5 sm:text-3xl xl:text-4xl">
+                    <p className="text-primary block pb-3 text-2xl sm:pb-5 sm:text-3xl xl:text-4xl">
                       {t("HeroSection.subtitle")}
-                    </h2>
+                    </p>
                   </div>
                   <p className="text-muted-foreground mt-3 text-base sm:mt-5 sm:text-xl lg:text-lg xl:text-xl">
                     {t("HeroSection.description")}
@@ -129,8 +129,8 @@ export default function LandingPage() {
                       <Button
                         asChild
                         size="lg"
-                        variant="primary"
-                        className="hover:shadow-primary/25 group shadow-lg transition-all hover:translate-y-[-2px]"
+                        variant="secondary"
+                        className="hover:shadow-secondary/25 group font-semibold shadow-lg transition-all hover:translate-y-[-2px]"
                       >
                         <Link href={modulePaths.DASHBOARD.path}>
                           {t("HeroSection.cta-button-start")}
@@ -141,7 +141,7 @@ export default function LandingPage() {
                         asChild
                         size="lg"
                         variant="outline"
-                        className="border-primary/20 hover:bg-primary/5 backdrop-blur transition-all"
+                        // className="border-primary/20 hover:bg-primary/5 backdrop-blur transition-all"
                       >
                         <Link
                           href="/public/grows"
@@ -162,7 +162,7 @@ export default function LandingPage() {
               >
                 <div className="sticky top-24">
                   <motion.div
-                    className="relative h-[min(820px,80vh)] w-[1138px] -translate-y-12 overflow-visible"
+                    className="frost-card relative h-[min(820px,80vh)] w-[1138px] -translate-y-12 overflow-visible"
                     whileHover={{ scale: 1.01 }}
                     transition={{ duration: 0.3 }}
                   >
@@ -271,13 +271,13 @@ export default function LandingPage() {
             <div className="relative mt-32">
               <div className="from-primary/20 to-secondary/20 absolute -inset-x-4 -top-2 -bottom-2 rounded-3xl bg-gradient-to-r"></div>
               <motion.div
-                className="relative grid gap-8 md:grid-cols-3"
+                className="glass-effect relative grid gap-8 rounded-3xl p-4 md:grid-cols-3"
                 initial={{ opacity: 0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.7 }}
               >
-                <div className="flex flex-col gap-4 p-6">
+                <div className="frost-card flex flex-col gap-4 p-6">
                   <div className="bg-harvest/30 flex h-14 w-14 items-center justify-center rounded-full p-3">
                     <ShieldCheckIcon className="text-harvest h-6 w-6" />
                   </div>
@@ -289,7 +289,7 @@ export default function LandingPage() {
                   </p>
                 </div>
 
-                <div className="xs:translate-y-0 flex translate-y-8 flex-col gap-4 p-6">
+                <div className="frost-card xs:translate-y-0 flex translate-y-8 flex-col gap-4 p-6">
                   <div className="bg-flowering/20 flex h-14 w-14 items-center justify-center rounded-full p-3">
                     <LineChartIcon className="text-flowering h-6 w-6" />
                   </div>
@@ -301,7 +301,7 @@ export default function LandingPage() {
                   </p>
                 </div>
 
-                <div className="flex flex-col gap-4 p-6">
+                <div className="frost-card flex flex-col gap-4 p-6">
                   <div className="bg-curing/20 flex h-14 w-14 items-center justify-center rounded-full p-3">
                     <UsersIcon className="text-curing h-6 w-6" />
                   </div>
@@ -336,7 +336,7 @@ function FeatureCard({
 
   return (
     <motion.div variants={itemVariants} whileHover="hover">
-      <Card className="bg-card/60 relative flex h-full flex-col overflow-hidden border-0 backdrop-blur-sm">
+      <Card className="frost-card relative flex h-full flex-col overflow-hidden border-0">
         {/* Background gradient glow effect */}
         <div
           className={`absolute inset-0 bg-gradient-to-br from-${color}/10 to-transparent opacity-70`}
