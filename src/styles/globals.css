@@ -10,47 +10,56 @@
     --bprogress-spinner-top: 13px;
     --bprogress-spinner-left: 102px;
   }
+
+  /* Grid pattern background for enhanced visuals */
+  .bg-grid-pattern {
+    background-image:
+      linear-gradient(to right, var(--primary) / 5% 1px, transparent 1px),
+      linear-gradient(to bottom, var(--primary) / 5% 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
 }
 
 :root {
-  --background: oklch(0.93 0.03 85.56);
-  --foreground: oklch(0.41 0.08 78.87);
-  --card: oklch(0.92 0.04 84.58);
-  --card-foreground: oklch(0.41 0.08 74.05);
-  --popover: oklch(0.92 0.04 84.58);
-  --popover-foreground: oklch(0.41 0.08 74.05);
-  --primary: oklch(0.6 0.16 141.98);
-  --primary-foreground: oklch(0.98 0.01 1.98);
-  --secondary: oklch(0.76 0.17 57.7);
-  --secondary-foreground: oklch(0.98 0.01 1.98);
-  --muted: oklch(0.86 0.06 82.95);
-  --muted-foreground: oklch(0.51 0.08 74.79);
-  --accent: oklch(0.86 0.05 85.13);
-  --accent-foreground: oklch(0.41 0.08 74.05);
-  --destructive: oklch(0.63 0.24 29.21);
-  --destructive-foreground: oklch(0.97 0.02 351.14);
-  --border: oklch(0.74 0.06 79.65);
-  --input: oklch(0.91 0.05 82.79);
-  --ring: oklch(0.6 0.16 141.98);
-  --chart-1: oklch(0.66 0.19 41.68);
-  --chart-2: oklch(0.7 0.12 183.6);
-  --chart-3: oklch(0.48 0.08 211.31);
-  --chart-4: oklch(0.84 0.17 85);
-  --chart-5: oklch(0.74 0.17 59.96);
-  --sidebar: oklch(0.92 0.04 84.58);
-  --sidebar-foreground: oklch(0.41 0.08 74.05);
-  --sidebar-primary: oklch(0.6 0.16 141.98);
-  --sidebar-primary-foreground: oklch(0.98 0.01 1.98);
-  --sidebar-accent: oklch(0.86 0.05 85.13);
-  --sidebar-accent-foreground: oklch(0.41 0.08 74.05);
-  --sidebar-border: oklch(0.74 0.06 79.65);
-  --sidebar-ring: oklch(0.6 0.16 141.98);
-  --font-sans:
-    var(--font-nunito), system-ui, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", Roboto, sans-serif;
-  --font-heading: var(--font-grandstander), Georgia, serif;
-  --font-serif: Merriweather, serif;
-  --font-mono: Roboto Mono, monospace;
+  --planted: oklch(0.56 0.24 54); /* rust/terracotta */
+  --seedling: oklch(0.64 0.3 324); /* purple */
+  --vegetation: oklch(0.56 0.185 144); /* green */
+  --flowering: oklch(0.56 0.24 14); /* pink */
+  --harvest: oklch(0.78 0.16 96); /* yellow */
+  --curing: oklch(0.56 0.24 264); /* blue */
+
+  --background: oklch(0.91 0.048 83.6);
+  --foreground: oklch(0.41 0.077 78.9);
+  --card: oklch(0.92 0.042 83.6);
+  --card-foreground: oklch(0.41 0.077 74.3);
+  --popover: oklch(0.92 0.042 83.6);
+  --popover-foreground: oklch(0.41 0.077 74.3);
+  --primary: oklch(0.59 0.16 132);
+  --primary-foreground: oklch(0.98 0.005 0);
+  --secondary: oklch(0.7 0.192 42);
+  --secondary-foreground: oklch(0.92 0.02 42);
+  --muted: oklch(0.86 0.064 83.7);
+  --muted-foreground: oklch(0.51 0.077 74.3);
+  --accent: oklch(0.71 0.097 111.7);
+  --accent-foreground: oklch(0.98 0.005 0);
+  --destructive: oklch(0.63 0.24 29.2);
+  --destructive-foreground: oklch(0.97 0.018 0);
+  --border: oklch(0.74 0.063 80.8);
+  --input: oklch(0.74 0.063 80.8);
+  --ring: oklch(0.59 0.16 132);
+  --chart-1: oklch(0.66 0.19 41.6);
+  --chart-2: oklch(0.68 0.16 184.9);
+  --chart-3: oklch(0.48 0.09 210.9);
+  --chart-4: oklch(0.85 0.19 85.4);
+  --chart-5: oklch(0.74 0.19 66.3);
+  --sidebar: oklch(0.87 0.059 83.7);
+  --sidebar-foreground: oklch(0.41 0.077 78.9);
+  --sidebar-primary: oklch(0.59 0.16 132);
+  --sidebar-primary-foreground: oklch(0.98 0.005 0);
+  --sidebar-accent: oklch(0.71 0.097 111.7);
+  --sidebar-accent-foreground: oklch(0.98 0.005 0);
+  --sidebar-border: oklch(0.74 0.063 80.8);
+  --sidebar-ring: oklch(0.59 0.16 132);
   --radius: 0.625rem;
   --shadow-2xs: 0px 8px 16px -4px hsl(0 0% 0% / 0.04);
   --shadow-xs: 0px 8px 16px -4px hsl(0 0% 0% / 0.04);
@@ -68,9 +77,16 @@
 }
 
 .dark {
+  --planted: oklch(0.64 0.24 54); /* rust/terracotta */
+  --seedling: oklch(0.64 0.3 324); /* purple */
+  --vegetation: oklch(0.64 0.185 144); /* green */
+  --flowering: oklch(0.64 0.24 14); /* pink */
+  --harvest: oklch(0.78 0.18 96); /* yellow */
+  --curing: oklch(0.64 0.25 264); /* blue */
+
   --background: oklch(0.17 0.02 87.73);
   --foreground: oklch(0.95 0.02 87.51);
-  --card: oklch(0.2 0.03 82.37);
+  --card: oklch(0.24 0.05 72);
   --card-foreground: oklch(0.95 0.02 87.51);
   --popover: oklch(0.2 0.03 82.37);
   --popover-foreground: oklch(0.86 0.05 85.13);
@@ -100,11 +116,6 @@
   --sidebar-accent-foreground: oklch(0.86 0.05 85.13);
   --sidebar-border: oklch(0.37 0.06 76.03);
   --sidebar-ring: oklch(0.57 0.19 141.69);
-  --font-sans:
-    var(--font-nunito), system-ui, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", Roboto, sans-serif;
-  --font-serif: Merriweather, serif;
-  --font-mono: Roboto Mono, monospace;
   --radius: 0.625rem;
   --shadow-2xs: 0px 8px 16px -4px hsl(0 0% 0% / 0.04);
   --shadow-xs: 0px 8px 16px -4px hsl(0 0% 0% / 0.04);
@@ -122,6 +133,13 @@
 }
 
 @theme inline {
+  --color-planted: var(--planted);
+  --color-seedling: var(--seedling);
+  --color-vegetation: var(--vegetation);
+  --color-flowering: var(--flowering);
+  --color-harvest: var(--harvest);
+  --color-curing: var(--curing);
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -172,14 +190,55 @@
   --shadow-lg: var(--shadow-lg);
   --shadow-xl: var(--shadow-xl);
   --shadow-2xl: var(--shadow-2xl);
+
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  --breakpoint-xs: 480px;
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 960px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+
+  @keyframes accordion-down {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+
+  @keyframes accordion-up {
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
 }
 
 @layer base {
+  :root {
+    --font-sans:
+      var(--font-nunito), system-ui, -apple-system, BlinkMacSystemFont,
+      "Segoe UI", Roboto, sans-serif;
+    --font-serif: Merriweather, serif;
+    --font-mono: Roboto Mono, monospace;
+  }
   * {
     @apply border-border outline-ring/50;
   }
   body {
     @apply bg-background text-foreground;
+    font-weight: var(--font-weight-medium);
   }
   /* Apply Grandstander to all heading elements */
   h1,
@@ -188,6 +247,47 @@
   h4,
   h5,
   h6 {
-    font-family: var(--font-heading);
+    font-family: var(--font-grandstander);
+    font-weight: 600;
+  }
+
+  /* .border {
+    border-width: 2px !important;
+  }
+  .border-l {
+    border-left-width: 2px !important;
+  }
+  .border-r {
+    border-right-width: 2px !important;
+  }
+  .border-t {
+    border-top-width: 2px !important;
+  }
+  .border-b {
+    border-bottom-width: 2px !important;
+  }
+  .shadow-primary {
+    box-shadow: 0 2px 0 0 var(--primary-border);
+  }
+  .shadow-destructive {
+    box-shadow: 0 2px 0 0 var(--destructive);
+  }
+  .shadow-destructive-border {
+    box-shadow: 0 2px 0 0 var(--destructive-border);
+  } */
+
+  .texture {
+    background-image: url(/images/texture.png);
+    background-size: 100% 100%;
+    background-repeat: repeat;
+    opacity: 0.12;
+    mix-blend-mode: multiply;
+    z-index: 100;
+    isolation: isolate;
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100dvh;
+    pointer-events: none;
   }
 }
