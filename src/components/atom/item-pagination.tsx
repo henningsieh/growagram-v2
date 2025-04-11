@@ -55,7 +55,7 @@ export default function ItemsPagination({
         <PaginationContent>
           <PaginationItem hidden={currentPage === 1}>
             <PaginationPrevious
-              className="p-0"
+              className="cursor-pointer p-0"
               onClick={() => handlePageChange(currentPage - 1)}
             >
               <ChevronLeftIcon className="h-4 w-4" />
@@ -84,7 +84,7 @@ export default function ItemsPagination({
 
           <PaginationItem hidden={currentPage === totalPages}>
             <PaginationNext
-              className="p-0"
+              className="cursor-pointer p-0"
               onClick={() => handlePageChange(currentPage + 1)}
             >
               <ChevronRightIcon className="h-4 w-4" />
