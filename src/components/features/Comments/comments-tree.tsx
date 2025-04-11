@@ -35,7 +35,7 @@ const CommentsTree: React.FC<CommentsTreeProps> = ({
 
       {!isLoading && replies && replies.length > 0 && (
         <>
-          <div className="bg-accent/60 absolute top-[3rem] bottom-1 left-[30px] w-px" />
+          <div className="bg-accent/60 absolute top-[3rem] bottom-1 left-[25px] w-px" />
           <ul className="space-y-4 pt-2 pl-5">
             {replies.map((reply) => (
               <li key={reply.id}>

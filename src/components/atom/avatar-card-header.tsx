@@ -39,79 +39,74 @@ function AvatarCardHeader({
   actions,
 }: SocialHeaderProps) {
   return (
-    <CardHeader className="space-y-0 px-1 py-0">
-      <div className="flex items-start justify-between pt-0.5">
-        <div className="flex items-center gap-2">
-          <CustomAvatar
-            size={36}
-            src={user.image ?? undefined}
-            alt={user.username ?? "User avatar"}
-            fallback={user.name?.[0] || "?"}
-          />
-          <div className="xs:flex-row xs:gap-1 flex flex-col gap-0">
-            <Link
-              href={`/public/profile/${user.id}`}
-              className="text-muted-foreground flex items-center text-sm"
-              // eslint-disable-next-line react/jsx-no-literals
-            >
-              <div className="flex items-center gap-2 whitespace-nowrap">
-                <p className="text-foreground text-sm font-bold underline-offset-4 hover:underline">
-                  {user.name}
-                </p>
-                {user.role === UserRoles.ADMIN && (
-                  <div title="Administrator">
-                    <ShieldIcon
-                      fill="var(--color-yellow-500)"
-                      className="h-4 w-4 text-yellow-700"
-                    />
-                  </div>
-                )}
-                <span
-                  className="text-muted-foreground"
-                  // eslint-disable-next-line react/jsx-no-literals
-                >
-                  @{user.username}
-                </span>
-              </div>
-            </Link>
-            {dateElement && dateElement}
-          </div>
+    <CardHeader className="flex h-12.5 items-center justify-between space-y-0 px-1 py-0 pt-0">
+      <div className="flex items-center gap-2">
+        <CustomAvatar
+          size={36}
+          src={user.image ?? undefined}
+          alt={user.username ?? "User avatar"}
+          fallback={user.name?.[0] || "?"}
+          className="ring-muted-foreground ring-1 transition-colors duration-200 ease-in-out hover:ring-2"
+        />
+        <div className="flex flex-col gap-0 sm:flex-row sm:gap-1">
+          <Link
+            href={`/public/profile/${user.id}`}
+            className="text-muted-foreground flex items-center text-sm"
+          >
+            <div className="flex items-center gap-2 whitespace-nowrap">
+              <p className="text-foreground text-sm font-bold underline-offset-4 hover:underline">
+                {user.name}
+              </p>
+              {user.role === UserRoles.ADMIN && (
+                <div title="Administrator">
+                  <ShieldIcon
+                    fill="var(--color-yellow-500)"
+                    className="h-4 w-4 text-yellow-700"
+                  />
+                </div>
+              )}
+              <span className="text-muted-foreground">
+                {`@${user.username}`}
+              </span>
+            </div>
+          </Link>
+          {dateElement && dateElement}
         </div>
-        {showActions && actions && actions.length > 0 && (
-          <DropdownMenu>
-            <DropdownMenuTrigger
-              asChild
-              className="text-muted-foreground hover:text-foreground"
-            >
-              <Button variant="ghost" size="icon" aria-label="More actions">
-                <MoreHorizontal className="h-6 w-6" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="min-w-6" align="end">
-              {actions.map((action, index) => {
-                const Icon = action.icon;
-                return (
-                  <DropdownMenuItem
-                    className="px-0 py-0.5 focus:bg-transparent"
-                    key={`${action.label}-${index}`}
-                  >
-                    <Button
-                      size={"sm"}
-                      className="flex w-full items-center justify-start"
-                      variant={action.variant}
-                      disabled={action.disabled}
-                      onClick={action.onClick}
-                    >
-                      <Icon className="mr-2 h-4 w-4" />
-                      {action.label}
-                    </Button>
-                  </DropdownMenuItem>
-                );
-              })}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        )}
       </div>
+      {showActions && actions && actions.length > 0 && (
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            asChild
+            className="text-muted-foreground hover:text-foreground"
+          >
+            <Button variant="ghost" size="icon" aria-label="More actions">
+              <MoreHorizontal className="h-6 w-6" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="min-w-6" align="end">
+            {actions.map((action, index) => {
+              const Icon = action.icon;
+              return (
+                <DropdownMenuItem
+                  className="px-0 py-0.5 focus:bg-transparent"
+                  key={`${action.label}-${index}`}
+                >
+                  <Button
+                    size={"sm"}
+                    className="flex w-full items-center justify-start"
+                    variant={action.variant}
+                    disabled={action.disabled}
+                    onClick={action.onClick}
+                  >
+                    <Icon className="mr-2 h-4 w-4" />
+                    {action.label}
+                  </Button>
+                </DropdownMenuItem>
+              );
+            })}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )}
     </CardHeader>
   );
 }

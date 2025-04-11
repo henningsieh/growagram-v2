@@ -6,13 +6,11 @@ import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
 import { AnimatePresence, motion } from "framer-motion";
 import {
-  AlertCircle,
-  Calendar1Icon,
+  AlertCircleIcon,
   DotIcon,
   EditIcon,
   MessageSquareTextIcon,
-  TentTree,
-  Trash2,
+  Trash2Icon,
 } from "lucide-react";
 import { toast } from "sonner";
 import { modulePaths } from "~/assets/constants";
@@ -28,12 +26,7 @@ import { EnhancedPlantCard } from "~/components/features/Plants/enhanced-plant-c
 import { PostFormModal } from "~/components/features/Timeline/Post/post-form-modal";
 import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
 import { Button } from "~/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardTitle,
-} from "~/components/ui/card";
+import { Card, CardContent, CardTitle } from "~/components/ui/card";
 import { useComments } from "~/hooks/use-comments";
 import { useLikeStatus } from "~/hooks/use-likes";
 import { Link, useRouter } from "~/lib/i18n/routing";
@@ -62,6 +55,7 @@ export function GrowCard({
   const locale = useLocale();
   const utils = api.useUtils();
 
+  const tCommon = useTranslations("Platform");
   const t = useTranslations("Grows");
 
   const [isSocial, setIsSocial] = React.useState(isSocialProp);
@@ -115,7 +109,7 @@ export function GrowCard({
 
   if (user && (user.id === grow.ownerId || user.role === UserRoles.ADMIN)) {
     growActions.push({
-      icon: Trash2,
+      icon: Trash2Icon,
       label: t("delete-button-label"),
       variant: "destructive",
       onClick: handleDelete,
@@ -126,8 +120,8 @@ export function GrowCard({
   const dateElement = (
     <Link
       href={`/public/grows/${grow.id}`}
-      title={t("updated-at")}
-      className="text-muted-foreground flex items-center gap-1 text-sm whitespace-nowrap"
+      title={tCommon("updated-at")}
+      className="text-muted-foreground flex items-center gap-1 text-sm whitespace-nowrap underline-offset-3 hover:underline"
     >
       {<DotIcon size={24} className="xs:block -mx-2 hidden" />}
       {formatDate(grow.updatedAt, locale as Locale)}{" "}
@@ -222,7 +216,7 @@ export function GrowCard({
                   ))
                 ) : (
                   <Alert variant="destructive" className="bg-accent/20">
-                    <AlertCircle className="h-4 w-4" />
+                    <AlertCircleIcon className="h-4 w-4" />
                     <AlertTitle>{t("no-plants-connected")}</AlertTitle>
                     <AlertDescription>
                       {/* {t("connect-plants-description")} */}

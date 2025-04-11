@@ -156,8 +156,7 @@
         "title": "Plant Removed"
       }
     },
-    "unexpected-error": "Unexpected error occurred.",
-    "updated-at": "Last edited at"
+    "unexpected-error": "Unexpected error occurred."
   },
   "HomePage": {
     "about": "go to Timeline",
@@ -413,7 +412,6 @@
         }
       }
     },
-    "updated-at": "Last edited at",
     "upload": {
       "buttonLabel-files": "Files",
       "buttonLabel-upload": "Upload",
@@ -530,7 +528,6 @@
     "thc-content": "THC Content",
     "title": "My Plants",
     "until": "until",
-    "updated-at": "Last edited at",
     "user-has-no-plants": "You haven&apos;t added any plants yet.",
     "vegetation-start-date": "Vegetation Start Date"
   },

@@ -18,7 +18,7 @@ const badgeVariants = cva(
         plant: 
           "bg-primary/80 border border border-primary text-primary-foreground shadow-2xs hover:bg-primary/60",
         strain: 
-          " border border border-fuchsia-400 text-foreground shadow-2xs bg-fuchsia-900 hover:bg-fuchsia-700",
+          "border border-fuchsia-400 text-fuchsia-900 shadow-2xs bg-fuchsia-100 hover:bg-fuchsia-200",
         destructive:
           "border-transparent bg-destructive text-white [a&]:hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
         outline:

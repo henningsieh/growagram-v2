@@ -156,8 +156,7 @@
         "title": "Pflanze entfernt"
       }
     },
-    "unexpected-error": "Ein unerwarteter Fehler ist aufgetreten.",
-    "updated-at": "Zuletzt bearbeitet"
+    "unexpected-error": "Ein unerwarteter Fehler ist aufgetreten."
   },
   "HomePage": {
     "about": "gehe zur Zeitleiste",
@@ -413,7 +412,6 @@
         }
       }
     },
-    "updated-at": "Zuletzt bearbeitet",
     "upload": {
       "buttonLabel-files": "Dateien",
       "buttonLabel-upload": "Hochladen",
@@ -530,7 +528,6 @@
     "thc-content": "THC-Gehalt",
     "title": "Meine Pflanzen",
     "until": "bis",
-    "updated-at": "Zuletzt bearbeitet",
     "user-has-no-plants": "Du hast bisher keine Pflanzen hinzugefügt.",
     "vegetation-start-date": "Startdatum der Wachstumsphase"
   },
