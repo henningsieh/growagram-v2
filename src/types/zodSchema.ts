@@ -17,12 +17,9 @@ export const plantFormSchema = z.object({
   strainId: z.string().nullable().optional(),
   breederId: z.string().nullable().optional(),
   startDate: z
-    .union([
-      z.date({
-        required_error: "'Seed Planted (Start date)' is required.",
-      }),
-      z.null(),
-    ])
+    .date({
+      required_error: "'Seed Planted (Start date)' is required.",
+    })
     .refine((value) => value !== null, {
       message: "'Seed Planted (Start date)' is required.", // Ensures `null` triggers the correct error message
     }),
