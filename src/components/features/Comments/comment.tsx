@@ -225,7 +225,7 @@ export const Comment: React.FC<CommentProps> = ({
         </div>
 
         <SocialCardFooter
-          className={`pr-2 pb-2 ${isSocial && "ml-12"}`}
+          className={`${isSocial && "ml-12"}`}
           entityId={comment.id}
           entityType={LikeableEntityType.Comment}
           initialLiked={isLiked}

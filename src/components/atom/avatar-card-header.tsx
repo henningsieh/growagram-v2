@@ -40,7 +40,7 @@ function AvatarCardHeader({
 }: SocialHeaderProps) {
   return (
     <CardHeader className="space-y-0 px-1 py-0">
-      <div className="flex items-start justify-between py-1">
+      <div className="flex items-start justify-between pt-0.5">
         <div className="flex items-center gap-2">
           <CustomAvatar
             size={36}
@@ -59,10 +59,12 @@ function AvatarCardHeader({
                   {user.name}
                 </p>
                 {user.role === UserRoles.ADMIN && (
-                  <ShieldIcon
-                    fill="hsl(var(--planted))"
-                    className="h-4 w-4 text-yellow-500"
-                  />
+                  <div title="Administrator">
+                    <ShieldIcon
+                      fill="var(--color-yellow-500)"
+                      className="h-4 w-4 text-yellow-700"
+                    />
+                  </div>
                 )}
                 <span
                   className="text-muted-foreground"

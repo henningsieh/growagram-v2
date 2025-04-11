@@ -244,23 +244,27 @@ export function GrowCard({
             </div>
 
             {!isSocial && (
-              <div className="mt-4">
-                <Button
-                  size={"sm"}
-                  className="w-full p-2 font-semibold"
-                  onClick={() => setIsPostModalOpen(true)}
-                >
-                  <MessageSquareTextIcon size={20} />
+              <Button
+                size={"sm"}
+                variant="primary"
+                className="group flex transform items-center gap-2 rounded-sm p-2 font-semibold transition-all hover:translate-y-[-1px] hover:shadow-md"
+                onClick={() => setIsPostModalOpen(true)}
+              >
+                <MessageSquareTextIcon
+                  size={20}
+                  className="transition-transform duration-300 group-hover:scale-110"
+                />
+                <span className="transition-colors duration-300">
                   {t("button-label-post-update")}
-                </Button>
-              </div>
+                </span>
+              </Button>
             )}
           </div>
         </CardContent>
 
         {isSocial && (
           <SocialCardFooter
-            className={`pr-2 pb-2 ${isSocial && "ml-12"}`}
+            className={`${isSocial && "ml-12"}`}
             entityId={grow.id}
             entityType={LikeableEntityType.Grow}
             initialLiked={isLiked}

@@ -247,18 +247,24 @@ export default function PlantCard({
             {!isSocial && (
               <Button
                 size={"sm"}
-                className="p-2 font-semibold"
+                variant="primary"
+                className="group flex transform items-center gap-2 rounded-sm p-2 font-semibold transition-all hover:translate-y-[-1px] hover:shadow-md"
                 onClick={() => setIsPostModalOpen(true)}
               >
-                <MessageSquareTextIcon size={20} />
-                {t("button-label-post-update")}
+                <MessageSquareTextIcon
+                  size={20}
+                  className="transition-transform duration-300 group-hover:scale-110"
+                />
+                <span className="transition-colors duration-300">
+                  {t("button-label-post-update")}
+                </span>
               </Button>
             )}
           </CardContent>
           {
             isSocial && (
               <SocialCardFooter
-                className={`pr-2 pb-2 ${isSocial && "ml-12"}`}
+                className={`${isSocial && "ml-12"}`}
                 entityId={plant.id}
                 entityType={LikeableEntityType.Plant}
                 initialLiked={isLiked}

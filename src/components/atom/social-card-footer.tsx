@@ -80,9 +80,7 @@ export const SocialCardFooter: React.FC<CardFooterProps> = ({
     <>
       <div
         className={cn(
-          // `isolate` creates a new stacking context
-          // It prevents the parent's HighlightElement background blending from affecting its children
-          "isolate flex items-center justify-between gap-2",
+          "isolate flex items-center justify-between gap-2 py-1 pr-2",
           className,
         )}
       >
