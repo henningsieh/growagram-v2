@@ -588,6 +588,10 @@
   },
   "Posts": {
     "buttonLabel-createNewPost": "Update posten",
+    "buttonLabel-posting": "Wird gepostet...",
+    "content-label": "Was gibt es Neues?",
+    "content-placeholder": "Was sprießt bei dir? Updates, Bilder oder Düngeripps – lass uns teilhaben!",
+    "createNewPost-description": "Teile deine Anbauerfahrungen mit der Community",
     "createNewPost-title": "Schreibe und poste ein neues Update",
     "delete-button-label": "Update löschen",
     "edit-button-label": "Update bearbeiten",

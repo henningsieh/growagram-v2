@@ -588,6 +588,10 @@
   },
   "Posts": {
     "buttonLabel-createNewPost": "Post Update",
+    "buttonLabel-posting": "Posting...",
+    "content-label": "What's on your mind?",
+    "content-placeholder": "Nuggets of wisdom, bud shots, or leafy updates – what's growing on?",
+    "createNewPost-description": "Share your growing experiences with the community",
     "createNewPost-title": "Write and post a new Update",
     "delete-button-label": "Delete Update",
     "edit-button-label": "Edit Update",

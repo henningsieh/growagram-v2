@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { AnimatePresence, motion } from "framer-motion";
 import { ShareIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -11,13 +12,13 @@ import { EmbeddedGrowCard } from "~/components/features/Grows/embedded-grow-card
 import { EnhancedPlantCard } from "~/components/features/Plants/enhanced-plant-card.tsx";
 import { Button } from "~/components/ui/button";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "~/components/ui/card";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "~/components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -26,7 +27,6 @@ import {
   FormLabel,
   FormMessage,
 } from "~/components/ui/form";
-import { Modal } from "~/components/ui/modal";
 import { Textarea } from "~/components/ui/textarea";
 import { useRouter } from "~/lib/i18n/routing";
 import { api } from "~/lib/trpc/react";
@@ -47,14 +47,25 @@ interface PostFormModalProps {
   entityType: PostableEntityType;
 }
 
+// Animation variants
+const fadeInUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
+};
+
+const scaleIn = {
+  hidden: { opacity: 0, scale: 0.95 },
+  visible: { opacity: 1, scale: 1, transition: { duration: 0.3 } },
+};
+
 /**
- * A modal component for creating a new post. This modal is connected to a specific entity,
- * which will be associated with the new post upon creation. The modal includes a form
+ * A dialog component for creating a new post. This dialog is connected to a specific entity,
+ * which will be associated with the new post upon creation. The dialog includes a form
  * for entering post content and handles form submission with appropriate success and error
  * notifications.
  *
- * @param {boolean} isOpen - Indicates whether the modal is open.
- * @param {() => void} onClose - Function to call when the modal is closed.
+ * @param {boolean} isOpen - Indicates whether the dialog is open.
+ * @param {() => void} onClose - Function to call when the dialog is closed.
  * @param {object} entity - The entity to which the new post will be connected.
  * @param {PostableEntityType} entityType - The type of the entity.
  */
@@ -95,69 +106,102 @@ export function PostFormModal({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <Card className="xs:p2 w-full max-w-6xl space-y-4 rounded-md p-1 shadow-lg sm:p-4">
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="sm:max-w-2xl md:max-w-3xl lg:max-w-4xl">
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <CardHeader className="px-4">
-            <CardTitle as="h2" className="text-xl">
+          <DialogHeader>
+            <DialogTitle className="text-2xl">
               {t("createNewPost-title")}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="px-4">
+            </DialogTitle>
+            <DialogDescription>
+              {t("createNewPost-description")}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="py-4">
             <Form {...form}>
               <FormField
                 control={form.control}
                 name="content"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel
-                      className="sr-only"
-                      // eslint-disable-next-line react/jsx-no-literals
-                    >
-                      Content
-                    </FormLabel>
+                    <FormLabel>{t("content-label")}</FormLabel>
                     <FormControl>
-                      <Textarea {...field} rows={4} />
+                      <motion.div
+                        initial="hidden"
+                        animate="visible"
+                        variants={fadeInUp}
+                      >
+                        <Textarea
+                          {...field}
+                          rows={4}
+                          placeholder={t("content-placeholder")}
+                          className="focus-visible:ring-primary/50"
+                        />
+                      </motion.div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
             </Form>
-          </CardContent>
-          <CardFooter className="px-4">
-            <Button type="submit" className="w-full font-semibold">
-              <ShareIcon className="mr-0 h-6 w-6" />
-              {t("buttonLabel-createNewPost")}
+
+            <AnimatePresence>
+              <motion.div
+                initial="hidden"
+                animate="visible"
+                variants={scaleIn}
+                className="mt-6 space-y-3"
+              >
+                <h3 className="text-muted-foreground text-sm font-semibold">
+                  {t("linkedInThisPost")}:
+                </h3>
+                <div className="border-border/50 overflow-hidden rounded-md border">
+                  {entityType === PostableEntityType.GROW && (
+                    <EmbeddedGrowCard grow={entity as GetOwnGrowType} />
+                  )}
+                  {entityType === PostableEntityType.PLANT && (
+                    <EnhancedPlantCard plant={entity as GetOwnPlantType} />
+                  )}
+                  {entityType === PostableEntityType.PHOTO && (
+                    <div className="flex items-center space-x-4 overflow-hidden p-3">
+                      <Image
+                        src={(entity as GetOwnPhotoType).imageUrl}
+                        alt={(entity as GetOwnPhotoType).originalFilename}
+                        width={120}
+                        height={120}
+                        className="rounded-md object-cover"
+                      />
+                      <span>
+                        {(entity as GetOwnPhotoType).originalFilename}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+
+          <DialogFooter>
+            <Button
+              type="submit"
+              className="w-full transform gap-2 font-semibold transition-all hover:translate-y-[-2px] hover:shadow-md"
+              disabled={createPostMutation.isPending}
+            >
+              <ShareIcon className="h-5 w-5" />
+              <motion.span
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.2 }}
+              >
+                {createPostMutation.isPending
+                  ? t("buttonLabel-posting")
+                  : t("buttonLabel-createNewPost")}
+              </motion.span>
             </Button>
-          </CardFooter>
-          <CardDescription className="space-y-4 p-4">
-            <strong>
-              {
-                // eslint-disable-next-line react/jsx-no-literals
-                `${t("linkedInThisPost")}:`
-              }
-            </strong>
-            {entityType === PostableEntityType.GROW && (
-              <EmbeddedGrowCard grow={entity as GetOwnGrowType} />
-            )}
-            {entityType === PostableEntityType.PLANT && (
-              <EnhancedPlantCard plant={entity as GetOwnPlantType} />
-            )}
-            {entityType === PostableEntityType.PHOTO && (
-              <div className="flex items-center space-x-4 overflow-hidden">
-                <Image
-                  src={(entity as GetOwnPhotoType).imageUrl}
-                  alt={(entity as GetOwnPhotoType).originalFilename}
-                  width={120}
-                  height={120}
-                />
-                <span>{(entity as GetOwnPhotoType).originalFilename}</span>
-              </div>
-            )}
-          </CardDescription>
+          </DialogFooter>
         </form>
-      </Card>
-    </Modal>
+      </DialogContent>
+    </Dialog>
   );
 }
