@@ -1,8 +1,6 @@
-"use client";
-
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
-import { ArrowUpDown } from "lucide-react";
+import { ArrowUpDown, Ban, Clock } from "lucide-react";
 import { CustomAvatar } from "~/components/atom/custom-avatar";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
@@ -169,6 +167,55 @@ export const columns: ColumnDef<AdminUserListItem>[] = [
     cell: ({ row }) => {
       const date = new Date(row.original.createdAt);
       return <div>{format(date, "dd/MM/yyyy")}</div>;
+    },
+  },
+  {
+    accessorKey: "bannedUntil",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          {"Ban Status"}
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const bannedUntil = row.original.bannedUntil
+        ? new Date(row.original.bannedUntil)
+        : null;
+      const now = new Date();
+      const isBanned = bannedUntil && bannedUntil > now;
+      const isPermanentBan =
+        row.original.bannedUntil === null && row.original.banReason;
+
+      if (isPermanentBan) {
+        return (
+          <div className="text-destructive flex items-center gap-1">
+            <Ban className="h-4 w-4" />
+            <Badge variant="destructive" className="text-xs">
+              Permanently Banned
+            </Badge>
+          </div>
+        );
+      } else if (isBanned) {
+        return (
+          <div className="text-destructive flex items-center gap-1">
+            <Clock className="h-4 w-4" />
+            <Badge variant="destructive" className="text-xs">
+              Banned until {format(bannedUntil, "dd/MM/yyyy")}
+            </Badge>
+          </div>
+        );
+      }
+
+      return (
+        <Badge variant="outline" className="text-xs">
+          Active
+        </Badge>
+      );
     },
   },
   {

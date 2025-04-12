@@ -9,17 +9,22 @@ import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowLeft,
   AtSign,
+  Ban,
   CheckIcon,
   Edit,
+  LockIcon,
   Mail,
   RotateCcw,
+  ShieldAlert,
   ShieldCheck,
+  Unlock,
   UserIcon,
   XIcon,
 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { adminEditUserSchema } from "~/types/zodSchema";
+import { z } from "zod";
+import { BAN_DURATIONS } from "~/assets/constants";
 import FormContent from "~/components/Layouts/form-content";
 import PageHeader from "~/components/Layouts/page-header";
 import { CustomAvatar } from "~/components/atom/custom-avatar";
@@ -50,10 +55,11 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import { Separator } from "~/components/ui/separator";
+import { Textarea } from "~/components/ui/textarea";
 import { useIsMobile } from "~/hooks/use-mobile";
 import { api } from "~/lib/trpc/react";
 import { UserRoles } from "~/types/user";
-import { z } from "zod";
+import { adminEditUserSchema } from "~/types/zodSchema";
 
 // Form animations
 const formVariants = {
@@ -72,6 +78,17 @@ const itemVariants = {
   visible: { opacity: 1, y: 0 },
 };
 
+// Ban form schema
+const banUserSchema = z.object({
+  banDuration: z.string().min(1, "Ban duration is required"),
+  banReason: z
+    .string()
+    .min(3, "Reason must be at least 3 characters")
+    .max(500, "Reason must be less than 500 characters"),
+});
+
+type BanUserInput = z.infer<typeof banUserSchema>;
+
 // Use the imported validation schema
 type AdminEditUserInput = z.infer<typeof adminEditUserSchema>;
 
@@ -88,7 +105,11 @@ export default function AdminUserEditForm({ userId }: { userId: string }) {
   }, [userId, utils.admin.getUserById, utils.admin.getAllUsers]);
 
   // Get user data and always refetch
-  const {data: user, isLoading: userLoading, error: userError} = api.admin.getUserById.useQuery(
+  const {
+    data: user,
+    isLoading: userLoading,
+    error: userError,
+  } = api.admin.getUserById.useQuery(
     { id: userId },
     {
       refetchOnWindowFocus: true,
@@ -108,6 +129,73 @@ export default function AdminUserEditForm({ userId }: { userId: string }) {
     }
   }, [userError, router, t]);
 
+  // Ban user form and mutation
+  const banForm = useForm<BanUserInput>({
+    resolver: zodResolver(banUserSchema),
+    defaultValues: {
+      banDuration: "1d",
+      banReason: "",
+    },
+  });
+
+  // Ban user mutation
+  const banUserMutation = api.admin.banUser.useMutation({
+    onSuccess: () => {
+      // Invalidate queries to refetch the latest data
+      utils.admin.getUserById.invalidate({ id: userId });
+      utils.admin.getAllUsers.invalidate();
+
+      toast.success("User banned successfully", {
+        description:
+          "The user has been banned and cannot log in until the ban expires.",
+      });
+      banForm.reset();
+    },
+    onError: (error) => {
+      toast.error("Failed to ban user", {
+        description: error.message || "An unexpected error occurred",
+      });
+    },
+  });
+
+  // Unban user mutation
+  const unbanUserMutation = api.admin.unbanUser.useMutation({
+    onSuccess: () => {
+      // Invalidate queries to refetch the latest data
+      utils.admin.getUserById.invalidate({ id: userId });
+      utils.admin.getAllUsers.invalidate();
+
+      toast.success("User unbanned successfully", {
+        description: "The user's ban has been lifted and they can now log in.",
+      });
+    },
+    onError: (error) => {
+      toast.error("Failed to unban user", {
+        description: error.message || "An unexpected error occurred",
+      });
+    },
+  });
+
+  // Handle ban form submission
+  const onBanSubmit = (values: BanUserInput) => {
+    banUserMutation.mutateAsync({
+      userId,
+      banDuration: values.banDuration,
+      banReason: values.banReason,
+    });
+  };
+
+  // Handle unban user
+  const handleUnban = () => {
+    unbanUserMutation.mutateAsync({ userId });
+  };
+
+  // Check if user is currently banned
+  const isUserBanned = React.useMemo(() => {
+    if (!user?.bannedUntil) return false;
+    const bannedUntil = new Date(user.bannedUntil);
+    return bannedUntil > new Date() || user.bannedUntil === null; // null means permanent ban
+  }, [user?.bannedUntil]);
 
   // Initialize form with user data when it's loaded
   const form = useForm<AdminEditUserInput>({
@@ -207,7 +295,8 @@ export default function AdminUserEditForm({ userId }: { userId: string }) {
                             {user?.name}
                           </CardTitle>
                           <span className="text-muted-foreground text-sm">
-                            {"@"}{user?.username}
+                            {"@"}
+                            {user?.username}
                           </span>
                         </div>
                       </div>
@@ -464,6 +553,185 @@ export default function AdminUserEditForm({ userId }: { userId: string }) {
                   </Card>
                 </Form>
               </form>
+
+              {/* Ban User Form */}
+              <Form {...banForm}>
+                <form onSubmit={banForm.handleSubmit(onBanSubmit)}>
+                  <Card className="mt-4 overflow-hidden border-2 backdrop-blur">
+                    <CardHeader className="relative">
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.5 }}
+                        className="from-destructive/10 absolute inset-0 bg-linear-to-br to-transparent"
+                      />
+                      <div className="flex items-center gap-4">
+                        <ShieldAlert className="text-destructive h-8 w-8" />
+                        <div className="flex flex-col">
+                          <CardTitle className="text-xl font-bold">
+                            {t("ban-title")}
+                          </CardTitle>
+                          <span className="text-muted-foreground text-sm">
+                            {t("ban-subtitle")}
+                          </span>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <Separator className="opacity-50" />
+                    <CardContent className="p-2 sm:p-8">
+                      <motion.div
+                        variants={formVariants}
+                        initial="hidden"
+                        animate="visible"
+                        className="space-y-6"
+                      >
+                        {/* Ban Duration Field */}
+                        <motion.div variants={itemVariants}>
+                          <FormField
+                            control={banForm.control}
+                            name="banDuration"
+                            render={({ field }) => (
+                              <FormItem className="bg-muted/50 hover:bg-muted/70 overflow-hidden rounded-sm p-4 transition-colors">
+                                <FormLabel className="text-base">
+                                  {t("ban-duration-label")}
+                                </FormLabel>
+                                <FormDescription>
+                                  {t("ban-duration-description")}
+                                </FormDescription>
+                                <div className="relative mt-2">
+                                  <LockIcon className="text-foreground absolute top-1/2 left-3 z-10 h-5 w-5 -translate-y-1/2" />
+                                  <Select
+                                    onValueChange={field.onChange}
+                                    defaultValue={field.value}
+                                  >
+                                    <FormControl>
+                                      <SelectTrigger
+                                        className="pl-10"
+                                        // className="bg-background/50 focus:bg-background pl-10 font-medium transition-colors"
+                                      >
+                                        <SelectValue
+                                          placeholder={t("ban-duration")}
+                                        />
+                                      </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                      {BAN_DURATIONS.map((duration) => (
+                                        <SelectItem
+                                          key={duration.value}
+                                          value={duration.value}
+                                        >
+                                          {duration.label}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </motion.div>
+
+                        {/* Ban Reason Field */}
+                        <motion.div variants={itemVariants}>
+                          <FormField
+                            control={banForm.control}
+                            name="banReason"
+                            render={({ field }) => (
+                              <FormItem className="bg-muted/50 hover:bg-muted/70 overflow-hidden rounded-sm p-4 transition-colors">
+                                <FormLabel className="text-base">
+                                  {t("ban-reason-label")}
+                                </FormLabel>
+                                <FormDescription>
+                                  {t("ban-reason-description")}
+                                </FormDescription>
+                                <FormControl>
+                                  <Textarea
+                                    // className="bg-background/50 focus:bg-background font-medium transition-colors"
+                                    placeholder={t("ban-reason-placeholder")}
+                                    {...field}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </motion.div>
+                      </motion.div>
+                    </CardContent>
+                    <CardFooter className="flex gap-2 p-2 sm:p-8">
+                      <Button
+                        size={isMobile ? "sm" : "default"}
+                        type="button"
+                        variant="outline"
+                        onClick={() => {
+                          banForm.reset();
+                        }}
+                        className="group relative flex-1 overflow-hidden"
+                      >
+                        <RotateCcw className="mr-2 h-4 w-4" />
+                        {t("ban-reset-button")}
+                      </Button>
+                      <Button
+                        size={isMobile ? "sm" : "default"}
+                        type="submit"
+                        disabled={banUserMutation.isPending}
+                        className="group relative flex-1 overflow-hidden"
+                      >
+                        {banUserMutation.isPending ? (
+                          <SpinningLoader className="mr-2 h-4 w-4 animate-spin" />
+                        ) : (
+                          <Ban className="mr-2 h-4 w-4" />
+                        )}
+                        {t("ban-submit-button")}
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                </form>
+              </Form>
+
+              {/* Unban User Button */}
+              {isUserBanned && (
+                <Card className="mt-4 overflow-hidden border-2 backdrop-blur">
+                  <CardHeader className="relative">
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.5 }}
+                      className="from-primary/10 absolute inset-0 bg-linear-to-br to-transparent"
+                    />
+                    <div className="flex items-center gap-4">
+                      <Unlock className="text-primary h-8 w-8" />
+                      <div className="flex flex-col">
+                        <CardTitle className="text-xl font-bold">
+                          {t("unban-title")}
+                        </CardTitle>
+                        <span className="text-muted-foreground text-sm">
+                          {t("unban-subtitle")}
+                        </span>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <Separator className="opacity-50" />
+                  <CardFooter className="flex p-2 sm:p-8">
+                    <Button
+                      size={isMobile ? "sm" : "default"}
+                      type="button"
+                      variant="outline"
+                      onClick={handleUnban}
+                      disabled={unbanUserMutation.isPending}
+                      className="group relative flex-1 overflow-hidden"
+                    >
+                      {unbanUserMutation.isPending ? (
+                        <SpinningLoader className="mr-2 h-4 w-4 animate-spin" />
+                      ) : (
+                        <Unlock className="mr-2 h-4 w-4" />
+                      )}
+                      {t("unban-button")}
+                    </Button>
+                  </CardFooter>
+                </Card>
+              )}
             </FormContent>
           </motion.div>
         )}

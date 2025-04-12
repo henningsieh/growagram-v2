@@ -183,11 +183,14 @@ export type GetStrainByIdInput = RouterInput["plants"]["getStrainById"];
 //  OUTPUTS:
 export type AdminUserListItem = RouterOutput["admin"]["getAllUsers"][number];
 export type AdminUserList = RouterOutput["admin"]["getAllUsers"];
-export type UpdateUserRoleOutput = RouterOutput["admin"]["updateUserRole"];
+export type AdminUpdateUserRoleOutput = RouterOutput["admin"]["updateUserRole"];
 
 //  INPUTS:
-export type UpdateUserRoleInput = RouterInput["admin"]["updateUserRole"];
-
+export type AdminUpdateUserRoleInput = RouterInput["admin"]["updateUserRole"];
+export type AdminBanUserInput = RouterInput["admin"]["banUser"];
+export type AdminUnbanUserInput = RouterInput["admin"]["unbanUser"];
+export type AdminGetAllUsersInput = RouterInput["admin"]["getAllUsers"];
+export type AdminGetUserByIdInput = RouterInput["admin"]["getUserById"];
 /**
  * Create a server-side caller for the tRPC API.
  * @example

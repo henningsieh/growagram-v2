@@ -57,14 +57,17 @@
     "title": "Administration",
     "user-management": {
       "buttons": {
+        "ban-user": "Ban User",
         "copy-id": "Copy User ID",
         "delete-user": "Delete User",
         "edit-details": "Edit User Details",
+        "unban-user": "Unban User",
         "view-profile": "View User Profile"
       },
       "column-selector": "Columns",
       "columns": {
         "actions": "Actions",
+        "bannedUntil": "Ban Status",
         "createdAt": "Joined Date",
         "email": "Email",
         "emailVerified": "Verified",
@@ -76,6 +79,18 @@
       "description": "Manage users, roles, and permissions",
       "edit-form": {
         "back-button": "Back to Users",
+        "ban-button": "Ban User",
+        "ban-duration": "Ban Duration",
+        "ban-duration-description": "How long should this user be banned?",
+        "ban-duration-label": "Ban duration",
+        "ban-reason": "Ban Reason",
+        "ban-reason-description": "Provide a reason for banning this user",
+        "ban-reason-label": "Ban reason",
+        "ban-reason-placeholder": "Enter a reason for the ban...",
+        "ban-section-description": "Ban this user to prevent them from logging in to the platform.",
+        "ban-subtitle": "Prevent user from accessing the platform",
+        "ban-success": "User banned successfully",
+        "ban-title": "User Ban Management",
         "created-at": "Created At",
         "email-description": "Primary email address for account communications",
         "email-label": "Email Address",
@@ -92,6 +107,7 @@
         "name-placeholder": "Enter full name",
         "not-available": "Not available",
         "not-verified": "Not Verified",
+        "permanent-ban": "Permanent Ban",
         "reset-button": "Reset",
         "role-admin": "Administrator",
         "role-description": "User permission level within the platform",
@@ -104,7 +120,11 @@
         "success-description": "User details successfully updated",
         "success-title": "Changes Saved",
         "title": "Edit User",
+        "unban-button": "Remove Ban",
+        "unban-success": "User unbanned successfully",
         "updated-at": "Last Updated",
+        "user-ban-message": "This user is currently banned until {date}",
+        "user-ban-permanent-message": "This user is permanently banned",
         "user-id": "User ID",
         "username-description": "Unique username for the account",
         "username-label": "Username",
@@ -119,11 +139,35 @@
       "selected-count": "{count} users selected",
       "title": "User Management",
       "toasts": {
+        "ban-error": {
+          "description": "Failed to ban the user. Please try again.",
+          "title": "Error"
+        },
+        "ban-success": {
+          "description": "The user has been banned successfully.",
+          "title": "User Banned"
+        },
         "copy-error": "Failed to copy to clipboard. This feature may not be supported by your browser.",
-        "copy-success": "User ID copied to clipboard"
+        "copy-success": "User ID copied to clipboard",
+        "unban-error": {
+          "description": "Failed to unban the user. Please try again.",
+          "title": "Error"
+        },
+        "unban-success": {
+          "description": "The user's ban has been removed successfully.",
+          "title": "User Unbanned"
+        }
       }
     },
     "users-tab": "Users"
+  },
+  "Authentication": {
+    "ban": {
+      "account_banned": "Account Banned",
+      "account_banned_until": "Your account is banned until {date} {time}.",
+      "ban_reason": "Reason: {reason}",
+      "no_reason_provided": "No reason provided"
+    }
   },
   "CardFooter": {
     "Login to see detailed view statistics": "Login to see detailed view statistics.",
@@ -351,10 +395,10 @@
     "home": "Home",
     "my-grows": "My Grows",
     "my-grows-subline": "Manage and group your plants in Grows.",
-    "my-photos": "",
-    "my-photos-subline": "",
-    "my-plants": "",
-    "my-plants-subline": "",
+    "my-photos": "My photos",
+    "my-photos-subline": "Manage your photos and link them to plants.",
+    "my-plants": "My plants",
+    "my-plants-subline": "Manage and edit your plants.",
     "navigation": "Navigation",
     "plants": "All Plants",
     "plants-description": "Discover what varieties others are growing and learn from their experiences.",
@@ -644,6 +688,7 @@
     "coming-soon": "Coming soon",
     "coming-soon-description": "We are already working on the new function. Come by again soon!",
     "comunity": "Community",
+    "create-plant": "Add new plant",
     "created-at": "Created on",
     "day": "day",
     "days": "days",
@@ -657,6 +702,7 @@
     "infinitescroll": "Infinite scrolling",
     "living": "living",
     "more": "more",
+    "no-active-plants": "No active plants",
     "overview": "Overview",
     "recent-photos": "Photos overview",
     "recent-photos-description": "Your recent photos",

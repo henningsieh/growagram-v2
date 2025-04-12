@@ -2,12 +2,11 @@
 import { forbidden, notFound } from "next/navigation";
 import AdminUserEditForm from "~/components/features/Admin/UserManagement/components/edit-user-form";
 import { auth } from "~/lib/auth";
+import { AdminGetUserByIdInput } from "~/server/api/root";
 import { UserRoles } from "~/types/user";
 
 interface EditUserPageProps {
-  params: {
-    id: string;
-  };
+  params: Promise<AdminGetUserByIdInput>;
 }
 
 export default async function EditUserPage({ params }: EditUserPageProps) {
@@ -19,7 +18,7 @@ export default async function EditUserPage({ params }: EditUserPageProps) {
     forbidden();
   }
 
-  const userId = params.id;
+  const userId = (await params).id;
   if (!userId) {
     notFound();
   }

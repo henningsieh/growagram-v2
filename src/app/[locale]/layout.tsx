@@ -10,6 +10,7 @@ import { MainNavigationBar } from "~/components/Layouts/MainNavigationBar";
 import { PhotoModalProvider } from "~/components/Layouts/photo-modal-provider";
 import { EnhancedProgressProvider } from "~/components/Layouts/progress-provider";
 import { ThemeProvider } from "~/components/Layouts/theme-provider";
+import { BanNotification } from "~/components/atom/ban-notification";
 import { Toaster } from "~/components/ui/sonner";
 import { TRPCReactProvider } from "~/lib/trpc/react";
 import "~/styles/globals.css";
@@ -78,6 +79,7 @@ export default async function AppLayout(props: AppLayoutProps) {
                 <TRPCReactProvider>
                   <PhotoModalProvider>
                     <Toaster richColors />
+                    <BanNotification />
                     <div className="relative mx-auto flex max-w-7xl flex-col">
                       <MainNavigationBar />
                       <div className="flex min-h-[calc(100svh-7rem)] flex-1">

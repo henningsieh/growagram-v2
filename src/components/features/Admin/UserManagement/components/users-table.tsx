@@ -47,6 +47,7 @@ export function UsersTable() {
   // Set default column visibility - hide emailVerified column
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
     emailVerified: false,
+    createdAt: false,
   });
   const [rowSelection, setRowSelection] = useState({});
 
