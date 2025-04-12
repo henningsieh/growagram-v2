@@ -9,7 +9,7 @@ import { Button } from "~/components/ui/button";
 import { Checkbox } from "~/components/ui/checkbox";
 import type { AdminUserListItem } from "~/server/api/root";
 import { UserRoles } from "~/types/user";
-import { ActionsCell } from "./components/actions-cell";
+import { ActionsCell } from "./actions-cell";
 
 export const columns: ColumnDef<AdminUserListItem>[] = [
   {

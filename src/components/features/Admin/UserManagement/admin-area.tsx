@@ -11,7 +11,7 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { UsersTable } from "./users-table";
+import { UsersTable } from "./components/users-table";
 
 export function AdminArea() {
   const t = useTranslations("AdminArea");
