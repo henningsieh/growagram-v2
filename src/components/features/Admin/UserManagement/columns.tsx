@@ -55,7 +55,12 @@ export const columns: ColumnDef<AdminUserListItem>[] = [
           alt={row.original.name ?? "User"}
           fallback={row.original.name?.[0] || "?"}
         />
-        <div className="font-medium">{row.original.name}</div>
+        <div
+          className="max-w-38 truncate font-medium"
+          title={row.original.name || ""}
+        >
+          {row.original.name}
+        </div>
       </div>
     ),
   },
@@ -92,7 +97,11 @@ export const columns: ColumnDef<AdminUserListItem>[] = [
         </Button>
       );
     },
-    cell: ({ row }) => <div>{row.original.email}</div>,
+    cell: ({ row }) => (
+      <div className="max-w-48 truncate" title={row.original.email || ""}>
+        {row.original.email}
+      </div>
+    ),
   },
   {
     accessorKey: "role",

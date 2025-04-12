@@ -1,5 +1,6 @@
 // src/app/[locale]/(protected)/admin/page.tsx:
-import { notFound } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { forbidden } from "next/navigation";
 import PageHeader from "~/components/Layouts/page-header";
 import { AdminArea } from "~/components/features/Admin/UserManagement/admin-area";
 import { auth } from "~/lib/auth";
@@ -9,8 +10,10 @@ export default async function AdminPage() {
   // Check for admin permissions
   const session = await auth();
 
+  // const t = useTranslations("AdminArea");
+
   if (!session?.user || session.user.role !== UserRoles.ADMIN) {
-    notFound();
+    forbidden();
   }
 
   return (
@@ -18,9 +21,7 @@ export default async function AdminPage() {
       title="Admin Area"
       subtitle="Administration and management tools"
     >
-      <div className="mx-auto w-full max-w-7xl">
-        <AdminArea />
-      </div>
+      <AdminArea />
     </PageHeader>
   );
 }

@@ -3,9 +3,9 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import {
-  ColumnFiltersState,
-  SortingState,
-  VisibilityState,
+  type ColumnFiltersState,
+  type SortingState,
+  type VisibilityState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
@@ -44,7 +44,10 @@ export function UsersTable() {
   const t = useTranslations("AdminArea");
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  // Set default column visibility - hide emailVerified column
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
+    emailVerified: false,
+  });
   const [rowSelection, setRowSelection] = useState({});
 
   // Fetch users data
@@ -72,9 +75,11 @@ export function UsersTable() {
   });
 
   return (
-    <Card>
+    <Card className="rounded-md">
       <CardHeader>
-        <CardTitle>{t("user-management.title")}</CardTitle>
+        <CardTitle className="text-lg" as="h3">
+          {t("user-management.title")}
+        </CardTitle>
         <CardDescription>{t("user-management.description")}</CardDescription>
       </CardHeader>
       <CardContent>

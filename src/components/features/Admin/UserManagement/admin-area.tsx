@@ -18,9 +18,11 @@ export function AdminArea() {
   const [activeTab, setActiveTab] = React.useState("users");
 
   return (
-    <Card className="w-full">
+    <Card className="w-full rounded-lg">
       <CardHeader>
-        <CardTitle>{t("title")}</CardTitle>
+        <CardTitle className="text-2xl" as="h2">
+          {t("title")}
+        </CardTitle>
         <CardDescription>{t("description")}</CardDescription>
       </CardHeader>
       <CardContent>
@@ -30,11 +32,7 @@ export function AdminArea() {
               <Users className="h-4 w-4" />
               {t("users-tab")}
             </TabsTrigger>
-            <TabsTrigger
-              value="settings"
-              className="flex items-center gap-2"
-              disabled
-            >
+            <TabsTrigger value="settings" className="flex items-center gap-2">
               <Shield className="h-4 w-4" />
               {t("settings-tab")}
             </TabsTrigger>
