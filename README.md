@@ -63,7 +63,7 @@ GrowAGram is a modern social platform for plant enthusiasts to document and shar
 - 🔨 In Progress
 - ✅ Completed
 
-### Phase 1: Core Platform (70% Complete)
+### Phase 1: Core Platform (85% Complete)
 
 #### Core Features
 
@@ -71,10 +71,11 @@ GrowAGram is a modern social platform for plant enthusiasts to document and shar
 - ✅ Basic CRUD operations
 - ✅ Image management
 - ✅ Public timeline Posts (reference Grows, Plants or Fotos)
-- 🔨 Features for Admin role (delete crap, ban users)
+- ✅ User banning system with Edge-compatible implementation
+- 🔨 Additional features for Admin role (content moderation)
 - 🔨 Activity feeds/timelines for Users, Grows and Plants
 - 🔨 Follow system with Following timeline
-- ⏳ User profile enhancements
+- ✅ User profile enhancements
 
 #### Image Management and Storage Infrastructure
 
@@ -95,6 +96,7 @@ GrowAGram is a modern social platform for plant enthusiasts to document and shar
 - ⏳ Advanced search features
 - ✅ Notifications
 - ⏳ Private messaging
+- ⏳ Chat rooms
 
 ### Phase 3: Advanced Features
 
