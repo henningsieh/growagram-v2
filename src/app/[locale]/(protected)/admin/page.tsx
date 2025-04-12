@@ -1,5 +1,5 @@
 // src/app/[locale]/(protected)/admin/page.tsx:
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import { forbidden } from "next/navigation";
 import PageHeader from "~/components/Layouts/page-header";
 import { AdminArea } from "~/components/features/Admin/UserManagement/admin-area";
@@ -10,7 +10,7 @@ export default async function AdminPage() {
   // Check for admin permissions
   const session = await auth();
 
-  // const t = useTranslations("AdminArea");
+  const t = await getTranslations("AdminArea");
 
   if (!session?.user || session.user.role !== UserRoles.ADMIN) {
     forbidden();
@@ -18,8 +18,8 @@ export default async function AdminPage() {
 
   return (
     <PageHeader
-      title="Admin Area"
-      subtitle="Administration and management tools"
+      title={t("pageheader.title")}
+      subtitle={t("pageheader.subtitle")}
     >
       <AdminArea />
     </PageHeader>

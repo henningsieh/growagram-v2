@@ -48,10 +48,20 @@
   },
   "AdminArea": {
     "description": "Benutzer und Plattformeinstellungen verwalten",
+    "pageheader": {
+      "subtitle": "Verwaltungs- und Management -Tools",
+      "title": "Verwaltungsbereich"
+    },
     "settings-coming-soon": "Admin-Einstellungen bald verfügbar",
     "settings-tab": "Einstellungen",
     "title": "Administration",
     "user-management": {
+      "buttons": {
+        "copy-id": "Benutzer-ID kopieren",
+        "delete-user": "Benutzer löschen",
+        "edit-details": "Benutzerdetails bearbeiten",
+        "view-profile": "Benutzerprofil anzeigen"
+      },
       "column-selector": "Spalten",
       "columns": {
         "actions": "Aktionen",
@@ -71,15 +81,9 @@
       "search-placeholder": "Nach E-Mail suchen...",
       "selected-count": "{count} Benutzer ausgewählt",
       "title": "Benutzerverwaltung",
-      "buttons": {
-        "copy-id": "Benutzer-ID kopieren",
-        "view-profile": "Benutzerprofil anzeigen",
-        "edit-details": "Benutzerdetails bearbeiten",
-        "delete-user": "Benutzer löschen"
-      },
       "toasts": {
-        "copy-success": "Benutzer-ID in die Zwischenablage kopiert",
-        "copy-error": "Kopieren in die Zwischenablage fehlgeschlagen. Diese Funktion wird möglicherweise von Ihrem Browser nicht unterstützt."
+        "copy-error": "Kopieren in die Zwischenablage fehlgeschlagen. Diese Funktion wird möglicherweise von Ihrem Browser nicht unterstützt.",
+        "copy-success": "Benutzer-ID in die Zwischenablage kopiert"
       }
     },
     "users-tab": "Benutzer"
