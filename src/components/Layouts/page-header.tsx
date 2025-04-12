@@ -12,6 +12,7 @@ interface IPageHeader {
   buttonLabel?: string;
   searchParams?: ReadonlyURLSearchParams;
   buttonVariant?: VariantProps<typeof buttonVariants>["variant"];
+  buttonIcon?: React.ReactNode;
 }
 
 export default function Component({
@@ -22,6 +23,7 @@ export default function Component({
   buttonLabel,
   searchParams,
   buttonVariant = "primary",
+  buttonIcon,
 }: IPageHeader) {
   const queryObject = searchParams
     ? Object.fromEntries(searchParams.entries())
@@ -50,6 +52,7 @@ export default function Component({
                     query: queryObject,
                   }}
                 >
+                  {buttonIcon}
                   {buttonLabel}
                 </Link>
               </Button>

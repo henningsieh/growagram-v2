@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 import { MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "~/components/ui/button";
@@ -20,6 +21,7 @@ interface ActionsCellProps {
 
 export function ActionsCell({ user }: ActionsCellProps) {
   const t = useTranslations("AdminArea.user-management");
+  const router = useRouter();
 
   const handleCopyUserId = () => {
     try {
@@ -29,6 +31,14 @@ export function ActionsCell({ user }: ActionsCellProps) {
       console.error(error);
       toast.error(t("toasts.copy-error"));
     }
+  };
+
+  const handleViewProfile = () => {
+    router.push(`/public/profile/${user.id}`);
+  };
+
+  const handleEditDetails = () => {
+    router.push(`/admin/users/${user.id}/edit`);
   };
 
   return (
@@ -47,8 +57,12 @@ export function ActionsCell({ user }: ActionsCellProps) {
           {t("buttons.copy-id")}
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>{t("buttons.view-profile")}</DropdownMenuItem>
-        <DropdownMenuItem>{t("buttons.edit-details")}</DropdownMenuItem>
+        <DropdownMenuItem onClick={handleViewProfile}>
+          {t("buttons.view-profile")}
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={handleEditDetails}>
+          {t("buttons.edit-details")}
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem className="text-destructive">
           {t("buttons.delete-user")}
