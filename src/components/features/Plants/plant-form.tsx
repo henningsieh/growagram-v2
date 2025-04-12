@@ -138,7 +138,6 @@ export default function PlantForm({ plant }: { plant?: GetPlantByIdType }) {
   });
 
   async function onSubmit(values: FormValues) {
-    console.debug(values);
     setIsSubmitting(true);
     await createOrEditPlantMutation.mutateAsync(
       values satisfies CreateOrEditPlantInput,
@@ -158,7 +157,7 @@ export default function PlantForm({ plant }: { plant?: GetPlantByIdType }) {
           : t("form-pagerheader-new-subtitle")
       }
       buttonLabel={t("form-pageheader-backButtonLabel")}
-      buttonLink={"/plants"}
+      buttonLink={modulePaths.PLANTS.path}
     >
       <FormContent>
         <form onSubmit={form.handleSubmit(onSubmit)}>
