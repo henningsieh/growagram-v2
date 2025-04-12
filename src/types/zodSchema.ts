@@ -7,6 +7,7 @@ import {
   NotificationEventType,
 } from "~/types/notification";
 import { PostableEntityType } from "~/types/post";
+import { UserRoles } from "~/types/user";
 
 export const plantFormSchema = z.object({
   id: z.string().optional(),
@@ -87,6 +88,22 @@ export const userEditSchema = z.object({
     .string({ required_error: "Email is required" })
     .email({ message: "Invalid email address" }),
   image: z.string().url({ message: "Invalid image URL" }).nullable(),
+});
+
+// Admin user edit schema - allows partial updates and role assignment
+export const adminEditUserSchema = z.object({
+  id: z.string(),
+  name: z.string().min(2).max(50).optional(),
+  username: z.string().min(3).max(30).optional(),
+  email: z.string().email().optional(),
+  role: z.enum([UserRoles.ADMIN, UserRoles.MOD, UserRoles.USER]),
+  image: z.string().optional().nullable(),
+});
+
+// Schema for updating a user's role by an admin
+export const updateUserRoleSchema = z.object({
+  userId: z.string(),
+  role: z.enum([UserRoles.ADMIN, UserRoles.MOD, UserRoles.USER]),
 });
 
 export function createRegisterSchema(t: (key: string) => string) {

@@ -14,6 +14,7 @@ import { plantRouter } from "~/server/api/routers/plant";
 import { postRouter } from "~/server/api/routers/post";
 import { userRouter } from "~/server/api/routers/users";
 import { notificationRouter } from "~/server/api/routers/notifications";
+import { adminRouter } from "~/server/api/routers/admin";
 import { createCallerFactory } from "@trpc/server/unstable-core-do-not-import";
 
 /**
@@ -33,6 +34,7 @@ export const appRouter = createTRPCRouter({
   channel: channelRouter,
   message: messageRouter,
   notifications: notificationRouter,
+  admin: adminRouter,
 
   healthcheck: publicProcedure.query(() => "yay!"),
 
@@ -177,6 +179,18 @@ export type GetStrainsByBreederInput = RouterInput["plants"]["getStrainsByBreede
 export type CreateStrainInput = RouterInput["plants"]["createStrain"];
 export type GetStrainByIdInput = RouterInput["plants"]["getStrainById"];
 
+// adminRouter
+//  OUTPUTS:
+export type AdminUserListItem = RouterOutput["admin"]["getAllUsers"][number];
+export type AdminUserList = RouterOutput["admin"]["getAllUsers"];
+export type AdminUpdateUserRoleOutput = RouterOutput["admin"]["updateUserRole"];
+
+//  INPUTS:
+export type AdminUpdateUserRoleInput = RouterInput["admin"]["updateUserRole"];
+export type AdminBanUserInput = RouterInput["admin"]["banUser"];
+export type AdminUnbanUserInput = RouterInput["admin"]["unbanUser"];
+export type AdminGetAllUsersInput = RouterInput["admin"]["getAllUsers"];
+export type AdminGetUserByIdInput = RouterInput["admin"]["getUserById"];
 /**
  * Create a server-side caller for the tRPC API.
  * @example

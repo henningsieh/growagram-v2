@@ -63,6 +63,16 @@ export const modulePaths = {
     path: "/public/plants",
     protected: false,
   },
+  PUBLICPROFILE: {
+    name: "Public Profile",
+    path: "/public/profile",
+    protected: false,
+  },
+  USERADMINISTRATION: {
+    name: "User Adminstration",
+    path: "/admin/users",
+    protected: true,
+  },
 };
 
 export const PROTECTED_PATHS = Object.values(modulePaths)
@@ -97,3 +107,16 @@ export const ACCEPTED_IMAGE_TYPES = [
 ];
 
 export const TRPC_ENDPOINT = "/api/trpc";
+
+// Ban duration options for admin user management
+export const BAN_DURATIONS = [
+  { value: "1d",    label: "1 day",     milliseconds:       24 * 60 * 60 * 1000 },
+  { value: "3d",    label: "3 days",    milliseconds:   3 * 24 * 60 * 60 * 1000 },
+  { value: "7d",    label: "1 week",    milliseconds:   7 * 24 * 60 * 60 * 1000 },
+  { value: "14d",   label: "2 weeks",   milliseconds:  14 * 24 * 60 * 60 * 1000 },
+  { value: "30d",   label: "1 month",   milliseconds:  30 * 24 * 60 * 60 * 1000 },
+  { value: "90d",   label: "3 months",  milliseconds:  90 * 24 * 60 * 60 * 1000 },
+  { value: "180d",  label: "6 months",  milliseconds: 180 * 24 * 60 * 60 * 1000 },
+  { value: "365d",  label: "1 year",    milliseconds: 365 * 24 * 60 * 60 * 1000 },
+  { value: "permanent", label: "Permanent", milliseconds: -1 },
+];

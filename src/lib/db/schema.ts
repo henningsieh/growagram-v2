@@ -107,6 +107,8 @@ export const users = pgTable(
     })
       .default(UserRoles.USER) // Use the TS enum for the default value
       .notNull(),
+    bannedUntil: timestamp("banned_until", { withTimezone: true }),
+    banReason: text("ban_reason"),
     steadyAccessToken: text(),
     steadyTokenExpiresAt: timestamp("steady_token_expires_at"),
     steadyRefreshToken: text(),

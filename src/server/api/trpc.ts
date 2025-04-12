@@ -12,6 +12,7 @@ import { FetchCreateContextFnOptions } from "@trpc/server/adapters/fetch";
 import superjson from "superjson";
 import { auth } from "~/lib/auth";
 import { db } from "~/lib/db";
+import { UserRoles } from "~/types/user";
 
 /**
  * 1. CONTEXT
@@ -160,5 +161,27 @@ export const protectedProcedure = publicProcedure.use(function isAuthed(opts) {
         },
       },
     },
+  });
+});
+
+/**
+ * Admin procedure
+ *
+ * This procedure ensures that only users with the ADMIN role can access the endpoint.
+ * It builds on the protectedProcedure to first check if the user is logged in.
+ */
+export const adminProcedure = protectedProcedure.use(function isAdmin(opts) {
+  const { user } = opts.ctx.session;
+
+  // Check if the user has the ADMIN role
+  if (user.role !== UserRoles.ADMIN) {
+    throw new TRPCError({
+      code: "FORBIDDEN",
+      message: "Only administrators can access this resource",
+    });
+  }
+
+  return opts.next({
+    ctx: opts.ctx,
   });
 });

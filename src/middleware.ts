@@ -74,6 +74,62 @@ export default async function middleware(req: NextRequest) {
   const isLocalePath = localeMatchArray !== null;
   const isProtectedPath = isLocalePath && isPathProtected(pathWithoutLocale);
 
+  // Skip ban check if we're already on the signin page with a banned error param
+  const isAlreadyBannedRedirect =
+    pathWithoutLocale === modulePaths.SIGNIN.path &&
+    req.nextUrl.searchParams.get("error") === "banned";
+
+  // Check if the user is banned (but skip if we're already on the signin page with banned error)
+  if (token && token.sub && !isAlreadyBannedRedirect) {
+    const response = await fetch(`${baseUrl}/api/check-ban`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ userId: token.sub }),
+      cache: "no-store",
+    });
+
+    if (response.ok) {
+      const user = await response.json();
+
+      if (user?.bannedUntil) {
+        const bannedUntil = new Date(user.bannedUntil);
+        const now = new Date();
+
+        if (bannedUntil > now || user.bannedUntil === null) {
+          console.error(
+            `User is banned until ${bannedUntil.toLocaleString()}. Reason: ${user.banReason || "No reason provided"}`,
+          );
+
+          // Sign the user out by destroying the session
+          await fetch(`${baseUrl}/api/auth/signout`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({}),
+          });
+
+          const redirectUrl = new URL(modulePaths.SIGNIN.path, baseUrl);
+          redirectUrl.searchParams.append("error", "banned");
+          // Add ban details to URL parameters for the client-side toast
+          redirectUrl.searchParams.append(
+            "bannedUntil",
+            bannedUntil.toISOString(),
+          );
+          if (user.banReason) {
+            redirectUrl.searchParams.append("banReason", user.banReason);
+          }
+
+          return NextResponse.redirect(redirectUrl);
+        }
+      }
+    } else {
+      console.error("Failed to check user ban status:", await response.text());
+    }
+  }
+
   // If the path is protected and the user is not logged in, redirect to the sign-in page
   if (isProtectedPath && !token) {
     console.debug("User is not authenticated. Redirecting to sign-in page.");
@@ -99,7 +155,12 @@ export default async function middleware(req: NextRequest) {
   }
 
   // If the user is logged in but requested the sign-in page, redirect to the dashboard
-  if (token && pathWithoutLocale === modulePaths.SIGNIN.path) {
+  // Skip this logic for banned users on the signin page
+  if (
+    token &&
+    pathWithoutLocale === modulePaths.SIGNIN.path &&
+    !req.nextUrl.searchParams.get("error")
+  ) {
     return NextResponse.redirect(new URL(modulePaths.DASHBOARD.path, baseUrl));
   }
 
