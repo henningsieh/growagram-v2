@@ -27,7 +27,7 @@ export function ActivePlantsCard({
   plantsData,
   isLoading,
 }: ActivePlantsCardProps) {
-  const t = useTranslations("Platform");
+  const t = useTranslations();
 
   const activePlants =
     plantsData?.plants.filter(
@@ -38,9 +38,11 @@ export function ActivePlantsCard({
     <Card className="col-span-1 md:col-span-4">
       <CardHeader>
         <CardTitle as="h3" className="text-xl font-semibold">
-          {t("active-plants")}
+          {t("Platform.active-plants")}
         </CardTitle>
-        <CardDescription>{t("active-plants-description")}</CardDescription>
+        <CardDescription>
+          {t("Platform.active-plants-description")}
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="space-y-8">
@@ -66,9 +68,9 @@ export function ActivePlantsCard({
             (!plantsData?.plants.length || activePlants.length === 0) && (
               <div className="text-muted-foreground py-4 text-center">
                 <Sprout className="mx-auto mb-2 h-8 w-8 opacity-50" />
-                <p>{t("no-active-plants")}</p>
+                <p>{t("Platform.no-active-plants")}</p>
                 <Button variant="link" asChild className="mt-2">
-                  <Link href="/plants/form">{t("create-plant")}</Link>
+                  <Link href="/plants/form">{t("Platform.create-plant")}</Link>
                 </Button>
               </div>
             )}

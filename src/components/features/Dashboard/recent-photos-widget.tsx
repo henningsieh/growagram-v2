@@ -29,7 +29,7 @@ export function RecentPhotosWidget({
   photos,
   isLoading,
 }: RecentPhotosWidgetProps) {
-  const t = useTranslations("Platform");
+  const t = useTranslations();
   const { openImageModal } = useImageModal();
   const [hoveredPhotoId, setHoveredPhotoId] = useState<string | null>(null);
 
@@ -37,9 +37,11 @@ export function RecentPhotosWidget({
     <Card className="col-span-1 md:col-span-4">
       <CardHeader>
         <CardTitle as="h3" className="text-xl font-semibold">
-          {t("recent-photos")}
+          {t("Platform.recent-photos")}
         </CardTitle>
-        <CardDescription>{t("recent-photos-description")}</CardDescription>
+        <CardDescription>
+          {t("Platform.recent-photos-description")}
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
@@ -56,12 +58,12 @@ export function RecentPhotosWidget({
             /* No photos state */
             <div className="py-8 text-center">
               <ImageIcon className="text-muted-foreground mx-auto h-10 w-10 opacity-50" />
-              <h3 className="mt-2 font-medium">{t("no-photos-yet")}</h3>
-              <p className="text-muted-foreground text-sm">
-                {t("upload-photos-description")}
-              </p>
+              <h3 className="mt-2 font-medium">{t("Photos.no-photos-yet")}</h3>
+
               <Button variant="outline" asChild className="mt-4">
-                <Link href="/photos/upload">{t("upload-photos")}</Link>
+                <Link href={`${modulePaths.PHOTOS.path}/upload`}>
+                  {t("Photos.button-label-upload-photos")}
+                </Link>
               </Button>
             </div>
           ) : (
@@ -101,7 +103,7 @@ export function RecentPhotosWidget({
               <div className="flex justify-end">
                 <Button variant="link" asChild size="sm" className="px-0">
                   <Link href={modulePaths.PHOTOS.path}>
-                    {t("view-all-photos")}
+                    {t("Platform.view-all-photos")}
                     <ArrowRight className="ml-1 h-4 w-4" />
                   </Link>
                 </Button>

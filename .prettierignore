@@ -1,4 +1,5 @@
 src/lib/db/migrations
 src/server/api/root.ts
 src/components/ui
+src/assets/constants.ts
 components.json

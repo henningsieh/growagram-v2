@@ -4,6 +4,7 @@ import * as React from "react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { usePathname, useSearchParams } from "next/navigation";
+import { skipToken } from "@tanstack/react-query";
 import {
   Flower2Icon,
   ImageIcon,
@@ -33,7 +34,7 @@ export function DashboardContent() {
   const [activeTab, setActiveTab] = React.useState("overview");
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
 
   // Handle URL hash for tab selection
   React.useEffect(() => {
@@ -61,30 +62,40 @@ export function DashboardContent() {
     };
   }, [pathname, searchParams]); // Add pathname and searchParams as dependencies
 
-  if (session === null) {
-    return null;
-  }
-
+  // Define all API queries with conditional fetching based on session state
   const { data: growsData, isLoading: isLoadingGrows } =
-    api.grows.getOwnGrows.useQuery({
-      // limit: 6,
-    });
+    api.grows.getOwnGrows.useQuery(
+      {
+        // limit: 6,
+      },
+      { enabled: !!session?.user.id },
+    );
 
   const { data: plantsData, isLoading: isLoadingPlants } =
-    api.plants.getOwnPlants.useQuery({
-      // limit: 5,
-    });
+    api.plants.getOwnPlants.useQuery(
+      {
+        // limit: 5,
+      },
+      { enabled: !!session?.user.id },
+    );
 
   const { data: photosData, isLoading: isLoadingPhotos } =
-    api.photos.getOwnPhotos.useQuery({
-      limit: 12,
-    });
+    api.photos.getOwnPhotos.useQuery(
+      {
+        limit: 12,
+      },
+      { enabled: !!session?.user.id },
+    );
 
   const { data: userProfile, isPending: userStatsArePending } =
     api.users.getPublicUserProfile.useQuery(
-      { id: session?.user.id },
-      { enabled: status === "authenticated" },
+      session?.user.id ? { id: session.user.id } : skipToken,
     );
+
+  // Return null if session is null, after defining all hooks
+  if (session === null) {
+    return null;
+  }
 
   const totalGrows = growsData?.count || 0;
   const totalPlants = plantsData?.count || 0;
