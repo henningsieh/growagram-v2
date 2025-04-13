@@ -35,7 +35,7 @@ export default function LandingPage() {
   return (
     <div className="relative w-full overflow-hidden">
       {/* Subtle background gradient */}
-      <div className="from-primary/5 absolute top-0 right-0 left-0 h-[500px] bg-gradient-to-b to-transparent"></div>
+      <div className="dark:from-primary/10 absolute top-0 right-0 left-0 h-svh dark:bg-gradient-to-b dark:to-transparent"></div>
 
       {/* Hero Section */}
       <motion.div
@@ -44,17 +44,21 @@ export default function LandingPage() {
         animate="visible"
         className="relative z-10"
       >
-        <div className="relative min-h-[calc(100svh-9rem)]">
-          <div className="container mx-auto px-4 py-16 md:py-24 lg:py-32">
+        <div className="relative flex min-h-[calc(100svh-9rem)] flex-col justify-center">
+          <div className="container mx-auto my-auto h-full p-8">
             <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-8">
               <motion.div
                 variants={itemVariants}
                 className="flex max-w-2xl flex-col space-y-8"
               >
                 <div className="bg-primary/10 border-primary/50 text-primary inline-flex items-center self-start rounded-full border px-4 py-1.5 text-base font-medium">
-                  <span className="mr-3 inline-block animate-pulse">🚀</span>
+                  <span className="mr-3 inline-block animate-pulse">
+                    {"🚀"}
+                  </span>
                   {t("HeroSection.badge")}
-                  <span className="ml-3 inline-block animate-pulse">🪴</span>
+                  <span className="ml-3 inline-block animate-pulse">
+                    {"🪴"}
+                  </span>
                 </div>
 
                 <div className="flex flex-col space-y-4">

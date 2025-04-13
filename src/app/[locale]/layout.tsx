@@ -1,4 +1,4 @@
-// src/app/[locale]/layout.tsx
+import type React from "react";
 import type { Metadata } from "next";
 import { SessionProvider } from "next-auth/react";
 import { NextIntlClientProvider } from "next-intl";
@@ -58,7 +58,7 @@ export default async function AppLayout(props: AppLayoutProps) {
       lang={(await props.params).locale}
       suppressHydrationWarning
     >
-      <body className="bg-background min-h-screen font-sans antialiased">
+      <body className="bg-background min-h-screen overflow-x-hidden font-sans antialiased">
         <EnhancedProgressProvider
           className="spinner-size-md"
           height="5px"
@@ -72,7 +72,7 @@ export default async function AppLayout(props: AppLayoutProps) {
             enableSystem
             disableTransitionOnChange={false}
           >
-            <div className="texture"></div>
+            <div className="texture pointer-events-none fixed inset-0 z-0"></div>
             {/* Providing all messages to the client */}
             <NextIntlClientProvider messages={await getMessages()}>
               <SessionProvider>
@@ -80,13 +80,13 @@ export default async function AppLayout(props: AppLayoutProps) {
                   <PhotoModalProvider>
                     <Toaster richColors />
                     <BanNotification />
-                    <div className="relative mx-auto flex max-w-7xl flex-col">
-                      <MainNavigationBar />
-                      <div className="flex min-h-[calc(100svh-7rem)] flex-1">
+                    <MainNavigationBar />
+                    <div className="relative mx-auto flex min-h-screen max-w-7xl flex-col">
+                      <div className="flex min-h-[calc(100svh-7rem)] flex-1 pt-14 pb-4">
                         {props.children}
                       </div>
-                      <AppFooter />
                     </div>
+                    <AppFooter />
                   </PhotoModalProvider>
                 </TRPCReactProvider>
               </SessionProvider>

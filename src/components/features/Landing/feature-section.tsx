@@ -27,8 +27,8 @@ export default function FeatureSection() {
       <div className="bg-grid-pattern pointer-events-none absolute inset-0 opacity-[0.03]"></div>
 
       <div className="container mx-auto px-4 md:px-6">
-        <div className="mx-auto mb-12 max-w-3xl space-y-4 text-center md:mb-16">
-          <div className="bg-primary/5 border-primary/20 text-primary inline-flex items-center rounded-full border px-4 py-1.5 text-sm font-medium">
+        <div className="mx-auto mb-12 max-w-3xl space-y-8 text-center md:mb-16">
+          <div className="bg-primary/10 border-primary/50 text-primary inline-flex items-center self-start rounded-full border px-4 py-1.5 text-base font-medium">
             <span className="mr-3 inline-block animate-pulse">{"✨"}</span>
             {t("FeaturesSection.badge")}
             <span className="ml-3 inline-block animate-pulse">{"⚙️"}</span>
