@@ -8,7 +8,7 @@ import type {
   GetGrowByIdType,
 } from "~/server/api/root";
 
-export default async function CreatePlantPage({
+export default async function EditGrowPage({
   params,
 }: {
   params: Promise<GetGrowByIdInput>;

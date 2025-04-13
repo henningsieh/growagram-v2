@@ -261,6 +261,9 @@ export const grows = pgTable("grow", {
   ownerId: text("owner_id")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
+  headerImageId: text("header_image_id").references(() => images.id, {
+    onDelete: "set null",
+  }),
   createdAt: timestamp("created_at", { withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
@@ -646,6 +649,11 @@ export const growsRelations = relations(grows, ({ one, many }) => ({
   owner: one(users, {
     fields: [grows.ownerId],
     references: [users.id],
+  }),
+  // A grow has one header image
+  headerImage: one(images, {
+    fields: [grows.headerImageId],
+    references: [images.id],
   }),
   // A grow has many plants
   plants: many(plants),

@@ -4,7 +4,7 @@ import { and, count, eq } from "drizzle-orm";
 import { z } from "zod";
 import { PaginationItemsPerPage } from "~/assets/constants";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
-import { grows, plants } from "~/lib/db/schema";
+import { grows, images, plants } from "~/lib/db/schema";
 import { connectPlantWithImagesQuery } from "~/server/api/routers/plantImages";
 import {
   createTRPCRouter,
@@ -66,6 +66,7 @@ export const growRouter = createTRPCRouter({
         offset: offset,
         with: {
           owner: true,
+          headerImage: true,
           plants: {
             with: {
               owner: true,
@@ -137,6 +138,7 @@ export const growRouter = createTRPCRouter({
         offset: offset,
         with: {
           owner: true,
+          headerImage: true,
           plants: {
             with: {
               owner: true,
@@ -176,6 +178,7 @@ export const growRouter = createTRPCRouter({
         where: eq(grows.id, input.id),
         with: {
           owner: true,
+          headerImage: true,
           plants: {
             with: {
               owner: true,
@@ -404,6 +407,87 @@ export const growRouter = createTRPCRouter({
           code: "INTERNAL_SERVER_ERROR",
           message:
             "An unexpected error occurred while creating or editing the grow.",
+          cause: error,
+        });
+      }
+    }),
+
+  // Update the header image for a grow
+  updateHeaderImage: protectedProcedure
+    .input(
+      z.object({
+        growId: z.string(),
+        headerImageId: z.string().nullable(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      try {
+        // Verify grow ownership
+        const grow = await ctx.db.query.grows.findFirst({
+          where: eq(grows.id, input.growId),
+        });
+
+        if (!grow) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "Grow environment not found.",
+          });
+        }
+
+        if (grow.ownerId !== ctx.session.user.id) {
+          throw new TRPCError({
+            code: "UNAUTHORIZED",
+            message: "User is not owner of this Grow environment.",
+          });
+        }
+
+        // If setting to null, simply update the grow
+        if (input.headerImageId === null) {
+          const updatedGrow = await ctx.db
+            .update(grows)
+            .set({ headerImageId: null })
+            .where(eq(grows.id, input.growId))
+            .returning();
+
+          return updatedGrow[0];
+        }
+
+        // Verify image exists and is owned by the user
+        const image = await ctx.db.query.images.findFirst({
+          where: eq(images.id, input.headerImageId),
+        });
+
+        if (!image) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "Image not found.",
+          });
+        }
+
+        if (image.ownerId !== ctx.session.user.id) {
+          throw new TRPCError({
+            code: "UNAUTHORIZED",
+            message: "User is not owner of this image.",
+          });
+        }
+
+        // Update grow with the header image
+        const updatedGrow = await ctx.db
+          .update(grows)
+          .set({ headerImageId: input.headerImageId })
+          .where(eq(grows.id, input.growId))
+          .returning();
+
+        return updatedGrow[0];
+      } catch (error) {
+        if (error instanceof TRPCError) {
+          throw error;
+        }
+
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message:
+            "An unexpected error occurred while updating the header image.",
           cause: error,
         });
       }
