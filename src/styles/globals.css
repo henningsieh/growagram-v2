@@ -25,7 +25,7 @@
   --seedling: oklch(0.64 0.3 324); /* purple */
   --vegetation: oklch(0.56 0.185 144); /* green */
   --flowering: oklch(0.56 0.24 14); /* pink */
-  --harvest: oklch(0.78 0.16 96); /* yellow */
+  --harvest: oklch(0.56 0.15 49); /* amber 700 */
   --curing: oklch(0.56 0.24 264); /* blue */
 
   --background: oklch(0.91 0.048 83.6);
@@ -77,12 +77,12 @@
 }
 
 .dark {
-  --planted: oklch(0.64 0.24 54); /* rust/terracotta */
-  --seedling: oklch(0.64 0.3 324); /* purple */
-  --vegetation: oklch(0.64 0.185 144); /* green */
-  --flowering: oklch(0.64 0.24 14); /* pink */
-  --harvest: oklch(0.78 0.18 96); /* yellow */
-  --curing: oklch(0.64 0.25 264); /* blue */
+  --planted: oklch(0.7 0.19 48); /* orange 500 */
+  --seedling: oklch(0.67 0.26 322); /* fuchsia 500 */
+  --vegetation: oklch(0.77 0.2 131); /* lime 500 */
+  --flowering: oklch(0.65 0.22 16); /* rose 500 */
+  --harvest: oklch(0.77 0.16 70); /* amber 500 */
+  --curing: oklch(0.68 0.15 237); /* sky 500 */
 
   --background: oklch(0.17 0.02 87.73);
   --foreground: oklch(0.95 0.02 87.51);

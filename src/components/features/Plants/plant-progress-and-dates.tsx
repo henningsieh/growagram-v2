@@ -27,16 +27,13 @@ export function PlantProgressAndDates({ plant }: { plant: PlantByIdType }) {
   const progress = calculateGrowthProgress(plant);
 
   return (
-    <Card className="bg-muted/30 space-y-4 rounded-md p-4">
+    <Card className="bg-muted/30 gap-2 space-y-4 rounded-md p-4 py-3">
       <CardHeader className="flex w-full flex-col p-0">
         <div className="mb-1 flex w-full justify-between text-sm">
           <span>{t("overall-progress")}</span>
           <span>
-            {
-              progress.overallProgress
-              // eslint-disable-next-line react/jsx-no-literals
-            }
-            %
+            {progress.overallProgress}
+            {"%"}
           </span>
         </div>
         <Progress value={progress.overallProgress} className="w-full" />
