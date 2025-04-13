@@ -65,6 +65,7 @@ export const postRouter = {
         grow: {
           with: {
             owner: true,
+            // headerImage: true, // Include full headerImage data
             plants: {
               with: {
                 owner: true,

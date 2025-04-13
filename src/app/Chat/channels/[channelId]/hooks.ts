@@ -46,8 +46,8 @@ export function useLivePosts(channelId: string) {
   );
 
   const [messages, setMessages] = React.useState(() => {
-    const msgs = query.data?.pages.map((page) => page.items).flat();
-    return msgs ?? null;
+    const msgs = query.data.pages.map((page) => page.items).flat();
+    return msgs;
   });
   type Post = NonNullable<typeof messages>[number];
 
@@ -57,7 +57,7 @@ export function useLivePosts(channelId: string) {
   const addMessages = React.useCallback((incoming?: Post[]) => {
     setMessages((current) => {
       const map: Record<Post["id"], Post> = {};
-      for (const msg of current ?? []) {
+      for (const msg of current) {
         map[msg.id] = msg;
       }
       for (const msg of incoming ?? []) {
@@ -73,9 +73,9 @@ export function useLivePosts(channelId: string) {
    * when new data from `useInfiniteQuery`, merge with current state
    */
   React.useEffect(() => {
-    const msgs = query.data?.pages.map((page) => page.items).flat();
+    const msgs = query.data.pages.map((page) => page.items).flat();
     addMessages(msgs);
-  }, [query.data?.pages, addMessages]);
+  }, [query.data.pages, addMessages]);
 
   const [lastEventId, setLastEventId] = React.useState<
     // Query has not been run yet
@@ -85,7 +85,7 @@ export function useLivePosts(channelId: string) {
     // Event id
     | string
   >(false);
-  if (messages && lastEventId === false) {
+  if (lastEventId === false) {
     // We should only set the lastEventId once, if the SSE-connection is lost, it will automatically reconnect and continue from the last event id
     // Changing this value will trigger a new subscription
     setLastEventId(messages.at(-1)?.id ?? null);
@@ -99,7 +99,7 @@ export function useLivePosts(channelId: string) {
       onError(err) {
         console.error("Subscription error:", err);
 
-        const lastMessageEventId = messages?.at(-1)?.id;
+        const lastMessageEventId = messages.at(-1)?.id;
         if (lastMessageEventId) {
           // We've lost the connection, let's resubscribe from the last message
           setLastEventId(lastMessageEventId);

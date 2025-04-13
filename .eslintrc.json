@@ -1,11 +1,21 @@
 {
-  "extends": ["next/core-web-vitals", "next/typescript"],
+  "extends": [
+    "next/core-web-vitals",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/recommended-requiring-type-checking",
+    "plugin:@typescript-eslint/strict-type-checked"
+  ],
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
   "rules": {
     "@typescript-eslint/no-unused-vars": "warn",
-
     "react/jsx-no-literals": "warn",
-
-    "no-restricted-imports": "error"
+    "no-restricted-imports": "error",
+    "@typescript-eslint/no-unsafe-assignment": "error",
+    "@typescript-eslint/no-unsafe-member-access": "error",
+    "@typescript-eslint/no-unsafe-call": "error",
+    "@typescript-eslint/no-unsafe-return": "error"
   },
   "overrides": [
     {

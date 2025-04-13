@@ -45,7 +45,7 @@ const handleSubscriptionError = (error: SubscriptionError) => {
     return "Server error occurred. Please try again later.";
   }
 
-  return `Connection error: ${error.message}, Code: ${error.data?.code}`;
+  return `Connection error: ${error.message}, Code: ${String(error.data?.code)}`;
 };
 
 function SubscriptionStatus(props: {
@@ -158,8 +158,8 @@ export function Chat(props: Readonly<{ channelId: string }>) {
                 </Button>
               </div>
 
-              {livePosts.messages?.map((message) => {
-                const isMe = message.name === session?.user?.name;
+              {livePosts.messages.map((message) => {
+                const isMe = message.name === session?.user.name;
 
                 return (
                   <div
@@ -300,7 +300,9 @@ function AddMessageForm(props: {
           className="pr-12"
           placeholder="Type your message..."
           value={message}
-          onChange={(e) => setMessage(e.target.value)}
+          onChange={(e) => {
+            setMessage(e.target.value);
+          }}
           rows={message.split(/\r|\n/).length}
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
@@ -308,8 +310,12 @@ function AddMessageForm(props: {
               postMessage();
             }
           }}
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
+          onFocus={() => {
+            setIsFocused(true);
+          }}
+          onBlur={() => {
+            setIsFocused(false);
+          }}
           autoFocus
         />
         <Button
