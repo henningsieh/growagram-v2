@@ -207,14 +207,17 @@ export default function PlantCard({
               )}
             </div>
 
+            {/* Image Carousel */}
+            <ImageCarousel plantImages={plant.plantImages} />
+
             {/* Date Information */}
             <EntityDateInfo
               createdAt={plant.createdAt}
               updatedAt={plant.updatedAt}
             />
 
-            {/* Image Carousel */}
-            <ImageCarousel plantImages={plant.plantImages} />
+            {/* Plant Progress and Dates */}
+            <PlantProgressAndDates plant={plant} />
 
             <CardDescription>
               <div className="flex min-h-6 items-center justify-between gap-2 p-0">
@@ -240,9 +243,6 @@ export default function PlantCard({
                 )}
               </div>
             </CardDescription>
-
-            {/* Plant Progress and Dates */}
-            <PlantProgressAndDates plant={plant} />
 
             {!isSocial && (
               <Button

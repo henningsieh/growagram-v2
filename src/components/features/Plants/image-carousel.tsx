@@ -77,7 +77,7 @@ export const ImageCarousel = ({
       </div>
 
       {/* Date overlay */}
-      <div className="bg-accent/50 text-accent-foreground absolute right-0 bottom-0 left-0 p-2 backdrop-blur-[2px]">
+      <div className="bg-accent/50 text-accent-foreground absolute right-0 bottom-0 left-0 rounded-b-sm p-2 backdrop-blur-[2px]">
         <div className="flex items-center gap-2 font-mono text-sm">
           <CameraIcon size={16} />
           <span>
