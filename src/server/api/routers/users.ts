@@ -64,6 +64,7 @@ export const userRouter = {
           grows: {
             with: {
               owner: true,
+              headerImage: true,
               plants: {
                 with: {
                   owner: true,
