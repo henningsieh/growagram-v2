@@ -49,14 +49,22 @@ export default function ItemsPagination({
     }, []);
   };
 
+  const handlePageClick = (page: number) => {
+    if (!isFetching) {
+      handlePageChange(page);
+    }
+  };
+
   return (
     <div className="my-4 flex justify-center">
       <Pagination>
-        <PaginationContent>
+        <PaginationContent
+          className={isFetching ? "pointer-events-none opacity-60" : ""}
+        >
           <PaginationItem hidden={currentPage === 1}>
             <PaginationPrevious
               className="cursor-pointer p-0"
-              onClick={() => handlePageChange(currentPage - 1)}
+              onClick={() => handlePageClick(currentPage - 1)}
             >
               <ChevronLeftIcon className="h-4 w-4" />
             </PaginationPrevious>
@@ -73,7 +81,7 @@ export default function ItemsPagination({
             ) : (
               <PaginationItem key={page} className="cursor-pointer">
                 <PaginationLink
-                  onClick={() => handlePageChange(page as number)}
+                  onClick={() => handlePageClick(page as number)}
                   isActive={currentPage === page}
                 >
                   <p>{page}</p>
@@ -85,7 +93,7 @@ export default function ItemsPagination({
           <PaginationItem hidden={currentPage === totalPages}>
             <PaginationNext
               className="cursor-pointer p-0"
-              onClick={() => handlePageChange(currentPage + 1)}
+              onClick={() => handlePageClick(currentPage + 1)}
             >
               <ChevronRightIcon className="h-4 w-4" />
             </PaginationNext>

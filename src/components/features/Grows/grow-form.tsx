@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TRPCClientError } from "@trpc/client";
 import {
@@ -19,6 +20,7 @@ import { z } from "zod";
 import { PaginationItemsPerPage, modulePaths } from "~/assets/constants";
 import FormContent from "~/components/Layouts/form-content";
 import PageHeader from "~/components/Layouts/page-header";
+import { RESPONSIVE_IMAGE_SIZES } from "~/components/Layouts/responsive-grid";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
 import SpinningLoader from "~/components/atom/spinning-loader";
 import { Alert } from "~/components/ui/alert";
@@ -191,7 +193,7 @@ export default function GrowFormPage({ grow }: { grow?: GetGrowByIdType }) {
 
   // Header image update mutation
   const updateHeaderImageMutation = api.grows.updateHeaderImage.useMutation({
-    onSuccess: async (updatedGrow) => {
+    onSuccess: async () => {
       toast(t("header-image-update-success-title"), {
         description: t("header-image-update-success-description"),
       });
@@ -405,7 +407,9 @@ export default function GrowFormPage({ grow }: { grow?: GetGrowByIdType }) {
                       {/* Display current header image if exists */}
                       {headerImageUrl && (
                         <div className="relative aspect-video w-full max-w-md overflow-hidden rounded-md border">
-                          <img
+                          <Image
+                            fill
+                            sizes={RESPONSIVE_IMAGE_SIZES}
                             src={headerImageUrl}
                             alt={t("grow-header-image")}
                             className="h-full w-full object-cover"

@@ -20,7 +20,6 @@ import {
 } from "~/components/ui/dropdown-menu";
 import { api } from "~/lib/trpc/react";
 import type { AdminUserListItem } from "~/server/api/root";
-import { UserRoles } from "~/types/user";
 
 interface ActionsCellProps {
   user: AdminUserListItem;

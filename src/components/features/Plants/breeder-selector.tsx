@@ -2,9 +2,8 @@ import * as React from "react";
 import { useTranslations } from "next-intl";
 import { BriefcaseIcon } from "lucide-react";
 import { toast } from "sonner";
-import { ComboboxWithCreate } from "~/components/atom/combobox-with-create";
 import type { ComboboxOption } from "~/components/atom/combobox-with-create";
-import SpinningLoader from "~/components/atom/spinning-loader";
+import { ComboboxWithCreate } from "~/components/atom/combobox-with-create";
 import { FormError } from "~/components/ui/form-error";
 import { api } from "~/lib/trpc/react";
 

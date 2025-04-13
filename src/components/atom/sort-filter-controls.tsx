@@ -7,7 +7,6 @@ import {
   FilterIcon,
   ScrollText,
 } from "lucide-react";
-import { Button } from "~/components/ui/button";
 import { Label } from "~/components/ui/label";
 import {
   Select,
@@ -17,7 +16,6 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import { Switch } from "~/components/ui/switch";
-import { cn } from "~/lib/utils";
 
 export interface SortOption<T extends string> {
   field: T;
