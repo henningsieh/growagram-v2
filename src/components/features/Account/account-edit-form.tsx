@@ -110,8 +110,8 @@ export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
     },
   });
 
-  const onSubmit = (values: EditUserInput) => {
-    editUserMutation.mutateAsync(values);
+  const onSubmit = async (values: EditUserInput) => {
+    await editUserMutation.mutateAsync(values);
   };
 
   // Check username uniqueness
@@ -124,8 +124,8 @@ export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
   );
 
   // Wait for the user stopps typing
-  const debouncedUsernameCheck = debounce(() => {
-    usernameCheck.refetch();
+  const debouncedUsernameCheck = debounce(async () => {
+    await usernameCheck.refetch();
   }, 500);
 
   // Handle username change, debounce the API call
@@ -138,12 +138,12 @@ export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
 
     setTypingTimeout(
       setTimeout(() => {
-        debouncedUsernameCheck();
+        void debouncedUsernameCheck();
       }, 500),
     );
 
     form.setValue("username", newUsername);
-    form.trigger("username");
+    void form.trigger("username");
   };
 
   console.debug("form.formState.errors:", form.formState.errors);

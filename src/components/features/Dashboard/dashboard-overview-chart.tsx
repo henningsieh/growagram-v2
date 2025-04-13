@@ -86,7 +86,7 @@ export function PlantsOverviewChart({ plantsData }: PlantsOverviewChartProps) {
           fontSize={12}
         />
         <Tooltip
-          formatter={(value) => [`${value}%`, ""]}
+          formatter={(value) => [`${String(value)}%`, ""]}
           contentStyle={{
             borderRadius: "8px",
             border: "1px solid var(--border)",

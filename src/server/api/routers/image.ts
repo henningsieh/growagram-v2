@@ -382,6 +382,8 @@ async function objectExists(bucket: string, key: string) {
     }
     // For other errors, we should throw
     console.error("Error checking if object exists:", error);
-    throw new Error(`Failed to check if image exists in storage: ${error}`);
+    throw new Error(
+      `Failed to check if image exists in storage: ${String(error)}`,
+    );
   }
 }

@@ -117,16 +117,21 @@ export const columns: ColumnDef<AdminUserListItem>[] = [
     cell: ({ row }) => {
       const role = row.original.role;
       const variant =
-        role === UserRoles.ADMIN
+        (role as UserRoles) === UserRoles.ADMIN
           ? "destructive"
-          : role === UserRoles.MOD
+          : (role as UserRoles) === UserRoles.MOD
             ? "secondary"
             : "outline";
 
       return <Badge variant={variant}>{role}</Badge>;
     },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id));
+    filterFn: (row, id, value: unknown) => {
+      const rowValue = row.getValue(id);
+      return (
+        Array.isArray(value) &&
+        typeof rowValue === "string" &&
+        value.includes(rowValue)
+      );
     },
   },
   {

@@ -312,7 +312,7 @@ export function PhotoModalProvider({
     // Store touch points for pinch detection
     if (e.touches.length === 2) {
       // Use type assertion to convert to React.Touch[]
-      touchPoints.current = Array.from(e.touches) as React.Touch[];
+      touchPoints.current = Array.from(e.touches);
       lastDistance.current = getDistance(e.touches[0], e.touches[1]);
       lastMidpoint.current = getMidpoint(e.touches[0], e.touches[1]);
 

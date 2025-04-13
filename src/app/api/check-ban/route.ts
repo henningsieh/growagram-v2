@@ -3,8 +3,12 @@ import { eq } from "drizzle-orm";
 import { db } from "~/lib/db";
 import { users } from "~/lib/db/schema";
 
+interface RequestBody {
+  userId: string;
+}
+
 export async function POST(req: NextRequest) {
-  const { userId } = await req.json();
+  const { userId } = (await req.json()) as RequestBody;
 
   if (!userId) {
     return NextResponse.json({ error: "User ID is required" }, { status: 400 });
@@ -13,7 +17,6 @@ export async function POST(req: NextRequest) {
   try {
     const user = await db.query.users.findFirst({
       where: eq(users.id, userId),
-      columns: { bannedUntil: true, banReason: true },
     });
 
     if (!user) {
@@ -29,3 +32,6 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+
+// This is the type of the response from the POST request
+export type CheckBanResponse = Awaited<ReturnType<typeof POST>>;

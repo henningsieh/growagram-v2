@@ -6,6 +6,6 @@ export const metadata = {
   description: "Grower's Plattform",
 };
 
-export default async function Dashboard() {
+export default function Dashboard() {
   return <DashboardContent />;
 }

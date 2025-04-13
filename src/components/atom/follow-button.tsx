@@ -26,23 +26,23 @@ export function FollowButton({
 
   const { mutate: follow, isPending: isFollowLoading } =
     api.users.followUser.useMutation({
-      onSuccess: () => {
+      onSuccess: async () => {
         setIsFollowing(true);
         toast(t("FollowButton.follow-success-title"), {
           description: t("FollowButton.follow-success-description"),
         });
-        utils.users.getPublicUserProfile.invalidate();
+        await utils.users.getPublicUserProfile.invalidate();
       },
     });
 
   const { mutate: unfollow, isPending: isUnfollowLoading } =
     api.users.unfollowUser.useMutation({
-      onSuccess: () => {
+      onSuccess: async () => {
         setIsFollowing(false);
         toast(t("FollowButton.unfollow-success-title"), {
           description: t("FollowButton.unfollow-success-description"),
         });
-        utils.users.getPublicUserProfile.invalidate();
+        await utils.users.getPublicUserProfile.invalidate();
       },
     });
 

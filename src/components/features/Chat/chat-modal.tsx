@@ -47,7 +47,7 @@ export function ChatModal({
   // Cleanup subscription when modal closes
   React.useEffect(() => {
     if (!isOpen) {
-      utils.chat.getMessages.reset();
+      void utils.chat.getMessages.reset();
     }
   }, [isOpen, utils.chat.getMessages]);
 

@@ -104,7 +104,7 @@ const MarkdownPage = async () => {
   );
 };
 
-export async function generateMetadata() {
+export function generateMetadata() {
   return {
     title: "GrowAGram 🪴 Track Your Grow 📜",
     description:

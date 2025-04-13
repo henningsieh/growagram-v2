@@ -39,8 +39,8 @@ export function ActionsCell({ user }: ActionsCellProps) {
 
   // Ban user mutation
   const banUserMutation = api.admin.banUser.useMutation({
-    onSuccess: () => {
-      utils.admin.getAllUsers.invalidate();
+    onSuccess: async () => {
+      await utils.admin.getAllUsers.invalidate();
       toast.success("User banned successfully", {
         description:
           "The user has been banned and cannot log in until the ban expires.",
@@ -55,11 +55,11 @@ export function ActionsCell({ user }: ActionsCellProps) {
 
   // Unban user mutation
   const unbanUserMutation = api.admin.unbanUser.useMutation({
-    onSuccess: () => {
-      utils.admin.getAllUsers.invalidate();
+    onSuccess: async () => {
       toast.success("User unbanned successfully", {
         description: "The user's ban has been lifted and they can now log in.",
       });
+      await utils.admin.getAllUsers.invalidate();
     },
     onError: (error) => {
       toast.error("Failed to unban user", {
@@ -68,9 +68,9 @@ export function ActionsCell({ user }: ActionsCellProps) {
     },
   });
 
-  const handleCopyUserId = () => {
+  const handleCopyUserId = async () => {
     try {
-      navigator.clipboard.writeText(user.id);
+      await navigator.clipboard.writeText(user.id);
       toast.success(t("toasts.copy-success"));
     } catch (error) {
       console.error(error);
@@ -86,16 +86,16 @@ export function ActionsCell({ user }: ActionsCellProps) {
     router.push(`${modulePaths.USERADMINISTRATION.path}/${user.id}/edit`);
   };
 
-  const handleBanUser = (duration: string) => {
-    banUserMutation.mutateAsync({
+  const handleBanUser = async (duration: string) => {
+    await banUserMutation.mutateAsync({
       userId: user.id,
       banDuration: duration,
       banReason: `Admin action: User banned for ${BAN_DURATIONS.find((d) => d.value === duration)?.label.toLowerCase() || duration}`,
     });
   };
 
-  const handleUnbanUser = () => {
-    unbanUserMutation.mutateAsync({ userId: user.id });
+  const handleUnbanUser = async () => {
+    await unbanUserMutation.mutateAsync({ userId: user.id });
   };
 
   return (

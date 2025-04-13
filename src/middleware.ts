@@ -5,6 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { PROTECTED_PATHS, modulePaths } from "~/assets/constants";
 import { env } from "~/env";
 import { routing } from "~/lib/i18n/routing";
+import { User } from "~/types/db";
 
 const languages = routing.locales;
 
@@ -91,7 +92,7 @@ export default async function middleware(req: NextRequest) {
     });
 
     if (response.ok) {
-      const user = await response.json();
+      const user = (await response.json()) as User;
 
       if (user?.bannedUntil) {
         const bannedUntil = new Date(user.bannedUntil);

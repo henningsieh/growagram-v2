@@ -114,7 +114,7 @@ export function useNotifications(onlyUnread = true) {
         toast(t("new_notification"), {
           description: `${notification.actor.name} ${notificationText}`,
         });
-        utils.notifications.getAll.invalidate();
+        void utils.notifications.getAll.invalidate();
       },
       onError: (err) => {
         console.error("Subscription error:", err);
@@ -124,24 +124,24 @@ export function useNotifications(onlyUnread = true) {
           if (lastNotificationId) {
             setLastEventId(lastNotificationId);
           }
-          utils.notifications.getAll.invalidate();
+          void utils.notifications.getAll.invalidate();
         }
       },
     },
   );
 
   const { mutate: markAsRead } = api.notifications.markAsRead.useMutation({
-    onSuccess: (_, { id }) => {
+    onSuccess: async (_, { id }) => {
       setAllNotifications((prev) => prev?.filter((n) => n.id !== id) ?? null);
-      utils.notifications.getAll.invalidate();
+      await utils.notifications.getAll.invalidate();
     },
   });
 
   const { mutate: markAllAsRead } = api.notifications.markAllAsRead.useMutation(
     {
-      onSuccess: () => {
+      onSuccess: async () => {
         setAllNotifications([]);
-        utils.notifications.getAll.invalidate();
+        await utils.notifications.getAll.invalidate();
       },
     },
   );

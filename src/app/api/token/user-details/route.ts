@@ -20,7 +20,7 @@ export async function GET(req: Request) {
 
   try {
     const dbUser = await db.query.users.findFirst({
-      where: (users, { eq }) => eq(users.id, userId as string),
+      where: (users, { eq }) => eq(users.id, userId),
     });
 
     if (dbUser) {

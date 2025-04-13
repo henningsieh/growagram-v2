@@ -41,7 +41,7 @@
     ".next-dev/types/**/*.ts",
     ".next-prod/types/**/*.ts",
     "src/types/**/*.d.ts",
-    "next.config.mjs"
+    "next.config.ts"
   ],
 
   "exclude": ["node_modules"]

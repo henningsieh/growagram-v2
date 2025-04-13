@@ -112,6 +112,7 @@ export type GetOwnPhotosOutput = RouterOutput["photos"]["getOwnPhotos"];
 export type GetOwnPhotosType = RouterOutput["photos"]["getOwnPhotos"]["images"];
 export type GetOwnPhotoType = RouterOutput["photos"]["getOwnPhotos"]["images"][number];
 export type GetPhotoByIdType = RouterOutput["photos"]["getById"];
+export type CreatePhotoOutput = RouterOutput["photos"]["createPhoto"];
 //  INPUTS:
 export type GetOwnPhotosInput = RouterInput["photos"]["getOwnPhotos"];
 export type GetPhotoByIdInput = RouterInput["photos"]["getById"];

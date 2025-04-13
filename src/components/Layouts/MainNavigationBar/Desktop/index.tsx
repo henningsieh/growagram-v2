@@ -32,7 +32,7 @@ function DesktopNavigationMenu() {
                   "hover:bg-accent/80 hover:text-accent-foreground text-base font-medium transition-colors",
                 )}
               >
-                <Link href={item.href!}>{t(item.title)}</Link>
+                <Link href={item.href}>{t(item.title)}</Link>
               </NavigationMenuLink>
             ) : (
               <>

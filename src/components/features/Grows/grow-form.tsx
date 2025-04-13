@@ -56,6 +56,7 @@ import { api } from "~/lib/trpc/react";
 import { uploadToS3 } from "~/lib/utils/uploadToS3";
 import type {
   CreateOrEditGrowInput,
+  CreatePhotoOutput,
   GetConnectablePlantsInput,
   GetGrowByIdType,
   GetOwnGrowsInput,
@@ -264,12 +265,18 @@ export default function GrowFormPage({ grow }: { grow?: GetGrowByIdType }) {
 
         // Check for any connection/disconnection errors
         const connectionErrors = connectResults
-          .filter((result) => result.status === "rejected")
-          .map((result) => (result as PromiseRejectedResult).reason);
+          .filter(
+            (result): result is PromiseRejectedResult =>
+              result.status === "rejected",
+          )
+          .map((result) => result.reason as Error);
 
         const disconnectionErrors = disconnectResults
-          .filter((result) => result.status === "rejected")
-          .map((result) => (result as PromiseRejectedResult).reason);
+          .filter(
+            (result): result is PromiseRejectedResult =>
+              result.status === "rejected",
+          )
+          .map((result) => result.reason as Error);
 
         if (connectionErrors.length > 0 || disconnectionErrors.length > 0) {
           const errorMessages = [
@@ -498,7 +505,10 @@ export default function GrowFormPage({ grow }: { grow?: GetGrowByIdType }) {
                                   throw new Error("Failed to get upload URL");
                                 }
 
-                                const { uploadUrl } = await response.json();
+                                const { uploadUrl } =
+                                  (await response.json()) as {
+                                    uploadUrl: string;
+                                  };
 
                                 // Upload file to S3
                                 const { url: imageUrl, eTag } =

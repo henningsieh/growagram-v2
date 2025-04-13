@@ -87,7 +87,7 @@ export default {
     }),
   ],
   callbacks: {
-    async session({ session, token }) {
+    session({ session, token }) {
       // Careful type checking and assertion
       session.user = {
         ...session.user,
@@ -118,7 +118,11 @@ export default {
               },
             },
           );
-          const data = await response.json();
+          const data = (await response.json()) as {
+            username: string;
+            role: UserRoles;
+            error?: string;
+          };
 
           if (response.ok) {
             token.username = data.username;
@@ -131,12 +135,24 @@ export default {
         }
       }
 
-      // this gets invoked by session.update() in src/components/features/Account/edit-form.tsx:
-      if (trigger === "update" && updatedSessionData?.name) {
+      // This gets invoked by session.update() in src/components/features/Account/edit-form.tsx:
+      if (trigger === "update" && updatedSessionData) {
         console.debug("trigger session.update():", updatedSessionData);
-        // Note, that `session` can be any arbitrary object, remember to validate it!
-        token.name = updatedSessionData.name;
-        token.username = updatedSessionData.username;
+
+        // Type assertion to a known structure and validate before updating
+        const sessionData = updatedSessionData as Record<string, unknown>;
+
+        // Validate the data before updating the token
+        if (typeof sessionData.name === "string") {
+          token.name = sessionData.name;
+        }
+
+        if (typeof sessionData.username === "string") {
+          token.username = sessionData.username;
+        }
+
+        // Add any other fields you want to allow updating
+        // Make sure to validate each field with proper type checking
       }
       return token;
     },

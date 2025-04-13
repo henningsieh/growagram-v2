@@ -72,7 +72,7 @@ export default function PostCard({ post, isSocialProp = true }: PostCardProps) {
   };
 
   const handleImageClick = () => {
-    if (post.entityType === "image") {
+    if (post.entityType === PostableEntityType.PHOTO) {
       openImageModal(post.photo.imageUrl);
     }
   };
@@ -119,7 +119,7 @@ export default function PostCard({ post, isSocialProp = true }: PostCardProps) {
           {post.entityType === PostableEntityType.PLANT && (
             <EnhancedPlantCard plant={post.plant} />
           )}
-          {post.entityType === "image" && (
+          {post.entityType === PostableEntityType.PHOTO && (
             <div
               className="relative aspect-square w-full cursor-pointer overflow-hidden rounded-md"
               onClick={handleImageClick}

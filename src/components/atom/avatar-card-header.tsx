@@ -57,7 +57,7 @@ function AvatarCardHeader({
               <p className="text-foreground text-sm font-bold underline-offset-4 hover:underline">
                 {user.name}
               </p>
-              {user.role === UserRoles.ADMIN && (
+              {(user.role as UserRoles) === UserRoles.ADMIN && (
                 <div title="Administrator">
                   <ShieldIcon
                     fill="var(--color-yellow-500)"

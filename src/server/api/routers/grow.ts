@@ -367,7 +367,7 @@ export const growRouter = createTRPCRouter({
           const existingGrow = await ctx.db.query.grows.findFirst({
             where: and(
               eq(grows.id, input.id),
-              eq(grows.ownerId, ctx.session.user.id as string),
+              eq(grows.ownerId, ctx.session.user.id),
             ),
           });
 
@@ -386,7 +386,7 @@ export const growRouter = createTRPCRouter({
           .values({
             id: input.id || crypto.randomUUID(),
             name: input.name,
-            ownerId: ctx.session.user.id as string,
+            ownerId: ctx.session.user.id,
           })
           .onConflictDoUpdate({
             target: grows.id,

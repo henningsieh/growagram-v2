@@ -1,6 +1,13 @@
-// src/types/assets.d.ts
+//src/types/assets.d.ts:
+
 declare module "*.svg" {
-  import * as React from "react";
-  const content: React.FC<React.ComponentProps<"svg">>;
-  export default content;
+  import React from "react";
+  const SVGComponent: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  export default SVGComponent;
+}
+
+declare module "~/assets/flags/*-svgrepo-com.svg" {
+  import React from "react";
+  const FlagComponent: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  export default FlagComponent;
 }

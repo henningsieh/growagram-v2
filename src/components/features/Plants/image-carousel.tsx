@@ -81,8 +81,8 @@ export const ImageCarousel = ({
         <div className="flex items-center gap-2 font-mono text-sm">
           <CameraIcon size={16} />
           <span>
-            {formatDate(image.captureDate, locale as Locale)}{" "}
-            {formatTime(image.captureDate, locale as Locale)}
+            {formatDate(image.captureDate, locale)}{" "}
+            {formatTime(image.captureDate, locale)}
           </span>
         </div>
       </div>

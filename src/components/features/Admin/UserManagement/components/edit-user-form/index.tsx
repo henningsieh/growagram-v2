@@ -140,10 +140,10 @@ export default function AdminUserEditForm({ userId }: { userId: string }) {
 
   // Ban user mutation
   const banUserMutation = api.admin.banUser.useMutation({
-    onSuccess: () => {
+    onSuccess: async () => {
       // Invalidate queries to refetch the latest data
-      utils.admin.getUserById.invalidate({ id: userId });
-      utils.admin.getAllUsers.invalidate();
+      await utils.admin.getUserById.invalidate({ id: userId });
+      await utils.admin.getAllUsers.invalidate();
 
       toast.success("User banned successfully", {
         description:
@@ -160,10 +160,10 @@ export default function AdminUserEditForm({ userId }: { userId: string }) {
 
   // Unban user mutation
   const unbanUserMutation = api.admin.unbanUser.useMutation({
-    onSuccess: () => {
+    onSuccess: async () => {
       // Invalidate queries to refetch the latest data
-      utils.admin.getUserById.invalidate({ id: userId });
-      utils.admin.getAllUsers.invalidate();
+      await utils.admin.getUserById.invalidate({ id: userId });
+      await utils.admin.getAllUsers.invalidate();
 
       toast.success("User unbanned successfully", {
         description: "The user's ban has been lifted and they can now log in.",
@@ -177,8 +177,8 @@ export default function AdminUserEditForm({ userId }: { userId: string }) {
   });
 
   // Handle ban form submission
-  const onBanSubmit = (values: BanUserInput) => {
-    banUserMutation.mutateAsync({
+  const onBanSubmit = async (values: BanUserInput) => {
+    await banUserMutation.mutateAsync({
       userId,
       banDuration: values.banDuration,
       banReason: values.banReason,
@@ -186,8 +186,8 @@ export default function AdminUserEditForm({ userId }: { userId: string }) {
   };
 
   // Handle unban user
-  const handleUnban = () => {
-    unbanUserMutation.mutateAsync({ userId });
+  const handleUnban = async () => {
+    await unbanUserMutation.mutateAsync({ userId });
   };
 
   // Check if user is currently banned
@@ -222,10 +222,12 @@ export default function AdminUserEditForm({ userId }: { userId: string }) {
 
   // Update user mutation with cache invalidation
   const updateUserMutation = api.admin.updateUserDetails.useMutation({
-    onSuccess: () => {
+    onSuccess: async () => {
       // Invalidate queries to refetch the latest data
-      utils.admin.getUserById.invalidate({ id: userId });
-      utils.admin.getAllUsers.invalidate();
+      await Promise.all([
+        utils.admin.getUserById.invalidate({ id: userId }),
+        utils.admin.getAllUsers.invalidate(),
+      ]);
 
       toast.success(t("success-title"), {
         description: t("success-description"),
@@ -240,8 +242,8 @@ export default function AdminUserEditForm({ userId }: { userId: string }) {
   });
 
   // Handle form submission
-  const onSubmit = (values: AdminEditUserInput) => {
-    updateUserMutation.mutateAsync(values);
+  const onSubmit = async (values: AdminEditUserInput) => {
+    await updateUserMutation.mutateAsync(values);
   };
 
   // Format date utility

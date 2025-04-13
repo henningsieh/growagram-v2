@@ -150,9 +150,10 @@ export const Comment: React.FC<CommentProps> = ({
     },
   });
 
-  // Handle comment deletion
-  const handleDeleteComment = () => {
-    deleteMutation.mutate({ commentId: comment.id });
+  // Create a separate confirmDelete function
+  const confirmDelete = async () => {
+    await deleteMutation.mutateAsync({ commentId: comment.id });
+    setShowDeleteDialog(false);
   };
 
   // Handle cancelling reply
@@ -196,10 +197,7 @@ export const Comment: React.FC<CommentProps> = ({
       <DeleteConfirmationDialog
         isOpen={showDeleteDialog}
         onOpenChange={setShowDeleteDialog}
-        onConfirmDelete={async () => {
-          await handleDeleteComment();
-          setShowDeleteDialog(false);
-        }}
+        onConfirmDelete={confirmDelete}
         isDeleting={deleteMutation.isPending}
         title={t("dialogs.deleteComment.title")}
         description={t("dialogs.deleteComment.alertCautionText")}

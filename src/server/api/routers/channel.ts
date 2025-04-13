@@ -57,7 +57,9 @@ class MyEventEmitter extends EventEmitter implements EventEmitterInterface {
 export const ee = new MyEventEmitter();
 
 // who is currently typing for each channel, key is `name`
-export const currentlyTyping: Record<string, WhoIsTyping> = Object.create(null);
+export const currentlyTyping: Record<string, WhoIsTyping> = Object.create(
+  null,
+) as Record<string, WhoIsTyping>;
 
 // every 1s, clear old "isTyping"
 setInterval(() => {
@@ -91,12 +93,12 @@ export const channelRouter = {
         })
         .returning();
 
-      return channel!.id;
+      return channel.id;
     }),
 
   isTyping: protectedProcedure
     .input(z.object({ channelId: z.string().uuid(), typing: z.boolean() }))
-    .mutation(async (opts) => {
+    .mutation((opts) => {
       const { name } = opts.ctx.session.user;
       const { channelId } = opts.input;
 

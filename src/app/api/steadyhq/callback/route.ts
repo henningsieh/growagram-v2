@@ -9,6 +9,7 @@ import { api } from "~/lib/trpc/server";
 
 // this Auth wrapper has bogus return type,
 // so we need to cast it to any. See below!
+// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 export const GET = auth(async function GET(req) {
   if (!req.auth) {
     return NextResponse.json(
@@ -44,7 +45,12 @@ export const GET = auth(async function GET(req) {
       refresh_token,
       expires_in,
       refresh_token_expires_in,
-    } = response.data;
+    } = response.data as {
+      access_token: string;
+      refresh_token: string;
+      expires_in: number;
+      refresh_token_expires_in: number;
+    };
 
     console.log("OAuth callback response:", response.data);
 

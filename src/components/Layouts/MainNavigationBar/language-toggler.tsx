@@ -1,6 +1,5 @@
 "use client";
 
-// src/components/Layouts/MainNavigationBar/language-toggler.tsx:
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useParams } from "next/navigation";
@@ -15,24 +14,17 @@ import {
 } from "~/components/ui/dropdown-menu";
 import { usePathname, useRouter } from "~/lib/i18n/routing";
 
+// Use URL imports for flags instead of direct SVG imports
+const FLAG_IMAGES = {
+  de: "/flags/germany-flag.svg",
+  en: "/flags/us-flag.svg",
+};
+
 export function LanguageToggle() {
   const router = useRouter();
   const pathname = usePathname();
   const params = useParams();
   const t = useTranslations("Platform");
-
-  const languages = APP_SETTINGS.LANGUAGES.map((language) => ({
-    ...language,
-    flag: (
-      <Image
-        width={24}
-        height={20}
-        className="h-5 w-6"
-        src={language.flag}
-        alt={`${language.label} flag`}
-      />
-    ),
-  }));
 
   const handleLanguageChange = (newLocale: string) => {
     const newPath = { pathname, params };
@@ -55,17 +47,30 @@ export function LanguageToggle() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        {languages.map((language) => (
-          <DropdownMenuItem
-            key={language.code}
-            onClick={() => handleLanguageChange(language.code)}
-          >
-            <div className="flex w-full items-start">
-              <div className="mr-2">{language.flag}</div>
-              <div>{language.label}</div>
-            </div>
-          </DropdownMenuItem>
-        ))}
+        {APP_SETTINGS.LANGUAGES.map((language) => {
+          const flagSrc = FLAG_IMAGES[language.code];
+
+          return (
+            <DropdownMenuItem
+              key={language.code}
+              onClick={() => handleLanguageChange(language.code)}
+            >
+              <div className="flex w-full items-start">
+                <div className="relative mr-2 h-5 w-6">
+                  {flagSrc && (
+                    <Image
+                      src={flagSrc}
+                      alt={`${language.label} flag`}
+                      fill
+                      style={{ objectFit: "contain" }}
+                    />
+                  )}
+                </div>
+                <div>{language.label}</div>
+              </div>
+            </DropdownMenuItem>
+          );
+        })}
       </DropdownMenuContent>
     </DropdownMenu>
   );

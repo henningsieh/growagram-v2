@@ -208,10 +208,9 @@ export function GrowCard({
                   <Image
                     fill
                     sizes={RESPONSIVE_IMAGE_SIZES}
-                    src={landscapePlaceholder}
+                    src={landscapePlaceholder as string}
                     alt={grow.name || "Grow placeholder"}
                     className="h-full w-full object-cover opacity-40 transition-opacity duration-300 hover:opacity-50"
-                    // style={{ objectFit: "cover", padding: "2rem" }}
                     priority
                   />
                 </div>

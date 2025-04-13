@@ -52,7 +52,7 @@ export function BreederSelector({
   });
 
   // Handle create new breeder
-  const handleCreateBreeder = async (name: string) => {
+  const handleCreateBreeder = (name: string) => {
     setError(null);
     createBreederMutation.mutate({ name });
     return createBreederMutation.data?.id || "";

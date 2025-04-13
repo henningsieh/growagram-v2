@@ -76,8 +76,8 @@ export function calculateGrowthProgress(
   // Calculate total phases weight (only for phases with a weight)
   let totalPhasesWeight = 0;
   orderedPhases.forEach((phaseName) => {
-    if (phases[phaseName].stage.weight && phases[phaseName].stage.weight! > 0) {
-      totalPhasesWeight += phases[phaseName].stage.weight!;
+    if (phases[phaseName].stage.weight && phases[phaseName].stage.weight > 0) {
+      totalPhasesWeight += phases[phaseName].stage.weight;
     }
   });
 

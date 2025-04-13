@@ -157,7 +157,7 @@ export const protectedProcedure = publicProcedure.use(function isAuthed(opts) {
         ...opts.ctx.session!,
         user: {
           ...user,
-          name: user.name as string,
+          name: user.name,
         },
       },
     },

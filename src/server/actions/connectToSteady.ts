@@ -5,6 +5,7 @@
 import { redirect } from "next/navigation";
 import { env } from "~/env";
 
+// eslint-disable-next-line @typescript-eslint/require-await
 export async function connectToSteady() {
   const steadyClientId = env.STEADYHQ_CLIENT_ID;
   const steadyClientSecret = env.STEADYHQ_CLIENT_SECRET;

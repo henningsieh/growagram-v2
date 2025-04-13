@@ -65,7 +65,7 @@ function parseExifDate(dateStr: string): Date | undefined {
   }
 }
 
-export async function readExif(buffer: Buffer): Promise<{
+export function readExif(buffer: Buffer): {
   captureDate?: Date;
   make?: string;
   model?: string;
@@ -75,10 +75,10 @@ export async function readExif(buffer: Buffer): Promise<{
     altitude?: number;
   };
   rawExif: ExifMetadata;
-} | null> {
+} | null {
   try {
     // Load tags using ExifReader
-    const tags = await ExifReader.load(buffer);
+    const tags = ExifReader.load(buffer);
 
     // Remove MakerNote as it can be very large
     delete tags["MakerNote"];

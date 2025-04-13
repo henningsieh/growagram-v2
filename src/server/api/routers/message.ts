@@ -33,7 +33,7 @@ export const messageRouter = {
         ee.emit("isTypingUpdate", channelId, channelTyping);
       }
 
-      const defPost = post!;
+      const defPost = post;
       ee.emit("add", channelId, defPost);
 
       return post;

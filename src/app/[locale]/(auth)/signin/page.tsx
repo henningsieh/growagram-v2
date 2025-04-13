@@ -43,8 +43,8 @@ export default function Page() {
     const formData = new FormData(event.target as HTMLFormElement);
 
     const result = await signIn("credentials", {
-      email: formData.get("email")?.toString() || "",
-      password: formData.get("password")?.toString() || "",
+      email: formData.get("email") ?? "",
+      password: formData.get("password") ?? "",
       callbackUrl,
       redirect: false,
     });

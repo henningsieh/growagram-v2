@@ -3,8 +3,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl, s3Client } from "~/lib/minio";
 
+interface RequestBody {
+  fileName: string;
+  fileType: string;
+}
+
 export async function POST(req: NextRequest) {
-  const { fileName, fileType } = await req.json();
+  const { fileName, fileType } = (await req.json()) as RequestBody;
 
   const params = {
     Bucket: process.env.MINIO_BUCKET_NAME!,

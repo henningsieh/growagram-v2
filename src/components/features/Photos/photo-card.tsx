@@ -88,8 +88,10 @@ export default function PhotoCard({
         description: t("DeleteConfirmation.toasts.success.description"),
       });
       // Invalidate and prefetch the images query to refresh the list
-      await utils.photos.getOwnPhotos.invalidate();
-      await utils.photos.getOwnPhotos.prefetch();
+      await Promise.all([
+        utils.photos.getOwnPhotos.invalidate(),
+        utils.photos.getOwnPhotos.prefetch(),
+      ]);
 
       router.refresh();
     },

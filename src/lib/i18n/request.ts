@@ -10,8 +10,12 @@ export default getRequestConfig(async ({ requestLocale }) => {
     locale = routing.defaultLocale;
   }
 
+  interface Messages {
+    default: Record<string, never>;
+  }
+
   return {
     locale,
-    messages: (await import(`./messages/${locale}.json`)).default,
+    messages: ((await import(`./messages/${locale}.json`)) as Messages).default,
   };
 });

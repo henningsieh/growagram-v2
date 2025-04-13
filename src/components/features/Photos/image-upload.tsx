@@ -40,6 +40,10 @@ interface FilePreview {
   } | null;
 }
 
+interface SignedUrlResponse {
+  uploadUrl: string;
+}
+
 const getSignedUrlForUpload = async (file: File) => {
   const response = await fetch("/api/getSignedURL", {
     method: "POST",
@@ -56,7 +60,7 @@ const getSignedUrlForUpload = async (file: File) => {
     throw new Error("Failed to get signed URL");
   }
 
-  const { uploadUrl } = await response.json();
+  const { uploadUrl } = (await response.json()) as SignedUrlResponse;
   return uploadUrl;
 };
 
@@ -113,7 +117,7 @@ export default function PhotoUpload() {
 
       formRef.current?.reset();
       setPreviews([]);
-      utils.photos.getOwnPhotos.invalidate();
+      await utils.photos.getOwnPhotos.invalidate();
       router.push(modulePaths.PHOTOS.path);
     } catch (error) {
       console.error("Error uploading images:", error);
@@ -148,9 +152,9 @@ export default function PhotoUpload() {
     }
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      handleFiles(Array.from(e.target.files));
+      await handleFiles(Array.from(e.target.files));
     }
   };
 
@@ -168,13 +172,13 @@ export default function PhotoUpload() {
     e.stopPropagation();
   };
 
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+  const handleDrop = async (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
     setIsDragging(false);
     dragCounter.current = 0;
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      handleFiles(Array.from(e.dataTransfer.files));
+      await handleFiles(Array.from(e.dataTransfer.files));
     }
   };
 

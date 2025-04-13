@@ -23,7 +23,7 @@ export default async function EditGrowPage({
 
   if (growId !== "new") {
     // preload connectable plants into utils cache
-    api.plants.getConnectablePlants.prefetch({
+    await api.plants.getConnectablePlants.prefetch({
       growId: growId,
     } satisfies GetConnectablePlantsInput);
   }

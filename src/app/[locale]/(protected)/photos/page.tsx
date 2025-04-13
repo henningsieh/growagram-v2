@@ -43,7 +43,7 @@ export default function MyImagesPage() {
   // Update URL parameters
   const updateUrlParams = React.useCallback(() => {
     const params = new URLSearchParams();
-    if (viewMode === PhotosViewMode.PAGINATION) {
+    if ((viewMode as PhotosViewMode) === PhotosViewMode.PAGINATION) {
       params.set("page", searchParams?.get("page") || "1");
     } else {
       params.delete("page");
@@ -72,7 +72,7 @@ export default function MyImagesPage() {
   // Toggle view mode function
   const toggleViewMode = () => {
     const newMode =
-      viewMode === PhotosViewMode.PAGINATION
+      (viewMode as PhotosViewMode) === PhotosViewMode.PAGINATION
         ? PhotosViewMode.INFINITE_SCROLL
         : PhotosViewMode.PAGINATION;
     localStorage.setItem("photoViewMode", newMode);
@@ -129,7 +129,7 @@ export default function MyImagesPage() {
         onViewModeToggle={toggleViewMode}
       />
 
-      {viewMode === PhotosViewMode.PAGINATION ? (
+      {(viewMode as PhotosViewMode) === PhotosViewMode.PAGINATION ? (
         <PhotosPaginatedView
           sortField={sortField}
           sortOrder={sortOrder}

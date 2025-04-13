@@ -58,12 +58,12 @@ export function SortFilterControls<T extends string>({
   onFilterChange,
   onViewModeToggle,
 }: SortFilterControlsProps<T>) {
-  const handleSortFieldChange = (value: string) => {
-    onSortChange(value as T, sortOrder);
+  const handleSortFieldChange = async (value: string) => {
+    await onSortChange(value as T, sortOrder);
   };
 
-  const handleSortOrderChange = (value: string) => {
-    onSortChange(sortField, value as SortOrder);
+  const handleSortOrderChange = async (value: string) => {
+    await onSortChange(sortField, value as SortOrder);
   };
 
   const t = useTranslations("Platform");

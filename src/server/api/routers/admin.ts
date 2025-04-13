@@ -179,7 +179,7 @@ export const adminRouter = {
         });
       }
 
-      if (targetUser.role === UserRoles.ADMIN) {
+      if ((targetUser.role as UserRoles) === UserRoles.ADMIN) {
         throw new TRPCError({
           code: "FORBIDDEN",
           message: "Cannot ban an administrator",

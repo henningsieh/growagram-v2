@@ -11,6 +11,7 @@ import {
   NotifiableEntityType,
   NotificationEventType,
 } from "~/types/notification";
+import { UserRoles } from "~/types/user";
 
 export const commentRouter = {
   // Post a new comment (create a new comment)
@@ -182,7 +183,7 @@ export const commentRouter = {
 
       if (
         comment.userId !== ctx.session.user.id &&
-        ctx.session.user.role !== "admin"
+        ctx.session.user.role !== UserRoles.ADMIN
       ) {
         throw new TRPCError({
           code: "FORBIDDEN",

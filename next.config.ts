@@ -1,5 +1,7 @@
 // next.config.mjs
 import createNextIntlPlugin from "next-intl/plugin";
+import type { NextConfig } from 'next';
+import type { Configuration as WebpackConfig } from 'webpack';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -44,9 +46,10 @@ const nextConfig = {
       },
     ],
   },
-  webpack(config) {
+  webpack(config: WebpackConfig): WebpackConfig {
     // Modified SVG configuration
-    config.module.rules.push({
+    const rules = config.module?.rules || [];
+    rules.push({
       test: /\.svg$/,
       use: [
         {
@@ -64,9 +67,10 @@ const nextConfig = {
         "url-loader",
       ],
     });
+    
     return config;
   },
-};
+} satisfies NextConfig;
 
 const withNextIntl = createNextIntlPlugin("./src/lib/i18n/request.ts");
 
