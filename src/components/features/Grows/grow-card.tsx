@@ -4,6 +4,7 @@
 import * as React from "react";
 import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
+import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   AlertCircleIcon,
@@ -14,6 +15,8 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { modulePaths } from "~/assets/constants";
+import landscapePlaceholder from "~/assets/landscape-placeholdersvg.svg";
+import { RESPONSIVE_IMAGE_SIZES } from "~/components/Layouts/responsive-grid";
 import AvatarCardHeader, {
   ActionItem,
 } from "~/components/atom/avatar-card-header";
@@ -189,6 +192,32 @@ export function GrowCard({
               />
             )}
           </div>
+          {/* Header Image */}
+          <div className="relative aspect-video w-full overflow-hidden rounded-md">
+            {grow.headerImage ? (
+              <Image
+                fill
+                sizes={RESPONSIVE_IMAGE_SIZES}
+                src={grow.headerImage.imageUrl}
+                alt={grow.name}
+                className="h-full w-full object-cover transition-transform duration-300 hover:scale-[1.02]"
+              />
+            ) : (
+              <div className="bg-muted/10 relative h-full w-full">
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <Image
+                    fill
+                    sizes={RESPONSIVE_IMAGE_SIZES}
+                    src={landscapePlaceholder}
+                    alt={grow.name || "Grow placeholder"}
+                    className="h-full w-full object-cover opacity-40 transition-opacity duration-300 hover:opacity-50"
+                    // style={{ objectFit: "cover", padding: "2rem" }}
+                    priority
+                  />
+                </div>
+              </div>
+            )}
+          </div>
 
           <EntityDateInfo
             createdAt={grow.createdAt}
@@ -220,7 +249,6 @@ export function GrowCard({
                     <AlertCircleIcon className="h-4 w-4" />
                     <AlertTitle>{t("no-plants-connected")}</AlertTitle>
                     <AlertDescription>
-                      {/* {t("connect-plants-description")} */}
                       <Button
                         variant="link"
                         className="text-primary p-0 font-semibold"
