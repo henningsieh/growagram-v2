@@ -164,6 +164,7 @@ export function GrowCard({
           className={`flex h-full flex-col gap-1 ${isSocial ? "ml-12 pr-2 pl-0" : "p-2"}`}
         >
           <div className="flex min-w-0 items-center justify-between gap-2">
+            {/* Title Link */}
             <CardTitle as="h3" className="min-w-0">
               <Button
                 asChild

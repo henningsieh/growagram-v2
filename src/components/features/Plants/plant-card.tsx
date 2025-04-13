@@ -162,7 +162,7 @@ export default function PlantCard({
       <TouchProvider>
         <Card
           className={cn(
-            `border-primary/60 flex flex-col gap-2 overflow-hidden rounded-md border py-0 shadow-none`,
+            `border-primary/60 flex flex-col gap-0 overflow-hidden rounded-md border py-0 shadow-none`,
             // isSocial && "bg-primary/5",
           )}
         >
@@ -174,6 +174,7 @@ export default function PlantCard({
               showActions={growActions.length > 0}
             />
           )}
+
           <CardContent
             className={`flex h-full flex-col gap-1 ${isSocial ? "ml-12 pr-2 pl-0" : "p-2"}`}
           >
@@ -186,7 +187,6 @@ export default function PlantCard({
                   className="text-primary decoration-primary flex min-w-0 items-center justify-start gap-2 px-0"
                 >
                   <Link href={`${modulePaths.PUBLICPLANTS.path}/${plant.id}`}>
-                    {/* <Flower2Icon className="shrink-0" size={20} /> */}
                     <span className="truncate text-2xl leading-normal font-semibold">
                       {plant.name}
                     </span>
