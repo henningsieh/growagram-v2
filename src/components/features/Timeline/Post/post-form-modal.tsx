@@ -154,7 +154,8 @@ export function PostFormModal({
                 className="mt-6 space-y-3"
               >
                 <h3 className="text-muted-foreground text-sm font-semibold">
-                  {t("linkedInThisPost")}:
+                  {t("linkedInThisPost")}
+                  {":"}
                 </h3>
                 <div className="border-border/50 overflow-hidden rounded-md border">
                   {entityType === PostableEntityType.GROW && (

@@ -56,7 +56,6 @@ import { api } from "~/lib/trpc/react";
 import { uploadToS3 } from "~/lib/utils/uploadToS3";
 import type {
   CreateOrEditGrowInput,
-  CreatePhotoOutput,
   GetConnectablePlantsInput,
   GetGrowByIdType,
   GetOwnGrowsInput,

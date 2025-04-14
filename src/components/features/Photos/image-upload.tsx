@@ -88,7 +88,7 @@ export default function PhotoUpload() {
       const uploadedImages = await Promise.all(
         previews.map(async (preview) => {
           const buffer = await preview.file.arrayBuffer();
-          const exifData = await readExif(Buffer.from(buffer));
+          const exifData = readExif(Buffer.from(buffer));
 
           const uploadUrl = await getSignedUrlForUpload(preview.file);
           const { url: s3Url, eTag } = await uploadToS3(
@@ -209,7 +209,7 @@ export default function PhotoUpload() {
     const newPreviews = await Promise.all(
       validFiles.map(async (file) => {
         const buffer = await file.arrayBuffer();
-        const exifData = await readExif(Buffer.from(buffer));
+        const exifData = readExif(Buffer.from(buffer));
         // console.debug({ exifData });
         return {
           file,
