@@ -240,6 +240,7 @@
     "button-label-create-grow": "Create New Grow",
     "button-label-post-update": "Create Update for Grow",
     "button-label-save-changes": "Save Changes",
+    "change-image": "Change Image",
     "connect-error": "Error connecting plant",
     "delete-button-label": "Delete Grow",
     "delete-grow-button-label": "Delete Grow",
@@ -256,24 +257,20 @@
     "form-page-title-new": "Create New Grow",
     "form-title-create-new-grow": "Grow's basic data",
     "form-title-edit-grow": "New Grow's basic data",
+    "grow-header-image": "Grow Header Image",
     "grow-name": "The Grow's Name",
     "grow-name-description": "Give a descriptive name to your grow.",
     "grow-name-placeholder": "Enter the Grow's Name",
     "growth-stage": "Growth Stage",
     "header-image": "Header Image",
-    "grow-header-image": "Grow Header Image",
     "header-image-description": "Add a header image to showcase your grow environment",
-    "select-image": "Select Image",
-    "change-image": "Change Image",
-    "upload-image": "Upload Image",
-    "uploading": "Uploading...",
-    "image-upload-success": "Image uploaded successfully",
-    "image-upload-error-title": "Upload Error",
-    "image-upload-error-description": "Failed to upload the image. Please try again.",
-    "header-image-update-success-title": "Header Image Updated",
-    "header-image-update-success-description": "Your grow's header image has been updated successfully.",
-    "header-image-update-error-title": "Header Image Update Error",
     "header-image-update-error-description": "Failed to update the header image. Please try again.",
+    "header-image-update-error-title": "Header Image Update Error",
+    "header-image-update-success-description": "Your grow's header image has been updated successfully.",
+    "header-image-update-success-title": "Header Image Updated",
+    "image-upload-error-description": "Failed to upload the image. Please try again.",
+    "image-upload-error-title": "Upload Error",
+    "image-upload-success": "Image uploaded successfully",
     "mygrows-page-subtitle": "View and edit my grows",
     "mygrows-page-title": "My Grows",
     "no-grows-yet": "You haven&apos;t created any Grows yet.",
@@ -284,6 +281,7 @@
     "reset": "Reset Form",
     "saving": "Saving...",
     "search-plants": "Search plants...",
+    "select-image": "Select Image",
     "select-plants": "Select Plants",
     "select-plants-optional": "Selecting plants is optional.",
     "sort-grows-createdAt": "Created at",
@@ -302,7 +300,9 @@
         "title": "Plant Removed"
       }
     },
-    "unexpected-error": "Unexpected error occurred."
+    "unexpected-error": "Unexpected error occurred.",
+    "upload-image": "Upload Image",
+    "uploading": "Uploading..."
   },
   "HomePage": {
     "about": "go to Timeline",
@@ -734,18 +734,28 @@
   "Posts": {
     "buttonLabel-createNewPost": "Post Update",
     "buttonLabel-posting": "Posting...",
+    "choose-from-library": "Choose from library",
     "content-label": "What's on your mind?",
     "content-placeholder": "Nuggets of wisdom, bud shots, or leafy updates – what's growing on?",
     "createNewPost-description": "Share your growing experiences with the community",
     "createNewPost-title": "Write and post a new Update",
     "delete-button-label": "Delete Update",
+    "drop-to-upload": "Drop to upload",
     "edit-button-label": "Edit Update",
+    "file-too-large": "{filename} exceeds the maximum file size of {maxSize} MB.",
+    "invalid-file-type": "{filename} is not a supported image type.",
     "linkedInThisPost": "Linked in this Update",
     "post-card-createdAt": "Posted at",
     "post-created-successfully": "Post created successfully",
     "post-delete-failed": "Failed to delete the post. Please try again.",
     "post-deleted-successfully": "Post deleted successfully",
-    "public-link-label": "Open in new Tab"
+    "public-link-label": "Open in new Tab",
+    "toast-errors": {
+      "error-deleting": "An unknown error occured while deleting the post",
+      "update-submission-error": "An unknown error occured while creating the update post"
+    },
+    "add-photos": "Add Photos",
+    "uploading-photos": "Uploading photos..."
   },
   "Premium": {
     "benefits": {

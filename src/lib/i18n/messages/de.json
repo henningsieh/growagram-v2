@@ -240,6 +240,7 @@
     "button-label-create-grow": "Neuen Grow anlegen",
     "button-label-post-update": "Update zum Grow erstellen",
     "button-label-save-changes": "Änderungen speichern",
+    "change-image": "Bild ändern",
     "connect-error": "Fehler beim Verbinden der Pflanze",
     "delete-button-label": "Grow löschen",
     "delete-grow-button-label": "Grow löschen",
@@ -256,24 +257,20 @@
     "form-page-title-new": "Neuen Grow anlegen",
     "form-title-create-new-grow": "Stammdaten deines Grows",
     "form-title-edit-grow": "Stammdaten des neuen Grows",
+    "grow-header-image": "Grow-Titelbild",
     "grow-name": "Name des Grows",
     "grow-name-description": "Gib deinem Grow einen Namen.",
     "grow-name-placeholder": "Gib den Namen des Grows ein",
     "growth-stage": "Wachstumsphase",
     "header-image": "Titelbild",
-    "grow-header-image": "Grow-Titelbild",
     "header-image-description": "Füge ein Titelbild hinzu, um deine Grow-Umgebung zu präsentieren",
-    "select-image": "Bild auswählen",
-    "change-image": "Bild ändern",
-    "upload-image": "Bild hochladen",
-    "uploading": "Wird hochgeladen...",
-    "image-upload-success": "Bild erfolgreich hochgeladen",
-    "image-upload-error-title": "Fehler beim Hochladen",
-    "image-upload-error-description": "Das Bild konnte nicht hochgeladen werden. Bitte versuche es erneut.",
-    "header-image-update-success-title": "Titelbild aktualisiert",
-    "header-image-update-success-description": "Das Titelbild deines Grows wurde erfolgreich aktualisiert.",
-    "header-image-update-error-title": "Fehler bei der Aktualisierung des Titelbilds",
     "header-image-update-error-description": "Das Titelbild konnte nicht aktualisiert werden. Bitte versuche es erneut.",
+    "header-image-update-error-title": "Fehler bei der Aktualisierung des Titelbilds",
+    "header-image-update-success-description": "Das Titelbild deines Grows wurde erfolgreich aktualisiert.",
+    "header-image-update-success-title": "Titelbild aktualisiert",
+    "image-upload-error-description": "Das Bild konnte nicht hochgeladen werden. Bitte versuche es erneut.",
+    "image-upload-error-title": "Fehler beim Hochladen",
+    "image-upload-success": "Bild erfolgreich hochgeladen",
     "mygrows-page-subtitle": "Anzeige und Verwaltung meiner aktuellen Grows",
     "mygrows-page-title": "Meine Grows",
     "no-grows-yet": "Du hast bisher keine Grows erstellt.",
@@ -284,6 +281,7 @@
     "reset": "Zurücksetzen",
     "saving": "Speichern...",
     "search-plants": "Pflanzen suchen...",
+    "select-image": "Bild auswählen",
     "select-plants": "Pflanzen auswählen",
     "select-plants-optional": "Die Auswahl von Pflanzen ist optional.",
     "sort-grows-createdAt": "Erstellt am",
@@ -302,7 +300,9 @@
         "title": "Pflanze entfernt"
       }
     },
-    "unexpected-error": "Ein unerwarteter Fehler ist aufgetreten."
+    "unexpected-error": "Ein unerwarteter Fehler ist aufgetreten.",
+    "upload-image": "Bild hochladen",
+    "uploading": "Wird hochgeladen..."
   },
   "HomePage": {
     "about": "gehe zur Zeitleiste",
@@ -734,18 +734,28 @@
   "Posts": {
     "buttonLabel-createNewPost": "Update posten",
     "buttonLabel-posting": "Wird gepostet...",
+    "choose-from-library": "Wähle aus deinen Photos",
     "content-label": "Was gibt es Neues?",
     "content-placeholder": "Was sprießt bei dir? Updates, Bilder oder Düngeripps – lass uns teilhaben!",
     "createNewPost-description": "Teile deine Anbauerfahrungen mit der Community",
     "createNewPost-title": "Schreibe und poste ein neues Update",
     "delete-button-label": "Update löschen",
+    "drop-to-upload": "Zum Hochladen hier ablegen",
     "edit-button-label": "Update bearbeiten",
+    "file-too-large": "{filename} überschreitet die maximale Dateigröße von {maxSize} MB.",
+    "invalid-file-type": "{filename} ist kein unterstützter Bildtyp.",
     "linkedInThisPost": "Mit dem Update verlinkt",
     "post-card-createdAt": "Gepostet am",
     "post-created-successfully": "Post erfolgreich erstellt",
     "post-delete-failed": "Das Löschen des Posts ist fehlgeschlagen. Bitte versuche es erneut.",
     "post-deleted-successfully": "Post erfolgreich gelöscht",
-    "public-link-label": "Öffnen im neuen Tab"
+    "public-link-label": "Öffnen im neuen Tab",
+    "toast-errors": {
+      "error-deleting": "Ein unbekannter Fehler beim Löschen des Posts trat auf",
+      "update-submission-error": "Ein unbekannter Fehler beim Erstellen des Updates ist aufgetrten"
+    },
+    "add-photos": "Fotos hinzufügen",
+    "uploading-photos": "Fotos werden hochgeladen..."
   },
   "Premium": {
     "benefits": {

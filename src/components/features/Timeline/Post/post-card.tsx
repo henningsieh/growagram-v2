@@ -57,10 +57,11 @@ export default function PostCard({ post, isSocialProp = true }: PostCardProps) {
       });
       await utils.updates.getAll.invalidate();
     },
-    onError: (error) => {
+    onError: (error, post) => {
       toast.error("Error", {
-        description: error.message || t("error-default"),
+        description: t("toast-errors.error-deleting"),
       });
+      console.error("Error:", error, "post id:", post.id);
     },
   });
 

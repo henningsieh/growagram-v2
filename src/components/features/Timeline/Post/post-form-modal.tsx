@@ -10,14 +10,17 @@ import {
   FileImage,
   ImagePlus,
   ShareIcon,
-  Trash2,
+  Trash2Icon,
   Upload,
-  X,
 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { ACCEPTED_IMAGE_TYPES, MAX_UPLOAD_FILE_SIZE } from "~/assets/constants";
+import {
+  ACCEPTED_IMAGE_TYPES,
+  MAX_UPLOAD_FILE_SIZE,
+  modulePaths,
+} from "~/assets/constants";
 import { EmbeddedGrowCard } from "~/components/features/Grows/embedded-grow-card";
 import { EnhancedPlantCard } from "~/components/features/Plants/enhanced-plant-card.tsx";
 import { Badge } from "~/components/ui/badge";
@@ -128,13 +131,15 @@ export function PostFormModal({
       toast("Success", {
         description: t("post-created-successfully"),
       });
-      router.push("/public/timeline");
+      router.push(modulePaths.PUBLICTIMELINE.path);
       onClose();
     },
-    onError: (error) => {
+    onError: (error, post) => {
       toast.error("Error", {
-        description: error.message || t("toast-errors.update-submission-error"),
+        description: t("toast-errors.update-submission-error"),
       });
+      // console.error the error and the like object in one line
+      console.error("Error:", error, "Post object:", post);
     },
   });
 
@@ -192,15 +197,16 @@ export function PostFormModal({
       const isValidSize = file.size <= MAX_UPLOAD_FILE_SIZE;
 
       if (!isValid) {
-        toast.error(t("invalid-file-type"), {
-          description: `${file.name} is not a supported image type.`,
-        });
+        toast.error(t("invalid-file-type", { filename: file.name }));
       }
 
       if (!isValidSize) {
-        toast.error(t("file-too-large"), {
-          description: `${file.name} exceeds the maximum file size of ${MAX_UPLOAD_FILE_SIZE / 1000000}MB.`,
-        });
+        toast.error(
+          t("file-too-large", {
+            filename: file.name,
+            maxSize: MAX_UPLOAD_FILE_SIZE / 1000000,
+          }),
+        );
       }
 
       return isValid && isValidSize;
@@ -462,10 +468,10 @@ export function PostFormModal({
                       className="absolute top-1 right-1 h-6 w-6 rounded-full"
                       onClick={() => handleRemoveFile(index)}
                     >
-                      <X size={14} />
+                      <Trash2Icon size={14} />
                     </Button>
-                    <Badge className="absolute bottom-1 left-1 bg-black/70">
-                      New
+                    <Badge className="bg-secondary/70 absolute bottom-1 left-1">
+                      {"New"}
                     </Badge>
                   </div>
                 ))}
@@ -489,7 +495,7 @@ export function PostFormModal({
                       className="absolute top-1 right-1 h-6 w-6 rounded-full"
                       onClick={() => handleRemoveSelectedPhoto(photo.id)}
                     >
-                      <X size={14} />
+                      <Trash2Icon size={14} />
                     </Button>
                   </div>
                 ))}
