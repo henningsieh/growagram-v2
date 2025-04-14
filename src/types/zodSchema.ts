@@ -137,6 +137,7 @@ export const postSchema = z.object({
   content: z.string().min(1),
   entityId: z.string(),
   entityType: z.nativeEnum(PostableEntityType),
+  photoIds: z.array(z.string()).optional(),
 });
 
 // schema for updating user tokens
