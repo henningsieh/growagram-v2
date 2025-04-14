@@ -71,6 +71,7 @@ export default function PhotoUpload() {
   const [isDragging, setIsDragging] = React.useState(false);
   const router = useRouter();
   const utils = api.useUtils();
+  const t = useTranslations("Photos");
 
   const formRef = React.useRef<HTMLFormElement>(null);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
@@ -109,8 +110,8 @@ export default function PhotoUpload() {
         }),
       );
 
-      toast(t("Photos.upload.toasts.success.title"), {
-        description: t("Photos.upload.toasts.success.description", {
+      toast(t("upload.toasts.success.title"), {
+        description: t("upload.toasts.success.description", {
           count: uploadedImages.length,
         }),
       });
@@ -121,11 +122,11 @@ export default function PhotoUpload() {
       router.push(modulePaths.PHOTOS.path);
     } catch (error) {
       console.error("Error uploading images:", error);
-      toast.error(t("Photos.upload.toasts.error.title"), {
+      toast.error(t("upload.toasts.error.title"), {
         description:
           error instanceof Error
             ? error.message
-            : t("Photos.upload.toasts.error.description"),
+            : t("upload.toasts.error.description"),
       });
     } finally {
       setUploading(false);
@@ -188,15 +189,15 @@ export default function PhotoUpload() {
       const isValidSize = file.size <= MAX_UPLOAD_FILE_SIZE;
 
       if (!isValid) {
-        toast.error(t("Photos.upload.toasts.invalid-type.title"), {
-          description: t("Photos.upload.toasts.invalid-type.description", {
+        toast.error(t("upload.toasts.invalid-type.title"), {
+          description: t("upload.toasts.invalid-type.description", {
             filename: file.name,
           }),
         });
       }
       if (!isValidSize) {
-        toast.error(t("Photos.upload.toasts.file-too-large.title"), {
-          description: t("Photos.upload.toasts.file-too-large.description", {
+        toast.error(t("upload.toasts.file-too-large.title"), {
+          description: t("upload.toasts.file-too-large.description", {
             filename: file.name,
             maxSize: MAX_UPLOAD_FILE_SIZE / 1000000,
           }),
@@ -228,8 +229,6 @@ export default function PhotoUpload() {
       previews.forEach((preview) => URL.revokeObjectURL(preview.preview));
     };
   }, [previews]);
-
-  const t = useTranslations("Photos");
 
   return (
     <Card>
