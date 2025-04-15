@@ -240,6 +240,7 @@
     "button-label-create-grow": "Create New Grow",
     "button-label-post-update": "Create Update for Grow",
     "button-label-save-changes": "Save Changes",
+    "change-image": "Change Image",
     "connect-error": "Error connecting plant",
     "delete-button-label": "Delete Grow",
     "delete-grow-button-label": "Delete Grow",
@@ -256,24 +257,20 @@
     "form-page-title-new": "Create New Grow",
     "form-title-create-new-grow": "Grow's basic data",
     "form-title-edit-grow": "New Grow's basic data",
+    "grow-header-image": "Grow Header Image",
     "grow-name": "The Grow's Name",
     "grow-name-description": "Give a descriptive name to your grow.",
     "grow-name-placeholder": "Enter the Grow's Name",
     "growth-stage": "Growth Stage",
     "header-image": "Header Image",
-    "grow-header-image": "Grow Header Image",
     "header-image-description": "Add a header image to showcase your grow environment",
-    "select-image": "Select Image",
-    "change-image": "Change Image",
-    "upload-image": "Upload Image",
-    "uploading": "Uploading...",
-    "image-upload-success": "Image uploaded successfully",
-    "image-upload-error-title": "Upload Error",
-    "image-upload-error-description": "Failed to upload the image. Please try again.",
-    "header-image-update-success-title": "Header Image Updated",
-    "header-image-update-success-description": "Your grow's header image has been updated successfully.",
-    "header-image-update-error-title": "Header Image Update Error",
     "header-image-update-error-description": "Failed to update the header image. Please try again.",
+    "header-image-update-error-title": "Header Image Update Error",
+    "header-image-update-success-description": "Your grow's header image has been updated successfully.",
+    "header-image-update-success-title": "Header Image Updated",
+    "image-upload-error-description": "Failed to upload the image. Please try again.",
+    "image-upload-error-title": "Upload Error",
+    "image-upload-success": "Image uploaded successfully",
     "mygrows-page-subtitle": "View and edit my grows",
     "mygrows-page-title": "My Grows",
     "no-grows-yet": "You haven&apos;t created any Grows yet.",
@@ -284,6 +281,7 @@
     "reset": "Reset Form",
     "saving": "Saving...",
     "search-plants": "Search plants...",
+    "select-image": "Select Image",
     "select-plants": "Select Plants",
     "select-plants-optional": "Selecting plants is optional.",
     "sort-grows-createdAt": "Created at",
@@ -302,7 +300,9 @@
         "title": "Plant Removed"
       }
     },
-    "unexpected-error": "Unexpected error occurred."
+    "unexpected-error": "Unexpected error occurred.",
+    "upload-image": "Upload Image",
+    "uploading": "Uploading..."
   },
   "HomePage": {
     "about": "go to Timeline",
@@ -503,7 +503,7 @@
     "button-label-post-update": "Create update for photo",
     "button-label-upload-photos": "Upload",
     "buttonBackLabel": "Back",
-    "capture-date": "taken",
+    "capture-date": "Captured at",
     "connectPlants": {
       "photo-details-metadata": "Photo details / metadata"
     },
@@ -524,8 +524,8 @@
       "noResults": "No plants found",
       "placeholder": "Search plants..."
     },
-    "subtitle": "Which plants do you see in this photo?",
-    "title": "Identify plants",
+    "connect-plants-subtitle": "Which plants do you see in this photo?",
+    "connect-plants-title": "Identify plants",
     "toasts": {
       "errors": {
         "connectPlants": {
@@ -588,6 +588,8 @@
         }
       }
     },
+    "upload-photos-subtitle": "Add new photos to your collection",
+    "upload-photos-title": "Upload Photos",
     "uploaded-at": "Uploaded at"
   },
   "Plants": {
@@ -604,12 +606,12 @@
     "breeder-create-success-title": "Breeder Created",
     "breeder-empty-message": "No breeders found",
     "breeder-placeholder": "Select a breeder...",
+    "button-label-create-plant": "Add new plant",
     "button-label-post-update": "Create Update for Plant",
     "curing-start-date": "Curing phase start date",
     "delete-button-label": "Delete Plant",
     "delete-plant-button-label": "Delete Plant",
     "edit-button-label": "Edit Plant",
-    "edit-plant-button-label": "Edit Plant",
     "error-default": "An error occurred while deleting the plant. Please try again.",
     "estimated-harvest": "Estimated harvest",
     "flowering-start-date": "Flowering Start Date",
@@ -643,6 +645,8 @@
     "germination-date": "Germination Date",
     "harvest-date": "Harvest date",
     "linkUploadButtonLabel": "Add New Plant",
+    "myplants-page-subtitle": "View and edit my plants",
+    "myplants-page-title": "My Plants",
     "no-plants-yet": "No plants have been added yet.",
     "overall-progress": "Overall progress",
     "phase": "Phase progress",
@@ -669,10 +673,8 @@
     "strain-empty-message-no-breeder": "First select or create a breeder",
     "strain-empty-message-with-breeder": "This breeder has no strains yet.",
     "strain-placeholder": "Select a Strain...",
-    "subtitle": "View and edit my plants",
     "thc": "THC",
     "thc-content": "THC Content",
-    "title": "My Plants",
     "until": "until",
     "user-has-no-plants": "You haven&apos;t added any plants yet.",
     "vegetation-start-date": "Vegetation Start Date"
@@ -686,6 +688,7 @@
     "LanguageToggle": {
       "toggle-language": "Change language"
     },
+    "No breadcrumbs available": "No breadcrumbs available",
     "SignOut": {
       "buttonLabel": "Sign out"
     },

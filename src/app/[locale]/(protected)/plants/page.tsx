@@ -5,6 +5,8 @@ import * as React from "react";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { Infinity, Calendar, TagIcon } from "lucide-react";
+import { modulePaths } from "~/assets/constants";
+import { BreadcrumbSetter } from "~/components/Layouts/Breadcrumbs/breadcrumb-setter";
 import PageHeader from "~/components/Layouts/page-header";
 import {
   SortFilterControls,
@@ -12,6 +14,7 @@ import {
 } from "~/components/atom/sort-filter-controls";
 import InfiniteScrollPlantsView from "~/components/features/Plants/Views/infinite-scroll";
 import PaginatedPlantsView from "~/components/features/Plants/Views/paginated";
+import { createBreadcrumbs } from "~/lib/breadcrumbs/breadcrumbs";
 import { useRouter } from "~/lib/i18n/routing";
 import { PlantsSortField, PlantsViewMode } from "~/types/plant";
 
@@ -19,6 +22,14 @@ export default function MyPlantsPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const t = useTranslations("Plants");
+
+  // Create breadcrumbs for this page using sidebar translation keys
+  const breadcrumbs = createBreadcrumbs([
+    {
+      translationKey: "Plants.myplants-page-title",
+      path: modulePaths.PLANTS.path,
+    },
+  ]);
 
   // Manage view mode state
   const [viewMode, setViewMode] = React.useState<PlantsViewMode>(
@@ -89,44 +100,50 @@ export default function MyPlantsPage() {
   ];
 
   return (
-    <PageHeader
-      title={t("title")}
-      subtitle={t("subtitle")}
-      buttonLink="/plants/new/form"
-      buttonLabel={t("linkUploadButtonLabel")}
-      buttonVariant="plant"
-    >
-      <SortFilterControls
-        isFetching={isFetching}
-        sortField={sortField}
-        sortOrder={sortOrder}
-        sortOptions={sortOptions}
-        onSortChange={handleSortChange}
-        filterLabel={undefined}
-        filterEnabled={undefined}
-        onFilterChange={undefined}
-        viewMode={{
-          current: viewMode,
-          options: [PlantsViewMode.PAGINATION, PlantsViewMode.INFINITE_SCROLL],
-          label: "Scroll",
-          icon: <Infinity className="mr-2 h-4 w-4" />,
-        }}
-        onViewModeToggle={toggleViewMode}
-      />
+    <>
+      <BreadcrumbSetter items={breadcrumbs} />
+      <PageHeader
+        title={t("myplants-page-title")}
+        subtitle={t("myplants-page-subtitle")}
+        buttonLink="/plants/new/form"
+        buttonLabel={t("button-label-create-plant")}
+        buttonVariant="plant"
+      >
+        <SortFilterControls
+          isFetching={isFetching}
+          sortField={sortField}
+          sortOrder={sortOrder}
+          sortOptions={sortOptions}
+          onSortChange={handleSortChange}
+          filterLabel={undefined}
+          filterEnabled={undefined}
+          onFilterChange={undefined}
+          viewMode={{
+            current: viewMode,
+            options: [
+              PlantsViewMode.PAGINATION,
+              PlantsViewMode.INFINITE_SCROLL,
+            ],
+            label: "Scroll",
+            icon: <Infinity className="mr-2 h-4 w-4" />,
+          }}
+          onViewModeToggle={toggleViewMode}
+        />
 
-      {viewMode === PlantsViewMode.PAGINATION ? (
-        <PaginatedPlantsView
-          sortField={sortField}
-          sortOrder={sortOrder}
-          setIsFetching={setIsFetching}
-        />
-      ) : (
-        <InfiniteScrollPlantsView
-          sortField={sortField}
-          sortOrder={sortOrder}
-          setIsFetching={setIsFetching}
-        />
-      )}
-    </PageHeader>
+        {viewMode === PlantsViewMode.PAGINATION ? (
+          <PaginatedPlantsView
+            sortField={sortField}
+            sortOrder={sortOrder}
+            setIsFetching={setIsFetching}
+          />
+        ) : (
+          <InfiniteScrollPlantsView
+            sortField={sortField}
+            sortOrder={sortOrder}
+            setIsFetching={setIsFetching}
+          />
+        )}
+      </PageHeader>
+    </>
   );
 }

@@ -201,8 +201,8 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
 
   return (
     <PageHeader
-      title={t("title")}
-      subtitle={t("subtitle")}
+      title={t("connect-plants-title")}
+      subtitle={t("connect-plants-subtitle")}
       buttonLabel={t("buttonBackLabel")}
       buttonLink={modulePaths.PHOTOS.path}
       searchParams={allPhotosQuery ?? undefined}

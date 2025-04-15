@@ -1,5 +1,7 @@
+"use client";
+
+import * as React from "react";
 import { useTranslations } from "next-intl";
-import { modulePaths } from "~/assets/constants";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -8,8 +10,8 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "~/components/ui/breadcrumb";
-import { Link, usePathname } from "~/lib/i18n/routing";
-import { findCurrentNavItem, sidebarItems } from "~/lib/sidebar";
+import { useBreadcrumbs } from "~/lib/breadcrumbs/breadcrumb-context";
+import { Link } from "~/lib/i18n/routing";
 
 interface NavigationBreadcrumbProps {
   className?: string;
@@ -19,36 +21,47 @@ export function NavigationBreadcrumbs({
   className,
 }: NavigationBreadcrumbProps) {
   const t = useTranslations();
-  const pathname = usePathname();
-  const currentNav = findCurrentNavItem(pathname, sidebarItems.navMain);
+  const { items: breadcrumbs } = useBreadcrumbs();
+
+  // If there are no items, render a simple text for debugging
+  if (!breadcrumbs || breadcrumbs.length === 0) {
+    return (
+      <span className="text-xs text-red-500">
+        {t("Platform.No breadcrumbs available")}
+      </span>
+    );
+  }
+
   return (
     <Breadcrumb className={className}>
       <BreadcrumbList className="text-sm font-semibold">
-        <BreadcrumbItem className="hidden md:block">
-          <BreadcrumbLink asChild>
-            <Link href={modulePaths.DASHBOARD.path}>
-              {t("Platform.Dashboard-title")}
-            </Link>
-          </BreadcrumbLink>
-        </BreadcrumbItem>
-        <BreadcrumbSeparator className="hidden md:block" />
-        {currentNav && (
-          <>
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <Link href={currentNav.main.url || "#"}>
-                  {currentNav.main.title}
-                </Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage className="text-sm font-semibold">
-                {currentNav.sub.title}
-              </BreadcrumbPage>
-            </BreadcrumbItem>
-          </>
-        )}
+        {breadcrumbs.map((item, index) => {
+          const isLast = index === breadcrumbs.length - 1;
+          const label = t(item.translationKey);
+
+          return (
+            <React.Fragment key={item.path}>
+              <BreadcrumbItem
+                className={index === 0 ? "hidden md:block" : undefined}
+              >
+                {item.isCurrentPage || isLast ? (
+                  <BreadcrumbPage className="text-sm font-semibold">
+                    {label}
+                  </BreadcrumbPage>
+                ) : (
+                  <BreadcrumbLink asChild>
+                    <Link href={item.path}>{label}</Link>
+                  </BreadcrumbLink>
+                )}
+              </BreadcrumbItem>
+              {!isLast && (
+                <BreadcrumbSeparator
+                  className={index === 0 ? "hidden md:block" : undefined}
+                />
+              )}
+            </React.Fragment>
+          );
+        })}
       </BreadcrumbList>
     </Breadcrumb>
   );
