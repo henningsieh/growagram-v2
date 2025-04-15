@@ -338,9 +338,9 @@ function ProtectedSidebarContent({
       <SidebarInset className="min-h-[calc(100svh-5rem)]">
         {/* Sticky Header with Sidebar Toggle and Breadcrumbs */}
         <header className="bg-background/60 fixed top-14 z-10 flex h-14 w-full shrink-0 items-center justify-between gap-2 backdrop-blur">
-          <div className="flex items-center gap-2 pl-2 md:pl-1 lg:pl-3 xl:pl-5">
+          <div className="flex h-6 items-center gap-2 pl-2 md:pl-1 lg:pl-3 xl:pl-5">
             <SidebarTrigger className="text-primary" />
-            <Separator orientation="vertical" className="h-5" />
+            <Separator orientation="vertical" />
             <NavigationBreadcrumbs />
           </div>
         </header>
