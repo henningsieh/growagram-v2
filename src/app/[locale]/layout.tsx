@@ -81,7 +81,7 @@ export default async function AppLayout(props: AppLayoutProps) {
                     <Toaster richColors />
                     <BanNotification />
                     <MainNavigationBar />
-                    <div className="relative mx-auto flex min-h-screen max-w-7xl flex-col">
+                    <div className="relative mx-auto flex min-h-screen flex-col">
                       <div className="flex min-h-[calc(100svh-7rem)] flex-1 pt-14 pb-4">
                         {props.children}
                       </div>

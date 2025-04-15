@@ -13,17 +13,17 @@ import { Link } from "~/lib/i18n/routing";
 export function MainNavigationBar() {
   return (
     <header className="bg-background/90 fixed top-0 z-20 w-full border-b backdrop-blur">
-      <div className="relative mx-auto flex h-14 max-w-7xl items-center justify-center">
+      <div className="relative mx-auto flex h-14 items-center justify-center">
         {/* Navigation Left:  Main Logo */}
         <div className="absolute top-0 left-4 flex items-center">
           <Link href={"/"}>
             <Image
-              src="/images/grow-a-gram-high-resolution-logo.webp"
+              src="/images/GrowAGram_Logo.png"
               alt="GrowAGram Logo"
               width={86}
               height={50}
               priority
-              className="h-12 w-auto" // Make it responsive
+              className="h-13 w-auto" // Make it responsive
             />
           </Link>
         </div>

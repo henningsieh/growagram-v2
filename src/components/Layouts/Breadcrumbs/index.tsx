@@ -15,7 +15,9 @@ interface NavigationBreadcrumbProps {
   className?: string;
 }
 
-export function NavigationBreadcrumb({ className }: NavigationBreadcrumbProps) {
+export function NavigationBreadcrumbs({
+  className,
+}: NavigationBreadcrumbProps) {
   const t = useTranslations();
   const pathname = usePathname();
   const currentNav = findCurrentNavItem(pathname, sidebarItems.navMain);
