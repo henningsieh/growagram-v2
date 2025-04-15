@@ -191,10 +191,18 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
     );
   }, []);
 
+  // Check if the current selection differs from the initial selection
+  const selectionChanged = React.useMemo(() => {
+    if (selectedPlantIds.length !== initialSelectedPlantIds.length) return true;
+
+    const initialSet = new Set(initialSelectedPlantIds);
+    return selectedPlantIds.some((id) => !initialSet.has(id));
+  }, [selectedPlantIds, initialSelectedPlantIds]);
+
   return (
     <PageHeader
-      title={t("title")}
-      subtitle={t("subtitle")}
+      title={t("connect-plants-title")}
+      subtitle={t("connect-plants-subtitle")}
       buttonLabel={t("buttonBackLabel")}
       buttonLink={modulePaths.PHOTOS.path}
       searchParams={allPhotosQuery ?? undefined}
@@ -271,7 +279,7 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
               <Button
                 variant={"secondary"}
                 onClick={handleConnectPlants}
-                disabled={connectToPlantMutation.isPending}
+                disabled={!selectionChanged || connectToPlantMutation.isPending}
                 className="w-full"
               >
                 {connectToPlantMutation.isPending ? (
@@ -279,7 +287,7 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
                     <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
                     {t("button.connecting")}
                   </div>
-                ) : selectedPlantIds.length === 0 ? (
+                ) : selectedPlantIds.length === 0 && selectionChanged ? (
                   t("button.removeAll")
                 ) : (
                   t("button.save", { count: selectedPlantIds.length })

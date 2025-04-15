@@ -43,6 +43,11 @@ export const modulePaths = {
     path: "/photos",
     protected: true,
   },
+  PHOTOUPLOAD: {
+    name: "Upload Photos",
+    path: "/photos/upload",
+    protected: true,
+  },
   SIGNIN: {
     name: "Signin",
     path: "/signin",
@@ -67,6 +72,11 @@ export const modulePaths = {
     name: "Public Profile",
     path: "/public/profile",
     protected: false,
+  },
+  ADMINISTRATION: {
+    name: "Administration",
+    path: "/admin",
+    protected: true,
   },
   USERADMINISTRATION: {
     name: "User Adminstration",

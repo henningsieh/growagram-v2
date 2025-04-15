@@ -503,7 +503,9 @@
     "button-label-post-update": "Update zum Foto erstellen",
     "button-label-upload-photos": "Hochladen",
     "buttonBackLabel": "Zurück",
-    "capture-date": "aufgenommen",
+    "capture-date": "Aufgenommen am",
+    "connect-plants-subtitle": "Welche Pflanzen siehst du auf diesem Foto?",
+    "connect-plants-title": "Pflanzen identifizieren",
     "connectPlants": {
       "photo-details-metadata": "Fotodetails / Metadaten"
     },
@@ -524,8 +526,6 @@
       "noResults": "Keine Pflanzen gefunden",
       "placeholder": "Pflanzen suchen..."
     },
-    "subtitle": "Welche Pflanzen siehst du auf diesem Foto?",
-    "title": "Pflanzen identifizieren",
     "toasts": {
       "errors": {
         "connectPlants": {
@@ -588,7 +588,9 @@
         }
       }
     },
-    "uploaded-at": "hochgeladen am"
+    "upload-photos-subtitle": "Füge neue Fotos zu deiner Sammlung hinzu",
+    "upload-photos-title": "Fotos hochladen",
+    "uploaded-at": "Hochgeladen am"
   },
   "Plants": {
     "DeleteConfirmation": {
@@ -604,12 +606,12 @@
     "breeder-create-success-title": "Breeder erstellt",
     "breeder-empty-message": "Keine Züchter gefunden",
     "breeder-placeholder": "Wähle einen Züchter...",
+    "button-label-create-plant": "Pflanze hinzufügen",
     "button-label-post-update": "Update zur Pflanze erstellen",
     "curing-start-date": "Startdatum der Aushärtephase",
     "delete-button-label": "Pflanze löschen",
     "delete-plant-button-label": "Pflanze löschen",
     "edit-button-label": "Pflanze bearbeiten",
-    "edit-plant-button-label": "Pflanze bearbeiten",
     "error-default": "Beim Löschen der Pflanze ist ein Fehler aufgetreten. Bitte versuche es erneut.",
     "estimated-harvest": "Voraussichtliche Ernte",
     "flowering-start-date": "Startdatum der Blüte",
@@ -634,7 +636,7 @@
     "form-pagerheader-edit-subtitle": "Bearbeite eine Pflanze aus deiner Sammlung",
     "form-pagerheader-edit-title": "Pflanze bearbeiten",
     "form-pagerheader-new-subtitle": "Füge deiner Sammlung eine neue Pflanze hinzu",
-    "form-pagerheader-new-title": "Neue Pflanze hinzufügen",
+    "form-pagerheader-new-title": "Pflanze hinzufügen",
     "form-pick-a-date": "Datum auswählen",
     "form-strain-description": "Wähle oder erstelle den Strain (die Sorte) für diese Pflanze.",
     "form-toast-error-title": "Fehler beim Speichern",
@@ -643,6 +645,8 @@
     "germination-date": "Datum der Keimung",
     "harvest-date": "Datum der Ernte",
     "linkUploadButtonLabel": "Pflanze hinzufügen",
+    "myplants-page-subtitle": "Anzeige und Verwaltung meiner Pflanzen",
+    "myplants-page-title": "Meine Pflanzen",
     "no-plants-yet": "Es wurden noch keine Pflanzen hinzugefügt.",
     "overall-progress": "Gesamtfortschritt",
     "phase": "Phasenfortschritt",
@@ -669,10 +673,8 @@
     "strain-empty-message-no-breeder": "Wähle zuerst einen Züchter aus oder lege einen neuen an",
     "strain-empty-message-with-breeder": "Dieser Züchter hat noch keine Sorten.",
     "strain-placeholder": "Wähle eine Sorte...",
-    "subtitle": "Anzeige und Verwaltung meiner Pflanzen",
     "thc": "THC",
     "thc-content": "THC-Gehalt",
-    "title": "Meine Pflanzen",
     "until": "bis",
     "user-has-no-plants": "Du hast bisher keine Pflanzen hinzugefügt.",
     "vegetation-start-date": "Startdatum der Wachstumsphase"
@@ -686,6 +688,7 @@
     "LanguageToggle": {
       "toggle-language": "Sprache wechseln"
     },
+    "No breadcrumbs available": "Kein Navigationspfad vorhanden",
     "SignOut": {
       "buttonLabel": "Abmelden"
     },
@@ -792,7 +795,7 @@
       "label": "Upgrade auf Pro"
     },
     "premium-subtitle": "Verbessere deine Anbau-Erfahrung mit exklusiven Vorteilen",
-    "premium-title": "Premium-Funktionen freischalten",
+    "premium-title": "Premium-Funktionen",
     "ready-to-go-premium": "Bereit, deine Anbau-Erfahrung zu transformieren?",
     "unlock-premium-content": "Bringe deinen Cannabis-Anbau auf die nächste Stufe"
   },

@@ -503,7 +503,7 @@
     "button-label-post-update": "Create update for photo",
     "button-label-upload-photos": "Upload",
     "buttonBackLabel": "Back",
-    "capture-date": "taken",
+    "capture-date": "Captured at",
     "connectPlants": {
       "photo-details-metadata": "Photo details / metadata"
     },
@@ -524,8 +524,8 @@
       "noResults": "No plants found",
       "placeholder": "Search plants..."
     },
-    "subtitle": "Which plants do you see in this photo?",
-    "title": "Identify plants",
+    "connect-plants-subtitle": "Which plants do you see in this photo?",
+    "connect-plants-title": "Identify plants",
     "toasts": {
       "errors": {
         "connectPlants": {
@@ -588,6 +588,8 @@
         }
       }
     },
+    "upload-photos-subtitle": "Add new photos to your collection",
+    "upload-photos-title": "Upload Photos",
     "uploaded-at": "Uploaded at"
   },
   "Plants": {
@@ -604,12 +606,12 @@
     "breeder-create-success-title": "Breeder Created",
     "breeder-empty-message": "No breeders found",
     "breeder-placeholder": "Select a breeder...",
+    "button-label-create-plant": "Add new plant",
     "button-label-post-update": "Create Update for Plant",
     "curing-start-date": "Curing phase start date",
     "delete-button-label": "Delete Plant",
     "delete-plant-button-label": "Delete Plant",
     "edit-button-label": "Edit Plant",
-    "edit-plant-button-label": "Edit Plant",
     "error-default": "An error occurred while deleting the plant. Please try again.",
     "estimated-harvest": "Estimated harvest",
     "flowering-start-date": "Flowering Start Date",
@@ -643,6 +645,8 @@
     "germination-date": "Germination Date",
     "harvest-date": "Harvest date",
     "linkUploadButtonLabel": "Add New Plant",
+    "myplants-page-subtitle": "View and edit my plants",
+    "myplants-page-title": "My Plants",
     "no-plants-yet": "No plants have been added yet.",
     "overall-progress": "Overall progress",
     "phase": "Phase progress",
@@ -669,10 +673,8 @@
     "strain-empty-message-no-breeder": "First select or create a breeder",
     "strain-empty-message-with-breeder": "This breeder has no strains yet.",
     "strain-placeholder": "Select a Strain...",
-    "subtitle": "View and edit my plants",
     "thc": "THC",
     "thc-content": "THC Content",
-    "title": "My Plants",
     "until": "until",
     "user-has-no-plants": "You haven&apos;t added any plants yet.",
     "vegetation-start-date": "Vegetation Start Date"
@@ -686,6 +688,7 @@
     "LanguageToggle": {
       "toggle-language": "Change language"
     },
+    "No breadcrumbs available": "No breadcrumbs available",
     "SignOut": {
       "buttonLabel": "Sign out"
     },

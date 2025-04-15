@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { Infinity, Camera, UploadCloud } from "lucide-react";
 import { modulePaths } from "~/assets/constants";
+import { BreadcrumbSetter } from "~/components/Layouts/Breadcrumbs/breadcrumb-setter";
 import PageHeader from "~/components/Layouts/page-header";
 import {
   SortFilterControls,
@@ -13,6 +14,7 @@ import {
 } from "~/components/atom/sort-filter-controls";
 import PhotosInfiniteScrollView from "~/components/features/Photos/Views/infinite-scroll";
 import PhotosPaginatedView from "~/components/features/Photos/Views/paginated";
+import { createBreadcrumbs } from "~/lib/breadcrumbs/breadcrumbs";
 import { useRouter } from "~/lib/i18n/routing";
 import { PhotosSortField, PhotosViewMode } from "~/types/image";
 
@@ -20,6 +22,14 @@ export default function MyImagesPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const t = useTranslations("Photos");
+
+  // Create breadcrumbs for this page using sidebar translation keys
+  const breadcrumbs = createBreadcrumbs([
+    {
+      translationKey: "Photos.my-Photos",
+      path: modulePaths.PHOTOS.path,
+    },
+  ]);
 
   // Manage view mode state
   const [viewMode, setViewMode] = React.useState<string>(
@@ -105,45 +115,51 @@ export default function MyImagesPage() {
   ];
 
   return (
-    <PageHeader
-      title={t("my-Photos")}
-      subtitle={t("my-Photos-subtitle")}
-      buttonLink={`${modulePaths.PHOTOS.path}/upload`}
-      buttonLabel={t("button-label-upload-photos")}
-    >
-      <SortFilterControls
-        isFetching={isFetching}
-        sortField={sortField}
-        sortOrder={sortOrder}
-        sortOptions={sortOptions}
-        onSortChange={handleSortChange}
-        filterLabel={t("filter-label-not-connected")}
-        filterEnabled={filterNotConnected}
-        onFilterChange={handleFilterChange}
-        viewMode={{
-          current: viewMode,
-          options: [PhotosViewMode.PAGINATION, PhotosViewMode.INFINITE_SCROLL],
-          label: "Scroll",
-          icon: <Infinity className="mr-2 h-4 w-4" />,
-        }}
-        onViewModeToggle={toggleViewMode}
-      />
+    <>
+      <BreadcrumbSetter items={breadcrumbs} />
+      <PageHeader
+        title={t("my-Photos")}
+        subtitle={t("my-Photos-subtitle")}
+        buttonLink={`${modulePaths.PHOTOS.path}/upload`}
+        buttonLabel={t("button-label-upload-photos")}
+      >
+        <SortFilterControls
+          isFetching={isFetching}
+          sortField={sortField}
+          sortOrder={sortOrder}
+          sortOptions={sortOptions}
+          onSortChange={handleSortChange}
+          filterLabel={t("filter-label-not-connected")}
+          filterEnabled={filterNotConnected}
+          onFilterChange={handleFilterChange}
+          viewMode={{
+            current: viewMode,
+            options: [
+              PhotosViewMode.PAGINATION,
+              PhotosViewMode.INFINITE_SCROLL,
+            ],
+            label: "Scroll",
+            icon: <Infinity className="mr-2 h-4 w-4" />,
+          }}
+          onViewModeToggle={toggleViewMode}
+        />
 
-      {(viewMode as PhotosViewMode) === PhotosViewMode.PAGINATION ? (
-        <PhotosPaginatedView
-          sortField={sortField}
-          sortOrder={sortOrder}
-          filterNotConnected={filterNotConnected}
-          setIsFetching={setIsFetching}
-        />
-      ) : (
-        <PhotosInfiniteScrollView
-          sortField={sortField}
-          sortOrder={sortOrder}
-          filterNotConnected={filterNotConnected}
-          setIsFetching={setIsFetching}
-        />
-      )}
-    </PageHeader>
+        {(viewMode as PhotosViewMode) === PhotosViewMode.PAGINATION ? (
+          <PhotosPaginatedView
+            sortField={sortField}
+            sortOrder={sortOrder}
+            filterNotConnected={filterNotConnected}
+            setIsFetching={setIsFetching}
+          />
+        ) : (
+          <PhotosInfiniteScrollView
+            sortField={sortField}
+            sortOrder={sortOrder}
+            filterNotConnected={filterNotConnected}
+            setIsFetching={setIsFetching}
+          />
+        )}
+      </PageHeader>
+    </>
   );
 }

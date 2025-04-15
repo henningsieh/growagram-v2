@@ -12,6 +12,7 @@ import { EnhancedProgressProvider } from "~/components/Layouts/progress-provider
 import { ThemeProvider } from "~/components/Layouts/theme-provider";
 import { BanNotification } from "~/components/atom/ban-notification";
 import { Toaster } from "~/components/ui/sonner";
+import { BreadcrumbProvider } from "~/lib/breadcrumbs/breadcrumb-context";
 import { TRPCReactProvider } from "~/lib/trpc/react";
 import "~/styles/globals.css";
 
@@ -78,15 +79,17 @@ export default async function AppLayout(props: AppLayoutProps) {
               <SessionProvider>
                 <TRPCReactProvider>
                   <PhotoModalProvider>
-                    <Toaster richColors />
-                    <BanNotification />
-                    <MainNavigationBar />
-                    <div className="relative mx-auto flex min-h-screen max-w-7xl flex-col">
-                      <div className="flex min-h-[calc(100svh-7rem)] flex-1 pt-14 pb-4">
-                        {props.children}
+                    <BreadcrumbProvider>
+                      <Toaster richColors />
+                      <BanNotification />
+                      <MainNavigationBar />
+                      <div className="relative mx-auto flex min-h-screen flex-col">
+                        <div className="flex min-h-[calc(100svh-7rem)] flex-1 pt-14 pb-4">
+                          {props.children}
+                        </div>
                       </div>
-                    </div>
-                    <AppFooter />
+                      <AppFooter />
+                    </BreadcrumbProvider>
                   </PhotoModalProvider>
                 </TRPCReactProvider>
               </SessionProvider>
