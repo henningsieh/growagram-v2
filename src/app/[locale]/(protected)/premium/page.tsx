@@ -1,5 +1,6 @@
 "use client";
 
+// src/app/[locale]/(protected)/premium/page.tsx:
 import { useTranslations } from "next-intl";
 import { AnimatePresence, motion } from "framer-motion";
 import { PremiumBenefits } from "~/app/[locale]/(protected)/premium/PremiumBenefits";

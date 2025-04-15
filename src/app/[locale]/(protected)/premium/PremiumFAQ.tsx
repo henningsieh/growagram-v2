@@ -1,5 +1,6 @@
 "use client";
 
+// src/app/[locale]/(protected)/premium/PremiumFAQ.tsx:
 import { useTranslations } from "next-intl";
 import {
   Accordion,
@@ -30,18 +31,24 @@ export function PremiumFAQ() {
   ];
 
   return (
-    <section className="my-16">
+    <section className="mx-auto my-16 w-full max-w-3xl">
       <h2 className="mb-8 text-center text-3xl font-semibold">
         {t("faq.title")}
       </h2>
-      <Accordion type="single" collapsible className="mx-auto w-520">
-        {faqItems.map((item, index) => (
-          <AccordionItem key={index} value={`item-${index}`}>
-            <AccordionTrigger>{item.question}</AccordionTrigger>
-            <AccordionContent>{item.answer}</AccordionContent>
-          </AccordionItem>
-        ))}
-      </Accordion>
+      <div className="mb-4">
+        <Accordion type="single" collapsible className="w-full">
+          {faqItems.map((item, index) => (
+            <AccordionItem key={index} value={`item-${index}`}>
+              <AccordionTrigger className="py-4 text-left hover:no-underline">
+                {item.question}
+              </AccordionTrigger>
+              <AccordionContent className="pb-6">
+                {item.answer}
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
+      </div>
     </section>
   );
 }
