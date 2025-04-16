@@ -41,12 +41,10 @@
     "welcome-message-description": "You must set your username first before entering the platform!",
     "welcome-message-title": "Welcome"
   },
-  "Admin": {
+  "AdminArea": {
     "navigation": {
       "label": "Admin Area"
-    }
-  },
-  "AdminArea": {
+    },
     "description": "Manage users and platform settings",
     "pageheader": {
       "subtitle": "Administration and management tools",

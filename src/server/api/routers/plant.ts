@@ -12,7 +12,7 @@ import {
   plants,
 } from "~/lib/db/schema";
 import { connectPlantWithImagesQuery } from "~/server/api/routers/plantImages";
-import { protectedProcedure, publicProcedure } from "~/server/api/trpc";
+import { protectedProcedure, publicProcedure } from "~/trpc/init";
 import { PlantsSortField } from "~/types/plant";
 import {
   breederFormSchema,

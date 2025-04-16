@@ -14,7 +14,7 @@ import cloudinary from "~/lib/cloudinary";
 import { images, plantImages } from "~/lib/db/schema";
 import { s3Client } from "~/lib/minio";
 import { connectImageWithPlantsQuery } from "~/server/api/routers/plantImages";
-import { protectedProcedure, publicProcedure } from "~/server/api/trpc";
+import { protectedProcedure, publicProcedure } from "~/trpc/init";
 import { PhotosSortField } from "~/types/image";
 import { imageSchema } from "~/types/zodSchema";
 

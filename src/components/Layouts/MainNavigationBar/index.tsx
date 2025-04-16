@@ -34,10 +34,10 @@ export function MainNavigationBar() {
         {/* Navigation Right Side: Toggles */}
         <div className="absolute top-1/2 right-4 flex -translate-y-1/2 items-center space-x-1">
           {/* Chat Button */}
-          <ChatButton />
+          {/* <ChatButton /> */}
 
           {/* Notifications Indicator */}
-          <Notifications />
+          {/* <Notifications /> */}
 
           {/* Theme Toggle Button */}
           <ThemeToggle />

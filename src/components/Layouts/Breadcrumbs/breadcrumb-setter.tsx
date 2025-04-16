@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
-import { useBreadcrumbs } from "~/lib/breadcrumbs/breadcrumb-context";
-import { BreadcrumbsType } from "~/lib/breadcrumbs/breadcrumbs";
+import { useBreadcrumbs } from "~/components/Layouts/Breadcrumbs/breadcrumb-context";
+import { BreadcrumbsType } from "~/lib/breadcrumbs";
 
 export function BreadcrumbSetter({ items }: { items: BreadcrumbsType }) {
   const { setBreadcrumbs } = useBreadcrumbs();

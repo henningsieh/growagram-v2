@@ -7,7 +7,7 @@ import { userFollows, users, verificationTokens } from "~/lib/db/schema";
 import { createNotification } from "~/lib/notifications";
 import { sendVerificationEmail } from "~/server/actions/sendVerificationEmail";
 import { connectPlantWithImagesQuery } from "~/server/api/routers/plantImages";
-import { protectedProcedure, publicProcedure } from "~/server/api/trpc";
+import { protectedProcedure, publicProcedure } from "~/trpc/init";
 import {
   NotifiableEntityType,
   NotificationEventType,

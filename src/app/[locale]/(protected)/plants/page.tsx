@@ -14,7 +14,7 @@ import {
 } from "~/components/atom/sort-filter-controls";
 import InfiniteScrollPlantsView from "~/components/features/Plants/Views/infinite-scroll";
 import PaginatedPlantsView from "~/components/features/Plants/Views/paginated";
-import { createBreadcrumbs } from "~/lib/breadcrumbs/breadcrumbs";
+import { createBreadcrumbs } from "~/lib/breadcrumbs";
 import { useRouter } from "~/lib/i18n/routing";
 import { PlantsSortField, PlantsViewMode } from "~/types/plant";
 

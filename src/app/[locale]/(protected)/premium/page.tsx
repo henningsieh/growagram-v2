@@ -11,7 +11,7 @@ import FormContent from "~/components/Layouts/form-content";
 import PageHeader from "~/components/Layouts/page-header";
 import ConnectSteadyHQButton from "~/components/atom/steady-connect-button";
 import { Card, CardContent } from "~/components/ui/card";
-import { createBreadcrumbs } from "~/lib/breadcrumbs/breadcrumbs";
+import { createBreadcrumbs } from "~/lib/breadcrumbs";
 
 const containerVariants = {
   hidden: { opacity: 0 },

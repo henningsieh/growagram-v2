@@ -290,7 +290,7 @@ function ProtectedSidebarContent({
                       <Link href="/admin">
                         <DropdownMenuItem className="cursor-pointer text-red-500 focus:bg-red-600/50 focus:text-white">
                           <ServerCogIcon />
-                          {t("Admin.navigation.label")}
+                          {t("AdminArea.navigation.label")}
                         </DropdownMenuItem>
                       </Link>
                     )}

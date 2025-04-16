@@ -2,7 +2,7 @@
 import { modulePaths } from "~/assets/constants";
 import { BreadcrumbSetter } from "~/components/Layouts/Breadcrumbs/breadcrumb-setter";
 import ImageConnectPlants from "~/components/features/Photos/image-connect-plants";
-import { createBreadcrumbs } from "~/lib/breadcrumbs/breadcrumbs";
+import { createBreadcrumbs } from "~/lib/breadcrumbs";
 import { api } from "~/lib/trpc/server";
 import type { GetPhotoByIdInput } from "~/server/api/root";
 

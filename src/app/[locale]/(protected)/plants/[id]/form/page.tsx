@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { modulePaths } from "~/assets/constants";
 import { BreadcrumbSetter } from "~/components/Layouts/Breadcrumbs/breadcrumb-setter";
 import PlantForm from "~/components/features/Plants/plant-form";
-import { createBreadcrumbs } from "~/lib/breadcrumbs/breadcrumbs";
+import { createBreadcrumbs } from "~/lib/breadcrumbs";
 import { api } from "~/lib/trpc/server";
 import type { GetPlantByIdInput, GetPlantByIdType } from "~/server/api/root";
 

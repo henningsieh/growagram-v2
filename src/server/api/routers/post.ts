@@ -7,7 +7,7 @@ import {
   connectImageWithPlantsQuery,
   connectPlantWithImagesQuery,
 } from "~/server/api/routers/plantImages";
-import { protectedProcedure, publicProcedure } from "~/server/api/trpc";
+import { protectedProcedure, publicProcedure } from "~/trpc/init";
 import { PostableEntityType } from "~/types/post";
 import { postSchema } from "~/types/zodSchema";
 

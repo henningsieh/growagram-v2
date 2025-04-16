@@ -41,12 +41,10 @@
     "welcome-message-description": "Du musst zuerst deinen Benutzernamen (@username) festlegen, bevor du die Plattform nutzen kannst!",
     "welcome-message-title": "Willkommen"
   },
-  "Admin": {
+  "AdminArea": {
     "navigation": {
       "label": "Admin-Bereich"
-    }
-  },
-  "AdminArea": {
+    },
     "description": "Benutzer und Plattformeinstellungen verwalten",
     "pageheader": {
       "subtitle": "Verwaltungs- und Management -Tools",

@@ -3,6 +3,7 @@ import * as React from "react";
 import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
 import { DotIcon, Reply, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
@@ -18,13 +19,14 @@ import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { useComments } from "~/hooks/use-comments";
 import { useLikeStatus } from "~/hooks/use-likes";
-import { api } from "~/lib/trpc/react";
+// adjust import if needed
 import { formatDate, formatTime } from "~/lib/utils";
 import type {
   GetCommentType,
   GetCommentsInput,
   GetRepliesInput,
 } from "~/server/api/root";
+import { useTRPC } from "~/trpc/client";
 import { LikeableEntityType } from "~/types/like";
 import { Locale } from "~/types/locale";
 import { UserRoles } from "~/types/user";
@@ -50,9 +52,12 @@ export const Comment: React.FC<CommentProps> = ({
   const { data: session } = useSession();
 
   const locale = useLocale();
-  const utils = api.useUtils();
   const t = useTranslations("Comments");
   const inputRef = React.useRef<HTMLInputElement>(null);
+
+  // NEW: tRPC + TanStack Query hooks
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
 
   const {
     isLiked,
@@ -60,8 +65,9 @@ export const Comment: React.FC<CommentProps> = ({
     isLoading: likesAreLoading,
   } = useLikeStatus(comment.id, LikeableEntityType.Comment);
 
-  const { data: replies, isLoading: commentCountLoading } =
-    api.comments.getReplies.useQuery({ commentId: comment.id });
+  const { data: replies, isLoading: commentCountLoading } = useQuery(
+    trpc.comments.getReplies.queryOptions({ commentId: comment.id }),
+  );
 
   const {
     newComment: replyComment,
@@ -82,42 +88,51 @@ export const Comment: React.FC<CommentProps> = ({
     handleSubmitComment(comment.id);
   };
 
-  // Initialize delete mutation with optimistic updates
-  const deleteMutation = api.comments.deleteById.useMutation({
-    // Optimistic update: immediately remove the comment from the UI
+  // --- Mutation for deleting a comment ---
+  const deleteMutation = useMutation({
+    mutationFn: async ({ commentId }: { commentId: string }) => {
+      // Call your tRPC mutation here
+      return trpc.comments.deleteById.mutateAsync({ commentId });
+    },
     onMutate: async ({ commentId: deletedCommentId }) => {
       // Cancel any outgoing refetches
-      await utils.comments.getReplies.cancel({ commentId: comment.id });
+      await queryClient.cancelQueries(
+        trpc.comments.getReplies.queryKey({ commentId: comment.id }),
+      );
 
       // Snapshot the previous comments on this nested Level
       const previousCommentsOnThisLevel = comment.parentCommentId
-        ? utils.comments.getReplies.getData({
-            commentId: comment.parentCommentId,
-          } satisfies GetRepliesInput)
-        : utils.comments.getComments.getData({
-            entityId: comment.entityId,
-            entityType: comment.entityType,
-            sortOrder: commentsSortOrder,
-          } satisfies GetCommentsInput);
+        ? queryClient.getQueryData(
+            trpc.comments.getReplies.queryKey({
+              commentId: comment.parentCommentId,
+            }),
+          )
+        : queryClient.getQueryData(
+            trpc.comments.getComments.queryKey({
+              entityId: comment.entityId,
+              entityType: comment.entityType,
+              sortOrder: commentsSortOrder,
+            }),
+          );
 
       if (comment.parentCommentId) {
-        // Optimistically remove the deleted comment from the other parent's replies
-        utils.comments.getReplies.setData(
-          {
+        // Optimistically remove the deleted comment from the parent's replies
+        queryClient.setQueryData(
+          trpc.comments.getReplies.queryKey({
             commentId: comment.parentCommentId,
-          },
-          (parentsReplies) =>
+          }),
+          (parentsReplies: GetCommentType[] | undefined) =>
             parentsReplies?.filter((r) => r.id !== deletedCommentId) || [],
         );
       } else {
         // Optimistically remove the deleted comment from entity's comments
-        utils.comments.getComments.setData(
-          {
+        queryClient.setQueryData(
+          trpc.comments.getComments.queryKey({
             entityId: comment.entityId,
             entityType: comment.entityType,
             sortOrder: commentsSortOrder,
-          },
-          (entitysComments) =>
+          }),
+          (entitysComments: GetCommentType[] | undefined) =>
             entitysComments?.filter((r) => r.id !== deletedCommentId) || [],
         );
       }
@@ -131,17 +146,36 @@ export const Comment: React.FC<CommentProps> = ({
       });
 
       // Invalidate queries to ensure fresh data
-      await utils.comments.getReplies.invalidate({ commentId: comment.id });
-      await utils.comments.getComments.invalidate();
-      await utils.comments.getCommentCount.invalidate();
+      await queryClient.invalidateQueries(
+        trpc.comments.getReplies.queryFilter({ commentId: comment.id }),
+      );
+      await queryClient.invalidateQueries(
+        trpc.comments.getComments.queryFilter({}),
+      );
+      await queryClient.invalidateQueries(
+        trpc.comments.getCommentCount.queryFilter({}),
+      );
     },
     onError: (error, { commentId }, context) => {
       // Rollback the optimistic update if deletion fails
       if (context?.previousCommentsOnThisLevel) {
-        utils.comments.getReplies.setData(
-          { commentId: comment.id },
-          context.previousCommentsOnThisLevel,
-        );
+        if (comment.parentCommentId) {
+          queryClient.setQueryData(
+            trpc.comments.getReplies.queryKey({
+              commentId: comment.parentCommentId,
+            }),
+            context.previousCommentsOnThisLevel,
+          );
+        } else {
+          queryClient.setQueryData(
+            trpc.comments.getComments.queryKey({
+              entityId: comment.entityId,
+              entityType: comment.entityType,
+              sortOrder: commentsSortOrder,
+            }),
+            context.previousCommentsOnThisLevel,
+          );
+        }
       }
 
       toast.error(t("toasts.errors.deleteComment.title"), {

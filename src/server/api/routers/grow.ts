@@ -10,7 +10,7 @@ import {
   createTRPCRouter,
   protectedProcedure,
   publicProcedure,
-} from "~/server/api/trpc";
+} from "~/trpc/init";
 import { GrowsSortField } from "~/types/grow";
 import { growSchema } from "~/types/zodSchema";
 

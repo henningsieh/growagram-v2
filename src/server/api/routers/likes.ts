@@ -4,7 +4,7 @@ import { and, eq, sql } from "drizzle-orm";
 import { z } from "zod";
 import { comments, grows, images, likes, plants, posts } from "~/lib/db/schema";
 import { createNotification } from "~/lib/notifications";
-import { protectedProcedure, publicProcedure } from "~/server/api/trpc";
+import { protectedProcedure, publicProcedure } from "~/trpc/init";
 import { LikeableEntityType } from "~/types/like";
 import {
   NotifiableEntityType,

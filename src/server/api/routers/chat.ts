@@ -2,7 +2,7 @@
 import EventEmitter from "events";
 import { z } from "zod";
 import { chatMessages } from "~/lib/db/schema";
-import { protectedProcedure } from "~/server/api/trpc";
+import { protectedProcedure } from "~/trpc/init";
 import type { ChatMessage } from "~/types/chat";
 
 const ee = new EventEmitter();

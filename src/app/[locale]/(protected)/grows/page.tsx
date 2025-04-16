@@ -14,7 +14,7 @@ import {
 } from "~/components/atom/sort-filter-controls";
 import InfiniteScrollGrowsView from "~/components/features/Grows/Views/infinite-scroll";
 import PaginatedGrowsView from "~/components/features/Grows/Views/paginated";
-import { createBreadcrumbs } from "~/lib/breadcrumbs/breadcrumbs";
+import { createBreadcrumbs } from "~/lib/breadcrumbs";
 import { useRouter } from "~/lib/i18n/routing";
 import { GrowsSortField, GrowsViewMode } from "~/types/grow";
 
@@ -138,7 +138,7 @@ export default function MyGrowsPage() {
           <PaginatedGrowsView
             sortField={sortField}
             sortOrder={sortOrder}
-            setIsFetching={setIsFetching}
+            setIsFetchingAction={setIsFetching}
           />
         ) : (
           <InfiniteScrollGrowsView

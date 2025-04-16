@@ -1,10 +1,10 @@
-// next.config.mjs
+// next.config.ts
+import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
-import type { NextConfig } from 'next';
-import type { Configuration as WebpackConfig } from 'webpack';
+import type { Configuration as WebpackConfig } from "webpack";
 
 /** @type {import('next').NextConfig} */
-const nextConfig = {
+const nextConfig: import("next").NextConfig = {
   experimental: {
     serverActions: {
       bodySizeLimit: "30mb",
@@ -67,7 +67,7 @@ const nextConfig = {
         "url-loader",
       ],
     });
-    
+
     return config;
   },
 } satisfies NextConfig;

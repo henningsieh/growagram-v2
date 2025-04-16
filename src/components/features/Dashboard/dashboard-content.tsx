@@ -4,7 +4,7 @@ import * as React from "react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { usePathname, useSearchParams } from "next/navigation";
-import { skipToken } from "@tanstack/react-query";
+import { skipToken, useQuery } from "@tanstack/react-query";
 import {
   Flower2Icon,
   ImageIcon,
@@ -27,7 +27,7 @@ import {
 } from "~/components/ui/card";
 import { Skeleton } from "~/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { api } from "~/lib/trpc/react";
+import { useTRPC } from "~/trpc/client";
 
 export function DashboardContent() {
   const t = useTranslations("Platform");
@@ -35,6 +35,7 @@ export function DashboardContent() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { data: session } = useSession();
+  const trpc = useTRPC();
 
   // Handle URL hash for tab selection
   React.useEffect(() => {
@@ -60,42 +61,34 @@ export function DashboardContent() {
     return () => {
       window.removeEventListener("hashchange", handleHashChange);
     };
-  }, [pathname, searchParams]); // Add pathname and searchParams as dependencies
+  }, [pathname, searchParams]);
 
-  // Define all API queries with conditional fetching based on session state
-  const { data: growsData, isLoading: isLoadingGrows } =
-    api.grows.getOwnGrows.useQuery(
-      {
-        // limit: 6,
-      },
-      { enabled: !!session?.user.id },
-    );
-
-  const { data: plantsData, isLoading: isLoadingPlants } =
-    api.plants.getOwnPlants.useQuery(
-      {
-        // limit: 5,
-      },
-      { enabled: !!session?.user.id },
-    );
-
-  const { data: photosData, isLoading: isLoadingPhotos } =
-    api.photos.getOwnPhotos.useQuery(
-      {
-        limit: 12,
-      },
-      { enabled: !!session?.user.id },
-    );
-
-  const { data: userProfile, isPending: userStatsArePending } =
-    api.users.getPublicUserProfile.useQuery(
+  // Use tRPC hooks with TanStack React Query
+  const growsQuery = useQuery(trpc.grows.getOwnGrows.queryOptions({}));
+  const plantsQuery = useQuery(trpc.plants.getOwnPlants.queryOptions({}));
+  const photosQuery = useQuery(
+    trpc.photos.getOwnPhotos.queryOptions({ limit: 12 }),
+  );
+  const userProfileQuery = useQuery({
+    ...trpc.users.getPublicUserProfile.queryOptions(
       session?.user.id ? { id: session.user.id } : skipToken,
-    );
+    ),
+    enabled: !!session?.user.id,
+  });
 
   // Return null if session is null, after defining all hooks
   if (session === null) {
     return null;
   }
+
+  const growsData = growsQuery.data;
+  const plantsData = plantsQuery.data;
+  const photosData = photosQuery.data;
+  const userProfile = userProfileQuery.data;
+  const isLoadingGrows = growsQuery.isLoading;
+  const isLoadingPlants = plantsQuery.isLoading;
+  const isLoadingPhotos = photosQuery.isLoading;
+  const userStatsArePending = userProfileQuery.isPending;
 
   const totalGrows = growsData?.count || 0;
   const totalPlants = plantsData?.count || 0;

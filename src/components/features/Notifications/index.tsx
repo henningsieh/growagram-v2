@@ -16,7 +16,7 @@ import {
 } from "~/components/ui/popover";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { useNotifications } from "~/hooks/use-notifications";
+// import { useNotifications } from "~/hooks/use-notifications";
 import { Link } from "~/lib/i18n/routing";
 import { cn } from "~/lib/utils";
 

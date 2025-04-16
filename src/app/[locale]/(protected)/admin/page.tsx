@@ -6,7 +6,7 @@ import { BreadcrumbSetter } from "~/components/Layouts/Breadcrumbs/breadcrumb-se
 import PageHeader from "~/components/Layouts/page-header";
 import { AdminArea } from "~/components/features/Admin/UserManagement/admin-area";
 import { auth } from "~/lib/auth";
-import { createBreadcrumbs } from "~/lib/breadcrumbs/breadcrumbs";
+import { createBreadcrumbs } from "~/lib/breadcrumbs";
 import { UserRoles } from "~/types/user";
 
 export default async function AdminPage() {
@@ -20,7 +20,7 @@ export default async function AdminPage() {
   // Create breadcrumbs for this page using sidebar translation keys
   const breadcrumbs = createBreadcrumbs([
     {
-      translationKey: "Sidebar.navMain.Admin.items.Administration",
+      translationKey: "AdminArea.navigation.label",
       path: modulePaths.ADMINISTRATION.path,
     },
   ]);

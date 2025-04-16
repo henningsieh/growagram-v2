@@ -5,6 +5,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { Grandstander, Nunito } from "next/font/google";
 import { APP_SETTINGS } from "~/assets/constants";
+import { BreadcrumbProvider } from "~/components/Layouts/Breadcrumbs/breadcrumb-context";
 import { AppFooter } from "~/components/Layouts/Footer/app-footer";
 import { MainNavigationBar } from "~/components/Layouts/MainNavigationBar";
 import { PhotoModalProvider } from "~/components/Layouts/photo-modal-provider";
@@ -12,9 +13,8 @@ import { EnhancedProgressProvider } from "~/components/Layouts/progress-provider
 import { ThemeProvider } from "~/components/Layouts/theme-provider";
 import { BanNotification } from "~/components/atom/ban-notification";
 import { Toaster } from "~/components/ui/sonner";
-import { BreadcrumbProvider } from "~/lib/breadcrumbs/breadcrumb-context";
-import { TRPCReactProvider } from "~/lib/trpc/react";
 import "~/styles/globals.css";
+import { TRPCReactProvider } from "~/trpc/client";
 
 const nunito = Nunito({
   variable: "--font-nunito",

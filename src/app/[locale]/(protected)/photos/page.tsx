@@ -14,7 +14,7 @@ import {
 } from "~/components/atom/sort-filter-controls";
 import PhotosInfiniteScrollView from "~/components/features/Photos/Views/infinite-scroll";
 import PhotosPaginatedView from "~/components/features/Photos/Views/paginated";
-import { createBreadcrumbs } from "~/lib/breadcrumbs/breadcrumbs";
+import { createBreadcrumbs } from "~/lib/breadcrumbs";
 import { useRouter } from "~/lib/i18n/routing";
 import { PhotosSortField, PhotosViewMode } from "~/types/image";
 

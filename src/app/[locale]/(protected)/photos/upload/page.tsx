@@ -6,7 +6,7 @@ import FormContent from "~/components/Layouts/form-content";
 import PageHeader from "~/components/Layouts/page-header";
 import PhotoUpload from "~/components/features/Photos/image-upload";
 import { auth } from "~/lib/auth";
-import { createBreadcrumbs } from "~/lib/breadcrumbs/breadcrumbs";
+import { createBreadcrumbs } from "~/lib/breadcrumbs";
 
 export default async function ImageUploadPage() {
   const session = await auth();

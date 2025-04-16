@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { modulePaths } from "~/assets/constants";
 import { BreadcrumbSetter } from "~/components/Layouts/Breadcrumbs/breadcrumb-setter";
 import GrowForm from "~/components/features/Grows/grow-form";
-import { createBreadcrumbs } from "~/lib/breadcrumbs/breadcrumbs";
+import { createBreadcrumbs } from "~/lib/breadcrumbs";
 import { api } from "~/lib/trpc/server";
 import type { GetGrowByIdInput, GetGrowByIdType } from "~/server/api/root";
 

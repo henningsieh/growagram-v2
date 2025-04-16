@@ -3,7 +3,7 @@ import { z } from "zod";
 import { db } from "~/lib/db";
 import { Message, type PostType } from "~/lib/db/schema";
 import { currentlyTyping, ee } from "~/server/api/routers/channel";
-import { protectedProcedure, publicProcedure } from "~/server/api/trpc";
+import { protectedProcedure, publicProcedure } from "~/trpc/init";
 
 export const messageRouter = {
   add: protectedProcedure
