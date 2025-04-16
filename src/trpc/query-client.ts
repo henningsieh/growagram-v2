@@ -1,23 +1,24 @@
+//src/trpc/query-client.ts:
 import {
   QueryClient,
   defaultShouldDehydrateQuery,
 } from "@tanstack/react-query";
-import superjson from "superjson";
+import SuperJSON from "superjson";
 
-export function makeQueryClient() {
+export function createQueryClient() {
   return new QueryClient({
     defaultOptions: {
       queries: {
         staleTime: 30 * 1000,
       },
       dehydrate: {
-        serializeData: superjson.serialize,
+        serializeData: SuperJSON.serialize,
         shouldDehydrateQuery: (query) =>
           defaultShouldDehydrateQuery(query) ||
           query.state.status === "pending",
       },
       hydrate: {
-        deserializeData: superjson.deserialize,
+        deserializeData: SuperJSON.deserialize,
       },
     },
   });

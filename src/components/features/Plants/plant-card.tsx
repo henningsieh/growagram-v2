@@ -4,6 +4,7 @@
 import * as React from "react";
 import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   DotIcon,
   EditIcon,
@@ -37,9 +38,9 @@ import {
 import { useComments } from "~/hooks/use-comments";
 import { useLikeStatus } from "~/hooks/use-likes";
 import { Link, useRouter } from "~/lib/i18n/routing";
-import { api } from "~/lib/trpc/react";
 import { cn, formatDate, formatTime } from "~/lib/utils";
 import type { PlantByIdType } from "~/server/api/root";
+import { useTRPC } from "~/trpc/client";
 import { CommentableEntityType } from "~/types/comment";
 import { LikeableEntityType } from "~/types/like";
 import { Locale } from "~/types/locale";
@@ -55,12 +56,13 @@ export default function PlantCard({
   plant,
   isSocialProp = true,
 }: PlantCardProps) {
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
   const { data: session } = useSession();
   const user = session?.user;
 
   const router = useRouter();
   const locale = useLocale();
-  const utils = api.useUtils();
 
   const tCommon = useTranslations("Platform");
   const t = useTranslations("Plants");
@@ -78,23 +80,25 @@ export default function PlantCard({
   const { commentCount, commentCountLoading, isCommentsOpen, toggleComments } =
     useComments(plant.id, CommentableEntityType.Plant);
 
-  // Initialize delete mutation
-  const deleteMutation = api.plants.deleteById.useMutation({
-    onSuccess: async () => {
-      toast("Success", {
-        description: t("plant-deleted-successfully"),
-      });
-      // Invalidate and prefetch the plants query to refresh the list
-      await utils.plants.getOwnPlants.invalidate();
-      // await utils.plants.getOwnPlants.prefetch();
-      // router.refresh();
-    },
-    onError: (error) => {
-      toast.error("Error", {
-        description: error.message || t("error-default"),
-      });
-    },
-  });
+  // Initialize delete mutation with modern TanStack approach
+  const deleteMutation = useMutation(
+    trpc.plants.deleteById.mutationOptions({
+      onSuccess: async () => {
+        toast(t("DeleteConfirmation.success-title"), {
+          description: t("plant-deleted-successfully"),
+        });
+        // Invalidate and refresh the plants query using TanStack's approach
+        await queryClient.invalidateQueries({
+          queryKey: [["plants", "getOwnPlants"]],
+        });
+      },
+      onError: (error) => {
+        toast.error("Error", {
+          description: error.message || t("error-default"),
+        });
+      },
+    }),
+  );
 
   const handleDelete = () => {
     setIsDeleteDialogOpen(true);

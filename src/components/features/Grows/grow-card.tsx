@@ -5,6 +5,7 @@ import * as React from "react";
 import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   AlertCircleIcon,
@@ -33,9 +34,9 @@ import { Card, CardContent, CardTitle } from "~/components/ui/card";
 import { useComments } from "~/hooks/use-comments";
 import { useLikeStatus } from "~/hooks/use-likes";
 import { Link, useRouter } from "~/lib/i18n/routing";
-import { api } from "~/lib/trpc/react";
 import { cn, formatDate, formatTime } from "~/lib/utils";
 import type { GetAllGrowType, GetOwnGrowType } from "~/server/api/root";
+import { useTRPC } from "~/trpc/client";
 import { CommentableEntityType } from "~/types/comment";
 import { LikeableEntityType } from "~/types/like";
 import { Locale } from "~/types/locale";
@@ -51,12 +52,13 @@ export function GrowCard({
   grow,
   isSocial: isSocialProp = true,
 }: GrowCardProps) {
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
   const { data: session } = useSession();
   const user = session?.user;
 
   const router = useRouter();
   const locale = useLocale();
-  const utils = api.useUtils();
 
   const tCommon = useTranslations("Platform");
   const t = useTranslations("Grows");
@@ -74,19 +76,23 @@ export function GrowCard({
   const { commentCount, commentCountLoading, isCommentsOpen, toggleComments } =
     useComments(grow.id, CommentableEntityType.Grow);
 
-  const deleteMutation = api.grows.deleteById.useMutation({
-    onSuccess: async () => {
-      toast(t("DeleteConfirmation.success-title"), {
-        description: t("DeleteConfirmation.success-description"),
-      });
-      await utils.grows.getOwnGrows.invalidate();
-    },
-    onError: (error) => {
-      toast.error(t("error-title"), {
-        description: `${t("error-default")} ${error.message || ""}`,
-      });
-    },
-  });
+  const deleteMutation = useMutation(
+    trpc.grows.deleteById.mutationOptions({
+      onSuccess: async () => {
+        toast(t("DeleteConfirmation.success-title"), {
+          description: t("DeleteConfirmation.success-description"),
+        });
+        await queryClient.invalidateQueries({
+          queryKey: [["grows", "getOwnGrows"]],
+        });
+      },
+      onError: (error) => {
+        toast.error(t("error-title"), {
+          description: `${t("error-default")} ${error.message || ""}`,
+        });
+      },
+    }),
+  );
 
   const handleDelete = () => {
     setIsDeleteDialogOpen(true);

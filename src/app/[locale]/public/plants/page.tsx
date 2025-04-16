@@ -3,26 +3,31 @@
 import * as React from "react";
 import { useTranslations } from "next-intl";
 import type { InfiniteData } from "@tanstack/react-query";
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { PaginationItemsPerPage } from "~/assets/constants";
 import InfiniteScrollLoader from "~/components/atom/infinite-scroll-loader";
 import SpinningLoader from "~/components/atom/spinning-loader";
 import PlantCard from "~/components/features/Plants/plant-card";
-import { api } from "~/lib/trpc/react";
 import type {
   GetAllPlantsInput,
   GetAllPlantsOutput,
   GetAllPlantsType,
 } from "~/server/api/root";
+import { useTRPC } from "~/trpc/client";
 
 export default function PublicPlantsPage() {
-  const utils = api.useUtils();
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
+
   const t = useTranslations("Plants");
 
-  // Get data from cache that was prefetched in layout.tsx
-  const cachedData = utils.plants.getAllPlants.getInfiniteData({
-    limit: PaginationItemsPerPage.PLANTS_PER_PAGE,
-  });
+  // Get initial data from cache (new syntax)
+  const cachedData = queryClient.getQueryData(
+    trpc.plants.getAllPlants.infiniteQueryKey({
+      limit: PaginationItemsPerPage.PUBLIC_PLANTS_PER_PAGE,
+    } satisfies GetAllPlantsInput),
+  );
 
   // Create initialData from cache if available
   const initialData: InfiniteData<GetAllPlantsOutput, number> | undefined =
@@ -41,14 +46,16 @@ export default function PublicPlantsPage() {
     isFetching: isFetchingNextPage,
     hasNextPage,
     fetchNextPage,
-  } = api.plants.getAllPlants.useInfiniteQuery(
-    {
-      limit: PaginationItemsPerPage.PUBLIC_PLANTS_PER_PAGE,
-    } satisfies GetAllPlantsInput,
-    {
-      initialData,
-      getNextPageParam: (lastPage) => lastPage.nextCursor,
-    },
+  } = useInfiniteQuery(
+    trpc.plants.getAllPlants.infiniteQueryOptions(
+      {
+        limit: PaginationItemsPerPage.PUBLIC_PLANTS_PER_PAGE,
+      } satisfies GetAllPlantsInput,
+      {
+        initialData,
+        getNextPageParam: (lastPage) => lastPage.nextCursor,
+      },
+    ),
   );
 
   const plants: GetAllPlantsType =
@@ -89,12 +96,10 @@ export default function PublicPlantsPage() {
           {t("no-plants-yet")}
         </p>
       ) : (
-        // this should be a flex-col timeline with animated plant cards
         <motion.div className="flex flex-col gap-4">
           {plants.map((plant) => (
             <PlantCard key={plant.id} plant={plant} isSocialProp={true} />
           ))}
-
           <InfiniteScrollLoader
             ref={loadingRef}
             isLoading={isLoading}

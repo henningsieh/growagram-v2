@@ -1,5 +1,4 @@
 import { cache } from "react";
-import type { Session } from "next-auth";
 import { TRPCError, initTRPC } from "@trpc/server";
 import { FetchCreateContextFnOptions } from "@trpc/server/adapters/fetch";
 import superjson from "superjson";
@@ -15,7 +14,7 @@ import { UserRoles } from "~/types/user";
  * These allow you to access things when processing a request, like the database, the session, etc.
  *
  * This helper generates the "internals" for a tRPC context. The API handler and RSC clients each
- * wrap this and provides the required context.
+ * wrap this and provides the required context.^
  *
  * @see https://trpc.io/docs/v11/context
  */

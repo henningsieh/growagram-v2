@@ -2,8 +2,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { GrowCard } from "~/components/features/Grows/grow-card";
-import { api } from "~/lib/trpc/server";
 import type { GetGrowByIdInput } from "~/server/api/root";
+import { caller } from "~/trpc/server";
 
 export type PublicGrowByIdProps = {
   params: Promise<GetGrowByIdInput>;
@@ -14,7 +14,7 @@ export async function generateMetadata(
   // parent: ResolvingMetadata,
 ): Promise<Metadata> {
   // read route params
-  const grow = await api.grows.getById({
+  const grow = await caller.grows.getById({
     id: (await params).id,
   } satisfies GetGrowByIdInput);
 
@@ -38,7 +38,7 @@ export async function generateMetadata(
 export default async function PublicGrowByIdPage({
   params,
 }: PublicGrowByIdProps) {
-  const grow = await api.grows.getById({
+  const grow = await caller.grows.getById({
     id: (await params).id,
   } satisfies GetGrowByIdInput);
 

@@ -15,7 +15,7 @@ import { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 import { createTRPCContext } from "@trpc/tanstack-react-query";
 import superjson from "superjson";
 import type { AppRouter } from "../server/api/root";
-import { makeQueryClient } from "./query-client";
+import { createQueryClient } from "./query-client";
 
 export const { TRPCProvider, useTRPC } = createTRPCContext<AppRouter>();
 
@@ -36,13 +36,13 @@ let browserQueryClient: QueryClient;
 function getQueryClient() {
   if (typeof window === "undefined") {
     // Server: always make a new query client
-    return makeQueryClient();
+    return createQueryClient();
   }
   // Browser: make a new query client if we don't already have one
   // This is very important, so we don't re-make a new client if React
   // suspends during the initial render. This may not be needed if we
   // have a suspense boundary BELOW the creation of the query client
-  if (!browserQueryClient) browserQueryClient = makeQueryClient();
+  if (!browserQueryClient) browserQueryClient = createQueryClient();
   return browserQueryClient;
 }
 function getUrl() {
@@ -72,10 +72,7 @@ export function TRPCReactProvider(
             process.env.NODE_ENV === "development" ||
             (op.direction === "down" && op.result instanceof Error),
         }),
-        httpBatchLink({
-          transformer: superjson, // <-- if you use a data transformer
-          url: getUrl(),
-        }),
+        // Remove the standalone httpBatchLink and just use the splitLink
         splitLink({
           // The split link is used to send queries and mutations to the correct endpoint
           // based on the operation type. This is useful if you have a separate endpoint
