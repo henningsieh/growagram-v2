@@ -45,14 +45,12 @@
     "navigation": {
       "label": "Admin-Bereich"
     },
-    "description": "Benutzer und Plattformeinstellungen verwalten",
     "pageheader": {
       "subtitle": "Verwaltungs- und Management -Tools",
       "title": "Verwaltungsbereich"
     },
     "settings-coming-soon": "Admin-Einstellungen bald verfügbar",
     "settings-tab": "Einstellungen",
-    "title": "Administration",
     "user-management": {
       "buttons": {
         "ban-user": "Benutzer sperren",

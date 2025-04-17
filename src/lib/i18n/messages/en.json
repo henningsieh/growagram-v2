@@ -45,14 +45,12 @@
     "navigation": {
       "label": "Admin Area"
     },
-    "description": "Manage users and platform settings",
     "pageheader": {
       "subtitle": "Administration and management tools",
       "title": "Administration Area"
     },
     "settings-coming-soon": "Admin settings coming soon",
     "settings-tab": "Settings",
-    "title": "Administration",
     "user-management": {
       "buttons": {
         "ban-user": "Ban User",
