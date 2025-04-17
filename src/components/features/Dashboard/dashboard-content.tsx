@@ -4,8 +4,7 @@ import * as React from "react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { usePathname, useSearchParams } from "next/navigation";
-import { skipToken } from "@tanstack/react-query";
-import { useQuery } from "@tanstack/react-query";
+import { skipToken, useQuery } from "@tanstack/react-query";
 import {
   Flower2Icon,
   ImageIcon,
@@ -13,7 +12,9 @@ import {
   UsersIcon,
   Wheat,
 } from "lucide-react";
+import { PaginationItemsPerPage } from "~/assets/constants";
 import PageHeader from "~/components/Layouts/page-header";
+import { SortOrder } from "~/components/atom/sort-filter-controls";
 import { ActivePlantsCard } from "~/components/features/Dashboard/active-plants-card";
 import { PlantsOverviewChart } from "~/components/features/Dashboard/dashboard-overview-chart";
 import { RecentPhotosWidget } from "~/components/features/Dashboard/recent-photos-widget";
@@ -29,6 +30,8 @@ import {
 import { Skeleton } from "~/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { useTRPC } from "~/lib/trpc/client";
+import { GrowsSortField } from "~/types/grow";
+import { PlantsSortField } from "~/types/plant";
 
 export function DashboardContent() {
   const trpc = useTRPC();
@@ -62,41 +65,40 @@ export function DashboardContent() {
     return () => {
       window.removeEventListener("hashchange", handleHashChange);
     };
-  }, [pathname, searchParams]); // Add pathname and searchParams as dependencies
+  }, [pathname, searchParams]);
 
-  // Define all API queries with conditional fetching based on session state
+  // Use tRPC hooks with TanStack React Query
   const { data: growsData, isLoading: isLoadingGrows } = useQuery(
-    trpc.grows.getOwnGrows.queryOptions(
-      {
-        // limit: 6,
-      },
-      { enabled: !!session?.user.id },
-    ),
+    trpc.grows.getOwnGrows.queryOptions({
+      cursor: 1,
+      limit: PaginationItemsPerPage.GROWS_PER_PAGE,
+      sortField: GrowsSortField.CREATED_AT,
+      sortOrder: SortOrder.DESC,
+    }),
   );
 
   const { data: plantsData, isLoading: isLoadingPlants } = useQuery(
     trpc.plants.getOwnPlants.queryOptions(
       {
-        // limit: 5,
+        cursor: 1,
+        limit: PaginationItemsPerPage.PLANTS_PER_PAGE,
+        sortField: PlantsSortField.CREATED_AT,
+        sortOrder: SortOrder.DESC,
       },
       { enabled: !!session?.user.id },
     ),
   );
 
   const { data: photosData, isLoading: isLoadingPhotos } = useQuery(
-    trpc.photos.getOwnPhotos.queryOptions(
-      {
-        limit: 12,
-      },
-      { enabled: !!session?.user.id },
-    ),
+    trpc.photos.getOwnPhotos.queryOptions({ limit: 12 }),
   );
 
-  const { data: userProfile, isPending: userStatsArePending } = useQuery(
-    trpc.users.getPublicUserProfile.queryOptions(
+  const { data: userProfile, isPending: userStatsArePending } = useQuery({
+    ...trpc.users.getPublicUserProfile.queryOptions(
       session?.user.id ? { id: session.user.id } : skipToken,
     ),
-  );
+    enabled: !!session?.user.id,
+  });
 
   // Return null if session is null, after defining all hooks
   if (session === null) {
