@@ -12,7 +12,9 @@ import {
   UsersIcon,
   Wheat,
 } from "lucide-react";
+import { PaginationItemsPerPage } from "~/assets/constants";
 import PageHeader from "~/components/Layouts/page-header";
+import { SortOrder } from "~/components/atom/sort-filter-controls";
 import { ActivePlantsCard } from "~/components/features/Dashboard/active-plants-card";
 import { PlantsOverviewChart } from "~/components/features/Dashboard/dashboard-overview-chart";
 import { RecentPhotosWidget } from "~/components/features/Dashboard/recent-photos-widget";
@@ -28,6 +30,8 @@ import {
 import { Skeleton } from "~/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { useTRPC } from "~/trpc/client";
+import { GrowsSortField } from "~/types/grow";
+import { PlantsSortField } from "~/types/plant";
 
 export function DashboardContent() {
   const t = useTranslations("Platform");
@@ -64,11 +68,28 @@ export function DashboardContent() {
   }, [pathname, searchParams]);
 
   // Use tRPC hooks with TanStack React Query
-  const growsQuery = useQuery(trpc.grows.getOwnGrows.queryOptions({}));
-  const plantsQuery = useQuery(trpc.plants.getOwnPlants.queryOptions({}));
+  const growsQuery = useQuery(
+    trpc.grows.getOwnGrows.queryOptions({
+      cursor: 1,
+      limit: PaginationItemsPerPage.GROWS_PER_PAGE,
+      sortField: GrowsSortField.CREATED_AT,
+      sortOrder: SortOrder.DESC,
+    }),
+  );
+
+  const plantsQuery = useQuery(
+    trpc.plants.getOwnPlants.queryOptions({
+      cursor: 1,
+      limit: PaginationItemsPerPage.PLANTS_PER_PAGE,
+      sortField: PlantsSortField.CREATED_AT,
+      sortOrder: SortOrder.DESC,
+    }),
+  );
+
   const photosQuery = useQuery(
     trpc.photos.getOwnPhotos.queryOptions({ limit: 12 }),
   );
+
   const userProfileQuery = useQuery({
     ...trpc.users.getPublicUserProfile.queryOptions(
       session?.user.id ? { id: session.user.id } : skipToken,
