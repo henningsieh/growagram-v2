@@ -3,6 +3,7 @@
 import * as React from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
 import { BAN_DURATIONS, modulePaths } from "~/assets/constants";
@@ -18,17 +19,18 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
-import { api } from "~/lib/trpc/react";
 import type { AdminUserListItem } from "~/server/api/root";
+import { useTRPC } from "~/trpc/client";
 
 interface ActionsCellProps {
   user: AdminUserListItem;
 }
 
 export function ActionsCell({ user }: ActionsCellProps) {
-  const t = useTranslations("AdminArea.user-management");
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
   const router = useRouter();
-  const utils = api.useUtils();
+  const t = useTranslations("AdminArea.user-management");
 
   // Check if user is currently banned
   const isUserBanned = React.useMemo(() => {
@@ -38,35 +40,44 @@ export function ActionsCell({ user }: ActionsCellProps) {
   }, [user.bannedUntil]);
 
   // Ban user mutation
-  const banUserMutation = api.admin.banUser.useMutation({
-    onSuccess: async () => {
-      await utils.admin.getAllUsers.invalidate();
-      toast.success("User banned successfully", {
-        description:
-          "The user has been banned and cannot log in until the ban expires.",
-      });
-    },
-    onError: (error) => {
-      toast.error("Failed to ban user", {
-        description: error.message || "An unexpected error occurred",
-      });
-    },
-  });
+  const banUserMutation = useMutation(
+    trpc.admin.banUser.mutationOptions({
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({
+          queryKey: trpc.admin.getAllUsers.queryKey(),
+        });
+        toast.success("User banned successfully", {
+          description:
+            "The user has been banned and cannot log in until the ban expires.",
+        });
+      },
+      onError: (error) => {
+        toast.error("Failed to ban user", {
+          description: error.message || "An unexpected error occurred",
+        });
+      },
+    }),
+  );
 
   // Unban user mutation
-  const unbanUserMutation = api.admin.unbanUser.useMutation({
-    onSuccess: async () => {
-      toast.success("User unbanned successfully", {
-        description: "The user's ban has been lifted and they can now log in.",
-      });
-      await utils.admin.getAllUsers.invalidate();
-    },
-    onError: (error) => {
-      toast.error("Failed to unban user", {
-        description: error.message || "An unexpected error occurred",
-      });
-    },
-  });
+  const unbanUserMutation = useMutation(
+    trpc.admin.unbanUser.mutationOptions({
+      onSuccess: async () => {
+        toast.success("User unbanned successfully", {
+          description:
+            "The user's ban has been lifted and they can now log in.",
+        });
+        await queryClient.invalidateQueries({
+          queryKey: trpc.admin.getAllUsers.queryKey(),
+        });
+      },
+      onError: (error) => {
+        toast.error("Failed to unban user", {
+          description: error.message || "An unexpected error occurred",
+        });
+      },
+    }),
+  );
 
   const handleCopyUserId = async () => {
     try {
