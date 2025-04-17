@@ -89,82 +89,37 @@ export const Comment: React.FC<CommentProps> = ({
   };
 
   // --- Mutation for deleting a comment ---
-  const deleteMutation = useMutation({
-    mutationFn: async ({ commentId }: { commentId: string }) => {
-      // Call your tRPC mutation here
-      return trpc.comments.deleteById.mutateAsync({ commentId });
-    },
-    onMutate: async ({ commentId: deletedCommentId }) => {
-      // Cancel any outgoing refetches
-      await queryClient.cancelQueries(
-        trpc.comments.getReplies.queryKey({ commentId: comment.id }),
-      );
-
-      // Snapshot the previous comments on this nested Level
-      const previousCommentsOnThisLevel = comment.parentCommentId
-        ? queryClient.getQueryData(
-            trpc.comments.getReplies.queryKey({
-              commentId: comment.parentCommentId,
-            }),
-          )
-        : queryClient.getQueryData(
-            trpc.comments.getComments.queryKey({
-              entityId: comment.entityId,
-              entityType: comment.entityType,
-              sortOrder: commentsSortOrder,
-            }),
-          );
-
-      if (comment.parentCommentId) {
-        // Optimistically remove the deleted comment from the parent's replies
-        queryClient.setQueryData(
-          trpc.comments.getReplies.queryKey({
-            commentId: comment.parentCommentId,
+  const deleteMutation = useMutation(
+    trpc.comments.deleteById.mutationOptions({
+      // 1. onMutate
+      onMutate: async ({ commentId: deletedCommentId }) => {
+        await queryClient.cancelQueries({
+          queryKey: trpc.comments.getReplies.queryKey({
+            commentId: comment.id,
           }),
-          (parentsReplies: GetCommentType[] | undefined) =>
-            parentsReplies?.filter((r) => r.id !== deletedCommentId) || [],
-        );
-      } else {
-        // Optimistically remove the deleted comment from entity's comments
-        queryClient.setQueryData(
-          trpc.comments.getComments.queryKey({
-            entityId: comment.entityId,
-            entityType: comment.entityType,
-            sortOrder: commentsSortOrder,
-          }),
-          (entitysComments: GetCommentType[] | undefined) =>
-            entitysComments?.filter((r) => r.id !== deletedCommentId) || [],
-        );
-      }
+        });
 
-      // Return a context object with the snapshotted value
-      return { previousCommentsOnThisLevel };
-    },
-    onSuccess: async () => {
-      toast(t("toasts.success.deleteComment.title"), {
-        description: t("toasts.success.deleteComment.description"),
-      });
+        const previousCommentsOnThisLevel = comment.parentCommentId
+          ? queryClient.getQueryData(
+              trpc.comments.getReplies.queryKey({
+                commentId: comment.parentCommentId,
+              }),
+            )
+          : queryClient.getQueryData(
+              trpc.comments.getComments.queryKey({
+                entityId: comment.entityId,
+                entityType: comment.entityType,
+                sortOrder: commentsSortOrder,
+              }),
+            );
 
-      // Invalidate queries to ensure fresh data
-      await queryClient.invalidateQueries(
-        trpc.comments.getReplies.queryFilter({ commentId: comment.id }),
-      );
-      await queryClient.invalidateQueries(
-        trpc.comments.getComments.queryFilter({}),
-      );
-      await queryClient.invalidateQueries(
-        trpc.comments.getCommentCount.queryFilter({}),
-      );
-    },
-    onError: (error, { commentId }, context) => {
-      // Rollback the optimistic update if deletion fails
-      if (context?.previousCommentsOnThisLevel) {
         if (comment.parentCommentId) {
           queryClient.setQueryData(
             trpc.comments.getReplies.queryKey({
               commentId: comment.parentCommentId,
             }),
-            context.previousCommentsOnThisLevel,
+            (parentsReplies: GetCommentType[] | undefined) =>
+              parentsReplies?.filter((r) => r.id !== deletedCommentId) || [],
           );
         } else {
           queryClient.setQueryData(
@@ -173,16 +128,68 @@ export const Comment: React.FC<CommentProps> = ({
               entityType: comment.entityType,
               sortOrder: commentsSortOrder,
             }),
-            context.previousCommentsOnThisLevel,
+            (entitysComments: GetCommentType[] | undefined) =>
+              entitysComments?.filter((r) => r.id !== deletedCommentId) || [],
           );
         }
-      }
 
-      toast.error(t("toasts.errors.deleteComment.title"), {
-        description: `${t("toasts.errors.deleteComment.description")} ${error.message || `Failed to delete comment with ID: ${commentId}`}`,
-      });
-    },
-  });
+        return { previousCommentsOnThisLevel };
+      },
+
+      // 2. onSuccess
+      onSuccess: async () => {
+        toast(t("toasts.success.deleteComment.title"), {
+          description: t("toasts.success.deleteComment.description"),
+        });
+
+        await queryClient.invalidateQueries({
+          queryKey: trpc.comments.getReplies.queryKey({
+            commentId: comment.id,
+          }),
+        });
+        await queryClient.invalidateQueries({
+          queryKey: trpc.comments.getComments.queryKey({
+            entityId: comment.entityId,
+            entityType: comment.entityType,
+            sortOrder: commentsSortOrder,
+          }),
+        });
+        await queryClient.invalidateQueries({
+          queryKey: trpc.comments.getCommentCount.queryKey({
+            entityId: comment.entityId,
+            entityType: comment.entityType,
+          }),
+        });
+      },
+
+      // 3. onError
+      onError: (error, { commentId }, context) => {
+        if (context?.previousCommentsOnThisLevel) {
+          if (comment.parentCommentId) {
+            queryClient.setQueryData(
+              trpc.comments.getReplies.queryKey({
+                commentId: comment.parentCommentId,
+              }),
+              context.previousCommentsOnThisLevel,
+            );
+          } else {
+            queryClient.setQueryData(
+              trpc.comments.getComments.queryKey({
+                entityId: comment.entityId,
+                entityType: comment.entityType,
+                sortOrder: commentsSortOrder,
+              }),
+              context.previousCommentsOnThisLevel,
+            );
+          }
+        }
+
+        toast.error(t("toasts.errors.deleteComment.title"), {
+          description: `${t("toasts.errors.deleteComment.description")} ${error.message || `Failed to delete comment with ID: ${commentId}`}`,
+        });
+      },
+    }),
+  );
 
   // Create a separate confirmDelete function
   const confirmDelete = async () => {
