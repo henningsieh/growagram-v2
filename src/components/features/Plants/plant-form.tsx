@@ -4,6 +4,7 @@
 import * as React from "react";
 import { useTranslations } from "next-intl";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   FlowerIcon,
   LeafIcon,
@@ -48,12 +49,12 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import { useRouter } from "~/lib/i18n/routing";
-import { api } from "~/lib/trpc/react";
 import type {
   CreateOrEditPlantInput,
   GetOwnPlantsInput,
   GetPlantByIdType,
 } from "~/server/api/root";
+import { useTRPC } from "~/trpc/client";
 import { plantFormSchema } from "~/types/zodSchema";
 import { BreederSelector } from "./breeder-selector";
 import PlantFormDateField from "./plant-form-date-fields";
@@ -62,7 +63,8 @@ import { StrainSelector } from "./strain-selector";
 type FormValues = z.infer<typeof plantFormSchema>;
 
 export default function PlantForm({ plant }: { plant?: GetPlantByIdType }) {
-  const utils = api.useUtils();
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
   const router = useRouter();
 
   const t = useTranslations("Plants");
@@ -104,38 +106,32 @@ export default function PlantForm({ plant }: { plant?: GetPlantByIdType }) {
     }
   }, [watchedBreederId, selectedBreederId, form]);
 
-  const { data: growsData, isPending: isGrowsLoading } =
-    api.grows.getOwnGrows.useQuery(
-      {
-        limit: 1000,
+  const { data: growsData, isPending: isGrowsLoading } = useQuery(
+    trpc.grows.getOwnGrows.queryOptions({ limit: 1000 }),
+  );
+
+  const createOrEditPlantMutation = useMutation(
+    trpc.plants.createOrEdit.mutationOptions({
+      onSuccess: async () => {
+        toast(t("form-toast-success-title"), {
+          description: t("form-toast-success-description"),
+        });
+
+        // Invalidate the plants queries
+        await queryClient.invalidateQueries({
+          queryKey: trpc.plants.getOwnPlants.queryKey(),
+        });
+
+        // Navigate to the plants page
+        router.push(modulePaths.PLANTS.path);
       },
-      {
-        initialData: utils.grows.getOwnGrows.getData(),
+      onError: (error) => {
+        toast.error(t("form-toast-error-title"), {
+          description: error.message || t("form-toast-error-description"),
+        });
       },
-    );
-
-  const createOrEditPlantMutation = api.plants.createOrEdit.useMutation({
-    onSuccess: async () => {
-      toast(t("form-toast-success-title"), {
-        description: t("form-toast-success-description"),
-      });
-
-      // Reset the infinite query
-      await utils.plants.getOwnPlants.reset();
-      // Prefetch initial OwnPlants infinite query into cache
-      await utils.plants.getOwnPlants.prefetchInfinite({
-        limit: PaginationItemsPerPage.PLANTS_PER_PAGE,
-      } satisfies GetOwnPlantsInput);
-
-      // Now navigate to the plants page
-      router.push(modulePaths.PLANTS.path);
-    },
-    onError: (error) => {
-      toast.error(t("form-toast-error-title"), {
-        description: error.message || t("form-toast-error-description"),
-      });
-    },
-  });
+    }),
+  );
 
   async function onSubmit(values: FormValues) {
     setIsSubmitting(true);

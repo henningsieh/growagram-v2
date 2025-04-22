@@ -9,18 +9,16 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   AlertCircleIcon,
-  DotIcon,
+  ArrowRightIcon,
   EditIcon,
   MessageSquareTextIcon,
   Trash2Icon,
 } from "lucide-react";
 import { toast } from "sonner";
 import { modulePaths } from "~/assets/constants";
-import landscapePlaceholder from "~/assets/landscape-placeholdersvg.svg";
 import { RESPONSIVE_IMAGE_SIZES } from "~/components/Layouts/responsive-grid";
-import AvatarCardHeader, {
-  ActionItem,
-} from "~/components/atom/avatar-card-header";
+import { ActionItem } from "~/components/atom/actions-menu";
+import AvatarCardHeader from "~/components/atom/avatar-card-header";
 import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
 import { EntityDateInfo } from "~/components/atom/entity-date-info";
 import { OwnerDropdownMenu } from "~/components/atom/owner-dropdown-menu";
@@ -30,7 +28,13 @@ import { EnhancedPlantCard } from "~/components/features/Plants/enhanced-plant-c
 import { PostFormModal } from "~/components/features/Timeline/Post/post-form-modal";
 import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
 import { Button } from "~/components/ui/button";
-import { Card, CardContent, CardTitle } from "~/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "~/components/ui/card";
 import { useComments } from "~/hooks/use-comments";
 import { useLikeStatus } from "~/hooks/use-likes";
 import { Link, useRouter } from "~/lib/i18n/routing";
@@ -132,8 +136,7 @@ export function GrowCard({
       title={tCommon("updated-at")}
       className="text-muted-foreground flex items-center gap-1 text-sm whitespace-nowrap underline-offset-3 hover:underline"
     >
-      {<DotIcon size={24} className="xs:block -mx-2 hidden" />}
-      {formatDate(grow.updatedAt, locale as Locale)}{" "}
+      {formatDate(grow.updatedAt, locale as Locale, { includeYear: false })}{" "}
       {formatTime(grow.updatedAt, locale as Locale)}
     </Link>
   );
@@ -157,155 +160,170 @@ export function GrowCard({
       />
       <Card
         className={cn(
-          `border-secondary/60 flex flex-col gap-0 overflow-hidden rounded-md border py-0 shadow-none`,
+          "border-secondary/60 flex h-full flex-col gap-0 overflow-hidden rounded-md border py-0 shadow-none",
         )}
       >
-        {isSocial && (
-          <AvatarCardHeader
-            user={grow.owner}
-            dateElement={dateElement}
-            actions={growActions}
-            showActions={growActions.length > 0}
-          />
-        )}
-
-        <CardContent
-          className={`flex h-full flex-col gap-1 ${isSocial ? "ml-12 pr-2 pl-0" : "p-2"}`}
+        {/* Card Header */}
+        <CardHeader
+          className={cn(
+            "flex items-center justify-between p-2 pb-0",
+            isSocial && "px-0 pb-1",
+          )}
         >
-          <div className="flex min-w-0 items-center justify-between gap-2">
-            {/* Title Link */}
-            <CardTitle as="h3" className="min-w-0">
-              <Button
-                asChild
-                variant="link"
-                className="text-secondary decoration-secondary flex min-w-0 items-center justify-start gap-2 px-0"
-              >
-                <Link href={`${modulePaths.PUBLICGROWS.path}/${grow.id}`}>
-                  <span className="truncate text-2xl leading-normal font-semibold">
-                    {grow.name}
-                  </span>
-                </Link>
-              </Button>
-            </CardTitle>
-            {!isSocial && user && user.id === grow.ownerId && (
-              <OwnerDropdownMenu
-                isSocial={isSocial}
-                setIsSocial={setIsSocial}
-                isDeleting={deleteMutation.isPending}
-                handleDelete={handleDelete}
-                entityId={grow.id}
-                entityType="Grows"
-              />
-            )}
-          </div>
-          {/* Header Image */}
-          <div className="relative aspect-video w-full overflow-hidden rounded-md">
-            {grow.headerImage ? (
-              <Image
-                fill
-                sizes={RESPONSIVE_IMAGE_SIZES}
-                src={grow.headerImage.imageUrl}
-                alt={grow.name}
-                className="h-full w-full object-cover transition-transform duration-300 hover:scale-[1.02]"
-              />
-            ) : (
-              <div className="bg-muted/10 relative h-full w-full">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Image
-                    fill
-                    sizes={RESPONSIVE_IMAGE_SIZES}
-                    src={landscapePlaceholder as string}
-                    alt={grow.name || "Grow placeholder"}
-                    className="h-full w-full object-cover opacity-40 transition-opacity duration-300 hover:opacity-50"
-                    priority
-                  />
+          {isSocial ? (
+            <AvatarCardHeader
+              user={grow.owner}
+              dateElement={dateElement}
+              actions={growActions}
+              showActions={growActions.length > 0}
+            />
+          ) : (
+            <div className="flex w-full min-w-0 items-center justify-between gap-2">
+              {/* Title Link */}
+              <CardTitle as="h3" className="min-w-0">
+                <Button
+                  asChild
+                  variant="link"
+                  className="text-secondary decoration-secondary flex min-w-0 items-center justify-start gap-2 px-0"
+                >
+                  <Link href={`${modulePaths.PUBLICGROWS.path}/${grow.id}`}>
+                    <span className="truncate text-2xl leading-normal font-semibold">
+                      {grow.name}
+                    </span>
+                  </Link>
+                </Button>
+              </CardTitle>
+              {user && user.id === grow.ownerId && (
+                <OwnerDropdownMenu
+                  isSocial={isSocial}
+                  setIsSocial={setIsSocial}
+                  isDeleting={deleteMutation.isPending}
+                  handleDelete={handleDelete}
+                  entityId={grow.id}
+                  entityType="Grows"
+                />
+              )}
+            </div>
+          )}
+        </CardHeader>
+
+        {/* Card Content */}
+        <CardContent
+          className={cn(
+            "p-2",
+            isSocial && "ml-12 pr-2 pl-0",
+            "flex flex-1 flex-col",
+          )}
+        >
+          <div className="flex-1">
+            {/* Header Image */}
+            <div className="border-accent relative aspect-video w-full overflow-hidden rounded-md border">
+              {grow.headerImage ? (
+                <Image
+                  fill
+                  sizes={RESPONSIVE_IMAGE_SIZES}
+                  src={grow.headerImage.imageUrl}
+                  alt={grow.name}
+                  className="h-full w-full object-cover transition-transform duration-300 hover:scale-[1.02]"
+                />
+              ) : (
+                <div className="bg-muted/10 relative h-full w-full">
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <Image
+                      fill
+                      sizes={RESPONSIVE_IMAGE_SIZES}
+                      src="/images/GrowAGram_Logo_big.png"
+                      alt={grow.name || "Grow placeholder"}
+                      className="h-full w-full object-cover opacity-40 transition-opacity duration-300 hover:opacity-50"
+                      priority
+                    />
+                  </div>
                 </div>
+              )}
+            </div>
+            {/* Plants Listing */}
+            <div className="mt-2 flex flex-1 flex-col">
+              <div
+                className={cn(
+                  "custom-scrollbar max-h-72 flex-1 space-y-2 overflow-y-auto",
+                  grow.plants.length > 2 && "pr-3",
+                )}
+              >
+                <AnimatePresence>
+                  {grow.plants.length ? (
+                    grow.plants.map((plant) => (
+                      <motion.div
+                        key={plant.id}
+                        initial={{ opacity: 0, y: -30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <EnhancedPlantCard plant={plant} />
+                      </motion.div>
+                    ))
+                  ) : (
+                    <Alert variant="destructive" className="bg-accent/20">
+                      <AlertCircleIcon className="h-4 w-4" />
+                      <AlertTitle>{t("no-plants-connected")}</AlertTitle>
+                      <AlertDescription className="flex items-center justify-end">
+                        <Button size="sm" variant="link" asChild>
+                          <Link
+                            href={`${modulePaths.GROWS.path}/${grow.id}/form`}
+                          >
+                            {t("button-label-connect-plants")}
+                            <ArrowRightIcon className="h-4 w-4" />
+                          </Link>
+                        </Button>
+                      </AlertDescription>
+                    </Alert>
+                  )}
+                </AnimatePresence>
               </div>
-            )}
+            </div>
           </div>
 
+          {/* Date Information - Moved above footer content */}
           <EntityDateInfo
             createdAt={grow.createdAt}
             updatedAt={grow.updatedAt}
           />
-
-          <div className="justify-top flex h-full flex-1 flex-col">
-            <div
-              className={cn(
-                "custom-scrollbar max-h-72 flex-1 space-y-2 overflow-y-auto",
-                grow.plants.length > 2 && "pr-3",
-              )}
-            >
-              <AnimatePresence>
-                {grow.plants.length ? (
-                  grow.plants.map((plant) => (
-                    <motion.div
-                      key={plant.id}
-                      initial={{ opacity: 0, y: -30 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -20 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <EnhancedPlantCard plant={plant} />
-                    </motion.div>
-                  ))
-                ) : (
-                  <Alert variant="destructive" className="bg-accent/20">
-                    <AlertCircleIcon className="h-4 w-4" />
-                    <AlertTitle>{t("no-plants-connected")}</AlertTitle>
-                    <AlertDescription>
-                      <Button
-                        variant="link"
-                        className="text-primary p-0 font-semibold"
-                        asChild
-                      >
-                        <Link
-                          href={`${modulePaths.GROWS.path}/${grow.id}/form`}
-                        >
-                          {t("button-label-connect-plants")}
-                        </Link>
-                      </Button>
-                    </AlertDescription>
-                  </Alert>
-                )}
-              </AnimatePresence>
-            </div>
-
-            {!isSocial && (
-              <Button
-                size={"sm"}
-                variant="primary"
-                className="group flex transform items-center gap-2 rounded-sm p-2 font-semibold transition-all hover:translate-y-[-1px] hover:shadow-md"
-                onClick={() => setIsPostModalOpen(true)}
-              >
-                <MessageSquareTextIcon
-                  size={20}
-                  className="transition-transform duration-300 group-hover:scale-110"
-                />
-                <span className="transition-colors duration-300">
-                  {t("button-label-post-update")}
-                </span>
-              </Button>
-            )}
-          </div>
         </CardContent>
+        {/* Card Footer */}
+        <CardFooter className={cn("p-2 pt-0", isSocial && "ml-12")}>
+          {!isSocial && (
+            <Button
+              size={"sm"}
+              variant="primary"
+              className="group flex w-full transform items-center justify-center gap-2 rounded-sm p-2 font-semibold transition-all hover:translate-y-[-1px] hover:shadow-md"
+              onClick={() => setIsPostModalOpen(true)}
+            >
+              <MessageSquareTextIcon
+                size={20}
+                className="transition-transform duration-300 group-hover:scale-110"
+              />
+              <span className="transition-colors duration-300">
+                {t("button-label-post-update")}
+              </span>
+            </Button>
+          )}
 
-        {isSocial && (
-          <SocialCardFooter
-            className={`${isSocial && "ml-12"}`}
-            entityId={grow.id}
-            entityType={LikeableEntityType.Grow}
-            initialLiked={isLiked}
-            isLikeStatusLoading={isLikeLoading}
-            commentCountLoading={commentCountLoading}
-            stats={{
-              comments: commentCount,
-              views: 0,
-              likes: likeCount,
-            }}
-            toggleComments={toggleComments}
-          />
-        )}
+          {isSocial && (
+            <SocialCardFooter
+              entityId={grow.id}
+              entityType={LikeableEntityType.Grow}
+              initialLiked={isLiked}
+              isLikeStatusLoading={isLikeLoading}
+              commentCountLoading={commentCountLoading}
+              stats={{
+                comments: commentCount,
+                views: 0,
+                likes: likeCount,
+              }}
+              toggleComments={toggleComments}
+            />
+          )}
+        </CardFooter>
 
         {isSocial && isCommentsOpen && (
           <Comments

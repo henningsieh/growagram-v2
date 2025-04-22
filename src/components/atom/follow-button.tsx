@@ -1,5 +1,4 @@
-"use client";
-
+"use client";;
 import * as React from "react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
@@ -7,6 +6,8 @@ import { UserMinusIcon, UserPlusIcon } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "~/components/ui/button";
 import { api } from "~/lib/trpc/react";
+
+import { useMutation } from "@tanstack/react-query";
 
 interface FollowButtonProps {
   userId: string;
@@ -19,13 +20,14 @@ export function FollowButton({
   initialIsFollowing,
   className,
 }: FollowButtonProps) {
+  const trpc = useTRPC();
   const { data: session } = useSession();
   const [isFollowing, setIsFollowing] = React.useState(initialIsFollowing);
   const utils = api.useUtils();
   const t = useTranslations("Profile");
 
   const { mutate: follow, isPending: isFollowLoading } =
-    api.users.followUser.useMutation({
+    useMutation(api.users.followUser.mutationOptions({
       onSuccess: async () => {
         setIsFollowing(true);
         toast(t("FollowButton.follow-success-title"), {
@@ -33,10 +35,10 @@ export function FollowButton({
         });
         await utils.users.getPublicUserProfile.invalidate();
       },
-    });
+    }));
 
   const { mutate: unfollow, isPending: isUnfollowLoading } =
-    api.users.unfollowUser.useMutation({
+    useMutation(api.users.unfollowUser.mutationOptions({
       onSuccess: async () => {
         setIsFollowing(false);
         toast(t("FollowButton.unfollow-success-title"), {
@@ -44,7 +46,7 @@ export function FollowButton({
         });
         await utils.users.getPublicUserProfile.invalidate();
       },
-    });
+    }));
 
   if (!session || session.user.id === userId) return null;
 

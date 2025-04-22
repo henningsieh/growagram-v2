@@ -1,5 +1,4 @@
-"use client";
-
+"use client";;
 // src/components/features/Chat/chat-modal.tsx:
 import * as React from "react";
 import { useSession } from "next-auth/react";
@@ -11,7 +10,11 @@ import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { EnhancedScrollArea } from "~/components/ui/enhanced-scroll-area";
 import { Input } from "~/components/ui/input";
-import { api } from "~/lib/trpc/react";
+
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
+import { useSubscription } from "@trpc/tanstack-react-query";
+import { useTRPC } from "~/trpc/client";
 
 export function ChatModal({
   isOpen,
@@ -23,40 +26,46 @@ export function ChatModal({
   const { data: session, status } = useSession();
   const [message, setMessage] = React.useState("");
   const [error, setError] = React.useState<string | null>(null);
-  const scrollViewportRef = React.useRef<HTMLDivElement>(null);
-  const utils = api.useUtils();
+  const scrollViewportRef = React.useRef<HTMLDivElement>(null);   
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
 
-  const { data: messages } = api.chat.getMessages.useQuery(undefined, {
+  const { data: messages } = useQuery(trpc.chat.getMessages.queryOptions(undefined, {
     enabled: status === "authenticated" && isOpen, // Only fetch messages when user is authenticated and modal is open
-  });
+  }));
 
   // Enhanced subscription with error handling
-  api.chat.onMessage.useSubscription(undefined, {
+  useSubscription(trpc.chat.onMessage.subscriptionOptions(undefined, {
     onData: (message) => {
-      utils.chat.getMessages.setData(undefined, (prev) => {
-        if (!prev) return [message];
-        return [message, ...prev];
-      });
+      queryClient.setQueryData(
+        trpc.chat.getMessages.queryKey(undefined),
+        (prev: typeof messages) => {
+          if (!prev) return [message];
+          return [message, ...prev];
+        }
+      );
     },
     enabled: isOpen,
     onError: (error) => {
       console.error("Subscription error:", error);
     },
-  });
+  }));
 
   // Cleanup subscription when modal closes
   React.useEffect(() => {
     if (!isOpen) {
-      void utils.chat.getMessages.reset();
+      void queryClient.invalidateQueries({
+        queryKey: trpc.chat.getMessages.queryKey(undefined)
+      });
     }
-  }, [isOpen, utils.chat.getMessages]);
+  }, [isOpen, queryClient, trpc.chat.getMessages]);
 
-  const sendMessageMutation = api.chat.sendMessage.useMutation({
+  const sendMessageMutation = useMutation(trpc.chat.sendMessage.mutationOptions({
     onError: (err) => {
       console.error("Failed to send message:", err);
       setError("Failed to send message. Please try again.");
     },
-  });
+  }));
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();

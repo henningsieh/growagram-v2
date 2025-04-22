@@ -3,6 +3,7 @@ import * as React from "react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { skipToken, useMutation, useQuery } from "@tanstack/react-query";
+import { useSubscription } from "@trpc/tanstack-react-query";
 import { toast } from "sonner";
 import {
   type GetAllNotificationType,
@@ -100,7 +101,7 @@ export function useNotifications(onlyUnread = true) {
   );
 
   // Updated subscription with new TanStack Query syntax
-  const subscription = useQuery<GetAllNotificationType>({
+  const subscription = useSubscription({
     ...trpc.notifications.onNotification.subscriptionOptions(
       status !== "authenticated" || lastEventId === false
         ? skipToken

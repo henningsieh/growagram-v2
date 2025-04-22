@@ -1,5 +1,4 @@
-"use client";
-
+"use client";;
 import * as React from "react";
 // eslint-disable-next-line no-restricted-imports
 import { useRouter } from "next/navigation";
@@ -15,10 +14,13 @@ import {
 import { Input, Label } from "~/components/input";
 import { api } from "~/lib/trpc/react";
 
+import { useMutation } from "@tanstack/react-query";
+
 export function CreateChannelDialog() {
+  const trpc = useTRPC();
   const [open, setOpen] = React.useState(false);
   const router = useRouter();
-  const mutation = api.channel.create.useMutation({
+  const mutation = useMutation(api.channel.create.mutationOptions({
     onSuccess: (id) => {
       router.push(`Chat/channels/${id}`);
       router.refresh();
@@ -26,7 +28,7 @@ export function CreateChannelDialog() {
     onError(err) {
       alert("Error: " + err.message);
     },
-  });
+  }));
 
   return (
     <>

@@ -4,6 +4,7 @@
 import * as React from "react";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CloudUpload, Upload, X } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -17,11 +18,11 @@ import { Card, CardContent, CardFooter } from "~/components/ui/card";
 import { Label } from "~/components/ui/label";
 import { Progress as ProgressBar } from "~/components/ui/progress";
 import { useRouter } from "~/lib/i18n/routing";
-import { api } from "~/lib/trpc/react";
 import { cn, formatDate, formatTime } from "~/lib/utils";
 import { readExif } from "~/lib/utils/readExif";
 import { uploadToS3 } from "~/lib/utils/uploadToS3";
 import type { CreatePhotoInput } from "~/server/api/root";
+import { useTRPC } from "~/trpc/client";
 import { Locale } from "~/types/locale";
 
 interface FilePreview {
@@ -65,18 +66,22 @@ const getSignedUrlForUpload = async (file: File) => {
 };
 
 export default function PhotoUpload() {
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
   const locale = useLocale();
   const [uploading, setUploading] = React.useState(false);
   const [previews, setPreviews] = React.useState<FilePreview[]>([]);
   const [isDragging, setIsDragging] = React.useState(false);
   const router = useRouter();
-  const utils = api.useUtils();
+
   const t = useTranslations("Photos");
 
   const formRef = React.useRef<HTMLFormElement>(null);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
-  const saveImageMutation = api.photos.createPhoto.useMutation();
+  const saveImageMutation = useMutation(
+    trpc.photos.createPhoto.mutationOptions(),
+  );
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -118,7 +123,10 @@ export default function PhotoUpload() {
 
       formRef.current?.reset();
       setPreviews([]);
-      await utils.photos.getOwnPhotos.invalidate();
+      // await utils.photos.getOwnPhotos.invalidate();
+      await queryClient.invalidateQueries({
+        queryKey: trpc.photos.getOwnPhotos.queryKey(),
+      });
       router.push(modulePaths.PHOTOS.path);
     } catch (error) {
       console.error("Error uploading images:", error);
@@ -231,8 +239,8 @@ export default function PhotoUpload() {
   }, [previews]);
 
   return (
-    <Card>
-      <form ref={formRef} onSubmit={onSubmit}>
+    <form ref={formRef} onSubmit={onSubmit}>
+      <Card>
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <Label className="sr-only" htmlFor="files">
@@ -364,7 +372,7 @@ export default function PhotoUpload() {
             }
           </Button>
         </CardFooter>
-      </form>
-    </Card>
+      </Card>
+    </form>
   );
 }

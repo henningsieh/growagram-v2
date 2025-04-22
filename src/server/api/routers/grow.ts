@@ -106,8 +106,8 @@ export const growRouter = createTRPCRouter({
         limit: z
           .number()
           .min(1)
-          .max(1000)
-          .default(PaginationItemsPerPage.GROWS_PER_PAGE),
+          .max(PaginationItemsPerPage.PUBLIC_GROWS_PER_PAGE)
+          .default(PaginationItemsPerPage.PUBLIC_GROWS_PER_PAGE),
         sortField: z
           .nativeEnum(GrowsSortField)
           .default(GrowsSortField.UPDATED_AT),

@@ -70,12 +70,12 @@ import { growSchema } from "~/types/zodSchema";
 
 type FormValues = z.infer<typeof growSchema>;
 
-export default function GrowFormPage({ grow }: { grow?: GetGrowByIdType }) {
+export function GrowForm({ grow }: { grow?: GetGrowByIdType }) {
   const trpc = useTRPC();
 
   const queryClient = useQueryClient();
 
-  const t_nav = useTranslations("Navigation");
+  const t_sidebar = useTranslations("Sidebar");
   const t = useTranslations("Grows");
 
   // Determine the mode based on the presence of grow
@@ -322,32 +322,56 @@ export default function GrowFormPage({ grow }: { grow?: GetGrowByIdType }) {
             description: pageTexts.successToast.description,
           });
 
-          const queryObject = {
-            cursor: 1,
-            limit: PaginationItemsPerPage.GROWS_PER_PAGE,
-            sortField: GrowsSortField.NAME,
-            sortOrder: SortOrder.ASC,
-          } satisfies GetOwnGrowsInput;
+          const currentViewMode =
+            localStorage.getItem("growViewMode") || "pagination";
 
-          // Reset and prefetch queries
-          await Promise.all([
-            queryClient.resetQueries({
-              queryKey: trpc.grows.getOwnGrows.queryKey(),
-            }),
-            queryClient.prefetchInfiniteQuery({
-              ...trpc.grows.getOwnGrows,
-              queryKey: trpc.grows.getOwnGrows.queryKey(queryObject),
-              initialPageParam: 1,
-              // getNextPageParam: (lastPage) => lastPage.nextCursor,
-            }),
-            queryClient.prefetchQuery({
-              ...trpc.grows.getOwnGrows,
-              queryKey: trpc.grows.getOwnGrows.queryKey(queryObject),
-            }),
-          ]);
+          try {
+            if (currentViewMode === "infinite-scroll") {
+              // 1. Generate the exact same infinite query key structure used by the component
+              const infiniteQueryOptions =
+                trpc.grows.getOwnGrows.infiniteQueryOptions({
+                  limit: PaginationItemsPerPage.GROWS_PER_PAGE,
+                  sortField: GrowsSortField.NAME,
+                  sortOrder: SortOrder.ASC,
+                });
 
-          // Navigate to grows page
-          router.push("/grows"); //TODO: add paginated parameters?
+              // 2. First remove the specific infinite query structure using its exact key
+              queryClient.removeQueries({
+                queryKey: infiniteQueryOptions.queryKey,
+                exact: true, // Use exact match to avoid affecting other queries
+              });
+
+              // 3. Then build a fresh query with the same key structure
+              await queryClient.fetchInfiniteQuery(infiniteQueryOptions);
+
+              // 4. Navigate with view mode parameter
+              router.push("/grows?viewMode=infinite-scroll");
+            } else {
+              // Paginated view works fine with normal approach
+              await queryClient.invalidateQueries({
+                queryKey: trpc.grows.getOwnGrows.queryKey(),
+                refetchType: "all",
+              });
+
+              await queryClient.fetchQuery(
+                trpc.grows.getOwnGrows.queryOptions({
+                  cursor: 1,
+                  limit: PaginationItemsPerPage.GROWS_PER_PAGE,
+                  sortField: GrowsSortField.NAME,
+                  sortOrder: SortOrder.ASC,
+                }),
+              );
+
+              // Navigate to the default URL (pagination mode)
+              router.push("/grows");
+            }
+          } catch (error) {
+            console.error("Error updating queries:", error);
+            // Navigate anyway to avoid leaving the user stuck
+            router.push("/grows");
+          } finally {
+            setIsSubmitting(false);
+          }
         } catch (error) {
           toast.error(t("error-title"), {
             description: t("error-default"),
@@ -630,13 +654,24 @@ export default function GrowFormPage({ grow }: { grow?: GetGrowByIdType }) {
                               <CircleAlertIcon className="size-5" />
                               {t("no-plants-connectable")}
                             </Alert>
-                            <div className="flex justify-end">
-                              <Button className="p-0" variant="link" asChild>
+                            <div className="flex justify-end gap-2">
+                              <Button size="sm" variant="outline" asChild>
                                 <Link
                                   className="roundex-xs h-6 text-sm"
                                   href={modulePaths.PLANTS.path}
                                 >
-                                  {t_nav("my-plants")}
+                                  {t_sidebar("navMain.Plants.items.My Plants")}
+                                  <ArrowRight className="ml-1 h-4 w-4" />
+                                </Link>
+                              </Button>
+                              <Button size="sm" variant="primary" asChild>
+                                <Link
+                                  className="roundex-xs h-6 text-sm"
+                                  href={modulePaths.PLANTS.newpath}
+                                >
+                                  {t_sidebar(
+                                    "navMain.Plants.items.Add New Plant",
+                                  )}
                                   <ArrowRight className="ml-1 h-4 w-4" />
                                 </Link>
                               </Button>

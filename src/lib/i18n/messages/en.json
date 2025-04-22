@@ -285,7 +285,7 @@
     "sort-label": "Sort by:",
     "success-description-create": "The grow environment has been created successfully.",
     "success-description-edit": "The grow environment has been updated successfully.",
-    "success-title": "Success!",
+    "success-title": "That worked! 🎉",
     "toasts": {
       "connect-success": {
         "description": "Plant was successfully connected to the grow",
@@ -500,6 +500,8 @@
     "button-label-upload-photos": "Upload",
     "buttonBackLabel": "Back",
     "capture-date": "Captured at",
+    "connect-plants-subtitle": "Which plants do you see in this photo?",
+    "connect-plants-title": "Identify plants",
     "connectPlants": {
       "photo-details-metadata": "Photo details / metadata"
     },
@@ -520,8 +522,6 @@
       "noResults": "No plants found",
       "placeholder": "Search plants..."
     },
-    "connect-plants-subtitle": "Which plants do you see in this photo?",
-    "connect-plants-title": "Identify plants",
     "toasts": {
       "errors": {
         "connectPlants": {
@@ -592,6 +592,7 @@
     "DeleteConfirmation": {
       "alertCautionText": "This action also deletes all Updates and other postings referring to this plant!",
       "description": "No photo will be deleted by this action. But this will also remove all references in any photos where this plant is tagged!",
+      "success-title": "Success",
       "title": "Are you sure you want to remove this plant?"
     },
     "breeder": "Breeder",
@@ -726,7 +727,7 @@
     "total-photos": "Total Photos",
     "total-photos-description": "All photos",
     "total-plants": "Total plants",
-    "updated-at": "updated on",
+    "updated-at": "updated at",
     "view-all-photos": "to your Photos",
     "welcome-to-platform-subttitle": "Welcome to the Grower's platform where you can manage all your Grows and Plants"
   },

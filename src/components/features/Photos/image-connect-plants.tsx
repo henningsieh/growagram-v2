@@ -3,7 +3,7 @@
 // src/components/features/Images/image-details-card.tsx:
 import * as React from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { useSearchParams } from "next/navigation";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { TRPCClientError } from "@trpc/client";
 import { Check, Flower2Icon } from "lucide-react";
 import { toast } from "sonner";
@@ -31,57 +31,109 @@ import {
   CommandList,
 } from "~/components/ui/command";
 import { useRouter } from "~/lib/i18n/routing";
-import { api } from "~/lib/trpc/react";
-import type { GetOwnPlantsInput, GetPhotoByIdType } from "~/server/api/root";
+import type { GetPhotoByIdType } from "~/server/api/root";
+import { useTRPC } from "~/trpc/client";
+
+// Helper function to convert URLSearchParams to a plain object
+// Handles potential multiple values for the same key
+function searchParamsToObject(
+  params: URLSearchParams,
+): Record<string, string | string[]> {
+  const obj: Record<string, string | string[]> = {};
+  params.forEach((value, key) => {
+    const existing = obj[key];
+    if (existing === undefined) {
+      // If key doesn't exist, add it as a string
+      obj[key] = value;
+    } else if (Array.isArray(existing)) {
+      // If key exists and is an array, push the new value
+      existing.push(value);
+    } else {
+      // If key exists and is a string, convert it to an array and add the new value
+      obj[key] = [existing, value];
+    }
+  });
+  return obj;
+}
 
 interface ImageConnectPlantsProps {
   image: GetPhotoByIdType;
+  returnParams?: string; // Add returnParams prop
 }
 
-export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
+export default function ImageConnectPlants({
+  image,
+  returnParams, // Destructure returnParams (encoded string)
+}: ImageConnectPlantsProps) {
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
   const router = useRouter();
   const locale = useLocale();
-  const utils = api.useUtils();
 
   const t = useTranslations("Photos");
 
-  const allPhotosQuery = useSearchParams();
+  /**
+   * Create back URL href object with preserved parameters using URLSearchParams
+   */
+  const backHref = React.useMemo(() => {
+    const defaultHref = { pathname: modulePaths.PHOTOS.path };
+    if (!returnParams) {
+      return defaultHref;
+    }
+
+    try {
+      // Decode the returnParams string
+      const decodedParamsString = decodeURIComponent(returnParams);
+      // Parse the decoded string using URLSearchParams
+      const parsedSearchParams = new URLSearchParams(decodedParamsString);
+      // Convert the URLSearchParams object to a plain object
+      const query = searchParamsToObject(parsedSearchParams);
+
+      return {
+        pathname: modulePaths.PHOTOS.path,
+        query: query,
+      };
+    } catch (e) {
+      console.error("Failed to parse return params:", e);
+      return defaultHref; // Fallback on error
+    }
+  }, [returnParams]);
 
   /**
    * Mutation to connect an image to a plant.
    *
    * On success, invalidates the cache for the image to ensure updated data.
    */
-  const connectToPlantMutation = api.photos.connectToPlant.useMutation({
-    onSuccess: async () => {
-      await utils.photos.getById.invalidate({ id: image.id });
-    },
-  });
+  const connectToPlantMutation = useMutation(
+    trpc.photos.connectToPlant.mutationOptions({
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({
+          queryKey: trpc.photos.getById.queryKey({ id: image.id }),
+        });
+      },
+    }),
+  );
 
   /**
    * Mutation to disconnect an image from a plant.
    *
    * On success, invalidates the cache for the image to ensure updated data.
    */
-  const disconnectFromPlantMutation =
-    api.photos.disconnectFromPlant.useMutation({
+  const disconnectFromPlantMutation = useMutation(
+    trpc.photos.disconnectFromPlant.mutationOptions({
       onSuccess: async () => {
-        await utils.photos.getById.invalidate({ id: image.id });
+        await queryClient.invalidateQueries({
+          queryKey: trpc.photos.getById.queryKey({ id: image.id }),
+        });
       },
-    });
-
-  // The prefetched data will be available in the cache
-  const initialData = utils.plants.getOwnPlants.getData();
-
-  const { data: plantsData, isLoading } = api.plants.getOwnPlants.useQuery(
-    { limit: 100 } satisfies GetOwnPlantsInput,
-    {
-      // Use the data that was prefetched on the server
-      initialData: initialData,
-    },
+    }),
   );
 
-  // Move plants array into useMemo to ensure stable reference
+  const { data: plantsData, isLoading } = useQuery(
+    trpc.plants.getOwnPlants.queryOptions({ limit: 100 }),
+  );
+
+  // Move plants array into useMemo to ensure stable references
   const plants = React.useMemo(() => plantsData?.plants || [], [plantsData]);
 
   // Initialize with connected plants
@@ -161,8 +213,14 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
       toast(t("toasts.success.connectPlants.title"), {
         description: t("toasts.success.connectPlants.description"),
       });
-      await utils.photos.getOwnPhotos.invalidate();
-      router.push(modulePaths.PHOTOS.path);
+
+      // Invalidate photos query instead of using utils
+      await queryClient.invalidateQueries({
+        queryKey: trpc.photos.getOwnPhotos.queryKey(),
+      });
+
+      // Navigate back using the constructed href object
+      router.push(backHref);
     } catch (error) {
       // Show error toast when any operation fails
       toast.error(t("toasts.errors.connectPlants.title"), {
@@ -173,14 +231,16 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
       });
     }
   }, [
+    t,
+    router,
+    queryClient,
+    trpc.photos.getOwnPhotos,
     image.id,
     image.plantImages,
     selectedPlantIds,
-    t,
-    utils.photos.getOwnPhotos,
-    router,
     connectToPlantMutation,
     disconnectFromPlantMutation,
+    backHref, // Add backHref to dependencies
   ]);
 
   const togglePlantSelection = React.useCallback((plantId: string) => {
@@ -204,8 +264,8 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
       title={t("connect-plants-title")}
       subtitle={t("connect-plants-subtitle")}
       buttonLabel={t("buttonBackLabel")}
-      buttonLink={modulePaths.PHOTOS.path}
-      searchParams={allPhotosQuery ?? undefined}
+      buttonLink={backHref} // Pass the href object
+      searchParams={undefined} // Remove allPhotosQuery as it's not needed here
     >
       <FormContent>
         <Card className="rounded-md py-2">
@@ -242,14 +302,14 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
                       <CommandItem
                         key={plant.id}
                         onSelect={() => togglePlantSelection(plant.id)}
-                        className={`data[] hover:text-accent-foreground cursor-pointer ${
+                        className={`text-muted-foreground cursor-pointer ${
                           selectedPlantIds.includes(plant.id)
-                            ? "text-secondary font-bold"
-                            : "data-[selected=true]:text-accent-foreground"
+                            ? "text-secondary data-[selected=true]:text-secondary font-bold"
+                            : "data-[selected=true]:text-foreground"
                         }`}
                       >
                         <div
-                          className={`mr-2 flex h-4 w-4 items-center justify-center rounded-sm border ${
+                          className={`mr-2 flex h-4 w-4 shrink-0 items-center justify-center rounded-sm border ${
                             selectedPlantIds.includes(plant.id)
                               ? "border-secondary bg-secondary"
                               : "border-secondary"

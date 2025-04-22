@@ -16,6 +16,7 @@ import {
 } from "~/components/ui/popover";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
+import { useNotifications } from "~/hooks/use-notifications";
 // import { useNotifications } from "~/hooks/use-notifications";
 import { Link } from "~/lib/i18n/routing";
 import { cn } from "~/lib/utils";
@@ -36,6 +37,9 @@ export function Notifications() {
     error: queryError,
   } = useNotifications();
 
+  // Function to close the popover
+  const closePopover = () => setOpen(false);
+
   const statusIndicatorClass = cn(
     "absolute -right-1 -top-1 h-2 w-2 rounded-full",
     {
@@ -44,9 +48,6 @@ export function Notifications() {
       "bg-red-500": subscriptionStatus === "error",
     },
   );
-
-  // Function to close the popover
-  const closePopover = () => setOpen(false);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>

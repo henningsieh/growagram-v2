@@ -60,7 +60,6 @@ import { UserRoles } from "~/types/user";
 
 /**
  * ProtectedSidebar: Main sidebar component for authenticated users
- * Provides navigation, team switching, and user profile management
  */
 export default function ProtectedSidebar({
   children,
@@ -123,15 +122,25 @@ function ProtectedSidebarContent({
                         if (!open) toggleSidebar();
                       }}
                     >
-                      <Link href={item.url}>
-                        <SidebarMenuButton tooltip={item.title}>
+                        {item.url ? (
+                        <Link href={item.url}>
+                          <SidebarMenuButton tooltip={item.title}>
                           {item.icon && <item.icon />}
                           <span>{item.title}</span>
                           {item.items && (
                             <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                           )}
+                          </SidebarMenuButton>
+                        </Link>
+                        ) : (
+                        <SidebarMenuButton tooltip={item.title}>
+                          {item.icon && <item.icon />}
+                          <span>{item.title}</span>
+                          {item.items && (
+                          <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                          )}
                         </SidebarMenuButton>
-                      </Link>
+                        )}
                     </CollapsibleTrigger>
                     {item.items && (
                       <CollapsibleContent
@@ -346,7 +355,7 @@ function ProtectedSidebarContent({
         </header>
 
         {/* Main Content Area */}
-        <div className="@container flex flex-col gap-2 rounded-sm pt-14">
+        <div className="@container/main flex flex-col gap-2 rounded-sm pt-14">
           {children}
         </div>
       </SidebarInset>

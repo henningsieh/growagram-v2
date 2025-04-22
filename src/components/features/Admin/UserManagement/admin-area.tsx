@@ -26,7 +26,12 @@ export function AdminArea() {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="users" className="w-full">
-            <UsersTable />
+            <div
+              className="max-w-full"
+              style={{ overflowX: "auto", whiteSpace: "nowrap" }}
+            >
+              <UsersTable />
+            </div>
           </TabsContent>
           <TabsContent value="settings">
             <div className="flex h-[300px] w-full items-center justify-center">

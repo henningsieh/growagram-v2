@@ -5,21 +5,25 @@ import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   Camera,
+  EditIcon,
   FileIcon,
   Flower2Icon,
   MessageSquareTextIcon,
   TagsIcon,
+  Trash2Icon,
   UploadCloud,
 } from "lucide-react";
 import { toast } from "sonner";
 import { modulePaths } from "~/assets/constants";
 import { useImageModal } from "~/components/Layouts/photo-modal-provider";
 import { RESPONSIVE_IMAGE_SIZES } from "~/components/Layouts/responsive-grid";
+import { ActionItem } from "~/components/atom/actions-menu";
 import AvatarCardHeader from "~/components/atom/avatar-card-header";
 import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
-import { EntityDateInfo } from "~/components/atom/entity-date-info";
 import { OwnerDropdownMenu } from "~/components/atom/owner-dropdown-menu";
 import { SocialCardFooter } from "~/components/atom/social-card-footer";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
@@ -27,7 +31,14 @@ import { Comments } from "~/components/features/Comments/comments";
 import { PostFormModal } from "~/components/features/Timeline/Post/post-form-modal";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
-import { Card, CardContent, CardTitle } from "~/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "~/components/ui/card";
 import {
   Tooltip,
   TooltipContent,
@@ -37,18 +48,19 @@ import {
 import { useComments } from "~/hooks/use-comments";
 import { useLikeStatus } from "~/hooks/use-likes";
 import { Link, useRouter } from "~/lib/i18n/routing";
-import { api } from "~/lib/trpc/react";
 import { cn, formatDate, formatTime } from "~/lib/utils";
 import type { GetOwnPhotoType } from "~/server/api/root";
+import { useTRPC } from "~/trpc/client";
 import { CommentableEntityType } from "~/types/comment";
 import { PhotosSortField } from "~/types/image";
 import { LikeableEntityType } from "~/types/like";
 import { Locale } from "~/types/locale";
 import { PostableEntityType } from "~/types/post";
+import { UserRoles } from "~/types/user";
 
 interface PhotoCardProps {
   photo: GetOwnPhotoType;
-  isSocial: boolean;
+  isSocial?: boolean;
   currentQuery?: {
     page: number;
     sortField: PhotosSortField;
@@ -59,14 +71,18 @@ interface PhotoCardProps {
 
 export default function PhotoCard({
   photo,
-  isSocial: isSocialProp,
+  isSocial: isSocialProp = true,
   currentQuery,
 }: PhotoCardProps) {
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
   const { data: session } = useSession();
   const user = session?.user;
   const locale = useLocale();
   const router = useRouter();
-  const utils = api.useUtils();
+  const searchParams = useSearchParams();
+
+  const tCommon = useTranslations("Platform");
   const t = useTranslations("Photos");
 
   const { isLiked, likeCount, isLoading } = useLikeStatus(
@@ -81,27 +97,27 @@ export default function PhotoCard({
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
 
-  // Initialize delete mutation
-  const deleteMutation = api.photos.deletePhoto.useMutation({
-    onSuccess: async () => {
-      toast(t("DeleteConfirmation.toasts.success.title"), {
-        description: t("DeleteConfirmation.toasts.success.description"),
-      });
-      // Invalidate and prefetch the images query to refresh the list
-      await Promise.all([
-        utils.photos.getOwnPhotos.invalidate(),
-        utils.photos.getOwnPhotos.prefetch(),
-      ]);
-
-      router.refresh();
-    },
-    onError: (error) => {
-      toast.error(t("DeleteConfirmation.toasts.error.title"), {
-        description:
-          error.message || t("DeleteConfirmation.toasts.error.description"),
-      });
-    },
-  });
+  // Initialize delete mutation using Tanstack Query
+  const deleteMutation = useMutation(
+    trpc.photos.deletePhoto.mutationOptions({
+      onSuccess: async () => {
+        toast(t("DeleteConfirmation.toasts.success.title"), {
+          description: t("DeleteConfirmation.toasts.success.description"),
+        });
+        // Invalidate queries to refresh the list
+        await queryClient.invalidateQueries({
+          queryKey: [["photos", "getOwnPhotos"]],
+        });
+        router.refresh();
+      },
+      onError: (error) => {
+        toast.error(t("DeleteConfirmation.toasts.error.title"), {
+          description:
+            error.message || t("DeleteConfirmation.toasts.error.description"),
+        });
+      },
+    }),
+  );
 
   const handleDelete = () => {
     setIsDeleteDialogOpen(true);
@@ -128,9 +144,53 @@ export default function PhotoCard({
     openImageModal(photo.imageUrl);
   };
 
+  // Get the current search parameters string to preserve state
+  const currentUrlParamsString = searchParams ? searchParams.toString() : "";
+  // Encode the entire string to be safely passed as a query parameter value
+  const returnToQuery = currentUrlParamsString
+    ? `?returnTo=${encodeURIComponent(currentUrlParamsString)}`
+    : "";
+
+  // Define actions for the avatar header menu
+  const photoActions: ActionItem[] = [];
+
+  if (user && user.id === photo.ownerId) {
+    photoActions.push({
+      icon: EditIcon,
+      label: t("edit-button-label"),
+      variant: "ghost",
+      onClick: () => {
+        // Navigate with the encoded returnTo parameter
+        router.push(
+          `${modulePaths.PHOTOS.path}/${photo.id}/form${returnToQuery}`,
+        );
+      },
+    });
+  }
+
+  if (user && (user.id === photo.ownerId || user.role === UserRoles.ADMIN)) {
+    photoActions.push({
+      icon: Trash2Icon,
+      label: t("delete-button-label"),
+      variant: "destructive",
+      onClick: handleDelete,
+      disabled: deleteMutation.isPending,
+    });
+  }
+
+  const dateElement = (
+    <Link
+      href={`/public${modulePaths.PHOTOS.path}/${photo.id}`}
+      title={tCommon("updated-at")}
+      className="text-muted-foreground flex items-center gap-1 text-sm whitespace-nowrap underline-offset-3 hover:underline"
+    >
+      {formatDate(photo.updatedAt, locale as Locale, { includeYear: false })}{" "}
+      {formatTime(photo.updatedAt, locale as Locale)}
+    </Link>
+  );
+
   return (
     <>
-      {/* Delete Confirmation Dialog */}
       <DeleteConfirmationDialog
         isOpen={isDeleteDialogOpen}
         onOpenChange={setIsDeleteDialogOpen}
@@ -148,109 +208,76 @@ export default function PhotoCard({
       />
       <Card
         className={cn(
-          `border-input relative flex flex-col overflow-hidden rounded-md border py-0 shadow-none`,
+          `border-input relative flex flex-col gap-0 overflow-hidden rounded-md border py-0 shadow-none`,
           isSocial && "border-none",
         )}
       >
         {/* "NEW" Banner */}
         {!isSocial && !!!photo.plantImages.length && (
-          <div className="bg-secondary absolute top-[12px] left-[-36px] z-10 w-[110px] rotate-[-45deg] cursor-default px-[40px] py-[1px] text-[14px] font-semibold tracking-widest text-white">
+          <div className="bg-secondary absolute top-[12px] left-[-36px] z-5 h-5 w-[110px] rotate-[-45deg] cursor-default px-[40px] py-[1px] text-[14px] font-semibold tracking-widest text-white">
             {t("newNotConnteched")}
           </div>
         )}
 
-        {isSocial && <AvatarCardHeader user={photo.owner} />}
-
-        <CardContent
-          className={`grid gap-2 p-2 ${isSocial && "ml-12 pr-2 pl-0"}`}
+        {/* Card Header */}
+        <CardHeader
+          className={cn(
+            "flex items-center justify-between p-2 pb-0",
+            isSocial && "px-0 pb-1 pl-0",
+          )}
         >
-          <div className="flex min-w-0 items-center justify-between gap-2">
-            {/* Title Link */}
-            <CardTitle as="h3" className="min-w-0 flex-1">
-              <Button
-                asChild
-                variant="link"
-                className="text-primary decoration-primary flex min-w-0 items-center justify-start gap-2 px-0"
-              >
-                <Link
-                  href={`/public${modulePaths.PHOTOS.path}/${photo.id}`}
-                  className="flex min-w-0 items-center gap-2"
-                >
-                  <FileIcon className="flex-shrink-0" size={20} />
-                  <span className="truncate text-xl leading-normal font-semibold">
-                    {photo.originalFilename}
-                  </span>
-                </Link>
-              </Button>
-            </CardTitle>
-
-            {/* DropdownMenu for plant's owner */}
-            {user && user.id === photo.ownerId && (
-              <div className="w-8 flex-none">
-                <OwnerDropdownMenu
-                  isSocial={isSocial}
-                  setIsSocial={setIsSocial}
-                  isDeleting={deleteMutation.isPending}
-                  handleDelete={handleDelete}
-                  entityId={photo.id}
-                  entityType="Photos"
-                />
-              </div>
-            )}
-          </div>
-
-          {/* Date Information */}
-          <EntityDateInfo
-            createdAt={photo.createdAt}
-            updatedAt={photo.updatedAt}
-          />
-
-          {/* Photo */}
-          <div
-            className="relative aspect-video cursor-pointer"
-            onClick={handleImageClick}
-            onMouseEnter={() => setIsImageHovered(true)}
-            onMouseLeave={() => setIsImageHovered(false)}
-          >
-            <Image
-              src={photo.imageUrl}
-              alt={photo.originalFilename}
-              fill
-              priority
-              className="object-contain transition-transform duration-300"
-              sizes={RESPONSIVE_IMAGE_SIZES}
-              style={{
-                transform: isImageHovered ? "scale(1.02)" : "scale(1)",
-              }}
+          {isSocial ? (
+            <AvatarCardHeader
+              user={photo.owner}
+              dateElement={dateElement}
+              actions={photoActions}
+              showActions={photoActions.length > 0}
             />
-          </div>
-
-          {/* Plant Badges */}
-          <div className="custom-scrollbar flex min-h-8 gap-2 overflow-x-auto px-1 pb-2">
-            {photo.plantImages
-              .sort((a, b) => a.plant.name.localeCompare(b.plant.name))
-              .map((plantImage) => (
-                <Link
-                  key={plantImage.plant.id}
-                  href={`/public/plants/${plantImage.plant.id}`}
+          ) : (
+            <div className="flex w-full min-w-0 items-center justify-between gap-2">
+              {/* Title Link */}
+              <CardTitle as="h3" className="min-w-0 flex-1">
+                <Button
+                  asChild
+                  variant="link"
+                  className="text-primary decoration-primary flex min-w-0 items-center justify-start gap-2 px-0"
                 >
-                  <Badge
-                    variant="plant"
-                    className="flex max-w-32 items-center gap-1 overflow-hidden rounded-sm text-ellipsis whitespace-nowrap"
+                  <Link
+                    href={`/public${modulePaths.PHOTOS.path}/${photo.id}`}
+                    className="flex min-w-0 items-center gap-2"
                   >
-                    <Flower2Icon className="h-4 w-4 shrink-0" />
-
-                    <span className="overflow-hidden text-left text-ellipsis">
-                      {plantImage.plant.name}
+                    {/* <div className="flex items-center gap-2"> */}
+                    <FileIcon className="flex-shrink-0" size={24} />
+                    <span className="truncate text-xl leading-normal font-semibold">
+                      {photo.originalFilename}
                     </span>
-                  </Badge>
-                </Link>
-              ))}
-          </div>
+                    {/* </div> */}
+                  </Link>
+                </Button>
+              </CardTitle>
 
+              {/* DropdownMenu for photo's owner */}
+              {user && user.id === photo.ownerId && (
+                <div className="w-8 flex-none">
+                  <OwnerDropdownMenu
+                    isSocial={isSocial}
+                    setIsSocial={setIsSocial}
+                    isDeleting={deleteMutation.isPending}
+                    handleDelete={handleDelete}
+                    entityId={photo.id}
+                    entityType="Photos"
+                  />
+                </div>
+              )}
+            </div>
+          )}
+        </CardHeader>
+
+        {/* Card Content */}
+        <CardContent className={cn("gap-2 p-2", isSocial && "ml-12 pr-2 pl-0")}>
           {/* Photo Upload and Capture Dates */}
           <TooltipProvider>
-            <div className="flex flex-col text-sm">
+            <div className="mb-2 flex flex-col text-sm">
               <Tooltip>
                 <TooltipTrigger asChild>
                   <p
@@ -295,55 +322,106 @@ export default function PhotoCard({
             </div>
           </TooltipProvider>
 
-          {!!photo.plantImages.length && !isSocial && (
-            <Button
-              size={"sm"}
-              variant="primary"
-              className="group flex transform items-center gap-2 rounded-sm p-2 font-semibold transition-all hover:translate-y-[-1px] hover:shadow-md"
-              onClick={() => setIsPostModalOpen(true)}
-            >
-              <MessageSquareTextIcon
-                size={20}
-                className="transition-transform duration-300 group-hover:scale-110"
-              />
-              <span className="transition-colors duration-300">
-                {t("button-label-post-update")}
-              </span>
-            </Button>
-          )}
+          {/* Photo */}
+          <div
+            className="relative aspect-video cursor-pointer"
+            onClick={handleImageClick}
+            onMouseEnter={() => setIsImageHovered(true)}
+            onMouseLeave={() => setIsImageHovered(false)}
+          >
+            <Image
+              src={photo.imageUrl}
+              alt={photo.originalFilename}
+              fill
+              priority
+              className="object-contain transition-transform duration-300"
+              sizes={RESPONSIVE_IMAGE_SIZES}
+              style={{
+                transform: isImageHovered ? "scale(1.02)" : "scale(1)",
+              }}
+            />
+          </div>
 
-          {!!!photo.plantImages.length && !isSocial && (
-            // link to edit plant, same as in DropDown menu
-            <Button
-              asChild
-              size={"sm"}
-              variant={"secondary"}
-              className="p-2 font-semibold"
-            >
-              <Link href={`${modulePaths.PHOTOS.path}/${photo.id}/form`}>
-                <TagsIcon size={20} />
-                {t("button-label-connect-plants")}
-              </Link>
-            </Button>
-          )}
+          {/* Plant Badges */}
+          <CardDescription className="mt-2">
+            <div className="custom-scrollbar flex min-h-8 items-center gap-2 overflow-x-auto px-1">
+              {photo.plantImages
+                .sort((a, b) => a.plant.name.localeCompare(b.plant.name))
+                .map((plantImage) => (
+                  <Link
+                    key={plantImage.plant.id}
+                    href={`/public/plants/${plantImage.plant.id}`}
+                  >
+                    <Badge
+                      variant="plant"
+                      className="flex max-w-32 items-center gap-1 overflow-hidden rounded-sm text-ellipsis whitespace-nowrap"
+                    >
+                      <Flower2Icon className="h-4 w-4 shrink-0" />
+
+                      <span className="overflow-hidden text-left text-ellipsis">
+                        {plantImage.plant.name}
+                      </span>
+                    </Badge>
+                  </Link>
+                ))}
+            </div>
+          </CardDescription>
         </CardContent>
 
-        {isSocial && (
-          <SocialCardFooter
-            className={`${isSocial && "ml-12"}`}
-            entityId={photo.id}
-            entityType={LikeableEntityType.Photo}
-            initialLiked={isLiked}
-            isLikeStatusLoading={isLoading}
-            commentCountLoading={commentCountLoading}
-            stats={{
-              comments: commentCount,
-              views: 0,
-              likes: likeCount,
-            }}
-            toggleComments={toggleComments}
-          />
-        )}
+        {/* Card Footer */}
+        <CardFooter className={cn("flex-col p-2 pt-0", isSocial && "ml-12")}>
+          {!isSocial && (
+            <>
+              {!!photo.plantImages.length ? (
+                <Button
+                  size={"sm"}
+                  variant="primary"
+                  className="group flex w-full transform items-center gap-2 rounded-sm p-2 font-semibold transition-all hover:translate-y-[-1px] hover:shadow-md"
+                  onClick={() => setIsPostModalOpen(true)}
+                >
+                  <MessageSquareTextIcon
+                    size={20}
+                    className="transition-transform duration-300 group-hover:scale-110"
+                  />
+                  <span className="transition-colors duration-300">
+                    {t("button-label-post-update")}
+                  </span>
+                </Button>
+              ) : (
+                <Button
+                  asChild
+                  size={"sm"}
+                  variant={"secondary"}
+                  className="w-full p-2 font-semibold"
+                >
+                  {/* Navigate with the encoded returnTo parameter */}
+                  <Link
+                    href={`${modulePaths.PHOTOS.path}/${photo.id}/form${returnToQuery}`}
+                  >
+                    <TagsIcon size={20} />
+                    {t("button-label-connect-plants")}
+                  </Link>
+                </Button>
+              )}
+            </>
+          )}
+
+          {isSocial && (
+            <SocialCardFooter
+              entityId={photo.id}
+              entityType={LikeableEntityType.Photo}
+              initialLiked={isLiked}
+              isLikeStatusLoading={isLoading}
+              commentCountLoading={commentCountLoading}
+              stats={{
+                comments: commentCount,
+                views: 0,
+                likes: likeCount,
+              }}
+              toggleComments={toggleComments}
+            />
+          )}
+        </CardFooter>
 
         {isSocial && isCommentsOpen && (
           <Comments

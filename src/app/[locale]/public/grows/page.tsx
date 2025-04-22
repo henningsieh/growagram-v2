@@ -2,113 +2,68 @@
 
 import * as React from "react";
 import { useTranslations } from "next-intl";
-import type { InfiniteData } from "@tanstack/react-query";
-import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
-import { motion } from "framer-motion";
-import { PaginationItemsPerPage } from "~/assets/constants";
+import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
+import { AlertCircleIcon } from "lucide-react";
 import InfiniteScrollLoader from "~/components/atom/infinite-scroll-loader";
-import SpinningLoader from "~/components/atom/spinning-loader";
 import { GrowCard } from "~/components/features/Grows/grow-card";
-import type {
-  GetAllGrowsInput,
-  GetAllGrowsOutput,
-  GetAllGrowsType,
-} from "~/server/api/root";
+import { Alert, AlertTitle } from "~/components/ui/alert";
+import { useIntersectionObserver } from "~/hooks/use-intersection";
+import { getAllGrowsInput } from "~/lib/queries/grows";
+import type { GetAllGrowsInput, GetAllGrowsType } from "~/server/api/root";
 import { useTRPC } from "~/trpc/client";
 
 export default function PublicGrowsPage() {
   const trpc = useTRPC();
-  const queryClient = useQueryClient();
-
   const t = useTranslations("Grows");
 
-  // Get initial data from cache (new syntax)
-  const cachedData = queryClient.getQueryData(
-    trpc.grows.getAllGrows.infiniteQueryKey({
-      limit: PaginationItemsPerPage.PUBLIC_GROWS_PER_PAGE,
-    } satisfies GetAllGrowsInput),
-  );
-
-  // Create initialData from cache if available
-  const initialData: InfiniteData<GetAllGrowsOutput, number> | undefined =
-    cachedData
-      ? {
-          pages: cachedData.pages,
-          pageParams: cachedData.pageParams.filter(
-            (param): param is number => param !== null,
-          ),
-        }
-      : undefined;
-
-  const {
-    data,
-    isLoading,
-    isFetching: isFetchingNextPage,
-    hasNextPage,
-    fetchNextPage,
-  } = useInfiniteQuery(
-    trpc.grows.getAllGrows.infiniteQueryOptions(
-      {
-        limit: PaginationItemsPerPage.PUBLIC_GROWS_PER_PAGE,
-      } satisfies GetAllGrowsInput,
-      {
-        initialData,
-        getNextPageParam: (lastPage) => lastPage.nextCursor,
-      },
-    ),
-  );
-
-  const grows: GetAllGrowsType =
-    data?.pages?.flatMap((page) => page.grows satisfies GetAllGrowsType) ?? [];
-
-  // Intersection Observer callback
-  const onIntersect = React.useCallback(
-    (entries: IntersectionObserverEntry[]) => {
-      const firstEntry = entries[0];
-      if (firstEntry.isIntersecting && hasNextPage && !isFetchingNextPage) {
-        void fetchNextPage();
-      }
-    },
-    [fetchNextPage, hasNextPage, isFetchingNextPage],
-  );
-
-  // Set up intersection observer
-  const loadingRef = React.useRef<HTMLDivElement>(null);
-  React.useEffect(() => {
-    const observer = new IntersectionObserver(onIntersect, {
-      root: null, // Use viewport as root
-      rootMargin: "0px",
-      threshold: 0.01, // Trigger when even 1% of the element is visible
+  // get suspense infinite query data from tanstack prefetchInfiniteQuery
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useSuspenseInfiniteQuery({
+      ...trpc.grows.getAllGrows.infiniteQueryOptions(
+        getAllGrowsInput satisfies GetAllGrowsInput,
+        {
+          getNextPageParam: (lastPage) => lastPage.nextCursor,
+        },
+      ),
     });
-    if (loadingRef.current) {
-      observer.observe(loadingRef.current);
+
+  // Extract grows from pages - with suspend, data is guaranteed to be defined
+  const grows = data.pages.flatMap(
+    (page) => page.grows satisfies GetAllGrowsType,
+  );
+
+  // Configure the callback for intersection
+  const fetchNextPageCallback = React.useCallback(() => {
+    if (hasNextPage && !isFetchingNextPage) {
+      void fetchNextPage();
     }
-    return () => observer.disconnect();
-  }, [onIntersect]);
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
+
+  // Use the intersection observer hook
+  const loadingRef = useIntersectionObserver(fetchNextPageCallback);
 
   return (
     <>
-      {isLoading ? (
-        <SpinningLoader className="text-secondary" />
-      ) : grows.length === 0 ? (
-        <p className="text-muted-foreground mt-8 text-center">
-          {t("NoGrowsFound")}
-        </p>
+      {grows.length === 0 ? (
+        <Alert variant="default" className="mx-auto mt-8 max-w-md">
+          <AlertCircleIcon className="size-11" />
+          <AlertTitle className="text-xl">{t("NoGrowsFound")}</AlertTitle>
+        </Alert>
       ) : (
         // this should be a flex-col timeline with animated grow cards
-        <motion.div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4">
           {grows.map((grow) => (
             <GrowCard key={grow.id} grow={grow} isSocial={true} />
           ))}
           <InfiniteScrollLoader
             ref={loadingRef}
-            isLoading={isLoading}
+            // isLoading={false}
             isFetchingNextPage={isFetchingNextPage}
             hasNextPage={hasNextPage}
             itemsLength={grows.length}
             noMoreMessage="No more grows to load."
           />
-        </motion.div>
+        </div>
       )}
     </>
   );

@@ -1,17 +1,15 @@
-"use client";
-
 // src/components/features/Plants/Views/infinite-scroll.tsx:
 import * as React from "react";
 import { useTranslations } from "next-intl";
-import { PaginationItemsPerPage, modulePaths } from "~/assets/constants";
+import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import ResponsiveGrid from "~/components/Layouts/responsive-grid";
 import InfiniteScrollLoader from "~/components/atom/infinite-scroll-loader";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
-import SpinningLoader from "~/components/atom/spinning-loader";
 import PlantCard from "~/components/features/Plants/plant-card";
-import { useRouter } from "~/lib/i18n/routing";
-import { api } from "~/lib/trpc/react";
+import { useIntersectionObserver } from "~/hooks/use-intersection";
+import { getOwnPlantsInput } from "~/lib/queries/plants";
 import type { GetOwnPlantsInput, GetOwnPlantsType } from "~/server/api/root";
+import { useTRPC } from "~/trpc/client";
 import { PlantsSortField } from "~/types/plant";
 
 export default function InfiniteScrollPlantsView({
@@ -23,41 +21,27 @@ export default function InfiniteScrollPlantsView({
   sortOrder: SortOrder;
   setIsFetching: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  const router = useRouter();
-  const utils = api.useUtils();
+  const trpc = useTRPC();
   const t = useTranslations("Plants");
 
-  React.useEffect(() => {
-    router.replace(
-      modulePaths.PLANTS.path, // Use only the base path
-    );
-  }, [router]);
+  const { data, isFetching, hasNextPage, fetchNextPage, isFetchingNextPage } =
+    useSuspenseInfiniteQuery({
+      ...trpc.plants.getOwnPlants.infiniteQueryOptions(
+        {
+          ...getOwnPlantsInput,
+          sortField,
+          sortOrder,
+        } satisfies GetOwnPlantsInput,
+        {
+          getNextPageParam: (lastPage) => lastPage.nextCursor,
+          // initialPageParam: 1,
+        },
+      ),
+    });
 
-  // Get initial data from cache
-  const initialData = utils.plants.getOwnPlants.getInfiniteData({
-    limit: PaginationItemsPerPage.PLANTS_PER_PAGE,
-    sortField,
-    sortOrder,
-  } satisfies GetOwnPlantsInput);
-
-  // Infinite query
-  const {
-    data,
-    isLoading,
-    isFetching,
-    hasNextPage,
-    fetchNextPage,
-    isFetchingNextPage,
-  } = api.plants.getOwnPlants.useInfiniteQuery(
-    {
-      limit: PaginationItemsPerPage.PLANTS_PER_PAGE,
-      sortField,
-      sortOrder,
-    } satisfies GetOwnPlantsInput,
-    {
-      getNextPageParam: (lastPage) => lastPage.nextCursor,
-      initialData,
-    },
+  // Extract plants from pages - with suspend, data is guaranteed to be defined
+  const plants = data.pages.flatMap(
+    (page) => page.plants satisfies GetOwnPlantsType,
   );
 
   // Directly update the parent's isFetching state
@@ -65,41 +49,19 @@ export default function InfiniteScrollPlantsView({
     setIsFetching(isFetching);
   }, [isFetching, setIsFetching]);
 
-  // Extract plants from pages
-  const plants =
-    data?.pages?.flatMap((page) => page.plants satisfies GetOwnPlantsType) ??
-    [];
-
-  // Intersection Observer callback
-  const onIntersect = React.useCallback(
-    (entries: IntersectionObserverEntry[]) => {
-      const firstEntry = entries[0];
-      if (firstEntry.isIntersecting && hasNextPage && !isFetchingNextPage) {
-        void fetchNextPage();
-      }
-    },
-    [fetchNextPage, hasNextPage, isFetchingNextPage],
-  );
-
-  // Set up intersection observer
-  const loadingRef = React.useRef<HTMLDivElement>(null);
-  React.useEffect(() => {
-    const observer = new IntersectionObserver(onIntersect, {
-      root: null, // Use viewport as root
-      rootMargin: "0px",
-      threshold: 0.01, // Trigger when even 10% of the element is visible
-    });
-    if (loadingRef.current) {
-      observer.observe(loadingRef.current);
+  // Configure the callback for intersection
+  const fetchNextPageCallback = React.useCallback(() => {
+    if (hasNextPage && !isFetchingNextPage) {
+      void fetchNextPage();
     }
-    return () => observer.disconnect();
-  }, [onIntersect]);
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
+
+  // Use our custom intersection observer hook
+  const loadingRef = useIntersectionObserver(fetchNextPageCallback);
 
   return (
     <>
-      {isLoading ? (
-        <SpinningLoader className="text-secondary" />
-      ) : plants.length === 0 ? (
+      {plants.length === 0 ? (
         <p className="text-muted-foreground mt-8 text-center">
           {t("no-plants-yet")}
         </p>
@@ -113,7 +75,6 @@ export default function InfiniteScrollPlantsView({
 
           <InfiniteScrollLoader
             ref={loadingRef}
-            isLoading={isLoading}
             isFetchingNextPage={isFetchingNextPage}
             hasNextPage={hasNextPage}
             itemsLength={plants.length}

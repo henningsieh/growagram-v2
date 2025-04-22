@@ -1,7 +1,8 @@
 // src/app/[locale]/(protected)/grows/[id]/form/layout.tsx:
 import * as React from "react";
-import { api } from "~/lib/trpc/server";
+import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import type { GetPlantByIdInput } from "~/server/api/root";
+import { caller, getQueryClient, trpc } from "~/trpc/server";
 
 export const metadata = {
   title: "Grower's Plattform | Plants",
@@ -15,13 +16,20 @@ export default async function PublicPlantByIdLayout({
   children: React.ReactNode;
   params: Promise<GetPlantByIdInput>;
 }) {
-  const plantId = (await params).id;
+  const queryClient = getQueryClient();
 
-  const plantByIdQuery = {
-    id: plantId,
+  const plantByIdQueryOptions = {
+    id: (await params).id,
   } satisfies GetPlantByIdInput;
 
-  await api.plants.getById.prefetch(plantByIdQuery);
+  // Prefetch plant data
+  await queryClient.prefetchQuery({
+    ...trpc.plants.getById.queryOptions(plantByIdQueryOptions),
+  });
 
-  return children;
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      {children}
+    </HydrationBoundary>
+  );
 }

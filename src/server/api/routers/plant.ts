@@ -12,15 +12,20 @@ import {
   plants,
 } from "~/lib/db/schema";
 import { connectPlantWithImagesQuery } from "~/server/api/routers/plantImages";
-import { protectedProcedure, publicProcedure } from "~/trpc/init";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "~/trpc/init";
 import { PlantsSortField } from "~/types/plant";
+import { UserRoles } from "~/types/user";
 import {
   breederFormSchema,
   plantFormSchema,
   strainFormSchema,
 } from "~/types/zodSchema";
 
-export const plantRouter = {
+export const plantRouter = createTRPCRouter({
   // Get paginated plants for the current user
   getOwnPlants: protectedProcedure
     .input(
@@ -43,7 +48,7 @@ export const plantRouter = {
     )
     .query(async ({ ctx, input }) => {
       // Use default values if input is not provided
-      const limit = input?.limit ?? PaginationItemsPerPage.GROWS_PER_PAGE;
+      const limit = input?.limit ?? PaginationItemsPerPage.PLANTS_PER_PAGE; // Fixed this line
       const cursor = input?.cursor ?? 1;
       const sortField = input?.sortField ?? PlantsSortField.CREATED_AT;
       const sortOrder = input?.sortOrder ?? SortOrder.DESC;
@@ -264,12 +269,12 @@ export const plantRouter = {
       // of the plant and the ownership of the current user
       if (input.id !== undefined && typeof input.id === "string") {
         const plantId = input.id;
-        const existingPlant = await ctx.db.query.plants.findFirst({
+        const plant = await ctx.db.query.plants.findFirst({
           where: (plants, { eq }) => eq(plants.id, plantId),
         });
 
         // Throw a TRPC not found error if the plant doesn't exist
-        if (!existingPlant) {
+        if (!plant) {
           throw new TRPCError({
             code: "NOT_FOUND",
             message: "Plant not found",
@@ -277,7 +282,10 @@ export const plantRouter = {
         }
 
         // Throw a TRPC unauthorized error if the current user is not the owner
-        if (existingPlant.ownerId !== ctx.session.user.id) {
+        if (
+          // ctx.session.user.role !== UserRoles.ADMIN &&
+          plant.ownerId !== ctx.session.user.id
+        ) {
           throw new TRPCError({
             code: "UNAUTHORIZED",
             message: "Session user does not own this plant",
@@ -347,7 +355,12 @@ export const plantRouter = {
         });
       }
 
-      if (plant.ownerId !== ctx.session.user.id) {
+      console.debug(ctx.session.user.role);
+
+      if (
+        ctx.session.user.role !== UserRoles.ADMIN &&
+        plant.ownerId !== ctx.session.user.id
+      ) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
           message: "Session user does not own this plant",
@@ -457,4 +470,4 @@ export const plantRouter = {
 
       return newStrain[0];
     }),
-};
+});

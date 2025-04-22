@@ -285,7 +285,7 @@
     "sort-label": "Sortieren nach:",
     "success-description-create": "Der Grow wurde erfolgreich erstellt.",
     "success-description-edit": "Der Grow wurde erfolgreich aktualisiert.",
-    "success-title": "Erfolg!",
+    "success-title": "Das hat geklappt! 🎉",
     "toasts": {
       "connect-success": {
         "description": "Die Pflanze wurde erfolgreich mit dem Grow verbunden",
@@ -475,7 +475,7 @@
           "title": "Erfolg"
         },
         "warning-photo-has-posts": {
-          "description": "Dieses Foto ist mit einem oder mehreren Beiträgen verbunden. Du kannst ein Foto nicht löschen, wenn es Beiträge zugeordnet ist.",
+          "description": "Dieses Foto ist mit einem oder mehreren Beiträgen verbunden. Du kannst ein Foto nicht löschen, wenn es einem oder mehreren Beiträgen zugeordnet ist.",
           "title": "Warnung"
         }
       }
@@ -592,6 +592,7 @@
     "DeleteConfirmation": {
       "alertCautionText": "Diese Aktion löscht auch alle Updates und anderen Beiträge, die sich auf diese Pflanze beziehen!",
       "description": "Durch diese Aktion wird kein Foto gelöscht. Dies wird aber auch alle Referenzen in den Fotos entfernen, auf denen diese Pflanze markiert ist!",
+      "success-title": "Erfolg",
       "title": "Bist du sicher, dass du diese Pflanze löschen möchten?"
     },
     "breeder": "Breeder (Züchter)",

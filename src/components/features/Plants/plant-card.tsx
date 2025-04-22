@@ -6,21 +6,20 @@ import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
-  DotIcon,
   EditIcon,
+  ExternalLinkIcon,
   MessageSquareTextIcon,
   TentTreeIcon,
   Trash2Icon,
 } from "lucide-react";
 import { toast } from "sonner";
 import { modulePaths } from "~/assets/constants";
-import AvatarCardHeader, {
-  ActionItem,
-} from "~/components/atom/avatar-card-header";
+import { ActionItem } from "~/components/atom/actions-menu";
+import { ActionsMenu } from "~/components/atom/actions-menu";
+import AvatarCardHeader from "~/components/atom/avatar-card-header";
 import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
 import { EntityDateInfo } from "~/components/atom/entity-date-info";
 import { TouchProvider } from "~/components/atom/hybrid-tooltip";
-import { OwnerDropdownMenu } from "~/components/atom/owner-dropdown-menu";
 import { SocialCardFooter } from "~/components/atom/social-card-footer";
 import StrainBadge from "~/components/atom/strain-badge";
 import { Comments } from "~/components/features/Comments/comments";
@@ -33,6 +32,8 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
+  CardHeader,
   CardTitle,
 } from "~/components/ui/card";
 import { useComments } from "~/hooks/use-comments";
@@ -109,11 +110,11 @@ export default function PlantCard({
     setIsDeleteDialogOpen(false);
   };
 
-  const growActions: ActionItem[] = [];
+  const plantActions: ActionItem[] = [];
 
   // Edit Action (visible to owner only)
   if (user && user.id === plant.ownerId) {
-    growActions.push({
+    plantActions.push({
       icon: EditIcon,
       label: t("edit-button-label"),
       variant: "ghost",
@@ -125,7 +126,7 @@ export default function PlantCard({
 
   // Delete Action (visible to owner and admin)
   if (user && (user.id === plant.ownerId || user.role === UserRoles.ADMIN)) {
-    growActions.push({
+    plantActions.push({
       icon: Trash2Icon,
       label: t("delete-button-label"),
       variant: "destructive",
@@ -134,14 +135,39 @@ export default function PlantCard({
     });
   }
 
+  const ownerActions: ActionItem[] = [
+    {
+      icon: ExternalLinkIcon,
+      label: t(`public-link-label`),
+      onClick: () => {
+        window.open(`/public/plants/${plant.id}`, "_blank");
+      },
+      variant: "ghost",
+    },
+    {
+      icon: EditIcon,
+      label: t("edit-button-label"),
+      onClick: () => {
+        router.push(`${modulePaths.PLANTS.path}/${plant.id}/form`);
+      },
+      variant: "ghost",
+    },
+    {
+      icon: Trash2Icon,
+      label: t("delete-button-label"),
+      onClick: handleDelete,
+      variant: "destructive",
+      disabled: deleteMutation.isPending,
+    },
+  ];
+
   const dateElement = (
     <Link
       href={`${modulePaths.PUBLICPLANTS.path}/${plant.id}`}
       title={tCommon("updated-at")}
       className="text-muted-foreground flex items-center gap-1 text-sm whitespace-nowrap underline-offset-3 hover:underline"
     >
-      {<DotIcon size={24} className="hidden sm:block" />}
-      {formatDate(plant.updatedAt, locale as Locale)}{" "}
+      {formatDate(plant.updatedAt, locale as Locale, { includeYear: false })}{" "}
       {formatTime(plant.updatedAt, locale as Locale)}
     </Link>
   );
@@ -167,64 +193,54 @@ export default function PlantCard({
         <Card
           className={cn(
             `border-primary/60 flex flex-col gap-0 overflow-hidden rounded-md border py-0 shadow-none`,
-            // isSocial && "bg-primary/5",
           )}
         >
-          {isSocial && (
-            <AvatarCardHeader
-              user={plant.owner}
-              dateElement={dateElement}
-              actions={growActions}
-              showActions={growActions.length > 0}
-            />
-          )}
-
-          <CardContent
-            className={`flex h-full flex-col gap-1 ${isSocial ? "ml-12 pr-2 pl-0" : "p-2"}`}
+          {/* Card Header */}
+          <CardHeader
+            className={cn(
+              "flex items-center justify-between p-2 pb-0",
+              isSocial && "px-0 pb-1",
+            )}
           >
-            <div className="flex min-w-0 items-center justify-between gap-2">
-              {/* Title Link */}
-              <CardTitle as="h3" className="min-w-0 flex-1">
-                <Button
-                  asChild
-                  variant="link"
-                  className="text-primary decoration-primary flex min-w-0 items-center justify-start gap-2 px-0"
-                >
-                  <Link href={`${modulePaths.PUBLICPLANTS.path}/${plant.id}`}>
-                    <span className="truncate text-2xl leading-normal font-semibold">
-                      {plant.name}
-                    </span>
-                  </Link>
-                </Button>
-              </CardTitle>
+            {isSocial ? (
+              <AvatarCardHeader
+                user={plant.owner}
+                dateElement={dateElement}
+                actions={plantActions}
+                showActions={plantActions.length > 0}
+              />
+            ) : (
+              <div className="flex w-full min-w-0 items-center justify-between gap-2">
+                {/* Title Link */}
+                <CardTitle as="h3" className="min-w-0 flex-1">
+                  <Button
+                    asChild
+                    variant="link"
+                    className="text-primary decoration-primary flex min-w-0 items-center justify-start gap-2 px-0"
+                  >
+                    <Link href={`${modulePaths.PUBLICPLANTS.path}/${plant.id}`}>
+                      <span className="truncate text-2xl leading-normal font-semibold">
+                        {plant.name}
+                      </span>
+                    </Link>
+                  </Button>
+                </CardTitle>
 
-              {/* DropdownMenu for plant's owner */}
-              {user && user.id === plant.ownerId && (
-                <OwnerDropdownMenu
-                  isSocial={isSocial}
-                  setIsSocial={setIsSocial}
-                  isDeleting={deleteMutation.isPending}
-                  handleDelete={handleDelete}
-                  entityId={plant.id}
-                  entityType="Plants"
-                />
-              )}
-            </div>
+                {/* ActionsMenu for plant's owner */}
+                {user && user.id === plant.ownerId && (
+                  <ActionsMenu actions={ownerActions} />
+                )}
+              </div>
+            )}
+          </CardHeader>
 
+          {/* Card Content */}
+          <CardContent className={cn("p-2", isSocial && "ml-12 pr-2 pl-0")}>
             {/* Image Carousel */}
             <ImageCarousel plantImages={plant.plantImages} />
 
-            {/* Date Information */}
-            <EntityDateInfo
-              createdAt={plant.createdAt}
-              updatedAt={plant.updatedAt}
-            />
-
-            {/* Plant Progress and Dates */}
-            <PlantProgressAndDates plant={plant} />
-
-            <CardDescription>
-              <div className="flex min-h-6 items-center justify-between gap-2 p-0">
+            <CardDescription className="my-2">
+              <div className="flex items-center justify-between gap-2 p-0">
                 {/* Strain Tooltip */}
                 <div>
                   {plant.strain && <StrainBadge strain={plant.strain} />}
@@ -248,11 +264,23 @@ export default function PlantCard({
               </div>
             </CardDescription>
 
+            {/* Plant Progress and Dates */}
+            <PlantProgressAndDates plant={plant} />
+
+            {/* Date Information - Moved above footer content */}
+            <EntityDateInfo
+              createdAt={plant.createdAt}
+              updatedAt={plant.updatedAt}
+            />
+          </CardContent>
+
+          {/* Card Footer */}
+          <CardFooter className={cn("p-2 pt-0", isSocial && "ml-12")}>
             {!isSocial && (
               <Button
                 size={"sm"}
                 variant="primary"
-                className="group flex transform items-center gap-2 rounded-sm p-2 font-semibold transition-all hover:translate-y-[-1px] hover:shadow-md"
+                className="group flex w-full transform items-center justify-center gap-2 rounded-sm p-2 font-semibold transition-all hover:translate-y-[-1px] hover:shadow-md"
                 onClick={() => setIsPostModalOpen(true)}
               >
                 <MessageSquareTextIcon
@@ -264,11 +292,9 @@ export default function PlantCard({
                 </span>
               </Button>
             )}
-          </CardContent>
-          {
-            isSocial && (
+
+            {isSocial && (
               <SocialCardFooter
-                className={`${isSocial && "ml-12"}`}
                 entityId={plant.id}
                 entityType={LikeableEntityType.Plant}
                 initialLiked={isLiked}
@@ -281,39 +307,9 @@ export default function PlantCard({
                 }}
                 toggleComments={toggleComments}
               />
-            )
+            )}
+          </CardFooter>
 
-            // : (
-            //   user &&
-            //   user.id === plant.ownerId && (
-            //     // Owner Buttons
-            //     <>
-            //       <Separator />
-            //       <CardFooter className="flex w-full justify-between gap-1 p-1">
-            //         <Button
-            //           variant="destructive"
-            //           size="sm"
-            //           className="w-20"
-            //           onClick={handleDelete}
-            //           disabled={deleteMutation.isPending}
-            //         >
-            //           {deleteMutation.isPending ? (
-            //             <Loader2 size={20} className="animate-spin" />
-            //           ) : (
-            //             <Trash2 size={20} />
-            //           )}
-            //         </Button>
-            //         <Button asChild size="sm" className="w-full text-base">
-            //           <Link href={`/plants/${plant.id}/form`}>
-            //             <Edit size={20} />
-            //             {t("edit-plant-button-label")}
-            //           </Link>
-            //         </Button>
-            //       </CardFooter>
-            //     </>
-            //   )
-            // )
-          }
           {isSocial && isCommentsOpen && (
             <Comments
               entityId={plant.id}

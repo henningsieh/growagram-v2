@@ -2,12 +2,17 @@ import * as React from "react";
 import { skipToken } from "@tanstack/react-query";
 import { api } from "~/lib/trpc/react";
 
+import { useMutation } from "@tanstack/react-query";
+import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
+import { useSubscription } from "@trpc/tanstack-react-query";
+
 /**
  * Set isTyping with a throttle of 1s
  * Triggers immediately if state changes
  */
 export function useThrottledIsTypingMutation(channelId: string) {
-  const isTyping = api.channel.isTyping.useMutation();
+  const trpc = useTRPC();
+  const isTyping = useMutation(api.channel.isTyping.mutationOptions());
 
   return React.useMemo(() => {
     let state = false;
@@ -34,7 +39,8 @@ export function useThrottledIsTypingMutation(channelId: string) {
 }
 
 export function useLivePosts(channelId: string) {
-  const [, query] = api.message.infinite.useSuspenseInfiniteQuery(
+  const trpc = useTRPC();
+  const query = useSuspenseInfiniteQuery(api.message.infinite.infiniteQueryOptions(
     { channelId },
     {
       getNextPageParam: (d) => d.nextCursor,
@@ -43,7 +49,7 @@ export function useLivePosts(channelId: string) {
       refetchOnWindowFocus: false,
       refetchOnMount: false,
     },
-  );
+  ));
 
   const [messages, setMessages] = React.useState(() => {
     const msgs = query.data.pages.map((page) => page.items).flat();
@@ -90,7 +96,7 @@ export function useLivePosts(channelId: string) {
     // Changing this value will trigger a new subscription
     setLastEventId(messages.at(-1)?.id ?? null);
   }
-  const subscription = api.message.onAdd.useSubscription(
+  const subscription = useSubscription(api.message.onAdd.subscriptionOptions(
     lastEventId === false ? skipToken : { channelId, lastEventId },
     {
       onData(event) {
@@ -106,7 +112,7 @@ export function useLivePosts(channelId: string) {
         }
       },
     },
-  );
+  ));
   return {
     query,
     messages,

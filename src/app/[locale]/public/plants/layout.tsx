@@ -1,5 +1,8 @@
+import { Suspense } from "react";
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
-import { PaginationItemsPerPage } from "~/assets/constants";
+import { ErrorBoundary } from "~/components/atom/error-boundary";
+import SpinningLoader from "~/components/atom/spinning-loader";
+import { getAllPlantsInput } from "~/lib/queries/plants";
 import type { GetAllPlantsInput } from "~/server/api/root";
 import { getQueryClient, trpc } from "~/trpc/server";
 
@@ -15,16 +18,25 @@ export default async function PublicPlantsLayout({
 }) {
   const queryClient = getQueryClient();
 
-  // Prefetch infinite query data on the server
-  await queryClient.prefetchInfiniteQuery(
-    trpc.plants.getAllPlants.infiniteQueryOptions({
-      limit: PaginationItemsPerPage.PUBLIC_PLANTS_PER_PAGE,
-    } satisfies GetAllPlantsInput),
-  );
+  // Prefetch infinite query data on the server with specific sort order
+  await queryClient.prefetchInfiniteQuery({
+    ...trpc.plants.getAllPlants.infiniteQueryOptions(
+      getAllPlantsInput satisfies GetAllPlantsInput,
+      {
+        getNextPageParam: (lastPage) => lastPage.nextCursor,
+      },
+    ),
+  });
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      {children}
+      <ErrorBoundary>
+        <Suspense
+          fallback={<SpinningLoader className="text-primary mx-auto my-8" />}
+        >
+          {children}
+        </Suspense>
+      </ErrorBoundary>
     </HydrationBoundary>
   );
 }

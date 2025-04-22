@@ -36,6 +36,7 @@ export const modulePaths = {
   PLANTS: {
     name: "Plants",
     path: "/plants",
+    newpath: "/plants/form/new",
     protected: true,
   },
   PHOTOS: {

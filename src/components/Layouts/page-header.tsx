@@ -1,15 +1,21 @@
 // src/components/Layouts/page-header.tsx:
-import { ReadonlyURLSearchParams } from "next/navigation";
+import type { ReadonlyURLSearchParams } from "next/navigation";
+// Import UrlObject
 import type { VariantProps } from "class-variance-authority";
+import type { UrlObject } from "url";
 import { Button, buttonVariants } from "~/components/ui/button";
 import { Link } from "~/lib/i18n/routing";
+
+// Update buttonLink type to accept string or UrlObject
+type Href = string | UrlObject;
 
 interface IPageHeader {
   title: string;
   subtitle: string;
   children: React.ReactNode;
-  buttonLink?: string | null;
+  buttonLink?: Href | null; // Use Href type
   buttonLabel?: string;
+  /** @deprecated searchParams is no longer used directly for link construction, pass a full href object to buttonLink instead */
   searchParams?: ReadonlyURLSearchParams;
   buttonVariant?: VariantProps<typeof buttonVariants>["variant"];
   buttonIcon?: React.ReactNode;
@@ -21,13 +27,12 @@ export default function Component({
   children,
   buttonLink,
   buttonLabel,
+  // searchParams is kept for potential backward compatibility but marked deprecated
   searchParams,
   buttonVariant = "primary",
   buttonIcon,
 }: IPageHeader) {
-  const queryObject = searchParams
-    ? Object.fromEntries(searchParams.entries())
-    : undefined;
+  // Remove queryObject and linkHref logic
 
   return (
     <div className="space-y-4 pr-4 pl-3 md:pl-2 lg:pl-4 xl:pl-6">
@@ -39,19 +44,16 @@ export default function Component({
             </h1>
           </div>
           <div className="flex items-start">
-            {buttonLink && (
+            {/* Ensure buttonLink is not null/undefined before rendering */}
+            {buttonLink && buttonLabel && (
               <Button
                 asChild
                 size="sm"
                 className="sm:w-[154px]"
                 variant={buttonVariant || "primary"}
               >
-                <Link
-                  href={{
-                    pathname: buttonLink,
-                    query: queryObject,
-                  }}
-                >
+                {/* Pass buttonLink directly to href */}
+                <Link href={buttonLink}>
                   {buttonIcon}
                   {buttonLabel}
                 </Link>

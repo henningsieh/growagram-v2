@@ -2,90 +2,112 @@
 
 // src/app/[locale]/(protected)/grows/page.tsx:
 import * as React from "react";
+import { Suspense } from "react";
 import { useTranslations } from "next-intl";
-import { useSearchParams } from "next/navigation";
 import { Infinity, Calendar1Icon, PenSquareIcon, TentTree } from "lucide-react";
+import { createParser, parseAsStringLiteral, useQueryState } from "nuqs";
 import { modulePaths } from "~/assets/constants";
 import { BreadcrumbSetter } from "~/components/Layouts/Breadcrumbs/breadcrumb-setter";
 import PageHeader from "~/components/Layouts/page-header";
+import { ErrorBoundary } from "~/components/atom/error-boundary";
 import {
   SortFilterControls,
   SortOrder,
 } from "~/components/atom/sort-filter-controls";
+import SpinningLoader from "~/components/atom/spinning-loader";
 import InfiniteScrollGrowsView from "~/components/features/Grows/Views/infinite-scroll";
 import PaginatedGrowsView from "~/components/features/Grows/Views/paginated";
 import { createBreadcrumbs } from "~/lib/breadcrumbs";
-import { useRouter } from "~/lib/i18n/routing";
+import { DEFAULT_GROW_SORT_FIELD } from "~/lib/queries/grows";
 import { GrowsSortField, GrowsViewMode } from "~/types/grow";
 
+// Create a parser for GrowsSortField
+const sortFieldParser = createParser({
+  parse: (value) => {
+    return Object.values(GrowsSortField).includes(value as GrowsSortField)
+      ? (value as GrowsSortField)
+      : DEFAULT_GROW_SORT_FIELD;
+  },
+  serialize: (value: GrowsSortField) => value,
+});
+
+// Create a parser for SortOrder
+const sortOrderParser = createParser({
+  parse: (value) => {
+    return Object.values(SortOrder).includes(value as SortOrder)
+      ? (value as SortOrder)
+      : SortOrder.ASC;
+  },
+  serialize: (value: SortOrder) => value,
+});
+
+// Create a parser for GrowsViewMode
+const viewModeParser = parseAsStringLiteral([
+  GrowsViewMode.PAGINATION,
+  GrowsViewMode.INFINITE_SCROLL,
+]).withDefault(GrowsViewMode.PAGINATION);
+
 export default function MyGrowsPage() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
   const t = useTranslations("Grows");
 
-  // Create breadcrumbs for this page using sidebar translation keys
-  const breadcrumbs = createBreadcrumbs([
-    {
-      translationKey: "Sidebar.navMain.Grows.items.My Grows",
-      path: modulePaths.GROWS.path,
-    },
-  ]);
-
-  // Manage view mode state
-  const [viewMode, setViewMode] = React.useState<GrowsViewMode>(
-    (localStorage.getItem("growViewMode") as GrowsViewMode) ||
-      GrowsViewMode.PAGINATION,
-  );
-
-  // Shared state for sorting
-  const [sortField, setSortField] = React.useState<GrowsSortField>(
-    (searchParams?.get("sortField") as GrowsSortField) || GrowsSortField.NAME,
-  );
-  const [sortOrder, setSortOrder] = React.useState<SortOrder>(
-    (searchParams?.get("sortOrder") as SortOrder) || SortOrder.ASC,
-  );
+  const [page, setPage] = useQueryState("page", { defaultValue: "1" });
   const [isFetching, setIsFetching] = React.useState<boolean>(false);
 
-  // Update URL parameters
-  const updateUrlParams = React.useCallback(() => {
-    const params = new URLSearchParams(searchParams?.toString());
+  // Use nuqs for URL state management
+  const [sortField, setSortField] = useQueryState(
+    "sortField",
+    sortFieldParser.withDefault(DEFAULT_GROW_SORT_FIELD),
+  );
 
-    // Only include page parameter for pagination mode
-    if (viewMode === GrowsViewMode.PAGINATION) {
-      params.set("page", searchParams?.get("page") || "1");
-    } else {
-      // Remove page parameter for infinite scroll
-      params.delete("page");
-    }
+  const [sortOrder, setSortOrder] = useQueryState(
+    "sortOrder",
+    sortOrderParser.withDefault(SortOrder.ASC),
+  );
+  const [viewMode, setViewMode] = useQueryState("viewMode", viewModeParser);
 
-    params.set("sortField", sortField);
-    params.set("sortOrder", sortOrder);
-
-    // Only set URL if there are parameters
-    const paramsString = params.toString();
-    router.replace(paramsString ? `?${paramsString}` : "", { scroll: false });
-  }, [searchParams, sortField, sortOrder, router, viewMode]);
-
-  // Sync state with URL
   React.useEffect(() => {
-    updateUrlParams();
-  }, [sortField, sortOrder, viewMode, updateUrlParams]);
+    // Sync localStorage with URL on initial load
+    const storedViewMode = localStorage.getItem(
+      "growViewMode",
+    ) as GrowsViewMode;
+    if (storedViewMode && storedViewMode !== viewMode) {
+      void setViewMode(storedViewMode);
+    }
+  }, [setViewMode, viewMode]);
 
   // Toggle view mode function
-  const toggleViewMode = () => {
-    const newMode =
-      viewMode === GrowsViewMode.PAGINATION
-        ? GrowsViewMode.INFINITE_SCROLL
-        : GrowsViewMode.PAGINATION;
-    localStorage.setItem("growViewMode", newMode);
-    setViewMode(newMode);
-  };
+  const toggleViewMode = React.useCallback(async () => {
+    try {
+      const newMode =
+        viewMode === GrowsViewMode.PAGINATION
+          ? GrowsViewMode.INFINITE_SCROLL
+          : GrowsViewMode.PAGINATION;
+
+      localStorage.setItem("growViewMode", newMode);
+      await setViewMode(newMode);
+
+      // Clear page parameter when switching to infinite scroll
+      if (newMode === GrowsViewMode.INFINITE_SCROLL) {
+        await setPage(null);
+      } else {
+        await setPage("1");
+      }
+    } catch (error) {
+      console.error("Error updating URL parameters:", error);
+    }
+  }, [viewMode, setViewMode, setPage]);
 
   // Shared handler for sort changes
-  const handleSortChange = (field: GrowsSortField, order: SortOrder) => {
-    setSortField(field);
-    setSortOrder(order);
-  };
+  const handleSortChange = React.useCallback(
+    async (field: GrowsSortField, order: SortOrder) => {
+      try {
+        await Promise.all([setSortField(field), setSortOrder(order)]);
+      } catch (error) {
+        console.error("Error updating sort parameters:", error);
+      }
+    },
+    [setSortField, setSortOrder],
+  );
 
   // Define sort options
   const sortOptions = [
@@ -105,6 +127,26 @@ export default function MyGrowsPage() {
       icon: <PenSquareIcon className="h-5 w-5" />,
     },
   ];
+
+  // Handle page changes from the paginated view
+  const handlePageChange = React.useCallback(
+    async (newPage: number) => {
+      try {
+        await setPage(newPage.toString());
+      } catch (error) {
+        console.error("Error updating page:", error);
+      }
+    },
+    [setPage],
+  );
+
+  // Create breadcrumbs for this page using sidebar translation keys
+  const breadcrumbs = createBreadcrumbs([
+    {
+      translationKey: "Sidebar.navMain.Grows.items.My Grows",
+      path: modulePaths.GROWS.path,
+    },
+  ]);
 
   return (
     <>
@@ -134,19 +176,29 @@ export default function MyGrowsPage() {
           onViewModeToggle={toggleViewMode}
         />
 
-        {viewMode === GrowsViewMode.PAGINATION ? (
-          <PaginatedGrowsView
-            sortField={sortField}
-            sortOrder={sortOrder}
-            setIsFetchingAction={setIsFetching}
-          />
-        ) : (
-          <InfiniteScrollGrowsView
-            sortField={sortField}
-            sortOrder={sortOrder}
-            setIsFetching={setIsFetching}
-          />
-        )}
+        <ErrorBoundary>
+          <Suspense
+            fallback={
+              <SpinningLoader className="text-primary mx-auto my-8 size-28" />
+            }
+          >
+            {viewMode === GrowsViewMode.PAGINATION ? (
+              <PaginatedGrowsView
+                currentPage={parseInt(page)}
+                onPageChange={handlePageChange}
+                sortField={sortField}
+                sortOrder={sortOrder}
+                setIsFetching={setIsFetching}
+              />
+            ) : (
+              <InfiniteScrollGrowsView
+                sortField={sortField}
+                sortOrder={sortOrder}
+                setIsFetching={setIsFetching}
+              />
+            )}
+          </Suspense>
+        </ErrorBoundary>
       </PageHeader>
     </>
   );

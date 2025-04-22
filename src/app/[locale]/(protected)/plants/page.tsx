@@ -2,88 +2,112 @@
 
 // src/app/[locale]/(protected)/plants/page.tsx:
 import * as React from "react";
+import { Suspense } from "react";
 import { useTranslations } from "next-intl";
-import { useSearchParams } from "next/navigation";
 import { Infinity, Calendar, TagIcon } from "lucide-react";
+import { createParser, parseAsStringLiteral, useQueryState } from "nuqs";
 import { modulePaths } from "~/assets/constants";
 import { BreadcrumbSetter } from "~/components/Layouts/Breadcrumbs/breadcrumb-setter";
 import PageHeader from "~/components/Layouts/page-header";
+import { ErrorBoundary } from "~/components/atom/error-boundary";
 import {
   SortFilterControls,
   SortOrder,
 } from "~/components/atom/sort-filter-controls";
+import SpinningLoader from "~/components/atom/spinning-loader";
 import InfiniteScrollPlantsView from "~/components/features/Plants/Views/infinite-scroll";
 import PaginatedPlantsView from "~/components/features/Plants/Views/paginated";
 import { createBreadcrumbs } from "~/lib/breadcrumbs";
-import { useRouter } from "~/lib/i18n/routing";
+import { DEFAULT_PLANT_SORT_FIELD } from "~/lib/queries/plants";
 import { PlantsSortField, PlantsViewMode } from "~/types/plant";
 
+// Create a parser for PlantsSortField
+const sortFieldParser = createParser({
+  parse: (value) => {
+    return Object.values(PlantsSortField).includes(value as PlantsSortField)
+      ? (value as PlantsSortField)
+      : DEFAULT_PLANT_SORT_FIELD;
+  },
+  serialize: (value: PlantsSortField) => value,
+});
+
+// Create a parser for SortOrder
+const sortOrderParser = createParser({
+  parse: (value) => {
+    return Object.values(SortOrder).includes(value as SortOrder)
+      ? (value as SortOrder)
+      : SortOrder.ASC;
+  },
+  serialize: (value: SortOrder) => value,
+});
+
+// Create a parser for PlantsViewMode
+const viewModeParser = parseAsStringLiteral([
+  PlantsViewMode.PAGINATION,
+  PlantsViewMode.INFINITE_SCROLL,
+]).withDefault(PlantsViewMode.PAGINATION);
+
 export default function MyPlantsPage() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
   const t = useTranslations("Plants");
 
-  // Create breadcrumbs for this page using sidebar translation keys
-  const breadcrumbs = createBreadcrumbs([
-    {
-      translationKey: "Plants.myplants-page-title",
-      path: modulePaths.PLANTS.path,
-    },
-  ]);
-
-  // Manage view mode state
-  const [viewMode, setViewMode] = React.useState<PlantsViewMode>(
-    (localStorage.getItem("plantViewMode") as PlantsViewMode) ||
-      PlantsViewMode.PAGINATION,
-  );
-
-  // Shared state for sorting
-  const [sortField, setSortField] = React.useState<PlantsSortField>(
-    (searchParams?.get("sortField") as PlantsSortField) || PlantsSortField.NAME,
-  );
-  const [sortOrder, setSortOrder] = React.useState<SortOrder>(
-    (searchParams?.get("sortOrder") as SortOrder) || SortOrder.ASC,
-  );
+  const [page, setPage] = useQueryState("page", { defaultValue: "1" });
   const [isFetching, setIsFetching] = React.useState<boolean>(false);
 
-  // Update URL parameters
-  const updateUrlParams = React.useCallback(() => {
-    const params = new URLSearchParams(searchParams?.toString());
+  // Use nuqs for URL state management
+  const [sortField, setSortField] = useQueryState(
+    "sortField",
+    sortFieldParser.withDefault(DEFAULT_PLANT_SORT_FIELD),
+  );
 
-    if (viewMode === PlantsViewMode.PAGINATION) {
-      params.set("page", searchParams?.get("page") || "1");
-    } else {
-      params.delete("page");
-    }
+  const [sortOrder, setSortOrder] = useQueryState(
+    "sortOrder",
+    sortOrderParser.withDefault(SortOrder.ASC),
+  );
+  const [viewMode, setViewMode] = useQueryState("viewMode", viewModeParser);
 
-    params.set("sortField", sortField);
-    params.set("sortOrder", sortOrder);
-
-    // Only set URL if there are parameters
-    const paramsString = params.toString();
-    router.replace(paramsString ? `?${paramsString}` : "", { scroll: false });
-  }, [searchParams, sortField, sortOrder, router, viewMode]);
-
-  // Sync state with URL
   React.useEffect(() => {
-    updateUrlParams();
-  }, [sortField, sortOrder, viewMode, updateUrlParams]);
+    // Sync localStorage with URL on initial load
+    const storedViewMode = localStorage.getItem(
+      "plantViewMode",
+    ) as PlantsViewMode;
+    if (storedViewMode && storedViewMode !== viewMode) {
+      void setViewMode(storedViewMode);
+    }
+  }, [setViewMode, viewMode]);
 
   // Toggle view mode function
-  const toggleViewMode = () => {
-    const newMode =
-      viewMode === PlantsViewMode.PAGINATION
-        ? PlantsViewMode.INFINITE_SCROLL
-        : PlantsViewMode.PAGINATION;
-    localStorage.setItem("plantViewMode", newMode);
-    setViewMode(newMode);
-  };
+  const toggleViewMode = React.useCallback(async () => {
+    try {
+      const newMode =
+        viewMode === PlantsViewMode.PAGINATION
+          ? PlantsViewMode.INFINITE_SCROLL
+          : PlantsViewMode.PAGINATION;
+
+      localStorage.setItem("plantViewMode", newMode);
+      await setViewMode(newMode);
+
+      // Clear page parameter when switching to infinite scroll
+      if (newMode === PlantsViewMode.INFINITE_SCROLL) {
+        await setPage(null);
+      } else {
+        await setPage("1");
+      }
+    } catch (error) {
+      console.error("Error updating URL parameters:", error);
+    }
+  }, [viewMode, setViewMode, setPage]);
 
   // Shared handler for sort changes
-  const handleSortChange = (field: PlantsSortField, order: SortOrder) => {
-    setSortField(field);
-    setSortOrder(order);
-  };
+  const handleSortChange = React.useCallback(
+    async (field: PlantsSortField, order: SortOrder) => {
+      try {
+        await Promise.all([setSortField(field), setSortOrder(order)]);
+      } catch (error) {
+        console.error("Error updating sort parameters:", error);
+      }
+    },
+    [setSortField, setSortOrder],
+  );
 
   // Define sort options
   const sortOptions = [
@@ -98,6 +122,26 @@ export default function MyPlantsPage() {
       icon: <Calendar className="h-5 w-5" />,
     },
   ];
+
+  // Handle page changes from the paginated view
+  const handlePageChange = React.useCallback(
+    async (newPage: number) => {
+      try {
+        await setPage(newPage.toString());
+      } catch (error) {
+        console.error("Error updating page:", error);
+      }
+    },
+    [setPage],
+  );
+
+  // Create breadcrumbs for this page using sidebar translation keys
+  const breadcrumbs = createBreadcrumbs([
+    {
+      translationKey: "Plants.myplants-page-title",
+      path: modulePaths.PLANTS.path,
+    },
+  ]);
 
   return (
     <>
@@ -130,19 +174,29 @@ export default function MyPlantsPage() {
           onViewModeToggle={toggleViewMode}
         />
 
-        {viewMode === PlantsViewMode.PAGINATION ? (
-          <PaginatedPlantsView
-            sortField={sortField}
-            sortOrder={sortOrder}
-            setIsFetching={setIsFetching}
-          />
-        ) : (
-          <InfiniteScrollPlantsView
-            sortField={sortField}
-            sortOrder={sortOrder}
-            setIsFetching={setIsFetching}
-          />
-        )}
+        <ErrorBoundary>
+          <Suspense
+            fallback={
+              <SpinningLoader className="text-secondary mx-auto my-8 size-28" />
+            }
+          >
+            {viewMode === PlantsViewMode.PAGINATION ? (
+              <PaginatedPlantsView
+                currentPage={parseInt(page)}
+                onPageChange={handlePageChange}
+                sortField={sortField}
+                sortOrder={sortOrder}
+                setIsFetching={setIsFetching}
+              />
+            ) : (
+              <InfiniteScrollPlantsView
+                sortField={sortField}
+                sortOrder={sortOrder}
+                setIsFetching={setIsFetching}
+              />
+            )}
+          </Suspense>
+        </ErrorBoundary>
       </PageHeader>
     </>
   );

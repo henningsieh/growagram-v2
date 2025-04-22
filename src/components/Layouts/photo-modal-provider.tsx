@@ -604,7 +604,7 @@ export function PhotoModalProvider({
                     }}
                   >
                     <Image
-                      src={imageUrl || "/placeholder.svg"}
+                      src={imageUrl}
                       alt="Image preview"
                       fill
                       sizes="100vw"

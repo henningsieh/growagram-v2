@@ -1,8 +1,8 @@
 // src/app/[locale]/(public)/public/timeline/page.tsx:
 import { notFound } from "next/navigation";
 import PlantCard from "~/components/features/Plants/plant-card";
-import { api } from "~/lib/trpc/server";
 import type { GetPlantByIdInput } from "~/server/api/root";
+import { caller } from "~/trpc/server";
 
 export default async function PublicPlantByIdPage({
   params,
@@ -13,11 +13,12 @@ export default async function PublicPlantByIdPage({
 
   if (plantId.trim() === "") notFound();
 
-  const plantByIdQuery = {
-    id: plantId,
+  const plantByIdQueryOptions = {
+    id: (await params).id,
   } satisfies GetPlantByIdInput;
 
-  const plant = await api.plants.getById(plantByIdQuery);
+  // Get plant data directly from the server
+  const plant = await caller.plants.getById(plantByIdQueryOptions);
 
   if (plant === undefined) notFound();
 

@@ -13,6 +13,7 @@ import { env } from "~/env";
 import cloudinary from "~/lib/cloudinary";
 import { images, plantImages } from "~/lib/db/schema";
 import { s3Client } from "~/lib/minio";
+import { DEFAULT_PHOTO_SORT_FIELD } from "~/lib/queries/photos";
 import { connectImageWithPlantsQuery } from "~/server/api/routers/plantImages";
 import { protectedProcedure, publicProcedure } from "~/trpc/init";
 import { PhotosSortField } from "~/types/image";
@@ -32,7 +33,7 @@ export const photoRouter = {
             .optional(),
           sortField: z
             .nativeEnum(PhotosSortField)
-            .default(PhotosSortField.UPLOAD_DATE)
+            .default(DEFAULT_PHOTO_SORT_FIELD) // use default constant here
             .optional(),
           sortOrder: z.nativeEnum(SortOrder).default(SortOrder.DESC).optional(),
           filterNotConnected: z.boolean().default(false).optional(),
@@ -41,9 +42,9 @@ export const photoRouter = {
     )
     .query(async ({ ctx, input }) => {
       // Use default values if input is not provided
-      const limit = input?.limit ?? 12;
+      const limit = input?.limit ?? PaginationItemsPerPage.PHOTOS_PER_PAGE;
       const cursor = input?.cursor ?? 1;
-      const sortField = input?.sortField ?? PhotosSortField.UPLOAD_DATE;
+      const sortField = input?.sortField ?? DEFAULT_PHOTO_SORT_FIELD;
       const sortOrder = input?.sortOrder ?? SortOrder.DESC;
       const filterNotConnected = input?.filterNotConnected ?? false;
 
@@ -116,7 +117,8 @@ export const photoRouter = {
         images: imagesList,
         cursor: cursor,
         nextCursor: nextCursor,
-        total: Math.ceil(totalCount / limit),
+        totalPages: Math.ceil(totalCount / limit), // Add this line to match other router responses
+        total: Math.ceil(totalCount / limit), // Keep this for backward compatibility
         count: totalCount,
       };
     }),

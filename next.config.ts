@@ -1,7 +1,6 @@
 // next.config.ts
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
-import type { Configuration as WebpackConfig } from "webpack";
 
 /** @type {import('next').NextConfig} */
 const nextConfig: import("next").NextConfig = {
@@ -46,29 +45,15 @@ const nextConfig: import("next").NextConfig = {
       },
     ],
   },
-  webpack(config: WebpackConfig): WebpackConfig {
-    // Modified SVG configuration
-    const rules = config.module?.rules || [];
-    rules.push({
-      test: /\.svg$/,
-      use: [
-        {
-          loader: "@svgr/webpack",
-          options: {
-            svgo: true,
-            icon: true,
-            typescript: true,
-            ext: "tsx",
-            svgProps: {
-              className: "w-full h-full",
-            },
-          },
-        },
-        "url-loader",
-      ],
-    });
-
-    return config;
+  turbopack: {
+    rules: {
+      "*.svg": {
+        loaders: ["@svgr/webpack"],
+        as: "*.js",
+      },
+      // Add other rules here if needed based on your webpack config
+    },
+    // Add resolveAlias or resolveExtensions if you use them in webpack
   },
 } satisfies NextConfig;
 
