@@ -35,8 +35,8 @@ export default function Component({
   // Remove queryObject and linkHref logic
 
   return (
-    <div className="space-y-4 pr-4 pl-3 md:pl-2 lg:pl-4 xl:pl-6">
-      <div className="space-y-2">
+    <div className="space-y-3 pr-4 pl-3 md:pl-2 lg:pl-4 xl:pl-6">
+      <div>
         <div className="flex justify-between">
           <div className="flex flex-col space-y-2">
             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl">
