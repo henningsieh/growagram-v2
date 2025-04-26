@@ -1,10 +1,19 @@
+import { Metadata } from "next";
+import { useTranslations } from "next-intl";
 import { notFound } from "next/navigation";
 import { FollowButton } from "~/components/atom/follow-button";
 import ProfileTabs from "~/components/features/PublicProfile/PofileTabs";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { auth } from "~/lib/auth";
-import { api } from "~/lib/trpc/server";
 import type { GetPublicUserProfileInput } from "~/server/api/root";
+import { caller } from "~/trpc/server";
+
+// Cache the profile data to avoid duplicate fetching
+const getProfileData = async (userId: string) => {
+  return await caller.users.getPublicUserProfile({
+    id: userId,
+  });
+};
 
 export default async function ProfilePage({
   params,
@@ -14,15 +23,14 @@ export default async function ProfilePage({
   const userId = (await params).id;
   const session = await auth();
 
-  const profile = await api.users.getPublicUserProfile({
-    id: userId,
-  } satisfies GetPublicUserProfileInput);
+  // This is the data fetching that makes the component suspend
+  const profile = await getProfileData(userId);
 
   if (!profile) notFound();
 
-  const isFollowing = profile.followers.some((follow) => {
-    return follow.follower.id === session?.user.id;
-  });
+  const isFollowing = profile.followers.some(
+    (follow) => follow.follower.id === session?.user.id,
+  );
 
   return (
     <>
@@ -45,16 +53,38 @@ export default async function ProfilePage({
             />
           </div>
           {profile.username && (
-            <p
-              className="text-muted-foreground"
-              // eslint-disable-next-line react/jsx-no-literals
-            >
-              @{profile.username}
-            </p>
+            <p className="text-muted-foreground">{`@${profile.username}`}</p>
           )}
         </div>
       </div>
       <ProfileTabs profile={profile} />
     </>
   );
+}
+
+// Generate metadata for SEO
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<GetPublicUserProfileInput>;
+}): Promise<Metadata> {
+  const userId = (await params).id;
+
+  try {
+    const profile = await getProfileData(userId);
+
+    if (!profile) return { title: "User Not Found" };
+
+    return {
+      title: `Profile | ${profile.name}`, // Changed from genitive form
+      description: `Check out the plants and grows by ${profile.name} on Growagram`, // Changed from genitive form
+      openGraph: {
+        images: profile.image ? [{ url: profile.image }] : [],
+      },
+    };
+  } catch (error) {
+    console.error("Error fetching profile data:", error);
+    // Fallback metadata in case of an error
+    return { title: "User Profile | Growagram" };
+  }
 }
