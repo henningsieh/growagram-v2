@@ -81,10 +81,8 @@ export function UsersTable() {
 
   return (
     <div className="w-full">
-      {" "}
       {/* Root container to ensure proper width */}
       <CardHeader className="px-0 pt-0">
-        {" "}
         {/* Remove padding from header */}
         <CardTitle className="text-lg" as="h3">
           {t("user-management.title")}
@@ -92,21 +90,22 @@ export function UsersTable() {
         <CardDescription>{t("user-management.description")}</CardDescription>
       </CardHeader>
       <div className="w-full">
-        {" "}
         {/* Content wrapper */}
-        <div className="flex items-center justify-between py-4">
+        <div className="flex items-center justify-between gap-4 py-4">
           <Input
             placeholder={t("user-management.search-placeholder")}
-            value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
+            value={
+              (table.getColumn("username")?.getFilterValue() as string) ?? ""
+            }
             onChange={(event) =>
-              table.getColumn("email")?.setFilterValue(event.target.value)
+              table.getColumn("username")?.setFilterValue(event.target.value)
             }
             className="max-w-sm"
           />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="ml-auto">
-                {t("user-management.column-selector")}{" "}
+              <Button variant="outline" className="mr-auto">
+                {t("user-management.column-selector")}
                 <ChevronDown className="ml-2 h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
@@ -132,7 +131,6 @@ export function UsersTable() {
           </DropdownMenu>
         </div>
         <div className="w-full overflow-auto rounded-md border">
-          {" "}
           {/* Apply overflow-auto here */}
           {isLoading ? (
             <div className="flex h-[300px] items-center justify-center">

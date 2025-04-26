@@ -201,7 +201,7 @@ export const columns: ColumnDef<AdminUserListItem>[] = [
           <div className="text-destructive flex items-center gap-1">
             <Ban className="h-4 w-4" />
             <Badge variant="destructive" className="text-xs">
-              Permanently Banned
+              Banned permanently
             </Badge>
           </div>
         );

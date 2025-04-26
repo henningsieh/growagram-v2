@@ -12,7 +12,7 @@ export function AdminArea() {
   const [activeTab, setActiveTab] = React.useState("users");
 
   return (
-    <Card className="w-full rounded-lg">
+    <Card className="w-full overflow-y-scroll rounded-lg">
       <CardHeader>
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="mb-4">
