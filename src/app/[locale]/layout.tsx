@@ -82,11 +82,11 @@ export default async function AppLayout(props: AppLayoutProps) {
                   <NuqsAdapter>
                     <PhotoModalProvider>
                       <BreadcrumbProvider>
-                        <Toaster richColors />
+                        <Toaster richColors position="bottom-left" />
                         <BanNotification />
                         <MainNavigationBar />
-                        <div className="relative mx-auto flex min-h-screen flex-col">
-                          <div className="flex min-h-[calc(100svh-7rem)] flex-1 pt-14 pb-4">
+                        <div className="relative mx-auto flex min-h-screen max-w-7xl flex-col">
+                          <div className="flex w-full flex-1">
                             {props.children}
                           </div>
                         </div>

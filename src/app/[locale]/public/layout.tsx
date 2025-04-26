@@ -99,12 +99,12 @@ export default function PublicRootLayout({
             <h1 className="mb-4 flex items-center justify-center text-2xl font-semibold">
               {t("Sidebar.title")}
             </h1>
-            <p className="bg-accent my-2 p-2">Ad Banner</p>
-            <p className="bg-accent my-2 p-2">Ad Banner</p>
-            <p className="bg-accent my-2 p-2">Ad Banner</p>
-            <p className="bg-accent my-2 p-2">Ad Banner</p>
-            <p className="bg-accent my-2 p-2">Ad Banner</p>
-            <p className="bg-accent my-2 p-2">Ad Banner</p>
+            <p className="bg-accent my-2 p-2">{"Ad Banner"}</p>
+            <p className="bg-accent my-2 p-2">{"Ad Banner"}</p>
+            <p className="bg-accent my-2 p-2">{"Ad Banner"}</p>
+            <p className="bg-accent my-2 p-2">{"Ad Banner"}</p>
+            <p className="bg-accent my-2 p-2">{"Ad Banner"}</p>
+            <p className="bg-accent my-2 p-2">{"Ad Banner"}</p>
           </div>
         </div>
       </aside>
