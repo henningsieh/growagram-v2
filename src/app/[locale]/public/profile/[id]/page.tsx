@@ -1,8 +1,8 @@
 import { Metadata } from "next";
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { FollowButton } from "~/components/atom/follow-button";
-import ProfileTabs from "~/components/features/PublicProfile/PofileTabs";
+import ProfileTabs from "~/components/features/PublicProfile/profile-tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { auth } from "~/lib/auth";
 import type { GetPublicUserProfileInput } from "~/server/api/root";
@@ -69,22 +69,22 @@ export async function generateMetadata({
   params: Promise<GetPublicUserProfileInput>;
 }): Promise<Metadata> {
   const userId = (await params).id;
+  const t = await getTranslations("Profile");
 
   try {
     const profile = await getProfileData(userId);
 
-    if (!profile) return { title: "User Not Found" };
+    if (!profile) return { title: t("metadata.user-not-found") };
 
     return {
-      title: `Profile | ${profile.name}`, // Changed from genitive form
-      description: `Check out the plants and grows by ${profile.name} on Growagram`, // Changed from genitive form
+      title: t("metadata.title", { name: profile.name }),
+      description: t("metadata.description", { name: profile.name }),
       openGraph: {
         images: profile.image ? [{ url: profile.image }] : [],
       },
     };
   } catch (error) {
     console.error("Error fetching profile data:", error);
-    // Fallback metadata in case of an error
-    return { title: "User Profile | Growagram" };
+    return { title: t("metadata.user-not-found") };
   }
 }
