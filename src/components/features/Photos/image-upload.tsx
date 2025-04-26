@@ -83,6 +83,13 @@ export default function PhotoUpload() {
     trpc.photos.createPhoto.mutationOptions(),
   );
 
+  // Function to update progress for a specific file
+  const updateProgress = (index: number, progress: number) => {
+    setPreviews((currentPreviews) =>
+      currentPreviews.map((p, i) => (i === index ? { ...p, progress } : p)),
+    );
+  };
+
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -92,7 +99,7 @@ export default function PhotoUpload() {
       setUploading(true);
 
       const uploadedImages = await Promise.all(
-        previews.map(async (preview) => {
+        previews.map(async (preview, index) => {
           const buffer = await preview.file.arrayBuffer();
           const exifData = readExif(Buffer.from(buffer));
 
@@ -100,12 +107,12 @@ export default function PhotoUpload() {
           const { url: s3Url, eTag } = await uploadToS3(
             preview.file,
             uploadUrl,
+            (progress) => updateProgress(index, progress),
           );
 
           const savedImage = await saveImageMutation.mutateAsync({
             imageUrl: s3Url,
-            // s3Key: s3Url.split("/").pop(), // Extract the key from the URL
-            s3Key: `photos/${preview.file.name}`, // Store complete path
+            s3Key: `photos/${preview.file.name}`,
             s3ETag: eTag, // Use the extracted ETag
             captureDate: exifData?.captureDate || new Date(),
             originalFilename: preview.file.name,
@@ -123,7 +130,6 @@ export default function PhotoUpload() {
 
       formRef.current?.reset();
       setPreviews([]);
-      // await utils.photos.getOwnPhotos.invalidate();
       await queryClient.invalidateQueries({
         queryKey: trpc.photos.getOwnPhotos.queryKey(),
       });
@@ -138,6 +144,7 @@ export default function PhotoUpload() {
       });
     } finally {
       setUploading(false);
+      setPreviews((current) => current.map((p) => ({ ...p, progress: 0 })));
     }
   };
 
@@ -219,7 +226,7 @@ export default function PhotoUpload() {
       validFiles.map(async (file) => {
         const buffer = await file.arrayBuffer();
         const exifData = readExif(Buffer.from(buffer));
-        // console.debug({ exifData });
+
         return {
           file,
           preview: URL.createObjectURL(file),
@@ -291,7 +298,7 @@ export default function PhotoUpload() {
           {previews.length > 0 && (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               {previews.map((preview, index) => (
-                <div key={preview.preview}>
+                <div key={preview.preview} className="relative pt-4">
                   <div className="relative">
                     <Image
                       src={preview.preview}
@@ -300,6 +307,9 @@ export default function PhotoUpload() {
                       width={320}
                       height={160}
                     />
+                    <div className="absolute -top-4 right-0 left-0">
+                      <ProgressBar value={preview.progress} className="h-2" />
+                    </div>
                     <div className="bg-accent text-foreground absolute right-1 bottom-1 left-1 mt-2 flex flex-col rounded-sm p-1 text-xs font-semibold">
                       <div className="flex justify-between gap-2">
                         <span>{t("upload.preview.filename-label")}</span>
@@ -314,7 +324,6 @@ export default function PhotoUpload() {
                           {t("upload.preview.filesize-unit")}
                         </span>
                       </div>
-                      {/* EXIF Data Display */}
                       {preview.exifData?.captureDate && (
                         <div className="flex justify-between">
                           <span>{t("upload.preview.capturedate-label")}</span>
@@ -331,15 +340,12 @@ export default function PhotoUpload() {
                         </div>
                       )}
                     </div>
-                    <div className="absolute right-0 -bottom-3 left-0">
-                      <ProgressBar value={preview.progress} />
-                    </div>
                     <Button
                       size="icon"
                       type="button"
                       disabled={uploading}
                       variant="destructive"
-                      className="absolute top-2 right-2"
+                      className="absolute top-2 right-2 z-10"
                       onClick={() => handleRemoveFile(index)}
                     >
                       <X />
@@ -361,15 +367,9 @@ export default function PhotoUpload() {
             ) : (
               <Upload className="mr-2 h-5 w-5" />
             )}
-            {
-              // eslint-disable-next-line react/jsx-no-literals
-              `${t("upload.buttonLabel-upload")} (`
-            }
+            {`${t("upload.buttonLabel-upload")} (`}
             {previews.length}
-            {
-              // eslint-disable-next-line react/jsx-no-literals
-              ` ${t("upload.buttonLabel-files")})`
-            }
+            {` ${t("upload.buttonLabel-files")})`}
           </Button>
         </CardFooter>
       </Card>
