@@ -12,16 +12,21 @@ export default function ResponsiveGrid({
   return (
     <div
       className={cn(
-        "grid auto-rows-auto grid-cols-1 gap-4",
-        // Explicit container query sizes that match traditional breakpoints
-        "[@container_main_(min-width:640px)]:grid-cols-2",
-        "[@container_main_(min-width:960px)]:grid-cols-3",
-        "[@container_main_(min-width:1280px)]:grid-cols-4",
-        "[@container_main_(min-width:1600px)]:grid-cols-5",
-        "[@container_main_(min-width:1920px)]:grid-cols-6",
+        "grid auto-rows-auto gap-4",
+        // Default state - start with 1 column
+        "grid-cols-1",
+
+        // Using Tailwind's standard breakpoint pattern
+        "[@container_maincontent_(min-width:theme(--breakpoint-sm))_and_(max-width:calc(theme(--breakpoint-md)-1px))]:!grid-cols-2",
+        "[@container_maincontent_(min-width:theme(--breakpoint-md))_and_(max-width:calc(theme(--breakpoint-lg)-1px))]:!grid-cols-2",
+        "[@container_maincontent_(min-width:theme(--breakpoint-lg))_and_(max-width:calc(theme(--breakpoint-xl)-1px))]:!grid-cols-3",
+        "[@container_maincontent_(min-width:theme(--breakpoint-xl))_and_(max-width:calc(theme(--breakpoint-2xl)-1px))]:!grid-cols-4",
+        "[@container_maincontent_(min-width:theme(--breakpoint-2xl))_and_(max-width:calc(theme(--breakpoint-3xl)-1px))]:!grid-cols-5",
+        "[@container_maincontent_(min-width:theme(--breakpoint-2xl))]:!grid-cols-6",
 
         className,
       )}
+      // part=".css"
     >
       {children}
     </div>
@@ -35,4 +40,4 @@ export default function ResponsiveGrid({
  * 3. The values now show the percentage of viewport width that approximates the container's column width
  */
 export const RESPONSIVE_IMAGE_SIZES =
-"(min-width: 1920px) 16.67vw, (min-width: 1600px) 20vw, (min-width: 1280px) 25vw, (min-width: 960px) 33.33vw, (min-width: 640px) 50vw, 100vw";
+  "(min-width: 1920px) 16.67vw, (min-width: 1600px) 20vw, (min-width: 1280px) 25vw, (min-width: 960px) 33.33vw, (min-width: 640px) 50vw, 100vw";
