@@ -5,7 +5,7 @@ import { cx } from "class-variance-authority";
 import { CreateChannelDialog } from "~/app/Chat/channels/create-channel";
 import { Button } from "~/components/button";
 import { SignedIn, SignedOut, auth, signIn, signOut } from "~/lib/auth/index";
-import { api } from "~/lib/trpc/server";
+import { getCaller } from "~/trpc/server";
 
 export default async function Home(
   props: Readonly<{
@@ -15,7 +15,9 @@ export default async function Home(
 ) {
   const { channelId } = await props.params;
   const session = await auth();
-  const channels = await api.channel.list();
+  const caller = await getCaller();
+
+  const channels = await caller.channel.list();
 
   return (
     <div className="flex flex-1 overflow-hidden">

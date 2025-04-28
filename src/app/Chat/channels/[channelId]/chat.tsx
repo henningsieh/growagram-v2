@@ -1,9 +1,12 @@
-"use client";;
+"use client";
+
 import * as React from "react";
 import { signIn, useSession } from "next-auth/react";
 import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
+import { useMutation } from "@tanstack/react-query";
 import { TRPCClientErrorLike } from "@trpc/client";
 import { DefaultErrorShape } from "@trpc/server/unstable-core-do-not-import";
+import { useSubscription } from "@trpc/tanstack-react-query";
 import { cx } from "class-variance-authority";
 import { format, formatDistanceToNow, isToday } from "date-fns";
 import {
@@ -18,10 +21,7 @@ import {
 import { Avatar } from "~/components/avatar";
 import { Button } from "~/components/button";
 import { Textarea } from "~/components/input";
-import { api } from "~/lib/trpc/react";
-
-import { useSubscription } from "@trpc/tanstack-react-query";
-import { useMutation } from "@tanstack/react-query";
+import { useTRPC } from "~/trpc/client";
 
 type SubscriptionError = TRPCClientErrorLike<{
   input: {
@@ -116,12 +116,14 @@ function SubscriptionStatus(props: {
 }
 
 export function Chat(props: Readonly<{ channelId: string }>) {
-  const trpc = useTRPC();
+  const api = useTRPC();
   const { channelId } = props;
   const livePosts = useLivePosts(channelId);
-  const currentlyTyping = useSubscription(api.channel.whoIsTyping.subscriptionOptions({
-    channelId,
-  }));
+  const currentlyTyping = useSubscription(
+    api.channel.whoIsTyping.subscriptionOptions({
+      channelId,
+    }),
+  );
   const scrollRef = React.useRef<HTMLDivElement>(null);
 
   const session = useSession().data;
@@ -256,7 +258,7 @@ function AddMessageForm(props: {
   onMessagePost: () => void;
   channelId: string;
 }) {
-  const trpc = useTRPC();
+  const api = useTRPC();
   const { channelId } = props;
   const addPost = useMutation(api.message.add.mutationOptions());
 
