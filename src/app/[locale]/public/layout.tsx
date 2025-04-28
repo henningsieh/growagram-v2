@@ -88,8 +88,8 @@ export default function PublicRootLayout({
       </nav>
 
       {/* Main content */}
-      <main className="mx-auto w-full max-w-3xl pt-2 pr-3 pl-1">
-        <div className="mx-auto">{children}</div>
+      <main className="mx-auto mt-14 w-full max-w-3xl pt-2 pr-3 pl-1">
+        <div>{children}</div>
       </main>
 
       {/* Right sidebar */}
