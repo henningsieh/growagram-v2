@@ -6,10 +6,11 @@ import ProfileTabs from "~/components/features/PublicProfile/profile-tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { auth } from "~/lib/auth";
 import type { GetPublicUserProfileInput } from "~/server/api/root";
-import { caller } from "~/trpc/server";
+import { getCaller } from "~/trpc/server";
 
 // Cache the profile data to avoid duplicate fetching
 const getProfileData = async (userId: string) => {
+  const caller = await getCaller();
   return await caller.users.getPublicUserProfile({
     id: userId,
   });

@@ -5,7 +5,7 @@ import { BreadcrumbSetter } from "~/components/Layouts/Breadcrumbs/breadcrumb-se
 import { GrowForm } from "~/components/features/Grows/grow-form";
 import { createBreadcrumbs } from "~/lib/breadcrumbs";
 import type { GetGrowByIdInput, GetGrowByIdType } from "~/server/api/root";
-import { caller } from "~/trpc/server";
+import { getCaller } from "~/trpc/server";
 
 export default async function EditGrowPage({
   params,
@@ -13,6 +13,7 @@ export default async function EditGrowPage({
   params: Promise<GetGrowByIdInput>;
 }) {
   const growId = (await params).id;
+  const caller = await getCaller();
 
   const grow = (
     growId !== "new"
