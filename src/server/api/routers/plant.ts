@@ -144,7 +144,7 @@ export const plantRouter = createTRPCRouter({
         limit: z
           .number()
           .min(1)
-          .max(1000)
+          .max(PaginationItemsPerPage.MAX_DEFAULT_ITEMS)
           .default(PaginationItemsPerPage.PLANTS_PER_PAGE)
           .optional(),
         sortField: z

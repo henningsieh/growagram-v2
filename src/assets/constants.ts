@@ -6,10 +6,11 @@ export const PaginationItemsPerPage = {
   PHOTOS_PER_PAGE: 6,
   PLANTS_PER_PAGE: 6,
   GROWS_PER_PAGE: 6,
-  PUBLIC_GROWS_PER_PAGE: 2,
-  PUBLIC_PLANTS_PER_PAGE: 2,
+  PUBLIC_GROWS_PER_PAGE: 24,
+  PUBLIC_PLANTS_PER_PAGE: 24,
+  PUBLIC_PHOTOS_PER_PAGE: 24, 
   MAX_DEFAULT_ITEMS: 1296,
-};
+} as const;
 
 export const modulePaths = {
   DASHBOARD: {
