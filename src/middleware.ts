@@ -52,9 +52,9 @@ export default async function middleware(req: NextRequest) {
   const baseUrl = env.NEXTAUTH_URL || `${protocol}://${realHost}`;
   const fullUrl = new URL(currentPathname, baseUrl);
 
-  console.debug("realHost:", realHost);
-  console.debug("protocol:", protocol);
-  console.debug("baseUrl:", baseUrl);
+  // console.debug("realHost:", realHost);
+  // console.debug("protocol:", protocol);
+  // console.debug("baseUrl:", baseUrl);
   console.debug("fullUrl:", fullUrl.toString());
 
   // Handle auth callback paths specially

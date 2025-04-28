@@ -4,7 +4,11 @@ import { z } from "zod";
 import { db } from "~/lib/db";
 import type { PostType } from "~/lib/db/schema";
 import { Channel } from "~/lib/db/schema";
-import { protectedProcedure, publicProcedure } from "~/trpc/init";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "~/trpc/init";
 
 export type WhoIsTyping = Record<string, { lastTyped: Date }>;
 
@@ -78,7 +82,7 @@ setInterval(() => {
   });
 }, 3e3).unref();
 
-export const channelRouter = {
+export const channelRouter = createTRPCRouter({
   list: publicProcedure.query(() => {
     return db.query.Channel.findMany();
   }),
@@ -152,4 +156,4 @@ export const channelRouter = {
         }
       }
     }),
-} satisfies TRPCRouterRecord;
+} satisfies TRPCRouterRecord);

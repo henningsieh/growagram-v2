@@ -1,13 +1,14 @@
 // src/server/api/routers/chat.ts
+import { TRPCRouterRecord } from "@trpc/server";
 import EventEmitter from "events";
 import { z } from "zod";
 import { chatMessages } from "~/lib/db/schema";
-import { protectedProcedure } from "~/trpc/init";
+import { createTRPCRouter, protectedProcedure } from "~/trpc/init";
 import type { ChatMessage } from "~/types/chat";
 
 const ee = new EventEmitter();
 
-export const chatRouter = {
+export const chatRouter = createTRPCRouter({
   // Send a message
   sendMessage: protectedProcedure
     .input(z.object({ content: z.string() }))
@@ -81,7 +82,7 @@ export const chatRouter = {
       ee.off("sendMessage", onMessage);
     }
   }),
-};
+} satisfies TRPCRouterRecord);
 
 // Helper class for async iteration
 class AsyncIterableQueue<T> {

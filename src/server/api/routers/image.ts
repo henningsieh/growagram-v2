@@ -15,11 +15,15 @@ import { images, plantImages } from "~/lib/db/schema";
 import { s3Client } from "~/lib/minio";
 import { DEFAULT_PHOTO_SORT_FIELD } from "~/lib/queries/photos";
 import { connectImageWithPlantsQuery } from "~/server/api/routers/plantImages";
-import { protectedProcedure, publicProcedure } from "~/trpc/init";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "~/trpc/init";
 import { PhotosSortField } from "~/types/image";
 import { imageSchema } from "~/types/zodSchema";
 
-export const photoRouter = {
+export const photoRouter = createTRPCRouter({
   getOwnPhotos: protectedProcedure
     .input(
       z
@@ -311,7 +315,63 @@ export const photoRouter = {
         });
       }
     }),
-};
+
+  // Get all photos
+  getAllPhotos: publicProcedure
+    .input(
+      z.object({
+        cursor: z.number().min(1).default(1),
+        limit: z
+          .number()
+          .min(1)
+          .max(PaginationItemsPerPage.MAX_DEFAULT_ITEMS)
+          .default(PaginationItemsPerPage.PUBLIC_PHOTOS_PER_PAGE),
+        sortField: z
+          .nativeEnum(PhotosSortField)
+          .default(DEFAULT_PHOTO_SORT_FIELD),
+        sortOrder: z.nativeEnum(SortOrder).default(SortOrder.DESC),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const limit = input.limit;
+      const cursor = input.cursor;
+      const sortField = input.sortField;
+      const sortOrder = input.sortOrder;
+
+      const offset = (cursor - 1) * limit;
+
+      const totalCountResult = await ctx.db
+        .select({ count: count() })
+        .from(images);
+
+      const totalCount = Number(totalCountResult[0].count);
+
+      const allPhotos = await ctx.db.query.images.findMany({
+        orderBy: (images, { desc, asc }) => [
+          sortOrder === SortOrder.ASC
+            ? asc(images[sortField])
+            : desc(images[sortField]),
+        ],
+        limit: limit,
+        offset: offset,
+        with: {
+          owner: true,
+          posts: true,
+          plantImages: connectImageWithPlantsQuery,
+        },
+      });
+
+      const nextCursor = allPhotos.length === limit ? cursor + 1 : undefined;
+
+      return {
+        images: allPhotos,
+        cursor: cursor,
+        nextCursor: nextCursor,
+        totalPages: Math.ceil(totalCount / limit),
+        count: totalCount,
+      };
+    }),
+});
 
 /**
  * Deletes an object from S3 storage.

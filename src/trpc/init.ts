@@ -112,7 +112,7 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
     const randomNumber = (min: number, max: number) =>
       Math.floor(Math.random() * (max - min + 1)) + min;
 
-    const delay = randomNumber(120, 500);
+    const delay = randomNumber(20, 50);
     console.debug(
       "🚩 doing artificial delay of",
       delay,

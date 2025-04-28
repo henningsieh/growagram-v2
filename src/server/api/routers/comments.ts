@@ -1,11 +1,15 @@
 // src/server/api/routers/comments.ts:
-import { TRPCError } from "@trpc/server";
+import { TRPCError, TRPCRouterRecord } from "@trpc/server";
 import { and, asc, count, desc, eq, isNull } from "drizzle-orm";
 import { z } from "zod";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
 import { comments, grows, images, plants, posts } from "~/lib/db/schema";
 import { createNotification } from "~/lib/notifications";
-import { protectedProcedure, publicProcedure } from "~/trpc/init";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "~/trpc/init";
 import { CommentableEntityType } from "~/types/comment";
 import {
   NotifiableEntityType,
@@ -13,7 +17,7 @@ import {
 } from "~/types/notification";
 import { UserRoles } from "~/types/user";
 
-export const commentRouter = {
+export const commentRouter = createTRPCRouter({
   // Post a new comment (create a new comment)
   postComment: protectedProcedure
     .input(
@@ -290,4 +294,4 @@ export const commentRouter = {
         entityType: comment.entityType,
       };
     }),
-};
+} satisfies TRPCRouterRecord);
