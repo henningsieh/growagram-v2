@@ -5,7 +5,7 @@ import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import ResponsiveGrid from "~/components/Layouts/responsive-grid";
 import InfiniteScrollLoader from "~/components/atom/infinite-scroll-loader";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
-import PlantCard from "~/components/features/Plants/plant-card";
+import { PlantCard } from "~/components/features/Plants/plant-card";
 import { useIntersectionObserver } from "~/hooks/use-intersection";
 import { getOwnPlantsInput } from "~/lib/queries/plants";
 import type { GetOwnPlantsInput, GetOwnPlantsType } from "~/server/api/root";

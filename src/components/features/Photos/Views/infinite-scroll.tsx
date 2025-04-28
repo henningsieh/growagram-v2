@@ -7,7 +7,7 @@ import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import ResponsiveGrid from "~/components/Layouts/responsive-grid";
 import InfiniteScrollLoader from "~/components/atom/infinite-scroll-loader";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
-import PhotoCard from "~/components/features/Photos/photo-card";
+import { PhotoCard } from "~/components/features/Photos/photo-card";
 import { useIntersectionObserver } from "~/hooks/use-intersection";
 import { getOwnPhotosInput } from "~/lib/queries/photos";
 import type { GetOwnPhotosInput, GetOwnPhotosType } from "~/server/api/root";

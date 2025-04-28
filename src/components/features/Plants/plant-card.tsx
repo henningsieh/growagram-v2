@@ -53,10 +53,7 @@ interface PlantCardProps {
   isSocialProp?: boolean;
 }
 
-export default function PlantCard({
-  plant,
-  isSocialProp = true,
-}: PlantCardProps) {
+export function PlantCard({ plant, isSocialProp = true }: PlantCardProps) {
   const trpc = useTRPC();
   const queryClient = useQueryClient();
   const { data: session } = useSession();
@@ -81,7 +78,7 @@ export default function PlantCard({
   const { commentCount, commentCountLoading, isCommentsOpen, toggleComments } =
     useComments(plant.id, CommentableEntityType.Plant);
 
-  // Initialize delete mutation with modern TanStack approach
+  // Initialize delete mutation using Tanstack Query
   const deleteMutation = useMutation(
     trpc.plants.deleteById.mutationOptions({
       onSuccess: async () => {
@@ -110,56 +107,49 @@ export default function PlantCard({
     setIsDeleteDialogOpen(false);
   };
 
-  const plantActions: ActionItem[] = [];
+  // Memoized actions array
+  const actions = React.useMemo((): ActionItem[] => {
+    if (!user) return [];
 
-  // Edit Action (visible to owner only)
-  if (user && user.id === plant.ownerId) {
-    plantActions.push({
-      icon: EditIcon,
-      label: t("edit-button-label"),
-      variant: "ghost",
-      onClick: () => {
-        router.push(`${modulePaths.PLANTS.path}/${plant.id}/form`);
-      },
-    });
-  }
+    const actions: ActionItem[] = [];
 
-  // Delete Action (visible to owner and admin)
-  if (user && (user.id === plant.ownerId || user.role === UserRoles.ADMIN)) {
-    plantActions.push({
-      icon: Trash2Icon,
-      label: t("delete-button-label"),
-      variant: "destructive",
-      onClick: handleDelete,
-      disabled: deleteMutation.isPending,
-    });
-  }
+    // Public Link - Always show for owner
+    if (user.id === plant.ownerId) {
+      actions.push({
+        icon: ExternalLinkIcon,
+        label: t(`public-link-label`),
+        onClick: () => {
+          window.open(`${modulePaths.PUBLICPLANTS.path}/${plant.id}`, "_blank");
+        },
+        variant: "ghost",
+      });
+    }
 
-  const ownerActions: ActionItem[] = [
-    {
-      icon: ExternalLinkIcon,
-      label: t(`public-link-label`),
-      onClick: () => {
-        window.open(`/public/plants/${plant.id}`, "_blank");
-      },
-      variant: "ghost",
-    },
-    {
-      icon: EditIcon,
-      label: t("edit-button-label"),
-      onClick: () => {
-        router.push(`${modulePaths.PLANTS.path}/${plant.id}/form`);
-      },
-      variant: "ghost",
-    },
-    {
-      icon: Trash2Icon,
-      label: t("delete-button-label"),
-      onClick: handleDelete,
-      variant: "destructive",
-      disabled: deleteMutation.isPending,
-    },
-  ];
+    // Edit Action - Only for owner
+    if (user.id === plant.ownerId) {
+      actions.push({
+        icon: EditIcon,
+        label: t("edit-button-label"),
+        onClick: () => {
+          router.push(`${modulePaths.PLANTS.path}/${plant.id}/form`);
+        },
+        variant: "ghost",
+      });
+    }
+
+    // Delete Action - For owner and admin
+    if (user.id === plant.ownerId || user.role === UserRoles.ADMIN) {
+      actions.push({
+        icon: Trash2Icon,
+        label: t("delete-button-label"),
+        onClick: handleDelete,
+        variant: "destructive",
+        disabled: deleteMutation.isPending,
+      });
+    }
+
+    return actions;
+  }, [user, plant.ownerId, plant.id, t, router, deleteMutation.isPending]);
 
   const dateElement = (
     <Link
@@ -192,13 +182,14 @@ export default function PlantCard({
       <TouchProvider>
         <Card
           className={cn(
-            `border-primary/60 flex flex-col gap-0 overflow-hidden rounded-md border py-0 shadow-none`,
+            "border-primary/60 flex h-full flex-col gap-0 overflow-hidden rounded-md border py-0 shadow-none",
           )}
         >
           {/* Card Header */}
           <CardHeader
             className={cn(
-              "flex items-center justify-between p-2 pb-0",
+              "flex items-center justify-between pb-0",
+              !isSocial && "p-2",
               isSocial && "px-0 pb-1",
             )}
           >
@@ -206,8 +197,8 @@ export default function PlantCard({
               <AvatarCardHeader
                 user={plant.owner}
                 dateElement={dateElement}
-                actions={plantActions}
-                showActions={plantActions.length > 0}
+                actions={actions}
+                showActions={actions.length > 0}
               />
             ) : (
               <div className="flex w-full min-w-0 items-center justify-between gap-2">
@@ -226,16 +217,16 @@ export default function PlantCard({
                   </Button>
                 </CardTitle>
 
-                {/* ActionsMenu for plant's owner */}
-                {user && user.id === plant.ownerId && (
-                  <ActionsMenu actions={ownerActions} />
+                {/* ActionsMenu */}
+                {user && user.id === plant.ownerId && actions.length > 0 && (
+                  <ActionsMenu actions={actions} />
                 )}
               </div>
             )}
           </CardHeader>
 
           {/* Card Content */}
-          <CardContent className={cn("p-2", isSocial && "ml-12 pr-2 pl-0")}>
+          <CardContent className={cn("px-2", isSocial && "ml-12 pr-2 pl-0")}>
             {/* Image Carousel */}
             <ImageCarousel plantImages={plant.plantImages} />
 
@@ -275,7 +266,7 @@ export default function PlantCard({
           </CardContent>
 
           {/* Card Footer */}
-          <CardFooter className={cn("p-2 pt-0", isSocial && "ml-12")}>
+          <CardFooter className={cn("p-0", isSocial && "ml-12")}>
             {!isSocial && (
               <Button
                 size={"sm"}

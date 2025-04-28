@@ -4,7 +4,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import ResponsiveGrid from "~/components/Layouts/responsive-grid";
 import ItemsPagination from "~/components/atom/item-pagination";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
-import PhotoCard from "~/components/features/Photos/photo-card";
+import { PhotoCard } from "~/components/features/Photos/photo-card";
 import { getOwnPhotosInput } from "~/lib/queries/photos";
 import type { GetOwnPhotosInput } from "~/server/api/root";
 import { useTRPC } from "~/trpc/client";

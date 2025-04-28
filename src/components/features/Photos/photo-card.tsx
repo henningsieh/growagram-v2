@@ -1,7 +1,7 @@
 "use client";
 
 // src/components/features/Photos/photo-card.tsx:
-import { useState } from "react";
+import * as React from "react";
 import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
@@ -10,6 +10,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   Camera,
   EditIcon,
+  ExternalLinkIcon,
   FileIcon,
   Flower2Icon,
   MessageSquareTextIcon,
@@ -21,10 +22,9 @@ import { toast } from "sonner";
 import { modulePaths } from "~/assets/constants";
 import { useImageModal } from "~/components/Layouts/photo-modal-provider";
 import { RESPONSIVE_IMAGE_SIZES } from "~/components/Layouts/responsive-grid";
-import { ActionItem } from "~/components/atom/actions-menu";
+import { ActionItem, ActionsMenu } from "~/components/atom/actions-menu";
 import AvatarCardHeader from "~/components/atom/avatar-card-header";
 import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
-import { OwnerDropdownMenu } from "~/components/atom/owner-dropdown-menu";
 import { SocialCardFooter } from "~/components/atom/social-card-footer";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
 import { Comments } from "~/components/features/Comments/comments";
@@ -69,7 +69,7 @@ interface PhotoCardProps {
   };
 }
 
-export default function PhotoCard({
+export function PhotoCard({
   photo,
   isSocial: isSocialProp = true,
   currentQuery,
@@ -93,9 +93,9 @@ export default function PhotoCard({
   const { commentCount, commentCountLoading, isCommentsOpen, toggleComments } =
     useComments(photo.id, CommentableEntityType.Photo);
 
-  const [isSocial, setIsSocial] = useState(isSocialProp);
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [isPostModalOpen, setIsPostModalOpen] = useState(false);
+  const [isSocial, setIsSocial] = React.useState(isSocialProp);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);
+  const [isPostModalOpen, setIsPostModalOpen] = React.useState(false);
 
   // Initialize delete mutation using Tanstack Query
   const deleteMutation = useMutation(
@@ -125,11 +125,14 @@ export default function PhotoCard({
 
   const confirmDelete = async () => {
     if (photo.posts.length > 0) {
-      toast(t("DeleteConfirmation.toasts.warning-photo-has-posts.title"), {
-        description: t(
-          "DeleteConfirmation.toasts.warning-photo-has-posts.description",
-        ),
-      });
+      toast.warning(
+        t("DeleteConfirmation.toasts.warning-photo-has-posts.title"),
+        {
+          description: t(
+            "DeleteConfirmation.toasts.warning-photo-has-posts.description",
+          ),
+        },
+      );
       setIsDeleteDialogOpen(false);
       return;
     }
@@ -138,7 +141,7 @@ export default function PhotoCard({
   };
 
   const { openImageModal } = useImageModal();
-  const [isImageHovered, setIsImageHovered] = useState(false);
+  const [isImageHovered, setIsImageHovered] = React.useState(false);
 
   const handleImageClick = () => {
     openImageModal(photo.imageUrl);
@@ -151,32 +154,59 @@ export default function PhotoCard({
     ? `?returnTo=${encodeURIComponent(currentUrlParamsString)}`
     : "";
 
-  // Define actions for the avatar header menu
-  const photoActions: ActionItem[] = [];
+  // Memoized actions array
+  const actions = React.useMemo((): ActionItem[] => {
+    if (!user) return [];
 
-  if (user && user.id === photo.ownerId) {
-    photoActions.push({
-      icon: EditIcon,
-      label: t("edit-button-label"),
-      variant: "ghost",
-      onClick: () => {
-        // Navigate with the encoded returnTo parameter
-        router.push(
-          `${modulePaths.PHOTOS.path}/${photo.id}/form${returnToQuery}`,
-        );
-      },
-    });
-  }
+    const actions: ActionItem[] = [];
 
-  if (user && (user.id === photo.ownerId || user.role === UserRoles.ADMIN)) {
-    photoActions.push({
-      icon: Trash2Icon,
-      label: t("delete-button-label"),
-      variant: "destructive",
-      onClick: handleDelete,
-      disabled: deleteMutation.isPending,
-    });
-  }
+    // Public Link - Always show for owner
+    if (user.id === photo.ownerId) {
+      actions.push({
+        icon: ExternalLinkIcon,
+        label: t(`public-link-label`),
+        onClick: () => {
+          window.open(`/public/photos/${photo.id}`, "_blank");
+        },
+        variant: "ghost",
+      });
+    }
+
+    // Edit Action - Only for owner
+    if (user.id === photo.ownerId) {
+      actions.push({
+        icon: EditIcon,
+        label: t("edit-button-label"),
+        onClick: () => {
+          router.push(
+            `${modulePaths.PHOTOS.path}/${photo.id}/form${returnToQuery}`,
+          );
+        },
+        variant: "ghost",
+      });
+    }
+
+    // Delete Action - For owner and admin
+    if (user.id === photo.ownerId || user.role === UserRoles.ADMIN) {
+      actions.push({
+        icon: Trash2Icon,
+        label: t("delete-button-label"),
+        onClick: handleDelete,
+        variant: "destructive",
+        disabled: deleteMutation.isPending,
+      });
+    }
+
+    return actions;
+  }, [
+    user,
+    photo.ownerId,
+    photo.id,
+    t,
+    router,
+    returnToQuery,
+    deleteMutation.isPending,
+  ]);
 
   const dateElement = (
     <Link
@@ -222,16 +252,17 @@ export default function PhotoCard({
         {/* Card Header */}
         <CardHeader
           className={cn(
-            "flex items-center justify-between p-2 pb-0",
-            isSocial && "px-0 pb-1 pl-0",
+            "flex items-center justify-between pb-0",
+            !isSocial && "p-2",
+            isSocial && "px-0 pb-1",
           )}
         >
           {isSocial ? (
             <AvatarCardHeader
               user={photo.owner}
               dateElement={dateElement}
-              actions={photoActions}
-              showActions={photoActions.length > 0}
+              actions={actions}
+              showActions={actions.length > 0}
             />
           ) : (
             <div className="flex w-full min-w-0 items-center justify-between gap-2">
@@ -246,27 +277,18 @@ export default function PhotoCard({
                     href={`/public${modulePaths.PHOTOS.path}/${photo.id}`}
                     className="flex min-w-0 items-center gap-2"
                   >
-                    {/* <div className="flex items-center gap-2"> */}
                     <FileIcon className="flex-shrink-0" size={24} />
                     <span className="truncate text-xl leading-normal font-semibold">
                       {photo.originalFilename}
                     </span>
-                    {/* </div> */}
                   </Link>
                 </Button>
               </CardTitle>
 
-              {/* DropdownMenu for photo's owner */}
-              {user && user.id === photo.ownerId && (
+              {/* Replace OwnerDropdownMenu with ActionsMenu */}
+              {user && user.id === photo.ownerId && actions.length > 0 && (
                 <div className="w-8 flex-none">
-                  <OwnerDropdownMenu
-                    isSocial={isSocial}
-                    setIsSocial={setIsSocial}
-                    isDeleting={deleteMutation.isPending}
-                    handleDelete={handleDelete}
-                    entityId={photo.id}
-                    entityType="Photos"
-                  />
+                  <ActionsMenu actions={actions} />
                 </div>
               )}
             </div>
@@ -274,7 +296,7 @@ export default function PhotoCard({
         </CardHeader>
 
         {/* Card Content */}
-        <CardContent className={cn("gap-2 p-2", isSocial && "ml-12 pr-2 pl-0")}>
+        <CardContent className={cn(isSocial && "ml-12 pr-2 pl-0")}>
           {/* Photo Upload and Capture Dates */}
           <TooltipProvider>
             <div className="mb-2 flex flex-col text-sm">

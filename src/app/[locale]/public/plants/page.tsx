@@ -6,7 +6,7 @@ import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { AlertCircle } from "lucide-react";
 import InfiniteScrollLoader from "~/components/atom/infinite-scroll-loader";
-import PlantCard from "~/components/features/Plants/plant-card";
+import { PlantCard } from "~/components/features/Plants/plant-card";
 import { Alert, AlertTitle } from "~/components/ui/alert";
 import { useIntersectionObserver } from "~/hooks/use-intersection";
 import { getAllPlantsInput } from "~/lib/queries/plants";

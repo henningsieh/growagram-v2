@@ -11,17 +11,17 @@ import {
   AlertCircleIcon,
   ArrowRightIcon,
   EditIcon,
+  ExternalLinkIcon,
   MessageSquareTextIcon,
   Trash2Icon,
 } from "lucide-react";
 import { toast } from "sonner";
 import { modulePaths } from "~/assets/constants";
 import { RESPONSIVE_IMAGE_SIZES } from "~/components/Layouts/responsive-grid";
-import { ActionItem } from "~/components/atom/actions-menu";
+import { ActionItem, ActionsMenu } from "~/components/atom/actions-menu";
 import AvatarCardHeader from "~/components/atom/avatar-card-header";
 import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
 import { EntityDateInfo } from "~/components/atom/entity-date-info";
-import { OwnerDropdownMenu } from "~/components/atom/owner-dropdown-menu";
 import { SocialCardFooter } from "~/components/atom/social-card-footer";
 import { Comments } from "~/components/features/Comments/comments";
 import { EnhancedPlantCard } from "~/components/features/Plants/enhanced-plant-card.tsx";
@@ -107,28 +107,49 @@ export function GrowCard({
     setIsDeleteDialogOpen(false);
   };
 
-  const growActions: ActionItem[] = [];
+  // Memoized actions array
+  const actions = React.useMemo((): ActionItem[] => {
+    if (!user) return [];
 
-  if (user && user.id === grow.ownerId) {
-    growActions.push({
-      icon: EditIcon,
-      label: t("edit-button-label"),
-      variant: "ghost",
-      onClick: () => {
-        router.push(`${modulePaths.GROWS.path}/${grow.id}/form`);
-      },
-    });
-  }
+    const actions: ActionItem[] = [];
 
-  if (user && (user.id === grow.ownerId || user.role === UserRoles.ADMIN)) {
-    growActions.push({
-      icon: Trash2Icon,
-      label: t("delete-button-label"),
-      variant: "destructive",
-      onClick: handleDelete,
-      disabled: deleteMutation.isPending,
-    });
-  }
+    // Public Link - Always show for owner
+    if (user.id === grow.ownerId) {
+      actions.push({
+        icon: ExternalLinkIcon,
+        label: t(`public-link-label`),
+        onClick: () => {
+          window.open(`${modulePaths.PUBLICGROWS.path}/${grow.id}`, "_blank");
+        },
+        variant: "ghost",
+      });
+    }
+
+    // Edit Action - Only for owner
+    if (user.id === grow.ownerId) {
+      actions.push({
+        icon: EditIcon,
+        label: t("edit-button-label"),
+        onClick: () => {
+          router.push(`${modulePaths.GROWS.path}/${grow.id}/form`);
+        },
+        variant: "ghost",
+      });
+    }
+
+    // Delete Action - For owner and admin
+    if (user.id === grow.ownerId || user.role === UserRoles.ADMIN) {
+      actions.push({
+        icon: Trash2Icon,
+        label: t("delete-button-label"),
+        onClick: handleDelete,
+        variant: "destructive",
+        disabled: deleteMutation.isPending,
+      });
+    }
+
+    return actions;
+  }, [user, grow.ownerId, grow.id, t, router, deleteMutation.isPending]);
 
   const dateElement = (
     <Link
@@ -166,7 +187,8 @@ export function GrowCard({
         {/* Card Header */}
         <CardHeader
           className={cn(
-            "flex items-center justify-between p-2 pb-0",
+            "flex items-center justify-between pb-0",
+            !isSocial && "p-2",
             isSocial && "px-0 pb-1",
           )}
         >
@@ -174,8 +196,8 @@ export function GrowCard({
             <AvatarCardHeader
               user={grow.owner}
               dateElement={dateElement}
-              actions={growActions}
-              showActions={growActions.length > 0}
+              actions={actions}
+              showActions={actions.length > 0}
             />
           ) : (
             <div className="flex w-full min-w-0 items-center justify-between gap-2">
@@ -193,15 +215,10 @@ export function GrowCard({
                   </Link>
                 </Button>
               </CardTitle>
-              {user && user.id === grow.ownerId && (
-                <OwnerDropdownMenu
-                  isSocial={isSocial}
-                  setIsSocial={setIsSocial}
-                  isDeleting={deleteMutation.isPending}
-                  handleDelete={handleDelete}
-                  entityId={grow.id}
-                  entityType="Grows"
-                />
+
+              {/* ActionsMenu */}
+              {user && user.id === grow.ownerId && actions.length > 0 && (
+                <ActionsMenu actions={actions} />
               )}
             </div>
           )}
@@ -210,7 +227,7 @@ export function GrowCard({
         {/* Card Content */}
         <CardContent
           className={cn(
-            "p-2",
+            "px-2",
             isSocial && "ml-12 pr-2 pl-0",
             "flex flex-1 flex-col",
           )}
@@ -233,7 +250,7 @@ export function GrowCard({
                       fill
                       sizes={RESPONSIVE_IMAGE_SIZES}
                       src="/images/GrowAGram_Logo_big.png"
-                      alt={grow.name || "Grow placeholder"}
+                      alt={grow.name}
                       className="h-full w-full object-cover opacity-40 transition-opacity duration-300 hover:opacity-50"
                       priority
                     />

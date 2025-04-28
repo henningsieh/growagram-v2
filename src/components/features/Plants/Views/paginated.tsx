@@ -5,7 +5,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import ResponsiveGrid from "~/components/Layouts/responsive-grid";
 import ItemsPagination from "~/components/atom/item-pagination";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
-import PlantCard from "~/components/features/Plants/plant-card";
+import { PlantCard } from "~/components/features/Plants/plant-card";
 import { getOwnPlantsInput } from "~/lib/queries/plants";
 import type { GetOwnPlantsInput } from "~/server/api/root";
 import { useTRPC } from "~/trpc/client";

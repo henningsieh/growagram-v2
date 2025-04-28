@@ -80,7 +80,7 @@ export const SocialCardFooter: React.FC<CardFooterProps> = ({
     <>
       <div
         className={cn(
-          "isolate flex items-center justify-between gap-2 py-1 pr-2",
+          "isolate flex w-full items-center justify-between gap-2 py-1 pr-2",
           className,
         )}
       >
