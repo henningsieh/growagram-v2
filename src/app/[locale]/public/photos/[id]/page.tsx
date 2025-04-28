@@ -1,25 +1,51 @@
 // src/app/[locale]/(public)/public/timeline/page.tsx:
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import PhotoCard from "~/components/features/Photos/photo-card";
-import { api } from "~/lib/trpc/server";
+import { PhotoCard } from "~/components/features/Photos/photo-card";
 import type { GetPhotoByIdInput } from "~/server/api/root";
+import { getCaller } from "~/trpc/server";
 
-export default async function PublicPlantByIdPage({
-  params,
-}: {
+export type PublicPhotoByIdProps = {
   params: Promise<GetPhotoByIdInput>;
-}) {
-  const photoId = (await params).id;
+};
 
-  if (photoId.trim() === "") notFound();
+export async function generateMetadata({
+  params,
+}: PublicPhotoByIdProps): Promise<Metadata> {
+  const caller = await getCaller();
+  const photo = await caller.photos.getById({
+    id: (await params).id,
+  });
 
-  const photoByIdQuery = {
-    id: photoId,
-  } satisfies GetPhotoByIdInput;
+  if (!photo) {
+    return {
+      title: "Photo not found",
+    };
+  }
 
-  const photo = await api.photos.getById(photoByIdQuery);
+  return {
+    title: photo.originalFilename || "Photo",
+    description: `Captured on ${photo.captureDate?.toDateString()}`,
+    openGraph: {
+      images: [
+        {
+          url: photo.imageUrl,
+          alt: photo.originalFilename || "Photo",
+        },
+      ],
+    },
+  };
+}
 
-  if (photo === undefined) notFound();
+export default async function PublicPhotoByIdPage({
+  params,
+}: PublicPhotoByIdProps) {
+  const caller = await getCaller();
+  const photo = await caller.photos.getById({
+    id: (await params).id,
+  });
+
+  if (!photo) notFound();
 
   return (
     <>

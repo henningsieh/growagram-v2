@@ -731,6 +731,7 @@
     "feature-coming": "New Feature is on its Way!",
     "grow-environments": "Grows",
     "grow-environments-description": "All active Grows",
+    "grown-by": "grown by",
     "harvested": "already harvested",
     "infinitescroll": "Infinite scrolling",
     "living": "living",
@@ -811,9 +812,9 @@
       "unfollow-success-title": "Unfollowed"
     },
     "metadata": {
-      "user-not-found": "User Not Found",
       "description": "Check out the plants and grows by {name} on Growagram",
-      "title": "Profile | {name}"
+      "title": "Profile | {name}",
+      "user-not-found": "User Not Found"
     },
     "tabs": {
       "grows": "Grows",

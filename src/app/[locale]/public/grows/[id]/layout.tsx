@@ -1,22 +1,24 @@
+import { PaginationItemsPerPage } from "~/assets/constants";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
 import type { GetGrowByIdInput } from "~/server/api/root";
-import { caller } from "~/trpc/server";
+import { getCaller } from "~/trpc/server";
 import { GrowsSortField } from "~/types/grow";
 
-// Allow both static and dynamic rendering
-export const dynamic = "force-static";
-// Revalidate cache every minute
+// // Allow both static and dynamic rendering
+export const dynamic = "force-dynamic";
+// // Revalidate cache every minute
 export const revalidate = 60;
-// Enable dynamic parameters
+// // Enable dynamic parameters
 export const dynamicParams = true;
 
 // Pre-generate pages for all grows using tRPC caller instead of direct DB queries
 export async function generateStaticParams() {
+  const caller = await getCaller();
   try {
     // Using the tRPC server caller to fetch all grows with minimal data
     const allGrowsResult = await caller.grows.getAllGrows({
       cursor: 1,
-      limit: 1000, // Adjust based on your expected total number of grows
+      limit: PaginationItemsPerPage.MAX_DEFAULT_ITEMS,
       sortOrder: SortOrder.DESC,
       sortField: GrowsSortField.CREATED_AT,
     });
