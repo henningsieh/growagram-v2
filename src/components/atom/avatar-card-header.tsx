@@ -1,5 +1,3 @@
-"use client";
-
 import * as React from "react";
 import { DotIcon, ShieldIcon } from "lucide-react";
 import { CustomAvatar } from "~/components/atom/custom-avatar";
