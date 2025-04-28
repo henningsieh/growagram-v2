@@ -333,7 +333,7 @@ export function GrowForm({ grow }: { grow?: GetGrowByIdType }) {
                   limit: PaginationItemsPerPage.GROWS_PER_PAGE,
                   sortField: GrowsSortField.NAME,
                   sortOrder: SortOrder.ASC,
-                });
+                } satisfies GetOwnGrowsInput);
 
               // 2. First remove the specific infinite query structure using its exact key
               queryClient.removeQueries({

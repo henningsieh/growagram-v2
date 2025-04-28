@@ -16,13 +16,7 @@ import {
 } from "@tanstack/react-table";
 import { ChevronDown, Loader2 } from "lucide-react";
 import { Button } from "~/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "~/components/ui/card";
+import { CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,

@@ -107,7 +107,9 @@ export default function PlantForm({ plant }: { plant?: GetPlantByIdType }) {
   }, [watchedBreederId, selectedBreederId, form]);
 
   const { data: growsData, isPending: isGrowsLoading } = useQuery(
-    trpc.grows.getOwnGrows.queryOptions({ limit: 1000 }),
+    trpc.grows.getOwnGrows.queryOptions({
+      limit: PaginationItemsPerPage.MAX_DEFAULT_ITEMS,
+    }),
   );
 
   const createOrEditPlantMutation = useMutation(

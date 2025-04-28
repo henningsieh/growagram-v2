@@ -107,7 +107,8 @@ const ErrorFallback = ({ error, resetErrorBoundary }: FallbackProps) => {
               <pre
                 className={`text-xs text-${errorInfo.color}/80 mt-2 max-h-48 overflow-auto font-mono whitespace-pre-wrap bg-${errorInfo.color}/5 rounded-sm border p-3 border-${errorInfo.color}/10`}
               >
-                Error Code: {errorCode}
+                {"Error Code: "}
+                {errorCode}
                 {httpStatus && `\nHTTP Status: ${httpStatus}`}
                 {path && `\nPath: ${path}`}
                 {error.stack && `\n\nStack Trace:\n${error.stack}`}
@@ -123,7 +124,7 @@ const ErrorFallback = ({ error, resetErrorBoundary }: FallbackProps) => {
           size="sm"
           onClick={() => window.location.reload()}
         >
-          Reload Page
+          {"Reload Page"}
         </Button>
         <Button
           variant="primary"
@@ -132,7 +133,7 @@ const ErrorFallback = ({ error, resetErrorBoundary }: FallbackProps) => {
           className="gap-2"
         >
           <RefreshCw className="h-4 w-4" />
-          Try Again
+          {"Try Again"}
         </Button>
       </CardFooter>
     </Card>

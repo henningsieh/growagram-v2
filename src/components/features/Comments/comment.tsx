@@ -7,9 +7,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
 import { DotIcon, Reply, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
-import AvatarCardHeader, {
-  ActionItem,
-} from "~/components/atom/avatar-card-header";
+import { ActionItem } from "~/components/atom/actions-menu";
+import AvatarCardHeader from "~/components/atom/avatar-card-header";
 import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
 import { CustomAvatar } from "~/components/atom/custom-avatar";
 import { HighlightElement } from "~/components/atom/highlight-element";
@@ -66,7 +65,9 @@ export const Comment: React.FC<CommentProps> = ({
   } = useLikeStatus(comment.id, LikeableEntityType.Comment);
 
   const { data: replies, isLoading: commentCountLoading } = useQuery(
-    trpc.comments.getReplies.queryOptions({ commentId: comment.id }),
+    trpc.comments.getReplies.queryOptions({
+      commentId: comment.id,
+    } satisfies GetRepliesInput),
   );
 
   const {
@@ -110,7 +111,7 @@ export const Comment: React.FC<CommentProps> = ({
                 entityId: comment.entityId,
                 entityType: comment.entityType,
                 sortOrder: commentsSortOrder,
-              }),
+              } satisfies GetCommentsInput),
             );
 
         if (comment.parentCommentId) {
