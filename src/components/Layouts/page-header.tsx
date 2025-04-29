@@ -43,8 +43,8 @@ export default function Component({
               <Button
                 asChild
                 size="sm"
-                className="sm:w-[154px]"
-                variant={buttonVariant || "primary"}
+                className="min-w-fit lg:min-w-42"
+                variant={buttonVariant || "secondary"}
               >
                 {/* Pass buttonLink directly to href */}
                 <Link href={buttonLink}>

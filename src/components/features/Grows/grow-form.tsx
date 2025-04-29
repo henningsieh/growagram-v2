@@ -22,7 +22,6 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { PaginationItemsPerPage, modulePaths } from "~/assets/constants";
 import FormContent from "~/components/Layouts/form-content";
-import PageHeader from "~/components/Layouts/page-header";
 import { RESPONSIVE_IMAGE_SIZES } from "~/components/Layouts/responsive-grid";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
 import SpinningLoader from "~/components/atom/spinning-loader";
@@ -65,12 +64,27 @@ import type {
   GrowDisconnectPlantInput,
 } from "~/server/api/root";
 import { useTRPC } from "~/trpc/client";
-import { GrowsSortField } from "~/types/grow";
+import { GrowsSortField, GrowsViewMode } from "~/types/grow";
+// Ensure GrowsViewMode is imported
 import { growSchema } from "~/types/zodSchema";
 
 type FormValues = z.infer<typeof growSchema>;
 
-export function GrowForm({ grow }: { grow?: GetGrowByIdType }) {
+// Define the type for the list view parameters prop
+interface ListViewParams {
+  sortField: GrowsSortField;
+  sortOrder: SortOrder;
+  viewMode: GrowsViewMode;
+  page: string;
+}
+
+export function GrowForm({
+  grow,
+  listView,
+}: {
+  grow?: GetGrowByIdType;
+  listView: ListViewParams;
+}) {
   const trpc = useTRPC();
 
   const queryClient = useQueryClient();
@@ -322,53 +336,52 @@ export function GrowForm({ grow }: { grow?: GetGrowByIdType }) {
             description: pageTexts.successToast.description,
           });
 
-          const currentViewMode =
-            localStorage.getItem("growViewMode") || "pagination";
+          // Construct the return URL with the received list view parameters
+          const returnUrl = new URL(
+            modulePaths.GROWS.path,
+            window.location.origin,
+          );
+          returnUrl.searchParams.set("sortField", listView.sortField);
+          returnUrl.searchParams.set("sortOrder", listView.sortOrder);
+          returnUrl.searchParams.set("viewMode", listView.viewMode);
+          if (listView.viewMode === GrowsViewMode.PAGINATION && listView.page) {
+            returnUrl.searchParams.set("page", listView.page);
+          }
 
           try {
-            if (currentViewMode === "infinite-scroll") {
-              // 1. Generate the exact same infinite query key structure used by the component
+            if (listView.viewMode === GrowsViewMode.INFINITE_SCROLL) {
+              // Invalidate the infinite query
               const infiniteQueryOptions =
                 trpc.grows.getOwnGrows.infiniteQueryOptions({
-                  limit: PaginationItemsPerPage.GROWS_PER_PAGE,
-                  sortField: GrowsSortField.NAME,
-                  sortOrder: SortOrder.ASC,
+                  limit: PaginationItemsPerPage.GROWS_PER_PAGE, // Or use a value from listView if needed
+                  sortField: listView.sortField,
+                  sortOrder: listView.sortOrder,
                 } satisfies GetOwnGrowsInput);
 
-              // 2. First remove the specific infinite query structure using its exact key
-              queryClient.removeQueries({
-                queryKey: infiniteQueryOptions.queryKey,
-                exact: true, // Use exact match to avoid affecting other queries
-              });
-
-              // 3. Then build a fresh query with the same key structure
-              await queryClient.fetchInfiniteQuery(infiniteQueryOptions);
-
-              // 4. Navigate with view mode parameter
-              router.push("/grows?viewMode=infinite-scroll");
-            } else {
-              // Paginated view works fine with normal approach
+              // Invalidate the infinite query to trigger refetch on navigation
               await queryClient.invalidateQueries({
-                queryKey: trpc.grows.getOwnGrows.queryKey(),
-                refetchType: "all",
+                queryKey: infiniteQueryOptions.queryKey,
+              });
+            } else {
+              // Invalidate the specific page query for pagination view
+              const queryOptions = trpc.grows.getOwnGrows.queryOptions({
+                cursor: parseInt(listView.page, 10) || 1,
+                limit: PaginationItemsPerPage.GROWS_PER_PAGE, // Or use a value from listView if needed
+                sortField: listView.sortField,
+                sortOrder: listView.sortOrder,
               });
 
-              await queryClient.fetchQuery(
-                trpc.grows.getOwnGrows.queryOptions({
-                  cursor: 1,
-                  limit: PaginationItemsPerPage.GROWS_PER_PAGE,
-                  sortField: GrowsSortField.NAME,
-                  sortOrder: SortOrder.ASC,
-                }),
-              );
-
-              // Navigate to the default URL (pagination mode)
-              router.push("/grows");
+              await queryClient.invalidateQueries({
+                queryKey: queryOptions.queryKey,
+                exact: true, // Ensure only this specific page query is invalidated
+              });
             }
+            // Navigate back to the list page with the preserved parameters
+            router.push(returnUrl.pathname + returnUrl.search);
           } catch (error) {
-            console.error("Error updating queries:", error);
-            // Navigate anyway to avoid leaving the user stuck
-            router.push("/grows");
+            console.error("Error updating queries or navigating:", error);
+            // Navigate anyway to avoid leaving the user stuck, potentially losing state
+            router.push(returnUrl.pathname + returnUrl.search);
           } finally {
             setIsSubmitting(false);
           }
@@ -640,7 +653,7 @@ export function GrowForm({ grow }: { grow?: GetGrowByIdType }) {
                             {t("no-plants-connectable")}
                           </Alert>
                           <div className="flex justify-end gap-2">
-                            <Button size="sm" variant="outline" asChild>
+                            <Button size="sm" variant="link" asChild>
                               <Link
                                 className="roundex-xs h-6 text-sm"
                                 href={modulePaths.PLANTS.path}

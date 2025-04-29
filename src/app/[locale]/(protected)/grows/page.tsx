@@ -97,18 +97,6 @@ export default function MyGrowsPage() {
     }
   }, [viewMode, setViewMode, setPage]);
 
-  // Shared handler for sort changes
-  const handleSortChange = React.useCallback(
-    async (field: GrowsSortField, order: SortOrder) => {
-      try {
-        await Promise.all([setSortField(field), setSortOrder(order)]);
-      } catch (error) {
-        console.error("Error updating sort parameters:", error);
-      }
-    },
-    [setSortField, setSortOrder],
-  );
-
   // Define sort options
   const sortOptions = [
     {
@@ -148,13 +136,24 @@ export default function MyGrowsPage() {
     },
   ]);
 
+  // Construct the link for the "Create New Grow" button including current view parameters
+  const createGrowLink = {
+    pathname: "/grows/new/form",
+    query: {
+      sortField: sortField,
+      sortOrder: sortOrder,
+      viewMode: viewMode,
+      // 'page' is generally not needed for 'new', but include if required by form logic
+    },
+  };
+
   return (
     <>
       <BreadcrumbSetter items={breadcrumbs} />
       <PageHeader
         title={t("mygrows-page-title")}
         subtitle={t("mygrows-page-subtitle")}
-        buttonLink="/grows/new/form"
+        buttonLink={createGrowLink} // Use the dynamically constructed link object
         buttonLabel={t("button-label-create-grow")}
         buttonVariant={"secondary"}
       >
@@ -163,7 +162,9 @@ export default function MyGrowsPage() {
           sortField={sortField}
           sortOrder={sortOrder}
           sortOptions={sortOptions}
-          onSortChange={handleSortChange}
+          // Pass nuqs setters directly
+          setSortField={setSortField}
+          setSortOrder={setSortOrder}
           filterLabel={undefined}
           filterEnabled={undefined}
           onFilterChange={undefined}

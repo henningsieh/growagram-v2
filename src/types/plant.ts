@@ -12,6 +12,7 @@ import {
 export enum PlantsSortField {
   NAME = "name",
   CREATED_AT = "createdAt",
+  UPDATED_AT = "updatedAt",
 }
 
 export enum PlantsViewMode {

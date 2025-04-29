@@ -5,6 +5,7 @@ import * as React from "react";
 import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -58,14 +59,19 @@ export function GrowCard({
 }: GrowCardProps) {
   const trpc = useTRPC();
   const queryClient = useQueryClient();
-  const { data: session } = useSession();
-  const user = session?.user;
-
   const router = useRouter();
   const locale = useLocale();
 
   const tCommon = useTranslations("Platform");
   const t = useTranslations("Grows");
+
+  const { data: session } = useSession();
+  const user = session?.user;
+
+  const searchParams = useSearchParams();
+  const currentParams = React.useMemo(() => {
+    return new URLSearchParams(searchParams.toString());
+  }, [searchParams]);
 
   const [isSocial, setIsSocial] = React.useState(isSocialProp);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);
@@ -131,7 +137,9 @@ export function GrowCard({
         icon: EditIcon,
         label: t("edit-button-label"),
         onClick: () => {
-          router.push(`${modulePaths.GROWS.path}/${grow.id}/form`);
+          // Construct the target URL with existing search parameters
+          const targetPath = `${modulePaths.GROWS.path}/${grow.id}/form`;
+          router.push(`${targetPath}?${currentParams.toString()}`);
         },
         variant: "ghost",
       });
@@ -149,7 +157,15 @@ export function GrowCard({
     }
 
     return actions;
-  }, [user, grow.ownerId, grow.id, t, router, deleteMutation.isPending]);
+  }, [
+    t,
+    user,
+    grow.id,
+    grow.ownerId,
+    router,
+    currentParams,
+    deleteMutation.isPending,
+  ]);
 
   const dateElement = (
     <Link
@@ -286,7 +302,7 @@ export function GrowCard({
                       <AlertDescription className="flex items-center justify-end">
                         <Button size="sm" variant="link" asChild>
                           <Link
-                            href={`${modulePaths.GROWS.path}/${grow.id}/form`}
+                            href={`${modulePaths.GROWS.path}/${grow.id}/form?${currentParams.toString()}`}
                           >
                             {t("button-label-connect-plants")}
                             <ArrowRightIcon className="h-4 w-4" />

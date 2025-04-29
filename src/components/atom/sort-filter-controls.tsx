@@ -42,7 +42,9 @@ interface SortFilterControlsProps<T extends string> {
     label?: string;
     icon?: React.ReactNode;
   };
-  onSortChange: (field: T, order: SortOrder) => Promise<void> | void;
+  // Replace onSortChange with individual setters
+  setSortField: (field: T | null) => Promise<URLSearchParams>;
+  setSortOrder: (order: SortOrder | null) => Promise<URLSearchParams>;
   onFilterChange?: (checked: boolean) => void;
   onViewModeToggle?: () => void;
 }
@@ -55,16 +57,19 @@ export function SortFilterControls<T extends string>({
   filterLabel,
   isFetching = false,
   viewMode,
-  onSortChange,
+  // Destructure new props
+  setSortField,
+  setSortOrder,
   onFilterChange,
   onViewModeToggle,
 }: SortFilterControlsProps<T>) {
+  // Update handlers to call setters directly
   const handleSortFieldChange = async (value: string) => {
-    await onSortChange(value as T, sortOrder);
+    await setSortField(value as T);
   };
 
   const handleSortOrderChange = async (value: string) => {
-    await onSortChange(sortField, value as SortOrder);
+    await setSortOrder(value as SortOrder);
   };
 
   const t = useTranslations("Platform");
@@ -73,51 +78,51 @@ export function SortFilterControls<T extends string>({
     <div className="bg-card mb-2 flex flex-col gap-4 rounded-md p-2 shadow-md sm:flex-row sm:items-center sm:justify-between">
       {/* Sorting Section */}
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-        <div className="flex items-center gap-2">
-          <Select
-            value={sortField}
-            onValueChange={handleSortFieldChange}
-            disabled={isFetching}
-          >
-            <SelectTrigger size="sm" className="border-input w-full">
-              <SelectValue placeholder="Sort by" />
-            </SelectTrigger>
-            <SelectContent>
-              {sortOptions.map((option, index) => (
-                <SelectItem key={index} value={option.field}>
-                  <span className="flex items-center gap-2">
-                    {option.icon}
-                    {option.label}
-                  </span>
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+        {/* <div className="flex items-center gap-2"> */}
+        <Select
+          value={sortField}
+          onValueChange={handleSortFieldChange}
+          disabled={isFetching}
+        >
+          <SelectTrigger size="sm" className="border-input w-full min-w-44">
+            <SelectValue placeholder="Sort by" />
+          </SelectTrigger>
+          <SelectContent>
+            {sortOptions.map((option, index) => (
+              <SelectItem key={index} value={option.field}>
+                <span className="flex items-center gap-2">
+                  {option.icon}
+                  {option.label}
+                </span>
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        {/* </div> */}
 
-        <div className="flex items-center gap-2">
-          <Select
-            value={sortOrder}
-            onValueChange={handleSortOrderChange}
-            disabled={isFetching}
-          >
-            <SelectTrigger size="sm" className="border-input w-full">
-              <SelectValue placeholder="Order" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value={SortOrder.ASC}>
-                <div className="flex items-center gap-2">
-                  <ArrowDown01Icon className="h-6 w-5" /> {t(SortOrder.ASC)}
-                </div>
-              </SelectItem>
-              <SelectItem value={SortOrder.DESC}>
-                <div className="flex items-center gap-2">
-                  <ArrowUp10Icon className="h-6 w-5" /> {t(SortOrder.DESC)}
-                </div>
-              </SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+        {/* <div className="flex items-center gap-2"> */}
+        <Select
+          value={sortOrder}
+          onValueChange={handleSortOrderChange}
+          disabled={isFetching}
+        >
+          <SelectTrigger size="sm" className="border-input w-full min-w-44">
+            <SelectValue placeholder="Order" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value={SortOrder.ASC}>
+              <div className="flex items-center gap-2">
+                <ArrowDown01Icon className="h-6 w-5" /> {t(SortOrder.ASC)}
+              </div>
+            </SelectItem>
+            <SelectItem value={SortOrder.DESC}>
+              <div className="flex items-center gap-2">
+                <ArrowUp10Icon className="h-6 w-5" /> {t(SortOrder.DESC)}
+              </div>
+            </SelectItem>
+          </SelectContent>
+        </Select>
+        {/* </div> */}
       </div>
 
       {/* Filtering Section */}
