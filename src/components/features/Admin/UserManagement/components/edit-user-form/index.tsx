@@ -26,7 +26,7 @@ import {
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { BAN_DURATIONS } from "~/assets/constants";
+import { BAN_DURATIONS, modulePaths } from "~/assets/constants";
 import FormContent from "~/components/Layouts/form-content";
 import PageHeader from "~/components/Layouts/page-header";
 import { CustomAvatar } from "~/components/atom/custom-avatar";
@@ -283,7 +283,7 @@ export default function AdminUserEditForm({ userId }: { userId: string }) {
     <PageHeader
       title={t("title")}
       subtitle={t("subtitle")}
-      buttonLink="/admin"
+      buttonLink={modulePaths.ADMINISTRATION.path}
       buttonLabel={t("back-button")}
       buttonVariant="outline"
       buttonIcon={<ArrowLeft className="mr-2 h-4 w-4" />}

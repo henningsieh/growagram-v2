@@ -174,7 +174,7 @@ export default function MyImagesPage() {
       <PageHeader
         title={t("my-Photos")}
         subtitle={t("my-Photos-subtitle")}
-        buttonLink={`${modulePaths.PHOTOS.path}/upload`}
+        buttonLink={`${modulePaths.PHOTOUPLOAD.path}`}
         buttonLabel={t("button-label-upload-photos")}
       >
         <SortFilterControls

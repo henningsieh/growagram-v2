@@ -31,30 +31,9 @@ import {
   CommandList,
 } from "~/components/ui/command";
 import { useRouter } from "~/lib/i18n/routing";
+import { searchParamsToObject } from "~/lib/utils/searchParamsToObject";
 import type { GetPhotoByIdType } from "~/server/api/root";
 import { useTRPC } from "~/trpc/client";
-
-// Helper function to convert URLSearchParams to a plain object
-// Handles potential multiple values for the same key
-function searchParamsToObject(
-  params: URLSearchParams,
-): Record<string, string | string[]> {
-  const obj: Record<string, string | string[]> = {};
-  params.forEach((value, key) => {
-    const existing = obj[key];
-    if (existing === undefined) {
-      // If key doesn't exist, add it as a string
-      obj[key] = value;
-    } else if (Array.isArray(existing)) {
-      // If key exists and is an array, push the new value
-      existing.push(value);
-    } else {
-      // If key exists and is a string, convert it to an array and add the new value
-      obj[key] = [existing, value];
-    }
-  });
-  return obj;
-}
 
 interface ImageConnectPlantsProps {
   image: GetPhotoByIdType;
@@ -159,12 +138,22 @@ export default function ImageConnectPlants({
 
   const [selectAll, setSelectAll] = React.useState(false);
 
+  // Effect to synchronize selectAll state with selectedPlantIds and filteredPlants
+  React.useEffect(() => {
+    if (filteredPlants.length > 0) {
+      setSelectAll(selectedPlantIds.length === filteredPlants.length);
+    } else {
+      setSelectAll(false); // No plants to select
+    }
+  }, [selectedPlantIds, filteredPlants]);
+
   const handleSelectAll = React.useCallback(() => {
-    setSelectAll(!selectAll);
+    const nextSelectAll = !selectAll; // Determine the next state first
+    setSelectAll(nextSelectAll);
     setSelectedPlantIds(
-      selectAll ? [] : filteredPlants.map((plant) => plant.id),
+      nextSelectAll ? filteredPlants.map((plant) => plant.id) : [],
     );
-  }, [selectAll, filteredPlants]);
+  }, [selectAll, filteredPlants, setSelectedPlantIds]); // Added setSelectedPlantIds dependency
 
   /**
    * Handles connecting and disconnecting plants to an image.
@@ -265,7 +254,6 @@ export default function ImageConnectPlants({
       subtitle={t("connect-plants-subtitle")}
       buttonLabel={t("buttonBackLabel")}
       buttonLink={backHref} // Pass the href object
-      searchParams={undefined} // Remove allPhotosQuery as it's not needed here
     >
       <FormContent>
         <Card className="rounded-md py-2">
@@ -281,7 +269,8 @@ export default function ImageConnectPlants({
               <div className="flex w-full items-center border-b pl-1">
                 <Checkbox
                   className="border-secondary data-[state=checked]:bg-secondary data-[state=checked]:text-secondary-foreground m-2"
-                  onCheckedChange={handleSelectAll}
+                  checked={selectAll} // Bind checked state directly
+                  onCheckedChange={handleSelectAll} // Keep using the handler for click events
                 />
                 <CommandInput
                   placeholder={t("search.placeholder")}

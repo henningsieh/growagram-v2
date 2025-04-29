@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { modulePaths } from "~/assets/constants";
 import FormContent from "~/components/Layouts/form-content";
 import PageHeader from "~/components/Layouts/page-header";
 import AvatarCardHeader from "~/components/atom/avatar-card-header";
@@ -162,7 +163,7 @@ export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
         title={t("form-edit-profile-title")}
         subtitle={t("form-edit-profile-subtitle")}
         buttonLabel={t("form-back-button")}
-        buttonLink="/account"
+        buttonLink={modulePaths.ACCOUNT.path}
       >
         <motion.div
           initial={{ opacity: 0, y: 20 }}

@@ -5,11 +5,9 @@ import { BreadcrumbSetter } from "~/components/Layouts/Breadcrumbs/breadcrumb-se
 import FormContent from "~/components/Layouts/form-content";
 import PageHeader from "~/components/Layouts/page-header";
 import PhotoUpload from "~/components/features/Photos/image-upload";
-import { auth } from "~/lib/auth";
 import { createBreadcrumbs } from "~/lib/breadcrumbs";
 
 export default async function ImageUploadPage() {
-  const session = await auth();
   const t = await getTranslations("Photos");
 
   // Create breadcrumbs for this page using sidebar translation keys
@@ -31,11 +29,9 @@ export default async function ImageUploadPage() {
         title={t("upload-photos-title")}
         subtitle={t("upload-photos-subtitle")}
       >
-        {session && session.user && (
-          <FormContent>
-            <PhotoUpload />
-          </FormContent>
-        )}
+        <FormContent>
+          <PhotoUpload />
+        </FormContent>
       </PageHeader>
     </>
   );

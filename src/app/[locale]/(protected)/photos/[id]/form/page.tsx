@@ -1,4 +1,5 @@
 // src/app/[locale]/(protected)/photos/[id]/form/page.tsx:
+import * as React from "react";
 import { modulePaths } from "~/assets/constants";
 import { BreadcrumbSetter } from "~/components/Layouts/Breadcrumbs/breadcrumb-setter";
 import ImageConnectPlants from "~/components/features/Photos/image-connect-plants";
@@ -11,10 +12,11 @@ export default async function Page({
   searchParams, // Add searchParams to props
 }: {
   params: Promise<GetPhotoByIdInput>;
-  searchParams: { returnTo?: string }; // Define type for searchParams
+  searchParams: Promise<{ returnTo?: string }>; // Make searchParams a promise
 }) {
   const caller = await getCaller();
   const imageId = (await params).id;
+  const queryParams = await searchParams;
 
   // Get the image data
   const image = await caller.photos.getById({ id: imageId });
@@ -31,12 +33,13 @@ export default async function Page({
     },
   ]);
 
-  // Extract the return URL parameters if present
-  const returnParams = searchParams.returnTo || "";
+  // Extract the return URL parameters if present - now using the resolved searchParams
+  const returnParams = queryParams.returnTo || "";
 
   return (
     <>
       <BreadcrumbSetter items={breadcrumbs} />
+
       {/* Pass returnParams to the component */}
       <ImageConnectPlants image={image} returnParams={returnParams} />
     </>

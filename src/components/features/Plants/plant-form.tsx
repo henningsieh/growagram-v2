@@ -109,7 +109,7 @@ export default function PlantForm({ plant }: { plant?: GetPlantByIdType }) {
   const { data: growsData, isPending: isGrowsLoading } = useQuery(
     trpc.grows.getOwnGrows.queryOptions({
       limit: PaginationItemsPerPage.MAX_DEFAULT_ITEMS,
-    }),
+    } satisfies GetOwnPlantsInput),
   );
 
   const createOrEditPlantMutation = useMutation(

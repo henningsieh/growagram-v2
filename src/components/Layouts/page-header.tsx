@@ -15,8 +15,6 @@ interface IPageHeader {
   children: React.ReactNode;
   buttonLink?: Href | null; // Use Href type
   buttonLabel?: string;
-  /** @deprecated searchParams is no longer used directly for link construction, pass a full href object to buttonLink instead */
-  searchParams?: ReadonlyURLSearchParams;
   buttonVariant?: VariantProps<typeof buttonVariants>["variant"];
   buttonIcon?: React.ReactNode;
 }
@@ -27,13 +25,9 @@ export default function Component({
   children,
   buttonLink,
   buttonLabel,
-  // searchParams is kept for potential backward compatibility but marked deprecated
-  searchParams,
   buttonVariant = "primary",
   buttonIcon,
 }: IPageHeader) {
-  // Remove queryObject and linkHref logic
-
   return (
     <div className="space-y-3 pr-4 pl-3 md:pl-2 lg:pl-4 xl:pl-6">
       <div>
