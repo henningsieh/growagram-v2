@@ -4,6 +4,7 @@
 import * as React from "react";
 import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
+import { useSearchParams } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   EditIcon,
@@ -56,14 +57,19 @@ interface PlantCardProps {
 export function PlantCard({ plant, isSocialProp = true }: PlantCardProps) {
   const trpc = useTRPC();
   const queryClient = useQueryClient();
-  const { data: session } = useSession();
-  const user = session?.user;
-
   const router = useRouter();
   const locale = useLocale();
 
   const tCommon = useTranslations("Platform");
   const t = useTranslations("Plants");
+
+  const { data: session } = useSession();
+  const user = session?.user;
+
+  const searchParams = useSearchParams();
+  const currentParams = React.useMemo(() => {
+    return new URLSearchParams(searchParams.toString());
+  }, [searchParams]);
 
   const [isSocial, setIsSocial] = React.useState(isSocialProp);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);
@@ -131,7 +137,9 @@ export function PlantCard({ plant, isSocialProp = true }: PlantCardProps) {
         icon: EditIcon,
         label: t("edit-button-label"),
         onClick: () => {
-          router.push(`${modulePaths.PLANTS.path}/${plant.id}/form`);
+          // Construct the target URL with existing search parameters
+          const targetPath = `${modulePaths.PLANTS.path}/${plant.id}/form`;
+          router.push(`${targetPath}?${currentParams.toString()}`);
         },
         variant: "ghost",
       });
@@ -149,7 +157,15 @@ export function PlantCard({ plant, isSocialProp = true }: PlantCardProps) {
     }
 
     return actions;
-  }, [user, plant.ownerId, plant.id, t, router, deleteMutation.isPending]);
+  }, [
+    t,
+    user,
+    plant.id,
+    plant.ownerId,
+    router,
+    currentParams,
+    deleteMutation.isPending,
+  ]);
 
   const dateElement = (
     <Link

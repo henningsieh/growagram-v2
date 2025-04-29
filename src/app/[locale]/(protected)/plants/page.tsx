@@ -4,7 +4,7 @@
 import * as React from "react";
 import { Suspense } from "react";
 import { useTranslations } from "next-intl";
-import { Infinity, Calendar, TagIcon } from "lucide-react";
+import { Infinity, Calendar1Icon, EditIcon, TagIcon } from "lucide-react";
 import { createParser, parseAsStringLiteral, useQueryState } from "nuqs";
 import { modulePaths } from "~/assets/constants";
 import { BreadcrumbSetter } from "~/components/Layouts/Breadcrumbs/breadcrumb-setter";
@@ -97,18 +97,6 @@ export default function MyPlantsPage() {
     }
   }, [viewMode, setViewMode, setPage]);
 
-  // Shared handler for sort changes
-  const handleSortChange = React.useCallback(
-    async (field: PlantsSortField, order: SortOrder) => {
-      try {
-        await Promise.all([setSortField(field), setSortOrder(order)]);
-      } catch (error) {
-        console.error("Error updating sort parameters:", error);
-      }
-    },
-    [setSortField, setSortOrder],
-  );
-
   // Define sort options
   const sortOptions = [
     {
@@ -119,7 +107,12 @@ export default function MyPlantsPage() {
     {
       field: PlantsSortField.CREATED_AT,
       label: t("sort-plants-createdAt"),
-      icon: <Calendar className="h-5 w-5" />,
+      icon: <Calendar1Icon className="h-5 w-5" />,
+    },
+    {
+      field: PlantsSortField.UPDATED_AT,
+      label: t("sort-plants-updatedAt"),
+      icon: <EditIcon className="h-5 w-5" />,
     },
   ];
 
@@ -143,13 +136,24 @@ export default function MyPlantsPage() {
     },
   ]);
 
+  // Construct the link for the "Create New Plant" button including current view parameters
+  const createPlantLink = {
+    pathname: "/plants/new/form",
+    query: {
+      sortField: sortField,
+      sortOrder: sortOrder,
+      viewMode: viewMode,
+      // 'page' is generally not needed for 'new', but include if required by form logic
+    },
+  };
+
   return (
     <>
       <BreadcrumbSetter items={breadcrumbs} />
       <PageHeader
         title={t("myplants-page-title")}
         subtitle={t("myplants-page-subtitle")}
-        buttonLink="/plants/new/form"
+        buttonLink={createPlantLink} // Use the dynamically constructed link object
         buttonLabel={t("button-label-create-plant")}
         buttonVariant={"primary"}
       >
@@ -158,7 +162,9 @@ export default function MyPlantsPage() {
           sortField={sortField}
           sortOrder={sortOrder}
           sortOptions={sortOptions}
-          onSortChange={handleSortChange}
+          // Pass nuqs setters directly
+          setSortField={setSortField}
+          setSortOrder={setSortOrder}
           filterLabel={undefined}
           filterEnabled={undefined}
           onFilterChange={undefined}
