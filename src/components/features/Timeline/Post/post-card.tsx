@@ -56,24 +56,16 @@ export default function PostCard({ post, isSocialProp = true }: PostCardProps) {
   const deleteMutation = useMutation(
     api.updates.deleteById.mutationOptions({
       onSuccess: async () => {
-        toast("Success", {
-          description: t("post-deleted-successfully"),
-        });
+        toast.success(t("post-deleted-successfully"));
         await queryClient.invalidateQueries({
           queryKey: api.updates.getAll.queryKey(),
         });
       },
       onError: (error) => {
-        toast.error("Error", {
-          description: error.message || t("error-default"),
-        });
+        toast.error(error.message || t("post-delete-failed"));
       },
     }),
   );
-
-  // const handleDelete = () => {
-  //   setIsDeleteDialogOpen(true);
-  // };
 
   const confirmDelete = async () => {
     await deleteMutation.mutateAsync({ id: post.id });

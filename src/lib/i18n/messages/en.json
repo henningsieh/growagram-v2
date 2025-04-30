@@ -528,6 +528,7 @@
     "newNotConnteched": "NEW",
     "no-photos-yet": "No photos have been selected yet.",
     "no-photos-yet-filtered": "No new images (without linked plants) were found.",
+    "no-plants-connected-yet": "No plants conected yet!",
     "plantSelection": {
       "description": "Select every plant you can see in the photo!",
       "title": "Plant selection"
@@ -749,7 +750,8 @@
     "welcome-to-platform-subttitle": "Welcome to the Grower's platform where you can manage all your Grows and Plants"
   },
   "Posts": {
-    "buttonLabel-createNewPost": "Post Update",
+    "add-photos": "Add Photos",
+    "buttonLabel-createNewPost": "Create Post",
     "buttonLabel-posting": "Posting...",
     "choose-from-library": "Choose from library",
     "content-label": "What's on your mind?",
@@ -760,8 +762,10 @@
     "drop-to-upload": "Drop to upload",
     "edit-button-label": "Edit Update",
     "file-too-large": "{filename} exceeds the maximum file size of {maxSize} MB.",
+    "image-upload-success": "Images Uploaded",
     "invalid-file-type": "{filename} is not a supported image type.",
     "linkedInThisPost": "Linked in this Update",
+    "multiple-images-uploaded-successfully": "Successfully uploaded {count} images",
     "post-card-createdAt": "Posted at",
     "post-created-successfully": "Post created successfully",
     "post-delete-failed": "Failed to delete the post. Please try again.",
@@ -769,9 +773,11 @@
     "public-link-label": "Open in new Tab",
     "toast-errors": {
       "error-deleting": "An unknown error occured while deleting the post",
-      "update-submission-error": "An unknown error occured while creating the update post"
+      "unknown-error": "An unknown error occurred",
+      "update-submission-error": "An unknown error occured while creating the update post",
+      "upload-failed": "Upload Failed"
     },
-    "add-photos": "Add Photos",
+    "uploading": "Uploading...",
     "uploading-photos": "Uploading photos..."
   },
   "Premium": {

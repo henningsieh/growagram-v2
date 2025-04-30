@@ -42,6 +42,7 @@ import {
 } from "~/components/ui/form";
 import { Textarea } from "~/components/ui/textarea";
 import { useRouter } from "~/lib/i18n/routing";
+import { getSignedUrlForUpload } from "~/lib/utils";
 import { readExif } from "~/lib/utils/readExif";
 import { uploadToS3 } from "~/lib/utils/uploadToS3";
 import type {
@@ -76,6 +77,7 @@ const scaleIn = {
 interface FilePreview {
   file: File;
   preview: string;
+  progress: number;
   exifData: {
     captureDate?: Date;
   } | null;
@@ -109,16 +111,8 @@ export function PostFormModal({
   const router = useRouter();
   const t = useTranslations("Posts");
 
-  const [selectedPhotos, setSelectedPhotos] = useState<SelectedPhoto[]>([]);
-  const [newFileUploads, setNewFileUploads] = useState<FilePreview[]>([]);
-  const [isUploading, setIsUploading] = useState(false);
-  const [isDragging, setIsDragging] = useState(false);
-
-  const dragCounter = React.useRef(0);
-  const fileInputRef = React.useRef<HTMLInputElement>(null);
-
-  const createPhotoMutation = useMutation(
-    trpc.photos.createPhoto.mutationOptions(),
+  const connectToPlantMutation = useMutation(
+    trpc.photos.connectToPlant.mutationOptions(),
   );
 
   const form = useForm<PostFormValues>({
@@ -131,24 +125,40 @@ export function PostFormModal({
     },
   });
 
+  const [selectedPhotos, setSelectedPhotos] = useState<SelectedPhoto[]>([]);
+  const [newFileUploads, setNewFileUploads] = useState<FilePreview[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+
+  const dragCounter = React.useRef(0);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+  const createPhotoMutation = useMutation(
+    trpc.photos.createPhoto.mutationOptions(),
+  );
+
   const createPostMutation = useMutation(
     trpc.updates.create.mutationOptions({
       onSuccess: () => {
-        toast("Success", {
-          description: t("post-created-successfully"),
-        });
+        toast.success(t("post-created-successfully"));
         router.push(modulePaths.PUBLICTIMELINE.path);
         onClose();
       },
       onError: (error, post) => {
-        toast.error("Error", {
-          description: t("toast-errors.update-submission-error"),
-        });
-        // console.error the error and the like object in one line
+        toast.error(t("toast-errors.update-submission-error"));
         console.error("Error:", error, "Post object:", post);
       },
     }),
   );
+
+  // Function to update progress for a specific file
+  const updateProgress = React.useCallback((file: File, progress: number) => {
+    setNewFileUploads((prevUploads) =>
+      prevUploads.map((upload) =>
+        upload.file === file ? { ...upload, progress } : upload,
+      ),
+    );
+  }, []);
 
   // Function to handle browsing for images
   const handleBrowseClick = () => {
@@ -229,6 +239,7 @@ export function PostFormModal({
         return {
           file,
           preview: URL.createObjectURL(file),
+          progress: 0,
           exifData,
         };
       }),
@@ -261,91 +272,89 @@ export function PostFormModal({
     });
   };
 
+  // Handle form submission with parallel uploads
   const onSubmit = async (values: PostFormValues) => {
     try {
       setIsUploading(true);
 
-      // First, upload any new files
-      let uploadedPhotoIds: string[] = [];
-
+      // Handle new file uploads in parallel
+      let newlyUploadedImageIds: string[] = [];
       if (newFileUploads.length > 0) {
-        const uploadPromises = newFileUploads.map(async (preview) => {
-          try {
-            // Get a signed URL for upload
-            const response = await fetch("/api/getSignedURL", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                fileName: preview.file.name,
-                fileType: preview.file.type,
-              }),
-            });
+        // Upload all new files in parallel
+        const uploadResults = await Promise.all(
+          newFileUploads.map(async (filePreview) => {
+            try {
+              // Get signed URL for each file
+              const uploadUrl = await getSignedUrlForUpload(filePreview.file);
 
-            if (!response.ok) {
-              throw new Error("Failed to get upload URL");
+              // Upload to S3 with progress tracking
+              const { url } = await uploadToS3(
+                filePreview.file,
+                uploadUrl,
+                (progress) => {
+                  updateProgress(filePreview.file, progress);
+                },
+              );
+
+              // Create photo record in database
+              const [photo] = await createPhotoMutation.mutateAsync({
+                imageUrl: url,
+                originalFilename: filePreview.file.name,
+                captureDate: filePreview.exifData?.captureDate,
+              });
+
+              // If this post is for a plant, connect the image to the plant
+              if (entityType === PostableEntityType.PLANT && photo?.id) {
+                await connectToPlantMutation.mutateAsync({
+                  imageId: photo.id,
+                  plantId: entity.id,
+                });
+              }
+
+              return photo?.id;
+            } catch (error) {
+              console.error("Error uploading file:", error);
+              toast.error(t("toast-errors.upload-failed"));
+              return null;
             }
+          }),
+        );
 
-            const { uploadUrl } = (await response.json()) as {
-              uploadUrl: string;
-            };
+        // Store the new image IDs
+        newlyUploadedImageIds = uploadResults.filter(
+          (id): id is string => id !== null,
+        );
 
-            // Upload to S3
-            const { url: s3Url, eTag } = await uploadToS3(
-              preview.file,
-              uploadUrl,
-            );
-
-            // Create image record in database
-            const [newImage] = await createPhotoMutation.mutateAsync({
-              id: crypto.randomUUID(),
-              imageUrl: s3Url,
-              s3Key: `photos/${preview.file.name}`,
-              s3ETag: eTag,
-              captureDate: preview.exifData?.captureDate || new Date(),
-              originalFilename: preview.file.name,
-            });
-
-            return newImage.id;
-          } catch (error) {
-            console.error("Error uploading image:", error);
-            toast.error("Upload failed", {
-              description: "Failed to upload image. Please try again.",
-            });
-            return null;
-          }
-        });
-
-        const uploadedIds = await Promise.all(uploadPromises);
-        uploadedPhotoIds = uploadedIds.filter(Boolean) as string[];
+        // Show success toast for image uploads
+        if (newlyUploadedImageIds.length > 0) {
+          toast.success(t("image-upload-success"), {
+            description: t("multiple-images-uploaded-successfully", {
+              count: newlyUploadedImageIds.length,
+            }),
+          });
+        }
       }
 
-      // Add existing selected photos
-      const allPhotoIds = [
-        ...uploadedPhotoIds,
-        ...selectedPhotos.map((photo) => photo.id),
+      // Combine newly uploaded image IDs with selected photo IDs
+      const finalPhotoIds = [
+        ...selectedPhotos.map((p) => p.id),
+        ...newlyUploadedImageIds,
       ];
 
-      // Submit the post with the photo IDs
+      // Create the post with all photo IDs
       await createPostMutation.mutateAsync({
         ...values,
-        photoIds: allPhotoIds.length > 0 ? allPhotoIds : undefined,
+        photoIds: finalPhotoIds.length > 0 ? finalPhotoIds : undefined,
       });
-
-      // Clear uploads
-      setNewFileUploads([]);
-      setSelectedPhotos([]);
     } catch (error) {
-      console.error("Post creation error:", error);
-      toast.error("Error", {
-        description:
-          error instanceof Error
-            ? error.message
-            : "Unknown error occurred while creating post",
-      });
+      console.error("Error in form submission:", error);
+      toast.error(t("toast-errors.unknown-error"));
+      throw error;
     } finally {
       setIsUploading(false);
+      setNewFileUploads((current) =>
+        current.map((p) => ({ ...p, progress: 0 })),
+      );
     }
   };
 
@@ -460,26 +469,38 @@ export function PostFormModal({
                 {newFileUploads.map((file, index) => (
                   <div
                     key={file.preview}
-                    className="relative aspect-square overflow-hidden rounded-md border"
+                    className="group relative aspect-square overflow-hidden rounded-md border"
                   >
                     <Image
                       src={file.preview}
-                      alt={`Upload preview ${index}`}
+                      alt={`Upload preview ${index + 1}`}
                       fill
                       className="object-cover"
                     />
-                    <Button
-                      type="button"
-                      variant="destructive"
-                      size="icon"
-                      className="absolute top-1 right-1 h-6 w-6 rounded-full"
-                      onClick={() => handleRemoveFile(index)}
-                    >
-                      <Trash2Icon size={14} />
-                    </Button>
-                    <Badge className="bg-secondary/70 absolute bottom-1 left-1">
-                      {"New"}
-                    </Badge>
+                    {!isUploading && (
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="icon"
+                        className="absolute top-1 right-1 h-6 w-6 rounded-full opacity-0 transition-opacity group-hover:opacity-100"
+                        onClick={() => handleRemoveFile(index)}
+                      >
+                        <Trash2Icon size={14} />
+                      </Button>
+                    )}
+                    {file.progress > 0 && file.progress < 100 && (
+                      <div className="bg-background/80 absolute inset-0 flex flex-col items-center justify-center gap-2 p-4 transition-all">
+                        <div className="bg-muted h-2 w-full overflow-hidden rounded-full">
+                          <div
+                            className="bg-primary h-full transition-all duration-300"
+                            style={{ width: `${file.progress}%` }}
+                          />
+                        </div>
+                        <p className="text-sm font-medium">
+                          {`${t("uploading")} ${file.progress}%`}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 ))}
 
@@ -487,7 +508,7 @@ export function PostFormModal({
                 {selectedPhotos.map((photo) => (
                   <div
                     key={photo.id}
-                    className="relative aspect-square overflow-hidden rounded-md border"
+                    className="group relative aspect-square overflow-hidden rounded-md border"
                   >
                     <Image
                       src={photo.imageUrl}
@@ -499,7 +520,7 @@ export function PostFormModal({
                       type="button"
                       variant="destructive"
                       size="icon"
-                      className="absolute top-1 right-1 h-6 w-6 rounded-full"
+                      className="absolute top-1 right-1 h-6 w-6 rounded-full opacity-0 transition-opacity group-hover:opacity-100"
                       onClick={() => handleRemoveSelectedPhoto(photo.id)}
                     >
                       <Trash2Icon size={14} />

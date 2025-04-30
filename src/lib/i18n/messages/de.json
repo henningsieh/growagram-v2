@@ -528,6 +528,7 @@
     "newNotConnteched": "NEU",
     "no-photos-yet": "Es wurden noch keine Fotos ausgewählt.",
     "no-photos-yet-filtered": "Es wurden keine neuen Bilder (ohne verknüpte Pflanzen) gefunden.",
+    "no-plants-connected-yet": "Noch keine Pflanzen ausgewählt!",
     "plantSelection": {
       "description": "Wähle jede Pflanze aus, die du auf dem Foto sehen kannst!",
       "title": "Pflanzenauswahl"
@@ -749,29 +750,34 @@
     "welcome-to-platform-subttitle": "Willkommen bei der Verwaltung deiner Grows und Pflanzen"
   },
   "Posts": {
-    "buttonLabel-createNewPost": "Update posten",
+    "add-photos": "Fotos hinzufügen",
+    "buttonLabel-createNewPost": "Beitrag erstellen",
     "buttonLabel-posting": "Wird gepostet...",
-    "choose-from-library": "Wähle aus deinen Photos",
+    "choose-from-library": "Aus Bibliothek wählen",
     "content-label": "Was gibt es Neues?",
-    "content-placeholder": "Was sprießt bei dir? Updates, Bilder oder Düngeripps – lass uns teilhaben!",
-    "createNewPost-description": "Teile deine Anbauerfahrungen mit der Community",
-    "createNewPost-title": "Schreibe und poste ein neues Update",
+    "content-placeholder": "Teile deine Erfahrungen mit der Community...",
+    "createNewPost-description": "Teile deine Grow-Erfahrungen mit der Community",
+    "createNewPost-title": "Neues Update schreiben und posten",
     "delete-button-label": "Update löschen",
-    "drop-to-upload": "Zum Hochladen hier ablegen",
+    "drop-to-upload": "Zum Hochladen fallen lassen",
     "edit-button-label": "Update bearbeiten",
     "file-too-large": "{filename} überschreitet die maximale Dateigröße von {maxSize} MB.",
-    "invalid-file-type": "{filename} ist kein unterstützter Bildtyp.",
-    "linkedInThisPost": "Mit dem Update verlinkt",
+    "image-upload-success": "Bilder hochgeladen",
+    "invalid-file-type": "{filename} ist kein unterstütztes Bildformat.",
+    "linkedInThisPost": "Verknüpft in diesem Update",
+    "multiple-images-uploaded-successfully": "{count} Bilder erfolgreich hochgeladen",
     "post-card-createdAt": "Gepostet am",
-    "post-created-successfully": "Post erfolgreich erstellt",
-    "post-delete-failed": "Das Löschen des Posts ist fehlgeschlagen. Bitte versuche es erneut.",
-    "post-deleted-successfully": "Post erfolgreich gelöscht",
-    "public-link-label": "Öffnen im neuen Tab",
+    "post-created-successfully": "Beitrag erfolgreich erstellt",
+    "post-delete-failed": "Beitrag konnte nicht gelöscht werden. Bitte versuche es erneut.",
+    "post-deleted-successfully": "Beitrag erfolgreich gelöscht",
+    "public-link-label": "In neuem Tab öffnen",
     "toast-errors": {
-      "error-deleting": "Ein unbekannter Fehler beim Löschen des Posts trat auf",
-      "update-submission-error": "Ein unbekannter Fehler beim Erstellen des Updates ist aufgetrten"
+      "error-deleting": "Ein unbekannter Fehler ist beim Löschen des Beitrags aufgetreten",
+      "unknown-error": "Ein unbekannter Fehler ist aufgetreten",
+      "update-submission-error": "Ein unbekannter Fehler ist beim Erstellen des Updates aufgetreten",
+      "upload-failed": "Upload fehlgeschlagen"
     },
-    "add-photos": "Fotos hinzufügen",
+    "uploading": "Wird hochgeladen...",
     "uploading-photos": "Fotos werden hochgeladen..."
   },
   "Premium": {
