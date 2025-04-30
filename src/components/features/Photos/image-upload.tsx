@@ -18,7 +18,7 @@ import { Card, CardContent, CardFooter } from "~/components/ui/card";
 import { Label } from "~/components/ui/label";
 import { Progress as ProgressBar } from "~/components/ui/progress";
 import { useRouter } from "~/lib/i18n/routing";
-import { cn, formatDate, formatTime } from "~/lib/utils";
+import { cn, formatDate, formatTime, getSignedUrlForUpload } from "~/lib/utils";
 import { readExif } from "~/lib/utils/readExif";
 import { uploadToS3 } from "~/lib/utils/uploadToS3";
 import type { CreatePhotoInput } from "~/server/api/root";
@@ -40,30 +40,6 @@ interface FilePreview {
     };
   } | null;
 }
-
-interface SignedUrlResponse {
-  uploadUrl: string;
-}
-
-const getSignedUrlForUpload = async (file: File) => {
-  const response = await fetch("/api/getSignedURL", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      fileName: file.name,
-      fileType: file.type,
-    }),
-  });
-
-  if (!response.ok) {
-    throw new Error("Failed to get signed URL");
-  }
-
-  const { uploadUrl } = (await response.json()) as SignedUrlResponse;
-  return uploadUrl;
-};
 
 export default function PhotoUpload() {
   const trpc = useTRPC();
