@@ -243,9 +243,8 @@ export function GrowCard({
         {/* Card Content */}
         <CardContent
           className={cn(
-            "px-2",
+            "flex flex-1 flex-col px-2",
             isSocial && "ml-12 pr-2 pl-0",
-            "flex flex-1 flex-col",
           )}
         >
           <div className="flex-1">
@@ -323,7 +322,7 @@ export function GrowCard({
           />
         </CardContent>
         {/* Card Footer */}
-        <CardFooter className={cn("p-2 pt-0", isSocial && "ml-12")}>
+        <CardFooter className={cn("p-2", isSocial && "ml-12")}>
           {!isSocial && (
             <Button
               size={"sm"}

@@ -242,7 +242,12 @@ export function PlantCard({ plant, isSocialProp = true }: PlantCardProps) {
           </CardHeader>
 
           {/* Card Content */}
-          <CardContent className={cn("px-2", isSocial && "ml-12 pr-2 pl-0")}>
+          <CardContent
+            className={cn(
+              "flex flex-1 flex-col px-2",
+              isSocial && "ml-12 pr-2 pl-0",
+            )}
+          >
             {/* Image Carousel */}
             <ImageCarousel plantImages={plant.plantImages} />
 
@@ -282,7 +287,7 @@ export function PlantCard({ plant, isSocialProp = true }: PlantCardProps) {
           </CardContent>
 
           {/* Card Footer */}
-          <CardFooter className={cn("p-0", isSocial && "ml-12")}>
+          <CardFooter className={cn("p-2", isSocial && "ml-12")}>
             {!isSocial && (
               <Button
                 size={"sm"}

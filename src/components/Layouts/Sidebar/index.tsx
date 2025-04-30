@@ -375,12 +375,14 @@ function ProtectedSidebarContent({
       {/* Sidebar Inset: Content Area */}
       <SidebarInset className="flex-1">
         {/* Fixed Header with Sidebar Toggle and Breadcrumbs */}
-        <header className="bg-background/80 fixed top-14 z-10 flex h-10 w-full shrink-0 items-center justify-between gap-2 border-b shadow-sm backdrop-blur">
-          <div className="flex h-6 items-center gap-1 pl-2 md:pl-1 lg:pl-3 xl:pl-5">
+        <header className="bg-background/80 fixed top-14 z-10 flex w-full shrink-0 flex-col items-start pl-2 shadow-sm backdrop-blur lg:pl-4 xl:pl-6">
+          <div className="flex h-2 items-center"></div>
+          <div className="flex h-5 items-center gap-1">
             <SidebarTrigger className="text-primary" />
             <Separator orientation="vertical" />
             <NavigationBreadcrumbs />
           </div>
+          <div className="flex h-2 w-full shrink-0 items-center border-b"></div>
         </header>
 
         {/* Main Content Area with proper spacing to account for sticky breadcrumb header */}

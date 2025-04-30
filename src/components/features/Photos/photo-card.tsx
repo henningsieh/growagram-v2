@@ -14,8 +14,8 @@ import {
   FileIcon,
   Flower2Icon,
   MessageSquareTextIcon,
-  TagsIcon,
   Trash2Icon,
+  TriangleAlertIcon,
   UploadCloud,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -296,7 +296,12 @@ export function PhotoCard({
         </CardHeader>
 
         {/* Card Content */}
-        <CardContent className={cn(isSocial && "ml-12 pr-2 pl-0")}>
+        <CardContent
+          className={cn(
+            "flex flex-1 flex-col px-2",
+            isSocial && "ml-12 pr-2 pl-0",
+          )}
+        >
           {/* Photo Upload and Capture Dates */}
           <TooltipProvider>
             <div className="mb-2 flex flex-col text-sm">
@@ -365,33 +370,43 @@ export function PhotoCard({
           </div>
 
           {/* Plant Badges */}
-          <CardDescription className="mt-2">
+          <CardDescription>
             <div className="custom-scrollbar flex min-h-8 items-center gap-2 overflow-x-auto px-1">
-              {photo.plantImages
-                .sort((a, b) => a.plant.name.localeCompare(b.plant.name))
-                .map((plantImage) => (
-                  <Link
-                    key={plantImage.plant.id}
-                    href={`/public/plants/${plantImage.plant.id}`}
-                  >
-                    <Badge
-                      variant="plant"
-                      className="flex max-w-32 items-center gap-1 overflow-hidden rounded-sm text-ellipsis whitespace-nowrap"
+              {photo.plantImages.length != 0 ? (
+                photo.plantImages
+                  .sort((a, b) => a.plant.name.localeCompare(b.plant.name))
+                  .map((plantImage) => (
+                    <Link
+                      key={plantImage.plant.id}
+                      href={`/public/plants/${plantImage.plant.id}`}
                     >
-                      <Flower2Icon className="h-4 w-4 shrink-0" />
+                      <Badge
+                        variant="plant"
+                        className="flex max-w-32 items-center gap-1 overflow-hidden rounded-sm text-ellipsis whitespace-nowrap"
+                      >
+                        <Flower2Icon className="h-4 w-4 shrink-0" />
 
-                      <span className="overflow-hidden text-left text-ellipsis">
-                        {plantImage.plant.name}
-                      </span>
-                    </Badge>
-                  </Link>
-                ))}
+                        <span className="overflow-hidden text-left text-ellipsis">
+                          {plantImage.plant.name}
+                        </span>
+                      </Badge>
+                    </Link>
+                  ))
+              ) : (
+                <Badge
+                  variant="destructive"
+                  className="flex items-center gap-1 overflow-hidden rounded-sm font-bold whitespace-nowrap"
+                >
+                  <TriangleAlertIcon className="h-4 w-4 shrink-0" />
+                  {t("no-plants-connected-yet")}
+                </Badge>
+              )}
             </div>
           </CardDescription>
         </CardContent>
 
         {/* Card Footer */}
-        <CardFooter className={cn("flex-col p-2 pt-0", isSocial && "ml-12")}>
+        <CardFooter className={cn("p-2", isSocial && "ml-12")}>
           {!isSocial && (
             <>
               {!!photo.plantImages.length ? (
@@ -420,7 +435,7 @@ export function PhotoCard({
                   <Link
                     href={`${modulePaths.PHOTOS.path}/${photo.id}/form${returnToQuery}`}
                   >
-                    <TagsIcon size={20} />
+                    <Flower2Icon size={20} />
                     {t("button-label-connect-plants")}
                   </Link>
                 </Button>
