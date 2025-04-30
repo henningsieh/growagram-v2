@@ -3,18 +3,22 @@ import * as React from "react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
-import { api } from "~/lib/trpc/react";
 import type { GetCommentsInput, GetCommentsType } from "~/server/api/root";
+import { useTRPC } from "~/trpc/client";
 import { CommentableEntityType } from "~/types/comment";
 
 export const useComments = (
   entityId: string,
   entityType: CommentableEntityType,
 ) => {
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
   const { data: session } = useSession();
-  const utils = api.useUtils();
   const t = useTranslations();
 
   const [newComment, setNewComment] = React.useState<string>("");
@@ -24,10 +28,12 @@ export const useComments = (
     string | null
   >(null);
 
-  const commentCountQuery = api.comments.getCommentCount.useQuery({
-    entityId,
-    entityType,
-  });
+  const commentCountQuery = useQuery(
+    trpc.comments.getCommentCount.queryOptions({
+      entityId,
+      entityType,
+    }),
+  );
 
   React.useEffect(() => {
     if (commentCountQuery.data) {
@@ -37,15 +43,17 @@ export const useComments = (
 
   const commentsSortOrder = SortOrder.DESC satisfies SortOrder;
 
-  const commentsQuery = api.comments.getComments.useQuery(
-    {
-      entityId: entityId,
-      entityType: entityType,
-      sortOrder: commentsSortOrder,
-    } satisfies GetCommentsInput,
-    {
-      enabled: !!session,
-    },
+  const commentsQuery = useQuery(
+    trpc.comments.getComments.queryOptions(
+      {
+        entityId: entityId,
+        entityType: entityType,
+        sortOrder: commentsSortOrder,
+      } satisfies GetCommentsInput,
+      {
+        enabled: !!session,
+      },
+    ),
   );
 
   const toggleComments = () => {
@@ -59,43 +67,58 @@ export const useComments = (
     }
   };
 
-  const postCommentMutation = api.comments.postComment.useMutation({
-    onSuccess: async (_, newComment) => {
-      // First use optimistic updates...
-      utils.comments.getCommentCount.setData(
-        {
-          entityId: entityId,
-          entityType: entityType,
-        },
-        (old) => ({
-          count: (old?.count ?? 0) + 1,
-        }),
-      );
+  const postCommentMutation = useMutation(
+    trpc.comments.postComment.mutationOptions({
+      onSuccess: async (_, newComment) => {
+        // Optimistically update comment count
+        queryClient.setQueryData(
+          trpc.comments.getCommentCount.queryKey({
+            entityId,
+            entityType,
+          }),
+          (old: { count: number } | undefined) => ({
+            count: (old?.count ?? 0) + 1,
+          }),
+        );
 
-      // ...then invalidate the queries
-      await utils.comments.getComments.invalidate();
-      await utils.comments.getCommentCount.invalidate();
-
-      // Update comment count
-      await commentCountQuery.refetch();
-
-      // Refetch replies if it's a reply to a specific comment
-      if (newComment.parentCommentId) {
-        await utils.comments.getReplies.refetch({
-          commentId: newComment.parentCommentId,
+        // Invalidate queries
+        await queryClient.invalidateQueries({
+          queryKey: trpc.comments.getComments.queryKey({
+            entityId,
+            entityType,
+            sortOrder: commentsSortOrder,
+          }),
         });
-      }
+        await queryClient.invalidateQueries({
+          queryKey: trpc.comments.getCommentCount.queryKey({
+            entityId,
+            entityType,
+          }),
+        });
 
-      // Reset state
-      setNewComment("");
-      setReplyingToComment(null);
-    },
-    onError: (error) => {
-      toast.error("Error", {
-        description: error.message || "Failed to post comment",
-      });
-    },
-  });
+        // Update comment count
+        await commentCountQuery.refetch();
+
+        // Refetch replies if it's a reply to a specific comment
+        if (newComment.parentCommentId) {
+          await queryClient.refetchQueries({
+            queryKey: trpc.comments.getReplies.queryKey({
+              commentId: newComment.parentCommentId,
+            }),
+          });
+        }
+
+        // Reset state
+        setNewComment("");
+        setReplyingToComment(null);
+      },
+      onError: (error) => {
+        toast.error("Error", {
+          description: error.message || "Failed to post comment",
+        });
+      },
+    }),
+  );
 
   const handleSubmitComment = (parentCommentId?: string) => {
     if (!newComment.trim()) return;

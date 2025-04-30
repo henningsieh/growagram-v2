@@ -1,5 +1,5 @@
 // src/server/api/routers/grow.ts:
-import { TRPCError } from "@trpc/server";
+import { TRPCError, TRPCRouterRecord } from "@trpc/server";
 import { and, count, eq } from "drizzle-orm";
 import { z } from "zod";
 import { PaginationItemsPerPage } from "~/assets/constants";
@@ -10,7 +10,7 @@ import {
   createTRPCRouter,
   protectedProcedure,
   publicProcedure,
-} from "~/server/api/trpc";
+} from "~/trpc/init";
 import { GrowsSortField } from "~/types/grow";
 import { growSchema } from "~/types/zodSchema";
 
@@ -106,8 +106,8 @@ export const growRouter = createTRPCRouter({
         limit: z
           .number()
           .min(1)
-          .max(1000)
-          .default(PaginationItemsPerPage.GROWS_PER_PAGE),
+          .max(PaginationItemsPerPage.MAX_DEFAULT_ITEMS)
+          .default(PaginationItemsPerPage.PUBLIC_GROWS_PER_PAGE),
         sortField: z
           .nativeEnum(GrowsSortField)
           .default(GrowsSortField.UPDATED_AT),
@@ -502,4 +502,4 @@ export const growRouter = createTRPCRouter({
         .where(eq(grows.id, input.id));
       return { success: !!deletedGrow };
     }),
-});
+} satisfies TRPCRouterRecord);

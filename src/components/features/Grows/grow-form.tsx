@@ -4,6 +4,9 @@ import * as React from "react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { TRPCClientError } from "@trpc/client";
 import {
   ArrowRight,
@@ -19,7 +22,6 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { PaginationItemsPerPage, modulePaths } from "~/assets/constants";
 import FormContent from "~/components/Layouts/form-content";
-import PageHeader from "~/components/Layouts/page-header";
 import { RESPONSIVE_IMAGE_SIZES } from "~/components/Layouts/responsive-grid";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
 import SpinningLoader from "~/components/atom/spinning-loader";
@@ -52,7 +54,6 @@ import {
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
 import { Link, useRouter } from "~/lib/i18n/routing";
-import { api } from "~/lib/trpc/react";
 import { uploadToS3 } from "~/lib/utils/uploadToS3";
 import type {
   CreateOrEditGrowInput,
@@ -62,13 +63,33 @@ import type {
   GrowConnectPlantInput,
   GrowDisconnectPlantInput,
 } from "~/server/api/root";
-import { GrowsSortField } from "~/types/grow";
+import { useTRPC } from "~/trpc/client";
+import { GrowsSortField, GrowsViewMode } from "~/types/grow";
+// Ensure GrowsViewMode is imported
 import { growSchema } from "~/types/zodSchema";
 
 type FormValues = z.infer<typeof growSchema>;
 
-export default function GrowFormPage({ grow }: { grow?: GetGrowByIdType }) {
-  const t_nav = useTranslations("Navigation");
+// Define the type for the list view parameters prop
+interface ListViewParams {
+  sortField: GrowsSortField;
+  sortOrder: SortOrder;
+  viewMode: GrowsViewMode;
+  page: string;
+}
+
+export function GrowForm({
+  grow,
+  listView,
+}: {
+  grow?: GetGrowByIdType;
+  listView: ListViewParams;
+}) {
+  const trpc = useTRPC();
+
+  const queryClient = useQueryClient();
+
+  const t_sidebar = useTranslations("Sidebar");
   const t = useTranslations("Grows");
 
   // Determine the mode based on the presence of grow
@@ -93,7 +114,6 @@ export default function GrowFormPage({ grow }: { grow?: GetGrowByIdType }) {
     },
   };
 
-  const utils = api.useUtils();
   const router = useRouter();
 
   const [isSubmitting, setIsSubmitting] = React.useState(false);
@@ -118,58 +138,73 @@ export default function GrowFormPage({ grow }: { grow?: GetGrowByIdType }) {
   /**
    * Mutation to connect a plant to a grow environment.
    */
-  const connectPlantMutation = api.grows.connectPlant.useMutation({
-    onSuccess: async () => {
-      // Invalidate and refetch relevant queries
-      await utils.grows.getOwnGrows.invalidate();
-      await utils.plants.getOwnPlants.invalidate();
+  const connectPlantMutation = useMutation(
+    trpc.grows.connectPlant.mutationOptions({
+      onSuccess: async () => {
+        // Invalidate and refetch relevant queries
+        await queryClient.invalidateQueries({
+          queryKey: trpc.grows.getOwnGrows.queryKey(),
+        });
+        await queryClient.invalidateQueries({
+          queryKey: trpc.plants.getOwnPlants.queryKey(),
+        });
 
-      toast(t("toasts.connect-success.title"), {
-        description: t("toasts.connect-success.description"),
-      });
-    },
-    onError: (error) => {
-      toast.error(t("error-title"), {
-        description: t("connect-error"),
-      });
-      handleTRPCError(error);
-    },
-  });
+        toast(t("toasts.connect-success.title"), {
+          description: t("toasts.connect-success.description"),
+        });
+      },
+      onError: (error) => {
+        toast.error(t("error-title"), {
+          description: t("connect-error"),
+        });
+        handleTRPCError(error);
+      },
+    }),
+  );
 
   /**
    * Mutation to disconnect a plant from a grow environment.
    */
-  const disconnectPlantMutation = api.grows.disconnectPlant.useMutation({
-    onSuccess: async () => {
-      // Invalidate and refetch relevant queries
-      await utils.grows.getOwnGrows.invalidate();
-      await utils.plants.getOwnPlants.invalidate();
+  const disconnectPlantMutation = useMutation(
+    trpc.grows.disconnectPlant.mutationOptions({
+      onSuccess: async () => {
+        // Invalidate and refetch relevant queries
+        await queryClient.invalidateQueries({
+          queryKey: trpc.grows.getOwnGrows.queryKey(),
+        });
+        await queryClient.invalidateQueries({
+          queryKey: trpc.plants.getOwnPlants.queryKey(),
+        });
 
-      toast(t("toasts.disconnect-success.title"), {
-        description: t("toasts.disconnect-success.description"),
-      });
-    },
-    onError: (error) => {
-      toast.error(t("error-title"), {
-        description: t("disconnect-error"),
-      });
-      handleTRPCError(error);
-    },
-  });
+        toast(t("toasts.disconnect-success.title"), {
+          description: t("toasts.disconnect-success.description"),
+        });
+      },
+      onError: (error) => {
+        toast.error(t("error-title"), {
+          description: t("disconnect-error"),
+        });
+        handleTRPCError(error);
+      },
+    }),
+  );
 
-  // fetching connectable plants from utils cache
-  const initialData = utils.plants.getConnectablePlants.getData({
-    growId: grow?.id,
-  } satisfies GetConnectablePlantsInput);
+  // fetching connectable plants from cache (new syntax)
+  const initialData = queryClient.getQueryData(
+    trpc.plants.getConnectablePlants.queryKey({
+      growId: grow?.id,
+    } satisfies GetConnectablePlantsInput),
+  );
 
   // Data fetching and form initialization...
-  const { data: plantsData, isPending } =
-    api.plants.getConnectablePlants.useQuery(
+  const { data: plantsData, isPending } = useQuery(
+    trpc.plants.getConnectablePlants.queryOptions(
       { growId: grow?.id } satisfies GetConnectablePlantsInput,
       {
         initialData: initialData,
       },
-    );
+    ),
+  );
   const plants = React.useMemo(() => plantsData?.plants || [], [plantsData]);
 
   const initialConnectedPlantIds = React.useMemo(
@@ -189,26 +224,34 @@ export default function GrowFormPage({ grow }: { grow?: GetGrowByIdType }) {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   // Create a photo mutation - defined at component level
-  const createPhotoMutation = api.photos.createPhoto.useMutation();
+  const createPhotoMutation = useMutation(
+    trpc.photos.createPhoto.mutationOptions(),
+  );
 
   // Header image update mutation
-  const updateHeaderImageMutation = api.grows.updateHeaderImage.useMutation({
-    onSuccess: async () => {
-      toast(t("header-image-update-success-title"), {
-        description: t("header-image-update-success-description"),
-      });
-      await utils.grows.getOwnGrows.invalidate();
-      if (grow?.id) {
-        await utils.grows.getById.invalidate({ id: grow.id });
-      }
-    },
-    onError: (error) => {
-      toast.error(t("header-image-update-error-title"), {
-        description:
-          error.message || t("header-image-update-error-description"),
-      });
-    },
-  });
+  const updateHeaderImageMutation = useMutation(
+    trpc.grows.updateHeaderImage.mutationOptions({
+      onSuccess: async () => {
+        toast(t("header-image-update-success-title"), {
+          description: t("header-image-update-success-description"),
+        });
+        await queryClient.invalidateQueries({
+          queryKey: trpc.grows.getOwnGrows.queryKey(),
+        });
+        if (grow?.id) {
+          await queryClient.invalidateQueries({
+            queryKey: trpc.grows.getById.queryKey({ id: grow.id }),
+          });
+        }
+      },
+      onError: (error) => {
+        toast.error(t("header-image-update-error-title"), {
+          description:
+            error.message || t("header-image-update-error-description"),
+        });
+      },
+    }),
+  );
 
   const filteredPlants = React.useMemo(() => {
     if (!plants.length) return [];
@@ -229,102 +272,137 @@ export default function GrowFormPage({ grow }: { grow?: GetGrowByIdType }) {
   });
 
   /**
-   * Mutation to create or edit a grow environment.
+   * Mutation to create or edit a grow
    */
-  const createOrEditGrowMutation = api.grows.createOrEdit.useMutation({
-    onSuccess: async (savedGrow) => {
-      try {
-        // Find plants to connect and disconnect
-        const currentPlantIds = grow?.plants?.map((p) => p.id) || [];
-        const plantsToConnect = selectedPlantIds.filter(
-          (id) => !currentPlantIds.includes(id),
-        );
-        const plantsToDisconnect = currentPlantIds.filter(
-          (id) => !selectedPlantIds.includes(id),
-        );
+  const createOrEditGrowMutation = useMutation(
+    trpc.grows.createOrEdit.mutationOptions({
+      onSuccess: async (savedGrow) => {
+        try {
+          // Find plants to connect and disconnect
+          const currentPlantIds = grow?.plants?.map((p) => p.id) || [];
+          const plantsToConnect = selectedPlantIds.filter(
+            (id) => !currentPlantIds.includes(id),
+          );
+          const plantsToDisconnect = currentPlantIds.filter(
+            (id) => !selectedPlantIds.includes(id),
+          );
 
-        // Perform connection/disconnection operations with error tracking
-        const connectResults = await Promise.allSettled(
-          plantsToConnect.map((plantId) =>
-            connectPlantMutation.mutateAsync({
-              growId: savedGrow.id,
-              plantId: plantId,
-            } satisfies GrowConnectPlantInput),
-          ),
-        );
-
-        const disconnectResults = await Promise.allSettled(
-          plantsToDisconnect.map((plantId) =>
-            disconnectPlantMutation.mutateAsync({
-              growId: savedGrow.id,
-              plantId: plantId,
-            } satisfies GrowDisconnectPlantInput),
-          ),
-        );
-
-        // Check for any connection/disconnection errors
-        const connectionErrors = connectResults
-          .filter(
-            (result): result is PromiseRejectedResult =>
-              result.status === "rejected",
-          )
-          .map((result) => result.reason as Error);
-
-        const disconnectionErrors = disconnectResults
-          .filter(
-            (result): result is PromiseRejectedResult =>
-              result.status === "rejected",
-          )
-          .map((result) => result.reason as Error);
-
-        if (connectionErrors.length > 0 || disconnectionErrors.length > 0) {
-          const errorMessages = [
-            ...connectionErrors.map((err) => `${t("connect-error")}: ${err}`),
-            ...disconnectionErrors.map(
-              (err) => `${t("disconnect-error")}: ${err}`,
+          // Perform connection/disconnection operations with error tracking
+          const connectResults = await Promise.allSettled(
+            plantsToConnect.map((plantId) =>
+              connectPlantMutation.mutateAsync({
+                growId: savedGrow.id,
+                plantId: plantId,
+              } satisfies GrowConnectPlantInput),
             ),
-          ];
+          );
 
-          throw new Error(errorMessages.join("; "));
+          const disconnectResults = await Promise.allSettled(
+            plantsToDisconnect.map((plantId) =>
+              disconnectPlantMutation.mutateAsync({
+                growId: savedGrow.id,
+                plantId: plantId,
+              } satisfies GrowDisconnectPlantInput),
+            ),
+          );
+
+          // Check for any connection/disconnection errors
+          const connectionErrors = connectResults
+            .filter(
+              (result): result is PromiseRejectedResult =>
+                result.status === "rejected",
+            )
+            .map((result) => result.reason as Error);
+
+          const disconnectionErrors = disconnectResults
+            .filter(
+              (result): result is PromiseRejectedResult =>
+                result.status === "rejected",
+            )
+            .map((result) => result.reason as Error);
+
+          if (connectionErrors.length > 0 || disconnectionErrors.length > 0) {
+            const errorMessages = [
+              ...connectionErrors.map((err) => `${t("connect-error")}: ${err}`),
+              ...disconnectionErrors.map(
+                (err) => `${t("disconnect-error")}: ${err}`,
+              ),
+            ];
+
+            throw new Error(errorMessages.join("; "));
+          }
+
+          toast(pageTexts.successToast.title, {
+            description: pageTexts.successToast.description,
+          });
+
+          // Construct the return URL with the received list view parameters
+          const returnUrl = new URL(
+            modulePaths.GROWS.path,
+            window.location.origin,
+          );
+          returnUrl.searchParams.set("sortField", listView.sortField);
+          returnUrl.searchParams.set("sortOrder", listView.sortOrder);
+          returnUrl.searchParams.set("viewMode", listView.viewMode);
+          if (listView.viewMode === GrowsViewMode.PAGINATION && listView.page) {
+            returnUrl.searchParams.set("page", listView.page);
+          }
+
+          try {
+            if (listView.viewMode === GrowsViewMode.INFINITE_SCROLL) {
+              // Invalidate the infinite query
+              const infiniteQueryOptions =
+                trpc.grows.getOwnGrows.infiniteQueryOptions({
+                  limit: PaginationItemsPerPage.GROWS_PER_PAGE, // Or use a value from listView if needed
+                  sortField: listView.sortField,
+                  sortOrder: listView.sortOrder,
+                } satisfies GetOwnGrowsInput);
+
+              // Invalidate the infinite query to trigger refetch on navigation
+              await queryClient.invalidateQueries({
+                queryKey: infiniteQueryOptions.queryKey,
+              });
+            } else {
+              // Invalidate the specific page query for pagination view
+              const queryOptions = trpc.grows.getOwnGrows.queryOptions({
+                cursor: parseInt(listView.page, 10) || 1,
+                limit: PaginationItemsPerPage.GROWS_PER_PAGE, // Or use a value from listView if needed
+                sortField: listView.sortField,
+                sortOrder: listView.sortOrder,
+              });
+
+              await queryClient.invalidateQueries({
+                queryKey: queryOptions.queryKey,
+                exact: true, // Ensure only this specific page query is invalidated
+              });
+            }
+            // Navigate back to the list page with the preserved parameters
+            router.push(returnUrl.pathname + returnUrl.search);
+          } catch (error) {
+            console.error("Error updating queries or navigating:", error);
+            // Navigate anyway to avoid leaving the user stuck, potentially losing state
+            router.push(returnUrl.pathname + returnUrl.search);
+          } finally {
+            setIsSubmitting(false);
+          }
+        } catch (error) {
+          toast.error(t("error-title"), {
+            description: t("error-default"),
+          });
+          handleTRPCError(error);
+        } finally {
+          setIsSubmitting(false);
         }
-
-        toast(pageTexts.successToast.title, {
-          description: pageTexts.successToast.description,
-        });
-
-        const queryObject = {
-          cursor: 1,
-          limit: PaginationItemsPerPage.GROWS_PER_PAGE,
-          sortField: GrowsSortField.NAME,
-          sortOrder: SortOrder.ASC,
-        } satisfies GetOwnGrowsInput;
-
-        // Reset and prefetch queries
-        await Promise.all([
-          utils.grows.getOwnGrows.reset(),
-          utils.grows.getOwnGrows.prefetchInfinite(queryObject),
-          utils.grows.getOwnGrows.prefetch(queryObject),
-        ]);
-
-        // Navigate to grows page
-        router.push("/grows"); //TODO: add paginated parameters?
-      } catch (error) {
+      },
+      onError: (error) => {
         toast.error(t("error-title"), {
           description: t("error-default"),
         });
         handleTRPCError(error);
-      } finally {
         setIsSubmitting(false);
-      }
-    },
-    onError: (error) => {
-      toast.error(t("error-title"), {
-        description: t("error-default"),
-      });
-      handleTRPCError(error);
-      setIsSubmitting(false);
-    },
-  });
+      },
+    }),
+  );
 
   async function onSubmit(values: FormValues) {
     setIsSubmitting(true);
@@ -352,323 +430,314 @@ export default function GrowFormPage({ grow }: { grow?: GetGrowByIdType }) {
   };
 
   return (
-    <PageHeader
-      title={
-        grow === undefined
-          ? t("form-page-title-new")
-          : t("form-page-title-edit")
-      }
-      subtitle={
-        grow === undefined
-          ? t("form-page-subtitle-new")
-          : t("form-page-subtitle-edit")
-      }
-      buttonLabel={t("button-label-back")}
-      buttonVariant={"outline"}
-      buttonLink={modulePaths.GROWS.path}
-    >
-      <FormContent>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-          <Form {...form}>
-            <Card>
-              <CardHeader className="p-2 pb-0 sm:p-3 sm:pb-0 lg:p-4 lg:pb-0 xl:p-6 xl:pb-0">
-                <CardTitle as="h2">{pageTexts.formTitle}</CardTitle>
-                <CardDescription>{pageTexts.formDescription}</CardDescription>
-              </CardHeader>
-              <CardContent className="p-2 sm:p-3 lg:p-4 xl:p-6">
-                <div className="space-y-6">
-                  <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="font-semibold">
-                          {t("grow-name")}
-                        </FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <TentTree className="text-muted-foreground absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2" />
-                            <Input
-                              className="pl-10"
-                              placeholder={t("grow-name-placeholder")}
-                              {...field}
-                            />
-                          </div>
-                        </FormControl>
-                        <FormDescription>
-                          {t("grow-name-description")}
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  {/* Header Image Section */}
-                  <div className="space-y-2">
-                    <FormLabel className="font-semibold">
-                      {t("header-image")}
-                    </FormLabel>
-
-                    <div className="flex flex-col gap-4">
-                      {/* Display current header image if exists */}
-                      {headerImageUrl && (
-                        <div className="relative aspect-video w-full max-w-md overflow-hidden rounded-md border">
-                          <Image
-                            fill
-                            sizes={RESPONSIVE_IMAGE_SIZES}
-                            src={headerImageUrl}
-                            alt={t("grow-header-image")}
-                            className="h-full w-full object-cover"
+    <FormContent>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        <Form {...form}>
+          <Card>
+            <CardHeader className="p-2 pb-0 sm:p-3 sm:pb-0 lg:p-4 lg:pb-0 xl:p-6 xl:pb-0">
+              <CardTitle as="h2">{pageTexts.formTitle}</CardTitle>
+              <CardDescription>{pageTexts.formDescription}</CardDescription>
+            </CardHeader>
+            <CardContent className="p-2 sm:p-3 lg:p-4 xl:p-6">
+              <div className="space-y-6">
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-semibold">
+                        {t("grow-name")}
+                      </FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <TentTree className="text-muted-foreground absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2" />
+                          <Input
+                            className="pl-10"
+                            placeholder={t("grow-name-placeholder")}
+                            {...field}
                           />
-                          <Button
-                            type="button"
-                            variant="destructive"
-                            size="icon"
-                            className="absolute top-2 right-2 h-8 w-8 rounded-full"
-                            onClick={() => {
-                              if (grow?.id) {
-                                updateHeaderImageMutation.mutate({
-                                  growId: grow.id,
-                                  headerImageId: null,
-                                });
-                                setHeaderImageUrl(null);
-                              }
-                            }}
-                            disabled={
-                              updateHeaderImageMutation.isPending ||
-                              isSubmitting
-                            }
-                          >
-                            <X className="h-4 w-4" />
-                          </Button>
                         </div>
-                      )}
+                      </FormControl>
+                      <FormDescription>
+                        {t("grow-name-description")}
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-                      {/* File selection input */}
-                      <div className="flex gap-2">
-                        <Input
-                          type="file"
-                          accept="image/*"
-                          ref={fileInputRef}
-                          className="hidden"
-                          onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            if (file) {
-                              setSelectedFile(file);
-                              // Create a preview URL
-                              const objectUrl = URL.createObjectURL(file);
-                              setHeaderImageUrl(objectUrl);
-                            }
-                          }}
+                {/* Header Image Section */}
+                <div className="space-y-2">
+                  <FormLabel className="font-semibold">
+                    {t("header-image")}
+                  </FormLabel>
+
+                  <div className="flex flex-col gap-4">
+                    {/* Display current header image if exists */}
+                    {headerImageUrl && (
+                      <div className="relative aspect-video w-full max-w-md overflow-hidden rounded-md border">
+                        <Image
+                          fill
+                          sizes={RESPONSIVE_IMAGE_SIZES}
+                          src={headerImageUrl}
+                          alt={t("grow-header-image")}
+                          className="h-full w-full object-cover"
                         />
                         <Button
                           type="button"
-                          variant="outline"
-                          onClick={() => fileInputRef.current?.click()}
+                          variant="destructive"
+                          size="icon"
+                          className="absolute top-2 right-2 h-8 w-8 rounded-full"
+                          onClick={() => {
+                            if (grow?.id) {
+                              updateHeaderImageMutation.mutate({
+                                growId: grow.id,
+                                headerImageId: null,
+                              });
+                              setHeaderImageUrl(null);
+                            }
+                          }}
+                          disabled={
+                            updateHeaderImageMutation.isPending || isSubmitting
+                          }
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    )}
+
+                    {/* File selection input */}
+                    <div className="flex gap-2">
+                      <Input
+                        type="file"
+                        accept="image/*"
+                        ref={fileInputRef}
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            setSelectedFile(file);
+                            // Create a preview URL
+                            const objectUrl = URL.createObjectURL(file);
+                            setHeaderImageUrl(objectUrl);
+                          }
+                        }}
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={
+                          isUploadingImage ||
+                          isSubmitting ||
+                          updateHeaderImageMutation.isPending
+                        }
+                        className="flex gap-2"
+                      >
+                        <ImageIcon className="h-4 w-4" />
+                        {selectedFile ? t("change-image") : t("select-image")}
+                      </Button>
+                      {selectedFile && grow?.id && (
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          onClick={async () => {
+                            if (!selectedFile || !grow?.id) return;
+
+                            setIsUploadingImage(true);
+                            try {
+                              // Get a signed URL from the API
+                              const fileName = `${grow.id}-${Date.now()}-${selectedFile.name}`;
+                              const response = await fetch(
+                                "/api/getSignedURL",
+                                {
+                                  method: "POST",
+                                  headers: {
+                                    "Content-Type": "application/json",
+                                  },
+                                  body: JSON.stringify({
+                                    fileName,
+                                    fileType: selectedFile.type,
+                                  }),
+                                },
+                              );
+
+                              if (!response.ok) {
+                                throw new Error("Failed to get upload URL");
+                              }
+
+                              const { uploadUrl } = (await response.json()) as {
+                                uploadUrl: string;
+                              };
+
+                              // Upload file to S3
+                              const { url: imageUrl, eTag } = await uploadToS3(
+                                selectedFile,
+                                uploadUrl,
+                              );
+
+                              // Create image record - use the mutation defined at component level
+                              const [newImage] =
+                                await createPhotoMutation.mutateAsync({
+                                  id: crypto.randomUUID(),
+                                  imageUrl,
+                                  s3Key: `photos/${fileName}`,
+                                  s3ETag: eTag,
+                                  originalFilename: selectedFile.name,
+                                  captureDate: new Date(),
+                                });
+
+                              // Update grow header image
+                              await updateHeaderImageMutation.mutateAsync({
+                                growId: grow.id,
+                                headerImageId: newImage.id,
+                              });
+
+                              setSelectedFile(null);
+                              toast.success(t("image-upload-success"));
+                            } catch (error) {
+                              console.error("Upload error:", error);
+                              toast.error(t("image-upload-error-title"), {
+                                description: t(
+                                  "image-upload-error-description",
+                                ),
+                              });
+                            } finally {
+                              setIsUploadingImage(false);
+                            }
+                          }}
                           disabled={
                             isUploadingImage ||
                             isSubmitting ||
                             updateHeaderImageMutation.isPending
                           }
-                          className="flex gap-2"
                         >
-                          <ImageIcon className="h-4 w-4" />
-                          {selectedFile ? t("change-image") : t("select-image")}
+                          {isUploadingImage ? (
+                            <>
+                              <SpinningLoader className="mr-2 h-4 w-4" />{" "}
+                              {t("uploading")}
+                            </>
+                          ) : (
+                            t("upload-image")
+                          )}
                         </Button>
-                        {selectedFile && grow?.id && (
-                          <Button
-                            type="button"
-                            variant="secondary"
-                            onClick={async () => {
-                              if (!selectedFile || !grow?.id) return;
-
-                              setIsUploadingImage(true);
-                              try {
-                                // Get a signed URL from the API
-                                const fileName = `${grow.id}-${Date.now()}-${selectedFile.name}`;
-                                const response = await fetch(
-                                  "/api/getSignedURL",
-                                  {
-                                    method: "POST",
-                                    headers: {
-                                      "Content-Type": "application/json",
-                                    },
-                                    body: JSON.stringify({
-                                      fileName,
-                                      fileType: selectedFile.type,
-                                    }),
-                                  },
-                                );
-
-                                if (!response.ok) {
-                                  throw new Error("Failed to get upload URL");
-                                }
-
-                                const { uploadUrl } =
-                                  (await response.json()) as {
-                                    uploadUrl: string;
-                                  };
-
-                                // Upload file to S3
-                                const { url: imageUrl, eTag } =
-                                  await uploadToS3(selectedFile, uploadUrl);
-
-                                // Create image record - use the mutation defined at component level
-                                const [newImage] =
-                                  await createPhotoMutation.mutateAsync({
-                                    id: crypto.randomUUID(),
-                                    imageUrl,
-                                    s3Key: `photos/${fileName}`,
-                                    s3ETag: eTag,
-                                    originalFilename: selectedFile.name,
-                                    captureDate: new Date(),
-                                  });
-
-                                // Update grow header image
-                                await updateHeaderImageMutation.mutateAsync({
-                                  growId: grow.id,
-                                  headerImageId: newImage.id,
-                                });
-
-                                setSelectedFile(null);
-                                toast.success(t("image-upload-success"));
-                              } catch (error) {
-                                console.error("Upload error:", error);
-                                toast.error(t("image-upload-error-title"), {
-                                  description: t(
-                                    "image-upload-error-description",
-                                  ),
-                                });
-                              } finally {
-                                setIsUploadingImage(false);
-                              }
-                            }}
-                            disabled={
-                              isUploadingImage ||
-                              isSubmitting ||
-                              updateHeaderImageMutation.isPending
-                            }
-                          >
-                            {isUploadingImage ? (
-                              <>
-                                <SpinningLoader className="mr-2 h-4 w-4" />{" "}
-                                {t("uploading")}
-                              </>
-                            ) : (
-                              t("upload-image")
-                            )}
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                    <FormDescription>
-                      {t("header-image-description")}
-                    </FormDescription>
-                  </div>
-
-                  <div>
-                    <FormLabel className="mb-2 block font-semibold">
-                      {t("select-plants")}
-                    </FormLabel>
-
-                    <Command
-                      className="rounded-sm border shadow-md"
-                      shouldFilter={false}
-                    >
-                      <CommandInput
-                        placeholder={t("search-plants")}
-                        value={searchQuery}
-                        onValueChange={(value) => setSearchQuery(value)}
-                      />
-                      {isPending ? (
-                        <SpinningLoader className="m-4 size-12" />
-                      ) : (
-                        <CommandList className="min-h-24">
-                          <CommandEmpty className="mx-auto my-4 w-full space-y-2 p-4">
-                            <Alert variant="destructive">
-                              <CircleAlertIcon className="size-5" />
-                              {t("no-plants-connectable")}
-                            </Alert>
-                            <div className="flex justify-end">
-                              <Button className="p-0" variant="link" asChild>
-                                <Link
-                                  className="roundex-xs h-6 text-sm"
-                                  href={modulePaths.PLANTS.path}
-                                >
-                                  {t_nav("my-plants")}
-                                  <ArrowRight className="ml-1 h-4 w-4" />
-                                </Link>
-                              </Button>
-                            </div>
-                          </CommandEmpty>
-                          <CommandGroup>
-                            {filteredPlants.map((plant) => (
-                              <CommandItem
-                                key={plant.id}
-                                onSelect={() => togglePlantSelection(plant.id)}
-                                className={`cursor-pointer ${
-                                  selectedPlantIds.includes(plant.id)
-                                    ? "text-secondary font-bold"
-                                    : ""
-                                }`}
-                              >
-                                <div
-                                  className={`mr-2 flex h-4 w-4 items-center justify-center rounded-sm border ${
-                                    selectedPlantIds.includes(plant.id)
-                                      ? "border-secondary bg-secondary"
-                                      : "border-secondary"
-                                  }`}
-                                >
-                                  {selectedPlantIds.includes(plant.id) && (
-                                    <Check className="text-primary-foreground h-3 w-3" />
-                                  )}
-                                </div>
-                                <TagIcon className="mr-2 h-4 w-4" />
-                                <span>{plant.name}</span>
-                              </CommandItem>
-                            ))}
-                          </CommandGroup>
-                        </CommandList>
                       )}
-                    </Command>
+                    </div>
                   </div>
-
-                  <FormDescription className="mt-2">
-                    {selectedPlantIds.length > 0
-                      ? t("plants-selected", {
-                          count: selectedPlantIds.length,
-                        })
-                      : t("select-plants-optional")}
+                  <FormDescription>
+                    {t("header-image-description")}
                   </FormDescription>
                 </div>
-              </CardContent>
 
-              <CardFooter className="flex w-full gap-2 p-2 sm:p-3 md:gap-6 lg:p-4 xl:p-6">
-                <Button
-                  type="button"
-                  title={t("reset")}
-                  variant="outline"
-                  onClick={() => {
-                    form.reset();
-                    setSelectedPlantIds(initialConnectedPlantIds);
-                    setSearchQuery("");
-                  }}
-                  className="flex-1"
-                >
-                  {t("reset")}
-                </Button>
-                <Button
-                  type="submit"
-                  className="flex-1"
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? t("saving") : pageTexts.submitButtonText}
-                </Button>
-              </CardFooter>
-            </Card>
-          </Form>
-        </form>
-      </FormContent>
-    </PageHeader>
+                <div>
+                  <FormLabel className="mb-2 block font-semibold">
+                    {t("select-plants")}
+                  </FormLabel>
+
+                  <Command
+                    className="rounded-sm border shadow-md"
+                    shouldFilter={false}
+                  >
+                    <CommandInput
+                      placeholder={t("search-plants")}
+                      value={searchQuery}
+                      onValueChange={(value) => setSearchQuery(value)}
+                    />
+                    {isPending ? (
+                      <SpinningLoader className="m-4 size-12" />
+                    ) : (
+                      <CommandList className="min-h-24">
+                        <CommandEmpty className="mx-auto my-4 w-full space-y-2 p-4">
+                          <Alert variant="destructive">
+                            <CircleAlertIcon className="size-5" />
+                            {t("no-plants-connectable")}
+                          </Alert>
+                          <div className="flex justify-end gap-2">
+                            <Button size="sm" variant="link" asChild>
+                              <Link
+                                className="roundex-xs h-6 text-sm"
+                                href={modulePaths.PLANTS.path}
+                              >
+                                {t_sidebar("navMain.Plants.items.My Plants")}
+                                <ArrowRight className="ml-1 h-4 w-4" />
+                              </Link>
+                            </Button>
+                            <Button size="sm" variant="primary" asChild>
+                              <Link
+                                className="roundex-xs h-6 text-sm"
+                                href={modulePaths.PLANTS.newpath}
+                              >
+                                {t_sidebar(
+                                  "navMain.Plants.items.Add New Plant",
+                                )}
+                                <ArrowRight className="ml-1 h-4 w-4" />
+                              </Link>
+                            </Button>
+                          </div>
+                        </CommandEmpty>
+                        <CommandGroup>
+                          {filteredPlants.map((plant) => (
+                            <CommandItem
+                              key={plant.id}
+                              onSelect={() => togglePlantSelection(plant.id)}
+                              className={`cursor-pointer ${
+                                selectedPlantIds.includes(plant.id)
+                                  ? "text-secondary font-bold"
+                                  : ""
+                              }`}
+                            >
+                              <div
+                                className={`mr-2 flex h-4 w-4 items-center justify-center rounded-sm border ${
+                                  selectedPlantIds.includes(plant.id)
+                                    ? "border-secondary bg-secondary"
+                                    : "border-secondary"
+                                }`}
+                              >
+                                {selectedPlantIds.includes(plant.id) && (
+                                  <Check className="text-primary-foreground h-3 w-3" />
+                                )}
+                              </div>
+                              <TagIcon className="mr-2 h-4 w-4" />
+                              <span>{plant.name}</span>
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    )}
+                  </Command>
+                </div>
+
+                <FormDescription className="mt-2">
+                  {selectedPlantIds.length > 0
+                    ? t("plants-selected", {
+                        count: selectedPlantIds.length,
+                      })
+                    : t("select-plants-optional")}
+                </FormDescription>
+              </div>
+            </CardContent>
+
+            <CardFooter className="flex w-full gap-2 p-2 sm:p-3 md:gap-6 lg:p-4 xl:p-6">
+              <Button
+                type="button"
+                title={t("reset")}
+                variant="outline"
+                onClick={() => {
+                  form.reset();
+                  setSelectedPlantIds(initialConnectedPlantIds);
+                  setSearchQuery("");
+                }}
+                className="flex-1"
+              >
+                {t("reset")}
+              </Button>
+              <Button type="submit" className="flex-1" disabled={isSubmitting}>
+                {isSubmitting ? t("saving") : pageTexts.submitButtonText}
+              </Button>
+            </CardFooter>
+          </Card>
+        </Form>
+      </form>
+    </FormContent>
   );
 }

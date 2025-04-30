@@ -83,7 +83,7 @@ export default function ComingSoon() {
             variant="outline"
             className="w-full px-6 py-2 sm:w-auto"
           >
-            <Link href="/">Back to Home</Link>
+            <Link href="/">{"Back to Home"}</Link>
           </Button>
           <Button
             asChild
@@ -92,7 +92,7 @@ export default function ComingSoon() {
           >
             <Link href="/newsletter">
               <Rocket className="mr-2 h-4 w-4" />
-              Get Notified
+              {"Get Notified"}
             </Link>
           </Button>
         </motion.div>

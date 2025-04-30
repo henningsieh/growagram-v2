@@ -41,20 +41,16 @@
     "welcome-message-description": "You must set your username first before entering the platform!",
     "welcome-message-title": "Welcome"
   },
-  "Admin": {
+  "AdminArea": {
     "navigation": {
       "label": "Admin Area"
-    }
-  },
-  "AdminArea": {
-    "description": "Manage users and platform settings",
+    },
     "pageheader": {
       "subtitle": "Administration and management tools",
       "title": "Administration Area"
     },
     "settings-coming-soon": "Admin settings coming soon",
     "settings-tab": "Settings",
-    "title": "Administration",
     "user-management": {
       "buttons": {
         "ban-user": "Ban User",
@@ -64,7 +60,7 @@
         "unban-user": "Unban User",
         "view-profile": "View User Profile"
       },
-      "column-selector": "Columns",
+      "column-selector": "Select columns",
       "columns": {
         "actions": "Actions",
         "bannedUntil": "Ban Status",
@@ -139,7 +135,7 @@
       "no-results": "No results found",
       "no-users": "No users found",
       "previous": "Previous",
-      "search-placeholder": "Search by email...",
+      "search-placeholder": "Search by username...",
       "selected-count": "{count} users selected",
       "title": "User Management",
       "toasts": {
@@ -178,6 +174,21 @@
     "Please log in to like this content": "Please log in to like this content.",
     "Please log in to share this content": "Please log in to share this content.",
     "Sign in to view and add comments": "Sign in to view and add comments."
+  },
+  "Chat": {
+    "error": {
+      "send-failed": "Failed to send message. Please try again."
+    },
+    "input": {
+      "placeholder": {
+        "authenticated": "Type a message...",
+        "unauthenticated": "Login to send messages"
+      }
+    },
+    "messages-are-loading": "Messages are loading...",
+    "no-messages": "No messages yet.",
+    "please-login": "Please log in to chat.",
+    "title": "GrowAGram Chat"
   },
   "Comments": {
     "add-comment-placeholder": "Write a comment",
@@ -289,7 +300,7 @@
     "sort-label": "Sort by:",
     "success-description-create": "The grow environment has been created successfully.",
     "success-description-edit": "The grow environment has been updated successfully.",
-    "success-title": "Success!",
+    "success-title": "That worked! 🎉",
     "toasts": {
       "connect-success": {
         "description": "Plant was successfully connected to the grow",
@@ -503,7 +514,9 @@
     "button-label-post-update": "Create update for photo",
     "button-label-upload-photos": "Upload",
     "buttonBackLabel": "Back",
-    "capture-date": "Captured at",
+    "capture-date": "Captured on",
+    "connect-plants-subtitle": "Which plants do you see in this photo?",
+    "connect-plants-title": "Identify plants",
     "connectPlants": {
       "photo-details-metadata": "Photo details / metadata"
     },
@@ -524,8 +537,6 @@
       "noResults": "No plants found",
       "placeholder": "Search plants..."
     },
-    "connect-plants-subtitle": "Which plants do you see in this photo?",
-    "connect-plants-title": "Identify plants",
     "toasts": {
       "errors": {
         "connectPlants": {
@@ -596,6 +607,7 @@
     "DeleteConfirmation": {
       "alertCautionText": "This action also deletes all Updates and other postings referring to this plant!",
       "description": "No photo will be deleted by this action. But this will also remove all references in any photos where this plant is tagged!",
+      "success-title": "Success",
       "title": "Are you sure you want to remove this plant?"
     },
     "breeder": "Breeder",
@@ -661,7 +673,8 @@
     "plant-deleted-successfully": "The plant has been deleted successfully.",
     "planting-date": "Seed planting date",
     "public-link-label": "Open in new Tab",
-    "sort-plants-createdAt": "Created at",
+    "sort-plants-createdAt": "Added on",
+    "sort-plants-updatedAt": "Updated on",
     "strain": "Strain",
     "strain-breeder-required-error-description": "You must select a breeder before creating a strain.",
     "strain-breeder-required-error-title": "Breeder Required",
@@ -710,7 +723,7 @@
     "coming-soon-description": "We are already working on the new function. Come by again soon!",
     "comunity": "Community",
     "create-plant": "Add new plant",
-    "created-at": "Created on",
+    "created-at": "created on",
     "day": "day",
     "days": "days",
     "desc": "Descending",
@@ -719,6 +732,7 @@
     "feature-coming": "New Feature is on its Way!",
     "grow-environments": "Grows",
     "grow-environments-description": "All active Grows",
+    "grown-by": "grown by",
     "harvested": "already harvested",
     "infinitescroll": "Infinite scrolling",
     "living": "living",
@@ -802,11 +816,16 @@
   "Profile": {
     "FollowButton": {
       "follow": "Follow",
-      "follow-success-description": "You are now following this user.",
+      "follow-success-description": "You are now following this grower. 🥳",
       "follow-success-title": "Following",
       "unfollow": "Unfollow",
-      "unfollow-success-description": "You have unfollowed this user.",
+      "unfollow-success-description": "You have unfollowed this grower. 😢",
       "unfollow-success-title": "Unfollowed"
+    },
+    "metadata": {
+      "description": "Check out the plants and grows by {name} on Growagram",
+      "title": "Profile | {name}",
+      "user-not-found": "User Not Found"
     },
     "tabs": {
       "grows": "Grows",

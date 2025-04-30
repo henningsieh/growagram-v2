@@ -26,23 +26,25 @@ export function EntityDateInfo({
 
   return (
     <CardDescription
-      className={`mb-2 flex h-6 flex-row items-start justify-between pt-1 pr-1 font-mono text-xs tracking-tighter ${className}`}
+      className={`flex h-6 flex-row items-center justify-between pr-1 text-xs tracking-tighter ${className}`}
     >
       {/* Updated At Date */}
       {updatedAt && (
-        <div title={t("updated-at")} className="flex items-center gap-2">
-          <EditIcon size={16} className="shrink-0" />
+        <div title={t("updated-at")} className="flex items-center gap-1">
+          <EditIcon size={13} className="shrink-0" />
           <span className="block">
-            {formatDate(updatedAt, locale)} {formatTime(updatedAt, locale)}
+            {formatDate(updatedAt, locale, { includeYear: false })}{" "}
+            {formatTime(updatedAt, locale)}
           </span>
         </div>
       )}
 
       {/* Created At Date */}
-      <div title={t("created-at")} className="flex items-center gap-2">
-        <Calendar1Icon size={16} className="shrink-0" />
+      <div title={t("created-at")} className="flex items-center gap-1">
+        <Calendar1Icon size={13} className="shrink-0" />
         <span className="block">
-          {formatDate(createdAt, locale)} {formatTime(createdAt, locale)}
+          {formatDate(createdAt, locale, { includeYear: false })}{" "}
+          {formatTime(createdAt, locale)}
         </span>
       </div>
     </CardDescription>

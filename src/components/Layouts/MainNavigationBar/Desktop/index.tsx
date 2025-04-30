@@ -29,7 +29,7 @@ function DesktopNavigationMenu() {
                 asChild
                 className={cn(
                   navigationMenuTriggerStyle(),
-                  "hover:bg-accent/80 hover:text-accent-foreground text-base font-medium transition-colors",
+                  "text-lg font-semibold",
                 )}
               >
                 <Link href={item.href}>{t(item.title)}</Link>
@@ -37,9 +37,7 @@ function DesktopNavigationMenu() {
             ) : (
               <>
                 <NavigationMenuTrigger
-                  className={cn(
-                    "hover:bg-accent/80 hover:text-accent-foreground text-base font-medium transition-colors",
-                  )}
+                  className={cn("text-lg font-semibold transition-colors")}
                 >
                   {t(item.title)}
                 </NavigationMenuTrigger>
@@ -77,7 +75,7 @@ function DesktopNavigationMenu() {
                         <Link
                           key={subItem.title}
                           href={subItem.href}
-                          className="hover:bg-accent hover:text-accent-foreground flex flex-col gap-1 rounded-md p-3 transition-all"
+                          className="flex flex-col gap-1 rounded-md p-3"
                         >
                           <div className="flex items-center gap-2">
                             {subItem.icon &&

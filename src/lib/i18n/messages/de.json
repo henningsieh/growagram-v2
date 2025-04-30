@@ -41,20 +41,16 @@
     "welcome-message-description": "Du musst zuerst deinen Benutzernamen (@username) festlegen, bevor du die Plattform nutzen kannst!",
     "welcome-message-title": "Willkommen"
   },
-  "Admin": {
+  "AdminArea": {
     "navigation": {
       "label": "Admin-Bereich"
-    }
-  },
-  "AdminArea": {
-    "description": "Benutzer und Plattformeinstellungen verwalten",
+    },
     "pageheader": {
       "subtitle": "Verwaltungs- und Management -Tools",
       "title": "Verwaltungsbereich"
     },
     "settings-coming-soon": "Admin-Einstellungen bald verfügbar",
     "settings-tab": "Einstellungen",
-    "title": "Administration",
     "user-management": {
       "buttons": {
         "ban-user": "Benutzer sperren",
@@ -64,7 +60,7 @@
         "unban-user": "Sperre aufheben",
         "view-profile": "Benutzerprofil anzeigen"
       },
-      "column-selector": "Spalten",
+      "column-selector": "Spalten auswählen",
       "columns": {
         "actions": "Aktionen",
         "bannedUntil": "Sperrstatus",
@@ -179,6 +175,21 @@
     "Please log in to share this content": "Melde dich an, um diesen Inhalt zu teilen.",
     "Sign in to view and add comments": "Melden dich an, um Kommentare anzuzeigen und hinzuzufügen."
   },
+  "Chat": {
+    "error": {
+      "send-failed": "Nachricht konnte nicht gesendet werden. Bitte versuche es erneut."
+    },
+    "input": {
+      "placeholder": {
+        "authenticated": "Schreibe eine Nachricht...",
+        "unauthenticated": "Anmelden um Nachrichten zu senden"
+      }
+    },
+    "messages-are-loading": "Nachrichten werden geladen...",
+    "no-messages": "Noch keine Nachrichten.",
+    "please-login": "Bitte melde dich an, um zu chatten.",
+    "title": "GrowAGram Chat"
+  },
   "Comments": {
     "add-comment-placeholder": "Schreibe einen Kommentar",
     "buttons": {
@@ -289,7 +300,7 @@
     "sort-label": "Sortieren nach:",
     "success-description-create": "Der Grow wurde erfolgreich erstellt.",
     "success-description-edit": "Der Grow wurde erfolgreich aktualisiert.",
-    "success-title": "Erfolg!",
+    "success-title": "Das hat geklappt! 🎉",
     "toasts": {
       "connect-success": {
         "description": "Die Pflanze wurde erfolgreich mit dem Grow verbunden",
@@ -479,7 +490,7 @@
           "title": "Erfolg"
         },
         "warning-photo-has-posts": {
-          "description": "Dieses Foto ist mit einem oder mehreren Beiträgen verbunden. Du kannst ein Foto nicht löschen, wenn es Beiträge zugeordnet ist.",
+          "description": "Dieses Foto ist mit einem oder mehreren Beiträgen verbunden. Du kannst ein Foto nicht löschen, wenn es einem oder mehreren Beiträgen zugeordnet ist.",
           "title": "Warnung"
         }
       }
@@ -596,6 +607,7 @@
     "DeleteConfirmation": {
       "alertCautionText": "Diese Aktion löscht auch alle Updates und anderen Beiträge, die sich auf diese Pflanze beziehen!",
       "description": "Durch diese Aktion wird kein Foto gelöscht. Dies wird aber auch alle Referenzen in den Fotos entfernen, auf denen diese Pflanze markiert ist!",
+      "success-title": "Erfolg",
       "title": "Bist du sicher, dass du diese Pflanze löschen möchten?"
     },
     "breeder": "Breeder (Züchter)",
@@ -661,7 +673,8 @@
     "plant-deleted-successfully": "Die Pflanze wurde erfolgreich gelöscht.",
     "planting-date": "Datum der Aussaat",
     "public-link-label": "Öffnen im neuen Tab",
-    "sort-plants-createdAt": "Angelegt am",
+    "sort-plants-createdAt": "Hinzugefügt am",
+    "sort-plants-updatedAt": "Aktualisiert am",
     "strain": "Strain (Sorte)",
     "strain-breeder-required-error-description": "Du musst zuerst einen Breeder auswählen, bevor du einen Strain erstellen kannst.",
     "strain-breeder-required-error-title": "Breeder erforderlich",
@@ -710,7 +723,7 @@
     "coming-soon-description": "Wir arbeiten bereits an der neuen Funktion. \nKomm bald wieder vorbei!",
     "comunity": "Community",
     "create-plant": "Neue Pflanze hinzufügen",
-    "created-at": "Erstellt am",
+    "created-at": "erstellt am",
     "day": "Tag",
     "days": "Tagen",
     "desc": "Absteigend",
@@ -719,6 +732,7 @@
     "feature-coming": "Neue Funktion ist auf dem Weg!",
     "grow-environments": "Grows",
     "grow-environments-description": "Alle aktiven Grows",
+    "grown-by": "angebaut von",
     "harvested": "bereits geerntet",
     "infinitescroll": "Unendliches Scrollen",
     "living": "lebend",
@@ -802,11 +816,16 @@
   "Profile": {
     "FollowButton": {
       "follow": "Folgen",
-      "follow-success-description": "Du folgst diesem Benutzer jetzt.",
-      "follow-success-title": "Folgst du",
+      "follow-success-description": "Du folgst jetzt diesem Growmie. 🥳",
+      "follow-success-title": "Folgen",
       "unfollow": "Entfolgen",
-      "unfollow-success-description": "Du folgst diesem Benutzer nicht mehr.",
-      "unfollow-success-title": "Entfolgt"
+      "unfollow-success-description": "Du folgst diesem Growmie nicht mehr. 😢",
+      "unfollow-success-title": "Entfolgen"
+    },
+    "metadata": {
+      "description": "Entdecke die Pflanzen und Grows von {name} auf Growagram",
+      "title": "Profil | {name}",
+      "user-not-found": "Benutzer nicht gefunden"
     },
     "tabs": {
       "grows": "Grows",

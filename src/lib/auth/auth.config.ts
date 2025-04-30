@@ -4,7 +4,6 @@ import Credentials from "next-auth/providers/credentials";
 import Discord from "next-auth/providers/discord";
 import Facebook from "next-auth/providers/facebook";
 import GitHub from "next-auth/providers/github";
-import Github from "next-auth/providers/github";
 import Google from "next-auth/providers/google";
 import Twitter from "next-auth/providers/twitter";
 import { modulePaths } from "~/assets/constants";
@@ -80,9 +79,6 @@ export default {
       allowDangerousEmailAccountLinking: true,
     }),
     Facebook({
-      allowDangerousEmailAccountLinking: true,
-    }),
-    Github({
       allowDangerousEmailAccountLinking: true,
     }),
   ],

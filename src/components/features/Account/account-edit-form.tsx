@@ -5,6 +5,8 @@ import * as React from "react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
 import { debounce } from "lodash";
 import {
@@ -18,6 +20,7 @@ import {
 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { modulePaths } from "~/assets/constants";
 import FormContent from "~/components/Layouts/form-content";
 import PageHeader from "~/components/Layouts/page-header";
 import AvatarCardHeader from "~/components/atom/avatar-card-header";
@@ -43,8 +46,8 @@ import { Input } from "~/components/ui/input";
 import { Separator } from "~/components/ui/separator";
 import { useIsMobile } from "~/hooks/use-mobile";
 import { useRouter } from "~/lib/i18n/routing";
-import { api } from "~/lib/trpc/react";
 import type { EditUserInput, OwnUserDataType } from "~/server/api/root";
+import { useTRPC } from "~/trpc/client";
 import { userEditSchema } from "~/types/zodSchema";
 
 const formVariants = {
@@ -64,6 +67,7 @@ const itemVariants = {
 };
 
 export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
+  const api = useTRPC();
   const isMobile = useIsMobile();
   const router = useRouter();
   const t = useTranslations("Account");
@@ -86,41 +90,45 @@ export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
     },
   });
 
-  const editUserMutation = api.users.editUser.useMutation({
-    onSuccess: async (updatedUser) => {
-      // 1. Update session
-      await update({
-        name: updatedUser.name,
-        username: updatedUser.username,
-      });
+  const editUserMutation = useMutation(
+    api.users.editUser.mutationOptions({
+      onSuccess: async (updatedUser) => {
+        // 1. Update session
+        await update({
+          name: updatedUser.name,
+          username: updatedUser.username,
+        });
 
-      // 2. Show success message
-      toast(t("form-save-success-title"), {
-        description: t("form-save-success-message"),
-      });
+        // 2. Show success message
+        toast(t("form-save-success-title"), {
+          description: t("form-save-success-message"),
+        });
 
-      // 3. Redirect to account page
-      router.push("/account");
-    },
-    onError: (error) => {
-      toast.error(t("toast-error-save.title"), {
-        description: t("toast-error-save.description"),
-      });
-      console.error("Error updating user:", error);
-    },
-  });
+        // 3. Redirect to account page
+        router.push("/account");
+      },
+      onError: (error) => {
+        toast.error(t("toast-error-save.title"), {
+          description: t("toast-error-save.description"),
+        });
+        console.error("Error updating user:", error);
+      },
+    }),
+  );
 
   const onSubmit = async (values: EditUserInput) => {
     await editUserMutation.mutateAsync(values);
   };
 
   // Check username uniqueness
-  const usernameCheck = api.users.isUsernameAvailable.useQuery(
-    { username: username, excludeOwn: true },
-    {
-      enabled: form.formState.dirtyFields.username,
-      refetchOnWindowFocus: false,
-    },
+  const usernameCheck = useQuery(
+    api.users.isUsernameAvailable.queryOptions(
+      { username: username, excludeOwn: true },
+      {
+        enabled: form.formState.dirtyFields.username,
+        refetchOnWindowFocus: false,
+      },
+    ),
   );
 
   // Wait for the user stopps typing
@@ -155,7 +163,7 @@ export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
         title={t("form-edit-profile-title")}
         subtitle={t("form-edit-profile-subtitle")}
         buttonLabel={t("form-back-button")}
-        buttonLink="/account"
+        buttonLink={modulePaths.ACCOUNT.path}
       >
         <motion.div
           initial={{ opacity: 0, y: 20 }}

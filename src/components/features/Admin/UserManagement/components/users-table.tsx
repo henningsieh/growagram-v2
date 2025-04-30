@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { useQuery } from "@tanstack/react-query";
 import {
   type ColumnFiltersState,
   type SortingState,
@@ -15,13 +16,7 @@ import {
 } from "@tanstack/react-table";
 import { ChevronDown, Loader2 } from "lucide-react";
 import { Button } from "~/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "~/components/ui/card";
+import { CardDescription, CardHeader, CardTitle } from "~/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -37,10 +32,11 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
-import { api } from "~/lib/trpc/react";
+import { useTRPC } from "~/trpc/client.tsx";
 import { columns } from "./columns.tsx";
 
 export function UsersTable() {
+  const trpc = useTRPC();
   const t = useTranslations("AdminArea");
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -52,9 +48,11 @@ export function UsersTable() {
   const [rowSelection, setRowSelection] = useState({});
 
   // Fetch users data
-  const { data: users, isLoading } = api.admin.getAllUsers.useQuery(undefined, {
-    refetchOnWindowFocus: false,
-  });
+  const { data: users, isLoading } = useQuery(
+    trpc.admin.getAllUsers.queryOptions(undefined, {
+      refetchOnWindowFocus: false,
+    }),
+  );
 
   const table = useReactTable({
     data: users || [],
@@ -76,27 +74,32 @@ export function UsersTable() {
   });
 
   return (
-    <Card className="rounded-md">
-      <CardHeader>
+    <div className="w-full">
+      {/* Root container to ensure proper width */}
+      <CardHeader className="px-0 pt-0">
+        {/* Remove padding from header */}
         <CardTitle className="text-lg" as="h3">
           {t("user-management.title")}
         </CardTitle>
         <CardDescription>{t("user-management.description")}</CardDescription>
       </CardHeader>
-      <CardContent>
-        <div className="flex items-center justify-between py-4">
+      <div className="w-full">
+        {/* Content wrapper */}
+        <div className="flex items-center justify-between gap-4 py-4">
           <Input
             placeholder={t("user-management.search-placeholder")}
-            value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
+            value={
+              (table.getColumn("username")?.getFilterValue() as string) ?? ""
+            }
             onChange={(event) =>
-              table.getColumn("email")?.setFilterValue(event.target.value)
+              table.getColumn("username")?.setFilterValue(event.target.value)
             }
             className="max-w-sm"
           />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="ml-auto">
-                {t("user-management.column-selector")}{" "}
+              <Button variant="outline" className="mr-auto">
+                {t("user-management.column-selector")}
                 <ChevronDown className="ml-2 h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
@@ -121,13 +124,14 @@ export function UsersTable() {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-        <div className="rounded-md border">
+        <div className="w-full overflow-auto rounded-md border">
+          {/* Apply overflow-auto here */}
           {isLoading ? (
-            <div className="flex h-[300px] w-full items-center justify-center">
+            <div className="flex h-[300px] items-center justify-center">
               <Loader2 className="text-primary h-8 w-8 animate-spin" />
             </div>
           ) : (
-            <Table>
+            <Table style={{ width: "100%" }}>
               <TableHeader>
                 {table.getHeaderGroups().map((headerGroup) => (
                   <TableRow key={headerGroup.id}>
@@ -204,7 +208,7 @@ export function UsersTable() {
             </Button>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

@@ -6,10 +6,11 @@ import { twMerge } from "tailwind-merge";
 import { CreateChannelDialog } from "~/app/Chat/channels/create-channel";
 import { buttonVariants } from "~/components/button";
 import { SignedIn, SignedOut } from "~/lib/auth/index";
-import { api } from "~/lib/trpc/server";
+import { getCaller } from "~/trpc/server";
 
 export default async function Home() {
-  const channels = await api.channel.list();
+  const caller = await getCaller();
+  const channels = await caller.channel.list();
 
   return (
     <div className="flex-1 overflow-y-auto">

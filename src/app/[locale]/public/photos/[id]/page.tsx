@@ -1,25 +1,72 @@
 // src/app/[locale]/(public)/public/timeline/page.tsx:
+import type { Metadata, ResolvingMetadata } from "next";
+import { getLocale, getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
-import PhotoCard from "~/components/features/Photos/photo-card";
-import { api } from "~/lib/trpc/server";
+import { PhotoCard } from "~/components/features/Photos/photo-card";
+import { formatDate } from "~/lib/utils";
 import type { GetPhotoByIdInput } from "~/server/api/root";
+import { getCaller } from "~/trpc/server";
+import { Locale } from "~/types/locale";
 
-export default async function PublicPlantByIdPage({
-  params,
-}: {
+export type PublicPhotoByIdProps = {
   params: Promise<GetPhotoByIdInput>;
-}) {
-  const photoId = (await params).id;
+  parent: ResolvingMetadata;
+};
 
-  if (photoId.trim() === "") notFound();
+export async function generateMetadata({
+  params,
+  // parent,
+}: PublicPhotoByIdProps): Promise<Metadata> {
+  const caller = await getCaller();
+  const locale = await getLocale();
+  const t = await getTranslations("Photos");
 
-  const photoByIdQuery = {
-    id: photoId,
-  } satisfies GetPhotoByIdInput;
+  // Read route params
+  const { id } = await params;
+  const photo = await caller.photos.getById({
+    id,
+  } satisfies GetPhotoByIdInput);
 
-  const photo = await api.photos.getById(photoByIdQuery);
+  // If photo not found, return basic metadata
+  if (!photo) {
+    return {
+      title: "Photo not found",
+    };
+  }
 
-  if (photo === undefined) notFound();
+  // Format the capture date using proper localization
+  const captureDateFormatted = photo.captureDate
+    ? formatDate(photo.captureDate, locale as Locale, { force: true })
+    : "";
+
+  // Use translated text for the description
+  const description = captureDateFormatted
+    ? `${t("capture-date")}: ${captureDateFormatted}`
+    : "";
+
+  return {
+    title: photo.originalFilename || "Photo",
+    description: description,
+    openGraph: {
+      images: [
+        {
+          url: photo.imageUrl,
+          alt: photo.originalFilename || "Photo",
+        },
+      ],
+    },
+  };
+}
+
+export default async function PublicPhotoByIdPage({
+  params,
+}: PublicPhotoByIdProps) {
+  const caller = await getCaller();
+  const photo = await caller.photos.getById({
+    id: (await params).id,
+  });
+
+  if (!photo) notFound();
 
   return (
     <>

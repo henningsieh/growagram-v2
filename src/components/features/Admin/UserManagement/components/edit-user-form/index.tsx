@@ -4,6 +4,8 @@ import * as React from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -24,7 +26,7 @@ import {
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { BAN_DURATIONS } from "~/assets/constants";
+import { BAN_DURATIONS, modulePaths } from "~/assets/constants";
 import FormContent from "~/components/Layouts/form-content";
 import PageHeader from "~/components/Layouts/page-header";
 import { CustomAvatar } from "~/components/atom/custom-avatar";
@@ -57,7 +59,8 @@ import {
 import { Separator } from "~/components/ui/separator";
 import { Textarea } from "~/components/ui/textarea";
 import { useIsMobile } from "~/hooks/use-mobile";
-import { api } from "~/lib/trpc/react";
+import { useTRPC } from "~/trpc/client";
+import { getQueryClient } from "~/trpc/server";
 import { UserRoles } from "~/types/user";
 import { adminEditUserSchema } from "~/types/zodSchema";
 
@@ -93,30 +96,35 @@ type BanUserInput = z.infer<typeof banUserSchema>;
 type AdminEditUserInput = z.infer<typeof adminEditUserSchema>;
 
 export default function AdminUserEditForm({ userId }: { userId: string }) {
+  const trpc = useTRPC();
+  const qureyClient = getQueryClient();
   const t = useTranslations("AdminArea.user-management.edit-form");
   const router = useRouter();
   const isMobile = useIsMobile();
-  const utils = api.useUtils();
 
   // Force refresh user data when component mounts
   React.useEffect(() => {
     // Invalidate user-specific query to ensure fresh data
-    void utils.admin.getUserById.invalidate({ id: userId });
-  }, [userId, utils.admin.getUserById, utils.admin.getAllUsers]);
+    void qureyClient.invalidateQueries({
+      queryKey: trpc.admin.getUserById.queryKey({ id: userId }),
+    });
+  }, [qureyClient, trpc.admin.getUserById, userId]);
 
   // Get user data and always refetch
   const {
     data: user,
     isLoading: userLoading,
     error: userError,
-  } = api.admin.getUserById.useQuery(
-    { id: userId },
-    {
-      refetchOnWindowFocus: true,
-      refetchOnMount: true,
-      refetchOnReconnect: true,
-      staleTime: 0, // Consider data immediately stale to force refetch
-    },
+  } = useQuery(
+    trpc.admin.getUserById.queryOptions(
+      { id: userId },
+      {
+        refetchOnWindowFocus: true,
+        refetchOnMount: true,
+        refetchOnReconnect: true,
+        staleTime: 0, // Consider data immediately stale to force refetch
+      },
+    ),
   );
 
   // Handle error with useEffect instead of in the query options
@@ -139,42 +147,55 @@ export default function AdminUserEditForm({ userId }: { userId: string }) {
   });
 
   // Ban user mutation
-  const banUserMutation = api.admin.banUser.useMutation({
-    onSuccess: async () => {
-      // Invalidate queries to refetch the latest data
-      await utils.admin.getUserById.invalidate({ id: userId });
-      await utils.admin.getAllUsers.invalidate();
-
-      toast.success("User banned successfully", {
-        description:
-          "The user has been banned and cannot log in until the ban expires.",
-      });
-      banForm.reset();
-    },
-    onError: (error) => {
-      toast.error("Failed to ban user", {
-        description: error.message || "An unexpected error occurred",
-      });
-    },
-  });
+  const banUserMutation = useMutation(
+    trpc.admin.banUser.mutationOptions({
+      onSuccess: async () => {
+        // Invalidate queries to refetch the latest data
+        await qureyClient.invalidateQueries({
+          queryKey: trpc.admin.getUserById.queryKey({ id: userId }),
+        });
+        await qureyClient.invalidateQueries({
+          queryKey: trpc.admin.getAllUsers.queryKey(),
+        });
+        // Show success toast
+        toast.success("User banned successfully", {
+          description:
+            "The user has been banned and cannot log in until the ban expires.",
+        });
+        banForm.reset();
+      },
+      onError: (error) => {
+        toast.error("Failed to ban user", {
+          description: error.message || "An unexpected error occurred",
+        });
+      },
+    }),
+  );
 
   // Unban user mutation
-  const unbanUserMutation = api.admin.unbanUser.useMutation({
-    onSuccess: async () => {
-      // Invalidate queries to refetch the latest data
-      await utils.admin.getUserById.invalidate({ id: userId });
-      await utils.admin.getAllUsers.invalidate();
-
-      toast.success("User unbanned successfully", {
-        description: "The user's ban has been lifted and they can now log in.",
-      });
-    },
-    onError: (error) => {
-      toast.error("Failed to unban user", {
-        description: error.message || "An unexpected error occurred",
-      });
-    },
-  });
+  const unbanUserMutation = useMutation(
+    trpc.admin.unbanUser.mutationOptions({
+      onSuccess: async () => {
+        // Invalidate queries to refetch the latest data
+        await qureyClient.invalidateQueries({
+          queryKey: trpc.admin.getUserById.queryKey({ id: userId }),
+        });
+        await qureyClient.invalidateQueries({
+          queryKey: trpc.admin.getAllUsers.queryKey(),
+        });
+        // Show success toast
+        toast.success("User unbanned successfully", {
+          description:
+            "The user's ban has been lifted and they can now log in.",
+        });
+      },
+      onError: (error) => {
+        toast.error("Failed to unban user", {
+          description: error.message || "An unexpected error occurred",
+        });
+      },
+    }),
+  );
 
   // Handle ban form submission
   const onBanSubmit = async (values: BanUserInput) => {
@@ -221,25 +242,31 @@ export default function AdminUserEditForm({ userId }: { userId: string }) {
   });
 
   // Update user mutation with cache invalidation
-  const updateUserMutation = api.admin.updateUserDetails.useMutation({
-    onSuccess: async () => {
-      // Invalidate queries to refetch the latest data
-      await Promise.all([
-        utils.admin.getUserById.invalidate({ id: userId }),
-        utils.admin.getAllUsers.invalidate(),
-      ]);
+  const updateUserMutation = useMutation(
+    trpc.admin.updateUserDetails.mutationOptions({
+      onSuccess: async () => {
+        // Invalidate queries to refetch the latest data
+        await Promise.all([
+          qureyClient.invalidateQueries({
+            queryKey: trpc.admin.getUserById.queryKey({ id: userId }),
+          }),
+          qureyClient.invalidateQueries({
+            queryKey: trpc.admin.getAllUsers.queryKey(),
+          }),
+        ]);
 
-      toast.success(t("success-title"), {
-        description: t("success-description"),
-      });
-      router.push("/admin");
-    },
-    onError: (error) => {
-      toast.error(t("error-title"), {
-        description: error.message || t("error-description"),
-      });
-    },
-  });
+        toast.success(t("success-title"), {
+          description: t("success-description"),
+        });
+        router.push("/admin");
+      },
+      onError: (error) => {
+        toast.error(t("error-title"), {
+          description: error.message || t("error-description"),
+        });
+      },
+    }),
+  );
 
   // Handle form submission
   const onSubmit = async (values: AdminEditUserInput) => {
@@ -256,7 +283,7 @@ export default function AdminUserEditForm({ userId }: { userId: string }) {
     <PageHeader
       title={t("title")}
       subtitle={t("subtitle")}
-      buttonLink="/admin"
+      buttonLink={modulePaths.ADMINISTRATION.path}
       buttonLabel={t("back-button")}
       buttonVariant="outline"
       buttonIcon={<ArrowLeft className="mr-2 h-4 w-4" />}

@@ -2,13 +2,14 @@
 import * as React from "react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
-import { skipToken } from "@tanstack/react-query";
+import { skipToken, useMutation, useQuery } from "@tanstack/react-query";
+import { useSubscription } from "@trpc/tanstack-react-query";
 import { toast } from "sonner";
-import { api } from "~/lib/trpc/react";
 import {
   type GetAllNotificationType,
   GetAllNotificationsInput,
 } from "~/server/api/root";
+import { useTRPC } from "~/trpc/client";
 import {
   NotifiableEntityType,
   NotificationEventType,
@@ -22,7 +23,7 @@ export function useNotifications(onlyUnread = true) {
   const [lastEventId, setLastEventId] = React.useState<false | null | string>(
     false,
   );
-  const utils = api.useUtils();
+  const trpc = useTRPC();
   const { status } = useSession();
   const t = useTranslations("Notifications");
 
@@ -41,16 +42,16 @@ export function useNotifications(onlyUnread = true) {
     }
   }, [allNotifications, lastEventId]);
 
-  const query = api.notifications.getAll.useQuery(
-    { onlyUnread } satisfies GetAllNotificationsInput, // Pass onlyUnread parameter
-    {
-      refetchOnWindowFocus: true,
-      refetchOnMount: true,
-      staleTime: 10 * 1000,
-      enabled: status === "authenticated", // Only enable when authenticated
-      retry: false, // Don't retry on error (like 401)
-    },
-  );
+  const query = useQuery({
+    ...trpc.notifications.getAll.queryOptions({
+      onlyUnread,
+    } satisfies GetAllNotificationsInput),
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
+    staleTime: 10 * 1000,
+    enabled: status === "authenticated", // Only enable when authenticated
+    retry: false, // Don't retry on error (like 401)
+  });
 
   // Update state from query
   React.useEffect(() => {
@@ -99,64 +100,60 @@ export function useNotifications(onlyUnread = true) {
     [t, getEntityTypeText],
   );
 
-  // Enhanced subscription with lastEventId and error handling
-  const subscription = api.notifications.onNotification.useSubscription(
-    status !== "authenticated" || lastEventId === false
-      ? skipToken
-      : { lastEventId },
-    {
-      onData: (notification) => {
-        setLastEventId(notification.id);
-        const notificationText = getNotificationText(
-          notification.type,
-          notification.entityType,
-        );
-        toast(t("new_notification"), {
-          description: `${notification.actor.name} ${notificationText}`,
-        });
-        void utils.notifications.getAll.invalidate();
-      },
-      onError: (err) => {
-        console.error("Subscription error:", err);
-        // Try to resubscribe if still authenticated
-        if (status === "authenticated") {
-          const lastNotificationId = allNotifications?.at(-1)?.id;
-          if (lastNotificationId) {
-            setLastEventId(lastNotificationId);
-          }
-          void utils.notifications.getAll.invalidate();
-        }
-      },
-    },
-  );
+  // Updated subscription with new TanStack Query syntax
+  const subscription = useSubscription({
+    ...trpc.notifications.onNotification.subscriptionOptions(
+      status !== "authenticated" || lastEventId === false
+        ? skipToken
+        : { lastEventId },
+    ),
+    enabled: status === "authenticated" && lastEventId !== false,
+  });
 
-  const { mutate: markAsRead } = api.notifications.markAsRead.useMutation({
+  // Handle success with the returned data using an effect
+  React.useEffect(() => {
+    if (subscription.data) {
+      const notification = subscription.data; // now typed as GetAllNotificationType
+      setLastEventId(notification.id);
+      const notificationText = getNotificationText(
+        notification.type,
+        notification.entityType,
+      );
+      toast(t("new_notification"), {
+        description: `${notification.actor.name} ${notificationText}`,
+      });
+      void query.refetch();
+    }
+  }, [getNotificationText, query, subscription.data, t]);
+
+  // Updated mutation with new TanStack Query syntax
+  const markAsReadMutation = useMutation({
+    ...trpc.notifications.markAsRead.mutationOptions(),
     onSuccess: async (_, { id }) => {
       setAllNotifications((prev) => prev?.filter((n) => n.id !== id) ?? null);
-      await utils.notifications.getAll.invalidate();
+      await query.refetch();
     },
   });
 
-  const { mutate: markAllAsRead } = api.notifications.markAllAsRead.useMutation(
-    {
-      onSuccess: async () => {
-        setAllNotifications([]);
-        await utils.notifications.getAll.invalidate();
-      },
+  // Updated mutation with new TanStack Query syntax
+  const markAllAsReadMutation = useMutation({
+    ...trpc.notifications.markAllAsRead.mutationOptions(),
+    onSuccess: async () => {
+      setAllNotifications([]);
+      await query.refetch();
     },
-  );
+  });
 
   const commentId = allNotifications?.find(
     (n) => n.entityType === NotifiableEntityType.COMMENT,
   )?.entityId;
 
-  const { data: commentableEntity, isLoading: isCommentLoading } =
-    api.comments.getParentEntity.useQuery(
+  const commentEntityQuery = useQuery({
+    ...trpc.comments.getParentEntity.queryOptions(
       commentId ? { commentId } : skipToken,
-      {
-        enabled: Boolean(commentId),
-      },
-    );
+    ),
+    enabled: Boolean(commentId),
+  });
 
   /**
    * Get the href for a notification
@@ -181,16 +178,16 @@ export function useNotifications(onlyUnread = true) {
             notification.commentId ? `?commentId=${notification.commentId}` : ""
           }`; // Photo that was liked or commented on
         case NotifiableEntityType.COMMENT:
-          if (!commentableEntity || isCommentLoading) {
+          if (!commentEntityQuery.data || commentEntityQuery.isLoading) {
             return undefined;
           }
-          return `/public/${commentableEntity.entityType}s/${commentableEntity.entityId}?commentId=${notification.entityId}`;
+          return `/public/${commentEntityQuery.data.entityType}s/${commentEntityQuery.data.entityId}?commentId=${notification.entityId}`;
 
         default:
           return "#"; // Fallback
       }
     };
-  }, [commentableEntity, isCommentLoading]);
+  }, [commentEntityQuery.data, commentEntityQuery.isLoading]);
 
   return {
     all: allNotifications ?? [],
@@ -215,7 +212,7 @@ export function useNotifications(onlyUnread = true) {
     subscriptionError: subscription.error,
     getNotificationText,
     getNotificationHref,
-    markAllAsRead,
-    markAsRead,
+    markAllAsRead: markAllAsReadMutation.mutate,
+    markAsRead: markAsReadMutation.mutate,
   };
 }

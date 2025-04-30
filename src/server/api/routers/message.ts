@@ -1,11 +1,15 @@
-import { tracked } from "@trpc/server";
+import { TRPCRouterRecord, tracked } from "@trpc/server";
 import { z } from "zod";
 import { db } from "~/lib/db";
 import { Message, type PostType } from "~/lib/db/schema";
 import { currentlyTyping, ee } from "~/server/api/routers/channel";
-import { protectedProcedure, publicProcedure } from "~/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "~/trpc/init";
 
-export const messageRouter = {
+export const messageRouter = createTRPCRouter({
   add: protectedProcedure
     .input(
       z.object({
@@ -138,4 +142,4 @@ export const messageRouter = {
         yield* maybeYield(post);
       }
     }),
-};
+} satisfies TRPCRouterRecord);

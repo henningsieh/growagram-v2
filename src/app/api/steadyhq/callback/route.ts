@@ -4,19 +4,21 @@ import { NextResponse } from "next/server";
 import axios from "axios";
 import { modulePaths } from "~/assets/constants";
 import { env } from "~/env";
-import { auth } from "~/lib/auth";
-import { api } from "~/lib/trpc/server";
+import { uncachedAuth } from "~/lib/auth";
+import { getCaller } from "~/trpc/server";
 
 // this Auth wrapper has bogus return type,
 // so we need to cast it to any. See below!
 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-export const GET = auth(async function GET(req) {
+export const GET = uncachedAuth(async function GET(req) {
   if (!req.auth) {
     return NextResponse.json(
       { error: "You are not authorized" },
       { status: 401 },
     );
   }
+
+  const caller = await getCaller();
 
   const { searchParams } = new URL(req.url);
   const code = searchParams.get("code");
@@ -55,7 +57,7 @@ export const GET = auth(async function GET(req) {
     console.log("OAuth callback response:", response.data);
 
     // Update tokens using the TRPC procedure
-    await api.users.updateUserTokens({
+    await caller.users.updateUserTokens({
       userId: req.auth.user.id,
       accessToken: access_token,
       refreshToken: refresh_token,

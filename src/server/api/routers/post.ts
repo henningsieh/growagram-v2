@@ -1,5 +1,5 @@
 // src/server/api/routers/publicPost.ts
-import { TRPCError } from "@trpc/server";
+import { TRPCError, TRPCRouterRecord } from "@trpc/server";
 import { desc, eq } from "drizzle-orm";
 import { z } from "zod";
 import { grows, images, plants, postImages, posts } from "~/lib/db/schema";
@@ -7,11 +7,15 @@ import {
   connectImageWithPlantsQuery,
   connectPlantWithImagesQuery,
 } from "~/server/api/routers/plantImages";
-import { protectedProcedure, publicProcedure } from "~/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "~/trpc/init";
 import { PostableEntityType } from "~/types/post";
 import { postSchema } from "~/types/zodSchema";
 
-export const postRouter = {
+export const postRouter = createTRPCRouter({
   create: protectedProcedure
     .input(postSchema)
     .mutation(async ({ ctx, input }) => {
@@ -198,4 +202,4 @@ export const postRouter = {
         .where(eq(posts.id, input.id));
       return { success: !!deletedPost };
     }),
-};
+} satisfies TRPCRouterRecord);

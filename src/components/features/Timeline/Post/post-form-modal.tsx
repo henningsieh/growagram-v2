@@ -1,10 +1,9 @@
-"use client";
-
 import * as React from "react";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   FileImage,
@@ -43,7 +42,6 @@ import {
 } from "~/components/ui/form";
 import { Textarea } from "~/components/ui/textarea";
 import { useRouter } from "~/lib/i18n/routing";
-import { api } from "~/lib/trpc/react";
 import { readExif } from "~/lib/utils/readExif";
 import { uploadToS3 } from "~/lib/utils/uploadToS3";
 import type {
@@ -51,6 +49,7 @@ import type {
   GetOwnPhotoType,
   GetOwnPlantType,
 } from "~/server/api/root";
+import { useTRPC } from "~/trpc/client";
 import { PostableEntityType } from "~/types/post";
 import { postSchema } from "~/types/zodSchema";
 
@@ -106,15 +105,21 @@ export function PostFormModal({
   entity,
   entityType,
 }: PostFormModalProps) {
+  const trpc = useTRPC();
   const router = useRouter();
   const t = useTranslations("Posts");
+
   const [selectedPhotos, setSelectedPhotos] = useState<SelectedPhoto[]>([]);
   const [newFileUploads, setNewFileUploads] = useState<FilePreview[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
+
   const dragCounter = React.useRef(0);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
-  const createPhotoMutation = api.photos.createPhoto.useMutation();
+
+  const createPhotoMutation = useMutation(
+    trpc.photos.createPhoto.mutationOptions(),
+  );
 
   const form = useForm<PostFormValues>({
     resolver: zodResolver(postSchema),
@@ -126,22 +131,24 @@ export function PostFormModal({
     },
   });
 
-  const createPostMutation = api.updates.create.useMutation({
-    onSuccess: () => {
-      toast("Success", {
-        description: t("post-created-successfully"),
-      });
-      router.push(modulePaths.PUBLICTIMELINE.path);
-      onClose();
-    },
-    onError: (error, post) => {
-      toast.error("Error", {
-        description: t("toast-errors.update-submission-error"),
-      });
-      // console.error the error and the like object in one line
-      console.error("Error:", error, "Post object:", post);
-    },
-  });
+  const createPostMutation = useMutation(
+    trpc.updates.create.mutationOptions({
+      onSuccess: () => {
+        toast("Success", {
+          description: t("post-created-successfully"),
+        });
+        router.push(modulePaths.PUBLICTIMELINE.path);
+        onClose();
+      },
+      onError: (error, post) => {
+        toast.error("Error", {
+          description: t("toast-errors.update-submission-error"),
+        });
+        // console.error the error and the like object in one line
+        console.error("Error:", error, "Post object:", post);
+      },
+    }),
+  );
 
   // Function to handle browsing for images
   const handleBrowseClick = () => {

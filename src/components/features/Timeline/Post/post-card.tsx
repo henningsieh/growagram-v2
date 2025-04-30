@@ -1,6 +1,7 @@
 import * as React from "react";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ChevronLeft, ChevronRight, DotIcon } from "lucide-react";
 import { toast } from "sonner";
 import { useImageModal } from "~/components/Layouts/photo-modal-provider";
@@ -14,9 +15,9 @@ import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
 import { useComments } from "~/hooks/use-comments";
 import { useLikeStatus } from "~/hooks/use-likes";
-import { api } from "~/lib/trpc/react";
 import { cn, formatDate, formatTime } from "~/lib/utils";
 import { GetPostType } from "~/server/api/root";
+import { useTRPC } from "~/trpc/client";
 import { CommentableEntityType } from "~/types/comment";
 import { LikeableEntityType } from "~/types/like";
 import { Locale } from "~/types/locale";
@@ -28,7 +29,9 @@ interface PostCardProps {
 }
 
 export default function PostCard({ post, isSocialProp = true }: PostCardProps) {
-  const utils = api.useUtils();
+  const api = useTRPC();
+  const queryClient = useQueryClient();
+
   const locale = useLocale();
 
   const t = useTranslations("Posts");
@@ -50,20 +53,27 @@ export default function PostCard({ post, isSocialProp = true }: PostCardProps) {
     useComments(post.id, CommentableEntityType.Post);
 
   // Initialize delete mutation
-  const deleteMutation = api.updates.deleteById.useMutation({
-    onSuccess: async () => {
-      toast("Success", {
-        description: t("post-deleted-successfully"),
-      });
-      await utils.updates.getAll.invalidate();
-    },
-    onError: (error, post) => {
-      toast.error("Error", {
-        description: t("toast-errors.error-deleting"),
-      });
-      console.error("Error:", error, "post id:", post.id);
-    },
-  });
+  const deleteMutation = useMutation(
+    api.updates.deleteById.mutationOptions({
+      onSuccess: async () => {
+        toast("Success", {
+          description: t("post-deleted-successfully"),
+        });
+        await queryClient.invalidateQueries({
+          queryKey: api.updates.getAll.queryKey(),
+        });
+      },
+      onError: (error) => {
+        toast.error("Error", {
+          description: error.message || t("error-default"),
+        });
+      },
+    }),
+  );
+
+  // const handleDelete = () => {
+  //   setIsDeleteDialogOpen(true);
+  // };
 
   const confirmDelete = async () => {
     await deleteMutation.mutateAsync({ id: post.id });
@@ -122,7 +132,7 @@ export default function PostCard({ post, isSocialProp = true }: PostCardProps) {
       />
       <Card
         className={cn(
-          `border-input flex flex-col gap-0 overflow-hidden border py-0`,
+          `border-input flex flex-col gap-0 overflow-hidden rounded-md border py-0`,
           // isSocial && "border-none",
         )}
       >

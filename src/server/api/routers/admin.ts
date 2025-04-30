@@ -1,14 +1,14 @@
 // src/server/api/routers/admin.ts
-import { TRPCError } from "@trpc/server";
+import { TRPCError, TRPCRouterRecord } from "@trpc/server";
 import { desc, eq } from "drizzle-orm";
 import { z } from "zod";
 import { BAN_DURATIONS } from "~/assets/constants";
 import { users } from "~/lib/db/schema";
-import { adminProcedure } from "~/server/api/trpc";
+import { adminProcedure, createTRPCRouter } from "~/trpc/init";
 import { UserRoles } from "~/types/user";
 import { adminEditUserSchema } from "~/types/zodSchema";
 
-export const adminRouter = {
+export const adminRouter = createTRPCRouter({
   // Get all users with pagination
   getAllUsers: adminProcedure.query(async ({ ctx }) => {
     const allUsers = await ctx.db.query.users.findMany({
@@ -256,4 +256,4 @@ export const adminRouter = {
 
       return updatedUser[0];
     }),
-};
+} satisfies TRPCRouterRecord);

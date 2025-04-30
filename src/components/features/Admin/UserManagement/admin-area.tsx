@@ -3,13 +3,7 @@
 import * as React from "react";
 import { useTranslations } from "next-intl";
 import { Shield, Users } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "~/components/ui/card";
+import { Card, CardHeader } from "~/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { UsersTable } from "./components/users-table";
 
@@ -18,14 +12,8 @@ export function AdminArea() {
   const [activeTab, setActiveTab] = React.useState("users");
 
   return (
-    <Card className="w-full rounded-lg">
+    <Card className="w-full overflow-y-scroll rounded-lg">
       <CardHeader>
-        <CardTitle className="text-2xl" as="h2">
-          {t("title")}
-        </CardTitle>
-        <CardDescription>{t("description")}</CardDescription>
-      </CardHeader>
-      <CardContent>
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="mb-4">
             <TabsTrigger value="users" className="flex items-center gap-2">
@@ -38,7 +26,12 @@ export function AdminArea() {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="users" className="w-full">
-            <UsersTable />
+            <div
+              className="max-w-full"
+              style={{ overflowX: "auto", whiteSpace: "nowrap" }}
+            >
+              <UsersTable />
+            </div>
           </TabsContent>
           <TabsContent value="settings">
             <div className="flex h-[300px] w-full items-center justify-center">
@@ -48,7 +41,7 @@ export function AdminArea() {
             </div>
           </TabsContent>
         </Tabs>
-      </CardContent>
+      </CardHeader>
     </Card>
   );
 }

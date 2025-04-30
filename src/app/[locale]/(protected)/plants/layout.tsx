@@ -1,14 +1,14 @@
 // src/app/[locale]/(protected)/plants/layout.tsx:
-import { PaginationItemsPerPage } from "~/assets/constants";
-import { SortOrder } from "~/components/atom/sort-filter-controls";
-import { HydrateClient, api } from "~/lib/trpc/server";
+import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
+import { getOwnPlantsInput } from "~/lib/queries/plants";
 import type { GetOwnPlantsInput } from "~/server/api/root";
-import { PlantsSortField } from "~/types/plant";
+import { getQueryClient, trpc } from "~/trpc/server";
 
 export const metadata = {
-  title: "Grower's Plattform | My Plants",
-  description: "Grower's Plattform | My Plants",
+  title: "Grower's Platform | My Plants",
+  description: "Grower's Platform | My Plants",
 };
+export const dynamic = "force-dynamic";
 
 export default async function PlantsLayout({
   children,
@@ -16,20 +16,23 @@ export default async function PlantsLayout({
   children: React.ReactNode;
 }) {
   // Prefetch initial data with default sorting for the first page
+  const queryClient = getQueryClient();
 
-  await api.plants.getOwnPlants.prefetchInfinite({
-    cursor: 1,
-    limit: PaginationItemsPerPage.PLANTS_PER_PAGE,
-    sortField: PlantsSortField.NAME,
-    sortOrder: SortOrder.ASC,
-  } satisfies GetOwnPlantsInput);
+  await queryClient.prefetchInfiniteQuery({
+    ...trpc.plants.getOwnPlants.infiniteQueryOptions(
+      getOwnPlantsInput satisfies GetOwnPlantsInput,
+    ),
+  });
 
-  await api.plants.getOwnPlants.prefetch({
-    cursor: 1,
-    limit: PaginationItemsPerPage.PLANTS_PER_PAGE,
-    sortField: PlantsSortField.NAME,
-    sortOrder: SortOrder.ASC,
-  } satisfies GetOwnPlantsInput);
+  await queryClient.prefetchQuery({
+    ...trpc.plants.getOwnPlants.queryOptions(
+      getOwnPlantsInput satisfies GetOwnPlantsInput,
+    ),
+  });
 
-  return <HydrateClient>{children}</HydrateClient>;
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      {children}
+    </HydrationBoundary>
+  );
 }

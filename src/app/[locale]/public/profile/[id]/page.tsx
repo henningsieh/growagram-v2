@@ -1,10 +1,20 @@
+import { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { FollowButton } from "~/components/atom/follow-button";
-import ProfileTabs from "~/components/features/PublicProfile/PofileTabs";
+import ProfileTabs from "~/components/features/PublicProfile/profile-tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { auth } from "~/lib/auth";
-import { api } from "~/lib/trpc/server";
 import type { GetPublicUserProfileInput } from "~/server/api/root";
+import { getCaller } from "~/trpc/server";
+
+// Cache the profile data to avoid duplicate fetching
+const getProfileData = async (userId: string) => {
+  const caller = await getCaller();
+  return await caller.users.getPublicUserProfile({
+    id: userId,
+  });
+};
 
 export default async function ProfilePage({
   params,
@@ -14,15 +24,14 @@ export default async function ProfilePage({
   const userId = (await params).id;
   const session = await auth();
 
-  const profile = await api.users.getPublicUserProfile({
-    id: userId,
-  } satisfies GetPublicUserProfileInput);
+  // This is the data fetching that makes the component suspend
+  const profile = await getProfileData(userId);
 
   if (!profile) notFound();
 
-  const isFollowing = profile.followers.some((follow) => {
-    return follow.follower.id === session?.user.id;
-  });
+  const isFollowing = profile.followers.some(
+    (follow) => follow.follower.id === session?.user.id,
+  );
 
   return (
     <>
@@ -45,16 +54,38 @@ export default async function ProfilePage({
             />
           </div>
           {profile.username && (
-            <p
-              className="text-muted-foreground"
-              // eslint-disable-next-line react/jsx-no-literals
-            >
-              @{profile.username}
-            </p>
+            <p className="text-muted-foreground">{`@${profile.username}`}</p>
           )}
         </div>
       </div>
       <ProfileTabs profile={profile} />
     </>
   );
+}
+
+// Generate metadata for SEO
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<GetPublicUserProfileInput>;
+}): Promise<Metadata> {
+  const userId = (await params).id;
+  const t = await getTranslations("Profile");
+
+  try {
+    const profile = await getProfileData(userId);
+
+    if (!profile) return { title: t("metadata.user-not-found") };
+
+    return {
+      title: t("metadata.title", { name: profile.name }),
+      description: t("metadata.description", { name: profile.name }),
+      openGraph: {
+        images: profile.image ? [{ url: profile.image }] : [],
+      },
+    };
+  } catch (error) {
+    console.error("Error fetching profile data:", error);
+    return { title: t("metadata.user-not-found") };
+  }
 }

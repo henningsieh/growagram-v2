@@ -3,7 +3,7 @@ import { modulePaths } from "~/assets/constants";
 import { BreadcrumbSetter } from "~/components/Layouts/Breadcrumbs/breadcrumb-setter";
 import AccountInfo from "~/components/features/Account/account-info";
 import { auth } from "~/lib/auth";
-import { createBreadcrumbs } from "~/lib/breadcrumbs/breadcrumbs";
+import { createBreadcrumbs } from "~/lib/breadcrumbs";
 import type { GetOwnUserDataType } from "~/server/api/root";
 
 export default async function AccountPage() {
