@@ -68,10 +68,10 @@ export default function MobileNavigationMenu() {
             {/* Section for drop-down menus expanded directly */}
             {processedNavigation.navigationItems
               .filter((item) => item.type !== "link" && item.content)
-              .map((item: ProcessedNavigationItem) => (
-                <>
+              .map((item: ProcessedNavigationItem, index) => (
+                <React.Fragment key={index}>
                   <Separator className="bg-secondary/50 my-1" />
-                  <div key={item.title} className="pb-3">
+                  <div className="pb-3">
                     <h3 className="text-primary px-3 py-2 text-xl font-bold">
                       {t(item.title)}
                     </h3>
@@ -123,7 +123,7 @@ export default function MobileNavigationMenu() {
                       ))}
                     </div>
                   </div>
-                </>
+                </React.Fragment>
               ))}
           </div>
         </ScrollArea>

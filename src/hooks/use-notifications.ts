@@ -3,7 +3,9 @@ import * as React from "react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { skipToken, useMutation, useQuery } from "@tanstack/react-query";
+import { TRPCClientError } from "@trpc/client";
 import { useSubscription } from "@trpc/tanstack-react-query";
+// Import TRPCClientError
 import { toast } from "sonner";
 import {
   type GetAllNotificationType,
@@ -45,6 +47,7 @@ export function useNotifications(onlyUnread = true) {
   const query = useQuery({
     ...trpc.notifications.getAll.queryOptions({
       onlyUnread,
+      // Fetching all initially might be better for lastEventId, but stick to onlyUnread for now
     } satisfies GetAllNotificationsInput),
     refetchOnWindowFocus: true,
     refetchOnMount: true,
@@ -98,6 +101,81 @@ export function useNotifications(onlyUnread = true) {
       }
     },
     [t, getEntityTypeText],
+  );
+
+  // Define the error handler for the subscription
+  const handleSubscriptionError = React.useCallback(
+    (err: unknown) => {
+      // Check if the error is due to intentional abortion or disposal issues
+      let isAbortOrDisposalError = false;
+      if (err instanceof TRPCClientError) {
+        // Check if the cause is an AbortError
+        if (err.cause instanceof Error && err.cause.name === "AbortError") {
+          isAbortOrDisposalError = true;
+        }
+        // Check if the message indicates suppression during disposal
+        if (err.message.includes("suppressed during disposal")) {
+          isAbortOrDisposalError = true;
+        }
+      } else if (err instanceof Error && err.name === "AbortError") {
+        // Direct AbortError
+        isAbortOrDisposalError = true;
+      }
+
+      if (isAbortOrDisposalError) {
+        // Log minimally for debugging, but don't treat as a reconnectable error
+        console.debug(
+          "Notification subscription aborted (likely page navigation/reload).",
+          err,
+        );
+        return; // Ignore abort/disposal errors for reconnection logic
+      }
+
+      // --- Proceed with handling genuine errors ---
+      console.error("Notification subscription error:", err);
+
+      // Attempt to get the last known event ID before the error
+      const lastId = allNotifications?.at(-1)?.id;
+      if (lastId) {
+        setLastEventId(lastId);
+        console.log(
+          `Notification subscription error. Attempting to reconnect with lastEventId: ${lastId}`,
+        );
+      } else {
+        // If no notifications were ever received or state is empty,
+        // maybe reset to null to trigger refetch without specific ID?
+        // For now, just log that we couldn't find a last ID.
+        // TanStack Query might handle reconnection automatically without lastEventId if it's null.
+        console.log(
+          "No previous notifications found in state, cannot set lastEventId for reconnect.",
+        );
+        // Consider setting lastEventId back to null if reconnection fails repeatedly without it.
+        // setLastEventId(null);
+      }
+
+      // Optional: More specific error handling/logging based on error type
+      if (err instanceof Error) {
+        if (err.message.includes("Timeout")) {
+          console.warn(
+            "Notification subscription timed out. Will attempt to reconnect.",
+          );
+          // Potentially update UI state to show a specific timeout message
+        } else if (err.message.includes("UNAUTHORIZED")) {
+          console.error(
+            "Notification subscription unauthorized. Check session/token.",
+          );
+          // Might need to trigger logout or session refresh
+        } else {
+          console.error(
+            "Unhandled notification subscription error:",
+            err.message,
+          );
+        }
+      } else {
+        console.error("Unknown notification subscription error type:", err);
+      }
+    },
+    [allNotifications], // Depend on allNotifications to get the last ID
   );
 
   // Updated subscription with new TanStack Query syntax
@@ -190,6 +268,8 @@ export function useNotifications(onlyUnread = true) {
   }, [commentEntityQuery.data, commentEntityQuery.isLoading]);
 
   return {
+    // Return empty/default values if not enabled? Or let Tanstack Query handle it?
+    // Tanstack Query's isLoading/isPending should reflect the enabled state.
     all: allNotifications ?? [],
     grouped: {
       follow: (allNotifications ?? []).filter(
