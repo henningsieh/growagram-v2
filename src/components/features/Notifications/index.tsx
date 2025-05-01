@@ -74,12 +74,12 @@ export function Notifications() {
       </PopoverTrigger>
       <PopoverContent
         align="end"
-        className="w-svw p-0 sm:w-[28rem]"
+        className="w-svw rounded-md p-0 sm:w-[28rem]"
         sideOffset={8}
       >
         <Tabs defaultValue="all" className="w-full gap-0">
           <div className="border-b">
-            <TabsList className="grid w-full grid-cols-4 gap-1">
+            <TabsList className="grid w-full grid-cols-4 gap-1 rounded-md rounded-b-none">
               <TabsTrigger
                 value="all"
                 // className="hover:bg-accent/50 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground text-sm"
