@@ -1,5 +1,3 @@
-"use client";
-
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import {
   Pagination,
@@ -27,7 +25,7 @@ export default function ItemsPagination({
   // Generate pagination numbers
   const getPaginationNumbers = () => {
     const pages: number[] = [];
-    const showAroundCurrent = 2;
+    const showAroundCurrent = 1;
 
     for (let i = 1; i <= totalPages; i++) {
       if (

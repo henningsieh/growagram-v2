@@ -462,11 +462,12 @@
     "new_post": "hat ein Update gepostet",
     "panel": {
       "error": "Fehler beim Laden von Benachrichtigungen",
-      "mark-all-as-read": "Ich habe alle gelesen",
+      "mark-all-as-read": "Hab alle gelesen",
       "no-comment-notifications": "Keine neuen Kommentare",
       "no-follow-notifications": "Keine neuen Follower",
       "no-like-notifications": "Keine neuen Likes",
       "no-notifications": "Keine neuen Benachrichtigungen",
+      "notification-link-aria": "Benachrichtigung anzeigen: {actor} {action}",
       "tabs": {
         "label_All": "Alle",
         "label_Comments": "Kommentare",

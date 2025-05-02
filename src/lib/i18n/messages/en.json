@@ -462,11 +462,12 @@
     "new_post": "has posted an update",
     "panel": {
       "error": "Error while loading Notifications",
-      "mark-all-as-read": "Mark all as read",
+      "mark-all-as-read": "I read them all",
       "no-comment-notifications": "No new comments",
       "no-follow-notifications": "No new Follower",
       "no-like-notifications": "No new likes",
       "no-notifications": "No new Notifications",
+      "notification-link-aria": "View notification: {actor} {action}",
       "tabs": {
         "label_All": "All",
         "label_Comments": "Comments",

@@ -181,7 +181,7 @@ export function ChatModal({
         onClick={onCloseAction}
       >
         <Card
-          className="grid h-[80vh] max-h-[700px] w-[90vw] max-w-[450px] grid-rows-[auto_1fr_auto] overflow-hidden rounded-lg shadow-xl"
+          className="grid h-[86vh] w-[90vw] max-w-[450px] grid-rows-[auto_1fr_auto] overflow-hidden rounded-lg shadow-xl"
           onClick={(e) => e.stopPropagation()}
         >
           <CardHeader className="flex flex-row items-center justify-between border-b px-4 [.border-b]:pb-3">
@@ -189,8 +189,8 @@ export function ChatModal({
               as="h2"
               className="font-grandstander flex flex-row text-2xl font-semibold"
             >
+              <MessageCircleIcon strokeWidth={3.2} className="mr-3 size-6" />
               {t("title")}
-              <MessageCircleIcon strokeWidth={3.5} className="ml-3 size-6" />
             </CardTitle>
             <Button
               variant="ghost"

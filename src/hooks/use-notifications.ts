@@ -2,10 +2,14 @@
 import * as React from "react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
-import { skipToken, useMutation, useQuery } from "@tanstack/react-query";
+import {
+  skipToken,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { TRPCClientError } from "@trpc/client";
 import { useSubscription } from "@trpc/tanstack-react-query";
-// Import TRPCClientError
 import { toast } from "sonner";
 import {
   type GetAllNotificationType,
@@ -26,6 +30,7 @@ export function useNotifications(onlyUnread = true) {
     false,
   );
   const trpc = useTRPC();
+  const queryClient = useQueryClient();
   const { status } = useSession();
   const t = useTranslations("Notifications");
 
@@ -47,7 +52,6 @@ export function useNotifications(onlyUnread = true) {
   const query = useQuery({
     ...trpc.notifications.getAll.queryOptions({
       onlyUnread,
-      // Fetching all initially might be better for lastEventId, but stick to onlyUnread for now
     } satisfies GetAllNotificationsInput),
     refetchOnWindowFocus: true,
     refetchOnMount: true,
@@ -181,15 +185,19 @@ export function useNotifications(onlyUnread = true) {
   // Updated subscription with new TanStack Query syntax
   const subscription = useSubscription({
     ...trpc.notifications.onNotification.subscriptionOptions(
+      // Skip if not authenticated, lastEventId is false
       status !== "authenticated" || lastEventId === false
         ? skipToken
         : { lastEventId },
     ),
-    enabled: status === "authenticated" && lastEventId !== false,
+    // Disable subscription if onlyUnread is false
+    enabled: status === "authenticated" && lastEventId !== false && onlyUnread,
+    onError: handleSubscriptionError,
   });
 
   // Handle success with the returned data using an effect
   React.useEffect(() => {
+    // Only process if subscription is enabled (implicitly checks onlyUnread)
     if (subscription.data) {
       const notification = subscription.data; // now typed as GetAllNotificationType
       setLastEventId(notification.id);
@@ -208,18 +216,33 @@ export function useNotifications(onlyUnread = true) {
   const markAsReadMutation = useMutation({
     ...trpc.notifications.markAsRead.mutationOptions(),
     onSuccess: async (_, { id }) => {
-      setAllNotifications((prev) => prev?.filter((n) => n.id !== id) ?? null);
-      await query.refetch();
+      // Optimistically update local state if needed (optional)
+      setAllNotifications(
+        (prev) =>
+          prev?.map((n) => (n.id === id ? { ...n, read: true } : n)) ?? null,
+      );
+      // Invalidate the query key to refetch in all components using it
+      await queryClient.invalidateQueries({
+        queryKey: trpc.notifications.getAll.queryKey(), // Invalidate base key
+      });
     },
+    // Add onError for potential rollback if needed
   });
 
   // Updated mutation with new TanStack Query syntax
   const markAllAsReadMutation = useMutation({
     ...trpc.notifications.markAllAsRead.mutationOptions(),
     onSuccess: async () => {
-      setAllNotifications([]);
-      await query.refetch();
+      // Optimistically update local state if needed (optional)
+      setAllNotifications(
+        (prev) => prev?.map((n) => ({ ...n, read: true })) ?? null,
+      );
+      // Invalidate the query key to refetch in all components using it
+      await queryClient.invalidateQueries({
+        queryKey: trpc.notifications.getAll.queryKey(), // Invalidate base key
+      });
     },
+    // Add onError for potential rollback if needed
   });
 
   const commentId = allNotifications?.find(
@@ -285,14 +308,16 @@ export function useNotifications(onlyUnread = true) {
     unreadCount: onlyUnread
       ? (allNotifications?.length ?? 0)
       : (allNotifications?.filter((n) => !n.read).length ?? 0),
-    isLoading: query.isLoading,
+    isLoading: query.isPending,
     isError: query.isError,
     error: query.error,
     subscriptionStatus: subscription.status,
     subscriptionError: subscription.error,
+    // subscriptionStatus: onlyUnread ? subscription.status : "idle", // Or 'disabled'
+    // subscriptionError: onlyUnread ? subscription.error : null,
     getNotificationText,
     getNotificationHref,
     markAllAsRead: markAllAsReadMutation.mutate,
-    markAsRead: markAsReadMutation.mutate,
+    markAsRead: markAsReadMutation.mutateAsync,
   };
 }

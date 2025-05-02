@@ -18,7 +18,7 @@ import { SortOrder } from "~/components/atom/sort-filter-controls";
 import { ActivePlantsCard } from "~/components/features/Dashboard/active-plants-card";
 import { PlantsOverviewChart } from "~/components/features/Dashboard/dashboard-overview-chart";
 import { RecentPhotosWidget } from "~/components/features/Dashboard/recent-photos-widget";
-import { NotificationsFeed } from "~/components/features/Notifications/notifications-feed";
+import { DashboardNotificationsFeed } from "~/components/features/Notifications/dashboard-notifications-feed";
 import {
   Card,
   CardContent,
@@ -157,14 +157,14 @@ export function DashboardContent() {
 
             <TabsContent value="overview" className="space-y-4">
               {/* Summary Cards */}
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="xs:grid-cols-2 grid gap-4 lg:grid-cols-4">
                 {/* Grows Card */}
                 <Card className="gap-2">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0">
                     <CardTitle as="h2" className="text-2xl font-semibold">
                       {t("grow-environments")}
                     </CardTitle>
-                    <TentTree className="size-6" />
+                    <TentTree className="size-5 shrink-0" />
                   </CardHeader>
                   <CardContent className="pb-2">
                     {isLoadingGrows ? (
@@ -184,7 +184,7 @@ export function DashboardContent() {
                     <CardTitle as="h2" className="text-2xl font-semibold">
                       {t("total-plants")}
                     </CardTitle>
-                    <Flower2Icon className="size-6" />
+                    <Flower2Icon className="size-5 shrink-0" />
                   </CardHeader>
                   <CardContent className="pb-2">
                     {isLoadingPlants ? (
@@ -215,7 +215,7 @@ export function DashboardContent() {
                     <CardTitle as="h2" className="text-2xl font-semibold">
                       {t("total-photos")}
                     </CardTitle>
-                    <ImageIcon className="size-6" />
+                    <ImageIcon className="size-5 shrink-0" />
                   </CardHeader>
                   <CardContent className="pb-2">
                     {isLoadingPhotos ? (
@@ -235,7 +235,7 @@ export function DashboardContent() {
                     <CardTitle as="h2" className="text-2xl font-semibold">
                       {t("comunity")}
                     </CardTitle>
-                    <UsersIcon className="size-6" />
+                    <UsersIcon className="size-5 shrink-0" />
                   </CardHeader>
                   <CardContent className="space-y-3">
                     {/* <div className="flex items-center space-x-3">
@@ -308,15 +308,12 @@ export function DashboardContent() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-8">
-                    {/* Use a state to control mounting */}
-                    {activeTab === "activity" && (
-                      <React.Suspense
-                        fallback={
-                          <div className="bg-muted/20 h-96 animate-pulse rounded-md" />
-                        }
-                      >
-                        <NotificationsFeed />
-                      </React.Suspense>
+                    {/* Conditionally render the component directly */}
+                    {activeTab === "activity" ? (
+                      <DashboardNotificationsFeed />
+                    ) : (
+                      // Optional: Render a placeholder or nothing when inactive
+                      <div className="bg-muted/20 h-96 animate-pulse rounded-md" />
                     )}
                   </div>
                 </CardContent>
