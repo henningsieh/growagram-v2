@@ -46,7 +46,10 @@ export function ChatModal({
     isLoading,
   } = useQuery(
     trpc.chat.getMessages.queryOptions(undefined, {
-      enabled: status === "authenticated" && isOpen,
+      // enabled: status === "authenticated" && isOpen,
+      enabled: status === "authenticated",
+      // Always fetch messages when authenticated, regardless of modal state
+      // This ensures messages are ready when modal is opened
     }),
   );
 
@@ -61,7 +64,7 @@ export function ChatModal({
           },
         );
       },
-      enabled: isOpen,
+      enabled: isOpen && status === "authenticated",
       onError: (error) => {
         console.error("Subscription error:", error);
       },
