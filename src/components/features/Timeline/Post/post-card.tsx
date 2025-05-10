@@ -1,7 +1,8 @@
 import * as React from "react";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
-import { DotIcon } from "lucide-react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { ChevronLeft, ChevronRight, DotIcon } from "lucide-react";
 import { toast } from "sonner";
 import { useImageModal } from "~/components/Layouts/photo-modal-provider";
 import AvatarCardHeader from "~/components/atom/avatar-card-header";
@@ -10,12 +11,13 @@ import { SocialCardFooter } from "~/components/atom/social-card-footer";
 import { Comments } from "~/components/features/Comments/comments";
 import { EmbeddedGrowCard } from "~/components/features/Grows/embedded-grow-card";
 import { EnhancedPlantCard } from "~/components/features/Plants/enhanced-plant-card.tsx";
+import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
 import { useComments } from "~/hooks/use-comments";
 import { useLikeStatus } from "~/hooks/use-likes";
-import { api } from "~/lib/trpc/react";
 import { cn, formatDate, formatTime } from "~/lib/utils";
 import { GetPostType } from "~/server/api/root";
+import { useTRPC } from "~/trpc/client";
 import { CommentableEntityType } from "~/types/comment";
 import { LikeableEntityType } from "~/types/like";
 import { Locale } from "~/types/locale";
@@ -27,12 +29,15 @@ interface PostCardProps {
 }
 
 export default function PostCard({ post, isSocialProp = true }: PostCardProps) {
-  const utils = api.useUtils();
+  const api = useTRPC();
+  const queryClient = useQueryClient();
+
   const locale = useLocale();
 
   const t = useTranslations("Posts");
   const { openImageModal } = useImageModal();
   const [isImageHovered, setIsImageHovered] = React.useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = React.useState(0);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isSocial, setIsSocial] = React.useState(isSocialProp);
@@ -48,32 +53,48 @@ export default function PostCard({ post, isSocialProp = true }: PostCardProps) {
     useComments(post.id, CommentableEntityType.Post);
 
   // Initialize delete mutation
-  const deleteMutation = api.updates.deleteById.useMutation({
-    onSuccess: async () => {
-      toast("Success", {
-        description: t("post-deleted-successfully"),
-      });
-      await utils.updates.getAll.invalidate();
-    },
-    onError: (error) => {
-      toast.error("Error", {
-        description: error.message || t("error-default"),
-      });
-    },
-  });
-
-  // const handleDelete = () => {
-  //   setIsDeleteDialogOpen(true);
-  // };
+  const deleteMutation = useMutation(
+    api.updates.deleteById.mutationOptions({
+      onSuccess: async () => {
+        toast.success(t("post-deleted-successfully"));
+        await queryClient.invalidateQueries({
+          queryKey: api.updates.getAll.queryKey(),
+        });
+      },
+      onError: (error) => {
+        toast.error(error.message || t("post-delete-failed"));
+      },
+    }),
+  );
 
   const confirmDelete = async () => {
     await deleteMutation.mutateAsync({ id: post.id });
     setIsDeleteDialogOpen(false);
   };
 
-  const handleImageClick = () => {
-    if (post.entityType === PostableEntityType.PHOTO) {
+  const handleImageClick = (index: number) => {
+    // If we have postImages, use those
+    if (post.postImages && post.postImages.length > 0) {
+      openImageModal(post.postImages[index].image.imageUrl);
+    }
+    // Otherwise, use the original single photo
+    else if (post.entityType === PostableEntityType.PHOTO) {
       openImageModal(post.photo.imageUrl);
+    }
+  };
+
+  const navigateImages = (direction: "next" | "prev", e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (post.postImages && post.postImages.length > 0) {
+      if (direction === "next") {
+        setCurrentImageIndex((current) =>
+          current < post.postImages.length - 1 ? current + 1 : 0,
+        );
+      } else {
+        setCurrentImageIndex((current) =>
+          current > 0 ? current - 1 : post.postImages.length - 1,
+        );
+      }
     }
   };
 
@@ -88,6 +109,9 @@ export default function PostCard({ post, isSocialProp = true }: PostCardProps) {
     </div>
   );
 
+  // Determine if the post has multiple images
+  const hasMultipleImages = post.postImages && post.postImages.length > 1;
+
   return (
     <>
       <DeleteConfirmationDialog
@@ -100,7 +124,7 @@ export default function PostCard({ post, isSocialProp = true }: PostCardProps) {
       />
       <Card
         className={cn(
-          `border-input flex flex-col gap-0 overflow-hidden border py-0`,
+          `border-input flex flex-col gap-0 overflow-hidden rounded-md border py-0`,
           // isSocial && "border-none",
         )}
       >
@@ -119,16 +143,43 @@ export default function PostCard({ post, isSocialProp = true }: PostCardProps) {
           {post.entityType === PostableEntityType.PLANT && (
             <EnhancedPlantCard plant={post.plant} />
           )}
-          {post.entityType === PostableEntityType.PHOTO && (
+
+          {/* Display the main entity photo (legacy) */}
+          {post.entityType === PostableEntityType.PHOTO &&
+            !hasMultipleImages && (
+              <div
+                className="relative aspect-square w-full cursor-pointer overflow-hidden rounded-md"
+                onClick={() => handleImageClick(0)}
+                onMouseEnter={() => setIsImageHovered(true)}
+                onMouseLeave={() => setIsImageHovered(false)}
+              >
+                <Image
+                  src={post.photo.imageUrl}
+                  alt={post.photo.originalFilename}
+                  fill
+                  className="object-cover transition-transform duration-300"
+                  sizes="100vw, (min-width: 768px) 75vw, (min-width: 1024) 720px"
+                  style={{
+                    transform: isImageHovered ? "scale(1.02)" : "scale(1)",
+                  }}
+                />
+              </div>
+            )}
+
+          {/* Display post images from the many-to-many relationship */}
+          {post.postImages && post.postImages.length > 0 && (
             <div
               className="relative aspect-square w-full cursor-pointer overflow-hidden rounded-md"
-              onClick={handleImageClick}
+              onClick={() => handleImageClick(currentImageIndex)}
               onMouseEnter={() => setIsImageHovered(true)}
               onMouseLeave={() => setIsImageHovered(false)}
             >
               <Image
-                src={post.photo.imageUrl}
-                alt={post.photo.originalFilename}
+                src={post.postImages[currentImageIndex].image.imageUrl}
+                alt={
+                  post.postImages[currentImageIndex].image.originalFilename ||
+                  "Post image"
+                }
                 fill
                 className="object-cover transition-transform duration-300"
                 sizes="100vw, (min-width: 768px) 75vw, (min-width: 1024) 720px"
@@ -136,6 +187,37 @@ export default function PostCard({ post, isSocialProp = true }: PostCardProps) {
                   transform: isImageHovered ? "scale(1.02)" : "scale(1)",
                 }}
               />
+
+              {/* Image navigation if multiple images */}
+              {hasMultipleImages && (
+                <>
+                  <Button
+                    variant="ghost"
+                    className="absolute top-1/2 left-2 h-8 w-8 -translate-y-1/2 rounded-full bg-black/50 p-0 text-white hover:bg-black/80"
+                    onClick={(e) => navigateImages("prev", e)}
+                  >
+                    <ChevronLeft className="h-5 w-5" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className="absolute top-1/2 right-2 h-8 w-8 -translate-y-1/2 rounded-full bg-black/50 p-0 text-white hover:bg-black/80"
+                    onClick={(e) => navigateImages("next", e)}
+                  >
+                    <ChevronRight className="h-5 w-5" />
+                  </Button>
+                  <div className="absolute bottom-2 left-1/2 flex -translate-x-1/2 gap-1">
+                    {post.postImages.map((_, index: number) => (
+                      <div
+                        key={index}
+                        className={cn(
+                          "h-2 w-2 rounded-full bg-white/70",
+                          currentImageIndex === index && "bg-white",
+                        )}
+                      />
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
           )}
         </CardContent>

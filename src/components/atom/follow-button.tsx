@@ -1,12 +1,12 @@
-"use client";
-
+"use client";;
 import * as React from "react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { UserMinusIcon, UserPlusIcon } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "~/components/ui/button";
-import { api } from "~/lib/trpc/react";
+import { useTRPC } from "~/trpc/client";
 
 interface FollowButtonProps {
   userId: string;
@@ -19,32 +19,39 @@ export function FollowButton({
   initialIsFollowing,
   className,
 }: FollowButtonProps) {
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
   const { data: session } = useSession();
   const [isFollowing, setIsFollowing] = React.useState(initialIsFollowing);
-  const utils = api.useUtils();
   const t = useTranslations("Profile");
 
-  const { mutate: follow, isPending: isFollowLoading } =
-    api.users.followUser.useMutation({
+  const followMutation = useMutation(
+    trpc.users.followUser.mutationOptions({
       onSuccess: async () => {
         setIsFollowing(true);
-        toast(t("FollowButton.follow-success-title"), {
+        toast.success(t("FollowButton.follow-success-title"), {
           description: t("FollowButton.follow-success-description"),
         });
-        await utils.users.getPublicUserProfile.invalidate();
+        await queryClient.invalidateQueries({
+          queryKey: trpc.users.getPublicUserProfile.queryKey(),
+        });
       },
-    });
+    }),
+  );
 
-  const { mutate: unfollow, isPending: isUnfollowLoading } =
-    api.users.unfollowUser.useMutation({
+  const unfollowMutation = useMutation(
+    trpc.users.unfollowUser.mutationOptions({
       onSuccess: async () => {
         setIsFollowing(false);
-        toast(t("FollowButton.unfollow-success-title"), {
+        toast.warning(t("FollowButton.unfollow-success-title"), {
           description: t("FollowButton.unfollow-success-description"),
         });
-        await utils.users.getPublicUserProfile.invalidate();
+        await queryClient.invalidateQueries({
+          queryKey: trpc.users.getPublicUserProfile.queryKey(),
+        });
       },
-    });
+    }),
+  );
 
   if (!session || session.user.id === userId) return null;
 
@@ -53,8 +60,12 @@ export function FollowButton({
       variant={isFollowing ? "outline" : "primary"}
       size="sm"
       className={className}
-      onClick={() => (isFollowing ? unfollow({ userId }) : follow({ userId }))}
-      disabled={isFollowLoading || isUnfollowLoading}
+      onClick={() =>
+        isFollowing
+          ? unfollowMutation.mutate({ userId })
+          : followMutation.mutate({ userId })
+      }
+      disabled={followMutation.isPending || unfollowMutation.isPending}
     >
       {isFollowing ? (
         <div className="flex w-full items-center justify-center">

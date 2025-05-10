@@ -1,108 +1,69 @@
-"use client";
-
 import * as React from "react";
 import { useTranslations } from "next-intl";
-// src/components/features/Grows/Views/paginated.tsx:
-import { useSearchParams } from "next/navigation";
-import { PaginationItemsPerPage } from "~/assets/constants";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import ResponsiveGrid from "~/components/Layouts/responsive-grid";
 import ItemsPagination from "~/components/atom/item-pagination";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
-import SpinningLoader from "~/components/atom/spinning-loader";
 import { GrowCard } from "~/components/features/Grows/grow-card";
-import { useRouter } from "~/lib/i18n/routing";
-import { api } from "~/lib/trpc/react";
+import { getOwnGrowsInput } from "~/lib/queries/grows";
 import type { GetOwnGrowsInput } from "~/server/api/root";
+import { useTRPC } from "~/trpc/client";
 import { GrowsSortField } from "~/types/grow";
 
-export default function PaginatedGrowsView({
-  sortField,
-  sortOrder,
-  setIsFetching,
-}: {
+interface PaginatedGrowsViewProps {
+  currentPage: number;
+  onPageChange: (page: number) => void;
   sortField: GrowsSortField;
   sortOrder: SortOrder;
   setIsFetching: React.Dispatch<React.SetStateAction<boolean>>;
-}) {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const utils = api.useUtils();
+}
+
+export default function PaginatedGrowsView({
+  currentPage: cursor,
+  onPageChange,
+  sortField,
+  sortOrder,
+  setIsFetching,
+}: PaginatedGrowsViewProps) {
+  const trpc = useTRPC();
   const t = useTranslations("Grows");
 
-  // Initialize state from URL query params
-  const [currentPage, setCurrentPage] = React.useState(
-    parseInt(searchParams?.get("page") || "1"),
+  const growsQuery = useSuspenseQuery(
+    trpc.grows.getOwnGrows.queryOptions({
+      ...getOwnGrowsInput,
+      cursor: cursor,
+      sortField: sortField,
+      sortOrder: sortOrder,
+    } satisfies GetOwnGrowsInput),
   );
 
-  // Function to update URL query params
-  const updateUrlParams = React.useCallback(() => {
-    const params = new URLSearchParams();
-    params.set("page", currentPage.toString());
-    params.set("sortField", sortField);
-    params.set("sortOrder", sortOrder);
-    router.push(`?${params.toString()}`);
-  }, [currentPage, sortField, sortOrder, router]);
-
-  // Sync state with URL query params
-  React.useEffect(() => {
-    updateUrlParams();
-  }, [currentPage, sortField, sortOrder, updateUrlParams]);
-
-  // Get initial data from cache
-  const initialData = utils.grows.getOwnGrows.getData({
-    cursor: currentPage,
-    limit: PaginationItemsPerPage.GROWS_PER_PAGE,
-    sortField,
-    sortOrder,
-  } satisfies GetOwnGrowsInput);
-
-  // Query grows
-  const { data, isLoading, isFetching } = api.grows.getOwnGrows.useQuery(
-    {
-      limit: PaginationItemsPerPage.GROWS_PER_PAGE,
-      cursor: currentPage,
-      sortField,
-      sortOrder,
-    } satisfies GetOwnGrowsInput,
-    {
-      initialData,
-    },
-  );
+  // Extract grows data
+  const { grows, totalPages } = growsQuery.data;
 
   // Directly update the parent's isFetching state
   React.useEffect(() => {
-    setIsFetching(isFetching);
-  }, [isFetching, setIsFetching]);
-
-  const userGrows = data?.grows ?? [];
-  const totalPages = data?.totalPages ?? 1;
-
-  // Handle page changes
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
+    setIsFetching(growsQuery.isFetching);
+  }, [growsQuery.isFetching, setIsFetching]);
 
   return (
     <>
-      {isLoading ? (
-        <SpinningLoader className="text-secondary" />
-      ) : userGrows.length === 0 ? (
+      {grows.length === 0 ? (
         <p className="text-muted-foreground mt-8 text-center">
           {t("no-grows-yet")}
         </p>
       ) : (
         <>
           <ResponsiveGrid>
-            {userGrows.map((grow) => (
+            {grows.map((grow) => (
               <GrowCard key={grow.id} grow={grow} isSocial={false} />
             ))}
           </ResponsiveGrid>
 
           <ItemsPagination
-            currentPage={currentPage}
+            currentPage={cursor}
             totalPages={totalPages}
-            isFetching={isFetching}
-            handlePageChange={handlePageChange}
+            isFetching={growsQuery.isFetching}
+            handlePageChange={onPageChange}
           />
         </>
       )}

@@ -60,7 +60,6 @@ import { UserRoles } from "~/types/user";
 
 /**
  * ProtectedSidebar: Main sidebar component for authenticated users
- * Provides navigation, team switching, and user profile management
  */
 export default function ProtectedSidebar({
   children,
@@ -68,11 +67,37 @@ export default function ProtectedSidebar({
   children: React.ReactNode;
 }>) {
   const { data: session } = useSession();
+  // Create a ref to track the container's position
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const [leftOffset, setLeftOffset] = React.useState(0);
+
+  // Update the left offset when the window resizes
+  React.useEffect(() => {
+    const updateOffset = () => {
+      if (containerRef.current) {
+        const rect = containerRef.current.getBoundingClientRect();
+        setLeftOffset(rect.left);
+      }
+    };
+
+    // Initial calculation
+    updateOffset();
+
+    // Listen for window resize
+    window.addEventListener("resize", updateOffset);
+
+    return () => {
+      window.removeEventListener("resize", updateOffset);
+    };
+  }, []);
 
   return (
-    <SidebarProvider className="relative min-h-[calc(100svh-7rem)]">
+    <SidebarProvider
+      className="relative flex min-h-[calc(100svh-7rem)] flex-1"
+      ref={containerRef}
+    >
       {/* Main sidebar with floating, collapsible design */}
-      <ProtectedSidebarContent session={session}>
+      <ProtectedSidebarContent session={session} leftOffset={leftOffset}>
         {children}
       </ProtectedSidebarContent>
     </SidebarProvider>
@@ -82,9 +107,11 @@ export default function ProtectedSidebar({
 function ProtectedSidebarContent({
   session,
   children,
+  leftOffset,
 }: {
   session: Session | null;
   children: React.ReactNode;
+  leftOffset: number;
 }) {
   const t = useTranslations();
   const handleSignOut = useSignOut();
@@ -96,8 +123,9 @@ function ProtectedSidebarContent({
     <>
       <Sidebar
         collapsible="icon"
-        variant="sidebar"
-        className="fixed top-14 h-[calc(100svh-4rem)] shrink-0"
+        variant="floating"
+        className="fixed top-14 z-20 h-[calc(100svh-3.5rem)]"
+        style={{ left: `${leftOffset}px` }}
       >
         {/* Sidebar Header: Team Switcher */}
         <SidebarHeader>
@@ -123,7 +151,17 @@ function ProtectedSidebarContent({
                         if (!open) toggleSidebar();
                       }}
                     >
-                      <Link href={item.url}>
+                      {item.url ? (
+                        <Link href={item.url}>
+                          <SidebarMenuButton tooltip={item.title}>
+                            {item.icon && <item.icon />}
+                            <span>{item.title}</span>
+                            {item.items && (
+                              <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                            )}
+                          </SidebarMenuButton>
+                        </Link>
+                      ) : (
                         <SidebarMenuButton tooltip={item.title}>
                           {item.icon && <item.icon />}
                           <span>{item.title}</span>
@@ -131,7 +169,7 @@ function ProtectedSidebarContent({
                             <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                           )}
                         </SidebarMenuButton>
-                      </Link>
+                      )}
                     </CollapsibleTrigger>
                     {item.items && (
                       <CollapsibleContent
@@ -290,7 +328,7 @@ function ProtectedSidebarContent({
                       <Link href="/admin">
                         <DropdownMenuItem className="cursor-pointer text-red-500 focus:bg-red-600/50 focus:text-white">
                           <ServerCogIcon />
-                          {t("Admin.navigation.label")}
+                          {t("AdminArea.navigation.label")}
                         </DropdownMenuItem>
                       </Link>
                     )}
@@ -335,18 +373,20 @@ function ProtectedSidebarContent({
       </Sidebar>
 
       {/* Sidebar Inset: Content Area */}
-      <SidebarInset className="min-h-[calc(100svh-5rem)]">
-        {/* Sticky Header with Sidebar Toggle and Breadcrumbs */}
-        <header className="bg-background/60 fixed top-14 z-10 flex h-14 w-full shrink-0 items-center justify-between gap-2 backdrop-blur">
-          <div className="flex h-6 items-center gap-2 pl-2 md:pl-1 lg:pl-3 xl:pl-5">
+      <SidebarInset className="flex-1">
+        {/* Fixed Header with Sidebar Toggle and Breadcrumbs */}
+        <header className="bg-background/80 fixed top-14 z-10 flex w-full shrink-0 flex-col items-start pl-2 shadow-sm backdrop-blur lg:pl-4 xl:pl-6">
+          <div className="flex h-2 items-center"></div>
+          <div className="flex h-5 items-center gap-1">
             <SidebarTrigger className="text-primary" />
             <Separator orientation="vertical" />
             <NavigationBreadcrumbs />
           </div>
+          <div className="flex h-2 w-full shrink-0 items-center border-b"></div>
         </header>
 
-        {/* Main Content Area */}
-        <div className="@container flex flex-col gap-2 rounded-sm pt-14">
+        {/* Main Content Area with proper spacing to account for sticky breadcrumb header */}
+        <div className="@container/maincontent mt-28 flex flex-col gap-2 rounded-sm">
           {children}
         </div>
       </SidebarInset>
@@ -402,7 +442,7 @@ function TeamSwitcher({
             sideOffset={4}
           >
             <DropdownMenuLabel className="text-muted-foreground text-xs">
-              Teams
+              {"Teams"}
             </DropdownMenuLabel>
 
             {/* Render team selection items */}
@@ -416,7 +456,10 @@ function TeamSwitcher({
                   <team.logo className="size-4 shrink-0" />
                 </div>
                 {team.name}
-                <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
+                <DropdownMenuShortcut>
+                  {"⌘"}
+                  {index + 1}
+                </DropdownMenuShortcut>
               </DropdownMenuItem>
             ))}
 
@@ -426,7 +469,9 @@ function TeamSwitcher({
               <div className="bg-background flex size-6 items-center justify-center rounded-sm border">
                 <PlusIcon className="size-4" />
               </div>
-              <div className="text-muted-foreground font-medium">Add team</div>
+              <div className="text-muted-foreground font-medium">
+                {"Add team"}
+              </div>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

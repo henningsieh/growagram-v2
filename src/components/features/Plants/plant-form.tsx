@@ -4,6 +4,7 @@
 import * as React from "react";
 import { useTranslations } from "next-intl";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   FlowerIcon,
   LeafIcon,
@@ -19,7 +20,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { PaginationItemsPerPage, modulePaths } from "~/assets/constants";
 import FormContent from "~/components/Layouts/form-content";
-import PageHeader from "~/components/Layouts/page-header";
+import { SortOrder } from "~/components/atom/sort-filter-controls";
 import SpinningLoader from "~/components/atom/spinning-loader";
 import { Button } from "~/components/ui/button";
 import {
@@ -48,12 +49,14 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import { useRouter } from "~/lib/i18n/routing";
-import { api } from "~/lib/trpc/react";
 import type {
   CreateOrEditPlantInput,
-  GetOwnPlantsInput,
+  GetOwnPlantsInput, // Ensure GetOwnPlantsInput is imported
   GetPlantByIdType,
 } from "~/server/api/root";
+import { useTRPC } from "~/trpc/client";
+import { PlantsSortField, PlantsViewMode } from "~/types/plant";
+// Ensure PlantsViewMode is imported
 import { plantFormSchema } from "~/types/zodSchema";
 import { BreederSelector } from "./breeder-selector";
 import PlantFormDateField from "./plant-form-date-fields";
@@ -61,8 +64,23 @@ import { StrainSelector } from "./strain-selector";
 
 type FormValues = z.infer<typeof plantFormSchema>;
 
-export default function PlantForm({ plant }: { plant?: GetPlantByIdType }) {
-  const utils = api.useUtils();
+// Define the type for the list view parameters prop
+interface ListViewParams {
+  sortField: PlantsSortField;
+  sortOrder: SortOrder;
+  viewMode: PlantsViewMode;
+  page: string;
+}
+
+export default function PlantForm({
+  plant,
+  listView,
+}: {
+  plant?: GetPlantByIdType;
+  listView: ListViewParams;
+}) {
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
   const router = useRouter();
 
   const t = useTranslations("Plants");
@@ -104,38 +122,77 @@ export default function PlantForm({ plant }: { plant?: GetPlantByIdType }) {
     }
   }, [watchedBreederId, selectedBreederId, form]);
 
-  const { data: growsData, isPending: isGrowsLoading } =
-    api.grows.getOwnGrows.useQuery(
-      {
-        limit: 1000,
+  const { data: growsData, isPending: isGrowsLoading } = useQuery(
+    trpc.grows.getOwnGrows.queryOptions({
+      limit: PaginationItemsPerPage.MAX_DEFAULT_ITEMS,
+    } satisfies GetOwnPlantsInput),
+  );
+
+  const createOrEditPlantMutation = useMutation(
+    trpc.plants.createOrEdit.mutationOptions({
+      onSuccess: async () => {
+        toast(t("form-toast-success-title"), {
+          description: t("form-toast-success-description"),
+        });
+
+        // Construct the return URL with the received list view parameters
+        const returnUrl = new URL(
+          modulePaths.PLANTS.path,
+          window.location.origin,
+        );
+        returnUrl.searchParams.set("sortField", listView.sortField);
+        returnUrl.searchParams.set("sortOrder", listView.sortOrder);
+        returnUrl.searchParams.set("viewMode", listView.viewMode);
+        if (listView.viewMode === PlantsViewMode.PAGINATION && listView.page) {
+          returnUrl.searchParams.set("page", listView.page);
+        }
+
+        try {
+          if (listView.viewMode === PlantsViewMode.INFINITE_SCROLL) {
+            // Invalidate the infinite query
+            const infiniteQueryOptions =
+              trpc.plants.getOwnPlants.infiniteQueryOptions({
+                limit: PaginationItemsPerPage.PLANTS_PER_PAGE, // Or use a value from listView if needed
+                sortField: listView.sortField,
+                sortOrder: listView.sortOrder,
+              } satisfies GetOwnPlantsInput);
+
+            // Invalidate the infinite query to trigger refetch on navigation
+            await queryClient.invalidateQueries({
+              queryKey: infiniteQueryOptions.queryKey,
+            });
+          } else {
+            // Invalidate the specific page query for pagination view
+            const queryOptions = trpc.plants.getOwnPlants.queryOptions({
+              cursor: parseInt(listView.page, 10) || 1,
+              limit: PaginationItemsPerPage.PLANTS_PER_PAGE, // Or use a value from listView if needed
+              sortField: listView.sortField,
+              sortOrder: listView.sortOrder,
+            });
+
+            await queryClient.invalidateQueries({
+              queryKey: queryOptions.queryKey,
+              exact: true, // Ensure only this specific page query is invalidated
+            });
+          }
+          // Navigate back to the list page with the preserved parameters
+          router.push(returnUrl.pathname + returnUrl.search);
+        } catch (error) {
+          console.error("Error updating queries or navigating:", error);
+          // Navigate anyway to avoid leaving the user stuck, potentially losing state
+          router.push(returnUrl.pathname + returnUrl.search);
+        } finally {
+          setIsSubmitting(false); // Ensure submitting state is reset
+        }
       },
-      {
-        initialData: utils.grows.getOwnGrows.getData(),
+      onError: (error) => {
+        toast.error(t("form-toast-error-title"), {
+          description: error.message,
+        });
+        setIsSubmitting(false); // Ensure submitting state is reset on error
       },
-    );
-
-  const createOrEditPlantMutation = api.plants.createOrEdit.useMutation({
-    onSuccess: async () => {
-      toast(t("form-toast-success-title"), {
-        description: t("form-toast-success-description"),
-      });
-
-      // Reset the infinite query
-      await utils.plants.getOwnPlants.reset();
-      // Prefetch initial OwnPlants infinite query into cache
-      await utils.plants.getOwnPlants.prefetchInfinite({
-        limit: PaginationItemsPerPage.PLANTS_PER_PAGE,
-      } satisfies GetOwnPlantsInput);
-
-      // Now navigate to the plants page
-      router.push(modulePaths.PLANTS.path);
-    },
-    onError: (error) => {
-      toast.error(t("form-toast-error-title"), {
-        description: error.message || t("form-toast-error-description"),
-      });
-    },
-  });
+    }),
+  );
 
   async function onSubmit(values: FormValues) {
     setIsSubmitting(true);
@@ -145,275 +202,254 @@ export default function PlantForm({ plant }: { plant?: GetPlantByIdType }) {
   }
 
   return (
-    <PageHeader
-      title={
-        plant !== undefined
-          ? t("form-pagerheader-edit-title")
-          : t("form-pagerheader-new-title")
-      }
-      subtitle={
-        plant !== undefined
-          ? t("form-pagerheader-edit-subtitle")
-          : t("form-pagerheader-new-subtitle")
-      }
-      buttonLabel={t("form-pageheader-backButtonLabel")}
-      buttonLink={modulePaths.PLANTS.path}
-    >
-      <FormContent>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-          <Form {...form}>
-            <Card>
-              <CardHeader className="p-2 pb-0 sm:p-3 sm:pb-0 lg:p-4 lg:pb-0 xl:p-6 xl:pb-0">
-                <CardTitle as="h2">{t("form-heading")}</CardTitle>
-                <CardDescription>
-                  {t("form-heading-description")}
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="p-2 sm:p-3 lg:p-4 xl:p-6">
-                <div className="space-y-6">
-                  <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="font-semibold">
-                          {t("form-nickname")}
-                        </FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <TagIcon className="text-muted-foreground absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2" />
-                            <Input
-                              className="bg-muted text-foreground pl-10 md:text-base"
-                              placeholder="Enter plant name"
-                              {...field}
-                            />
-                          </div>
-                        </FormControl>
-                        <FormDescription>
-                          {t("form-nickname-description")}
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+    <FormContent>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        <Form {...form}>
+          <Card>
+            <CardHeader className="p-2 pb-0 sm:p-3 sm:pb-0 lg:p-4 lg:pb-0 xl:p-6 xl:pb-0">
+              <CardTitle as="h2">{t("form-heading")}</CardTitle>
+              <CardDescription>{t("form-heading-description")}</CardDescription>
+            </CardHeader>
+            <CardContent className="p-2 sm:p-3 lg:p-4 xl:p-6">
+              <div className="space-y-6">
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-semibold">
+                        {t("form-nickname")}
+                      </FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <TagIcon className="text-muted-foreground absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2" />
+                          <Input
+                            className="bg-muted text-foreground pl-10 md:text-base"
+                            placeholder="Enter plant name"
+                            {...field}
+                          />
+                        </div>
+                      </FormControl>
+                      <FormDescription>
+                        {t("form-nickname-description")}
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-                  {/* Breeder Selection with Create */}
-                  <FormField
-                    control={form.control}
-                    name="breederId"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="font-semibold">
-                          {t("breeder")}
-                        </FormLabel>
-                        <FormControl>
-                          <div>
-                            <BreederSelector
-                              value={field.value}
-                              onChange={field.onChange}
-                              disabled={isSubmitting}
-                            />
-                          </div>
-                        </FormControl>
-                        <FormDescription>
-                          {t("form-breeder-description")}
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  {/* Strain Selection with Create - using new component */}
-                  <FormField
-                    control={form.control}
-                    name="strainId"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="font-semibold">
-                          {t("strain")}
-                        </FormLabel>
-                        <FormControl>
-                          <StrainSelector
+                {/* Breeder Selection with Create */}
+                <FormField
+                  control={form.control}
+                  name="breederId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-semibold">
+                        {t("breeder")}
+                      </FormLabel>
+                      <FormControl>
+                        <div>
+                          <BreederSelector
                             value={field.value}
-                            breederId={selectedBreederId}
                             onChange={field.onChange}
                             disabled={isSubmitting}
-                            existingStrain={
-                              plant?.strain
-                                ? {
-                                    id: plant.strain.id,
-                                    name: plant.strain.name,
-                                  }
-                                : null
-                            }
                           />
-                        </FormControl>
-                        <FormDescription>
-                          {t("form-strain-description")}
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
+                        </div>
+                      </FormControl>
+                      <FormDescription>
+                        {t("form-breeder-description")}
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Strain Selection with Create - using new component */}
+                <FormField
+                  control={form.control}
+                  name="strainId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-semibold">
+                        {t("strain")}
+                      </FormLabel>
+                      <FormControl>
+                        <StrainSelector
+                          value={field.value}
+                          breederId={selectedBreederId}
+                          onChange={field.onChange}
+                          disabled={isSubmitting}
+                          existingStrain={
+                            plant?.strain
+                              ? {
+                                  id: plant.strain.id,
+                                  name: plant.strain.name,
+                                }
+                              : null
+                          }
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        {t("form-strain-description")}
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="growId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-semibold">
+                        {t("form-grow")}
+                      </FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <TentTreeIcon className="text-muted-foreground absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2" />
+                          {isGrowsLoading ? (
+                            <SpinningLoader />
+                          ) : (
+                            <Select
+                              value={field.value || undefined}
+                              onValueChange={field.onChange}
+                            >
+                              <SelectTrigger className="bg-muted text-foreground w-full pl-10 md:text-base">
+                                <SelectValue
+                                  placeholder={t("form-grow-placeholder")}
+                                />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {growsData?.grows.map((grow) => (
+                                  <SelectItem key={grow.id} value={grow.id}>
+                                    {grow.name}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          )}
+                        </div>
+                      </FormControl>
+                      <FormDescription>
+                        {t("form-grow-description")}
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-4 lg:gap-6 xl:gap-8">
+                  {/* Planting Phase */}
+                  <FormField
+                    control={form.control}
+                    name="startDate"
+                    render={({ field }) => (
+                      <PlantFormDateField
+                        field={field}
+                        label={t("planting-date")}
+                        description={t("form-date-planted-description")}
+                        icon={NutIcon}
+                        iconClassName="text-planted"
+                      />
                     )}
                   />
 
                   <FormField
                     control={form.control}
-                    name="growId"
+                    name="seedlingPhaseStart"
                     render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="font-semibold">
-                          {t("form-grow")}
-                        </FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <TentTreeIcon className="text-muted-foreground absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2" />
-                            {isGrowsLoading ? (
-                              <SpinningLoader />
-                            ) : (
-                              <Select
-                                value={field.value || undefined}
-                                onValueChange={field.onChange}
-                              >
-                                <SelectTrigger className="bg-muted text-foreground w-full pl-10 md:text-base">
-                                  <SelectValue
-                                    placeholder={t("form-grow-placeholder")}
-                                  />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {growsData?.grows.map((grow) => (
-                                    <SelectItem key={grow.id} value={grow.id}>
-                                      {grow.name}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                            )}
-                          </div>
-                        </FormControl>
-                        <FormDescription>
-                          {t("form-grow-description")}
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
+                      <PlantFormDateField
+                        field={field}
+                        label={t("germination-date")}
+                        description={t("form-date-seedling-description")}
+                        icon={SproutIcon}
+                        iconClassName="text-seedling"
+                      />
                     )}
                   />
 
-                  <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-4 lg:gap-6 xl:gap-8">
-                    {/* Planting Phase */}
-                    <FormField
-                      control={form.control}
-                      name="startDate"
-                      render={({ field }) => (
-                        <PlantFormDateField
-                          field={field}
-                          label={t("planting-date")}
-                          description={t("form-date-planted-description")}
-                          icon={NutIcon}
-                          iconClassName="text-planted"
-                        />
-                      )}
-                    />
+                  {/* Growth Phase */}
+                  <FormField
+                    control={form.control}
+                    name="vegetationPhaseStart"
+                    render={({ field }) => (
+                      <PlantFormDateField
+                        field={field}
+                        label={t("vegetation-start-date")}
+                        description={t("form-date-vegetation-description")}
+                        icon={LeafIcon}
+                        iconClassName="text-vegetation"
+                      />
+                    )}
+                  />
 
-                    <FormField
-                      control={form.control}
-                      name="seedlingPhaseStart"
-                      render={({ field }) => (
-                        <PlantFormDateField
-                          field={field}
-                          label={t("germination-date")}
-                          description={t("form-date-seedling-description")}
-                          icon={SproutIcon}
-                          iconClassName="text-seedling"
-                        />
-                      )}
-                    />
+                  <FormField
+                    control={form.control}
+                    name="floweringPhaseStart"
+                    render={({ field }) => (
+                      <PlantFormDateField
+                        field={field}
+                        label={t("flowering-start-date")}
+                        description={t("form-date-flowering-description")}
+                        icon={FlowerIcon}
+                        iconClassName="text-flowering"
+                      />
+                    )}
+                  />
 
-                    {/* Growth Phase */}
-                    <FormField
-                      control={form.control}
-                      name="vegetationPhaseStart"
-                      render={({ field }) => (
-                        <PlantFormDateField
-                          field={field}
-                          label={t("vegetation-start-date")}
-                          description={t("form-date-vegetation-description")}
-                          icon={LeafIcon}
-                          iconClassName="text-vegetation"
-                        />
-                      )}
-                    />
+                  {/* Harvest Phase */}
+                  <FormField
+                    control={form.control}
+                    name="harvestDate"
+                    render={({ field }) => (
+                      <PlantFormDateField
+                        field={field}
+                        label={t("harvest-date")}
+                        description={t("form-date-harvest-description")}
+                        icon={Wheat}
+                        iconClassName="text-harvest"
+                      />
+                    )}
+                  />
 
-                    <FormField
-                      control={form.control}
-                      name="floweringPhaseStart"
-                      render={({ field }) => (
-                        <PlantFormDateField
-                          field={field}
-                          label={t("flowering-start-date")}
-                          description={t("form-date-flowering-description")}
-                          icon={FlowerIcon}
-                          iconClassName="text-flowering"
-                        />
-                      )}
-                    />
-
-                    {/* Harvest Phase */}
-                    <FormField
-                      control={form.control}
-                      name="harvestDate"
-                      render={({ field }) => (
-                        <PlantFormDateField
-                          field={field}
-                          label={t("harvest-date")}
-                          description={t("form-date-harvest-description")}
-                          icon={Wheat}
-                          iconClassName="text-harvest"
-                        />
-                      )}
-                    />
-
-                    <FormField
-                      control={form.control}
-                      name="curingPhaseStart"
-                      render={({ field }) => (
-                        <PlantFormDateField
-                          field={field}
-                          label={t("curing-start-date")}
-                          description={t("form-date-curing-description")}
-                          icon={PillBottleIcon}
-                          iconClassName="text-curing"
-                        />
-                      )}
-                    />
-                  </div>
+                  <FormField
+                    control={form.control}
+                    name="curingPhaseStart"
+                    render={({ field }) => (
+                      <PlantFormDateField
+                        field={field}
+                        label={t("curing-start-date")}
+                        description={t("form-date-curing-description")}
+                        icon={PillBottleIcon}
+                        iconClassName="text-curing"
+                      />
+                    )}
+                  />
                 </div>
-              </CardContent>
+              </div>
+            </CardContent>
 
-              <CardFooter className="flex w-full gap-2 p-2 sm:p-3 md:gap-6 lg:p-4 xl:p-6">
-                <Button
-                  type="button"
-                  title="Reset"
-                  variant="outline"
-                  onClick={() => form.reset()}
-                  className="flex-1"
-                >
-                  {t("form-button-reset")}
-                </Button>
-                <Button
-                  type="submit"
-                  className="flex-1"
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting && <SpinningLoader className="mr-2 h-4 w-4" />}
-                  {plant?.id
-                    ? t("form-button-save-changes")
-                    : t("form-button-save-new")}
-                </Button>
-              </CardFooter>
-            </Card>
-          </Form>
-        </form>
-      </FormContent>
-    </PageHeader>
+            <CardFooter className="flex w-full gap-2 p-2 sm:p-3 md:gap-6 lg:p-4 xl:p-6">
+              <Button
+                type="button"
+                title="Reset"
+                variant="outline"
+                onClick={() => form.reset()}
+                className="flex-1"
+              >
+                {t("form-button-reset")}
+              </Button>
+              <Button type="submit" className="flex-1" disabled={isSubmitting}>
+                {isSubmitting && <SpinningLoader className="mr-2 h-4 w-4" />}
+                {plant?.id
+                  ? t("form-button-save-changes")
+                  : t("form-button-save-new")}
+              </Button>
+            </CardFooter>
+          </Card>
+        </Form>
+      </form>
+    </FormContent>
   );
 }

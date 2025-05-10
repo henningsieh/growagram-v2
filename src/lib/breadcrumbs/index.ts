@@ -1,5 +1,5 @@
 import { modulePaths } from "~/assets/constants";
-import type { BreadcrumbItem } from "~/lib/breadcrumbs/breadcrumb-context";
+import type { BreadcrumbItem } from "~/components/Layouts/Breadcrumbs/breadcrumb-context";
 
 // Helper to create breadcrumbs with translation keys
 export function createBreadcrumbs(

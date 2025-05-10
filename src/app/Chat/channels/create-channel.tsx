@@ -5,6 +5,7 @@ import * as React from "react";
 import { useRouter } from "next/navigation";
 import * as Headless from "@headlessui/react";
 import { PlusIcon } from "@heroicons/react/24/outline";
+import { useMutation } from "@tanstack/react-query";
 import { Button } from "~/components/button";
 import {
   Dialog,
@@ -13,20 +14,23 @@ import {
   DialogTitle,
 } from "~/components/dialog";
 import { Input, Label } from "~/components/input";
-import { api } from "~/lib/trpc/react";
+import { useTRPC } from "~/trpc/client";
 
 export function CreateChannelDialog() {
+  const api = useTRPC();
   const [open, setOpen] = React.useState(false);
   const router = useRouter();
-  const mutation = api.channel.create.useMutation({
-    onSuccess: (id) => {
-      router.push(`Chat/channels/${id}`);
-      router.refresh();
-    },
-    onError(err) {
-      alert("Error: " + err.message);
-    },
-  });
+  const mutation = useMutation(
+    api.channel.create.mutationOptions({
+      onSuccess: (id) => {
+        router.push(`Chat/channels/${id}`);
+        router.refresh();
+      },
+      onError(err) {
+        alert("Error: " + err.message);
+      },
+    }),
+  );
 
   return (
     <>

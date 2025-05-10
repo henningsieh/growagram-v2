@@ -2,13 +2,20 @@
 import * as React from "react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
-import { skipToken } from "@tanstack/react-query";
+import {
+  skipToken,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
+import { TRPCClientError } from "@trpc/client";
+import { useSubscription } from "@trpc/tanstack-react-query";
 import { toast } from "sonner";
-import { api } from "~/lib/trpc/react";
 import {
   type GetAllNotificationType,
   GetAllNotificationsInput,
 } from "~/server/api/root";
+import { useTRPC } from "~/trpc/client";
 import {
   NotifiableEntityType,
   NotificationEventType,
@@ -22,7 +29,8 @@ export function useNotifications(onlyUnread = true) {
   const [lastEventId, setLastEventId] = React.useState<false | null | string>(
     false,
   );
-  const utils = api.useUtils();
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
   const { status } = useSession();
   const t = useTranslations("Notifications");
 
@@ -41,16 +49,16 @@ export function useNotifications(onlyUnread = true) {
     }
   }, [allNotifications, lastEventId]);
 
-  const query = api.notifications.getAll.useQuery(
-    { onlyUnread } satisfies GetAllNotificationsInput, // Pass onlyUnread parameter
-    {
-      refetchOnWindowFocus: true,
-      refetchOnMount: true,
-      staleTime: 10 * 1000,
-      enabled: status === "authenticated", // Only enable when authenticated
-      retry: false, // Don't retry on error (like 401)
-    },
-  );
+  const query = useQuery({
+    ...trpc.notifications.getAll.queryOptions({
+      onlyUnread,
+    } satisfies GetAllNotificationsInput),
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
+    staleTime: 10 * 1000,
+    enabled: status === "authenticated", // Only enable when authenticated
+    retry: false, // Don't retry on error (like 401)
+  });
 
   // Update state from query
   React.useEffect(() => {
@@ -99,64 +107,154 @@ export function useNotifications(onlyUnread = true) {
     [t, getEntityTypeText],
   );
 
-  // Enhanced subscription with lastEventId and error handling
-  const subscription = api.notifications.onNotification.useSubscription(
-    status !== "authenticated" || lastEventId === false
-      ? skipToken
-      : { lastEventId },
-    {
-      onData: (notification) => {
-        setLastEventId(notification.id);
-        const notificationText = getNotificationText(
-          notification.type,
-          notification.entityType,
-        );
-        toast(t("new_notification"), {
-          description: `${notification.actor.name} ${notificationText}`,
-        });
-        void utils.notifications.getAll.invalidate();
-      },
-      onError: (err) => {
-        console.error("Subscription error:", err);
-        // Try to resubscribe if still authenticated
-        if (status === "authenticated") {
-          const lastNotificationId = allNotifications?.at(-1)?.id;
-          if (lastNotificationId) {
-            setLastEventId(lastNotificationId);
-          }
-          void utils.notifications.getAll.invalidate();
+  // Define the error handler for the subscription
+  const handleSubscriptionError = React.useCallback(
+    (err: unknown) => {
+      // Check if the error is due to intentional abortion or disposal issues
+      let isAbortOrDisposalError = false;
+      if (err instanceof TRPCClientError) {
+        // Check if the cause is an AbortError
+        if (err.cause instanceof Error && err.cause.name === "AbortError") {
+          isAbortOrDisposalError = true;
         }
-      },
+        // Check if the message indicates suppression during disposal
+        if (err.message.includes("suppressed during disposal")) {
+          isAbortOrDisposalError = true;
+        }
+      } else if (err instanceof Error && err.name === "AbortError") {
+        // Direct AbortError
+        isAbortOrDisposalError = true;
+      }
+
+      if (isAbortOrDisposalError) {
+        // Log minimally for debugging, but don't treat as a reconnectable error
+        console.debug(
+          "Notification subscription aborted (likely page navigation/reload).",
+          err,
+        );
+        return; // Ignore abort/disposal errors for reconnection logic
+      }
+
+      // --- Proceed with handling genuine errors ---
+      console.error("Notification subscription error:", err);
+
+      // Attempt to get the last known event ID before the error
+      const lastId = allNotifications?.at(-1)?.id;
+      if (lastId) {
+        setLastEventId(lastId);
+        console.log(
+          `Notification subscription error. Attempting to reconnect with lastEventId: ${lastId}`,
+        );
+      } else {
+        // If no notifications were ever received or state is empty,
+        // maybe reset to null to trigger refetch without specific ID?
+        // For now, just log that we couldn't find a last ID.
+        // TanStack Query might handle reconnection automatically without lastEventId if it's null.
+        console.log(
+          "No previous notifications found in state, cannot set lastEventId for reconnect.",
+        );
+        // Consider setting lastEventId back to null if reconnection fails repeatedly without it.
+        // setLastEventId(null);
+      }
+
+      // Optional: More specific error handling/logging based on error type
+      if (err instanceof Error) {
+        if (err.message.includes("Timeout")) {
+          console.warn(
+            "Notification subscription timed out. Will attempt to reconnect.",
+          );
+          // Potentially update UI state to show a specific timeout message
+        } else if (err.message.includes("UNAUTHORIZED")) {
+          console.error(
+            "Notification subscription unauthorized. Check session/token.",
+          );
+          // Might need to trigger logout or session refresh
+        } else {
+          console.error(
+            "Unhandled notification subscription error:",
+            err.message,
+          );
+        }
+      } else {
+        console.error("Unknown notification subscription error type:", err);
+      }
     },
+    [allNotifications], // Depend on allNotifications to get the last ID
   );
 
-  const { mutate: markAsRead } = api.notifications.markAsRead.useMutation({
-    onSuccess: async (_, { id }) => {
-      setAllNotifications((prev) => prev?.filter((n) => n.id !== id) ?? null);
-      await utils.notifications.getAll.invalidate();
-    },
+  // Updated subscription with new TanStack Query syntax
+  const subscription = useSubscription({
+    ...trpc.notifications.onNotification.subscriptionOptions(
+      // Skip if not authenticated, lastEventId is false
+      status !== "authenticated" || lastEventId === false
+        ? skipToken
+        : { lastEventId },
+    ),
+    // Disable subscription if onlyUnread is false
+    enabled: status === "authenticated" && lastEventId !== false && onlyUnread,
+    onError: handleSubscriptionError,
   });
 
-  const { mutate: markAllAsRead } = api.notifications.markAllAsRead.useMutation(
-    {
-      onSuccess: async () => {
-        setAllNotifications([]);
-        await utils.notifications.getAll.invalidate();
-      },
+  // Handle success with the returned data using an effect
+  React.useEffect(() => {
+    // Only process if subscription is enabled (implicitly checks onlyUnread)
+    if (subscription.data) {
+      const notification = subscription.data; // now typed as GetAllNotificationType
+      setLastEventId(notification.id);
+      const notificationText = getNotificationText(
+        notification.type,
+        notification.entityType,
+      );
+      toast(t("new_notification"), {
+        description: `${notification.actor.name} ${notificationText}`,
+      });
+      void query.refetch();
+    }
+  }, [getNotificationText, query, subscription.data, t]);
+
+  // Updated mutation with new TanStack Query syntax
+  const markAsReadMutation = useMutation({
+    ...trpc.notifications.markAsRead.mutationOptions(),
+    onSuccess: async (_, { id }) => {
+      // Optimistically update local state if needed (optional)
+      setAllNotifications(
+        (prev) =>
+          prev?.map((n) => (n.id === id ? { ...n, read: true } : n)) ?? null,
+      );
+      // Invalidate the query key to refetch in all components using it
+      await queryClient.invalidateQueries({
+        queryKey: trpc.notifications.getAll.queryKey(), // Invalidate base key
+      });
     },
-  );
+    // Add onError for potential rollback if needed
+  });
+
+  // Updated mutation with new TanStack Query syntax
+  const markAllAsReadMutation = useMutation({
+    ...trpc.notifications.markAllAsRead.mutationOptions(),
+    onSuccess: async () => {
+      // Optimistically update local state if needed (optional)
+      setAllNotifications(
+        (prev) => prev?.map((n) => ({ ...n, read: true })) ?? null,
+      );
+      // Invalidate the query key to refetch in all components using it
+      await queryClient.invalidateQueries({
+        queryKey: trpc.notifications.getAll.queryKey(), // Invalidate base key
+      });
+    },
+    // Add onError for potential rollback if needed
+  });
 
   const commentId = allNotifications?.find(
     (n) => n.entityType === NotifiableEntityType.COMMENT,
   )?.entityId;
 
-  const { data: commentableEntity, isLoading: isCommentLoading } =
-    api.comments.getParentEntity.useQuery(
+  const commentEntityQuery = useQuery({
+    ...trpc.comments.getParentEntity.queryOptions(
       commentId ? { commentId } : skipToken,
-      {
-        enabled: Boolean(commentId),
-      },
-    );
+    ),
+    enabled: Boolean(commentId),
+  });
 
   /**
    * Get the href for a notification
@@ -181,18 +279,20 @@ export function useNotifications(onlyUnread = true) {
             notification.commentId ? `?commentId=${notification.commentId}` : ""
           }`; // Photo that was liked or commented on
         case NotifiableEntityType.COMMENT:
-          if (!commentableEntity || isCommentLoading) {
+          if (!commentEntityQuery.data || commentEntityQuery.isLoading) {
             return undefined;
           }
-          return `/public/${commentableEntity.entityType}s/${commentableEntity.entityId}?commentId=${notification.entityId}`;
+          return `/public/${commentEntityQuery.data.entityType}s/${commentEntityQuery.data.entityId}?commentId=${notification.entityId}`;
 
         default:
           return "#"; // Fallback
       }
     };
-  }, [commentableEntity, isCommentLoading]);
+  }, [commentEntityQuery.data, commentEntityQuery.isLoading]);
 
   return {
+    // Return empty/default values if not enabled? Or let Tanstack Query handle it?
+    // Tanstack Query's isLoading/isPending should reflect the enabled state.
     all: allNotifications ?? [],
     grouped: {
       follow: (allNotifications ?? []).filter(
@@ -208,14 +308,16 @@ export function useNotifications(onlyUnread = true) {
     unreadCount: onlyUnread
       ? (allNotifications?.length ?? 0)
       : (allNotifications?.filter((n) => !n.read).length ?? 0),
-    isLoading: query.isLoading,
+    isLoading: query.isPending,
     isError: query.isError,
     error: query.error,
     subscriptionStatus: subscription.status,
     subscriptionError: subscription.error,
+    // subscriptionStatus: onlyUnread ? subscription.status : "idle", // Or 'disabled'
+    // subscriptionError: onlyUnread ? subscription.error : null,
     getNotificationText,
     getNotificationHref,
-    markAllAsRead,
-    markAsRead,
+    markAllAsRead: markAllAsReadMutation.mutate,
+    markAsRead: markAsReadMutation.mutateAsync,
   };
 }

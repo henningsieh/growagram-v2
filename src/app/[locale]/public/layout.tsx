@@ -88,8 +88,8 @@ export default function PublicRootLayout({
       </nav>
 
       {/* Main content */}
-      <main className="mx-auto w-full max-w-3xl pt-2 pr-3 pl-1">
-        <div className="mx-auto">{children}</div>
+      <main className="mx-auto mt-14 w-full max-w-3xl pt-2 pr-3 pl-1">
+        <div>{children}</div>
       </main>
 
       {/* Right sidebar */}
@@ -99,12 +99,12 @@ export default function PublicRootLayout({
             <h1 className="mb-4 flex items-center justify-center text-2xl font-semibold">
               {t("Sidebar.title")}
             </h1>
-            <p className="bg-accent my-2 p-2">Ad Banner</p>
-            <p className="bg-accent my-2 p-2">Ad Banner</p>
-            <p className="bg-accent my-2 p-2">Ad Banner</p>
-            <p className="bg-accent my-2 p-2">Ad Banner</p>
-            <p className="bg-accent my-2 p-2">Ad Banner</p>
-            <p className="bg-accent my-2 p-2">Ad Banner</p>
+            <p className="bg-accent my-2 p-2">{"Ad Banner"}</p>
+            <p className="bg-accent my-2 p-2">{"Ad Banner"}</p>
+            <p className="bg-accent my-2 p-2">{"Ad Banner"}</p>
+            <p className="bg-accent my-2 p-2">{"Ad Banner"}</p>
+            <p className="bg-accent my-2 p-2">{"Ad Banner"}</p>
+            <p className="bg-accent my-2 p-2">{"Ad Banner"}</p>
           </div>
         </div>
       </aside>

@@ -2,102 +2,61 @@
 
 import * as React from "react";
 import { useTranslations } from "next-intl";
-import type { InfiniteData } from "@tanstack/react-query";
+import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { PaginationItemsPerPage } from "~/assets/constants";
+import { AlertCircle } from "lucide-react";
 import InfiniteScrollLoader from "~/components/atom/infinite-scroll-loader";
-import SpinningLoader from "~/components/atom/spinning-loader";
-import PlantCard from "~/components/features/Plants/plant-card";
-import { api } from "~/lib/trpc/react";
-import type {
-  GetAllPlantsInput,
-  GetAllPlantsOutput,
-  GetAllPlantsType,
-} from "~/server/api/root";
+import { PlantCard } from "~/components/features/Plants/plant-card";
+import { Alert, AlertTitle } from "~/components/ui/alert";
+import { useIntersectionObserver } from "~/hooks/use-intersection";
+import { getAllPlantsInput } from "~/lib/queries/plants";
+import type { GetAllPlantsInput, GetAllPlantsType } from "~/server/api/root";
+import { useTRPC } from "~/trpc/client";
 
 export default function PublicPlantsPage() {
-  const utils = api.useUtils();
+  const trpc = useTRPC();
   const t = useTranslations("Plants");
 
-  // Get data from cache that was prefetched in layout.tsx
-  const cachedData = utils.plants.getAllPlants.getInfiniteData({
-    limit: PaginationItemsPerPage.PLANTS_PER_PAGE,
-  });
-
-  // Create initialData from cache if available
-  const initialData: InfiniteData<GetAllPlantsOutput, number> | undefined =
-    cachedData
-      ? {
-          pages: cachedData.pages,
-          pageParams: cachedData.pageParams.filter(
-            (param): param is number => param !== null,
-          ),
-        }
-      : undefined;
-
-  const {
-    data,
-    isLoading,
-    isFetching: isFetchingNextPage,
-    hasNextPage,
-    fetchNextPage,
-  } = api.plants.getAllPlants.useInfiniteQuery(
-    {
-      limit: PaginationItemsPerPage.PUBLIC_PLANTS_PER_PAGE,
-    } satisfies GetAllPlantsInput,
-    {
-      initialData,
-      getNextPageParam: (lastPage) => lastPage.nextCursor,
-    },
-  );
-
-  const plants: GetAllPlantsType =
-    data?.pages?.flatMap((page) => page.plants satisfies GetAllPlantsType) ??
-    [];
-
-  // Intersection Observer callback
-  const onIntersect = React.useCallback(
-    (entries: IntersectionObserverEntry[]) => {
-      const firstEntry = entries[0];
-      if (firstEntry.isIntersecting && hasNextPage && !isFetchingNextPage) {
-        void fetchNextPage();
-      }
-    },
-    [fetchNextPage, hasNextPage, isFetchingNextPage],
-  );
-
-  // Set up intersection observer
-  const loadingRef = React.useRef<HTMLDivElement>(null);
-  React.useEffect(() => {
-    const observer = new IntersectionObserver(onIntersect, {
-      root: null, // Use viewport as root
-      rootMargin: "0px",
-      threshold: 0.01, // Trigger when even 1% of the element is visible
+  // get suspense infinite query data from tanstack prefetchInfiniteQuery
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useSuspenseInfiniteQuery({
+      ...trpc.plants.getAllPlants.infiniteQueryOptions(
+        getAllPlantsInput satisfies GetAllPlantsInput,
+        {
+          getNextPageParam: (lastPage) => lastPage.nextCursor,
+        },
+      ),
     });
-    if (loadingRef.current) {
-      observer.observe(loadingRef.current);
+
+  // Extract plants from pages - with suspend, data is guaranteed to be defined
+  const plants = data.pages.flatMap(
+    (page) => page.plants satisfies GetAllPlantsType,
+  );
+
+  // Configure the callback for intersection
+  const fetchNextPageCallback = React.useCallback(() => {
+    if (hasNextPage && !isFetchingNextPage) {
+      void fetchNextPage();
     }
-    return () => observer.disconnect();
-  }, [onIntersect]);
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
+
+  // Use the intersection observer hook
+  const loadingRef = useIntersectionObserver(fetchNextPageCallback);
 
   return (
     <>
-      {isLoading ? (
-        <SpinningLoader className="text-secondary" />
-      ) : plants.length === 0 ? (
-        <p className="text-muted-foreground mt-8 text-center">
-          {t("no-plants-yet")}
-        </p>
+      {plants.length === 0 ? (
+        <Alert variant="default" className="mx-auto mt-8 max-w-md">
+          <AlertCircle className="size-11" />
+          <AlertTitle className="text-xl">{t("no-plants-yet")}</AlertTitle>
+        </Alert>
       ) : (
-        // this should be a flex-col timeline with animated plant cards
         <motion.div className="flex flex-col gap-4">
           {plants.map((plant) => (
             <PlantCard key={plant.id} plant={plant} isSocialProp={true} />
           ))}
-
           <InfiniteScrollLoader
             ref={loadingRef}
-            isLoading={isLoading}
             isFetchingNextPage={isFetchingNextPage}
             hasNextPage={hasNextPage}
             itemsLength={plants.length}

@@ -5,3 +5,8 @@ export enum PostableEntityType {
   PLANT = "plant",
   PHOTO = "image",
 }
+
+// New interface for attaching multiple photos to posts
+export interface PostPhotosInput {
+  photoIds: string[];
+}

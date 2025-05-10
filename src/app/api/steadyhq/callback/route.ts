@@ -4,12 +4,9 @@ import { NextResponse } from "next/server";
 import axios from "axios";
 import { modulePaths } from "~/assets/constants";
 import { env } from "~/env";
-import { auth } from "~/lib/auth";
-import { api } from "~/lib/trpc/server";
+import { uncachedAuth as auth } from "~/lib/auth";
+import { getCaller } from "~/trpc/server";
 
-// this Auth wrapper has bogus return type,
-// so we need to cast it to any. See below!
-// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 export const GET = auth(async function GET(req) {
   if (!req.auth) {
     return NextResponse.json(
@@ -17,6 +14,8 @@ export const GET = auth(async function GET(req) {
       { status: 401 },
     );
   }
+
+  const caller = await getCaller();
 
   const { searchParams } = new URL(req.url);
   const code = searchParams.get("code");
@@ -52,10 +51,10 @@ export const GET = auth(async function GET(req) {
       refresh_token_expires_in: number;
     };
 
-    console.log("OAuth callback response:", response.data);
+    console.log("/api/steadyhq/callback OAuth response:", response.data);
 
     // Update tokens using the TRPC procedure
-    await api.users.updateUserTokens({
+    await caller.users.updateUserTokens({
       userId: req.auth.user.id,
       accessToken: access_token,
       refreshToken: refresh_token,
@@ -71,19 +70,4 @@ export const GET = auth(async function GET(req) {
       { status: 500 },
     );
   }
-
-  /**
-   * TEMPORARY WORKAROUND for Next.js 15.1.4 + NextAuth 5.0.0-beta.25 type incompatibility
-   *
-   * Issue: Route handler type mismatch between Next.js App Router and NextAuth
-   * Error: Type "AppRouteHandlerFnContext" is not a valid type for the function's second argument
-   *
-   * Affects:
-   * - next@15.1.4
-   * - next-auth@5.0.0-beta.25
-   *
-   * @see https://github.com/nextauthjs/next-auth/issues/12224#issuecomment-2506852177
-   * //TODO: Remove when NextAuth fixes type compatibility with Next.js 15+
-   */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-}) as any;
+});

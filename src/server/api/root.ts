@@ -1,8 +1,5 @@
 // src/server/api/root.ts:
-
-import { RouterInput, RouterOutput } from "~/lib/trpc/react";
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-
+import { adminRouter } from "~/server/api/routers/admin";
 import { channelRouter } from "~/server/api/routers/channel";
 import { chatRouter } from "~/server/api/routers/chat";
 import { commentRouter } from "~/server/api/routers/comments";
@@ -10,12 +7,12 @@ import { growRouter } from "~/server/api/routers/grow";
 import { photoRouter } from "~/server/api/routers/image";
 import { likeRouter } from "~/server/api/routers/likes";
 import { messageRouter } from "~/server/api/routers/message";
+import { notificationRouter } from "~/server/api/routers/notifications";
 import { plantRouter } from "~/server/api/routers/plant";
 import { postRouter } from "~/server/api/routers/post";
 import { userRouter } from "~/server/api/routers/users";
-import { notificationRouter } from "~/server/api/routers/notifications";
-import { adminRouter } from "~/server/api/routers/admin";
-import { createCallerFactory } from "@trpc/server/unstable-core-do-not-import";
+import { RouterInput, RouterOutput } from "~/trpc/client";
+import { createTRPCRouter, publicProcedure } from "../../trpc/init";
 
 /**
  * This is the primary router for the server.
@@ -45,15 +42,17 @@ export const appRouter = createTRPCRouter({
     }
   }),
 });
-
 // export type definition of API
 export type AppRouter = typeof appRouter;
 
 // notificationRouter
 //  OUTPUTS:
-export type GetAllNotificationsResponse = RouterOutput["notifications"]["getAll"];
-export type GetAllNotificationsType = RouterOutput["notifications"]["getAll"]["items"];
-export type GetAllNotificationType = RouterOutput["notifications"]["getAll"]["items"][number];
+export type GetAllNotificationsResponse =
+  RouterOutput["notifications"]["getAll"];
+export type GetAllNotificationsType =
+  RouterOutput["notifications"]["getAll"]["items"];
+export type GetAllNotificationType =
+  RouterOutput["notifications"]["getAll"]["items"][number];
 
 //  INPUTS:
 export type GetAllNotificationsInput = RouterInput["notifications"]["getAll"];
@@ -72,14 +71,16 @@ export type CreatePostInput = RouterInput["updates"]["create"];
 //  OUTPUTS:
 export type GetOwnUserDataType = RouterOutput["users"]["getOwnUserData"];
 export type OwnUserDataType = NonNullable<GetOwnUserDataType>;
-export type GetPublicUserProfileType = RouterOutput["users"]["getPublicUserProfile"];
+export type GetPublicUserProfileType =
+  RouterOutput["users"]["getPublicUserProfile"];
 export type PublicUserProfileType = NonNullable<GetPublicUserProfileType>;
 
 //  INPUTS
 export type GetUserByIdInput = RouterInput["users"]["getOwnUserData"];
 export type EditUserInput = RouterInput["users"]["editUser"];
 export type RegisterUserInput = RouterInput["users"]["registerUser"];
-export type GetPublicUserProfileInput = RouterInput["users"]["getPublicUserProfile"];
+export type GetPublicUserProfileInput =
+  RouterInput["users"]["getPublicUserProfile"];
 
 // commentRouter
 //  OUTPUTS:
@@ -99,18 +100,22 @@ export type DeleteCommentInput = RouterInput["comments"]["deleteById"];
 //  OUTPUTS:
 export type ToggleLikeOutput = RouterOutput["likes"]["toggleLike"];
 export type GetLikeCountOutput = RouterOutput["likes"]["getLikeCount"];
-export type GetUserLikedEntitiesType = RouterOutput["likes"]["getUserLikedEntities"];
-export type GetUserLikedEntityType = RouterOutput["likes"]["getUserLikedEntities"][number];
+export type GetUserLikedEntitiesType =
+  RouterOutput["likes"]["getUserLikedEntities"];
+export type GetUserLikedEntityType =
+  RouterOutput["likes"]["getUserLikedEntities"][number];
 //  INPUTS:
 export type ToggleLikeInput = RouterInput["likes"]["toggleLike"];
 export type GetLikeCountInput = RouterInput["likes"]["getLikeCount"];
-export type GetUserLikedEntitiesInput = RouterInput["likes"]["getUserLikedEntities"];
+export type GetUserLikedEntitiesInput =
+  RouterInput["likes"]["getUserLikedEntities"];
 
 // imageRouter
 //  OUTPUTS:
 export type GetOwnPhotosOutput = RouterOutput["photos"]["getOwnPhotos"];
 export type GetOwnPhotosType = RouterOutput["photos"]["getOwnPhotos"]["images"];
-export type GetOwnPhotoType = RouterOutput["photos"]["getOwnPhotos"]["images"][number];
+export type GetOwnPhotoType =
+  RouterOutput["photos"]["getOwnPhotos"]["images"][number];
 export type GetPhotoByIdType = RouterOutput["photos"]["getById"];
 export type CreatePhotoOutput = RouterOutput["photos"]["createPhoto"];
 //  INPUTS:
@@ -122,33 +127,40 @@ export type CreatePhotoInput = RouterInput["photos"]["createPhoto"];
 //  OUTPUTS:
 export type GetOwnPlantsOutput = RouterOutput["plants"]["getOwnPlants"];
 export type GetOwnPlantsType = RouterOutput["plants"]["getOwnPlants"]["plants"];
-export type GetOwnPlantType = RouterOutput["plants"]["getOwnPlants"]["plants"][number];
+export type GetOwnPlantType =
+  RouterOutput["plants"]["getOwnPlants"]["plants"][number];
 export type GetPlantByIdType = RouterOutput["plants"]["getById"];
 export type GetAllPlantsOutput = RouterOutput["plants"]["getAllPlants"];
 export type GetAllPlantsType = RouterOutput["plants"]["getAllPlants"]["plants"];
-export type GetAllPlantType = RouterOutput["plants"]["getAllPlants"]["plants"][number];
+export type GetAllPlantType =
+  RouterOutput["plants"]["getAllPlants"]["plants"][number];
 
 export type PlantByIdType = NonNullable<GetPlantByIdType>;
 export type PlantImagesType = NonNullable<GetPlantByIdType>["plantImages"];
-export type PlantImageType = NonNullable<GetPlantByIdType>["plantImages"][number];
-export type ImageType = NonNullable<GetPlantByIdType>["plantImages"][number]["image"];
+export type PlantImageType =
+  NonNullable<GetPlantByIdType>["plantImages"][number];
+export type ImageType =
+  NonNullable<GetPlantByIdType>["plantImages"][number]["image"];
 //  INPUTS:
 export type GetOwnPlantsInput = RouterInput["plants"]["getOwnPlants"];
 export type GetPlantByIdInput = RouterInput["plants"]["getById"];
 export type CreateOrEditPlantInput = RouterInput["plants"]["createOrEdit"];
 export type GetAllPlantsInput = RouterInput["plants"]["getAllPlants"];
-export type GetConnectablePlantsInput = RouterInput["plants"]["getConnectablePlants"];
+export type GetConnectablePlantsInput =
+  RouterInput["plants"]["getConnectablePlants"];
 
 // growRouter
 //  OUTPUTS:
 export type GetGrowByIdType = RouterOutput["grows"]["getById"];
 export type GetOwnGrowsOutput = RouterOutput["grows"]["getOwnGrows"];
 export type GetOwnGrowsType = RouterOutput["grows"]["getOwnGrows"]["grows"];
-export type GetOwnGrowType = RouterOutput["grows"]["getOwnGrows"]["grows"][number];
+export type GetOwnGrowType =
+  RouterOutput["grows"]["getOwnGrows"]["grows"][number];
 
 export type GetAllGrowsOutput = RouterOutput["grows"]["getAllGrows"];
 export type GetAllGrowsType = RouterOutput["grows"]["getAllGrows"]["grows"];
-export type GetAllGrowType = RouterOutput["grows"]["getAllGrows"]["grows"][number];
+export type GetAllGrowType =
+  RouterOutput["grows"]["getAllGrows"]["grows"][number];
 
 //  INPUTS:
 export type GetGrowByIdInput = RouterInput["grows"]["getById"];
@@ -169,14 +181,16 @@ export type CreateBreederInput = RouterInput["plants"]["createBreeder"];
 
 // strainsRouter
 //  OUTPUTS:
-export type GetStrainsByBreederType = RouterOutput["plants"]["getStrainsByBreeder"];
+export type GetStrainsByBreederType =
+  RouterOutput["plants"]["getStrainsByBreeder"];
 
 export type GetStrainByIdType = RouterOutput["plants"]["getStrainById"];
 export type StrainType = NonNullable<GetStrainByIdType>;
 export type CreateStrainOutput = RouterOutput["plants"]["createStrain"];
 
 //  INPUTS:
-export type GetStrainsByBreederInput = RouterInput["plants"]["getStrainsByBreeder"];
+export type GetStrainsByBreederInput =
+  RouterInput["plants"]["getStrainsByBreeder"];
 export type CreateStrainInput = RouterInput["plants"]["createStrain"];
 export type GetStrainByIdInput = RouterInput["plants"]["getStrainById"];
 
@@ -192,12 +206,3 @@ export type AdminBanUserInput = RouterInput["admin"]["banUser"];
 export type AdminUnbanUserInput = RouterInput["admin"]["unbanUser"];
 export type AdminGetAllUsersInput = RouterInput["admin"]["getAllUsers"];
 export type AdminGetUserByIdInput = RouterInput["admin"]["getUserById"];
-/**
- * Create a server-side caller for the tRPC API.
- * @example
- * const trpc = createCaller(createContext);
- * const res = await trpc.post.all();
- *       ^? Post[]
- */
-
-export const createCaller = createCallerFactory()(appRouter);

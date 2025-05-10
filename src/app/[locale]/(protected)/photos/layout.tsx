@@ -1,14 +1,14 @@
 // src/app/[locale]/(protected)/photos/layout.tsx:
-import { PaginationItemsPerPage } from "~/assets/constants";
-import { SortOrder } from "~/components/atom/sort-filter-controls";
-import { HydrateClient, api } from "~/lib/trpc/server";
+import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
+import { getOwnPhotosInput } from "~/lib/queries/photos";
 import type { GetOwnPhotosInput } from "~/server/api/root";
-import { PhotosSortField } from "~/types/image";
+import { getQueryClient, trpc } from "~/trpc/server";
 
 export const metadata = {
-  title: "Grower's Plattform | My Photos",
-  description: "Grower's Plattform | My Photos",
+  title: "Grower's Platform | My Photos",
+  description: "Grower's Platform | My Photos",
 };
+export const dynamic = "force-dynamic";
 
 export default async function PhotosLayout({
   children,
@@ -16,22 +16,23 @@ export default async function PhotosLayout({
   children: React.ReactNode;
 }) {
   // Prefetch initial data with default sorting for the first page
+  const queryClient = getQueryClient();
 
-  await api.photos.getOwnPhotos.prefetchInfinite({
-    cursor: 1,
-    limit: PaginationItemsPerPage.PHOTOS_PER_PAGE,
-    sortField: PhotosSortField.UPLOAD_DATE,
-    sortOrder: SortOrder.DESC,
-    filterNotConnected: false,
-  } satisfies GetOwnPhotosInput);
+  await queryClient.prefetchInfiniteQuery({
+    ...trpc.photos.getOwnPhotos.infiniteQueryOptions(
+      getOwnPhotosInput satisfies GetOwnPhotosInput,
+    ),
+  });
 
-  await api.photos.getOwnPhotos.prefetch({
-    cursor: 1,
-    limit: PaginationItemsPerPage.PHOTOS_PER_PAGE,
-    sortField: PhotosSortField.UPLOAD_DATE,
-    sortOrder: SortOrder.DESC,
-    filterNotConnected: false,
-  } satisfies GetOwnPhotosInput);
+  await queryClient.prefetchQuery({
+    ...trpc.photos.getOwnPhotos.queryOptions(
+      getOwnPhotosInput satisfies GetOwnPhotosInput,
+    ),
+  });
 
-  return <HydrateClient>{children}</HydrateClient>;
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      {children}
+    </HydrationBoundary>
+  );
 }

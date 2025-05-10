@@ -117,3 +117,25 @@ export function getDaysBetween(start: Date, end: Date): number {
   const millisecondsPerDay = 1000 * 60 * 60 * 24;
   return Math.ceil((end.getTime() - start.getTime()) / millisecondsPerDay);
 }
+
+export const getSignedUrlForUpload = async (file: File) => {
+  const response = await fetch("/api/getSignedURL", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      fileName: file.name,
+      fileType: file.type,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to get signed URL");
+  }
+
+  const { uploadUrl } = (await response.json()) as {
+    uploadUrl: string;
+  };
+  return uploadUrl;
+};

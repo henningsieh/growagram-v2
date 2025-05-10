@@ -1,8 +1,6 @@
-"use client";
-
 import { useTranslations } from "next-intl";
 import { GrowCard } from "~/components/features/Grows/grow-card";
-import PlantCard from "~/components/features/Plants/plant-card";
+import { PlantCard } from "~/components/features/Plants/plant-card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import type { PublicUserProfileType } from "~/server/api/root";
 
@@ -14,19 +12,13 @@ export const ProfileTabs = ({ profile }: ProfileTabsProps) => {
   const t = useTranslations();
   return (
     <Tabs defaultValue="grows" className="w-full">
-      <TabsList className="bg-muted text-muted-foreground grid w-full grid-cols-3 font-extrabold">
+      <TabsList className="bg-muted text-muted-foreground grid w-full grid-cols-3 p-0 font-extrabold">
         <TabsTrigger value="timeline" disabled>
           {t("Profile.tabs.timeline")}
-          <span
-            className="text-muted-foreground ml-2 text-xs"
-            // eslint-disable-next-line react/jsx-no-literals
-          >
-            (
-            {
-              t("Platform.coming-soon")
-              // eslint-disable-next-line react/jsx-no-literals
-            }
-            )
+          <span className="text-muted-foreground ml-2 text-xs">
+            {"("}
+            {t("Platform.coming-soon")}
+            {")"}
           </span>
         </TabsTrigger>
         <TabsTrigger
@@ -34,39 +26,18 @@ export const ProfileTabs = ({ profile }: ProfileTabsProps) => {
           className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-semibold data-[state=active]:font-bold"
         >
           {t("Profile.tabs.grows")}
-          {
-            // eslint-disable-next-line react/jsx-no-literals
-            " ("
-          }
-          {
-            profile.grows?.length ?? 0
-            // eslint-disable-next-line react/jsx-no-literals
-          }
-          {
-            // eslint-disable-next-line react/jsx-no-literals
-            ")"
-          }
+          {" ("}
+          {profile.grows?.length ?? 0}
+          {")"}
         </TabsTrigger>
         <TabsTrigger
           value="plants"
           className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground font-semibold data-[state=active]:font-bold"
         >
-          {
-            t("Profile.tabs.plants")
-            // eslint-disable-next-line react/jsx-no-literals
-          }
-          {
-            // eslint-disable-next-line react/jsx-no-literals
-            " ("
-          }
-          {
-            profile.plants?.length ?? 0
-            // eslint-disable-next-line react/jsx-no-literals
-          }
-          {
-            // eslint-disable-next-line react/jsx-no-literals
-            ")"
-          }
+          {t("Profile.tabs.plants")}
+          {" ("}
+          {profile.plants?.length ?? 0}
+          {")"}
         </TabsTrigger>
       </TabsList>
 

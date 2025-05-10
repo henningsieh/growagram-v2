@@ -4,7 +4,7 @@ import * as React from "react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { usePathname, useSearchParams } from "next/navigation";
-import { skipToken } from "@tanstack/react-query";
+import { skipToken, useQuery } from "@tanstack/react-query";
 import {
   Flower2Icon,
   ImageIcon,
@@ -12,11 +12,13 @@ import {
   UsersIcon,
   Wheat,
 } from "lucide-react";
+import { PaginationItemsPerPage } from "~/assets/constants";
 import PageHeader from "~/components/Layouts/page-header";
+import { SortOrder } from "~/components/atom/sort-filter-controls";
 import { ActivePlantsCard } from "~/components/features/Dashboard/active-plants-card";
 import { PlantsOverviewChart } from "~/components/features/Dashboard/dashboard-overview-chart";
 import { RecentPhotosWidget } from "~/components/features/Dashboard/recent-photos-widget";
-import { NotificationsFeed } from "~/components/features/Notifications/notifications-feed";
+import { DashboardNotificationsFeed } from "~/components/features/Notifications/dashboard-notifications-feed";
 import {
   Card,
   CardContent,
@@ -27,7 +29,9 @@ import {
 } from "~/components/ui/card";
 import { Skeleton } from "~/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { api } from "~/lib/trpc/react";
+import { useTRPC } from "~/trpc/client";
+import { GrowsSortField } from "~/types/grow";
+import { PlantsSortField } from "~/types/plant";
 
 export function DashboardContent() {
   const t = useTranslations("Platform");
@@ -35,6 +39,7 @@ export function DashboardContent() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { data: session } = useSession();
+  const trpc = useTRPC();
 
   // Handle URL hash for tab selection
   React.useEffect(() => {
@@ -60,42 +65,51 @@ export function DashboardContent() {
     return () => {
       window.removeEventListener("hashchange", handleHashChange);
     };
-  }, [pathname, searchParams]); // Add pathname and searchParams as dependencies
+  }, [pathname, searchParams]);
 
-  // Define all API queries with conditional fetching based on session state
-  const { data: growsData, isLoading: isLoadingGrows } =
-    api.grows.getOwnGrows.useQuery(
-      {
-        // limit: 6,
-      },
-      { enabled: !!session?.user.id },
-    );
+  // Use tRPC hooks with TanStack React Query
+  const growsQuery = useQuery(
+    trpc.grows.getOwnGrows.queryOptions({
+      cursor: 1,
+      limit: PaginationItemsPerPage.GROWS_PER_PAGE,
+      sortField: GrowsSortField.CREATED_AT,
+      sortOrder: SortOrder.DESC,
+    }),
+  );
 
-  const { data: plantsData, isLoading: isLoadingPlants } =
-    api.plants.getOwnPlants.useQuery(
-      {
-        // limit: 5,
-      },
-      { enabled: !!session?.user.id },
-    );
+  const plantsQuery = useQuery(
+    trpc.plants.getOwnPlants.queryOptions({
+      cursor: 1,
+      limit: PaginationItemsPerPage.PLANTS_PER_PAGE,
+      sortField: PlantsSortField.CREATED_AT,
+      sortOrder: SortOrder.DESC,
+    }),
+  );
 
-  const { data: photosData, isLoading: isLoadingPhotos } =
-    api.photos.getOwnPhotos.useQuery(
-      {
-        limit: 12,
-      },
-      { enabled: !!session?.user.id },
-    );
+  const photosQuery = useQuery(
+    trpc.photos.getOwnPhotos.queryOptions({ limit: 12 }),
+  );
 
-  const { data: userProfile, isPending: userStatsArePending } =
-    api.users.getPublicUserProfile.useQuery(
+  const userProfileQuery = useQuery({
+    ...trpc.users.getPublicUserProfile.queryOptions(
       session?.user.id ? { id: session.user.id } : skipToken,
-    );
+    ),
+    enabled: !!session?.user.id,
+  });
 
   // Return null if session is null, after defining all hooks
   if (session === null) {
     return null;
   }
+
+  const growsData = growsQuery.data;
+  const plantsData = plantsQuery.data;
+  const photosData = photosQuery.data;
+  const userProfile = userProfileQuery.data;
+  const isLoadingGrows = growsQuery.isLoading;
+  const isLoadingPlants = plantsQuery.isLoading;
+  const isLoadingPhotos = photosQuery.isLoading;
+  const userStatsArePending = userProfileQuery.isPending;
 
   const totalGrows = growsData?.count || 0;
   const totalPlants = plantsData?.count || 0;
@@ -143,14 +157,14 @@ export function DashboardContent() {
 
             <TabsContent value="overview" className="space-y-4">
               {/* Summary Cards */}
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="xs:grid-cols-2 grid gap-4 lg:grid-cols-4">
                 {/* Grows Card */}
                 <Card className="gap-2">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0">
                     <CardTitle as="h2" className="text-2xl font-semibold">
                       {t("grow-environments")}
                     </CardTitle>
-                    <TentTree className="size-6" />
+                    <TentTree className="size-5 shrink-0" />
                   </CardHeader>
                   <CardContent className="pb-2">
                     {isLoadingGrows ? (
@@ -170,7 +184,7 @@ export function DashboardContent() {
                     <CardTitle as="h2" className="text-2xl font-semibold">
                       {t("total-plants")}
                     </CardTitle>
-                    <Flower2Icon className="size-6" />
+                    <Flower2Icon className="size-5 shrink-0" />
                   </CardHeader>
                   <CardContent className="pb-2">
                     {isLoadingPlants ? (
@@ -201,7 +215,7 @@ export function DashboardContent() {
                     <CardTitle as="h2" className="text-2xl font-semibold">
                       {t("total-photos")}
                     </CardTitle>
-                    <ImageIcon className="size-6" />
+                    <ImageIcon className="size-5 shrink-0" />
                   </CardHeader>
                   <CardContent className="pb-2">
                     {isLoadingPhotos ? (
@@ -221,7 +235,7 @@ export function DashboardContent() {
                     <CardTitle as="h2" className="text-2xl font-semibold">
                       {t("comunity")}
                     </CardTitle>
-                    <UsersIcon className="size-6" />
+                    <UsersIcon className="size-5 shrink-0" />
                   </CardHeader>
                   <CardContent className="space-y-3">
                     {/* <div className="flex items-center space-x-3">
@@ -294,15 +308,12 @@ export function DashboardContent() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-8">
-                    {/* Use a state to control mounting */}
-                    {activeTab === "activity" && (
-                      <React.Suspense
-                        fallback={
-                          <div className="bg-muted/20 h-96 animate-pulse rounded-md" />
-                        }
-                      >
-                        <NotificationsFeed />
-                      </React.Suspense>
+                    {/* Conditionally render the component directly */}
+                    {activeTab === "activity" ? (
+                      <DashboardNotificationsFeed />
+                    ) : (
+                      // Optional: Render a placeholder or nothing when inactive
+                      <div className="bg-muted/20 h-96 animate-pulse rounded-md" />
                     )}
                   </div>
                 </CardContent>

@@ -9,11 +9,10 @@ import {
   Wheat,
 } from "lucide-react";
 
-// src/types/plant.ts:
-
 export enum PlantsSortField {
   NAME = "name",
   CREATED_AT = "createdAt",
+  UPDATED_AT = "updatedAt",
 }
 
 export enum PlantsViewMode {

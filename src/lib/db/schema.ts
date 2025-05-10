@@ -446,6 +446,25 @@ export const posts = pgTable("public_post", {
     .notNull(),
 });
 
+// Many-to-many relationship between posts and images
+export const postImages = pgTable(
+  "post_images",
+  {
+    postId: text("post_id")
+      .notNull()
+      .references(() => posts.id, { onDelete: "cascade" }),
+    imageId: text("image_id")
+      .notNull()
+      .references(() => images.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+  },
+  (t) => ({
+    pk: primaryKey({ columns: [t.postId, t.imageId] }),
+  }),
+);
+
 export const userFollows = pgTable(
   "user_follow",
   {
@@ -753,7 +772,7 @@ export const plantImagesRelations = relations(plantImages, ({ one }) => ({
   }),
 }));
 
-export const publicPostsRelations = relations(posts, ({ one }) => ({
+export const publicPostsRelations = relations(posts, ({ one, many }) => ({
   owner: one(users, {
     fields: [posts.userId],
     references: [users.id],
@@ -768,6 +787,18 @@ export const publicPostsRelations = relations(posts, ({ one }) => ({
   }),
   photo: one(images, {
     fields: [posts.entityId],
+    references: [images.id],
+  }),
+  postImages: many(postImages),
+}));
+
+export const postImagesRelations = relations(postImages, ({ one }) => ({
+  post: one(posts, {
+    fields: [postImages.postId],
+    references: [posts.id],
+  }),
+  image: one(images, {
+    fields: [postImages.imageId],
     references: [images.id],
   }),
 }));

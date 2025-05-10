@@ -13,12 +13,17 @@ import { env } from "~/env";
 import cloudinary from "~/lib/cloudinary";
 import { images, plantImages } from "~/lib/db/schema";
 import { s3Client } from "~/lib/minio";
+import { DEFAULT_PHOTO_SORT_FIELD } from "~/lib/queries/photos";
 import { connectImageWithPlantsQuery } from "~/server/api/routers/plantImages";
-import { protectedProcedure, publicProcedure } from "~/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "~/trpc/init";
 import { PhotosSortField } from "~/types/image";
 import { imageSchema } from "~/types/zodSchema";
 
-export const photoRouter = {
+export const photoRouter = createTRPCRouter({
   getOwnPhotos: protectedProcedure
     .input(
       z
@@ -32,7 +37,7 @@ export const photoRouter = {
             .optional(),
           sortField: z
             .nativeEnum(PhotosSortField)
-            .default(PhotosSortField.UPLOAD_DATE)
+            .default(DEFAULT_PHOTO_SORT_FIELD) // use default constant here
             .optional(),
           sortOrder: z.nativeEnum(SortOrder).default(SortOrder.DESC).optional(),
           filterNotConnected: z.boolean().default(false).optional(),
@@ -41,9 +46,9 @@ export const photoRouter = {
     )
     .query(async ({ ctx, input }) => {
       // Use default values if input is not provided
-      const limit = input?.limit ?? 12;
+      const limit = input?.limit ?? PaginationItemsPerPage.PHOTOS_PER_PAGE;
       const cursor = input?.cursor ?? 1;
-      const sortField = input?.sortField ?? PhotosSortField.UPLOAD_DATE;
+      const sortField = input?.sortField ?? DEFAULT_PHOTO_SORT_FIELD;
       const sortOrder = input?.sortOrder ?? SortOrder.DESC;
       const filterNotConnected = input?.filterNotConnected ?? false;
 
@@ -116,7 +121,8 @@ export const photoRouter = {
         images: imagesList,
         cursor: cursor,
         nextCursor: nextCursor,
-        total: Math.ceil(totalCount / limit),
+        totalPages: Math.ceil(totalCount / limit), // Add this line to match other router responses
+        total: Math.ceil(totalCount / limit), // Keep this for backward compatibility
         count: totalCount,
       };
     }),
@@ -309,7 +315,63 @@ export const photoRouter = {
         });
       }
     }),
-};
+
+  // Get all photos
+  getAllPhotos: publicProcedure
+    .input(
+      z.object({
+        cursor: z.number().min(1).default(1),
+        limit: z
+          .number()
+          .min(1)
+          .max(PaginationItemsPerPage.MAX_DEFAULT_ITEMS)
+          .default(PaginationItemsPerPage.PUBLIC_PHOTOS_PER_PAGE),
+        sortField: z
+          .nativeEnum(PhotosSortField)
+          .default(DEFAULT_PHOTO_SORT_FIELD),
+        sortOrder: z.nativeEnum(SortOrder).default(SortOrder.DESC),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const limit = input.limit;
+      const cursor = input.cursor;
+      const sortField = input.sortField;
+      const sortOrder = input.sortOrder;
+
+      const offset = (cursor - 1) * limit;
+
+      const totalCountResult = await ctx.db
+        .select({ count: count() })
+        .from(images);
+
+      const totalCount = Number(totalCountResult[0].count);
+
+      const allPhotos = await ctx.db.query.images.findMany({
+        orderBy: (images, { desc, asc }) => [
+          sortOrder === SortOrder.ASC
+            ? asc(images[sortField])
+            : desc(images[sortField]),
+        ],
+        limit: limit,
+        offset: offset,
+        with: {
+          owner: true,
+          posts: true,
+          plantImages: connectImageWithPlantsQuery,
+        },
+      });
+
+      const nextCursor = allPhotos.length === limit ? cursor + 1 : undefined;
+
+      return {
+        images: allPhotos,
+        cursor: cursor,
+        nextCursor: nextCursor,
+        totalPages: Math.ceil(totalCount / limit),
+        count: totalCount,
+      };
+    }),
+});
 
 /**
  * Deletes an object from S3 storage.

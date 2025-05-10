@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { useTranslations } from "next-intl";
+import { useBreadcrumbs } from "~/components/Layouts/Breadcrumbs/breadcrumb-context";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -10,7 +11,6 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "~/components/ui/breadcrumb";
-import { useBreadcrumbs } from "~/lib/breadcrumbs/breadcrumb-context";
 import { Link } from "~/lib/i18n/routing";
 
 interface NavigationBreadcrumbProps {

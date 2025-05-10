@@ -22,17 +22,19 @@ export function HighlightElement({
     if (isHighlighted) {
       void controls.start({
         backgroundColor: [
-          "hsl(var(--accent) / 0.5",
-          "hsl(var(--accent) / 0.4",
-          "hsl(var(--accent) / 0.3",
-          "hsl(var(--accent) / 0.4",
-          "hsl(var(--accent) / 0.5",
+          "var(--accent)",
+          "var(--accent)",
+          "var(--accent)",
+          "var(--accent)",
+          "var(--accent)",
         ],
+        opacity: [0.5, 0.4, 0.3, 0.4, 0.5],
         scale: [1, 0.99, 0.98, 0.99, 1],
       });
     } else {
       void controls.start({
-        backgroundColor: "rgba(0, 0, 0, 0)",
+        backgroundColor: "transparent",
+        opacity: 0,
         scale: 1,
       });
     }

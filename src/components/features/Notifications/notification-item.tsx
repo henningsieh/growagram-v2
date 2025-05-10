@@ -11,11 +11,11 @@ import type { GetAllNotificationType } from "~/server/api/root";
 import type { Locale } from "~/types/locale";
 
 interface NotificationItemProps extends GetAllNotificationType {
-  close?: () => void; // Changed from setOpen to an optional close function
+  onClick?: () => void; // Changed from setOpen to an optional close function
 }
 
 export function NotificationItem({
-  close,
+  onClick,
   ...notification
 }: NotificationItemProps) {
   const { markAsRead, getNotificationText, getNotificationHref } =
@@ -30,45 +30,79 @@ export function NotificationItem({
   }
 
   return (
-    <Link
-      href={href}
-      scroll={true}
-      onClick={() => close && close()} // Only call close if it exists
+    <div
       className={cn(
-        "flex w-full items-center gap-2 overflow-hidden rounded-sm p-2 text-left transition-colors",
+        "flex w-full items-center gap-2 overflow-hidden rounded-sm p-0 text-left transition-colors",
         {
           "bg-accent/40 hover:bg-accent/80": !notification.read,
           "bg-muted hover:bg-accent/80": notification.read,
         },
       )}
     >
-      <CustomAvatar
-        src={notification.actor.image || undefined}
-        alt={notification.actor.name || "User avatar"}
-        fallback={notification.actor.name?.[0] || "?"}
-        size={32}
-      />
-      <div className="flex flex-col">
-        <p className="text-sm">
-          <span className="font-medium">
-            {notification.actor.name}{" "}
-            {getNotificationText(notification.type, notification.entityType)}
-          </span>
-        </p>
-        <span className="text-muted-foreground text-xs">
-          {formatDate(notification.createdAt, locale as Locale)}{" "}
-          {formatTime(notification.createdAt, locale as Locale)}
-        </span>
-      </div>
+      {/* Link wraps only the clickable content area */}
+      <Link
+        href={href}
+        scroll={true}
+        onClick={() => {
+          if (onClick) onClick();
+          void markAsRead({ id: notification.id });
+        }}
+        className="flex flex-grow items-center gap-2 overflow-hidden p-2 pr-0" // Use flex-grow
+        aria-label={t("panel.notification-link-aria", {
+          actor: notification.actor.name as string,
+          action: getNotificationText(
+            notification.type,
+            notification.entityType,
+          ),
+        })}
+      >
+        <div className="flex w-full items-center justify-between">
+          <div className="flex items-center gap-3">
+            <CustomAvatar
+              src={notification.actor.image || undefined}
+              alt={notification.actor.name || "User avatar"}
+              fallback={notification.actor.name?.[0] || "?"}
+              size={32}
+              className="shrink-0" // Prevent avatar shrinking
+            />
+            <div className="flex flex-col overflow-hidden">
+              {/* Allow text to wrap/truncate */}
+              <p className="truncate text-sm">
+                {/* Add truncate */}
+                <span className="font-medium">
+                  {notification.actor.name}{" "}
+                  {getNotificationText(
+                    notification.type,
+                    notification.entityType,
+                  )}
+                </span>
+              </p>
+              <span className="text-muted-foreground text-xs">
+                {formatDate(notification.createdAt, locale as Locale)}{" "}
+                {formatTime(notification.createdAt, locale as Locale)}
+              </span>
+            </div>
+          </div>
+          {!notification.read && (
+            <div title={t("new")}>
+              <SparklesIcon
+                className="mr-1 size-6 fill-yellow-400 text-orange-500"
+                aria-label={t("new")}
+              />
+            </div>
+          )}
+        </div>
+      </Link>
+
+      {/* Buttons/Indicators are outside the Link */}
       {!notification.read && (
-        <div className="my-auto ml-auto flex items-center gap-2">
+        <div className="my-auto ml-auto flex shrink-0 items-center gap-2 pr-3">
           <Button
             size="icon"
-            variant="outline"
+            variant="secondary"
             onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              markAsRead({ id: notification.id });
+              e.stopPropagation(); // Prevent triggering potential parent handlers (though Link is separate now)
+              void markAsRead({ id: notification.id });
             }}
             title={t("buttonLabel.markAsRead")}
             aria-label={t("buttonLabel.markAsRead")}
@@ -76,15 +110,9 @@ export function NotificationItem({
           >
             <SquareCheckBigIcon className="h-4 w-4" />
           </Button>
-          <div title={t("new")}>
-            <SparklesIcon
-              className="mr-1 size-6 fill-yellow-400 text-orange-500"
-              aria-label={t("new")}
-            />
-          </div>
         </div>
       )}
-    </Link>
+    </div>
   );
 }
 

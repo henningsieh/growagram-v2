@@ -1,29 +1,11 @@
-"use client";
-
 import * as React from "react";
-import type { VariantProps } from "class-variance-authority";
-import type { LucideIcon } from "lucide-react";
-import { MoreHorizontal, ShieldIcon } from "lucide-react";
+import { DotIcon, ShieldIcon } from "lucide-react";
 import { CustomAvatar } from "~/components/atom/custom-avatar";
-import { Button, buttonVariants } from "~/components/ui/button";
 import { CardHeader } from "~/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu";
 import { Link } from "~/lib/i18n/routing";
 import type { OwnUserDataType } from "~/server/api/root";
 import { UserRoles } from "~/types/user";
-
-export interface ActionItem {
-  icon: LucideIcon;
-  label: string;
-  onClick: () => void;
-  variant?: VariantProps<typeof buttonVariants>["variant"];
-  disabled?: boolean;
-}
+import { type ActionItem, ActionsMenu } from "./actions-menu";
 
 interface SocialHeaderProps {
   user: OwnUserDataType;
@@ -39,73 +21,53 @@ function AvatarCardHeader({
   actions,
 }: SocialHeaderProps) {
   return (
-    <CardHeader className="flex h-12.5 items-center justify-between space-y-0 px-1 py-0 pt-0">
-      <div className="flex items-center gap-2">
-        <CustomAvatar
-          size={36}
-          src={user.image ?? undefined}
-          alt={user.username ?? "User avatar"}
-          fallback={user.name?.[0] || "?"}
-          className="ring-muted-foreground ring-1 transition-colors duration-200 ease-in-out hover:ring-2"
-        />
-        <div className="flex flex-col gap-0 sm:flex-row sm:gap-1">
-          <Link
-            href={`/public/profile/${user.id}`}
-            className="text-muted-foreground flex items-center text-sm"
-          >
-            <div className="flex items-center gap-2 whitespace-nowrap">
-              <p className="text-foreground text-sm font-bold underline-offset-4 hover:underline">
-                {user.name}
-              </p>
-              {(user.role as UserRoles) === UserRoles.ADMIN && (
-                <div title="Administrator">
-                  <ShieldIcon
-                    fill="var(--color-yellow-500)"
-                    className="h-4 w-4 text-yellow-700"
-                  />
-                </div>
-              )}
-              <span className="text-muted-foreground">
-                {`@${user.username}`}
-              </span>
-            </div>
-          </Link>
-          {dateElement && dateElement}
-        </div>
+    <CardHeader className="flex h-12.5 w-full items-center justify-between space-y-0 p-0 px-1.5">
+      {/* Avatar group */}
+      <div className="flex min-w-0 flex-shrink items-center gap-0">
+        {/* Create a hover group wrapper */}
+        <Link
+          href={`/public/profile/${user.id}`}
+          className="group flex min-w-0 items-center gap-2"
+        >
+          <CustomAvatar
+            size={36}
+            src={user.image ?? undefined}
+            alt={user.username ?? "User avatar"}
+            fallback={user.name?.[0] || "?"}
+            className="ring-muted-foreground shrink-0 ring-1 transition-colors duration-200 ease-in-out group-hover:ring-2"
+          />
+          <div className="flex min-w-0 items-center gap-2 text-sm whitespace-nowrap">
+            <p className="text-foreground shrink-0 font-bold underline-offset-4 group-hover:underline">
+              {user.name}
+            </p>
+            {(user.role as UserRoles) === UserRoles.ADMIN && (
+              <div title="Administrator" className="shrink-0">
+                <ShieldIcon
+                  fill="var(--color-yellow-500)"
+                  className="h-4 w-4 text-yellow-700"
+                />
+              </div>
+            )}
+            <span className="text-muted-foreground group-hover:text-foreground xs:inline hidden shrink truncate transition-colors">
+              {`@${user.username}`}
+            </span>
+          </div>
+        </Link>
+
+        {/* Date element kept separate from the hover group */}
+        {dateElement && (
+          <>
+            <DotIcon size={24} className="shrink-0" />
+            <div className="shrink-0">{dateElement}</div>
+          </>
+        )}
       </div>
+
+      {/* Actions menu */}
       {showActions && actions && actions.length > 0 && (
-        <DropdownMenu>
-          <DropdownMenuTrigger
-            asChild
-            className="text-muted-foreground hover:text-foreground"
-          >
-            <Button variant="ghost" size="icon" aria-label="More actions">
-              <MoreHorizontal className="h-6 w-6" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="min-w-6" align="end">
-            {actions.map((action, index) => {
-              const Icon = action.icon;
-              return (
-                <DropdownMenuItem
-                  className="px-0 py-0.5 focus:bg-transparent"
-                  key={`${action.label}-${index}`}
-                >
-                  <Button
-                    size={"sm"}
-                    className="flex w-full items-center justify-start"
-                    variant={action.variant}
-                    disabled={action.disabled}
-                    onClick={action.onClick}
-                  >
-                    <Icon className="mr-2 h-4 w-4" />
-                    {action.label}
-                  </Button>
-                </DropdownMenuItem>
-              );
-            })}
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className="shrink-0">
+          <ActionsMenu actions={actions} />
+        </div>
       )}
     </CardHeader>
   );

@@ -1,16 +1,20 @@
 // src/components/Layouts/page-header.tsx:
-import { ReadonlyURLSearchParams } from "next/navigation";
+import type { ReadonlyURLSearchParams } from "next/navigation";
+// Import UrlObject
 import type { VariantProps } from "class-variance-authority";
+import type { UrlObject } from "url";
 import { Button, buttonVariants } from "~/components/ui/button";
 import { Link } from "~/lib/i18n/routing";
+
+// Update buttonLink type to accept string or UrlObject
+type Href = string | UrlObject;
 
 interface IPageHeader {
   title: string;
   subtitle: string;
   children: React.ReactNode;
-  buttonLink?: string | null;
+  buttonLink?: Href | null; // Use Href type
   buttonLabel?: string;
-  searchParams?: ReadonlyURLSearchParams;
   buttonVariant?: VariantProps<typeof buttonVariants>["variant"];
   buttonIcon?: React.ReactNode;
 }
@@ -21,17 +25,12 @@ export default function Component({
   children,
   buttonLink,
   buttonLabel,
-  searchParams,
   buttonVariant = "primary",
   buttonIcon,
 }: IPageHeader) {
-  const queryObject = searchParams
-    ? Object.fromEntries(searchParams.entries())
-    : undefined;
-
   return (
-    <div className="space-y-4 pr-4 pl-3 md:pl-2 lg:pl-4 xl:pl-6">
-      <div className="space-y-2">
+    <div className="space-y-3 pr-4 pl-3 md:pl-2 lg:pl-4 xl:pl-6">
+      <div>
         <div className="flex justify-between">
           <div className="flex flex-col space-y-2">
             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl">
@@ -39,19 +38,16 @@ export default function Component({
             </h1>
           </div>
           <div className="flex items-start">
-            {buttonLink && (
+            {/* Ensure buttonLink is not null/undefined before rendering */}
+            {buttonLink && buttonLabel && (
               <Button
                 asChild
                 size="sm"
-                className="sm:w-[154px]"
-                variant={buttonVariant || "primary"}
+                className="min-w-fit lg:min-w-42"
+                variant={buttonVariant || "secondary"}
               >
-                <Link
-                  href={{
-                    pathname: buttonLink,
-                    query: queryObject,
-                  }}
-                >
+                {/* Pass buttonLink directly to href */}
+                <Link href={buttonLink}>
                   {buttonIcon}
                   {buttonLabel}
                 </Link>
