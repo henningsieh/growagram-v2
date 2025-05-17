@@ -11,7 +11,7 @@ import { SortOrder } from "~/components/atom/sort-filter-controls";
 import SpinningLoader from "~/components/atom/spinning-loader";
 import { GrowCard } from "~/components/features/Grows/grow-card";
 import { useRouter } from "~/lib/i18n/routing";
-import { api } from "~/lib/trpc/react";
+import { trpc } from "~/lib/trpc/react";
 import type { GetOwnGrowsInput } from "~/server/api/root";
 import { GrowsSortField } from "~/types/grow";
 
@@ -26,7 +26,7 @@ export default function PaginatedGrowsView({
 }) {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const utils = api.useUtils();
+  const utils = trpc.useUtils();
   const t = useTranslations("Grows");
 
   // Initialize state from URL query params
@@ -57,7 +57,7 @@ export default function PaginatedGrowsView({
   } satisfies GetOwnGrowsInput);
 
   // Query grows
-  const { data, isLoading, isFetching } = api.grows.getOwnGrows.useQuery(
+  const { data, isLoading, isFetching } = trpc.grows.getOwnGrows.useQuery(
     {
       limit: PaginationItemsPerPage.GROWS_PER_PAGE,
       cursor: currentPage,

@@ -48,7 +48,7 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import { useRouter } from "~/lib/i18n/routing";
-import { api } from "~/lib/trpc/react";
+import { trpc } from "~/lib/trpc/react";
 import type {
   CreateOrEditPlantInput,
   GetOwnPlantsInput,
@@ -62,7 +62,7 @@ import { StrainSelector } from "./strain-selector";
 type FormValues = z.infer<typeof plantFormSchema>;
 
 export default function PlantForm({ plant }: { plant?: GetPlantByIdType }) {
-  const utils = api.useUtils();
+  const utils = trpc.useUtils();
   const router = useRouter();
 
   const t = useTranslations("Plants");
@@ -105,7 +105,7 @@ export default function PlantForm({ plant }: { plant?: GetPlantByIdType }) {
   }, [watchedBreederId, selectedBreederId, form]);
 
   const { data: growsData, isPending: isGrowsLoading } =
-    api.grows.getOwnGrows.useQuery(
+    trpc.grows.getOwnGrows.useQuery(
       {
         limit: 1000,
       },
@@ -114,7 +114,7 @@ export default function PlantForm({ plant }: { plant?: GetPlantByIdType }) {
       },
     );
 
-  const createOrEditPlantMutation = api.plants.createOrEdit.useMutation({
+  const createOrEditPlantMutation = trpc.plants.createOrEdit.useMutation({
     onSuccess: async () => {
       toast(t("form-toast-success-title"), {
         description: t("form-toast-success-description"),

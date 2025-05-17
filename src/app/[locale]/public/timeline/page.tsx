@@ -3,10 +3,10 @@
 // src/app/[locale]/(public)/public/timeline/page.tsx:
 import SpinningLoader from "~/components/atom/spinning-loader";
 import PostCard from "~/components/features/Timeline/Post/post-card";
-import { api } from "~/lib/trpc/react";
+import { trpc } from "~/lib/trpc/react";
 
 export default function PublicTimelinePage() {
-  const { data: posts, isLoading } = api.updates.getAll.useQuery();
+  const { data: posts, isLoading } = trpc.updates.getAll.useQuery();
 
   if (isLoading) {
     return <SpinningLoader />;

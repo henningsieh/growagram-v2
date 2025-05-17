@@ -8,7 +8,7 @@ import { PaginationItemsPerPage } from "~/assets/constants";
 import InfiniteScrollLoader from "~/components/atom/infinite-scroll-loader";
 import SpinningLoader from "~/components/atom/spinning-loader";
 import PlantCard from "~/components/features/Plants/plant-card";
-import { api } from "~/lib/trpc/react";
+import { trpc } from "~/lib/trpc/react";
 import type {
   GetAllPlantsInput,
   GetAllPlantsOutput,
@@ -16,7 +16,7 @@ import type {
 } from "~/server/api/root";
 
 export default function PublicPlantsPage() {
-  const utils = api.useUtils();
+  const utils = trpc.useUtils();
   const t = useTranslations("Plants");
 
   // Get data from cache that was prefetched in layout.tsx
@@ -41,7 +41,7 @@ export default function PublicPlantsPage() {
     isFetching: isFetchingNextPage,
     hasNextPage,
     fetchNextPage,
-  } = api.plants.getAllPlants.useInfiniteQuery(
+  } = trpc.plants.getAllPlants.useInfiniteQuery(
     {
       limit: PaginationItemsPerPage.PUBLIC_PLANTS_PER_PAGE,
     } satisfies GetAllPlantsInput,

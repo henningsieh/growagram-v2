@@ -8,7 +8,7 @@ import { PaginationItemsPerPage } from "~/assets/constants";
 import InfiniteScrollLoader from "~/components/atom/infinite-scroll-loader";
 import SpinningLoader from "~/components/atom/spinning-loader";
 import { GrowCard } from "~/components/features/Grows/grow-card";
-import { api } from "~/lib/trpc/react";
+import { trpc } from "~/lib/trpc/react";
 import type {
   GetAllGrowsInput,
   GetAllGrowsOutput,
@@ -16,7 +16,7 @@ import type {
 } from "~/server/api/root";
 
 export default function PublicGrowsPage() {
-  const utils = api.useUtils();
+  const utils = trpc.useUtils();
   const t = useTranslations("Grows");
 
   // Get data from cache that was prefetched in layout.tsx
@@ -41,7 +41,7 @@ export default function PublicGrowsPage() {
     isFetching: isFetchingNextPage,
     hasNextPage,
     fetchNextPage,
-  } = api.grows.getAllGrows.useInfiniteQuery(
+  } = trpc.grows.getAllGrows.useInfiniteQuery(
     {
       limit: PaginationItemsPerPage.PUBLIC_GROWS_PER_PAGE,
     } satisfies GetAllGrowsInput,

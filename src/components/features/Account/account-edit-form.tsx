@@ -43,7 +43,7 @@ import { Input } from "~/components/ui/input";
 import { Separator } from "~/components/ui/separator";
 import { useIsMobile } from "~/hooks/use-mobile";
 import { useRouter } from "~/lib/i18n/routing";
-import { api } from "~/lib/trpc/react";
+import { trpc } from "~/lib/trpc/react";
 import type { EditUserInput, OwnUserDataType } from "~/server/api/root";
 import { userEditSchema } from "~/types/zodSchema";
 
@@ -86,7 +86,7 @@ export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
     },
   });
 
-  const editUserMutation = api.users.editUser.useMutation({
+  const editUserMutation = trpc.users.editUser.useMutation({
     onSuccess: async (updatedUser) => {
       // 1. Update session
       await update({
@@ -115,7 +115,7 @@ export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
   };
 
   // Check username uniqueness
-  const usernameCheck = api.users.isUsernameAvailable.useQuery(
+  const usernameCheck = trpc.users.isUsernameAvailable.useQuery(
     { username: username, excludeOwn: true },
     {
       enabled: form.formState.dirtyFields.username,

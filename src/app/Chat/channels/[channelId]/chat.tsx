@@ -19,7 +19,7 @@ import {
 import { Avatar } from "~/components/avatar";
 import { Button } from "~/components/button";
 import { Textarea } from "~/components/input";
-import { api } from "~/lib/trpc/react";
+import { trpc } from "~/lib/trpc/react";
 
 type SubscriptionError = TRPCClientErrorLike<{
   input: {
@@ -116,7 +116,7 @@ function SubscriptionStatus(props: {
 export function Chat(props: Readonly<{ channelId: string }>) {
   const { channelId } = props;
   const livePosts = useLivePosts(channelId);
-  const currentlyTyping = api.channel.whoIsTyping.useSubscription({
+  const currentlyTyping = trpc.channel.whoIsTyping.useSubscription({
     channelId,
   });
   const scrollRef = React.useRef<HTMLDivElement>(null);
@@ -254,7 +254,7 @@ function AddMessageForm(props: {
   channelId: string;
 }) {
   const { channelId } = props;
-  const addPost = api.message.add.useMutation();
+  const addPost = trpc.message.add.useMutation();
 
   const [message, setMessage] = React.useState("");
   const [isFocused, setIsFocused] = React.useState(false);

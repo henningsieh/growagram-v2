@@ -29,7 +29,7 @@ const getQueryClient = () => {
   return (clientQueryClientSingleton ??= createQueryClient());
 };
 
-export const api = createTRPCReact<AppRouter>();
+export const trpc = createTRPCReact<AppRouter>();
 
 /**
  * Inference helper for inputs.
@@ -58,7 +58,7 @@ export function TRPCReactProvider(
   const queryClient = getQueryClient();
 
   const [trpcClient] = React.useState(() =>
-    api.createClient({
+    trpc.createClient({
       links: [
         // adds pretty logs to your console in development and logs errors in production
         loggerLink({
@@ -89,14 +89,14 @@ export function TRPCReactProvider(
   );
 
   return (
-    <api.Provider client={trpcClient} queryClient={queryClient}>
+    <trpc.Provider client={trpcClient} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>
         <HydrationBoundary state={props.dehydratedState}>
           {props.children}
         </HydrationBoundary>
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
-    </api.Provider>
+    </trpc.Provider>
   );
 }
 

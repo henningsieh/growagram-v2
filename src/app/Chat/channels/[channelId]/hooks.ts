@@ -1,13 +1,13 @@
 import * as React from "react";
 import { skipToken } from "@tanstack/react-query";
-import { api } from "~/lib/trpc/react";
+import { trpc } from "~/lib/trpc/react";
 
 /**
  * Set isTyping with a throttle of 1s
  * Triggers immediately if state changes
  */
 export function useThrottledIsTypingMutation(channelId: string) {
-  const isTyping = api.channel.isTyping.useMutation();
+  const isTyping = trpc.channel.isTyping.useMutation();
 
   return React.useMemo(() => {
     let state = false;
@@ -34,7 +34,7 @@ export function useThrottledIsTypingMutation(channelId: string) {
 }
 
 export function useLivePosts(channelId: string) {
-  const [, query] = api.message.infinite.useSuspenseInfiniteQuery(
+  const [, query] = trpc.message.infinite.useSuspenseInfiniteQuery(
     { channelId },
     {
       getNextPageParam: (d) => d.nextCursor,
@@ -90,7 +90,7 @@ export function useLivePosts(channelId: string) {
     // Changing this value will trigger a new subscription
     setLastEventId(messages.at(-1)?.id ?? null);
   }
-  const subscription = api.message.onAdd.useSubscription(
+  const subscription = trpc.message.onAdd.useSubscription(
     lastEventId === false ? skipToken : { channelId, lastEventId },
     {
       onData(event) {

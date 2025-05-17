@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
-import { api } from "~/lib/trpc/react";
+import { trpc } from "~/lib/trpc/react";
 import type { GetCommentsInput, GetCommentsType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
 
@@ -14,7 +14,7 @@ export const useComments = (
   entityType: CommentableEntityType,
 ) => {
   const { data: session } = useSession();
-  const utils = api.useUtils();
+  const utils = trpc.useUtils();
   const t = useTranslations();
 
   const [newComment, setNewComment] = React.useState<string>("");
@@ -24,7 +24,7 @@ export const useComments = (
     string | null
   >(null);
 
-  const commentCountQuery = api.comments.getCommentCount.useQuery({
+  const commentCountQuery = trpc.comments.getCommentCount.useQuery({
     entityId,
     entityType,
   });
@@ -37,7 +37,7 @@ export const useComments = (
 
   const commentsSortOrder = SortOrder.DESC satisfies SortOrder;
 
-  const commentsQuery = api.comments.getComments.useQuery(
+  const commentsQuery = trpc.comments.getComments.useQuery(
     {
       entityId: entityId,
       entityType: entityType,
@@ -59,7 +59,7 @@ export const useComments = (
     }
   };
 
-  const postCommentMutation = api.comments.postComment.useMutation({
+  const postCommentMutation = trpc.comments.postComment.useMutation({
     onSuccess: async (_, newComment) => {
       // First use optimistic updates...
       utils.comments.getCommentCount.setData(

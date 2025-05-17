@@ -57,7 +57,7 @@ import {
 import { Separator } from "~/components/ui/separator";
 import { Textarea } from "~/components/ui/textarea";
 import { useIsMobile } from "~/hooks/use-mobile";
-import { api } from "~/lib/trpc/react";
+import { trpc } from "~/lib/trpc/react";
 import { UserRoles } from "~/types/user";
 import { adminEditUserSchema } from "~/types/zodSchema";
 
@@ -96,7 +96,7 @@ export default function AdminUserEditForm({ userId }: { userId: string }) {
   const t = useTranslations("AdminArea.user-management.edit-form");
   const router = useRouter();
   const isMobile = useIsMobile();
-  const utils = api.useUtils();
+  const utils = trpc.useUtils();
 
   // Force refresh user data when component mounts
   React.useEffect(() => {
@@ -109,7 +109,7 @@ export default function AdminUserEditForm({ userId }: { userId: string }) {
     data: user,
     isLoading: userLoading,
     error: userError,
-  } = api.admin.getUserById.useQuery(
+  } = trpc.admin.getUserById.useQuery(
     { id: userId },
     {
       refetchOnWindowFocus: true,
@@ -139,7 +139,7 @@ export default function AdminUserEditForm({ userId }: { userId: string }) {
   });
 
   // Ban user mutation
-  const banUserMutation = api.admin.banUser.useMutation({
+  const banUserMutation = trpc.admin.banUser.useMutation({
     onSuccess: async () => {
       // Invalidate queries to refetch the latest data
       await utils.admin.getUserById.invalidate({ id: userId });
@@ -159,7 +159,7 @@ export default function AdminUserEditForm({ userId }: { userId: string }) {
   });
 
   // Unban user mutation
-  const unbanUserMutation = api.admin.unbanUser.useMutation({
+  const unbanUserMutation = trpc.admin.unbanUser.useMutation({
     onSuccess: async () => {
       // Invalidate queries to refetch the latest data
       await utils.admin.getUserById.invalidate({ id: userId });
@@ -221,7 +221,7 @@ export default function AdminUserEditForm({ userId }: { userId: string }) {
   });
 
   // Update user mutation with cache invalidation
-  const updateUserMutation = api.admin.updateUserDetails.useMutation({
+  const updateUserMutation = trpc.admin.updateUserDetails.useMutation({
     onSuccess: async () => {
       // Invalidate queries to refetch the latest data
       await Promise.all([

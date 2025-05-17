@@ -13,12 +13,12 @@ import {
   DialogTitle,
 } from "~/components/dialog";
 import { Input, Label } from "~/components/input";
-import { api } from "~/lib/trpc/react";
+import { trpc } from "~/lib/trpc/react";
 
 export function CreateChannelDialog() {
   const [open, setOpen] = React.useState(false);
   const router = useRouter();
-  const mutation = api.channel.create.useMutation({
+  const mutation = trpc.channel.create.useMutation({
     onSuccess: (id) => {
       router.push(`Chat/channels/${id}`);
       router.refresh();

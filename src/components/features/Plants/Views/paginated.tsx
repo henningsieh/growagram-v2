@@ -11,7 +11,7 @@ import { SortOrder } from "~/components/atom/sort-filter-controls";
 import SpinningLoader from "~/components/atom/spinning-loader";
 import PlantCard from "~/components/features/Plants/plant-card";
 import { useRouter } from "~/lib/i18n/routing";
-import { api } from "~/lib/trpc/react";
+import { trpc } from "~/lib/trpc/react";
 import type { GetOwnPlantsInput } from "~/server/api/root";
 import { PlantsSortField } from "~/types/plant";
 
@@ -26,7 +26,7 @@ export default function PaginatedPlantsView({
 }) {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const utils = api.useUtils();
+  const utils = trpc.useUtils();
   const t = useTranslations("Plants");
 
   // Initialize state from URL query params
@@ -57,7 +57,7 @@ export default function PaginatedPlantsView({
   } satisfies GetOwnPlantsInput);
 
   // Query plants
-  const { data, isLoading, isFetching } = api.plants.getOwnPlants.useQuery(
+  const { data, isLoading, isFetching } = trpc.plants.getOwnPlants.useQuery(
     {
       limit: PaginationItemsPerPage.PLANTS_PER_PAGE,
       cursor: currentPage,

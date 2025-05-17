@@ -11,7 +11,7 @@ import { SortOrder } from "~/components/atom/sort-filter-controls";
 import SpinningLoader from "~/components/atom/spinning-loader";
 import PhotoCard from "~/components/features/Photos/photo-card";
 import { useRouter } from "~/lib/i18n/routing";
-import { api } from "~/lib/trpc/react";
+import { trpc } from "~/lib/trpc/react";
 import type { GetOwnPhotosInput } from "~/server/api/root";
 import { PhotosSortField } from "~/types/image";
 
@@ -28,7 +28,7 @@ export default function PhotosPaginatedView({
 }) {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const utils = api.useUtils();
+  const utils = trpc.useUtils();
   const t = useTranslations("Photos");
 
   const [currentPage, setCurrentPage] = React.useState(
@@ -60,7 +60,7 @@ export default function PhotosPaginatedView({
   } satisfies GetOwnPhotosInput);
 
   // Query images
-  const { data, isLoading, isFetching } = api.photos.getOwnPhotos.useQuery(
+  const { data, isLoading, isFetching } = trpc.photos.getOwnPhotos.useQuery(
     {
       limit: PaginationItemsPerPage.PHOTOS_PER_PAGE,
       cursor: currentPage,

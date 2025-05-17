@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import type { ComboboxOption } from "~/components/atom/combobox-with-create";
 import { ComboboxWithCreate } from "~/components/atom/combobox-with-create";
 import { FormError } from "~/components/ui/form-error";
-import { api } from "~/lib/trpc/react";
+import { trpc } from "~/lib/trpc/react";
 
 interface BreederSelectorProps {
   value: string | null | undefined;
@@ -21,10 +21,10 @@ export function BreederSelector({
   const [error, setError] = React.useState<string | null>(null);
   const t = useTranslations("Plants");
 
-  const utils = api.useUtils();
+  const utils = trpc.useUtils();
 
   // Fetch breeders
-  const { data: breeders = [] } = api.plants.getBreeders.useQuery();
+  const { data: breeders = [] } = trpc.plants.getBreeders.useQuery();
 
   // Convert breeders to combobox options
   const breederOptions: ComboboxOption[] = breeders.map((breeder) => ({
@@ -33,7 +33,7 @@ export function BreederSelector({
   }));
 
   // Create breeder mutation
-  const createBreederMutation = api.plants.createBreeder.useMutation({
+  const createBreederMutation = trpc.plants.createBreeder.useMutation({
     onSuccess: (data) => {
       onChange(data.id);
       setError(null);

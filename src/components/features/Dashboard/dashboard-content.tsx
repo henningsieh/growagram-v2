@@ -27,7 +27,7 @@ import {
 } from "~/components/ui/card";
 import { Skeleton } from "~/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { api } from "~/lib/trpc/react";
+import { trpc } from "~/lib/trpc/react";
 
 export function DashboardContent() {
   const t = useTranslations("Platform");
@@ -64,7 +64,7 @@ export function DashboardContent() {
 
   // Define all API queries with conditional fetching based on session state
   const { data: growsData, isLoading: isLoadingGrows } =
-    api.grows.getOwnGrows.useQuery(
+    trpc.grows.getOwnGrows.useQuery(
       {
         // limit: 6,
       },
@@ -72,7 +72,7 @@ export function DashboardContent() {
     );
 
   const { data: plantsData, isLoading: isLoadingPlants } =
-    api.plants.getOwnPlants.useQuery(
+    trpc.plants.getOwnPlants.useQuery(
       {
         // limit: 5,
       },
@@ -80,7 +80,7 @@ export function DashboardContent() {
     );
 
   const { data: photosData, isLoading: isLoadingPhotos } =
-    api.photos.getOwnPhotos.useQuery(
+    trpc.photos.getOwnPhotos.useQuery(
       {
         limit: 12,
       },
@@ -88,7 +88,7 @@ export function DashboardContent() {
     );
 
   const { data: userProfile, isPending: userStatsArePending } =
-    api.users.getPublicUserProfile.useQuery(
+    trpc.users.getPublicUserProfile.useQuery(
       session?.user.id ? { id: session.user.id } : skipToken,
     );
 

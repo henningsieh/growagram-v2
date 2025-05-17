@@ -2,7 +2,7 @@
 import type React from "react";
 import { Comment } from "~/components/features/Comments/comment";
 import { useComments } from "~/hooks/use-comments";
-import { api } from "~/lib/trpc/react";
+import { trpc } from "~/lib/trpc/react";
 import type { GetCommentType, GetRepliesInput } from "~/server/api/root";
 
 interface CommentsTreeProps {
@@ -14,7 +14,7 @@ const CommentsTree: React.FC<CommentsTreeProps> = ({
   comment,
   isSocial = true,
 }) => {
-  const { data: replies, isLoading } = api.comments.getReplies.useQuery({
+  const { data: replies, isLoading } = trpc.comments.getReplies.useQuery({
     commentId: comment.id,
   } satisfies GetRepliesInput);
 

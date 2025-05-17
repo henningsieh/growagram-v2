@@ -18,7 +18,7 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
-import { api } from "~/lib/trpc/react";
+import { trpc } from "~/lib/trpc/react";
 import type { AdminUserListItem } from "~/server/api/root";
 
 interface ActionsCellProps {
@@ -28,7 +28,7 @@ interface ActionsCellProps {
 export function ActionsCell({ user }: ActionsCellProps) {
   const t = useTranslations("AdminArea.user-management");
   const router = useRouter();
-  const utils = api.useUtils();
+  const utils = trpc.useUtils();
 
   // Check if user is currently banned
   const isUserBanned = React.useMemo(() => {
@@ -38,7 +38,7 @@ export function ActionsCell({ user }: ActionsCellProps) {
   }, [user.bannedUntil]);
 
   // Ban user mutation
-  const banUserMutation = api.admin.banUser.useMutation({
+  const banUserMutation = trpc.admin.banUser.useMutation({
     onSuccess: async () => {
       await utils.admin.getAllUsers.invalidate();
       toast.success("User banned successfully", {
@@ -54,7 +54,7 @@ export function ActionsCell({ user }: ActionsCellProps) {
   });
 
   // Unban user mutation
-  const unbanUserMutation = api.admin.unbanUser.useMutation({
+  const unbanUserMutation = trpc.admin.unbanUser.useMutation({
     onSuccess: async () => {
       toast.success("User unbanned successfully", {
         description: "The user's ban has been lifted and they can now log in.",

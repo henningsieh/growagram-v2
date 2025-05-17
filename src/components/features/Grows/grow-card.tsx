@@ -33,7 +33,7 @@ import { Card, CardContent, CardTitle } from "~/components/ui/card";
 import { useComments } from "~/hooks/use-comments";
 import { useLikeStatus } from "~/hooks/use-likes";
 import { Link, useRouter } from "~/lib/i18n/routing";
-import { api } from "~/lib/trpc/react";
+import { trpc } from "~/lib/trpc/react";
 import { cn, formatDate, formatTime } from "~/lib/utils";
 import type { GetAllGrowType, GetOwnGrowType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
@@ -56,7 +56,7 @@ export function GrowCard({
 
   const router = useRouter();
   const locale = useLocale();
-  const utils = api.useUtils();
+  const utils = trpc.useUtils();
 
   const tCommon = useTranslations("Platform");
   const t = useTranslations("Grows");
@@ -74,7 +74,7 @@ export function GrowCard({
   const { commentCount, commentCountLoading, isCommentsOpen, toggleComments } =
     useComments(grow.id, CommentableEntityType.Grow);
 
-  const deleteMutation = api.grows.deleteById.useMutation({
+  const deleteMutation = trpc.grows.deleteById.useMutation({
     onSuccess: async () => {
       toast(t("DeleteConfirmation.success-title"), {
         description: t("DeleteConfirmation.success-description"),

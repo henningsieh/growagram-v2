@@ -29,7 +29,7 @@ import {
 } from "~/components/ui/form";
 import { Textarea } from "~/components/ui/textarea";
 import { useRouter } from "~/lib/i18n/routing";
-import { api } from "~/lib/trpc/react";
+import { trpc } from "~/lib/trpc/react";
 import type {
   GetOwnGrowType,
   GetOwnPhotoType,
@@ -86,7 +86,7 @@ export function PostFormModal({
     },
   });
 
-  const createPostMutation = api.updates.create.useMutation({
+  const createPostMutation = trpc.updates.create.useMutation({
     onSuccess: () => {
       toast("Success", {
         description: t("post-created-successfully"),

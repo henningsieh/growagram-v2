@@ -37,7 +37,7 @@ import {
 import { useComments } from "~/hooks/use-comments";
 import { useLikeStatus } from "~/hooks/use-likes";
 import { Link, useRouter } from "~/lib/i18n/routing";
-import { api } from "~/lib/trpc/react";
+import { trpc } from "~/lib/trpc/react";
 import { cn, formatDate, formatTime } from "~/lib/utils";
 import type { GetOwnPhotoType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
@@ -66,7 +66,7 @@ export default function PhotoCard({
   const user = session?.user;
   const locale = useLocale();
   const router = useRouter();
-  const utils = api.useUtils();
+  const utils = trpc.useUtils();
   const t = useTranslations("Photos");
 
   const { isLiked, likeCount, isLoading } = useLikeStatus(
@@ -82,7 +82,7 @@ export default function PhotoCard({
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
 
   // Initialize delete mutation
-  const deleteMutation = api.photos.deletePhoto.useMutation({
+  const deleteMutation = trpc.photos.deletePhoto.useMutation({
     onSuccess: async () => {
       toast(t("DeleteConfirmation.toasts.success.title"), {
         description: t("DeleteConfirmation.toasts.success.description"),

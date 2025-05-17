@@ -11,7 +11,7 @@ import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { EnhancedScrollArea } from "~/components/ui/enhanced-scroll-area";
 import { Input } from "~/components/ui/input";
-import { api } from "~/lib/trpc/react";
+import { trpc } from "~/lib/trpc/react";
 
 export function ChatModal({
   isOpen,
@@ -24,14 +24,14 @@ export function ChatModal({
   const [message, setMessage] = React.useState("");
   const [error, setError] = React.useState<string | null>(null);
   const scrollViewportRef = React.useRef<HTMLDivElement>(null);
-  const utils = api.useUtils();
+  const utils = trpc.useUtils();
 
-  const { data: messages } = api.chat.getMessages.useQuery(undefined, {
+  const { data: messages } = trpc.chat.getMessages.useQuery(undefined, {
     enabled: status === "authenticated" && isOpen, // Only fetch messages when user is authenticated and modal is open
   });
 
   // Enhanced subscription with error handling
-  api.chat.onMessage.useSubscription(undefined, {
+  trpc.chat.onMessage.useSubscription(undefined, {
     onData: (message) => {
       utils.chat.getMessages.setData(undefined, (prev) => {
         if (!prev) return [message];
@@ -51,7 +51,7 @@ export function ChatModal({
     }
   }, [isOpen, utils.chat.getMessages]);
 
-  const sendMessageMutation = api.chat.sendMessage.useMutation({
+  const sendMessageMutation = trpc.chat.sendMessage.useMutation({
     onError: (err) => {
       console.error("Failed to send message:", err);
       setError("Failed to send message. Please try again.");

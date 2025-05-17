@@ -18,7 +18,7 @@ import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { useComments } from "~/hooks/use-comments";
 import { useLikeStatus } from "~/hooks/use-likes";
-import { api } from "~/lib/trpc/react";
+import { trpc } from "~/lib/trpc/react";
 import { formatDate, formatTime } from "~/lib/utils";
 import type {
   GetCommentType,
@@ -50,7 +50,7 @@ export const Comment: React.FC<CommentProps> = ({
   const { data: session } = useSession();
 
   const locale = useLocale();
-  const utils = api.useUtils();
+  const utils = trpc.useUtils();
   const t = useTranslations("Comments");
   const inputRef = React.useRef<HTMLInputElement>(null);
 
@@ -61,7 +61,7 @@ export const Comment: React.FC<CommentProps> = ({
   } = useLikeStatus(comment.id, LikeableEntityType.Comment);
 
   const { data: replies, isLoading: commentCountLoading } =
-    api.comments.getReplies.useQuery({ commentId: comment.id });
+    trpc.comments.getReplies.useQuery({ commentId: comment.id });
 
   const {
     newComment: replyComment,
@@ -83,7 +83,7 @@ export const Comment: React.FC<CommentProps> = ({
   };
 
   // Initialize delete mutation with optimistic updates
-  const deleteMutation = api.comments.deleteById.useMutation({
+  const deleteMutation = trpc.comments.deleteById.useMutation({
     // Optimistic update: immediately remove the comment from the UI
     onMutate: async ({ commentId: deletedCommentId }) => {
       // Cancel any outgoing refetches

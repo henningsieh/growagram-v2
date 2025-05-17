@@ -17,7 +17,7 @@ import { Card, CardContent, CardFooter } from "~/components/ui/card";
 import { Label } from "~/components/ui/label";
 import { Progress as ProgressBar } from "~/components/ui/progress";
 import { useRouter } from "~/lib/i18n/routing";
-import { api } from "~/lib/trpc/react";
+import { trpc } from "~/lib/trpc/react";
 import { cn, formatDate, formatTime } from "~/lib/utils";
 import { readExif } from "~/lib/utils/readExif";
 import { uploadToS3 } from "~/lib/utils/uploadToS3";
@@ -70,13 +70,13 @@ export default function PhotoUpload() {
   const [previews, setPreviews] = React.useState<FilePreview[]>([]);
   const [isDragging, setIsDragging] = React.useState(false);
   const router = useRouter();
-  const utils = api.useUtils();
+  const utils = trpc.useUtils();
   const t = useTranslations("Photos");
 
   const formRef = React.useRef<HTMLFormElement>(null);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
-  const saveImageMutation = api.photos.createPhoto.useMutation();
+  const saveImageMutation = trpc.photos.createPhoto.useMutation();
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

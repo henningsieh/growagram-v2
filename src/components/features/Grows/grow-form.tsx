@@ -52,7 +52,7 @@ import {
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
 import { Link, useRouter } from "~/lib/i18n/routing";
-import { api } from "~/lib/trpc/react";
+import { trpc } from "~/lib/trpc/react";
 import { uploadToS3 } from "~/lib/utils/uploadToS3";
 import type {
   CreateOrEditGrowInput,
@@ -93,7 +93,7 @@ export default function GrowFormPage({ grow }: { grow?: GetGrowByIdType }) {
     },
   };
 
-  const utils = api.useUtils();
+  const utils = trpc.useUtils();
   const router = useRouter();
 
   const [isSubmitting, setIsSubmitting] = React.useState(false);
@@ -118,7 +118,7 @@ export default function GrowFormPage({ grow }: { grow?: GetGrowByIdType }) {
   /**
    * Mutation to connect a plant to a grow environment.
    */
-  const connectPlantMutation = api.grows.connectPlant.useMutation({
+  const connectPlantMutation = trpc.grows.connectPlant.useMutation({
     onSuccess: async () => {
       // Invalidate and refetch relevant queries
       await utils.grows.getOwnGrows.invalidate();
@@ -139,7 +139,7 @@ export default function GrowFormPage({ grow }: { grow?: GetGrowByIdType }) {
   /**
    * Mutation to disconnect a plant from a grow environment.
    */
-  const disconnectPlantMutation = api.grows.disconnectPlant.useMutation({
+  const disconnectPlantMutation = trpc.grows.disconnectPlant.useMutation({
     onSuccess: async () => {
       // Invalidate and refetch relevant queries
       await utils.grows.getOwnGrows.invalidate();
@@ -164,7 +164,7 @@ export default function GrowFormPage({ grow }: { grow?: GetGrowByIdType }) {
 
   // Data fetching and form initialization...
   const { data: plantsData, isPending } =
-    api.plants.getConnectablePlants.useQuery(
+    trpc.plants.getConnectablePlants.useQuery(
       { growId: grow?.id } satisfies GetConnectablePlantsInput,
       {
         initialData: initialData,
@@ -189,10 +189,10 @@ export default function GrowFormPage({ grow }: { grow?: GetGrowByIdType }) {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   // Create a photo mutation - defined at component level
-  const createPhotoMutation = api.photos.createPhoto.useMutation();
+  const createPhotoMutation = trpc.photos.createPhoto.useMutation();
 
   // Header image update mutation
-  const updateHeaderImageMutation = api.grows.updateHeaderImage.useMutation({
+  const updateHeaderImageMutation = trpc.grows.updateHeaderImage.useMutation({
     onSuccess: async () => {
       toast(t("header-image-update-success-title"), {
         description: t("header-image-update-success-description"),
@@ -231,7 +231,7 @@ export default function GrowFormPage({ grow }: { grow?: GetGrowByIdType }) {
   /**
    * Mutation to create or edit a grow environment.
    */
-  const createOrEditGrowMutation = api.grows.createOrEdit.useMutation({
+  const createOrEditGrowMutation = trpc.grows.createOrEdit.useMutation({
     onSuccess: async (savedGrow) => {
       try {
         // Find plants to connect and disconnect

@@ -37,7 +37,7 @@ import {
 import { useComments } from "~/hooks/use-comments";
 import { useLikeStatus } from "~/hooks/use-likes";
 import { Link, useRouter } from "~/lib/i18n/routing";
-import { api } from "~/lib/trpc/react";
+import { trpc } from "~/lib/trpc/react";
 import { cn, formatDate, formatTime } from "~/lib/utils";
 import type { PlantByIdType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
@@ -60,7 +60,7 @@ export default function PlantCard({
 
   const router = useRouter();
   const locale = useLocale();
-  const utils = api.useUtils();
+  const utils = trpc.useUtils();
 
   const tCommon = useTranslations("Platform");
   const t = useTranslations("Plants");
@@ -79,7 +79,7 @@ export default function PlantCard({
     useComments(plant.id, CommentableEntityType.Plant);
 
   // Initialize delete mutation
-  const deleteMutation = api.plants.deleteById.useMutation({
+  const deleteMutation = trpc.plants.deleteById.useMutation({
     onSuccess: async () => {
       toast("Success", {
         description: t("plant-deleted-successfully"),

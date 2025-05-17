@@ -13,7 +13,7 @@ import { EnhancedPlantCard } from "~/components/features/Plants/enhanced-plant-c
 import { Card, CardContent } from "~/components/ui/card";
 import { useComments } from "~/hooks/use-comments";
 import { useLikeStatus } from "~/hooks/use-likes";
-import { api } from "~/lib/trpc/react";
+import { trpc } from "~/lib/trpc/react";
 import { cn, formatDate, formatTime } from "~/lib/utils";
 import { GetPostType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
@@ -27,7 +27,7 @@ interface PostCardProps {
 }
 
 export default function PostCard({ post, isSocialProp = true }: PostCardProps) {
-  const utils = api.useUtils();
+  const utils = trpc.useUtils();
   const locale = useLocale();
 
   const t = useTranslations("Posts");
@@ -48,7 +48,7 @@ export default function PostCard({ post, isSocialProp = true }: PostCardProps) {
     useComments(post.id, CommentableEntityType.Post);
 
   // Initialize delete mutation
-  const deleteMutation = api.updates.deleteById.useMutation({
+  const deleteMutation = trpc.updates.deleteById.useMutation({
     onSuccess: async () => {
       toast("Success", {
         description: t("post-deleted-successfully"),

@@ -37,7 +37,7 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
-import { api } from "~/lib/trpc/react";
+import { trpc } from "~/lib/trpc/react";
 import { columns } from "./columns.tsx";
 
 export function UsersTable() {
@@ -52,9 +52,12 @@ export function UsersTable() {
   const [rowSelection, setRowSelection] = useState({});
 
   // Fetch users data
-  const { data: users, isLoading } = api.admin.getAllUsers.useQuery(undefined, {
-    refetchOnWindowFocus: false,
-  });
+  const { data: users, isLoading } = trpc.admin.getAllUsers.useQuery(
+    undefined,
+    {
+      refetchOnWindowFocus: false,
+    },
+  );
 
   const table = useReactTable({
     data: users || [],

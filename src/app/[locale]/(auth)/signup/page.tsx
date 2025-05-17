@@ -29,7 +29,7 @@ import {
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
 import { Link, useRouter } from "~/lib/i18n/routing";
-import { api } from "~/lib/trpc/react";
+import { trpc } from "~/lib/trpc/react";
 import { RegisterUserInput } from "~/server/api/root";
 import type { Locale } from "~/types/locale";
 import { createRegisterSchema } from "~/types/zodSchema";
@@ -70,7 +70,7 @@ export default function RegisterPage() {
     },
   });
 
-  const registerUserMutation = api.users.registerUser.useMutation({
+  const registerUserMutation = trpc.users.registerUser.useMutation({
     onSuccess: () => {
       router.push(modulePaths.SIGNIN.path);
     },

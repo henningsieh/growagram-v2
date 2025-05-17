@@ -4,7 +4,7 @@ import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { skipToken } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { api } from "~/lib/trpc/react";
+import { trpc } from "~/lib/trpc/react";
 import {
   type GetAllNotificationType,
   GetAllNotificationsInput,
@@ -22,7 +22,7 @@ export function useNotifications(onlyUnread = true) {
   const [lastEventId, setLastEventId] = React.useState<false | null | string>(
     false,
   );
-  const utils = api.useUtils();
+  const utils = trpc.useUtils();
   const { status } = useSession();
   const t = useTranslations("Notifications");
 
@@ -41,7 +41,7 @@ export function useNotifications(onlyUnread = true) {
     }
   }, [allNotifications, lastEventId]);
 
-  const query = api.notifications.getAll.useQuery(
+  const query = trpc.notifications.getAll.useQuery(
     { onlyUnread } satisfies GetAllNotificationsInput, // Pass onlyUnread parameter
     {
       refetchOnWindowFocus: true,
@@ -100,7 +100,7 @@ export function useNotifications(onlyUnread = true) {
   );
 
   // Enhanced subscription with lastEventId and error handling
-  const subscription = api.notifications.onNotification.useSubscription(
+  const subscription = trpc.notifications.onNotification.useSubscription(
     status !== "authenticated" || lastEventId === false
       ? skipToken
       : { lastEventId },
@@ -130,28 +130,27 @@ export function useNotifications(onlyUnread = true) {
     },
   );
 
-  const { mutate: markAsRead } = api.notifications.markAsRead.useMutation({
+  const { mutate: markAsRead } = trpc.notifications.markAsRead.useMutation({
     onSuccess: async (_, { id }) => {
       setAllNotifications((prev) => prev?.filter((n) => n.id !== id) ?? null);
       await utils.notifications.getAll.invalidate();
     },
   });
 
-  const { mutate: markAllAsRead } = api.notifications.markAllAsRead.useMutation(
-    {
+  const { mutate: markAllAsRead } =
+    trpc.notifications.markAllAsRead.useMutation({
       onSuccess: async () => {
         setAllNotifications([]);
         await utils.notifications.getAll.invalidate();
       },
-    },
-  );
+    });
 
   const commentId = allNotifications?.find(
     (n) => n.entityType === NotifiableEntityType.COMMENT,
   )?.entityId;
 
   const { data: commentableEntity, isLoading: isCommentLoading } =
-    api.comments.getParentEntity.useQuery(
+    trpc.comments.getParentEntity.useQuery(
       commentId ? { commentId } : skipToken,
       {
         enabled: Boolean(commentId),

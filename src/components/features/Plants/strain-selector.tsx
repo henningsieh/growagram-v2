@@ -8,7 +8,7 @@ import { ComboboxWithCreate } from "~/components/atom/combobox-with-create";
 import type { ComboboxOption } from "~/components/atom/combobox-with-create";
 import SpinningLoader from "~/components/atom/spinning-loader";
 import { FormError } from "~/components/ui/form-error";
-import { api } from "~/lib/trpc/react";
+import { trpc } from "~/lib/trpc/react";
 
 interface StrainSelectorProps {
   value: string | null | undefined;
@@ -28,11 +28,11 @@ export function StrainSelector({
   const [error, setError] = React.useState<string | null>(null);
   const t = useTranslations("Plants");
 
-  const utils = api.useUtils();
+  const utils = trpc.useUtils();
 
   // Fetch strains for the selected breeder
   const { data: strains, isLoading: isStrainsLoading } =
-    api.plants.getStrainsByBreeder.useQuery(
+    trpc.plants.getStrainsByBreeder.useQuery(
       { breederId: breederId || undefined },
       { enabled: !!breederId },
     );
@@ -56,7 +56,7 @@ export function StrainSelector({
   }
 
   // Create strain mutation
-  const createStrainMutation = api.plants.createStrain.useMutation({
+  const createStrainMutation = trpc.plants.createStrain.useMutation({
     onSuccess: (data) => {
       onChange(data.id);
       setError(null);

@@ -1,7 +1,7 @@
 // src/hooks/use-likes.tsx:
 import * as React from "react";
 import { useSession } from "next-auth/react";
-import { api } from "~/lib/trpc/react";
+import { trpc } from "~/lib/trpc/react";
 import { LikeableEntityType } from "~/types/like";
 
 export const useLikeStatus = (
@@ -14,13 +14,13 @@ export const useLikeStatus = (
   const [userHasLiked, setUserHasLiked] = React.useState(false);
   const [likeCount, setLikeCount] = React.useState(0);
 
-  const likeCountQuery = api.likes.getLikeCount.useQuery({
+  const likeCountQuery = trpc.likes.getLikeCount.useQuery({
     entityId,
     entityType,
   });
 
   // Only run queries if user is authenticated
-  const userLikesQuery = api.likes.getUserLikedEntities.useQuery(
+  const userLikesQuery = trpc.likes.getUserLikedEntities.useQuery(
     { entityType },
     { enabled: !!user },
   );

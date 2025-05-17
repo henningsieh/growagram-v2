@@ -9,7 +9,7 @@ import { Heart } from "lucide-react";
 import { toast } from "sonner";
 import SpinningLoader from "~/components/atom/spinning-loader";
 import { Button } from "~/components/ui/button";
-import { api } from "~/lib/trpc/react";
+import { trpc } from "~/lib/trpc/react";
 import { cn } from "~/lib/utils";
 import { ToggleLikeInput } from "~/server/api/root";
 import { LikeableEntityType } from "~/types/like";
@@ -51,7 +51,7 @@ export const LikeButton = React.forwardRef<HTMLButtonElement, LikeButtonProps>(
       setLikeCount(initialLikeCount);
     }, [initialLiked, initialLikeCount]);
 
-    const toggleLikeMutation = api.likes.toggleLike.useMutation({
+    const toggleLikeMutation = trpc.likes.toggleLike.useMutation({
       onMutate: (variables) => {
         // Prevent like actions for unauthenticated users
         if (!user) {

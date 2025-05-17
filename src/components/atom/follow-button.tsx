@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 import { UserMinusIcon, UserPlusIcon } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "~/components/ui/button";
-import { api } from "~/lib/trpc/react";
+import { trpc } from "~/lib/trpc/react";
 
 interface FollowButtonProps {
   userId: string;
@@ -21,11 +21,11 @@ export function FollowButton({
 }: FollowButtonProps) {
   const { data: session } = useSession();
   const [isFollowing, setIsFollowing] = React.useState(initialIsFollowing);
-  const utils = api.useUtils();
+  const utils = trpc.useUtils();
   const t = useTranslations("Profile");
 
   const { mutate: follow, isPending: isFollowLoading } =
-    api.users.followUser.useMutation({
+    trpc.users.followUser.useMutation({
       onSuccess: async () => {
         setIsFollowing(true);
         toast(t("FollowButton.follow-success-title"), {
@@ -36,7 +36,7 @@ export function FollowButton({
     });
 
   const { mutate: unfollow, isPending: isUnfollowLoading } =
-    api.users.unfollowUser.useMutation({
+    trpc.users.unfollowUser.useMutation({
       onSuccess: async () => {
         setIsFollowing(false);
         toast(t("FollowButton.unfollow-success-title"), {

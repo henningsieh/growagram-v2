@@ -10,7 +10,7 @@ import { SortOrder } from "~/components/atom/sort-filter-controls";
 import SpinningLoader from "~/components/atom/spinning-loader";
 import PlantCard from "~/components/features/Plants/plant-card";
 import { useRouter } from "~/lib/i18n/routing";
-import { api } from "~/lib/trpc/react";
+import { trpc } from "~/lib/trpc/react";
 import type { GetOwnPlantsInput, GetOwnPlantsType } from "~/server/api/root";
 import { PlantsSortField } from "~/types/plant";
 
@@ -24,7 +24,7 @@ export default function InfiniteScrollPlantsView({
   setIsFetching: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const router = useRouter();
-  const utils = api.useUtils();
+  const utils = trpc.useUtils();
   const t = useTranslations("Plants");
 
   React.useEffect(() => {
@@ -48,7 +48,7 @@ export default function InfiniteScrollPlantsView({
     hasNextPage,
     fetchNextPage,
     isFetchingNextPage,
-  } = api.plants.getOwnPlants.useInfiniteQuery(
+  } = trpc.plants.getOwnPlants.useInfiniteQuery(
     {
       limit: PaginationItemsPerPage.PLANTS_PER_PAGE,
       sortField,

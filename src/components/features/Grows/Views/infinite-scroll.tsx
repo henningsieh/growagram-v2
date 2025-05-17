@@ -10,7 +10,7 @@ import { SortOrder } from "~/components/atom/sort-filter-controls";
 import SpinningLoader from "~/components/atom/spinning-loader";
 import { GrowCard } from "~/components/features/Grows/grow-card";
 import { useRouter } from "~/lib/i18n/routing";
-import { api } from "~/lib/trpc/react";
+import { trpc } from "~/lib/trpc/react";
 import type { GetOwnGrowsInput, GetOwnGrowsType } from "~/server/api/root";
 import { GrowsSortField } from "~/types/grow";
 
@@ -24,7 +24,7 @@ export default function InfiniteScrollGrowsView({
   setIsFetching: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const router = useRouter();
-  const utils = api.useUtils();
+  const utils = trpc.useUtils();
   const t = useTranslations("Grows");
 
   React.useEffect(() => {
@@ -48,7 +48,7 @@ export default function InfiniteScrollGrowsView({
     hasNextPage,
     fetchNextPage,
     isFetchingNextPage,
-  } = api.grows.getOwnGrows.useInfiniteQuery(
+  } = trpc.grows.getOwnGrows.useInfiniteQuery(
     {
       limit: PaginationItemsPerPage.GROWS_PER_PAGE,
       sortField,

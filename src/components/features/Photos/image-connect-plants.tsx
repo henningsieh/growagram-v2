@@ -31,7 +31,7 @@ import {
   CommandList,
 } from "~/components/ui/command";
 import { useRouter } from "~/lib/i18n/routing";
-import { api } from "~/lib/trpc/react";
+import { trpc } from "~/lib/trpc/react";
 import type { GetOwnPlantsInput, GetPhotoByIdType } from "~/server/api/root";
 
 interface ImageConnectPlantsProps {
@@ -41,7 +41,7 @@ interface ImageConnectPlantsProps {
 export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
   const router = useRouter();
   const locale = useLocale();
-  const utils = api.useUtils();
+  const utils = trpc.useUtils();
 
   const t = useTranslations("Photos");
 
@@ -52,7 +52,7 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
    *
    * On success, invalidates the cache for the image to ensure updated data.
    */
-  const connectToPlantMutation = api.photos.connectToPlant.useMutation({
+  const connectToPlantMutation = trpc.photos.connectToPlant.useMutation({
     onSuccess: async () => {
       await utils.photos.getById.invalidate({ id: image.id });
     },
@@ -64,7 +64,7 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
    * On success, invalidates the cache for the image to ensure updated data.
    */
   const disconnectFromPlantMutation =
-    api.photos.disconnectFromPlant.useMutation({
+    trpc.photos.disconnectFromPlant.useMutation({
       onSuccess: async () => {
         await utils.photos.getById.invalidate({ id: image.id });
       },
@@ -73,7 +73,7 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
   // The prefetched data will be available in the cache
   const initialData = utils.plants.getOwnPlants.getData();
 
-  const { data: plantsData, isLoading } = api.plants.getOwnPlants.useQuery(
+  const { data: plantsData, isLoading } = trpc.plants.getOwnPlants.useQuery(
     { limit: 100 } satisfies GetOwnPlantsInput,
     {
       // Use the data that was prefetched on the server

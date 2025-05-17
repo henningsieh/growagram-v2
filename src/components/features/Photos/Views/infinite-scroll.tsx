@@ -9,7 +9,7 @@ import { SortOrder } from "~/components/atom/sort-filter-controls";
 import SpinningLoader from "~/components/atom/spinning-loader";
 import PhotoCard from "~/components/features/Photos/photo-card";
 import { useRouter } from "~/lib/i18n/routing";
-import { api } from "~/lib/trpc/react";
+import { trpc } from "~/lib/trpc/react";
 import type { GetOwnPhotosInput, GetOwnPhotosType } from "~/server/api/root";
 import { PhotosSortField } from "~/types/image";
 
@@ -25,7 +25,7 @@ export default function PhotosInfiniteScrollView({
   setIsFetching: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const router = useRouter();
-  const utils = api.useUtils();
+  const utils = trpc.useUtils();
 
   React.useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -56,7 +56,7 @@ export default function PhotosInfiniteScrollView({
     hasNextPage,
     fetchNextPage,
     isFetchingNextPage,
-  } = api.photos.getOwnPhotos.useInfiniteQuery(queryInput, {
+  } = trpc.photos.getOwnPhotos.useInfiniteQuery(queryInput, {
     getNextPageParam: (lastPage) => lastPage.nextCursor,
     initialData: initialData || undefined,
   });
