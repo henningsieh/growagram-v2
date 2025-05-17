@@ -83,7 +83,7 @@ export default function PhotoUpload() {
           const { url: s3Url, eTag } = await uploadToS3(
             preview.file,
             uploadUrl,
-            (progress) => updateProgress(index, progress),
+            (progress: number) => updateProgress(index, progress),
           );
 
           const savedImage = await saveImageMutation.mutateAsync({
