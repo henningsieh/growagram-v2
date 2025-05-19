@@ -3,12 +3,14 @@
 import * as React from "react";
 import { useTranslations } from "next-intl";
 import type { InfiniteData } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { PaginationItemsPerPage } from "~/assets/constants";
 import InfiniteScrollLoader from "~/components/atom/infinite-scroll-loader";
 import SpinningLoader from "~/components/atom/spinning-loader";
 import { GrowCard } from "~/components/features/Grows/grow-card";
-import { trpc } from "~/lib/trpc/react";
+import { useTRPC } from "~/lib/trpc/react";
 import type {
   GetAllGrowsInput,
   GetAllGrowsOutput,
@@ -16,13 +18,16 @@ import type {
 } from "~/server/api/root";
 
 export default function PublicGrowsPage() {
-  const utils = trpc.useUtils();
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
   const t = useTranslations("Grows");
 
   // Get data from cache that was prefetched in layout.tsx
-  const cachedData = utils.grows.getAllGrows.getInfiniteData({
-    limit: PaginationItemsPerPage.PUBLIC_GROWS_PER_PAGE,
-  });
+  const cachedData = queryClient.getQueryData(
+    trpc.grows.getAllGrows.infiniteQueryKey({
+      limit: PaginationItemsPerPage.PUBLIC_GROWS_PER_PAGE,
+    }),
+  );
 
   // Create initialData from cache if available
   const initialData: InfiniteData<GetAllGrowsOutput, number> | undefined =
@@ -41,14 +46,16 @@ export default function PublicGrowsPage() {
     isFetching: isFetchingNextPage,
     hasNextPage,
     fetchNextPage,
-  } = trpc.grows.getAllGrows.useInfiniteQuery(
-    {
-      limit: PaginationItemsPerPage.PUBLIC_GROWS_PER_PAGE,
-    } satisfies GetAllGrowsInput,
-    {
-      initialData,
-      getNextPageParam: (lastPage) => lastPage.nextCursor,
-    },
+  } = useInfiniteQuery(
+    trpc.grows.getAllGrows.infiniteQueryOptions(
+      {
+        limit: PaginationItemsPerPage.PUBLIC_GROWS_PER_PAGE,
+      } satisfies GetAllGrowsInput,
+      {
+        initialData,
+        getNextPageParam: (lastPage) => lastPage.nextCursor,
+      },
+    ),
   );
 
   const grows: GetAllGrowsType =
@@ -93,7 +100,6 @@ export default function PublicGrowsPage() {
           {grows.map((grow) => (
             <GrowCard key={grow.id} grow={grow} isSocial={true} />
           ))}
-
           <InfiniteScrollLoader
             ref={loadingRef}
             isLoading={isLoading}

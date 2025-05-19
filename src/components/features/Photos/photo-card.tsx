@@ -5,6 +5,8 @@ import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
+import { useMutation } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   Camera,
   FileIcon,
@@ -37,7 +39,7 @@ import {
 import { useComments } from "~/hooks/use-comments";
 import { useLikeStatus } from "~/hooks/use-likes";
 import { Link, useRouter } from "~/lib/i18n/routing";
-import { trpc } from "~/lib/trpc/react";
+import { useTRPC } from "~/lib/trpc/react";
 import { cn, formatDate, formatTime } from "~/lib/utils";
 import type { GetOwnPhotoType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
@@ -62,11 +64,12 @@ export default function PhotoCard({
   isSocial: isSocialProp,
   currentQuery,
 }: PhotoCardProps) {
+  const trpc = useTRPC();
   const { data: session } = useSession();
   const user = session?.user;
   const locale = useLocale();
   const router = useRouter();
-  const utils = trpc.useUtils();
+  const queryClient = useQueryClient();
   const t = useTranslations("Photos");
 
   const { isLiked, likeCount, isLoading } = useLikeStatus(
@@ -82,26 +85,28 @@ export default function PhotoCard({
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
 
   // Initialize delete mutation
-  const deleteMutation = trpc.photos.deletePhoto.useMutation({
-    onSuccess: async () => {
-      toast(t("DeleteConfirmation.toasts.success.title"), {
-        description: t("DeleteConfirmation.toasts.success.description"),
-      });
-      // Invalidate and prefetch the images query to refresh the list
-      await Promise.all([
-        utils.photos.getOwnPhotos.invalidate(),
-        utils.photos.getOwnPhotos.prefetch(),
-      ]);
+  const deleteMutation = useMutation(
+    trpc.photos.deletePhoto.mutationOptions({
+      onSuccess: async () => {
+        toast(t("DeleteConfirmation.toasts.success.title"), {
+          description: t("DeleteConfirmation.toasts.success.description"),
+        });
+        // Invalidate and prefetch the images query to refresh the list
+        await Promise.all([
+          queryClient.invalidateQueries(trpc.photos.getOwnPhotos.pathFilter()),
+          queryClient.prefetchQuery(trpc.photos.getOwnPhotos.queryOptions()),
+        ]);
 
-      router.refresh();
-    },
-    onError: (error) => {
-      toast.error(t("DeleteConfirmation.toasts.error.title"), {
-        description:
-          error.message || t("DeleteConfirmation.toasts.error.description"),
-      });
-    },
-  });
+        router.refresh();
+      },
+      onError: (error) => {
+        toast.error(t("DeleteConfirmation.toasts.error.title"), {
+          description:
+            error.message || t("DeleteConfirmation.toasts.error.description"),
+        });
+      },
+    }),
+  );
 
   const handleDelete = () => {
     setIsDeleteDialogOpen(true);

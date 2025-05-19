@@ -4,6 +4,8 @@ import * as React from "react";
 import { useTranslations } from "next-intl";
 // src/components/features/Grows/Views/paginated.tsx:
 import { useSearchParams } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { PaginationItemsPerPage } from "~/assets/constants";
 import ResponsiveGrid from "~/components/Layouts/responsive-grid";
 import ItemsPagination from "~/components/atom/item-pagination";
@@ -11,7 +13,7 @@ import { SortOrder } from "~/components/atom/sort-filter-controls";
 import SpinningLoader from "~/components/atom/spinning-loader";
 import { GrowCard } from "~/components/features/Grows/grow-card";
 import { useRouter } from "~/lib/i18n/routing";
-import { trpc } from "~/lib/trpc/react";
+import { useTRPC } from "~/lib/trpc/react";
 import type { GetOwnGrowsInput } from "~/server/api/root";
 import { GrowsSortField } from "~/types/grow";
 
@@ -24,9 +26,10 @@ export default function PaginatedGrowsView({
   sortOrder: SortOrder;
   setIsFetching: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
+  const trpc = useTRPC();
   const searchParams = useSearchParams();
   const router = useRouter();
-  const utils = trpc.useUtils();
+  const queryClient = useQueryClient();
   const t = useTranslations("Grows");
 
   // Initialize state from URL query params
@@ -49,24 +52,28 @@ export default function PaginatedGrowsView({
   }, [currentPage, sortField, sortOrder, updateUrlParams]);
 
   // Get initial data from cache
-  const initialData = utils.grows.getOwnGrows.getData({
-    cursor: currentPage,
-    limit: PaginationItemsPerPage.GROWS_PER_PAGE,
-    sortField,
-    sortOrder,
-  } satisfies GetOwnGrowsInput);
-
-  // Query grows
-  const { data, isLoading, isFetching } = trpc.grows.getOwnGrows.useQuery(
-    {
-      limit: PaginationItemsPerPage.GROWS_PER_PAGE,
+  const initialData = queryClient.getQueryData(
+    trpc.grows.getOwnGrows.queryKey({
       cursor: currentPage,
+      limit: PaginationItemsPerPage.GROWS_PER_PAGE,
       sortField,
       sortOrder,
-    } satisfies GetOwnGrowsInput,
-    {
-      initialData,
-    },
+    } satisfies GetOwnGrowsInput),
+  );
+
+  // Query grows
+  const { data, isLoading, isFetching } = useQuery(
+    trpc.grows.getOwnGrows.queryOptions(
+      {
+        limit: PaginationItemsPerPage.GROWS_PER_PAGE,
+        cursor: currentPage,
+        sortField,
+        sortOrder,
+      } satisfies GetOwnGrowsInput,
+      {
+        initialData,
+      },
+    ),
   );
 
   // Directly update the parent's isFetching state

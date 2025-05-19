@@ -4,6 +4,7 @@
 import * as React from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
 import { TRPCClientError } from "@trpc/client";
 import { motion } from "framer-motion";
 import { AtSign, ClipboardPenLineIcon, Mail, UserIcon } from "lucide-react";
@@ -29,7 +30,7 @@ import {
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
 import { Link, useRouter } from "~/lib/i18n/routing";
-import { trpc } from "~/lib/trpc/react";
+import { useTRPC } from "~/lib/trpc/react";
 import { RegisterUserInput } from "~/server/api/root";
 import type { Locale } from "~/types/locale";
 import { createRegisterSchema } from "~/types/zodSchema";
@@ -51,6 +52,7 @@ const itemVariants = {
 };
 
 export default function RegisterPage() {
+  const trpc = useTRPC();
   const tSchema = useTranslations();
   const t = useTranslations("RegisterPage");
   const router = useRouter();
@@ -70,35 +72,37 @@ export default function RegisterPage() {
     },
   });
 
-  const registerUserMutation = trpc.users.registerUser.useMutation({
-    onSuccess: () => {
-      router.push(modulePaths.SIGNIN.path);
-    },
-    onError: (error) => {
-      if (error instanceof TRPCClientError) {
-        if (error.message === "BOTH_TAKEN") {
-          form.setError("email", {
-            type: "manual",
-            message: t("errors.emailTaken"),
-          });
-          form.setError("username", {
-            type: "manual",
-            message: t("errors.usernameTaken"),
-          });
-        } else if (error.message === "EMAIL_TAKEN") {
-          form.setError("email", {
-            type: "manual",
-            message: t("errors.emailTaken"),
-          });
-        } else if (error.message === "USERNAME_TAKEN") {
-          form.setError("username", {
-            type: "manual",
-            message: t("errors.usernameTaken"),
-          });
+  const registerUserMutation = useMutation(
+    trpc.users.registerUser.mutationOptions({
+      onSuccess: () => {
+        router.push(modulePaths.SIGNIN.path);
+      },
+      onError: (error) => {
+        if (error instanceof TRPCClientError) {
+          if (error.message === "BOTH_TAKEN") {
+            form.setError("email", {
+              type: "manual",
+              message: t("errors.emailTaken"),
+            });
+            form.setError("username", {
+              type: "manual",
+              message: t("errors.usernameTaken"),
+            });
+          } else if (error.message === "EMAIL_TAKEN") {
+            form.setError("email", {
+              type: "manual",
+              message: t("errors.emailTaken"),
+            });
+          } else if (error.message === "USERNAME_TAKEN") {
+            form.setError("username", {
+              type: "manual",
+              message: t("errors.usernameTaken"),
+            });
+          }
         }
-      }
-    },
-  });
+      },
+    }),
+  );
 
   const onSubmit = form.handleSubmit(async (values) => {
     try {

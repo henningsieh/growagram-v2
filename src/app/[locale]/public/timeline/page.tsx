@@ -1,12 +1,16 @@
 "use client";
 
 // src/app/[locale]/(public)/public/timeline/page.tsx:
+import { useQuery } from "@tanstack/react-query";
 import SpinningLoader from "~/components/atom/spinning-loader";
 import PostCard from "~/components/features/Timeline/Post/post-card";
-import { trpc } from "~/lib/trpc/react";
+import { useTRPC } from "~/lib/trpc/react";
 
 export default function PublicTimelinePage() {
-  const { data: posts, isLoading } = trpc.updates.getAll.useQuery();
+  const trpc = useTRPC();
+  const { data: posts, isLoading } = useQuery(
+    trpc.updates.getAll.queryOptions(),
+  );
 
   if (isLoading) {
     return <SpinningLoader />;

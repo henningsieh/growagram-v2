@@ -4,6 +4,8 @@ import * as React from "react";
 import { useTranslations } from "next-intl";
 // src/components/features/Photos/Views/paginated.tsx:
 import { useSearchParams } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { PaginationItemsPerPage } from "~/assets/constants";
 import ResponsiveGrid from "~/components/Layouts/responsive-grid";
 import ItemsPagination from "~/components/atom/item-pagination";
@@ -11,7 +13,7 @@ import { SortOrder } from "~/components/atom/sort-filter-controls";
 import SpinningLoader from "~/components/atom/spinning-loader";
 import PhotoCard from "~/components/features/Photos/photo-card";
 import { useRouter } from "~/lib/i18n/routing";
-import { trpc } from "~/lib/trpc/react";
+import { useTRPC } from "~/lib/trpc/react";
 import type { GetOwnPhotosInput } from "~/server/api/root";
 import { PhotosSortField } from "~/types/image";
 
@@ -26,9 +28,10 @@ export default function PhotosPaginatedView({
   filterNotConnected: boolean;
   setIsFetching: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
+  const trpc = useTRPC();
   const searchParams = useSearchParams();
   const router = useRouter();
-  const utils = trpc.useUtils();
+  const queryClient = useQueryClient();
   const t = useTranslations("Photos");
 
   const [currentPage, setCurrentPage] = React.useState(
@@ -51,26 +54,30 @@ export default function PhotosPaginatedView({
   }, [currentPage, sortField, sortOrder, filterNotConnected, updateUrlParams]);
 
   // Get initial data from cache
-  const initialData = utils.photos.getOwnPhotos.getData({
-    cursor: currentPage,
-    limit: PaginationItemsPerPage.PHOTOS_PER_PAGE,
-    sortField,
-    sortOrder,
-    filterNotConnected,
-  } satisfies GetOwnPhotosInput);
-
-  // Query images
-  const { data, isLoading, isFetching } = trpc.photos.getOwnPhotos.useQuery(
-    {
-      limit: PaginationItemsPerPage.PHOTOS_PER_PAGE,
+  const initialData = queryClient.getQueryData(
+    trpc.photos.getOwnPhotos.queryKey({
       cursor: currentPage,
+      limit: PaginationItemsPerPage.PHOTOS_PER_PAGE,
       sortField,
       sortOrder,
       filterNotConnected,
-    } satisfies GetOwnPhotosInput,
-    {
-      initialData,
-    },
+    } satisfies GetOwnPhotosInput),
+  );
+
+  // Query images
+  const { data, isLoading, isFetching } = useQuery(
+    trpc.photos.getOwnPhotos.queryOptions(
+      {
+        limit: PaginationItemsPerPage.PHOTOS_PER_PAGE,
+        cursor: currentPage,
+        sortField,
+        sortOrder,
+        filterNotConnected,
+      } satisfies GetOwnPhotosInput,
+      {
+        initialData,
+      },
+    ),
   );
   // Directly update the parent's isFetching state
   React.useEffect(() => {

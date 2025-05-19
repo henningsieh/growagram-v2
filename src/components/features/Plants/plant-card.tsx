@@ -4,6 +4,8 @@
 import * as React from "react";
 import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
+import { useMutation } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   DotIcon,
   EditIcon,
@@ -37,7 +39,7 @@ import {
 import { useComments } from "~/hooks/use-comments";
 import { useLikeStatus } from "~/hooks/use-likes";
 import { Link, useRouter } from "~/lib/i18n/routing";
-import { trpc } from "~/lib/trpc/react";
+import { useTRPC } from "~/lib/trpc/react";
 import { cn, formatDate, formatTime } from "~/lib/utils";
 import type { PlantByIdType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
@@ -55,12 +57,13 @@ export default function PlantCard({
   plant,
   isSocialProp = true,
 }: PlantCardProps) {
+  const trpc = useTRPC();
   const { data: session } = useSession();
   const user = session?.user;
 
   const router = useRouter();
   const locale = useLocale();
-  const utils = trpc.useUtils();
+  const queryClient = useQueryClient();
 
   const tCommon = useTranslations("Platform");
   const t = useTranslations("Plants");
@@ -79,22 +82,26 @@ export default function PlantCard({
     useComments(plant.id, CommentableEntityType.Plant);
 
   // Initialize delete mutation
-  const deleteMutation = trpc.plants.deleteById.useMutation({
-    onSuccess: async () => {
-      toast("Success", {
-        description: t("plant-deleted-successfully"),
-      });
-      // Invalidate and prefetch the plants query to refresh the list
-      await utils.plants.getOwnPlants.invalidate();
-      // await utils.plants.getOwnPlants.prefetch();
-      // router.refresh();
-    },
-    onError: (error) => {
-      toast.error("Error", {
-        description: error.message || t("error-default"),
-      });
-    },
-  });
+  const deleteMutation = useMutation(
+    trpc.plants.deleteById.mutationOptions({
+      onSuccess: async () => {
+        toast("Success", {
+          description: t("plant-deleted-successfully"),
+        });
+        // Invalidate and prefetch the plants query to refresh the list
+        await queryClient.invalidateQueries(
+          trpc.plants.getOwnPlants.pathFilter(),
+        );
+        // await utils.plants.getOwnPlants.prefetch();
+        // router.refresh();
+      },
+      onError: (error) => {
+        toast.error("Error", {
+          description: error.message || t("error-default"),
+        });
+      },
+    }),
+  );
 
   const handleDelete = () => {
     setIsDeleteDialogOpen(true);

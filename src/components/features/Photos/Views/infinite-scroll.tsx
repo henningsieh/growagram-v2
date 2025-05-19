@@ -2,6 +2,8 @@
 
 // src/components/features/Photos/Views/infinite-scroll.tsx:
 import * as React from "react";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { PaginationItemsPerPage, modulePaths } from "~/assets/constants";
 import ResponsiveGrid from "~/components/Layouts/responsive-grid";
 import InfiniteScrollLoader from "~/components/atom/infinite-scroll-loader";
@@ -9,7 +11,7 @@ import { SortOrder } from "~/components/atom/sort-filter-controls";
 import SpinningLoader from "~/components/atom/spinning-loader";
 import PhotoCard from "~/components/features/Photos/photo-card";
 import { useRouter } from "~/lib/i18n/routing";
-import { trpc } from "~/lib/trpc/react";
+import { useTRPC } from "~/lib/trpc/react";
 import type { GetOwnPhotosInput, GetOwnPhotosType } from "~/server/api/root";
 import { PhotosSortField } from "~/types/image";
 
@@ -24,8 +26,9 @@ export default function PhotosInfiniteScrollView({
   filterNotConnected: boolean;
   setIsFetching: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
+  const trpc = useTRPC();
   const router = useRouter();
-  const utils = trpc.useUtils();
+  const queryClient = useQueryClient();
 
   React.useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -46,7 +49,9 @@ export default function PhotosInfiniteScrollView({
   } satisfies GetOwnPhotosInput;
 
   // Get initial data from cache with correct input structure
-  const initialData = utils.photos.getOwnPhotos.getInfiniteData(queryInput);
+  const initialData = queryClient.getQueryData(
+    trpc.photos.getOwnPhotos.infiniteQueryKey(queryInput),
+  );
 
   // Infinite query with matching input
   const {
@@ -56,10 +61,12 @@ export default function PhotosInfiniteScrollView({
     hasNextPage,
     fetchNextPage,
     isFetchingNextPage,
-  } = trpc.photos.getOwnPhotos.useInfiniteQuery(queryInput, {
-    getNextPageParam: (lastPage) => lastPage.nextCursor,
-    initialData: initialData || undefined,
-  });
+  } = useInfiniteQuery(
+    trpc.photos.getOwnPhotos.infiniteQueryOptions(queryInput, {
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
+      initialData: initialData || undefined,
+    }),
+  );
 
   // Directly update the parent's isFetching state
   React.useEffect(() => {

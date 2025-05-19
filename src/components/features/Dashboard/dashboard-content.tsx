@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { usePathname, useSearchParams } from "next/navigation";
 import { skipToken } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import {
   Flower2Icon,
   ImageIcon,
@@ -27,9 +28,10 @@ import {
 } from "~/components/ui/card";
 import { Skeleton } from "~/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { trpc } from "~/lib/trpc/react";
+import { useTRPC } from "~/lib/trpc/react";
 
 export function DashboardContent() {
+  const trpc = useTRPC();
   const t = useTranslations("Platform");
   const [activeTab, setActiveTab] = React.useState("overview");
   const pathname = usePathname();
@@ -63,34 +65,38 @@ export function DashboardContent() {
   }, [pathname, searchParams]); // Add pathname and searchParams as dependencies
 
   // Define all API queries with conditional fetching based on session state
-  const { data: growsData, isLoading: isLoadingGrows } =
-    trpc.grows.getOwnGrows.useQuery(
+  const { data: growsData, isLoading: isLoadingGrows } = useQuery(
+    trpc.grows.getOwnGrows.queryOptions(
       {
         // limit: 6,
       },
       { enabled: !!session?.user.id },
-    );
+    ),
+  );
 
-  const { data: plantsData, isLoading: isLoadingPlants } =
-    trpc.plants.getOwnPlants.useQuery(
+  const { data: plantsData, isLoading: isLoadingPlants } = useQuery(
+    trpc.plants.getOwnPlants.queryOptions(
       {
         // limit: 5,
       },
       { enabled: !!session?.user.id },
-    );
+    ),
+  );
 
-  const { data: photosData, isLoading: isLoadingPhotos } =
-    trpc.photos.getOwnPhotos.useQuery(
+  const { data: photosData, isLoading: isLoadingPhotos } = useQuery(
+    trpc.photos.getOwnPhotos.queryOptions(
       {
         limit: 12,
       },
       { enabled: !!session?.user.id },
-    );
+    ),
+  );
 
-  const { data: userProfile, isPending: userStatsArePending } =
-    trpc.users.getPublicUserProfile.useQuery(
+  const { data: userProfile, isPending: userStatsArePending } = useQuery(
+    trpc.users.getPublicUserProfile.queryOptions(
       session?.user.id ? { id: session.user.id } : skipToken,
-    );
+    ),
+  );
 
   // Return null if session is null, after defining all hooks
   if (session === null) {

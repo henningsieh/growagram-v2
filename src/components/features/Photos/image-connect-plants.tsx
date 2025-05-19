@@ -4,6 +4,9 @@
 import * as React from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { TRPCClientError } from "@trpc/client";
 import { Check, Flower2Icon } from "lucide-react";
 import { toast } from "sonner";
@@ -31,7 +34,7 @@ import {
   CommandList,
 } from "~/components/ui/command";
 import { useRouter } from "~/lib/i18n/routing";
-import { trpc } from "~/lib/trpc/react";
+import { useTRPC } from "~/lib/trpc/react";
 import type { GetOwnPlantsInput, GetPhotoByIdType } from "~/server/api/root";
 
 interface ImageConnectPlantsProps {
@@ -39,9 +42,10 @@ interface ImageConnectPlantsProps {
 }
 
 export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
+  const trpc = useTRPC();
   const router = useRouter();
   const locale = useLocale();
-  const utils = trpc.useUtils();
+  const queryClient = useQueryClient();
 
   const t = useTranslations("Photos");
 
@@ -52,33 +56,44 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
    *
    * On success, invalidates the cache for the image to ensure updated data.
    */
-  const connectToPlantMutation = trpc.photos.connectToPlant.useMutation({
-    onSuccess: async () => {
-      await utils.photos.getById.invalidate({ id: image.id });
-    },
-  });
+  const connectToPlantMutation = useMutation(
+    trpc.photos.connectToPlant.mutationOptions({
+      onSuccess: async () => {
+        await queryClient.invalidateQueries(
+          trpc.photos.getById.queryFilter({ id: image.id }),
+        );
+      },
+    }),
+  );
 
   /**
    * Mutation to disconnect an image from a plant.
    *
    * On success, invalidates the cache for the image to ensure updated data.
    */
-  const disconnectFromPlantMutation =
-    trpc.photos.disconnectFromPlant.useMutation({
+  const disconnectFromPlantMutation = useMutation(
+    trpc.photos.disconnectFromPlant.mutationOptions({
       onSuccess: async () => {
-        await utils.photos.getById.invalidate({ id: image.id });
+        await queryClient.invalidateQueries(
+          trpc.photos.getById.queryFilter({ id: image.id }),
+        );
       },
-    });
+    }),
+  );
 
   // The prefetched data will be available in the cache
-  const initialData = utils.plants.getOwnPlants.getData();
+  const initialData = queryClient.getQueryData(
+    trpc.plants.getOwnPlants.queryKey(),
+  );
 
-  const { data: plantsData, isLoading } = trpc.plants.getOwnPlants.useQuery(
-    { limit: 100 } satisfies GetOwnPlantsInput,
-    {
-      // Use the data that was prefetched on the server
-      initialData: initialData,
-    },
+  const { data: plantsData, isLoading } = useQuery(
+    trpc.plants.getOwnPlants.queryOptions(
+      { limit: 100 } satisfies GetOwnPlantsInput,
+      {
+        // Use the data that was prefetched on the server
+        initialData: initialData,
+      },
+    ),
   );
 
   // Move plants array into useMemo to ensure stable reference
@@ -161,7 +176,9 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
       toast(t("toasts.success.connectPlants.title"), {
         description: t("toasts.success.connectPlants.description"),
       });
-      await utils.photos.getOwnPhotos.invalidate();
+      await queryClient.invalidateQueries(
+        trpc.photos.getOwnPhotos.pathFilter(),
+      );
       router.push(modulePaths.PHOTOS.path);
     } catch (error) {
       // Show error toast when any operation fails
@@ -177,7 +194,8 @@ export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
     image.plantImages,
     selectedPlantIds,
     t,
-    utils.photos.getOwnPhotos,
+    queryClient,
+    trpc.photos.getOwnPhotos,
     router,
     connectToPlantMutation,
     disconnectFromPlantMutation,

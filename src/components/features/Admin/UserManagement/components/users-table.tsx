@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { useQuery } from "@tanstack/react-query";
 import {
   type ColumnFiltersState,
   type SortingState,
@@ -37,10 +38,11 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
-import { trpc } from "~/lib/trpc/react";
+import { useTRPC } from "~/lib/trpc/react";
 import { columns } from "./columns.tsx";
 
 export function UsersTable() {
+  const trpc = useTRPC();
   const t = useTranslations("AdminArea");
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -52,11 +54,10 @@ export function UsersTable() {
   const [rowSelection, setRowSelection] = useState({});
 
   // Fetch users data
-  const { data: users, isLoading } = trpc.admin.getAllUsers.useQuery(
-    undefined,
-    {
+  const { data: users, isLoading } = useQuery(
+    trpc.admin.getAllUsers.queryOptions(undefined, {
       refetchOnWindowFocus: false,
-    },
+    }),
   );
 
   const table = useReactTable({

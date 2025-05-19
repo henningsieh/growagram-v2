@@ -3,12 +3,14 @@
 import * as React from "react";
 import { useTranslations } from "next-intl";
 import type { InfiniteData } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { PaginationItemsPerPage } from "~/assets/constants";
 import InfiniteScrollLoader from "~/components/atom/infinite-scroll-loader";
 import SpinningLoader from "~/components/atom/spinning-loader";
 import PlantCard from "~/components/features/Plants/plant-card";
-import { trpc } from "~/lib/trpc/react";
+import { useTRPC } from "~/lib/trpc/react";
 import type {
   GetAllPlantsInput,
   GetAllPlantsOutput,
@@ -16,13 +18,16 @@ import type {
 } from "~/server/api/root";
 
 export default function PublicPlantsPage() {
-  const utils = trpc.useUtils();
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
   const t = useTranslations("Plants");
 
   // Get data from cache that was prefetched in layout.tsx
-  const cachedData = utils.plants.getAllPlants.getInfiniteData({
-    limit: PaginationItemsPerPage.PLANTS_PER_PAGE,
-  });
+  const cachedData = queryClient.getQueryData(
+    trpc.plants.getAllPlants.infiniteQueryKey({
+      limit: PaginationItemsPerPage.PLANTS_PER_PAGE,
+    }),
+  );
 
   // Create initialData from cache if available
   const initialData: InfiniteData<GetAllPlantsOutput, number> | undefined =
@@ -41,14 +46,16 @@ export default function PublicPlantsPage() {
     isFetching: isFetchingNextPage,
     hasNextPage,
     fetchNextPage,
-  } = trpc.plants.getAllPlants.useInfiniteQuery(
-    {
-      limit: PaginationItemsPerPage.PUBLIC_PLANTS_PER_PAGE,
-    } satisfies GetAllPlantsInput,
-    {
-      initialData,
-      getNextPageParam: (lastPage) => lastPage.nextCursor,
-    },
+  } = useInfiniteQuery(
+    trpc.plants.getAllPlants.infiniteQueryOptions(
+      {
+        limit: PaginationItemsPerPage.PUBLIC_PLANTS_PER_PAGE,
+      } satisfies GetAllPlantsInput,
+      {
+        initialData,
+        getNextPageParam: (lastPage) => lastPage.nextCursor,
+      },
+    ),
   );
 
   const plants: GetAllPlantsType =
@@ -94,7 +101,6 @@ export default function PublicPlantsPage() {
           {plants.map((plant) => (
             <PlantCard key={plant.id} plant={plant} isSocialProp={true} />
           ))}
-
           <InfiniteScrollLoader
             ref={loadingRef}
             isLoading={isLoading}

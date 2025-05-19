@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
 import { ShareIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -29,7 +30,7 @@ import {
 } from "~/components/ui/form";
 import { Textarea } from "~/components/ui/textarea";
 import { useRouter } from "~/lib/i18n/routing";
-import { trpc } from "~/lib/trpc/react";
+import { useTRPC } from "~/lib/trpc/react";
 import type {
   GetOwnGrowType,
   GetOwnPhotoType,
@@ -75,6 +76,7 @@ export function PostFormModal({
   entity,
   entityType,
 }: PostFormModalProps) {
+  const trpc = useTRPC();
   const router = useRouter();
   const t = useTranslations("Posts");
 
@@ -86,20 +88,22 @@ export function PostFormModal({
     },
   });
 
-  const createPostMutation = trpc.updates.create.useMutation({
-    onSuccess: () => {
-      toast("Success", {
-        description: t("post-created-successfully"),
-      });
-      router.push("/public/timeline");
-      onClose();
-    },
-    onError: () => {
-      toast.error("Error", {
-        description: t("toast-errors.update-submission-error"),
-      });
-    },
-  });
+  const createPostMutation = useMutation(
+    trpc.updates.create.mutationOptions({
+      onSuccess: () => {
+        toast("Success", {
+          description: t("post-created-successfully"),
+        });
+        router.push("/public/timeline");
+        onClose();
+      },
+      onError: () => {
+        toast.error("Error", {
+          description: t("toast-errors.update-submission-error"),
+        });
+      },
+    }),
+  );
 
   const onSubmit = (values: PostFormValues) => {
     createPostMutation.mutate(values);

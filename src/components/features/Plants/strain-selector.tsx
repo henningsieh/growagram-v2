@@ -2,13 +2,16 @@
 
 import * as React from "react";
 import { useTranslations } from "next-intl";
+import { useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { BeanIcon } from "lucide-react";
 import { toast } from "sonner";
 import { ComboboxWithCreate } from "~/components/atom/combobox-with-create";
 import type { ComboboxOption } from "~/components/atom/combobox-with-create";
 import SpinningLoader from "~/components/atom/spinning-loader";
 import { FormError } from "~/components/ui/form-error";
-import { trpc } from "~/lib/trpc/react";
+import { useTRPC } from "~/lib/trpc/react";
 
 interface StrainSelectorProps {
   value: string | null | undefined;
@@ -25,17 +28,19 @@ export function StrainSelector({
   disabled = false,
   existingStrain,
 }: StrainSelectorProps) {
+  const trpc = useTRPC();
   const [error, setError] = React.useState<string | null>(null);
   const t = useTranslations("Plants");
 
-  const utils = trpc.useUtils();
+  const queryClient = useQueryClient();
 
   // Fetch strains for the selected breeder
-  const { data: strains, isLoading: isStrainsLoading } =
-    trpc.plants.getStrainsByBreeder.useQuery(
+  const { data: strains, isLoading: isStrainsLoading } = useQuery(
+    trpc.plants.getStrainsByBreeder.queryOptions(
       { breederId: breederId || undefined },
       { enabled: !!breederId },
-    );
+    ),
+  );
 
   // Format strains for combobox
   const strainOptions: ComboboxOption[] =
@@ -56,25 +61,29 @@ export function StrainSelector({
   }
 
   // Create strain mutation
-  const createStrainMutation = trpc.plants.createStrain.useMutation({
-    onSuccess: (data) => {
-      onChange(data.id);
-      setError(null);
-      // Show success toast
-      toast(t("strain-create-success-title"), {
-        description: t("strain-create-success-description"),
-      });
-      // Invalidate queries to refresh the strains list
-      void utils.plants.getStrainsByBreeder.invalidate({
-        breederId: breederId || undefined,
-      });
-    },
-    onError: (error) => {
-      toast.error(t("strain-create-error-title"), {
-        description: error.message || t("strain-create-error-description"),
-      });
-    },
-  });
+  const createStrainMutation = useMutation(
+    trpc.plants.createStrain.mutationOptions({
+      onSuccess: (data) => {
+        onChange(data.id);
+        setError(null);
+        // Show success toast
+        toast(t("strain-create-success-title"), {
+          description: t("strain-create-success-description"),
+        });
+        // Invalidate queries to refresh the strains list
+        void queryClient.invalidateQueries(
+          trpc.plants.getStrainsByBreeder.queryFilter({
+            breederId: breederId || undefined,
+          }),
+        );
+      },
+      onError: (error) => {
+        toast.error(t("strain-create-error-title"), {
+          description: error.message || t("strain-create-error-description"),
+        });
+      },
+    }),
+  );
 
   // Verify breeder is selected before creating strain
   const handleCreateStrain = async (name: string) => {

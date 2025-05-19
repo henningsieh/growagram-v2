@@ -3,6 +3,8 @@
 // src/components/features/Grows/Views/infinite-scroll.tsx:
 import * as React from "react";
 import { useTranslations } from "next-intl";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { PaginationItemsPerPage, modulePaths } from "~/assets/constants";
 import ResponsiveGrid from "~/components/Layouts/responsive-grid";
 import InfiniteScrollLoader from "~/components/atom/infinite-scroll-loader";
@@ -10,7 +12,7 @@ import { SortOrder } from "~/components/atom/sort-filter-controls";
 import SpinningLoader from "~/components/atom/spinning-loader";
 import { GrowCard } from "~/components/features/Grows/grow-card";
 import { useRouter } from "~/lib/i18n/routing";
-import { trpc } from "~/lib/trpc/react";
+import { useTRPC } from "~/lib/trpc/react";
 import type { GetOwnGrowsInput, GetOwnGrowsType } from "~/server/api/root";
 import { GrowsSortField } from "~/types/grow";
 
@@ -23,8 +25,9 @@ export default function InfiniteScrollGrowsView({
   sortOrder: SortOrder;
   setIsFetching: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
+  const trpc = useTRPC();
   const router = useRouter();
-  const utils = trpc.useUtils();
+  const queryClient = useQueryClient();
   const t = useTranslations("Grows");
 
   React.useEffect(() => {
@@ -34,11 +37,13 @@ export default function InfiniteScrollGrowsView({
   }, [router]);
 
   // Get initial data from cache
-  const initialData = utils.grows.getOwnGrows.getInfiniteData({
-    limit: PaginationItemsPerPage.GROWS_PER_PAGE,
-    sortField,
-    sortOrder,
-  } satisfies GetOwnGrowsInput);
+  const initialData = queryClient.getQueryData(
+    trpc.grows.getOwnGrows.infiniteQueryKey({
+      limit: PaginationItemsPerPage.GROWS_PER_PAGE,
+      sortField,
+      sortOrder,
+    } satisfies GetOwnGrowsInput),
+  );
 
   // Infinite query
   const {
@@ -48,16 +53,18 @@ export default function InfiniteScrollGrowsView({
     hasNextPage,
     fetchNextPage,
     isFetchingNextPage,
-  } = trpc.grows.getOwnGrows.useInfiniteQuery(
-    {
-      limit: PaginationItemsPerPage.GROWS_PER_PAGE,
-      sortField,
-      sortOrder,
-    } satisfies GetOwnGrowsInput,
-    {
-      getNextPageParam: (lastPage) => lastPage.nextCursor,
-      initialData,
-    },
+  } = useInfiniteQuery(
+    trpc.grows.getOwnGrows.infiniteQueryOptions(
+      {
+        limit: PaginationItemsPerPage.GROWS_PER_PAGE,
+        sortField,
+        sortOrder,
+      } satisfies GetOwnGrowsInput,
+      {
+        getNextPageParam: (lastPage) => lastPage.nextCursor,
+        initialData,
+      },
+    ),
   );
 
   // Directly update the parent's isFetching state

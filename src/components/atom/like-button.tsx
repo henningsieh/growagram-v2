@@ -4,12 +4,13 @@
 import * as React from "react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
+import { useMutation } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
 import { Heart } from "lucide-react";
 import { toast } from "sonner";
 import SpinningLoader from "~/components/atom/spinning-loader";
 import { Button } from "~/components/ui/button";
-import { trpc } from "~/lib/trpc/react";
+import { useTRPC } from "~/lib/trpc/react";
 import { cn } from "~/lib/utils";
 import { ToggleLikeInput } from "~/server/api/root";
 import { LikeableEntityType } from "~/types/like";
@@ -38,6 +39,7 @@ export const LikeButton = React.forwardRef<HTMLButtonElement, LikeButtonProps>(
     },
     ref,
   ) => {
+    const trpc = useTRPC();
     const { data: session } = useSession();
     const user = session?.user;
     const t = useTranslations("Likes");
@@ -51,40 +53,42 @@ export const LikeButton = React.forwardRef<HTMLButtonElement, LikeButtonProps>(
       setLikeCount(initialLikeCount);
     }, [initialLiked, initialLikeCount]);
 
-    const toggleLikeMutation = trpc.likes.toggleLike.useMutation({
-      onMutate: (variables) => {
-        // Prevent like actions for unauthenticated users
-        if (!user) {
-          toast(t("login-required-title"), {
-            description: t("login-required-description"),
+    const toggleLikeMutation = useMutation(
+      trpc.likes.toggleLike.mutationOptions({
+        onMutate: (variables) => {
+          // Prevent like actions for unauthenticated users
+          if (!user) {
+            toast(t("login-required-title"), {
+              description: t("login-required-description"),
+            });
+            return null;
+          }
+
+          const newLikedState = !isLiked;
+          setIsLiked(newLikedState);
+          setLikeCount((prev) => (newLikedState ? prev + 1 : prev - 1));
+
+          if (newLikedState) {
+            setIsAnimating(true);
+            setTimeout(() => setIsAnimating(false), 500);
+          }
+
+          return { variables };
+        },
+        onSuccess: (data) => {
+          toast(t("success-title"), {
+            description: data.liked ? t("liked-success") : t("unliked-success"),
           });
-          return null;
-        }
-
-        const newLikedState = !isLiked;
-        setIsLiked(newLikedState);
-        setLikeCount((prev) => (newLikedState ? prev + 1 : prev - 1));
-
-        if (newLikedState) {
-          setIsAnimating(true);
-          setTimeout(() => setIsAnimating(false), 500);
-        }
-
-        return { variables };
-      },
-      onSuccess: (data) => {
-        toast(t("success-title"), {
-          description: data.liked ? t("liked-success") : t("unliked-success"),
-        });
-      },
-      onError: (error) => {
-        setIsLiked(initialLiked);
-        setLikeCount(initialLikeCount);
-        toast.error(t("error-title"), {
-          description: error.message,
-        });
-      },
-    });
+        },
+        onError: (error) => {
+          setIsLiked(initialLiked);
+          setLikeCount(initialLikeCount);
+          toast.error(t("error-title"), {
+            description: error.message,
+          });
+        },
+      }),
+    );
 
     const handleLikeToggle = () => {
       if (!user) {

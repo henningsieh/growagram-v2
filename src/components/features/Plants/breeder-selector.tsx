@@ -5,7 +5,11 @@ import { toast } from "sonner";
 import type { ComboboxOption } from "~/components/atom/combobox-with-create";
 import { ComboboxWithCreate } from "~/components/atom/combobox-with-create";
 import { FormError } from "~/components/ui/form-error";
-import { trpc } from "~/lib/trpc/react";
+import { useTRPC } from "~/lib/trpc/react";
+
+import { useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface BreederSelectorProps {
   value: string | null | undefined;
@@ -18,13 +22,14 @@ export function BreederSelector({
   onChange,
   disabled = false,
 }: BreederSelectorProps) {
+  const trpc = useTRPC();
   const [error, setError] = React.useState<string | null>(null);
   const t = useTranslations("Plants");
 
-  const utils = trpc.useUtils();
+  const queryClient = useQueryClient();
 
   // Fetch breeders
-  const { data: breeders = [] } = trpc.plants.getBreeders.useQuery();
+  const { data: breeders = [] } = useQuery(trpc.plants.getBreeders.queryOptions());
 
   // Convert breeders to combobox options
   const breederOptions: ComboboxOption[] = breeders.map((breeder) => ({
@@ -33,7 +38,7 @@ export function BreederSelector({
   }));
 
   // Create breeder mutation
-  const createBreederMutation = trpc.plants.createBreeder.useMutation({
+  const createBreederMutation = useMutation(trpc.plants.createBreeder.mutationOptions({
     onSuccess: (data) => {
       onChange(data.id);
       setError(null);
@@ -42,14 +47,14 @@ export function BreederSelector({
         description: t("breeder-create-success-description"),
       });
       // Invalidate queries to refresh the breeders list
-      void utils.plants.getBreeders.invalidate();
+      void queryClient.invalidateQueries(trpc.plants.getBreeders.pathFilter());
     },
     onError: (error) => {
       toast.error(t("breeder-create-error-title"), {
         description: error.message || t("breeder-create-error-description"),
       });
     },
-  });
+  }));
 
   // Handle create new breeder
   const handleCreateBreeder = (name: string) => {

@@ -5,6 +5,8 @@ import * as React from "react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
 import { debounce } from "lodash";
 import {
@@ -43,7 +45,7 @@ import { Input } from "~/components/ui/input";
 import { Separator } from "~/components/ui/separator";
 import { useIsMobile } from "~/hooks/use-mobile";
 import { useRouter } from "~/lib/i18n/routing";
-import { trpc } from "~/lib/trpc/react";
+import { useTRPC } from "~/lib/trpc/react";
 import type { EditUserInput, OwnUserDataType } from "~/server/api/root";
 import { userEditSchema } from "~/types/zodSchema";
 
@@ -64,6 +66,7 @@ const itemVariants = {
 };
 
 export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
+  const trpc = useTRPC();
   const isMobile = useIsMobile();
   const router = useRouter();
   const t = useTranslations("Account");
@@ -86,41 +89,45 @@ export default function AccountEditForm({ user }: { user: OwnUserDataType }) {
     },
   });
 
-  const editUserMutation = trpc.users.editUser.useMutation({
-    onSuccess: async (updatedUser) => {
-      // 1. Update session
-      await update({
-        name: updatedUser.name,
-        username: updatedUser.username,
-      });
+  const editUserMutation = useMutation(
+    trpc.users.editUser.mutationOptions({
+      onSuccess: async (updatedUser) => {
+        // 1. Update session
+        await update({
+          name: updatedUser.name,
+          username: updatedUser.username,
+        });
 
-      // 2. Show success message
-      toast(t("form-save-success-title"), {
-        description: t("form-save-success-message"),
-      });
+        // 2. Show success message
+        toast(t("form-save-success-title"), {
+          description: t("form-save-success-message"),
+        });
 
-      // 3. Redirect to account page
-      router.push("/account");
-    },
-    onError: (error) => {
-      toast.error(t("toast-error-save.title"), {
-        description: t("toast-error-save.description"),
-      });
-      console.error("Error updating user:", error);
-    },
-  });
+        // 3. Redirect to account page
+        router.push("/account");
+      },
+      onError: (error) => {
+        toast.error(t("toast-error-save.title"), {
+          description: t("toast-error-save.description"),
+        });
+        console.error("Error updating user:", error);
+      },
+    }),
+  );
 
   const onSubmit = async (values: EditUserInput) => {
     await editUserMutation.mutateAsync(values);
   };
 
   // Check username uniqueness
-  const usernameCheck = trpc.users.isUsernameAvailable.useQuery(
-    { username: username, excludeOwn: true },
-    {
-      enabled: form.formState.dirtyFields.username,
-      refetchOnWindowFocus: false,
-    },
+  const usernameCheck = useQuery(
+    trpc.users.isUsernameAvailable.queryOptions(
+      { username: username, excludeOwn: true },
+      {
+        enabled: form.formState.dirtyFields.username,
+        refetchOnWindowFocus: false,
+      },
+    ),
   );
 
   // Wait for the user stopps typing

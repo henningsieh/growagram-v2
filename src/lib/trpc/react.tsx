@@ -10,8 +10,9 @@ import {
   httpSubscriptionLink,
   loggerLink,
   splitLink,
+  createTRPCClient,
 } from "@trpc/client";
-import { createTRPCReact } from "@trpc/react-query";
+import { createTRPCContext } from "@trpc/tanstack-react-query";
 import { type inferRouterInputs, type inferRouterOutputs } from "@trpc/server";
 import SuperJSON from "superjson";
 import { TRPC_ENDPOINT } from "~/assets/constants";
@@ -29,7 +30,10 @@ const getQueryClient = () => {
   return (clientQueryClientSingleton ??= createQueryClient());
 };
 
-export const trpc = createTRPCReact<AppRouter>();
+export const {
+  TRPCProvider,
+  useTRPC
+} = createTRPCContext<AppRouter>();
 
 /**
  * Inference helper for inputs.
@@ -58,7 +62,7 @@ export function TRPCReactProvider(
   const queryClient = getQueryClient();
 
   const [trpcClient] = React.useState(() =>
-    trpc.createClient({
+    createTRPCClient<AppRouter>({
       links: [
         // adds pretty logs to your console in development and logs errors in production
         loggerLink({
@@ -89,14 +93,14 @@ export function TRPCReactProvider(
   );
 
   return (
-    <trpc.Provider client={trpcClient} queryClient={queryClient}>
+    <TRPCProvider trpcClient={trpcClient} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>
         <HydrationBoundary state={props.dehydratedState}>
           {props.children}
         </HydrationBoundary>
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
-    </trpc.Provider>
+    </TRPCProvider>
   );
 }
 

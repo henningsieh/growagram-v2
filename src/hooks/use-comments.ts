@@ -5,16 +5,21 @@ import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
-import { trpc } from "~/lib/trpc/react";
+import { useTRPC } from "~/lib/trpc/react";
 import type { GetCommentsInput, GetCommentsType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
+
+import { useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const useComments = (
   entityId: string,
   entityType: CommentableEntityType,
 ) => {
+  const trpc = useTRPC();
   const { data: session } = useSession();
-  const utils = trpc.useUtils();
+  const queryClient = useQueryClient();
   const t = useTranslations();
 
   const [newComment, setNewComment] = React.useState<string>("");
@@ -24,10 +29,10 @@ export const useComments = (
     string | null
   >(null);
 
-  const commentCountQuery = trpc.comments.getCommentCount.useQuery({
+  const commentCountQuery = useQuery(trpc.comments.getCommentCount.queryOptions({
     entityId,
     entityType,
-  });
+  }));
 
   React.useEffect(() => {
     if (commentCountQuery.data) {
@@ -37,7 +42,7 @@ export const useComments = (
 
   const commentsSortOrder = SortOrder.DESC satisfies SortOrder;
 
-  const commentsQuery = trpc.comments.getComments.useQuery(
+  const commentsQuery = useQuery(trpc.comments.getComments.queryOptions(
     {
       entityId: entityId,
       entityType: entityType,
@@ -46,7 +51,7 @@ export const useComments = (
     {
       enabled: !!session,
     },
-  );
+  ));
 
   const toggleComments = () => {
     // Only allow opening comments if user is logged in
@@ -59,31 +64,28 @@ export const useComments = (
     }
   };
 
-  const postCommentMutation = trpc.comments.postComment.useMutation({
+  const postCommentMutation = useMutation(trpc.comments.postComment.mutationOptions({
     onSuccess: async (_, newComment) => {
       // First use optimistic updates...
-      utils.comments.getCommentCount.setData(
-        {
-          entityId: entityId,
-          entityType: entityType,
-        },
-        (old) => ({
-          count: (old?.count ?? 0) + 1,
-        }),
-      );
+      queryClient.setQueryData(trpc.comments.getCommentCount.queryKey({
+        entityId: entityId,
+        entityType: entityType,
+      }), (old) => ({
+        count: (old?.count ?? 0) + 1,
+      }));
 
       // ...then invalidate the queries
-      await utils.comments.getComments.invalidate();
-      await utils.comments.getCommentCount.invalidate();
+      await queryClient.invalidateQueries(trpc.comments.getComments.pathFilter());
+      await queryClient.invalidateQueries(trpc.comments.getCommentCount.pathFilter());
 
       // Update comment count
       await commentCountQuery.refetch();
 
       // Refetch replies if it's a reply to a specific comment
       if (newComment.parentCommentId) {
-        await utils.comments.getReplies.refetch({
+        await queryClient.refetchQueries(trpc.comments.getReplies.queryFilter({
           commentId: newComment.parentCommentId,
-        });
+        }));
       }
 
       // Reset state
@@ -95,7 +97,7 @@ export const useComments = (
         description: error.message || "Failed to post comment",
       });
     },
-  });
+  }));
 
   const handleSubmitComment = (parentCommentId?: string) => {
     if (!newComment.trim()) return;

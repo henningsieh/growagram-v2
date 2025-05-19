@@ -3,10 +3,12 @@
 import * as React from "react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
+import { useMutation } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { UserMinusIcon, UserPlusIcon } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "~/components/ui/button";
-import { trpc } from "~/lib/trpc/react";
+import { useTRPC } from "~/lib/trpc/react";
 
 interface FollowButtonProps {
   userId: string;
@@ -19,32 +21,39 @@ export function FollowButton({
   initialIsFollowing,
   className,
 }: FollowButtonProps) {
+  const trpc = useTRPC();
   const { data: session } = useSession();
   const [isFollowing, setIsFollowing] = React.useState(initialIsFollowing);
-  const utils = trpc.useUtils();
+  const queryClient = useQueryClient();
   const t = useTranslations("Profile");
 
-  const { mutate: follow, isPending: isFollowLoading } =
-    trpc.users.followUser.useMutation({
+  const { mutate: follow, isPending: isFollowLoading } = useMutation(
+    trpc.users.followUser.mutationOptions({
       onSuccess: async () => {
         setIsFollowing(true);
         toast(t("FollowButton.follow-success-title"), {
           description: t("FollowButton.follow-success-description"),
         });
-        await utils.users.getPublicUserProfile.invalidate();
+        await queryClient.invalidateQueries(
+          trpc.users.getPublicUserProfile.pathFilter(),
+        );
       },
-    });
+    }),
+  );
 
-  const { mutate: unfollow, isPending: isUnfollowLoading } =
-    trpc.users.unfollowUser.useMutation({
+  const { mutate: unfollow, isPending: isUnfollowLoading } = useMutation(
+    trpc.users.unfollowUser.mutationOptions({
       onSuccess: async () => {
         setIsFollowing(false);
         toast(t("FollowButton.unfollow-success-title"), {
           description: t("FollowButton.unfollow-success-description"),
         });
-        await utils.users.getPublicUserProfile.invalidate();
+        await queryClient.invalidateQueries(
+          trpc.users.getPublicUserProfile.pathFilter(),
+        );
       },
-    });
+    }),
+  );
 
   if (!session || session.user.id === userId) return null;
 

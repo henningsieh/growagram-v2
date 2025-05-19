@@ -4,6 +4,8 @@
 import * as React from "react";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { PaginationItemsPerPage } from "~/assets/constants";
 import ResponsiveGrid from "~/components/Layouts/responsive-grid";
 import ItemsPagination from "~/components/atom/item-pagination";
@@ -11,7 +13,7 @@ import { SortOrder } from "~/components/atom/sort-filter-controls";
 import SpinningLoader from "~/components/atom/spinning-loader";
 import PlantCard from "~/components/features/Plants/plant-card";
 import { useRouter } from "~/lib/i18n/routing";
-import { trpc } from "~/lib/trpc/react";
+import { useTRPC } from "~/lib/trpc/react";
 import type { GetOwnPlantsInput } from "~/server/api/root";
 import { PlantsSortField } from "~/types/plant";
 
@@ -24,9 +26,10 @@ export default function PaginatedPlantsView({
   sortOrder: SortOrder;
   setIsFetching: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
+  const trpc = useTRPC();
   const searchParams = useSearchParams();
   const router = useRouter();
-  const utils = trpc.useUtils();
+  const queryClient = useQueryClient();
   const t = useTranslations("Plants");
 
   // Initialize state from URL query params
@@ -49,24 +52,28 @@ export default function PaginatedPlantsView({
   }, [currentPage, sortField, sortOrder, updateUrlParams]);
 
   // Get initial data from cache
-  const initialData = utils.plants.getOwnPlants.getData({
-    cursor: currentPage,
-    limit: PaginationItemsPerPage.PLANTS_PER_PAGE,
-    sortField,
-    sortOrder,
-  } satisfies GetOwnPlantsInput);
-
-  // Query plants
-  const { data, isLoading, isFetching } = trpc.plants.getOwnPlants.useQuery(
-    {
-      limit: PaginationItemsPerPage.PLANTS_PER_PAGE,
+  const initialData = queryClient.getQueryData(
+    trpc.plants.getOwnPlants.queryKey({
       cursor: currentPage,
+      limit: PaginationItemsPerPage.PLANTS_PER_PAGE,
       sortField,
       sortOrder,
-    } satisfies GetOwnPlantsInput,
-    {
-      initialData,
-    },
+    } satisfies GetOwnPlantsInput),
+  );
+
+  // Query plants
+  const { data, isLoading, isFetching } = useQuery(
+    trpc.plants.getOwnPlants.queryOptions(
+      {
+        limit: PaginationItemsPerPage.PLANTS_PER_PAGE,
+        cursor: currentPage,
+        sortField,
+        sortOrder,
+      } satisfies GetOwnPlantsInput,
+      {
+        initialData,
+      },
+    ),
   );
 
   // Directly update the parent's isFetching state

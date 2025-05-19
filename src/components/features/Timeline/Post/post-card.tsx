@@ -13,7 +13,7 @@ import { EnhancedPlantCard } from "~/components/features/Plants/enhanced-plant-c
 import { Card, CardContent } from "~/components/ui/card";
 import { useComments } from "~/hooks/use-comments";
 import { useLikeStatus } from "~/hooks/use-likes";
-import { trpc } from "~/lib/trpc/react";
+import { useTRPC } from "~/lib/trpc/react";
 import { cn, formatDate, formatTime } from "~/lib/utils";
 import { GetPostType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
@@ -21,13 +21,17 @@ import { LikeableEntityType } from "~/types/like";
 import { Locale } from "~/types/locale";
 import { PostableEntityType } from "~/types/post";
 
+import { useMutation } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
+
 interface PostCardProps {
   post: GetPostType;
   isSocialProp?: boolean;
 }
 
 export default function PostCard({ post, isSocialProp = true }: PostCardProps) {
-  const utils = trpc.useUtils();
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
   const locale = useLocale();
 
   const t = useTranslations("Posts");
@@ -48,19 +52,19 @@ export default function PostCard({ post, isSocialProp = true }: PostCardProps) {
     useComments(post.id, CommentableEntityType.Post);
 
   // Initialize delete mutation
-  const deleteMutation = trpc.updates.deleteById.useMutation({
+  const deleteMutation = useMutation(trpc.updates.deleteById.mutationOptions({
     onSuccess: async () => {
       toast("Success", {
         description: t("post-deleted-successfully"),
       });
-      await utils.updates.getAll.invalidate();
+      await queryClient.invalidateQueries(trpc.updates.getAll.pathFilter());
     },
     onError: (error) => {
       toast.error("Error", {
         description: error.message || t("error-default"),
       });
     },
-  });
+  }));
 
   // const handleDelete = () => {
   //   setIsDeleteDialogOpen(true);
