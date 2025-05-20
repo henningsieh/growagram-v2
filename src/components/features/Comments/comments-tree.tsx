@@ -39,10 +39,24 @@ const CommentsTree: React.FC<CommentsTreeProps> = ({
 
       {!isLoading && replies && replies.length > 0 && (
         <>
-          <div className="bg-accent/60 absolute top-[3rem] bottom-1 left-[25px] w-px" />
+          {/* Connection Line - Improved version */}
+          <div
+            className="absolute"
+            style={{
+              left: "24px", // Align precisely with the avatar
+              width: "2px", // Slightly thinner for elegance
+              background:
+                "linear-gradient(180deg, var(--border) 0%, var(--accent) 10%, var(--accent) 90%, var(--border) 100%)",
+              // position: "absolute", // Already applied by className
+              top: "3.25rem",
+              height: `calc(100% - 3.25rem)`, // Extend to the bottom of the container
+              opacity: 0.6, // Semi-transparent
+              zIndex: 1,
+            }}
+          />
           <ul className="space-y-4 pt-2 pl-5">
             {replies.map((reply) => (
-              <li key={reply.id}>
+              <li key={reply.id} className="relative">
                 <CommentsTree comment={reply} isSocial={isSocial} />
               </li>
             ))}
