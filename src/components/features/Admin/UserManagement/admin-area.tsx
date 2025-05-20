@@ -3,13 +3,7 @@
 import * as React from "react";
 import { useTranslations } from "next-intl";
 import { Shield, Users } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "~/components/ui/card";
+import { Card, CardHeader } from "~/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { UsersTable } from "./components/users-table";
 
@@ -20,12 +14,6 @@ export function AdminArea() {
   return (
     <Card className="w-full rounded-lg">
       <CardHeader>
-        <CardTitle className="text-2xl" as="h2">
-          {t("title")}
-        </CardTitle>
-        <CardDescription>{t("description")}</CardDescription>
-      </CardHeader>
-      <CardContent>
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="mb-4">
             <TabsTrigger value="users" className="flex items-center gap-2">
@@ -48,7 +36,7 @@ export function AdminArea() {
             </div>
           </TabsContent>
         </Tabs>
-      </CardContent>
+      </CardHeader>
     </Card>
   );
 }

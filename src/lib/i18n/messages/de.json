@@ -47,14 +47,12 @@
     }
   },
   "AdminArea": {
-    "description": "Benutzer und Plattformeinstellungen verwalten",
     "pageheader": {
-      "subtitle": "Verwaltungs- und Management -Tools",
-      "title": "Verwaltungsbereich"
+      "title": "Verwaltungsbereich",
+      "subtitle": "Verwaltungs- und Management -Tools"
     },
     "settings-coming-soon": "Admin-Einstellungen bald verfügbar",
     "settings-tab": "Einstellungen",
-    "title": "Administration",
     "user-management": {
       "buttons": {
         "ban-user": "Benutzer sperren",

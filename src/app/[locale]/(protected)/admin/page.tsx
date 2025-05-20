@@ -28,7 +28,10 @@ export default async function AdminPage() {
   return (
     <>
       <BreadcrumbSetter items={breadcrumbs} />
-      <PageHeader title={t("pageheader.title")} subtitle={t("description")}>
+      <PageHeader
+        title={t("pageheader.title")}
+        subtitle={t("pageheader.subtitle")}
+      >
         <AdminArea />
       </PageHeader>
     </>

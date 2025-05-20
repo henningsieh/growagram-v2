@@ -47,14 +47,12 @@
     }
   },
   "AdminArea": {
-    "description": "Manage users and platform settings",
     "pageheader": {
-      "subtitle": "Administration and management tools",
-      "title": "Administration Area"
+      "title": "Administration Area",
+      "subtitle": "Administration and management tools"
     },
     "settings-coming-soon": "Admin settings coming soon",
     "settings-tab": "Settings",
-    "title": "Administration",
     "user-management": {
       "buttons": {
         "ban-user": "Ban User",
