@@ -234,7 +234,6 @@
       "success-title": "Erfolg!",
       "title": "Bist du sicher, dass du diesen Grow löschen möchten?"
     },
-    "NoGrowsFound": "Es wurden keine Grows gefunden.",
     "button-label-back": "Zurück",
     "button-label-connect-plants": "Pflanze(n) auswählen",
     "button-label-create-grow": "Neuen Grow anlegen",
@@ -273,6 +272,7 @@
     "image-upload-success": "Bild erfolgreich hochgeladen",
     "mygrows-page-subtitle": "Anzeige und Verwaltung meiner Grows",
     "mygrows-page-title": "Meine Grows",
+    "no-grows-have-been-found": "Es wurden keine Grows gefunden.",
     "no-grows-yet": "Du hast bisher keine Grows erstellt.",
     "no-plants-connectable": "Es konnten keine Pflanzen gefunden werden. Entweder sind alle deine Pflanzen anderen Grows zugeordnet oder du hast noch keine Pflanzen.",
     "no-plants-connected": "Bisher keine Pflanzen zugeordnet.",
@@ -647,6 +647,7 @@
     "linkUploadButtonLabel": "Pflanze hinzufügen",
     "myplants-page-subtitle": "Anzeige und Verwaltung meiner Pflanzen",
     "myplants-page-title": "Meine Pflanzen",
+    "no-plants-have-been-found": "Es wurden keine Pflanzen gefunden.",
     "no-plants-yet": "Es wurden noch keine Pflanzen hinzugefügt.",
     "overall-progress": "Gesamtfortschritt",
     "phase": "Phasenfortschritt",

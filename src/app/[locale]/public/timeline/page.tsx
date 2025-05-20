@@ -4,7 +4,7 @@
 import { useQuery } from "@tanstack/react-query";
 import SpinningLoader from "~/components/atom/spinning-loader";
 import PostCard from "~/components/features/Timeline/Post/post-card";
-import { useTRPC } from "~/lib/trpc/react";
+import { useTRPC } from "~/lib/trpc/client";
 
 export default function PublicTimelinePage() {
   const trpc = useTRPC();

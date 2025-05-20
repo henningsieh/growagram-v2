@@ -51,7 +51,7 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import { useRouter } from "~/lib/i18n/routing";
-import { useTRPC } from "~/lib/trpc/react";
+import { useTRPC } from "~/lib/trpc/client";
 import type {
   CreateOrEditPlantInput,
   GetOwnPlantsInput,

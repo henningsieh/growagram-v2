@@ -8,7 +8,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { UserMinusIcon, UserPlusIcon } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "~/components/ui/button";
-import { useTRPC } from "~/lib/trpc/react";
+import { useTRPC } from "~/lib/trpc/client";
 
 interface FollowButtonProps {
   userId: string;

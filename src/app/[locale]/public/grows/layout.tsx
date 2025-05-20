@@ -1,5 +1,7 @@
+// src/app/[locale]/public/grows/layout.tsx:
+import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { PaginationItemsPerPage } from "~/assets/constants";
-import { HydrateClient, api } from "~/lib/trpc/server";
+import { getQueryClient, trpc } from "~/lib/trpc/server";
 import type { GetAllGrowsInput } from "~/server/api/root";
 
 export const metadata = {
@@ -12,10 +14,23 @@ export default async function PublicGrowsLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // Prefetch initial data for the first page
-  await api.grows.getAllGrows.prefetchInfinite({
-    limit: PaginationItemsPerPage.PUBLIC_GROWS_PER_PAGE,
-  } satisfies GetAllGrowsInput);
+  const queryClient = getQueryClient();
 
-  return <HydrateClient>{children}</HydrateClient>;
+  // Prefetch public grows data with exact same config as page component
+  await queryClient.prefetchInfiniteQuery(
+    trpc.grows.getAllGrows.infiniteQueryOptions(
+      {
+        limit: PaginationItemsPerPage.PUBLIC_GROWS_PER_PAGE,
+      } satisfies GetAllGrowsInput,
+      {
+        getNextPageParam: (lastPage) => lastPage.nextCursor,
+      },
+    ),
+  );
+
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      {children}
+    </HydrationBoundary>
+  );
 }

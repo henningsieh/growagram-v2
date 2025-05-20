@@ -5,9 +5,9 @@ import { z } from "zod";
 import { hashPassword } from "~/lib/auth/password";
 import { userFollows, users, verificationTokens } from "~/lib/db/schema";
 import { createNotification } from "~/lib/notifications";
+import { protectedProcedure, publicProcedure } from "~/lib/trpc/init";
 import { sendVerificationEmail } from "~/server/actions/sendVerificationEmail";
 import { connectPlantWithImagesQuery } from "~/server/api/routers/plantImages";
-import { protectedProcedure, publicProcedure } from "~/server/api/trpc";
 import {
   NotifiableEntityType,
   NotificationEventType,

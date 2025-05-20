@@ -3,7 +3,7 @@ import { FollowButton } from "~/components/atom/follow-button";
 import ProfileTabs from "~/components/features/PublicProfile/PofileTabs";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { auth } from "~/lib/auth";
-import { api } from "~/lib/trpc/server";
+import { caller } from "~/lib/trpc/server";
 import type { GetPublicUserProfileInput } from "~/server/api/root";
 
 export default async function ProfilePage({
@@ -14,7 +14,7 @@ export default async function ProfilePage({
   const userId = (await params).id;
   const session = await auth();
 
-  const profile = await api.users.getPublicUserProfile({
+  const profile = await caller.users.getPublicUserProfile({
     id: userId,
   } satisfies GetPublicUserProfileInput);
 

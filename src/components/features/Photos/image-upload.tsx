@@ -19,7 +19,7 @@ import { Card, CardContent, CardFooter } from "~/components/ui/card";
 import { Label } from "~/components/ui/label";
 import { Progress as ProgressBar } from "~/components/ui/progress";
 import { useRouter } from "~/lib/i18n/routing";
-import { useTRPC } from "~/lib/trpc/react";
+import { useTRPC } from "~/lib/trpc/client";
 import { cn, formatDate, formatTime } from "~/lib/utils";
 import { readExif } from "~/lib/utils/readExif";
 import { uploadToS3 } from "~/lib/utils/uploadToS3";

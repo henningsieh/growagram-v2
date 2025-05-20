@@ -5,7 +5,7 @@ import { z } from "zod";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
 import { comments, grows, images, plants, posts } from "~/lib/db/schema";
 import { createNotification } from "~/lib/notifications";
-import { protectedProcedure, publicProcedure } from "~/server/api/trpc";
+import { protectedProcedure, publicProcedure } from "~/lib/trpc/init";
 import { CommentableEntityType } from "~/types/comment";
 import {
   NotifiableEntityType,

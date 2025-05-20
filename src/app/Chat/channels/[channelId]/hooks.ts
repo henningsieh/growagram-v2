@@ -1,10 +1,9 @@
 import * as React from "react";
 import { skipToken } from "@tanstack/react-query";
-import { useTRPC } from "~/lib/trpc/react";
-
 import { useMutation } from "@tanstack/react-query";
 import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import { useSubscription } from "@trpc/tanstack-react-query";
+import { useTRPC } from "~/lib/trpc/client";
 
 /**
  * Set isTyping with a throttle of 1s
@@ -40,16 +39,18 @@ export function useThrottledIsTypingMutation(channelId: string) {
 
 export function useLivePosts(channelId: string) {
   const trpc = useTRPC();
-  const query = useSuspenseInfiniteQuery(trpc.message.infinite.infiniteQueryOptions(
-    { channelId },
-    {
-      getNextPageParam: (d) => d.nextCursor,
-      // No need to refetch as we have a subscription
-      refetchOnReconnect: false,
-      refetchOnWindowFocus: false,
-      refetchOnMount: false,
-    },
-  ));
+  const query = useSuspenseInfiniteQuery(
+    trpc.message.infinite.infiniteQueryOptions(
+      { channelId },
+      {
+        getNextPageParam: (d) => d.nextCursor,
+        // No need to refetch as we have a subscription
+        refetchOnReconnect: false,
+        refetchOnWindowFocus: false,
+        refetchOnMount: false,
+      },
+    ),
+  );
 
   const [messages, setMessages] = React.useState(() => {
     const msgs = query.data.pages.map((page) => page.items).flat();
@@ -96,23 +97,25 @@ export function useLivePosts(channelId: string) {
     // Changing this value will trigger a new subscription
     setLastEventId(messages.at(-1)?.id ?? null);
   }
-  const subscription = useSubscription(trpc.message.onAdd.subscriptionOptions(
-    lastEventId === false ? skipToken : { channelId, lastEventId },
-    {
-      onData(event) {
-        addMessages([event.data]);
-      },
-      onError(err) {
-        console.error("Subscription error:", err);
+  const subscription = useSubscription(
+    trpc.message.onAdd.subscriptionOptions(
+      lastEventId === false ? skipToken : { channelId, lastEventId },
+      {
+        onData(event) {
+          addMessages([event.data]);
+        },
+        onError(err) {
+          console.error("Subscription error:", err);
 
-        const lastMessageEventId = messages.at(-1)?.id;
-        if (lastMessageEventId) {
-          // We've lost the connection, let's resubscribe from the last message
-          setLastEventId(lastMessageEventId);
-        }
+          const lastMessageEventId = messages.at(-1)?.id;
+          if (lastMessageEventId) {
+            // We've lost the connection, let's resubscribe from the last message
+            setLastEventId(lastMessageEventId);
+          }
+        },
       },
-    },
-  ));
+    ),
+  );
   return {
     query,
     messages,

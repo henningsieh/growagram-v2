@@ -1,27 +1,39 @@
 // src/app/[locale]/(protected)/grows/[id]/form/layout.tsx:
-import * as React from "react";
-import { api } from "~/lib/trpc/server";
+import { asc } from "drizzle-orm";
+import { db } from "~/lib/db";
+import { plants } from "~/lib/db/schema";
 import type { GetPlantByIdInput } from "~/server/api/root";
 
-export const metadata = {
-  title: "Grower's Plattform | Plants",
-  description: "Grower's Plattform | Plants",
-};
+// Allow both static and dynamic rendering
+export const dynamic = "force-dynamic";
+// Revalidate cache every hour
+export const revalidate = 3600;
+// Enable dynamic parameters
+export const dynamicParams = true;
+
+// Pre-generate pages for all plants using direct DB query
+export async function generateStaticParams() {
+  try {
+    const allPlants = await db.query.plants.findMany({
+      columns: {
+        id: true,
+      },
+      orderBy: [asc(plants.createdAt)],
+    });
+
+    return allPlants.map((plant) => ({
+      id: plant.id,
+    })) satisfies GetPlantByIdInput[];
+  } catch (error) {
+    console.error("Error generating static params for plants:", error);
+    return [];
+  }
+}
 
 export default async function PublicPlantByIdLayout({
   children,
-  params,
 }: {
   children: React.ReactNode;
-  params: Promise<GetPlantByIdInput>;
 }) {
-  const plantId = (await params).id;
-
-  const plantByIdQuery = {
-    id: plantId,
-  } satisfies GetPlantByIdInput;
-
-  await api.plants.getById.prefetch(plantByIdQuery);
-
   return children;
 }

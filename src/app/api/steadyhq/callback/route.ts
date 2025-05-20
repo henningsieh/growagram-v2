@@ -5,7 +5,7 @@ import axios from "axios";
 import { modulePaths } from "~/assets/constants";
 import { env } from "~/env";
 import { auth } from "~/lib/auth";
-import { api } from "~/lib/trpc/server";
+import { caller } from "~/lib/trpc/server";
 
 // this Auth wrapper has bogus return type,
 // so we need to cast it to any. See below!
@@ -55,7 +55,7 @@ export const GET = auth(async function GET(req) {
     console.log("OAuth callback response:", response.data);
 
     // Update tokens using the TRPC procedure
-    await api.users.updateUserTokens({
+    await caller.users.updateUserTokens({
       userId: req.auth.user.id,
       accessToken: access_token,
       refreshToken: refresh_token,

@@ -2,43 +2,19 @@
 
 import * as React from "react";
 import { useTranslations } from "next-intl";
-import type { InfiniteData } from "@tanstack/react-query";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { PaginationItemsPerPage } from "~/assets/constants";
 import InfiniteScrollLoader from "~/components/atom/infinite-scroll-loader";
 import SpinningLoader from "~/components/atom/spinning-loader";
 import PlantCard from "~/components/features/Plants/plant-card";
-import { useTRPC } from "~/lib/trpc/react";
-import type {
-  GetAllPlantsInput,
-  GetAllPlantsOutput,
-  GetAllPlantsType,
-} from "~/server/api/root";
+import { useTRPC } from "~/lib/trpc/client";
+import type { GetAllPlantsInput, GetAllPlantsType } from "~/server/api/root";
 
 export default function PublicPlantsPage() {
-  const trpc = useTRPC();
-  const queryClient = useQueryClient();
   const t = useTranslations("Plants");
 
-  // Get data from cache that was prefetched in layout.tsx
-  const cachedData = queryClient.getQueryData(
-    trpc.plants.getAllPlants.infiniteQueryKey({
-      limit: PaginationItemsPerPage.PLANTS_PER_PAGE,
-    }),
-  );
-
-  // Create initialData from cache if available
-  const initialData: InfiniteData<GetAllPlantsOutput, number> | undefined =
-    cachedData
-      ? {
-          pages: cachedData.pages,
-          pageParams: cachedData.pageParams.filter(
-            (param): param is number => param !== null,
-          ),
-        }
-      : undefined;
+  const trpc = useTRPC();
 
   const {
     data,
@@ -52,7 +28,6 @@ export default function PublicPlantsPage() {
         limit: PaginationItemsPerPage.PUBLIC_PLANTS_PER_PAGE,
       } satisfies GetAllPlantsInput,
       {
-        initialData,
         getNextPageParam: (lastPage) => lastPage.nextCursor,
       },
     ),
@@ -93,7 +68,7 @@ export default function PublicPlantsPage() {
         <SpinningLoader className="text-secondary" />
       ) : plants.length === 0 ? (
         <p className="text-muted-foreground mt-8 text-center">
-          {t("no-plants-yet")}
+          {t("no-plants-have-been-found")}
         </p>
       ) : (
         // this should be a flex-col timeline with animated plant cards

@@ -15,7 +15,7 @@ import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { EnhancedScrollArea } from "~/components/ui/enhanced-scroll-area";
 import { Input } from "~/components/ui/input";
-import { useTRPC } from "~/lib/trpc/react";
+import { useTRPC } from "~/lib/trpc/client";
 
 export function ChatModal({
   isOpen,

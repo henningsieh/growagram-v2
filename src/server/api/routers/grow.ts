@@ -5,12 +5,12 @@ import { z } from "zod";
 import { PaginationItemsPerPage } from "~/assets/constants";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
 import { grows, images, plants } from "~/lib/db/schema";
-import { connectPlantWithImagesQuery } from "~/server/api/routers/plantImages";
 import {
   createTRPCRouter,
   protectedProcedure,
   publicProcedure,
-} from "~/server/api/trpc";
+} from "~/lib/trpc/init";
+import { connectPlantWithImagesQuery } from "~/server/api/routers/plantImages";
 import { GrowsSortField } from "~/types/grow";
 import { growSchema } from "~/types/zodSchema";
 

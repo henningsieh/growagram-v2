@@ -10,7 +10,7 @@ import { Heart } from "lucide-react";
 import { toast } from "sonner";
 import SpinningLoader from "~/components/atom/spinning-loader";
 import { Button } from "~/components/ui/button";
-import { useTRPC } from "~/lib/trpc/react";
+import { useTRPC } from "~/lib/trpc/client";
 import { cn } from "~/lib/utils";
 import { ToggleLikeInput } from "~/server/api/root";
 import { LikeableEntityType } from "~/types/like";

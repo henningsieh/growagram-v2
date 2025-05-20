@@ -1,6 +1,7 @@
 "use client";
 
 // src/components/navbar/index.tsx:
+// import { useSession } from "next-auth/react";
 import Image from "next/image";
 import DesktopNavigationManu from "~/components/Layouts/MainNavigationBar/Desktop";
 import MobileNavigationMenu from "~/components/Layouts/MainNavigationBar/Mobile";
@@ -11,6 +12,9 @@ import { Notifications } from "~/components/features/Notifications";
 import { Link } from "~/lib/i18n/routing";
 
 export function MainNavigationBar() {
+  // const { status } = useSession();
+  // const isAuthenticated = status === "authenticated";
+
   return (
     <header className="bg-background/90 fixed top-0 z-20 w-full border-b backdrop-blur">
       <div className="relative mx-auto flex h-14 items-center justify-center">
@@ -33,11 +37,12 @@ export function MainNavigationBar() {
 
         {/* Navigation Right Side: Toggles */}
         <div className="absolute top-1/2 right-4 flex -translate-y-1/2 items-center space-x-1">
+          {/* Only render Notifications when authenticated */}
+          <Notifications />
+          {/* {isAuthenticated && <Notifications />} */}
+
           {/* Chat Button */}
           <ChatButton />
-
-          {/* Notifications Indicator */}
-          <Notifications />
 
           {/* Theme Toggle Button */}
           <ThemeToggle />

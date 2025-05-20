@@ -1,37 +1,62 @@
 // src/app/[locale]/(protected)/photos/layout.tsx:
+import { getTranslations } from "next-intl/server";
+import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { PaginationItemsPerPage } from "~/assets/constants";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
-import { HydrateClient, api } from "~/lib/trpc/server";
+import { getQueryClient, trpc } from "~/lib/trpc/server";
 import type { GetOwnPhotosInput } from "~/server/api/root";
 import { PhotosSortField } from "~/types/image";
 
-export const metadata = {
-  title: "Grower's Plattform | My Photos",
-  description: "Grower's Plattform | My Photos",
-};
+export async function generateMetadata() {
+  const t = await getTranslations("Navigation");
+  return {
+    title: `${t("grower-menu")} | ${t("my-photos")}`,
+    description: t("my-photos-subline"),
+  };
+}
 
-export default async function PhotosLayout({
+export default async function MyPhotosLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  // Prefetch initial data with default sorting for the first page
+  const queryClient = getQueryClient();
 
-  await api.photos.getOwnPhotos.prefetchInfinite({
-    cursor: 1,
-    limit: PaginationItemsPerPage.PHOTOS_PER_PAGE,
-    sortField: PhotosSortField.UPLOAD_DATE,
-    sortOrder: SortOrder.DESC,
-    filterNotConnected: false,
-  } satisfies GetOwnPhotosInput);
+  // Default input parameters for prefetching
+  const defaultSortField = PhotosSortField.UPLOAD_DATE;
+  const defaultSortOrder = SortOrder.DESC;
+  const defaultLimit = PaginationItemsPerPage.PHOTOS_PER_PAGE;
+  const defaultFilterNotConnected = false;
 
-  await api.photos.getOwnPhotos.prefetch({
-    cursor: 1,
-    limit: PaginationItemsPerPage.PHOTOS_PER_PAGE,
-    sortField: PhotosSortField.UPLOAD_DATE,
-    sortOrder: SortOrder.DESC,
-    filterNotConnected: false,
-  } satisfies GetOwnPhotosInput);
+  // Prefetch data for InfiniteScrollPhotosView (initial load)
+  await queryClient.prefetchInfiniteQuery(
+    trpc.photos.getOwnPhotos.infiniteQueryOptions(
+      {
+        limit: defaultLimit,
+        sortField: defaultSortField,
+        sortOrder: defaultSortOrder,
+        filterNotConnected: defaultFilterNotConnected,
+      } satisfies GetOwnPhotosInput,
+      {
+        getNextPageParam: (lastPage) => lastPage.nextCursor,
+      },
+    ),
+  );
 
-  return <HydrateClient>{children}</HydrateClient>;
+  // Prefetch data for PaginatedPhotosView (default first page)
+  await queryClient.prefetchQuery(
+    trpc.photos.getOwnPhotos.queryOptions({
+      cursor: 1, // Default to page 1
+      limit: defaultLimit,
+      sortField: defaultSortField,
+      sortOrder: defaultSortOrder,
+      filterNotConnected: defaultFilterNotConnected,
+    } satisfies GetOwnPhotosInput),
+  );
+
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      {children}
+    </HydrationBoundary>
+  );
 }

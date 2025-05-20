@@ -1,10 +1,9 @@
 // src/hooks/use-likes.tsx:
 import * as React from "react";
 import { useSession } from "next-auth/react";
-import { useTRPC } from "~/lib/trpc/react";
-import { LikeableEntityType } from "~/types/like";
-
 import { useQuery } from "@tanstack/react-query";
+import { useTRPC } from "~/lib/trpc/client";
+import { LikeableEntityType } from "~/types/like";
 
 export const useLikeStatus = (
   entityId: string,
@@ -17,16 +16,20 @@ export const useLikeStatus = (
   const [userHasLiked, setUserHasLiked] = React.useState(false);
   const [likeCount, setLikeCount] = React.useState(0);
 
-  const likeCountQuery = useQuery(trpc.likes.getLikeCount.queryOptions({
-    entityId,
-    entityType,
-  }));
+  const likeCountQuery = useQuery(
+    trpc.likes.getLikeCount.queryOptions({
+      entityId,
+      entityType,
+    }),
+  );
 
   // Only run queries if user is authenticated
-  const userLikesQuery = useQuery(trpc.likes.getUserLikedEntities.queryOptions(
-    { entityType },
-    { enabled: !!user },
-  ));
+  const userLikesQuery = useQuery(
+    trpc.likes.getUserLikedEntities.queryOptions(
+      { entityType },
+      { enabled: !!user },
+    ),
+  );
 
   //TODO: this different behavior for "getLikeCount" and "getUserLikedEntities" is not clean!!!
 

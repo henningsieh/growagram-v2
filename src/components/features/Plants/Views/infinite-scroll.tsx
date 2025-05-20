@@ -12,7 +12,7 @@ import { SortOrder } from "~/components/atom/sort-filter-controls";
 import SpinningLoader from "~/components/atom/spinning-loader";
 import PlantCard from "~/components/features/Plants/plant-card";
 import { useRouter } from "~/lib/i18n/routing";
-import { useTRPC } from "~/lib/trpc/react";
+import { useTRPC } from "~/lib/trpc/client";
 import type { GetOwnPlantsInput, GetOwnPlantsType } from "~/server/api/root";
 import { PlantsSortField } from "~/types/plant";
 

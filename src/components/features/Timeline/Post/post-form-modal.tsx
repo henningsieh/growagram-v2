@@ -30,7 +30,7 @@ import {
 } from "~/components/ui/form";
 import { Textarea } from "~/components/ui/textarea";
 import { useRouter } from "~/lib/i18n/routing";
-import { useTRPC } from "~/lib/trpc/react";
+import { useTRPC } from "~/lib/trpc/client";
 import type {
   GetOwnGrowType,
   GetOwnPhotoType,

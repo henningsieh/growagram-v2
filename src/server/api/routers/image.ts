@@ -13,8 +13,8 @@ import { env } from "~/env";
 import cloudinary from "~/lib/cloudinary";
 import { images, plantImages } from "~/lib/db/schema";
 import { s3Client } from "~/lib/minio";
+import { protectedProcedure, publicProcedure } from "~/lib/trpc/init";
 import { connectImageWithPlantsQuery } from "~/server/api/routers/plantImages";
-import { protectedProcedure, publicProcedure } from "~/server/api/trpc";
 import { PhotosSortField } from "~/types/image";
 import { imageSchema } from "~/types/zodSchema";
 

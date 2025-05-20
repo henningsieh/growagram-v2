@@ -1,11 +1,10 @@
 // src/components/features/Comments/comments-tree.tsx:
 import type React from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Comment } from "~/components/features/Comments/comment";
 import { useComments } from "~/hooks/use-comments";
-import { useTRPC } from "~/lib/trpc/react";
+import { useTRPC } from "~/lib/trpc/client";
 import type { GetCommentType, GetRepliesInput } from "~/server/api/root";
-
-import { useQuery } from "@tanstack/react-query";
 
 interface CommentsTreeProps {
   comment: GetCommentType;
@@ -17,9 +16,11 @@ const CommentsTree: React.FC<CommentsTreeProps> = ({
   isSocial = true,
 }) => {
   const trpc = useTRPC();
-  const { data: replies, isLoading } = useQuery(trpc.comments.getReplies.queryOptions({
-    commentId: comment.id,
-  } satisfies GetRepliesInput));
+  const { data: replies, isLoading } = useQuery(
+    trpc.comments.getReplies.queryOptions({
+      commentId: comment.id,
+    } satisfies GetRepliesInput),
+  );
 
   const { handleReply, handleCancelReply, replyingToComment } = useComments(
     comment.entityId,

@@ -1,5 +1,6 @@
+import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { PaginationItemsPerPage } from "~/assets/constants";
-import { HydrateClient, api } from "~/lib/trpc/server";
+import { getQueryClient, trpc } from "~/lib/trpc/server";
 import type { GetAllPlantsInput } from "~/server/api/root";
 
 export const metadata = {
@@ -12,10 +13,23 @@ export default async function PublicPlantsLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // Prefetch initial data for the first page
-  await api.plants.getAllPlants.prefetchInfinite({
-    limit: PaginationItemsPerPage.PUBLIC_PLANTS_PER_PAGE,
-  } satisfies GetAllPlantsInput);
+  const queryClient = getQueryClient();
 
-  return <HydrateClient>{children}</HydrateClient>;
+  // Prefetch public plants data with exact same config as page component
+  await queryClient.prefetchInfiniteQuery(
+    trpc.plants.getAllPlants.infiniteQueryOptions(
+      {
+        limit: PaginationItemsPerPage.PUBLIC_PLANTS_PER_PAGE,
+      } satisfies GetAllPlantsInput,
+      {
+        getNextPageParam: (lastPage) => lastPage.nextCursor,
+      },
+    ),
+  );
+
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      {children}
+    </HydrationBoundary>
+  );
 }

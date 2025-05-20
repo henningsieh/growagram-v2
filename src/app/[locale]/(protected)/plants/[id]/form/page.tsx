@@ -1,9 +1,10 @@
+// src/app/[locale]/(protected)/plants/[id]/form/page.tsx:
 import { notFound } from "next/navigation";
 import { modulePaths } from "~/assets/constants";
 import { BreadcrumbSetter } from "~/components/Layouts/Breadcrumbs/breadcrumb-setter";
 import PlantForm from "~/components/features/Plants/plant-form";
 import { createBreadcrumbs } from "~/lib/breadcrumbs/breadcrumbs";
-import { api } from "~/lib/trpc/server";
+import { caller } from "~/lib/trpc/server";
 import type { GetPlantByIdInput, GetPlantByIdType } from "~/server/api/root";
 
 export default async function EditPlantPage({
@@ -14,10 +15,8 @@ export default async function EditPlantPage({
   const plantId = (await params).id;
 
   const plant = (
-    plantId !== "new"
-      ? await api.plants.getById({ id: plantId } satisfies GetPlantByIdInput)
-      : undefined
-  ) satisfies GetPlantByIdType | undefined;
+    plantId !== "new" ? await caller.plants.getById({ id: plantId }) : undefined
+  ) satisfies GetPlantByIdType;
 
   if (plantId !== "new" && plant === undefined) notFound();
 
@@ -35,11 +34,6 @@ export default async function EditPlantPage({
       path: `${modulePaths.PLANTS.path}/${plantId}/form`,
     },
   ]);
-
-  //prefetch own grows into cache
-  await api.grows.getOwnGrows.prefetch({
-    limit: 1000,
-  });
 
   return (
     <>

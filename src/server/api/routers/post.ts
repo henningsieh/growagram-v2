@@ -3,11 +3,11 @@ import { TRPCError } from "@trpc/server";
 import { desc, eq } from "drizzle-orm";
 import { z } from "zod";
 import { grows, images, plants, posts } from "~/lib/db/schema";
+import { protectedProcedure, publicProcedure } from "~/lib/trpc/init";
 import {
   connectImageWithPlantsQuery,
   connectPlantWithImagesQuery,
 } from "~/server/api/routers/plantImages";
-import { protectedProcedure, publicProcedure } from "~/server/api/trpc";
 import { PostableEntityType } from "~/types/post";
 import { postSchema } from "~/types/zodSchema";
 

@@ -21,7 +21,7 @@ import {
 import { Avatar } from "~/components/avatar";
 import { Button } from "~/components/button";
 import { Textarea } from "~/components/input";
-import { useTRPC } from "~/lib/trpc/react";
+import { useTRPC } from "~/lib/trpc/client";
 
 type SubscriptionError = TRPCClientErrorLike<{
   input: {

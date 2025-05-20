@@ -11,7 +11,7 @@ import { ComboboxWithCreate } from "~/components/atom/combobox-with-create";
 import type { ComboboxOption } from "~/components/atom/combobox-with-create";
 import SpinningLoader from "~/components/atom/spinning-loader";
 import { FormError } from "~/components/ui/form-error";
-import { useTRPC } from "~/lib/trpc/react";
+import { useTRPC } from "~/lib/trpc/client";
 
 interface StrainSelectorProps {
   value: string | null | undefined;

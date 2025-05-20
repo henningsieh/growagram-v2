@@ -38,7 +38,7 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
-import { useTRPC } from "~/lib/trpc/react";
+import { useTRPC } from "~/lib/trpc/client.tsx";
 import { columns } from "./columns.tsx";
 
 export function UsersTable() {

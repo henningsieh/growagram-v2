@@ -14,7 +14,7 @@ import {
   DialogTitle,
 } from "~/components/dialog";
 import { Input, Label } from "~/components/input";
-import { useTRPC } from "~/lib/trpc/react";
+import { useTRPC } from "~/lib/trpc/client";
 
 export function CreateChannelDialog() {
   const trpc = useTRPC();

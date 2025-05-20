@@ -4,7 +4,7 @@ import { z } from "zod";
 import { db } from "~/lib/db";
 import type { PostType } from "~/lib/db/schema";
 import { Channel } from "~/lib/db/schema";
-import { protectedProcedure, publicProcedure } from "~/server/api/trpc";
+import { protectedProcedure, publicProcedure } from "~/lib/trpc/init";
 
 export type WhoIsTyping = Record<string, { lastTyped: Date }>;
 

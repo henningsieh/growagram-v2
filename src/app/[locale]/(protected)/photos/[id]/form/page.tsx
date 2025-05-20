@@ -1,12 +1,14 @@
 // src/app/[locale]/(protected)/photos/[id]/form/page.tsx:
+import { notFound } from "next/navigation";
 import { modulePaths } from "~/assets/constants";
 import { BreadcrumbSetter } from "~/components/Layouts/Breadcrumbs/breadcrumb-setter";
-import ImageConnectPlants from "~/components/features/Photos/image-connect-plants";
+import PhotoConnectPlants from "~/components/features/Photos/photo-connect-plants";
 import { createBreadcrumbs } from "~/lib/breadcrumbs/breadcrumbs";
-import { api } from "~/lib/trpc/server";
+import { caller } from "~/lib/trpc/server";
 import type { GetPhotoByIdInput } from "~/server/api/root";
+import type { GetPhotoByIdType } from "~/server/api/root";
 
-export default async function Page({
+export default async function EditPhotoPage({
   params,
 }: {
   params: Promise<GetPhotoByIdInput>;
@@ -14,10 +16,14 @@ export default async function Page({
   const imageId = (await params).id;
 
   // Get the image data
-  const image = await api.photos.getById({ id: imageId });
+  const image = (await caller.photos.getById({
+    id: imageId,
+  })) satisfies GetPhotoByIdType;
 
-  // Prefetch the plants query - this will populate the cache
-  await api.plants.getOwnPlants.prefetch();
+  // If image is not found, render notFound page
+  if (!image) {
+    notFound();
+  }
 
   // Create breadcrumbs for this page using sidebar translation keys
   const breadcrumbs = createBreadcrumbs([
@@ -34,7 +40,7 @@ export default async function Page({
   return (
     <>
       <BreadcrumbSetter items={breadcrumbs} />
-      <ImageConnectPlants image={image} />
+      <PhotoConnectPlants image={image} />
     </>
   );
 }

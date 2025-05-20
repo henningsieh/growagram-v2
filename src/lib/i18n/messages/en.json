@@ -234,7 +234,6 @@
       "success-title": "Success!",
       "title": "Are you sure you want to remove this grow?"
     },
-    "NoGrowsFound": "No grows have been found.",
     "button-label-back": "Back",
     "button-label-connect-plants": "Connect Plants",
     "button-label-create-grow": "Create New Grow",
@@ -273,6 +272,7 @@
     "image-upload-success": "Image uploaded successfully",
     "mygrows-page-subtitle": "View and edit my grows",
     "mygrows-page-title": "My Grows",
+    "no-grows-have-been-found": "No grows have been found.",
     "no-grows-yet": "You haven&apos;t created any Grows yet.",
     "no-plants-connectable": "No plants could be found. Either all your plants are assigned to other grows or you don't have any plants yet.",
     "no-plants-connected": "No plants connected yet.",
@@ -504,6 +504,8 @@
     "button-label-upload-photos": "Upload",
     "buttonBackLabel": "Back",
     "capture-date": "Captured at",
+    "connect-plants-subtitle": "Which plants do you see in this photo?",
+    "connect-plants-title": "Identify plants",
     "connectPlants": {
       "photo-details-metadata": "Photo details / metadata"
     },
@@ -524,8 +526,6 @@
       "noResults": "No plants found",
       "placeholder": "Search plants..."
     },
-    "connect-plants-subtitle": "Which plants do you see in this photo?",
-    "connect-plants-title": "Identify plants",
     "toasts": {
       "errors": {
         "connectPlants": {
@@ -647,6 +647,7 @@
     "linkUploadButtonLabel": "Add New Plant",
     "myplants-page-subtitle": "View and edit my plants",
     "myplants-page-title": "My Plants",
+    "no-plants-have-been-found": "No plants have been found.",
     "no-plants-yet": "No plants have been added yet.",
     "overall-progress": "Overall progress",
     "phase": "Phase progress",

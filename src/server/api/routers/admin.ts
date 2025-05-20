@@ -4,7 +4,7 @@ import { desc, eq } from "drizzle-orm";
 import { z } from "zod";
 import { BAN_DURATIONS } from "~/assets/constants";
 import { users } from "~/lib/db/schema";
-import { adminProcedure } from "~/server/api/trpc";
+import { adminProcedure } from "~/lib/trpc/init";
 import { UserRoles } from "~/types/user";
 import { adminEditUserSchema } from "~/types/zodSchema";
 

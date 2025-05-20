@@ -3,8 +3,12 @@ import * as React from "react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { skipToken } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
+import { useSubscription } from "@trpc/tanstack-react-query";
 import { toast } from "sonner";
-import { useTRPC } from "~/lib/trpc/react";
+import { useTRPC } from "~/lib/trpc/client";
 import {
   type GetAllNotificationType,
   GetAllNotificationsInput,
@@ -13,11 +17,6 @@ import {
   NotifiableEntityType,
   NotificationEventType,
 } from "~/types/notification";
-
-import { useQuery } from "@tanstack/react-query";
-import { useMutation } from "@tanstack/react-query";
-import { useSubscription } from "@trpc/tanstack-react-query";
-import { useQueryClient } from "@tanstack/react-query";
 
 // Add the 'export' keyword in front of the function declaration
 export function useNotifications(onlyUnread = true) {
@@ -47,16 +46,18 @@ export function useNotifications(onlyUnread = true) {
     }
   }, [allNotifications, lastEventId]);
 
-  const query = useQuery(trpc.notifications.getAll.queryOptions(
-    { onlyUnread } satisfies GetAllNotificationsInput, // Pass onlyUnread parameter
-    {
-      refetchOnWindowFocus: true,
-      refetchOnMount: true,
-      staleTime: 10 * 1000,
-      enabled: status === "authenticated", // Only enable when authenticated
-      retry: false, // Don't retry on error (like 401)
-    },
-  ));
+  const query = useQuery(
+    trpc.notifications.getAll.queryOptions(
+      { onlyUnread } satisfies GetAllNotificationsInput, // Pass onlyUnread parameter
+      {
+        refetchOnWindowFocus: true,
+        refetchOnMount: true,
+        staleTime: 10 * 1000,
+        enabled: status === "authenticated", // Only enable when authenticated
+        retry: false, // Don't retry on error (like 401)
+      },
+    ),
+  );
 
   // Update state from query
   React.useEffect(() => {
@@ -105,63 +106,74 @@ export function useNotifications(onlyUnread = true) {
     [t, getEntityTypeText],
   );
 
-  // Enhanced subscription with lastEventId and error handling
-  const subscription = useSubscription(trpc.notifications.onNotification.subscriptionOptions(
-    status !== "authenticated" || lastEventId === false
-      ? skipToken
-      : { lastEventId },
-    {
-      onData: (notification) => {
-        setLastEventId(notification.id);
-        const notificationText = getNotificationText(
-          notification.type,
-          notification.entityType,
+  // Always call useSubscription unconditionally
+  const isSubscriptionEnabled = status === "authenticated";
+  // Determine the value for lastEventId to be sent to the API
+  // If lastEventId is the initial 'false', send null to the API (or undefined by not setting the key, but null is fine for nullable schema),
+  // otherwise send the actual string or null value.
+  const apiLastEventIdInput = lastEventId === false ? null : lastEventId;
+
+  const subscription = useSubscription(
+    trpc.notifications.onNotification.subscriptionOptions(
+      { lastEventId: apiLastEventIdInput }, // Always pass an object that matches the Zod schema
+      {
+        enabled: isSubscriptionEnabled, // Control the subscription lifecycle
+        onData: (notification) => {
+          setLastEventId(notification.id);
+          const notificationText = getNotificationText(
+            notification.type,
+            notification.entityType,
+          );
+          toast(t("new_notification"), {
+            description: `${notification.actor.name} ${notificationText}`,
+          });
+          void queryClient.invalidateQueries(
+            trpc.notifications.getAll.pathFilter(),
+          );
+        },
+        onError: (err) => {
+          console.error("Subscription error in useNotifications:", err);
+          // Optionally, provide user feedback about the connection issue, e.g., via a toast
+          // toast.error(t("subscriptionError")); // Example, if you have such a translation
+        },
+      },
+    ),
+  );
+
+  const { mutate: markAsRead } = useMutation(
+    trpc.notifications.markAsRead.mutationOptions({
+      onSuccess: async (_, { id }) => {
+        setAllNotifications((prev) => prev?.filter((n) => n.id !== id) ?? null);
+        await queryClient.invalidateQueries(
+          trpc.notifications.getAll.pathFilter(),
         );
-        toast(t("new_notification"), {
-          description: `${notification.actor.name} ${notificationText}`,
-        });
-        void queryClient.invalidateQueries(trpc.notifications.getAll.pathFilter());
       },
-      onError: (err) => {
-        console.error("Subscription error:", err);
-        // Try to resubscribe if still authenticated
-        if (status === "authenticated") {
-          const lastNotificationId = allNotifications?.at(-1)?.id;
-          if (lastNotificationId) {
-            setLastEventId(lastNotificationId);
-          }
-          void queryClient.invalidateQueries(trpc.notifications.getAll.pathFilter());
-        }
-      },
-    },
-  ));
+    }),
+  );
 
-  const { mutate: markAsRead } = useMutation(trpc.notifications.markAsRead.mutationOptions({
-    onSuccess: async (_, { id }) => {
-      setAllNotifications((prev) => prev?.filter((n) => n.id !== id) ?? null);
-      await queryClient.invalidateQueries(trpc.notifications.getAll.pathFilter());
-    },
-  }));
-
-  const { mutate: markAllAsRead } =
-    useMutation(trpc.notifications.markAllAsRead.mutationOptions({
+  const { mutate: markAllAsRead } = useMutation(
+    trpc.notifications.markAllAsRead.mutationOptions({
       onSuccess: async () => {
         setAllNotifications([]);
-        await queryClient.invalidateQueries(trpc.notifications.getAll.pathFilter());
+        await queryClient.invalidateQueries(
+          trpc.notifications.getAll.pathFilter(),
+        );
       },
-    }));
+    }),
+  );
 
   const commentId = allNotifications?.find(
     (n) => n.entityType === NotifiableEntityType.COMMENT,
   )?.entityId;
 
-  const { data: commentableEntity, isLoading: isCommentLoading } =
-    useQuery(trpc.comments.getParentEntity.queryOptions(
+  const { data: commentableEntity, isLoading: isCommentLoading } = useQuery(
+    trpc.comments.getParentEntity.queryOptions(
       commentId ? { commentId } : skipToken,
       {
         enabled: Boolean(commentId),
       },
-    ));
+    ),
+  );
 
   /**
    * Get the href for a notification

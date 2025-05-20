@@ -4,7 +4,7 @@ import { modulePaths } from "~/assets/constants";
 import { BreadcrumbSetter } from "~/components/Layouts/Breadcrumbs/breadcrumb-setter";
 import GrowForm from "~/components/features/Grows/grow-form";
 import { createBreadcrumbs } from "~/lib/breadcrumbs/breadcrumbs";
-import { api } from "~/lib/trpc/server";
+import { caller } from "~/lib/trpc/server";
 import type { GetGrowByIdInput, GetGrowByIdType } from "~/server/api/root";
 
 export default async function EditGrowPage({
@@ -14,8 +14,9 @@ export default async function EditGrowPage({
 }) {
   const growId = (await params).id;
 
-  const grow =
-    growId !== "new" ? await api.grows.getById({ id: growId }) : undefined;
+  const grow = (
+    growId !== "new" ? await caller.grows.getById({ id: growId }) : undefined
+  ) satisfies GetGrowByIdType;
 
   if (growId !== "new" && grow === undefined) notFound();
 

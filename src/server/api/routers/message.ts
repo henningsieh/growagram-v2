@@ -2,8 +2,8 @@ import { tracked } from "@trpc/server";
 import { z } from "zod";
 import { db } from "~/lib/db";
 import { Message, type PostType } from "~/lib/db/schema";
+import { protectedProcedure, publicProcedure } from "~/lib/trpc/init";
 import { currentlyTyping, ee } from "~/server/api/routers/channel";
-import { protectedProcedure, publicProcedure } from "~/server/api/trpc";
 
 export const messageRouter = {
   add: protectedProcedure

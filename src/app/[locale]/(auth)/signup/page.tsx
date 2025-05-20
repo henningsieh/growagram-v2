@@ -30,7 +30,7 @@ import {
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
 import { Link, useRouter } from "~/lib/i18n/routing";
-import { useTRPC } from "~/lib/trpc/react";
+import { useTRPC } from "~/lib/trpc/client";
 import { RegisterUserInput } from "~/server/api/root";
 import type { Locale } from "~/types/locale";
 import { createRegisterSchema } from "~/types/zodSchema";

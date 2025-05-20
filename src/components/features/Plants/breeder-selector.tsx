@@ -1,15 +1,14 @@
 import * as React from "react";
 import { useTranslations } from "next-intl";
+import { useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { BriefcaseIcon } from "lucide-react";
 import { toast } from "sonner";
 import type { ComboboxOption } from "~/components/atom/combobox-with-create";
 import { ComboboxWithCreate } from "~/components/atom/combobox-with-create";
 import { FormError } from "~/components/ui/form-error";
-import { useTRPC } from "~/lib/trpc/react";
-
-import { useQuery } from "@tanstack/react-query";
-import { useMutation } from "@tanstack/react-query";
-import { useQueryClient } from "@tanstack/react-query";
+import { useTRPC } from "~/lib/trpc/client";
 
 interface BreederSelectorProps {
   value: string | null | undefined;
@@ -29,7 +28,9 @@ export function BreederSelector({
   const queryClient = useQueryClient();
 
   // Fetch breeders
-  const { data: breeders = [] } = useQuery(trpc.plants.getBreeders.queryOptions());
+  const { data: breeders = [] } = useQuery(
+    trpc.plants.getBreeders.queryOptions(),
+  );
 
   // Convert breeders to combobox options
   const breederOptions: ComboboxOption[] = breeders.map((breeder) => ({
@@ -38,23 +39,27 @@ export function BreederSelector({
   }));
 
   // Create breeder mutation
-  const createBreederMutation = useMutation(trpc.plants.createBreeder.mutationOptions({
-    onSuccess: (data) => {
-      onChange(data.id);
-      setError(null);
-      // Show success toast
-      toast(t("breeder-create-success-title"), {
-        description: t("breeder-create-success-description"),
-      });
-      // Invalidate queries to refresh the breeders list
-      void queryClient.invalidateQueries(trpc.plants.getBreeders.pathFilter());
-    },
-    onError: (error) => {
-      toast.error(t("breeder-create-error-title"), {
-        description: error.message || t("breeder-create-error-description"),
-      });
-    },
-  }));
+  const createBreederMutation = useMutation(
+    trpc.plants.createBreeder.mutationOptions({
+      onSuccess: (data) => {
+        onChange(data.id);
+        setError(null);
+        // Show success toast
+        toast(t("breeder-create-success-title"), {
+          description: t("breeder-create-success-description"),
+        });
+        // Invalidate queries to refresh the breeders list
+        void queryClient.invalidateQueries(
+          trpc.plants.getBreeders.pathFilter(),
+        );
+      },
+      onError: (error) => {
+        toast.error(t("breeder-create-error-title"), {
+          description: error.message || t("breeder-create-error-description"),
+        });
+      },
+    }),
+  );
 
   // Handle create new breeder
   const handleCreateBreeder = (name: string) => {

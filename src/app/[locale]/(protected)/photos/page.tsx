@@ -18,7 +18,7 @@ import { createBreadcrumbs } from "~/lib/breadcrumbs/breadcrumbs";
 import { useRouter } from "~/lib/i18n/routing";
 import { PhotosSortField, PhotosViewMode } from "~/types/image";
 
-export default function MyImagesPage() {
+export default function MyPhotosPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const t = useTranslations("Photos");

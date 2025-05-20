@@ -1,3 +1,4 @@
+// src/app/[locale]/public/grows/[id]/layout.tsx:
 import { asc } from "drizzle-orm";
 import { db } from "~/lib/db";
 import { grows } from "~/lib/db/schema";

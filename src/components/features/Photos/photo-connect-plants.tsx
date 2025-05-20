@@ -34,14 +34,14 @@ import {
   CommandList,
 } from "~/components/ui/command";
 import { useRouter } from "~/lib/i18n/routing";
-import { useTRPC } from "~/lib/trpc/react";
+import { useTRPC } from "~/lib/trpc/client";
 import type { GetOwnPlantsInput, GetPhotoByIdType } from "~/server/api/root";
 
-interface ImageConnectPlantsProps {
+interface PhotoConnectPlantsProps {
   image: GetPhotoByIdType;
 }
 
-export default function ImageConnectPlants({ image }: ImageConnectPlantsProps) {
+export default function PhotoConnectPlants({ image }: PhotoConnectPlantsProps) {
   const trpc = useTRPC();
   const router = useRouter();
   const locale = useLocale();

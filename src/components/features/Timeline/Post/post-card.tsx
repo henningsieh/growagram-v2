@@ -1,6 +1,8 @@
 import * as React from "react";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
+import { useMutation } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { DotIcon } from "lucide-react";
 import { toast } from "sonner";
 import { useImageModal } from "~/components/Layouts/photo-modal-provider";
@@ -13,16 +15,13 @@ import { EnhancedPlantCard } from "~/components/features/Plants/enhanced-plant-c
 import { Card, CardContent } from "~/components/ui/card";
 import { useComments } from "~/hooks/use-comments";
 import { useLikeStatus } from "~/hooks/use-likes";
-import { useTRPC } from "~/lib/trpc/react";
+import { useTRPC } from "~/lib/trpc/client";
 import { cn, formatDate, formatTime } from "~/lib/utils";
 import { GetPostType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
 import { LikeableEntityType } from "~/types/like";
 import { Locale } from "~/types/locale";
 import { PostableEntityType } from "~/types/post";
-
-import { useMutation } from "@tanstack/react-query";
-import { useQueryClient } from "@tanstack/react-query";
 
 interface PostCardProps {
   post: GetPostType;
@@ -52,19 +51,21 @@ export default function PostCard({ post, isSocialProp = true }: PostCardProps) {
     useComments(post.id, CommentableEntityType.Post);
 
   // Initialize delete mutation
-  const deleteMutation = useMutation(trpc.updates.deleteById.mutationOptions({
-    onSuccess: async () => {
-      toast("Success", {
-        description: t("post-deleted-successfully"),
-      });
-      await queryClient.invalidateQueries(trpc.updates.getAll.pathFilter());
-    },
-    onError: (error) => {
-      toast.error("Error", {
-        description: error.message || t("error-default"),
-      });
-    },
-  }));
+  const deleteMutation = useMutation(
+    trpc.updates.deleteById.mutationOptions({
+      onSuccess: async () => {
+        toast("Success", {
+          description: t("post-deleted-successfully"),
+        });
+        await queryClient.invalidateQueries(trpc.updates.getAll.pathFilter());
+      },
+      onError: (error) => {
+        toast.error("Error", {
+          description: error.message || t("error-default"),
+        });
+      },
+    }),
+  );
 
   // const handleDelete = () => {
   //   setIsDeleteDialogOpen(true);

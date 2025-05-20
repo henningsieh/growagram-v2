@@ -1,7 +1,5 @@
 // src/server/api/root.ts:
 
-import { RouterInput, RouterOutput } from "~/lib/trpc/react";
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
 import { channelRouter } from "~/server/api/routers/channel";
 import { chatRouter } from "~/server/api/routers/chat";
@@ -16,6 +14,9 @@ import { userRouter } from "~/server/api/routers/users";
 import { notificationRouter } from "~/server/api/routers/notifications";
 import { adminRouter } from "~/server/api/routers/admin";
 import { createCallerFactory } from "@trpc/server/unstable-core-do-not-import";
+import { createTRPCRouter, publicProcedure } from "~/lib/trpc/init";
+
+import { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 
 /**
  * This is the primary router for the server.
@@ -48,6 +49,20 @@ export const appRouter = createTRPCRouter({
 
 // export type definition of API
 export type AppRouter = typeof appRouter;
+
+/**
+Inference helper for inputs.
+@example type HelloInput = RouterInputs['example']['hello']
+*/
+type RouterInput = inferRouterInputs<AppRouter>;
+
+/**
+Inference helper for outputs.
+@example type HelloOutput = RouterOutputs['example']['hello']
+*/
+type RouterOutput = inferRouterOutputs<AppRouter>;
+
+
 
 // notificationRouter
 //  OUTPUTS:
@@ -106,7 +121,7 @@ export type ToggleLikeInput = RouterInput["likes"]["toggleLike"];
 export type GetLikeCountInput = RouterInput["likes"]["getLikeCount"];
 export type GetUserLikedEntitiesInput = RouterInput["likes"]["getUserLikedEntities"];
 
-// imageRouter
+// photoRouter
 //  OUTPUTS:
 export type GetOwnPhotosOutput = RouterOutput["photos"]["getOwnPhotos"];
 export type GetOwnPhotosType = RouterOutput["photos"]["getOwnPhotos"]["images"];

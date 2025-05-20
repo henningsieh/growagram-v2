@@ -11,8 +11,8 @@ import {
   plantImages,
   plants,
 } from "~/lib/db/schema";
+import { protectedProcedure, publicProcedure } from "~/lib/trpc/init";
 import { connectPlantWithImagesQuery } from "~/server/api/routers/plantImages";
-import { protectedProcedure, publicProcedure } from "~/server/api/trpc";
 import { PlantsSortField } from "~/types/plant";
 import {
   breederFormSchema,

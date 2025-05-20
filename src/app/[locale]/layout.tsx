@@ -13,7 +13,7 @@ import { ThemeProvider } from "~/components/Layouts/theme-provider";
 import { BanNotification } from "~/components/atom/ban-notification";
 import { Toaster } from "~/components/ui/sonner";
 import { BreadcrumbProvider } from "~/lib/breadcrumbs/breadcrumb-context";
-import { TRPCReactProvider } from "~/lib/trpc/react";
+import { TRPCReactProvider } from "~/lib/trpc/client";
 import "~/styles/globals.css";
 
 const nunito = Nunito({
