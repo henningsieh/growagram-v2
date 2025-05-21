@@ -15,7 +15,7 @@ export function ChatButton() {
         <MessageCircleIcon strokeWidth={1.8} className="size-6" />
         <span className="sr-only">{"Chat"}</span>
       </Button>
-      <ChatModal isOpen={isOpen} onClose={() => setIsOpen(false)} />
+      <ChatModal isOpen={isOpen} onCloseAction={() => setIsOpen(false)} />
     </>
   );
 }

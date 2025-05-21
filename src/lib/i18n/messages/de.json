@@ -62,7 +62,7 @@
         "unban-user": "Sperre aufheben",
         "view-profile": "Benutzerprofil anzeigen"
       },
-      "column-selector": "Spalten",
+      "column-selector": "Spalten auswählen",
       "columns": {
         "actions": "Aktionen",
         "bannedUntil": "Sperrstatus",
@@ -176,6 +176,21 @@
     "Please log in to like this content": "Melde dich an, um diesen Inhalt zu liken.",
     "Please log in to share this content": "Melde dich an, um diesen Inhalt zu teilen.",
     "Sign in to view and add comments": "Melden dich an, um Kommentare anzuzeigen und hinzuzufügen."
+  },
+  "Chat": {
+    "error": {
+      "send-failed": "Nachricht konnte nicht gesendet werden. Bitte versuche es erneut."
+    },
+    "input": {
+      "placeholder": {
+        "authenticated": "Schreibe eine Nachricht...",
+        "unauthenticated": "Anmelden um Nachrichten zu senden"
+      }
+    },
+    "messages-are-loading": "Nachrichten werden geladen...",
+    "no-messages": "Noch keine Nachrichten.",
+    "please-login": "Bitte melde dich an, um zu chatten.",
+    "title": "GrowAGram Chat"
   },
   "Comments": {
     "add-comment-placeholder": "Schreibe einen Kommentar",
@@ -791,11 +806,16 @@
   "Profile": {
     "FollowButton": {
       "follow": "Folgen",
-      "follow-success-description": "Du folgst diesem Benutzer jetzt.",
-      "follow-success-title": "Folgst du",
+      "follow-success-description": "Du folgst jetzt diesem Growmie. 🥳",
+      "follow-success-title": "Folgen",
       "unfollow": "Entfolgen",
-      "unfollow-success-description": "Du folgst diesem Benutzer nicht mehr.",
-      "unfollow-success-title": "Entfolgt"
+      "unfollow-success-description": "Du folgst diesem Growmie nicht mehr. 😢",
+      "unfollow-success-title": "Entfolgen"
+    },
+    "metadata": {
+      "user-not-found": "Benutzer nicht gefunden",
+      "description": "Entdecke die Pflanzen und Grows von {name} auf Growagram",
+      "title": "Profil | {name}"
     },
     "tabs": {
       "grows": "Grows",
