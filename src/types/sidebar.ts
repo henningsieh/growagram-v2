@@ -10,7 +10,7 @@ export interface Team {
 
 export interface NavItem {
   title: string;
-  url: string;
+  url: string | null; // URL can be null
   icon?: string; // Icon name as string in config
   isActive?: boolean;
   items?: {
@@ -37,7 +37,7 @@ export type IconComponent = React.ForwardRefExoticComponent<
 // Define the processed nav item type
 export interface ProcessedNavItem {
   title: string;
-  url: string;
+  url: string | null;
   icon?: IconComponent;
   isActive?: boolean;
   items?: {

@@ -19,7 +19,7 @@
     },
     {
       "title": "Grows",
-      "url": "#",
+      "url": null,
       "icon": "TentTree",
       "isActive": true,
       "items": [
@@ -35,7 +35,7 @@
     },
     {
       "title": "Plants",
-      "url": "#",
+      "url": null,
       "icon": "Flower2Icon",
       "items": [
         {
@@ -50,7 +50,7 @@
     },
     {
       "title": "Photos",
-      "url": "#",
+      "url": null,
       "icon": "ImageIcon",
       "items": [
         {
