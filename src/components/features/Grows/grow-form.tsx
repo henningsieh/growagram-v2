@@ -549,7 +549,7 @@ export default function GrowFormPage({ grow }: { grow?: GetGrowByIdType }) {
                                 // Create image record - use the mutation defined at component level
                                 const [newImage] =
                                   await createPhotoMutation.mutateAsync({
-                                    id: crypto.randomUUID(),
+                                    // Let the server generate the ID
                                     imageUrl,
                                     s3Key: `photos/${fileName}`,
                                     s3ETag: eTag,
