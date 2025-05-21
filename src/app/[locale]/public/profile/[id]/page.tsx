@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { FollowButton } from "~/components/atom/follow-button";
-import ProfileTabs from "~/components/features/PublicProfile/PofileTabs";
+import ProfileTabs from "~/components/features/PublicProfile/profile-tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { auth } from "~/lib/auth";
 import { caller } from "~/lib/trpc/server";
