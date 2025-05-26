@@ -24,7 +24,12 @@ export function NotificationsFeed() {
   const [currentPage, setCurrentPage] = React.useState(1);
 
   // Use the useNotifications hook with its default behavior (onlyUnread = true)
-  const { all: notifications, isLoading, error } = useNotifications(false);
+  const {
+    all: notifications,
+    // isLoading,
+    error,
+    isFetched,
+  } = useNotifications(false);
 
   // Handle error with toast notification
   useEffect(() => {
@@ -58,7 +63,7 @@ export function NotificationsFeed() {
         <CardTitle>{t("ActivityFeed.label-all")}</CardTitle>
       </CardHeader>
       <CardContent>
-        {isLoading ? (
+        {!isFetched ? (
           <div className="flex flex-col gap-2">
             {Array(PAGE_SIZE)
               .fill(0)
@@ -86,7 +91,7 @@ export function NotificationsFeed() {
         <ItemsPagination
           currentPage={currentPage}
           totalPages={totalPages}
-          isFetching={isLoading}
+          isFetching={!isFetched}
           handlePageChange={handlePageChange}
         />
       </CardFooter>

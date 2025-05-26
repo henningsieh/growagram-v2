@@ -225,7 +225,7 @@ export function useNotifications(onlyUnread = true) {
     unreadCount: onlyUnread
       ? (allNotifications?.length ?? 0)
       : (allNotifications?.filter((n) => !n.read).length ?? 0),
-    isLoading: query.isLoading,
+    isFetched: query.isFetched,
     isError: query.isError,
     error: query.error,
     subscriptionStatus: subscription.status,

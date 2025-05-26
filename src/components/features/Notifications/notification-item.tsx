@@ -11,7 +11,7 @@ import type { GetAllNotificationType } from "~/server/api/root";
 import type { Locale } from "~/types/locale";
 
 interface NotificationItemProps extends GetAllNotificationType {
-  close?: () => void; // Changed from setOpen to an optional close function
+  close?: () => void;
 }
 
 export function NotificationItem({

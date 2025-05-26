@@ -29,7 +29,7 @@ export function Notifications() {
     all,
     grouped,
     unreadCount,
-    isLoading,
+    isFetched,
     markAllAsRead,
     subscriptionStatus,
     subscriptionError,
@@ -170,7 +170,7 @@ export function Notifications() {
           </div>
 
           <ScrollArea className="h-[min(60vh,400px)] pr-1">
-            {isLoading ? (
+            {!isFetched ? (
               <div className="flex flex-col gap-1 p-1">
                 <NotificationSkeleton className="h-[52px]" />
                 <NotificationSkeleton className="h-[52px]" />
