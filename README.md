@@ -1,33 +1,42 @@
 # GrowAGram 🪴 Track Your Grow 📜
 
-GrowAGram is a modern social platform for plant enthusiasts to document and share their growing journeys. Users can track plant progress, share experiences, and connect with like-minded growers.
+[![Version](https://img.shields.io/badge/Version-0.9.0--beta.1-blue?style=for-the-badge&logo=npm&logoColor=white)](https://github.com/henningsieh/growagram-v2)
+
+GrowAGram is a modern social platform for plant enthusiasts to document and share their growing journeys. Built with clean architecture principles and modern tech stack, it provides a scalable foundation for the growing community.
 
 ## 🌱 Key Features
 
-- 🖋️ Detailed grow diary tracking
-- 🔗 Plant-to-grow connections
-- 👥 Social community features
-- 📊 Growing statistics and analytics
-- 🌍 Multi-language support
-- 📱 Responsive design
+- 🖋️ **Grow Journal System** - Detailed tracking with timeline views
+- 🌿 **Plant Database** - Comprehensive plant information management
+- 👥 **Social Features** - Follow, like, comment, and notification systems
+- 📊 **Analytics Dashboard** - Growing statistics and insights
+- 🔔 **Real-time Notifications** - Factory-based notification system
+- 🌍 **Internationalization** - Multi-language support (German/English)
+- 📱 **Mobile-First Design** - Responsive across all devices
+- 🔒 **Security** - Comprehensive authentication and authorization
 
 ## 🛠️ Tech Stack
 
-[![Next.js](https://img.shields.io/badge/Next.js-15.2.4-black.svg)](https://nextjs.org/)
-[![React](https://img.shields.io/badge/React-19.1.0-61dafb.svg)](https://react.dev/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.8.2-blue.svg)](https://www.typescriptlang.org/)
-[![TailwindCSS](https://img.shields.io/badge/Tailwind-4.1.1-38bdf8.svg)](https://tailwindcss.com)
-[![shadcn/ui](https://img.shields.io/badge/shadcn/ui-Latest-000000.svg)](https://ui.shadcn.com)
-[![tRPC](https://img.shields.io/badge/tRPC-11.0.1-2596be.svg)](https://trpc.io)
-[![@tanstack/react-query](https://img.shields.io/badge/@tanstack/react--query-5.71.5-ff4154.svg)](https://tanstack.com/query/latest)
-[![Auth.js](https://img.shields.io/badge/Auth.js-5.0.0--beta.25-000000.svg)](https://authjs.dev)
-[![framer-motion](https://img.shields.io/badge/framer--motion-11.18.2-0055FF.svg)](https://www.framer.com/motion/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-316192.svg)](https://www.postgresql.org/)
-[![Drizzle](https://img.shields.io/badge/Drizzle-0.35.3-c5f74f.svg)](https://orm.drizzle.team)
-[![next-intl](https://img.shields.io/badge/next--intl-3.26.5-black.svg)](https://next-intl-docs.vercel.app/)
-[![MinIO](https://img.shields.io/badge/MinIO-S3--compatible-c72c48.svg)](https://min.io)
-[![Docker](https://img.shields.io/badge/Docker-Latest-2496ed.svg)](https://docker.com)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+<!-- Static badges for private repository - manually maintained -->
+
+[![Next.js](https://img.shields.io/badge/Next.js-15-black?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=white)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![tRPC](https://img.shields.io/badge/tRPC-11-398CCB?style=for-the-badge&logo=typescript&logoColor=white)](https://trpc.io/)
+[![Drizzle ORM](https://img.shields.io/badge/Drizzle_ORM-Latest-green?style=for-the-badge&logo=postgresql&logoColor=white)](https://orm.drizzle.team/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![NextAuth.js](https://img.shields.io/badge/NextAuth.js-5-orange?style=for-the-badge&logo=auth0&logoColor=white)](https://next-auth.js.org/)
+
+<!-- Framework and library badges -->
+
+[![TanStack Query](https://img.shields.io/badge/TanStack_Query-5-ff4154?style=for-the-badge&logo=react&logoColor=white)](https://tanstack.com/query/latest)
+[![Framer Motion](https://img.shields.io/badge/Framer_Motion-11-0055FF?style=for-the-badge&logo=framer&logoColor=white)](https://www.framer.com/motion/)
+[![next-intl](https://img.shields.io/badge/next--intl-3-black?style=for-the-badge&logo=next.js&logoColor=white)](https://next-intl-docs.vercel.app/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![shadcn/ui](https://img.shields.io/badge/shadcn/ui-Latest-black?style=for-the-badge&logo=shadcnui&logoColor=white)](https://ui.shadcn.com)
+[![MinIO](https://img.shields.io/badge/MinIO-S3%20Compatible-c72c48?style=for-the-badge&logo=minio&logoColor=white)](https://min.io)
+[![Docker](https://img.shields.io/badge/Docker-Latest-2496ed?style=for-the-badge&logo=docker&logoColor=white)](https://docker.com)
+[![MIT License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge&logo=opensourceinitiative&logoColor=white)](LICENSE)
 
 ### Frontend
 
@@ -53,7 +62,13 @@ GrowAGram is a modern social platform for plant enthusiasts to document and shar
 
 ## 📊 Project Status
 
-⚧️ **Active Development** | Phase 1 of 3
+⚧️ **Active Development** | Phase 1 Complete, Phase 2 in Progress
+
+**Recent Achievements:**
+
+- ✅ **Notifications System Refactored** - Replaced monolithic code with clean factory-based architecture
+- ✅ **Badge System Improved** - Automated GitHub integration for real-time dependency tracking
+- ✅ **Image Infrastructure** - Migrated to self-hosted MinIO for better performance and control
 
 ## 🖋️ Roadmap and Tasks
 
@@ -63,7 +78,7 @@ GrowAGram is a modern social platform for plant enthusiasts to document and shar
 - 🔨 In Progress
 - ✅ Completed
 
-### Phase 1: Core Platform (85% Complete)
+### Phase 1: Core Platform (90% Complete)
 
 #### Core Features
 
@@ -72,6 +87,7 @@ GrowAGram is a modern social platform for plant enthusiasts to document and shar
 - ✅ Image management
 - ✅ Public timeline Posts (reference Grows, Plants or Fotos)
 - ✅ User banning system with Edge-compatible implementation
+- ✅ **Factory-based notifications system** - Clean, extensible architecture
 - 🔨 Additional features for Admin role (content moderation)
 - 🔨 Activity feeds/timelines for Users, Grows and Plants
 - 🔨 Follow system with Following timeline
@@ -92,9 +108,9 @@ GrowAGram is a modern social platform for plant enthusiasts to document and shar
 
 - ✅ Comments system
 - ✅ Like functionality
+- ✅ **Notifications system** - Factory-based architecture with real-time updates
 - ⏳ User mentions in posts/comments
 - ⏳ Advanced search features
-- ✅ Notifications
 - ⏳ Private messaging
 - ⏳ Chat rooms
 
