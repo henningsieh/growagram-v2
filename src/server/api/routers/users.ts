@@ -4,7 +4,7 @@ import { and, eq, not } from "drizzle-orm";
 import { z } from "zod";
 import { hashPassword } from "~/lib/auth/password";
 import { userFollows, users, verificationTokens } from "~/lib/db/schema";
-import { createNotification } from "~/lib/notifications";
+import { NotificationFactoryRegistry } from "~/lib/notifications/core";
 import { protectedProcedure, publicProcedure } from "~/lib/trpc/init";
 import { sendVerificationEmail } from "~/server/actions/sendVerificationEmail";
 import { connectPlantWithImagesQuery } from "~/server/api/routers/plantImages";
@@ -316,20 +316,17 @@ export const userRouter = {
         })
         .returning();
 
-      await createNotification({
-        notificationEventType: NotificationEventType.NEW_FOLLOW,
-        notifiableEntity: {
-          type: NotifiableEntityType.USER,
-          // user being followed AND notified
-          id: input.userId,
+      await NotificationFactoryRegistry.createNotification(
+        NotificationEventType.NEW_FOLLOW,
+        {
+          entityType: NotifiableEntityType.USER,
+          entityId: input.userId,
+          actorId: ctx.session.user.id,
+          actorName: ctx.session.user.name,
+          actorUsername: ctx.session.user.username ?? null,
+          actorImage: ctx.session.user.image ?? null,
         },
-        actorData: {
-          id: ctx.session.user.id,
-          name: ctx.session.user.name,
-          username: ctx.session.user.username ?? null,
-          image: ctx.session.user.image ?? null,
-        },
-      });
+      );
 
       return follow[0];
     }),

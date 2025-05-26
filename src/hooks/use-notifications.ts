@@ -1,25 +1,49 @@
-// src/hooks/use-notifications.ts:
 import * as React from "react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
-import { skipToken } from "@tanstack/react-query";
-import { useQuery } from "@tanstack/react-query";
-import { useMutation } from "@tanstack/react-query";
-import { useQueryClient } from "@tanstack/react-query";
+import {
+  skipToken,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { useSubscription } from "@trpc/tanstack-react-query";
 import { toast } from "sonner";
 import { useTRPC } from "~/lib/trpc/client";
 import {
   type GetAllNotificationType,
-  GetAllNotificationsInput,
+  type GetAllNotificationsInput,
 } from "~/server/api/root";
 import {
   NotifiableEntityType,
   NotificationEventType,
 } from "~/types/notification";
 
-// Add the 'export' keyword in front of the function declaration
-export function useNotifications(onlyUnread = true) {
+interface UseNotificationsReturn {
+  all: GetAllNotificationType[];
+  grouped: {
+    follow: GetAllNotificationType[];
+    like: GetAllNotificationType[];
+    comment: GetAllNotificationType[];
+  };
+  unreadCount: number;
+  isFetched: boolean;
+  isError: boolean;
+  error: unknown;
+  subscriptionStatus: string;
+  subscriptionError: unknown;
+  getNotificationText: (
+    type: NotificationEventType,
+    entityType: NotifiableEntityType,
+  ) => string;
+  getNotificationHref: (
+    notification: GetAllNotificationType,
+  ) => string | undefined;
+  markAllAsRead: () => void;
+  markAsRead: (params: { id: string }) => void;
+}
+
+export function useNotifications(onlyUnread = true): UseNotificationsReturn {
   const trpc = useTRPC();
   const [allNotifications, setAllNotifications] = React.useState<
     GetAllNotificationType[] | null

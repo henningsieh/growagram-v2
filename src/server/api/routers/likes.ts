@@ -3,7 +3,7 @@ import { TRPCError } from "@trpc/server";
 import { and, eq, sql } from "drizzle-orm";
 import { z } from "zod";
 import { comments, grows, images, likes, plants, posts } from "~/lib/db/schema";
-import { createNotification } from "~/lib/notifications";
+import { NotificationFactoryRegistry } from "~/lib/notifications/core";
 import { protectedProcedure, publicProcedure } from "~/lib/trpc/init";
 import { LikeableEntityType } from "~/types/like";
 import {
@@ -113,19 +113,17 @@ export const likeRouter = {
           }
         };
 
-        await createNotification({
-          notificationEventType: NotificationEventType.NEW_LIKE,
-          notifiableEntity: {
-            type: notifiableEntityType(),
-            id: entityId,
+        await NotificationFactoryRegistry.createNotification(
+          NotificationEventType.NEW_LIKE,
+          {
+            entityType: notifiableEntityType(),
+            entityId: entityId,
+            actorId: ctx.session.user.id,
+            actorName: ctx.session.user.name,
+            actorUsername: ctx.session.user.username ?? null,
+            actorImage: ctx.session.user.image ?? null,
           },
-          actorData: {
-            id: ctx.session.user.id,
-            name: ctx.session.user.name,
-            username: ctx.session.user.username ?? null,
-            image: ctx.session.user.image ?? null,
-          },
-        });
+        );
 
         return { liked: true };
       }

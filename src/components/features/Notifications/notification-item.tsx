@@ -88,9 +88,10 @@ export function NotificationItem({
   );
 }
 
-export const NotificationSkeleton: React.FC<
-  React.HTMLAttributes<HTMLDivElement>
-> = ({ className, ...props }) => {
+export function NotificationSkeleton({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
       className={cn(
@@ -109,4 +110,4 @@ export const NotificationSkeleton: React.FC<
       {/* Badge skeleton */}
     </div>
   );
-};
+}

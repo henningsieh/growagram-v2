@@ -1,5 +1,4 @@
 import * as React from "react";
-import { useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { AlertCircle } from "lucide-react";
 import { toast } from "sonner";
@@ -32,7 +31,7 @@ export function NotificationsFeed() {
   } = useNotifications(false);
 
   // Handle error with toast notification
-  useEffect(() => {
+  React.useEffect(() => {
     if (error) {
       toast.error(t("panel.error"), {
         description:

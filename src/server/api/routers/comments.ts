@@ -4,7 +4,7 @@ import { and, asc, count, desc, eq, isNull } from "drizzle-orm";
 import { z } from "zod";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
 import { comments, grows, images, plants, posts } from "~/lib/db/schema";
-import { createNotification } from "~/lib/notifications";
+import { NotificationFactoryRegistry } from "~/lib/notifications/core";
 import { protectedProcedure, publicProcedure } from "~/lib/trpc/init";
 import { CommentableEntityType } from "~/types/comment";
 import {
@@ -91,34 +91,34 @@ export const commentRouter = {
       };
 
       // Create notifications for entity owner and parent comment authors
-      const actorData = {
-        id: ctx.session.user.id,
-        name: ctx.session.user.name,
-        username: ctx.session.user.username ?? null,
-        image: ctx.session.user.image ?? null,
-      };
       if (!newComment.parentCommentId) {
         // Create notification for entity owner
-        await createNotification({
-          notificationEventType: NotificationEventType.NEW_COMMENT,
-          commentId: newComment.id,
-          notifiableEntity: {
-            type: notifiableEntityType(),
-            id: entityId,
+        await NotificationFactoryRegistry.createNotification(
+          NotificationEventType.NEW_COMMENT,
+          {
+            entityType: notifiableEntityType(),
+            entityId: entityId,
+            actorId: ctx.session.user.id,
+            actorName: ctx.session.user.name,
+            actorUsername: ctx.session.user.username ?? null,
+            actorImage: ctx.session.user.image ?? null,
+            commentId: newComment.id,
           },
-          actorData,
-        });
+        );
       } else {
         // Create notification for parent comment authors
-        await createNotification({
-          notificationEventType: NotificationEventType.NEW_COMMENT,
-          commentId: newComment.id,
-          notifiableEntity: {
-            type: NotifiableEntityType.COMMENT,
-            id: newComment.id,
+        await NotificationFactoryRegistry.createNotification(
+          NotificationEventType.NEW_COMMENT,
+          {
+            entityType: NotifiableEntityType.COMMENT,
+            entityId: newComment.id,
+            actorId: ctx.session.user.id,
+            actorName: ctx.session.user.name,
+            actorUsername: ctx.session.user.username ?? null,
+            actorImage: ctx.session.user.image ?? null,
+            commentId: newComment.id,
           },
-          actorData,
-        });
+        );
       }
       return { comment: newComment };
     }),
