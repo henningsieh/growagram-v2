@@ -75,6 +75,7 @@ export const PlantGrowthStages = [
 ] as const;
 
 // Infer the phase names from PlantGrowthStages
+// "planted" | "seedling" | "vegetation" | "flowering" | "harvested" | "curing"
 export type GrowthPhase = (typeof PlantGrowthStages)[number]["name"];
 
 // Use the order of PlantGrowthStages as our single source of truth for sequence

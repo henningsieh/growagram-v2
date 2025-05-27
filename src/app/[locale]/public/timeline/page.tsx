@@ -1,24 +1,9 @@
-"use client";
+import TimelineTabs from "~/components/features/Timeline/timeline-tabs";
 
-// src/app/[locale]/(public)/public/timeline/page.tsx:
-import { useQuery } from "@tanstack/react-query";
-import SpinningLoader from "~/components/atom/spinning-loader";
-import PostCard from "~/components/features/Timeline/Post/post-card";
-import { useTRPC } from "~/lib/trpc/client";
-
-export default function PublicTimelinePage() {
-  const trpc = useTRPC();
-  const { data: posts, isLoading } = useQuery(
-    trpc.updates.getAll.queryOptions(),
-  );
-
-  if (isLoading) {
-    return <SpinningLoader />;
-  }
-
+export default function TimelinePage() {
   return (
-    <div className="space-y-4">
-      {posts?.map((post) => <PostCard key={post.id} post={post} />)}
+    <div className="container mx-auto px-4">
+      <TimelineTabs defaultTab="public" />
     </div>
   );
 }

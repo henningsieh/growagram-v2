@@ -38,7 +38,7 @@ export default function PublicRootLayout({
   ];
 
   return (
-    <div className="flex w-full flex-col md:flex-row">
+    <div className="mt-14 flex w-full flex-col md:flex-row">
       {/* Left sidebar - hidden on mobile */}
       <aside className="hidden h-screen w-64 md:block md:flex-none">
         <div className="fixed top-0 h-[calc(100svh-4rem)] w-64 overflow-hidden">
@@ -99,12 +99,12 @@ export default function PublicRootLayout({
             <h1 className="mb-4 flex items-center justify-center text-2xl font-semibold">
               {t("Sidebar.title")}
             </h1>
-            <p className="bg-accent my-2 p-2">Ad Banner</p>
-            <p className="bg-accent my-2 p-2">Ad Banner</p>
-            <p className="bg-accent my-2 p-2">Ad Banner</p>
-            <p className="bg-accent my-2 p-2">Ad Banner</p>
-            <p className="bg-accent my-2 p-2">Ad Banner</p>
-            <p className="bg-accent my-2 p-2">Ad Banner</p>
+            <p className="bg-accent my-2 p-2">{"Ad Banner"}</p>
+            <p className="bg-accent my-2 p-2">{"Ad Banner"}</p>
+            <p className="bg-accent my-2 p-2">{"Ad Banner"}</p>
+            <p className="bg-accent my-2 p-2">{"Ad Banner"}</p>
+            <p className="bg-accent my-2 p-2">{"Ad Banner"}</p>
+            <p className="bg-accent my-2 p-2">{"Ad Banner"}</p>
           </div>
         </div>
       </aside>

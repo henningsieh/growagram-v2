@@ -1,8 +1,9 @@
-"use client";
+import TimelineTabs from "~/components/features/Timeline/timeline-tabs";
 
 export default function FollowingPage() {
-  // const posts = await getPosts();
-
-  // eslint-disable-next-line react/jsx-no-literals
-  return <>Coming soon...</>;
+  return (
+    <div className="container mx-auto px-4">
+      <TimelineTabs defaultTab="following" />
+    </div>
+  );
 }

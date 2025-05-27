@@ -52,12 +52,12 @@ export default function PostCard({ post, isSocialProp = true }: PostCardProps) {
 
   // Initialize delete mutation
   const deleteMutation = useMutation(
-    trpc.updates.deleteById.mutationOptions({
+    trpc.posts.deleteById.mutationOptions({
       onSuccess: async () => {
         toast("Success", {
           description: t("post-deleted-successfully"),
         });
-        await queryClient.invalidateQueries(trpc.updates.getAll.pathFilter());
+        await queryClient.invalidateQueries(trpc.posts.getAll.pathFilter());
       },
       onError: (error) => {
         toast.error("Error", {

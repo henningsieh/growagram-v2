@@ -437,6 +437,32 @@
     "timeline-description": "Erlebe die gemeinsame Anbau-Reise mit Updates von dir und der Community.",
     "toggle-menu": "Menü umschalten"
   },
+  "Timeline": {
+    "tabs": {
+      "public": "Alle",
+      "following": "Folge ich"
+    },
+    "public": {
+      "empty": {
+        "title": "Noch keine Beiträge",
+        "description": "Sei der Erste, der seine Anbau-Reise teilt!"
+      }
+    },
+    "following": {
+      "empty": {
+        "title": "Keine Beiträge von gefolgten Benutzern",
+        "description": "Folge anderen Growern, um ihre Updates hier zu sehen.",
+        "exploreButton": "Community erkunden"
+      }
+    },
+    "errors": {
+      "loadFailed": "Fehler beim Laden der Beiträge",
+      "noMore": "Keine weiteren Beiträge zu laden"
+    },
+    "actions": {
+      "retry": "Erneut versuchen"
+    }
+  },
   "Notifications": {
     "ActivityFeed": {
       "error-no-notifications": "Fehler beim Laden der Benachrichtigungen",

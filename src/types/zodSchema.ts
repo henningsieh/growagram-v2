@@ -1,11 +1,14 @@
 // src/types/zodSchema.ts:
 import { z } from "zod";
 import { routing } from "~/lib/i18n/routing";
+// Import filter enums
+import { CultureMedium, FertilizerType, GrowEnvironment } from "~/types/grow";
 import { Locale } from "~/types/locale";
 import {
   NotifiableEntityType,
   NotificationEventType,
 } from "~/types/notification";
+import { type GrowthPhase, PlantGrowthStages } from "~/types/plant";
 import { PostableEntityType } from "~/types/post";
 import { UserRoles } from "~/types/user";
 
@@ -139,6 +142,19 @@ export const postSchema = z.object({
   entityType: z.nativeEnum(PostableEntityType),
 });
 
+// Timeline pagination schemas
+export const timelinePaginationSchema = z.object({
+  cursor: z.string().datetime().nullish(), // ISO datetime string for cursor
+  limit: z.number().min(1).max(50).default(20),
+});
+
+export const enhancedTimelinePaginationSchema = timelinePaginationSchema.extend(
+  {
+    followingOnly: z.boolean().default(false),
+    userId: z.string().optional(), // For user-specific feeds
+  },
+);
+
 // schema for updating user tokens
 export const updateTokensSchema = z.object({
   userId: z.string(),
@@ -162,3 +178,53 @@ export const createNotificationSchema = z.object({
     image: z.string().nullable(),
   }),
 });
+
+// Exploration and filtering schemas
+export const growExplorationSchema = timelinePaginationSchema.extend({
+  environment: z.nativeEnum(GrowEnvironment).optional(),
+  cultureMedium: z.nativeEnum(CultureMedium).optional(),
+  fertilizerType: z.nativeEnum(FertilizerType).optional(),
+  ownerId: z.string().optional(), // Filter by specific user
+});
+
+export const plantExplorationSchema = timelinePaginationSchema.extend({
+  growthStage: z
+    .enum(
+      PlantGrowthStages.map((stage) => stage.name) as [
+        GrowthPhase,
+        ...GrowthPhase[],
+      ],
+    )
+    .optional(),
+  strainId: z.string().optional(), // Filter by strain
+  growId: z.string().optional(), // Filter by grow
+  ownerId: z.string().optional(), // Filter by specific user
+});
+
+// Activity feed schemas
+export const activityFeedSchema = timelinePaginationSchema.extend({
+  entityType: z.nativeEnum(PostableEntityType).optional(), // Filter by entity type
+  userId: z.string().optional(), // For user-specific activity
+});
+
+// Timeline management schemas
+export const userTimelineSchema = z.object({
+  userId: z.string(),
+  cursor: z.string().datetime().nullish(),
+  limit: z.number().min(1).max(50).default(20),
+  includeFollowing: z.boolean().default(true), // Include posts from followed users
+});
+
+export const entityTimelineSchema = z.object({
+  entityId: z.string(),
+  entityType: z.nativeEnum(PostableEntityType),
+  cursor: z.string().datetime().nullish(),
+  limit: z.number().min(1).max(50).default(20),
+});
+
+// Type exports for the new schemas
+export type GrowExplorationInput = z.infer<typeof growExplorationSchema>;
+export type PlantExplorationInput = z.infer<typeof plantExplorationSchema>;
+export type ActivityFeedInput = z.infer<typeof activityFeedSchema>;
+export type UserTimelineInput = z.infer<typeof userTimelineSchema>;
+export type EntityTimelineInput = z.infer<typeof entityTimelineSchema>;

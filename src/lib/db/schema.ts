@@ -14,6 +14,7 @@ import {
   uniqueIndex,
 } from "drizzle-orm/pg-core";
 import { CommentableEntityType } from "~/types/comment";
+import { CultureMedium, FertilizerType, GrowEnvironment } from "~/types/grow";
 import { LikeableEntityType } from "~/types/like";
 import {
   NotifiableEntityType,
@@ -253,92 +254,179 @@ export const cannabisStrains = pgTable("cannabis_strain", {
 });
 
 // Define the Grows table
-export const grows = pgTable("grow", {
-  id: text("id")
-    .primaryKey()
-    .$defaultFn(() => crypto.randomUUID()),
-  name: text("name").notNull(),
-  ownerId: text("owner_id")
-    .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
-  headerImageId: text("header_image_id").references(() => images.id, {
-    onDelete: "set null",
+export const grows = pgTable(
+  "grow",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    name: text("name").notNull(),
+    ownerId: text("owner_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    headerImageId: text("header_image_id").references(() => images.id, {
+      onDelete: "set null",
+    }),
+    // Filtering fields for exploration
+    environment: text("environment").$type<GrowEnvironment>(),
+    cultureMedium: text("culture_medium").$type<CultureMedium>(),
+    fertilizerType: text("fertilizer_type").$type<FertilizerType>(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .$onUpdate(() => new Date())
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+  },
+  (table) => ({
+    // Performance indexes for grow queries
+    ownerCreatedAtIdx: index("grows_owner_created_at_idx").on(
+      table.ownerId,
+      table.createdAt.desc(),
+    ),
+    ownerUpdatedAtIdx: index("grows_owner_updated_at_idx").on(
+      table.ownerId,
+      table.updatedAt.desc(),
+    ),
+    createdAtIdx: index("grows_created_at_idx").on(table.createdAt.desc()),
+    updatedAtIdx: index("grows_updated_at_idx").on(table.updatedAt.desc()),
+    ownerIdx: index("grows_owner_idx").on(table.ownerId),
+    nameIdx: index("grows_name_idx").on(table.name),
+    // Filtering indexes
+    environmentIdx: index("grows_environment_idx").on(table.environment),
+    cultureMediumIdx: index("grows_culture_medium_idx").on(table.cultureMedium),
+    fertilizerTypeIdx: index("grows_fertilizer_type_idx").on(
+      table.fertilizerType,
+    ),
+    // Composite indexes for complex filtering queries
+    environmentCreatedAtIdx: index("grows_environment_created_at_idx").on(
+      table.environment,
+      table.createdAt.desc(),
+    ),
+    cultureMediumCreatedAtIdx: index("grows_culture_medium_created_at_idx").on(
+      table.cultureMedium,
+      table.createdAt.desc(),
+    ),
   }),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
-  updatedAt: timestamp("updated_at", { withTimezone: true })
-    .$onUpdate(() => new Date())
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
-});
+);
 
 // Define the images table
-export const images = pgTable("image", {
-  id: text("id")
-    .primaryKey()
-    .$defaultFn(() => crypto.randomUUID()),
-  ownerId: text("owner_id")
-    .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
-  imageUrl: text("image_url").notNull(),
-  cloudinaryAssetId: text("asset_id"),
-  cloudinaryPublicId: text("public_id"),
-  s3Key: text("s3_key"),
-  s3ETag: text("s3_etag"),
-  captureDate: timestamp("captureDate", { withTimezone: true })
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
-  originalFilename: text("originalFilename").notNull(),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
-  updatedAt: timestamp("updated_at", { withTimezone: true })
-    .$onUpdate(() => new Date())
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
-});
+export const images = pgTable(
+  "image",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    ownerId: text("owner_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    imageUrl: text("image_url").notNull(),
+    cloudinaryAssetId: text("asset_id"),
+    cloudinaryPublicId: text("public_id"),
+    s3Key: text("s3_key"),
+    s3ETag: text("s3_etag"),
+    captureDate: timestamp("captureDate", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    originalFilename: text("originalFilename").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .$onUpdate(() => new Date())
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+  },
+  (table) => ({
+    // Performance indexes for image queries
+    ownerCreatedAtIdx: index("images_owner_created_at_idx").on(
+      table.ownerId,
+      table.createdAt.desc(),
+    ),
+    ownerCaptureDateIdx: index("images_owner_capture_date_idx").on(
+      table.ownerId,
+      table.captureDate.desc(),
+    ),
+    createdAtIdx: index("images_created_at_idx").on(table.createdAt.desc()),
+    captureDateIdx: index("images_capture_date_idx").on(
+      table.captureDate.desc(),
+    ),
+    ownerIdx: index("images_owner_idx").on(table.ownerId),
+  }),
+);
 
 // Define the plants table
-export const plants = pgTable("plant", {
-  id: text("id")
-    .primaryKey()
-    .$defaultFn(() => crypto.randomUUID()),
-  name: text("name").notNull(),
-  ownerId: text("owner_id")
-    .references(() => users.id, {
+export const plants = pgTable(
+  "plant",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    name: text("name").notNull(),
+    ownerId: text("owner_id")
+      .references(() => users.id, {
+        onDelete: "restrict",
+      })
+      .notNull(),
+    headerImageId: text("header_image_id").references(() => images.id, {
+      onDelete: "set null",
+    }),
+    growId: text("grow_id").references(() => grows.id, {
+      onDelete: "set null",
+    }),
+    strainId: text("strain_id").references(() => cannabisStrains.id, {
       onDelete: "restrict",
-    })
-    .notNull(),
-  headerImageId: text("header_image_id").references(() => images.id, {
-    onDelete: "set null",
+    }),
+    startDate: timestamp("start_date", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    seedlingPhaseStart: timestamp("seedling_phase_start", {
+      withTimezone: true,
+    }),
+    vegetationPhaseStart: timestamp("vegetation_phase_start", {
+      withTimezone: true,
+    }),
+    floweringPhaseStart: timestamp("flowering_phase_start", {
+      withTimezone: true,
+    }),
+    harvestDate: timestamp("harvest_date", { withTimezone: true }),
+    curingPhaseStart: timestamp("curing_phase_start", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .$onUpdate(() => new Date())
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+  },
+  (table) => ({
+    // Performance indexes for plant queries
+    ownerCreatedAtIdx: index("plants_owner_created_at_idx").on(
+      table.ownerId,
+      table.createdAt.desc(),
+    ),
+    ownerUpdatedAtIdx: index("plants_owner_updated_at_idx").on(
+      table.ownerId,
+      table.updatedAt.desc(),
+    ),
+    growCreatedAtIdx: index("plants_grow_created_at_idx").on(
+      table.growId,
+      table.createdAt.desc(),
+    ),
+    strainCreatedAtIdx: index("plants_strain_created_at_idx").on(
+      table.strainId,
+      table.createdAt.desc(),
+    ),
+    createdAtIdx: index("plants_created_at_idx").on(table.createdAt.desc()),
+    updatedAtIdx: index("plants_updated_at_idx").on(table.updatedAt.desc()),
+    startDateIdx: index("plants_start_date_idx").on(table.startDate.desc()),
+    ownerIdx: index("plants_owner_idx").on(table.ownerId),
+    growIdx: index("plants_grow_idx").on(table.growId),
+    strainIdx: index("plants_strain_idx").on(table.strainId),
+    nameIdx: index("plants_name_idx").on(table.name),
   }),
-  growId: text("grow_id").references(() => grows.id, {
-    onDelete: "set null",
-  }),
-  strainId: text("strain_id").references(() => cannabisStrains.id, {
-    onDelete: "restrict",
-  }),
-  startDate: timestamp("start_date", { withTimezone: true })
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
-  seedlingPhaseStart: timestamp("seedling_phase_start", { withTimezone: true }),
-  vegetationPhaseStart: timestamp("vegetation_phase_start", {
-    withTimezone: true,
-  }),
-  floweringPhaseStart: timestamp("flowering_phase_start", {
-    withTimezone: true,
-  }),
-  harvestDate: timestamp("harvest_date", { withTimezone: true }),
-  curingPhaseStart: timestamp("curing_phase_start", { withTimezone: true }),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
-  updatedAt: timestamp("updated_at", { withTimezone: true })
-    .$onUpdate(() => new Date())
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
-});
+);
 
 // Many-to-many relationship between plants and images (for all images)
 export const plantImages = pgTable(
@@ -427,24 +515,43 @@ export const comments = pgTable(
 );
 
 // Define the posts table
-export const posts = pgTable("public_post", {
-  id: text("id")
-    .primaryKey()
-    .$defaultFn(() => crypto.randomUUID()),
-  userId: text("user_id")
-    .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
-  entityId: text("entity_id").notNull(),
-  entityType: text("entity_type").$type<PostableEntityType>().notNull(),
-  content: text("content").notNull(),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
-  updatedAt: timestamp("updated_at", { withTimezone: true })
-    .$onUpdate(() => new Date())
-    .default(sql`CURRENT_TIMESTAMP`)
-    .notNull(),
-});
+export const posts = pgTable(
+  "public_post",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    entityId: text("entity_id").notNull(),
+    entityType: text("entity_type").$type<PostableEntityType>().notNull(),
+    content: text("content").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .$onUpdate(() => new Date())
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+  },
+  (table) => ({
+    // Performance indexes for timeline queries
+    userCreatedAtIdx: index("posts_user_created_at_idx").on(
+      table.userId,
+      table.createdAt.desc(),
+    ),
+    // General created_at index for public timeline
+    createdAtIdx: index("posts_created_at_idx").on(table.createdAt.desc()),
+    // Index for filtering by user
+    userIdx: index("posts_user_idx").on(table.userId),
+    // Index for entity-based queries
+    entityTypeCreatedAtIdx: index("posts_entity_type_created_at_idx").on(
+      table.entityType,
+      table.createdAt.desc(),
+    ),
+  }),
+);
 
 export const userFollows = pgTable(
   "user_follow",
@@ -463,12 +570,18 @@ export const userFollows = pgTable(
       .notNull(),
   },
   (table) => ({
-    followerIdx: index("follower_idx").on(table.followerId),
-    followingIdx: index("following_idx").on(table.followingId),
-    uniqFollow: uniqueIndex("uniq_follow_idx").on(
+    // Unique constraint to prevent duplicate follows
+    followerFollowingIdx: uniqueIndex("user_follows_follower_following_idx").on(
       table.followerId,
       table.followingId,
     ),
+    // Performance indexes for follow timeline queries
+    followerCreatedAtIdx: index("user_follows_follower_created_at_idx").on(
+      table.followerId,
+      table.createdAt.desc(),
+    ),
+    // Individual column indexes for relationship queries
+    followingIdx: index("user_follows_following_idx").on(table.followingId),
   }),
 );
 

@@ -169,6 +169,13 @@
       "when": 1744531588111,
       "tag": "0023_wild_colleen_wing",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1748337467968,
+      "tag": "0024_aberrant_glorian",
+      "breakpoints": true
     }
   ]
 }

@@ -89,7 +89,7 @@ export function PostFormModal({
   });
 
   const createPostMutation = useMutation(
-    trpc.updates.create.mutationOptions({
+    trpc.posts.create.mutationOptions({
       onSuccess: () => {
         toast("Success", {
           description: t("post-created-successfully"),

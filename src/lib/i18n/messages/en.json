@@ -437,6 +437,32 @@
     "timeline-description": "Experience the collective growing journey with updates from you and the community.",
     "toggle-menu": "Toggle menu"
   },
+  "Timeline": {
+    "tabs": {
+      "public": "All",
+      "following": "Following"
+    },
+    "public": {
+      "empty": {
+        "title": "No posts yet",
+        "description": "Be the first to share your growing journey!"
+      }
+    },
+    "following": {
+      "empty": {
+        "title": "No posts from followed users",
+        "description": "Follow other growers to see their updates here.",
+        "exploreButton": "Explore Community"
+      }
+    },
+    "errors": {
+      "loadFailed": "Failed to load posts",
+      "noMore": "No more posts to load"
+    },
+    "actions": {
+      "retry": "Try Again"
+    }
+  },
   "Notifications": {
     "ActivityFeed": {
       "error-no-notifications": "Error loading notifications",

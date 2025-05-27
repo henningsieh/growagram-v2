@@ -30,7 +30,7 @@ export const appRouter = createTRPCRouter({
   photos: photoRouter,
   likes: likeRouter,
   comments: commentRouter,
-  updates: postRouter,
+  posts: postRouter,
   chat: chatRouter,
   channel: channelRouter,
   message: messageRouter,
@@ -75,13 +75,13 @@ export type GetAllNotificationsInput = RouterInput["notifications"]["getAll"];
 
 // postRouter
 //  OUTPUTS:
-export type GetPostsType = RouterOutput["updates"]["getAll"];
-export type GetPostType = RouterOutput["updates"]["getAll"][number];
-export type GetCreatePostOutput = RouterOutput["updates"]["create"];
+export type GetPostsType = RouterOutput["posts"]["getAll"];
+export type GetPostType = RouterOutput["posts"]["getAll"][number];
+export type GetCreatePostOutput = RouterOutput["posts"]["create"];
 
 //  INPUTS:
-export type GetPostsInput = RouterInput["updates"]["getAll"];
-export type CreatePostInput = RouterInput["updates"]["create"];
+export type GetPostsInput = RouterInput["posts"]["getAll"];
+export type CreatePostInput = RouterInput["posts"]["create"];
 
 // userRouter
 //  OUTPUTS:

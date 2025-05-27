@@ -1,6 +1,6 @@
 // src/server/api/routers/grow.ts:
 import { TRPCError } from "@trpc/server";
-import { and, count, eq } from "drizzle-orm";
+import { and, count, eq, lt } from "drizzle-orm";
 import { z } from "zod";
 import { PaginationItemsPerPage } from "~/assets/constants";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
@@ -12,7 +12,7 @@ import {
 } from "~/lib/trpc/init";
 import { connectPlantWithImagesQuery } from "~/server/api/routers/plantImages";
 import { GrowsSortField } from "~/types/grow";
-import { growSchema } from "~/types/zodSchema";
+import { growExplorationSchema, growSchema } from "~/types/zodSchema";
 
 export const growRouter = createTRPCRouter({
   // Get paginated grows for the current user
@@ -501,5 +501,90 @@ export const growRouter = createTRPCRouter({
         .delete(grows)
         .where(eq(grows.id, input.id));
       return { success: !!deletedGrow };
+    }),
+
+  // Explore grows with filtering capabilities
+  explore: publicProcedure
+    .input(growExplorationSchema)
+    .query(async ({ ctx, input }) => {
+      const limit = input.limit;
+      const cursor = input.cursor;
+
+      // Build where conditions dynamically
+      const whereConditions = [];
+
+      if (input.environment) {
+        whereConditions.push(eq(grows.environment, input.environment));
+      }
+
+      if (input.cultureMedium) {
+        whereConditions.push(eq(grows.cultureMedium, input.cultureMedium));
+      }
+
+      if (input.fertilizerType) {
+        whereConditions.push(eq(grows.fertilizerType, input.fertilizerType));
+      }
+
+      if (input.ownerId) {
+        whereConditions.push(eq(grows.ownerId, input.ownerId));
+      }
+
+      // Apply cursor pagination if cursor is provided
+      if (cursor) {
+        whereConditions.push(lt(grows.createdAt, new Date(cursor)));
+      }
+
+      const whereClause =
+        whereConditions.length > 0 ? and(...whereConditions) : undefined;
+
+      // Get filtered grows with cursor-based pagination
+      const filteredGrows = await ctx.db.query.grows.findMany({
+        where: whereClause,
+        orderBy: (grows, { desc }) => [desc(grows.createdAt)],
+        limit: limit + 1, // Get one extra to determine if there's a next page
+        with: {
+          owner: true,
+          headerImage: true,
+          plants: {
+            with: {
+              owner: true,
+              grow: true,
+              strain: {
+                columns: {
+                  id: true,
+                  name: true,
+                  thcContent: true,
+                  cbdContent: true,
+                },
+                with: { breeder: { columns: { id: true, name: true } } },
+              },
+              headerImage: { columns: { id: true, imageUrl: true } },
+              plantImages: connectPlantWithImagesQuery,
+            },
+          },
+        },
+      });
+
+      // Determine if there's a next page and prepare cursor
+      const hasNextPage = filteredGrows.length > limit;
+      const items = hasNextPage ? filteredGrows.slice(0, -1) : filteredGrows;
+      const nextCursor = hasNextPage
+        ? items[items.length - 1]?.createdAt.toISOString()
+        : null;
+
+      // Get total count for the filtered results
+      const totalCountResult = await ctx.db
+        .select({ count: count() })
+        .from(grows)
+        .where(whereClause);
+
+      const totalCount = Number(totalCountResult[0].count);
+
+      return {
+        grows: items,
+        nextCursor,
+        hasNextPage,
+        totalCount,
+      };
     }),
 });
