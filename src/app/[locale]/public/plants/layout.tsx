@@ -1,12 +1,13 @@
+import { Metadata } from "next";
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { PaginationItemsPerPage } from "~/assets/constants";
 import { getQueryClient, trpc } from "~/lib/trpc/server";
+import { generatePageMetadata } from "~/lib/utils/metadata";
 import type { GetAllPlantsInput } from "~/server/api/root";
 
-export const metadata = {
-  title: "Public Plants",
-  description: "Explore Public Plants",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return generatePageMetadata("plants");
+}
 
 export default async function PublicPlantsLayout({
   children,

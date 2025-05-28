@@ -1,11 +1,13 @@
+// src/app/[locale]/public/timeline/following/layout.tsx:
+import { Metadata } from "next";
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { PaginationItemsPerPage } from "~/assets/constants";
 import { getQueryClient, trpc } from "~/lib/trpc/server";
+import { generatePageMetadata } from "~/lib/utils/metadata";
 
-export const metadata = {
-  title: "Following Timeline",
-  description: "Updates from users you follow",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return generatePageMetadata("following");
+}
 
 export default async function FollowingTimelineLayout({
   children,

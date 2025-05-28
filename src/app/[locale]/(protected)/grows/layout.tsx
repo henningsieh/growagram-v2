@@ -1,18 +1,15 @@
 // src/app/[locale]/(protected)/grows/layout.tsx:
-import { getTranslations } from "next-intl/server";
+import { Metadata } from "next";
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import { PaginationItemsPerPage } from "~/assets/constants";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
 import { getQueryClient, trpc } from "~/lib/trpc/server";
+import { generatePageMetadata } from "~/lib/utils/metadata";
 import type { GetOwnGrowsInput } from "~/server/api/root";
 import { GrowsSortField } from "~/types/grow";
 
-export async function generateMetadata() {
-  const t = await getTranslations("Navigation");
-  return {
-    title: `${t("grower-menu")} | ${t("my-grows")}`,
-    description: t("my-grows-subline"),
-  };
+export async function generateMetadata(): Promise<Metadata> {
+  return generatePageMetadata("grows");
 }
 
 export default async function MyGrowsLayout({
