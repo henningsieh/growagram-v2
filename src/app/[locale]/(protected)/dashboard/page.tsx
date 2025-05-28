@@ -9,11 +9,6 @@ import { getQueryClient, trpc } from "~/lib/trpc/server";
 import { GrowsSortField } from "~/types/grow";
 import { PlantsSortField } from "~/types/plant";
 
-export const metadata = {
-  title: "Grower's Plattform",
-  description: "Grower's Plattform",
-};
-
 export default function Dashboard() {
   // For the dashboard page, we pass an empty array to get just the dashboard breadcrumb marked as current
   const breadcrumbs = createBreadcrumbs([]);

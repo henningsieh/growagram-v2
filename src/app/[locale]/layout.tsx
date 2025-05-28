@@ -4,6 +4,7 @@ import { SessionProvider } from "next-auth/react";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { Grandstander, Nunito } from "next/font/google";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { APP_SETTINGS } from "~/assets/constants";
 import { AppFooter } from "~/components/Layouts/Footer/app-footer";
 import { MainNavigationBar } from "~/components/Layouts/MainNavigationBar";
@@ -78,19 +79,21 @@ export default async function AppLayout(props: AppLayoutProps) {
             <NextIntlClientProvider messages={await getMessages()}>
               <SessionProvider>
                 <TRPCReactProvider>
-                  <PhotoModalProvider>
-                    <BreadcrumbProvider>
-                      <Toaster richColors position="bottom-left" />
-                      <BanNotification />
-                      <MainNavigationBar />
-                      <div className="relative mx-auto flex min-h-screen max-w-7xl flex-col">
-                        <div className="flex w-full flex-1">
-                          {props.children}
+                  <NuqsAdapter>
+                    <PhotoModalProvider>
+                      <BreadcrumbProvider>
+                        <Toaster richColors position="bottom-left" />
+                        <BanNotification />
+                        <MainNavigationBar />
+                        <div className="relative mx-auto flex min-h-screen max-w-7xl flex-col">
+                          <div className="flex w-full flex-1">
+                            {props.children}
+                          </div>
                         </div>
-                      </div>
-                      <AppFooter />
-                    </BreadcrumbProvider>
-                  </PhotoModalProvider>
+                        <AppFooter />
+                      </BreadcrumbProvider>
+                    </PhotoModalProvider>
+                  </NuqsAdapter>
                 </TRPCReactProvider>
               </SessionProvider>
             </NextIntlClientProvider>

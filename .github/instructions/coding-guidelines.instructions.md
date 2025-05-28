@@ -15,8 +15,67 @@ GrowAGram is a modern social platform for plant enthusiasts built with Next.js 1
 - **Storage**: Self-hosted MinIO (S3-compatible) on Hetzner Cloud
 - **Internationalization**: next-intl for i18n support
 - **State Management**: @tanstack/react-query
+- **URL State Management**: nuqs for query parameters
 - **Animation**: framer-motion
 - **Deployment**: Docker with Coolify CI/CD
+
+## Package Management & Development
+
+### Package Manager
+
+**Use Bun instead of npm for all package management and script execution.**
+
+- **Package Manager**: Bun (creates `bun.lock` instead of `package-lock.json`)
+- **Script Execution**: Use `bunx` instead of `npx` for executable scripts
+- **Installation**: Use `bun install` instead of `npm install`
+- **Adding Dependencies**: Use `bun add <package>` instead of `npm install <package>`
+
+### Available Scripts
+
+The project includes the following predefined scripts (run with `bun run <script>`):
+
+#### Development Scripts
+
+- `bun run dev` - Start development server with Turbopack
+- `bun run predev` - Run database generation and migration before dev (automatic)
+
+#### Build & Production Scripts
+
+- `bun run build` - Build the production application
+- `bun run prebuild` - Run database generation and migration before build (automatic)
+- `bun run start` - Start the production server
+
+#### Database Scripts
+
+- `bun run db:generate` - Generate Drizzle schema files
+- `bun run db:migrate` - Run database migrations
+- `bun run db:studio` - Open Drizzle Studio in the browser for database management
+
+#### Code Quality Scripts
+
+- `bun run lint` - Run Next.js linter
+- `bun run format` - Format code with Prettier
+
+#### Type Checking
+
+- `bunx tsc --noEmit` - Run TypeScript type checking without compilation (fast alternative to full build)
+
+### Development Workflow
+
+```bash
+# Start development
+bun run dev
+
+# Type checking during development
+bunx tsc --noEmit
+
+# Database operations
+bun run db:generate
+bun run db:migrate
+
+# Code formatting
+bun run format
+```
 
 ## File Structure & Organization
 
@@ -114,16 +173,134 @@ function HelperComponent() {
 - Create reusable types in the `types/` directory
 - Use strict TypeScript configuration
 
-### Generic Types
+### Single Source of Truth for Types
+
+**All type definitions must have a single source of truth to avoid duplication and ensure consistency across the codebase.**
+
+#### Zod Schema and Type Definitions
+
+- **Primary Location:** All Zod schemas are defined in `src/types/zodSchema.ts`
+- **Type Extraction:** Use `z.infer<typeof schema>` to extract TypeScript types from Zod schemas
+- **Enum Definitions:** Define enums in `src/types/` directory and reuse in Zod schemas
 
 ```typescript
-interface ProcessedNavItem {
-  title: string;
-  items?: ProcessedNavItem[];
-  // Other properties
+// ✅ CORRECT: Define enum once in types
+// src/types/plant.ts
+export const PlantGrowthStages = [
+  { name: "planted", color: "planted" },
+  { name: "seedling", color: "seedling" },
+  { name: "vegetation", color: "vegetation" },
+  { name: "flowering", color: "flowering" },
+  { name: "harvested", color: "harvested" },
+  { name: "curing", color: "curing" },
+];
+
+// src/types/zodSchema.ts
+import { PlantGrowthStages } from "~/types/plant";
+
+export const plantGrowthStageFilterSchema = z.object({
+  growthStage: z.enum(PlantGrowthStages.map(stage => stage.name)).optional(),
+});
+
+// tRPC router
+import { plantGrowthStageFilterSchema } from "~/types/zodSchema";
+
+export const plantRouter = createTRPCRouter({
+  explore: publicProcedure
+    .input(plantGrowthStageFilterSchema.extend({
+      // ... other fields
+    }))
+    .query(async ({ input }) => {
+      // Use the validated input
+    }),
+});
+```
+
+```typescript
+// ❌ WRONG: Duplicating enum definitions
+// router.ts - DON'T DO THIS
+.input(z.object({
+  growthStage: z.enum(["seedling", "vegetation", "flowering", "harvested", "curing"])
+}))
+
+// component.tsx - DON'T DO THIS
+type GrowthStage = "seedling" | "vegetation" | "flowering" | "harvested" | "curing";
+```
+
+#### Best Practices for Type Consistency
+
+1. **Enum Definitions:** Create TypeScript enums in `src/types/` for all categorical data
+2. **Zod Schema Reuse:** Reference enums using `z.nativeEnum()` in Zod schemas
+3. **Type Inference:** Use `z.infer<typeof schema>` instead of manually creating matching types
+4. **Import Consistency:** Always import from the single source, never redefine
+
+```typescript
+// src/types/zodSchema.ts
+import { CultureMedium, FertilizerType, GrowEnvironment } from "./grow";
+
+// Example: Grow entity types
+// src/types/grow.ts
+export enum GrowEnvironment {
+  INDOOR = "indoor",
+  OUTDOOR = "outdoor",
+  GREENHOUSE = "greenhouse",
 }
 
-type IconComponent = LucideIcon;
+export enum CultureMedium {
+  SOIL = "soil",
+  COCOS = "cocos",
+  HYDROPONIC = "hydroponic",
+  OTHER = "other",
+}
+
+export enum FertilizerType {
+  MINERAL = "mineral",
+  ORGANIC = "organic",
+  MIXED = "mixed",
+}
+
+export const growFilterSchema = z.object({
+  environment: z.nativeEnum(GrowEnvironment).optional(),
+  cultureMedium: z.nativeEnum(CultureMedium).optional(),
+  fertilizerType: z.nativeEnum(FertilizerType).optional(),
+});
+
+// Extract TypeScript type
+export type GrowFilterInput = z.infer<typeof growFilterSchema>;
+```
+
+#### Frontend Component Type Usage
+
+```typescript
+// ✅ CORRECT: Use enum from single source
+import { PlantGrowthStages } from "~/types/plant";
+// ✅ CORRECT: Use Zod-inferred types
+import type { GrowFilterInput } from "~/types/zodSchema";
+
+interface FilterProps {
+  selectedStage: (typeof PlantGrowthStages)[number];
+  onStageChange: (stage: (typeof PlantGrowthStages)[number]) => void;
+}
+
+interface ExploreGrowsProps {
+  filters: GrowFilterInput;
+}
+```
+
+#### Database Schema Consistency
+
+- Ensure database enum values match TypeScript enum values
+- Use the same enum definitions for both frontend validation and database constraints
+- Reference the single source of truth in migration files
+
+```typescript
+// drizzle schema
+import { GrowEnvironment } from "~/types/grow";
+
+export const grows = pgTable("grows", {
+  environment: varchar("environment").$type<GrowEnvironment>(),
+  // ...
+});
 ```
 
 ## Styling Guidelines
@@ -291,11 +468,269 @@ const messages = await import(`~/messages/${locale}.json`);
 - Implement proper error handling
 - Use React Query for caching and synchronization
 
+### URL Query Parameters
+
+**All URL query parameters must be handled using the `nuqs` library for type-safe, reactive query parameter management.**
+
+```typescript
+import { parseAsInteger, parseAsString, useQueryState } from "nuqs";
+
+// Basic string parameter
+const [search, setSearch] = useQueryState(
+  "search",
+  parseAsString.withDefault(""),
+);
+
+// Integer parameter with validation
+const [page, setPage] = useQueryState("page", parseAsInteger.withDefault(1));
+
+// Custom parser for complex types
+const [filters, setFilters] = useQueryState("filters", {
+  parse: (value) => JSON.parse(value),
+  serialize: (value) => JSON.stringify(value),
+  defaultValue: {},
+});
+```
+
+#### Benefits of using `nuqs`:
+
+- **Type Safety**: Ensures query parameters are properly typed
+- **Automatic Serialization**: Handles conversion between URL strings and JavaScript values
+- **React Integration**: Provides hooks that work seamlessly with React state
+- **SSR Support**: Compatible with Next.js server-side rendering
+- **History Management**: Properly handles browser back/forward navigation
+
+#### Common Patterns:
+
+```typescript
+// Search functionality
+const [searchQuery, setSearchQuery] = useQueryState('q', parseAsString);
+
+// Pagination
+const [currentPage, setCurrentPage] = useQueryState('page', parseAsInteger.withDefault(1));
+
+// Filtering
+const [category, setCategory] = useQueryState('category', parseAsString);
+const [sortBy, setSortBy] = useQueryState('sort', parseAsString.withDefault('newest'));
+
+// Multiple query states
+const {
+  search,
+  page,
+  category
+} = useQueryStates({
+  search: parseAsString,
+  page: parseAsInteger.withDefault(1),
+  category: parseAsString
+});
+```
+
 ### Environment Variables
 
 - Validate environment variables in `env.js`
 - Use proper typing for environment configuration
 - Include both client and server environment variables
+
+## Database & ORM Guidelines
+
+### Drizzle ORM Best Practices
+
+**Always use Drizzle syntax - never write manual SQL queries.**
+
+#### Entity Relations
+
+- Define proper relations between entities using Drizzle's relation syntax
+- Use `one()` and `many()` relations appropriately
+- Include foreign key constraints in table definitions
+
+```typescript
+// ✅ CORRECT: Proper Drizzle relations
+export const users = pgTable("users", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  // ...other fields
+});
+
+export const userFollows = pgTable(
+  "user_follows",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    followerId: uuid("follower_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    followingId: uuid("following_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => ({
+    // Composite unique constraint
+    followerFollowingIdx: uniqueIndex("user_follows_follower_following_idx").on(
+      table.followerId,
+      table.followingId,
+    ),
+    // Performance indexes
+    followerIdx: index("user_follows_follower_idx").on(table.followerId),
+    followingIdx: index("user_follows_following_idx").on(table.followingId),
+  }),
+);
+
+export const userFollowsRelations = relations(userFollows, ({ one }) => ({
+  follower: one(users, {
+    fields: [userFollows.followerId],
+    references: [users.id],
+  }),
+  following: one(users, {
+    fields: [userFollows.followingId],
+    references: [users.id],
+  }),
+}));
+```
+
+#### Performance Indexes
+
+- Always consider query patterns when defining indexes
+- Use composite indexes for multi-column queries
+- Index foreign keys for optimal join performance
+- Add indexes for common filter fields
+
+```typescript
+// ✅ CORRECT: Performance-focused indexing
+export const posts = pgTable(
+  "posts",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    // ...other fields
+  },
+  (table) => ({
+    // Timeline queries (user + chronological)
+    userCreatedAtIdx: index("posts_user_created_at_idx").on(
+      table.userId,
+      table.createdAt.desc(),
+    ),
+    // Global timeline queries
+    createdAtIdx: index("posts_created_at_idx").on(table.createdAt.desc()),
+    // User-specific queries
+    userIdx: index("posts_user_idx").on(table.userId),
+  }),
+);
+```
+
+#### Query Construction
+
+- Use Drizzle's query builder for all database operations
+- Leverage typed queries with proper relations
+- Use `with` clauses for including related data
+
+```typescript
+// ✅ CORRECT: Drizzle query syntax
+const timelinePosts = await db.query.posts.findMany({
+  where: (posts, { inArray, desc }) => inArray(posts.userId, followingUserIds),
+  orderBy: (posts, { desc }) => [desc(posts.createdAt)],
+  limit: 20,
+  offset: page * 20,
+  with: {
+    user: {
+      columns: {
+        id: true,
+        username: true,
+        displayName: true,
+        avatar: true,
+      },
+    },
+    grow: true,
+    plant: true,
+    likes: {
+      where: (likes, { eq }) => eq(likes.userId, currentUserId),
+    },
+    _count: {
+      likes: true,
+      comments: true,
+    },
+  },
+});
+```
+
+```typescript
+// ❌ WRONG: Manual SQL - DON'T DO THIS
+const result = await db.execute(sql`
+  SELECT p.*, u.username, COUNT(l.id) as like_count
+  FROM posts p
+  JOIN users u ON p.user_id = u.id
+  LEFT JOIN likes l ON p.id = l.post_id
+  WHERE p.user_id IN (${followingUserIds})
+  GROUP BY p.id, u.username
+  ORDER BY p.created_at DESC
+  LIMIT 20
+`);
+```
+
+#### Migration Best Practices
+
+- Use Drizzle's migration system
+- Include proper constraints and indexes in migrations
+- Test migrations on development data before production
+
+## Testing & Documentation
+
+### Documentation Standards
+
+**For this private hobby project, focus on excellent documentation rather than unit tests.**
+
+#### Code Documentation
+
+- Write comprehensive JSDoc comments for all public functions and components
+- Document complex business logic and calculations
+- Include usage examples in component documentation
+- Maintain up-to-date README files for major features
+
+````typescript
+/**
+ * Calculates the grow status based on associated plants' growth stages.
+ *
+ * @description This function determines if a grow is "Growing" or "Harvested"
+ * by examining the growth stages of all associated plants. A grow is considered
+ * "Growing" if any plant is in active growth stages (Planted, Seedling,
+ * vegetation, Flowering). Otherwise, it's "Harvested".
+ *
+ * @param plants - Array of plants associated with the grow
+ * @returns "Growing" | "Harvested"
+ *
+ * @example
+ * ```typescript
+ * const plants = [
+ *   { growthStage: PlantGrowthStage.FLOWERING },
+ *   { growthStage: PlantGrowthStage.HARVESTED }
+ * ];
+ * const status = calculateGrowStatus(plants); // Returns "Growing"
+ * ```
+ */
+export function calculateGrowStatus(plants: Plant[]): GrowStatus {
+  // Implementation...
+}
+````
+
+#### API Documentation
+
+- Document all tRPC procedures with input/output types
+- Include usage examples and common patterns
+- Document filtering and pagination behavior
+
+#### Component Documentation
+
+- Document component props and usage patterns
+- Include Storybook stories for complex components
+- Document responsive behavior and accessibility features
+
+### No Unit Testing Required
+
+- Focus development time on features and user experience
+- Rely on TypeScript for type safety
+- Use comprehensive manual testing during development
+- Prioritize good documentation over test coverage
 
 ## Error Handling
 
@@ -434,3 +869,5 @@ const containerVariants = {
 - Plan for scalability
 
 Remember: This is an active development project in Phase 1 of 3. Prioritize clean, maintainable code that supports the growing feature set and user base.
+
+Important: never hallucinate about things, you don'T know, Feel free to ask me at any time to prevent false conclusions on your side!
