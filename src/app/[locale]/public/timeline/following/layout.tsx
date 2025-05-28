@@ -3,11 +3,11 @@ import { PaginationItemsPerPage } from "~/assets/constants";
 import { getQueryClient, trpc } from "~/lib/trpc/server";
 
 export const metadata = {
-  title: "Public Timeline",
-  description: "Explore public updates from the community",
+  title: "Following Timeline",
+  description: "Updates from users you follow",
 };
 
-export default async function TimelineLayout({
+export default async function FollowingTimelineLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -15,13 +15,13 @@ export default async function TimelineLayout({
   const queryClient = getQueryClient();
 
   // Default input parameters for prefetching
-  const defaultPublicTimelineLimit =
-    PaginationItemsPerPage.PUBLIC_TIMELINE_PER_PAGE;
+  const defaultFollowingTimelineLimit =
+    PaginationItemsPerPage.FOLLOWING_TIMELINE_PER_PAGE;
 
-  // Prefetch public timeline data (infinite query)
+  // Prefetch following timeline data (infinite query)
   await queryClient.prefetchInfiniteQuery(
-    trpc.posts.getPublicTimeline.infiniteQueryOptions(
-      { limit: defaultPublicTimelineLimit },
+    trpc.posts.getFollowingTimeline.infiniteQueryOptions(
+      { limit: defaultFollowingTimelineLimit },
       {
         getNextPageParam: (lastPage) => lastPage.nextCursor,
       },

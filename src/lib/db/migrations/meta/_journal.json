@@ -176,6 +176,20 @@
       "when": 1748337467968,
       "tag": "0024_aberrant_glorian",
       "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1748340081281,
+      "tag": "0025_easy_rattler",
+      "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "7",
+      "when": 1748419894254,
+      "tag": "0026_thin_captain_flint",
+      "breakpoints": true
     }
   ]
 }

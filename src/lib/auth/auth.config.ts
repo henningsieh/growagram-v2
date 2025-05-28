@@ -109,7 +109,7 @@ export default {
       // When user first logs in or during token refresh, fetch additional user details
       if (user || !token.username) {
         try {
-          const baseUrl = env.NEXTAUTH_URL || "http://localhost:3000";
+          const baseUrl = env.NEXTAUTH_URL;
           const response = await fetch(
             `${baseUrl}/api/token/user-details?userId=${token.sub}`,
             {

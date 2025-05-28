@@ -2,13 +2,18 @@
 import { z } from "zod";
 import { routing } from "~/lib/i18n/routing";
 // Import filter enums
-import { CultureMedium, FertilizerType, GrowEnvironment } from "~/types/grow";
+import { CultureMedium, FertilizerType, FertilizerForm, GrowEnvironment } from "~/types/grow";
 import { Locale } from "~/types/locale";
 import {
   NotifiableEntityType,
   NotificationEventType,
 } from "~/types/notification";
-import { type GrowthPhase, PlantGrowthStages } from "~/types/plant";
+import {
+  GeneticsType,
+  type GrowthPhase,
+  PlantGrowthStages,
+  StrainType,
+} from "~/types/plant";
 import { PostableEntityType } from "~/types/post";
 import { UserRoles } from "~/types/user";
 
@@ -51,6 +56,9 @@ export const strainFormSchema = z.object({
   }),
   thcContent: z.number().min(0).max(100).optional(),
   cbdContent: z.number().min(0).max(100).optional(),
+  // Plant Entity Fields for exploration and filtering
+  strainType: z.nativeEnum(StrainType).optional(),
+  geneticsType: z.nativeEnum(GeneticsType).optional(),
 });
 
 export const imageSchema = z.object({
@@ -67,9 +75,14 @@ export const imageSchema = z.object({
 });
 
 // Define the schema for grow form validation
-export const growSchema = z.object({
+export const growFormSchema = z.object({
   id: z.string().optional(),
   name: z.string().min(1, "Grow name is required"),
+  // Grow Entity Fields for exploration and filtering
+  environment: z.nativeEnum(GrowEnvironment).optional(),
+  cultureMedium: z.nativeEnum(CultureMedium).optional(),
+  fertilizerType: z.nativeEnum(FertilizerType).optional(),
+  fertilizerForm: z.nativeEnum(FertilizerForm).optional(),
 });
 
 // form schema for user editing
@@ -184,7 +197,9 @@ export const growExplorationSchema = timelinePaginationSchema.extend({
   environment: z.nativeEnum(GrowEnvironment).optional(),
   cultureMedium: z.nativeEnum(CultureMedium).optional(),
   fertilizerType: z.nativeEnum(FertilizerType).optional(),
+  fertilizerForm: z.nativeEnum(FertilizerForm).optional(),
   ownerId: z.string().optional(), // Filter by specific user
+  search: z.string().optional(), // Search in grow name
 });
 
 export const plantExplorationSchema = timelinePaginationSchema.extend({
@@ -196,9 +211,12 @@ export const plantExplorationSchema = timelinePaginationSchema.extend({
       ],
     )
     .optional(),
+  strainType: z.nativeEnum(StrainType).optional(), // Filter by strain type
+  geneticsType: z.nativeEnum(GeneticsType).optional(), // Filter by genetics type
   strainId: z.string().optional(), // Filter by strain
   growId: z.string().optional(), // Filter by grow
   ownerId: z.string().optional(), // Filter by specific user
+  search: z.string().optional(), // Search in plant name
 });
 
 // Activity feed schemas

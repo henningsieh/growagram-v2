@@ -47,9 +47,12 @@
     }
   },
   "AdminArea": {
+    "navigation": {
+      "label": "Administration"
+    },
     "pageheader": {
-      "title": "Administration Area",
-      "subtitle": "Administration and management tools"
+      "subtitle": "Administration and management tools",
+      "title": "Administration Area"
     },
     "settings-coming-soon": "Admin settings coming soon",
     "settings-tab": "Settings",
@@ -254,13 +257,41 @@
     "button-label-save-changes": "Save Changes",
     "change-image": "Change Image",
     "connect-error": "Error connecting plant",
+    "culture-medium-label": "Soil, Alternatives & More",
+    "culture-medium-description": "What kind of soil or material are you using for cultivation?",
+    "culture-medium-placeholder": "Select culture medium",
+    "culture-medium-coco": "Coco",
+    "culture-medium-hydro": "Hydro",
+    "culture-medium-rockwool": "Rockwool",
+    "culture-medium-soil": "Soil",
+    "culture-medium-perlite": "Perlite",
+    "culture-medium-vermiculite": "Vermiculite",
     "delete-button-label": "Delete Grow",
     "delete-grow-button-label": "Delete Grow",
     "disconnect-error": "Error disconnecting plant",
     "edit-button-label": "Edit Grow",
     "edit-grow-button-label": "Edit Grow",
+    "environment-label": "Environment",
+    "environment-description": "Choose the environment where your plants are growing",
+    "environment-placeholder": "Select environment",
+    "environment-greenhouse": "Greenhouse",
+    "environment-hydroponic": "Hydroponic",
+    "environment-indoor": "Indoor",
+    "environment-outdoor": "Outdoor",
     "error-default": "Something went wrong. Please try again later.",
     "error-title": "An error occurred",
+    "fertilizer-type-label": "Fertilizer Type",
+    "fertilizer-type-description": "Choose the type of fertilizer you're using",
+    "fertilizer-type-placeholder": "Select fertilizer type",
+    "fertilizer-type-organic": "Organic fertilizer",
+    "fertilizer-type-mineral": "Mineral fertilizer",
+    "fertilizer-type-slow-release": "Slow Release",
+    "fertilizer-form-label": "Fertilizer Form",
+    "fertilizer-form-description": "Choose the physical form or application method of your fertilizer",
+    "fertilizer-form-placeholder": "Select fertilizer form",
+    "fertilizer-form-liquid": "Liquid",
+    "fertilizer-form-granular": "Granular",
+    "fertilizer-form-slow-release": "Slow Release",
     "form-description-create-new-grow": "Edit the name and further details of the grow",
     "form-description-edit-grow": "Modify your grow Environment",
     "form-page-subtitle-edit": "Edit this grow from your collection",
@@ -274,7 +305,6 @@
     "grow-name-description": "Give a descriptive name to your grow.",
     "grow-name-placeholder": "Enter the Grow's Name",
     "growth-stage": "Growth Stage",
-    "header-image": "Header Image",
     "header-image-description": "Add a header image to showcase your grow environment",
     "header-image-update-error-description": "Failed to update the header image. Please try again.",
     "header-image-update-error-title": "Header Image Update Error",
@@ -408,14 +438,15 @@
   "Navigation": {
     "All Grows": "All Grows",
     "All Plants": "All Plants",
-    "All Updates": "All Updates",
+    "All Posts": "All Posts",
+    "Following": "Following",
     "Sidebar": {
       "title": "Deals"
     },
     "Timelines": {
       "All Grows": "All Grows",
       "All Plants": "All Plants",
-      "All Updates": "All Updates"
+      "All Posts": "All Posts"
     },
     "dashboard": "Dashboard",
     "dashboard-description": "Keep an eye on your grows, your plants and your photos.",
@@ -436,32 +467,6 @@
     "timeline": "Community Timeline",
     "timeline-description": "Experience the collective growing journey with updates from you and the community.",
     "toggle-menu": "Toggle menu"
-  },
-  "Timeline": {
-    "tabs": {
-      "public": "All",
-      "following": "Following"
-    },
-    "public": {
-      "empty": {
-        "title": "No posts yet",
-        "description": "Be the first to share your growing journey!"
-      }
-    },
-    "following": {
-      "empty": {
-        "title": "No posts from followed users",
-        "description": "Follow other growers to see their updates here.",
-        "exploreButton": "Explore Community"
-      }
-    },
-    "errors": {
-      "loadFailed": "Failed to load posts",
-      "noMore": "No more posts to load"
-    },
-    "actions": {
-      "retry": "Try Again"
-    }
   },
   "Notifications": {
     "ActivityFeed": {
@@ -839,9 +844,9 @@
       "unfollow-success-title": "Unfollowed"
     },
     "metadata": {
-      "user-not-found": "User Not Found",
       "description": "Check out the plants and grows by {name} on Growagram",
-      "title": "Profile | {name}"
+      "title": "Profile | {name}",
+      "user-not-found": "User Not Found"
     },
     "tabs": {
       "grows": "Grows",
@@ -940,5 +945,31 @@
     "light": "Light",
     "system": "System",
     "toggle-theme": "Toggle theme"
+  },
+  "Timeline": {
+    "actions": {
+      "retry": "Try Again"
+    },
+    "errors": {
+      "loadFailed": "Failed to load posts",
+      "noMore": "No more posts to load"
+    },
+    "following": {
+      "empty": {
+        "description": "Follow other growers to see their updates here.",
+        "exploreButton": "Explore Community",
+        "title": "No posts from followed users"
+      }
+    },
+    "public": {
+      "empty": {
+        "description": "Be the first to share your growing journey!",
+        "title": "No posts yet"
+      }
+    },
+    "tabs": {
+      "following": "Following",
+      "public": "All"
+    }
   }
 }

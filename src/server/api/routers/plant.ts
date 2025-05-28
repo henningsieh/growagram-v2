@@ -1,6 +1,6 @@
 // src/server/api/routers/plant.ts:
 import { TRPCError } from "@trpc/server";
-import { and, count, eq, isNull, or } from "drizzle-orm";
+import { and, count, eq, ilike, isNull, lt, or } from "drizzle-orm";
 import { z } from "zod";
 import { PaginationItemsPerPage } from "~/assets/constants";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
@@ -16,6 +16,7 @@ import { connectPlantWithImagesQuery } from "~/server/api/routers/plantImages";
 import { PlantsSortField } from "~/types/plant";
 import {
   breederFormSchema,
+  plantExplorationSchema,
   plantFormSchema,
   strainFormSchema,
 } from "~/types/zodSchema";
@@ -77,6 +78,8 @@ export const plantRouter = {
             columns: {
               id: true,
               name: true,
+              strainType: true,
+              geneticsType: true,
               thcContent: true,
               cbdContent: true,
             },
@@ -117,6 +120,8 @@ export const plantRouter = {
             columns: {
               id: true,
               name: true,
+              strainType: true,
+              geneticsType: true,
               thcContent: true,
               cbdContent: true,
             },
@@ -179,6 +184,8 @@ export const plantRouter = {
             columns: {
               id: true,
               name: true,
+              strainType: true,
+              geneticsType: true,
               thcContent: true,
               cbdContent: true,
             },
@@ -214,6 +221,8 @@ export const plantRouter = {
             columns: {
               id: true,
               name: true,
+              strainType: true,
+              geneticsType: true,
               thcContent: true,
               cbdContent: true,
             },
@@ -376,7 +385,14 @@ export const plantRouter = {
     .query(async ({ ctx, input }) => {
       const strain = await ctx.db.query.cannabisStrains.findFirst({
         where: eq(cannabisStrains.id, input.id),
-        columns: { id: true, name: true, thcContent: true, cbdContent: true },
+        columns: {
+          id: true,
+          name: true,
+          strainType: true,
+          geneticsType: true,
+          thcContent: true,
+          cbdContent: true,
+        },
         with: {
           breeder: {
             columns: { id: true, name: true },
@@ -452,9 +468,206 @@ export const plantRouter = {
           breederId: input.breederId,
           thcContent: input.thcContent,
           cbdContent: input.cbdContent,
+          strainType: input.strainType,
+          geneticsType: input.geneticsType,
         })
         .returning();
 
       return newStrain[0];
+    }),
+
+  // Explore plants with filtering capabilities
+  explore: publicProcedure
+    .input(plantExplorationSchema)
+    .query(async ({ ctx, input }) => {
+      const limit = input.limit;
+      const cursor = input.cursor;
+
+      // Build where conditions dynamically
+      const whereConditions = [];
+
+      if (input.growthStage) {
+        // For now, simple filtering by existence of phase dates
+        // TODO: Implement proper date-based growth stage detection
+        switch (input.growthStage) {
+          case "seedling":
+            whereConditions.push(isNull(plants.seedlingPhaseStart));
+            break;
+          case "vegetation":
+            whereConditions.push(
+              and(
+                eq(plants.seedlingPhaseStart, plants.seedlingPhaseStart), // Not null
+                isNull(plants.floweringPhaseStart),
+              ),
+            );
+            break;
+          case "flowering":
+            whereConditions.push(
+              and(
+                eq(plants.floweringPhaseStart, plants.floweringPhaseStart), // Not null
+                isNull(plants.harvestDate),
+              ),
+            );
+            break;
+          case "harvested":
+            whereConditions.push(
+              and(
+                eq(plants.harvestDate, plants.harvestDate), // Not null
+                isNull(plants.curingPhaseStart),
+              ),
+            );
+            break;
+          case "curing":
+            whereConditions.push(
+              eq(plants.curingPhaseStart, plants.curingPhaseStart), // Not null
+            );
+            break;
+        }
+      }
+
+      if (input.ownerId) {
+        whereConditions.push(eq(plants.ownerId, input.ownerId));
+      }
+
+      // Apply cursor pagination if cursor is provided
+      if (cursor) {
+        whereConditions.push(lt(plants.createdAt, new Date(cursor)));
+      }
+
+      // Add search functionality if search term is provided
+      if (input.search) {
+        const searchTerm = `%${input.search}%`;
+        whereConditions.push(ilike(plants.name, searchTerm));
+      }
+
+      // Filter by strain characteristics if provided
+      if (input.strainType || input.geneticsType) {
+        const strainFilters = [];
+        if (input.strainType) {
+          strainFilters.push(eq(cannabisStrains.strainType, input.strainType));
+        }
+        if (input.geneticsType) {
+          strainFilters.push(
+            eq(cannabisStrains.geneticsType, input.geneticsType),
+          );
+        }
+        // This will be handled through the relation join
+      }
+
+      const whereClause =
+        whereConditions.length > 0 ? and(...whereConditions) : undefined;
+
+      try {
+        // Get filtered plants with cursor-based pagination
+        const filteredPlants = await ctx.db.query.plants.findMany({
+          where: whereClause,
+          orderBy: (plants, { desc }) => [desc(plants.createdAt)],
+          limit: limit + 1, // Get one extra to determine if there's a next page
+          with: {
+            owner: {
+              columns: {
+                id: true,
+                username: true,
+                email: true,
+                image: true,
+                createdAt: true,
+              },
+            },
+            grow: {
+              columns: {
+                id: true,
+                name: true,
+                environment: true,
+                cultureMedium: true,
+              },
+            },
+            strain: {
+              columns: {
+                id: true,
+                name: true,
+                strainType: true,
+                geneticsType: true,
+                thcContent: true,
+                cbdContent: true,
+              },
+              with: {
+                breeder: {
+                  columns: {
+                    id: true,
+                    name: true,
+                  },
+                },
+              },
+              // Apply strain filters here if needed
+              ...(input.strainType || input.geneticsType
+                ? {
+                    where: and(
+                      ...[
+                        input.strainType
+                          ? eq(cannabisStrains.strainType, input.strainType)
+                          : undefined,
+                        input.geneticsType
+                          ? eq(cannabisStrains.geneticsType, input.geneticsType)
+                          : undefined,
+                      ].filter(Boolean),
+                    ),
+                  }
+                : {}),
+            },
+            headerImage: {
+              columns: {
+                id: true,
+                imageUrl: true,
+              },
+            },
+            plantImages: connectPlantWithImagesQuery,
+          },
+        });
+
+        // Determine if there's a next page and prepare cursor
+        const hasNextPage = filteredPlants.length > limit;
+        const items = hasNextPage
+          ? filteredPlants.slice(0, -1)
+          : filteredPlants;
+        const nextCursor = hasNextPage
+          ? items[items.length - 1]?.createdAt.toISOString()
+          : null;
+
+        // Get total count for the filtered results
+        const totalCountResult = await ctx.db
+          .select({ count: count() })
+          .from(plants)
+          .where(whereClause);
+
+        const totalCount = Number(totalCountResult[0]?.count ?? 0);
+
+        return {
+          plants: items,
+          nextCursor,
+          hasNextPage,
+          totalCount,
+          meta: {
+            appliedFilters: {
+              growthStage: input.growthStage,
+              strainType: input.strainType,
+              geneticsType: input.geneticsType,
+              ownerId: input.ownerId,
+              search: input.search,
+            },
+            pagination: {
+              limit,
+              cursor,
+              hasNextPage,
+              totalCount,
+            },
+          },
+        };
+      } catch (error) {
+        console.error("Error in plants.explore:", error);
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to fetch plants. Please try again.",
+        });
+      }
     }),
 };

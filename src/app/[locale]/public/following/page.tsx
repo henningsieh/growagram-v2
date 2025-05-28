@@ -1,9 +1,6 @@
-import TimelineTabs from "~/components/features/Timeline/timeline-tabs";
+import { redirect } from "next/navigation";
 
 export default function FollowingPage() {
-  return (
-    <div className="container mx-auto px-4">
-      <TimelineTabs defaultTab="following" />
-    </div>
-  );
+  // Redirect to the new following timeline route
+  redirect("/public/timeline/following");
 }

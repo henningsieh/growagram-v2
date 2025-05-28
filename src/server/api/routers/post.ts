@@ -75,6 +75,8 @@ export const postRouter = {
                   columns: {
                     id: true,
                     name: true,
+                    strainType: true,
+                    geneticsType: true,
                     thcContent: true,
                     cbdContent: true,
                   },
@@ -95,6 +97,8 @@ export const postRouter = {
               columns: {
                 id: true,
                 name: true,
+                strainType: true,
+                geneticsType: true,
                 thcContent: true,
                 cbdContent: true,
               },
@@ -153,6 +157,8 @@ export const postRouter = {
                     columns: {
                       id: true,
                       name: true,
+                      strainType: true,
+                      geneticsType: true,
                       thcContent: true,
                       cbdContent: true,
                     },
@@ -173,6 +179,8 @@ export const postRouter = {
                 columns: {
                   id: true,
                   name: true,
+                  strainType: true,
+                  geneticsType: true,
                   thcContent: true,
                   cbdContent: true,
                 },
@@ -269,6 +277,8 @@ export const postRouter = {
                     columns: {
                       id: true,
                       name: true,
+                      strainType: true,
+                      geneticsType: true,
                       thcContent: true,
                       cbdContent: true,
                     },
@@ -289,6 +299,8 @@ export const postRouter = {
                 columns: {
                   id: true,
                   name: true,
+                  strainType: true,
+                  geneticsType: true,
                   thcContent: true,
                   cbdContent: true,
                 },

@@ -56,8 +56,13 @@ export const modulePaths = {
     protected: false,
   },
   PUBLICTIMELINE: {
-    name: "All Updates",
+    name: "All Posts",
     path: "/public/timeline",
+    protected: false,
+  },
+  FOLLOWINGTIMELINE: {
+    name: "Following",
+    path: "/public/timeline/following",
     protected: false,
   },
   PUBLICGROWS: {

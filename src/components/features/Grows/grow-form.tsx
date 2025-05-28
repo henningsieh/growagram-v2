@@ -54,6 +54,13 @@ import {
   FormMessage,
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
 import { Link, useRouter } from "~/lib/i18n/routing";
 import { useTRPC } from "~/lib/trpc/client";
 import { uploadToS3 } from "~/lib/utils/uploadToS3";
@@ -65,12 +72,18 @@ import type {
   GrowConnectPlantInput,
   GrowDisconnectPlantInput,
 } from "~/server/api/root";
-import { GrowsSortField } from "~/types/grow";
-import { growSchema } from "~/types/zodSchema";
+import {
+  CultureMedium,
+  FertilizerForm,
+  FertilizerType,
+  GrowEnvironment,
+  GrowsSortField,
+} from "~/types/grow";
+import { growFormSchema } from "~/types/zodSchema";
 
-type FormValues = z.infer<typeof growSchema>;
+type FormValues = z.infer<typeof growFormSchema>;
 
-export default function GrowFormPage({ grow }: { grow?: GetGrowByIdType }) {
+export function GrowForm({ grow }: { grow?: GetGrowByIdType }) {
   const trpc = useTRPC();
   const t_nav = useTranslations("Navigation");
   const t = useTranslations("Grows");
@@ -248,10 +261,14 @@ export default function GrowFormPage({ grow }: { grow?: GetGrowByIdType }) {
 
   const form = useForm<FormValues>({
     mode: "onBlur",
-    resolver: zodResolver(growSchema),
+    resolver: zodResolver(growFormSchema),
     defaultValues: {
       id: grow?.id,
       name: grow?.name || "",
+      environment: grow?.environment || undefined,
+      cultureMedium: grow?.cultureMedium || undefined,
+      fertilizerType: grow?.fertilizerType || undefined,
+      fertilizerForm: grow?.fertilizerForm || undefined,
     },
   });
 
@@ -339,7 +356,7 @@ export default function GrowFormPage({ grow }: { grow?: GetGrowByIdType }) {
           ]);
 
           // Navigate to grows page
-          router.push("/grows"); //TODO: add paginated parameters?
+          router.push(modulePaths.GROWS.path);
         } catch (error) {
           toast.error(t("error-title"), {
             description: t("error-default"),
@@ -439,7 +456,7 @@ export default function GrowFormPage({ grow }: { grow?: GetGrowByIdType }) {
                   {/* Header Image Section */}
                   <div className="space-y-2">
                     <FormLabel className="font-semibold">
-                      {t("header-image")}
+                      {t("grow-header-image")}
                     </FormLabel>
 
                     <div className="flex flex-col gap-4">
@@ -598,6 +615,181 @@ export default function GrowFormPage({ grow }: { grow?: GetGrowByIdType }) {
                       {t("header-image-description")}
                     </FormDescription>
                   </div>
+
+                  {/* Environment Field */}
+                  <FormField
+                    control={form.control}
+                    name="environment"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="font-semibold">
+                          {t("environment-label")}
+                        </FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue
+                                placeholder={t("environment-placeholder")}
+                              />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value={GrowEnvironment.INDOOR}>
+                              {t("environment-indoor")}
+                            </SelectItem>
+                            <SelectItem value={GrowEnvironment.OUTDOOR}>
+                              {t("environment-outdoor")}
+                            </SelectItem>
+                            <SelectItem value={GrowEnvironment.GREENHOUSE}>
+                              {t("environment-greenhouse")}
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormDescription>
+                          {t("environment-description")}
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* Culture Medium Field */}
+                  <FormField
+                    control={form.control}
+                    name="cultureMedium"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="font-semibold">
+                          {t("culture-medium-label")}
+                        </FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue
+                                placeholder={t("culture-medium-placeholder")}
+                              />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value={CultureMedium.SOIL}>
+                              {t("culture-medium-soil")}
+                            </SelectItem>
+                            <SelectItem value={CultureMedium.COCO}>
+                              {t("culture-medium-coco")}
+                            </SelectItem>
+                            <SelectItem value={CultureMedium.HYDRO}>
+                              {t("culture-medium-hydro")}
+                            </SelectItem>
+                            <SelectItem value={CultureMedium.ROCKWOOL}>
+                              {t("culture-medium-rockwool")}
+                            </SelectItem>
+                            <SelectItem value={CultureMedium.PERLITE}>
+                              {t("culture-medium-perlite")}
+                            </SelectItem>
+                            <SelectItem value={CultureMedium.VERMICULITE}>
+                              {t("culture-medium-vermiculite")}
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormDescription>
+                          {t("culture-medium-description")}
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* Fertilizer Type Field */}
+                  <FormField
+                    control={form.control}
+                    name="fertilizerType"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="font-semibold">
+                          {t("fertilizer-type-label")}
+                        </FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue
+                                placeholder={t("fertilizer-type-placeholder")}
+                              />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value={FertilizerType.ORGANIC}>
+                              {t("fertilizer-type-organic")}
+                            </SelectItem>
+                            <SelectItem value={FertilizerType.MINERAL}>
+                              {t("fertilizer-type-mineral")}
+                            </SelectItem>
+                            {/* <SelectItem value={FertilizerType.LIQUID}>
+                              {t("fertilizer-type-liquid")}
+                            </SelectItem>
+                            <SelectItem value={FertilizerType.GRANULAR}>
+                              {t("fertilizer-type-granular")}
+                            </SelectItem>
+                            <SelectItem value={FertilizerType.SLOW_RELEASE}>
+                              {t("fertilizer-type-slow-release")}
+                            </SelectItem> */}
+                          </SelectContent>
+                        </Select>
+                        <FormDescription>
+                          {t("fertilizer-type-description")}
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* Fertilizer Form Field */}
+                  <FormField
+                    control={form.control}
+                    name="fertilizerForm"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="font-semibold">
+                          {t("fertilizer-form-label")}
+                        </FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue
+                                placeholder={t("fertilizer-form-placeholder")}
+                              />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value={FertilizerForm.LIQUID}>
+                              {t("fertilizer-form-liquid")}
+                            </SelectItem>
+                            <SelectItem value={FertilizerForm.GRANULAR}>
+                              {t("fertilizer-form-granular")}
+                            </SelectItem>
+                            <SelectItem value={FertilizerForm.SLOW_RELEASE}>
+                              {t("fertilizer-form-slow-release")}
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormDescription>
+                          {t("fertilizer-form-description")}
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
                   <div>
                     <FormLabel className="mb-2 block font-semibold">

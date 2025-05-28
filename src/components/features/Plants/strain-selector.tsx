@@ -99,6 +99,9 @@ export function StrainSelector({
       const result = await createStrainMutation.mutateAsync({
         name,
         breederId,
+        // Set default values for new fields - these can be updated later via dedicated strain form
+        strainType: undefined, // User can update this later
+        geneticsType: undefined, // User can update this later
       });
       return result.id;
     } catch (error) {

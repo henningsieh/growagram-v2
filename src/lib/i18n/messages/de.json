@@ -47,9 +47,12 @@
     }
   },
   "AdminArea": {
+    "navigation": {
+      "label": "Verwaltung"
+    },
     "pageheader": {
-      "title": "Verwaltungsbereich",
-      "subtitle": "Verwaltungs- und Management -Tools"
+      "subtitle": "Verwaltungs- und Management -Tools",
+      "title": "Verwaltungsbereich"
     },
     "settings-coming-soon": "Admin-Einstellungen bald verfügbar",
     "settings-tab": "Einstellungen",
@@ -254,13 +257,41 @@
     "button-label-save-changes": "Änderungen speichern",
     "change-image": "Bild ändern",
     "connect-error": "Fehler beim Verbinden der Pflanze",
+    "culture-medium-label": "Erde, Alternativen & Co.",
+    "culture-medium-description": "Welche Erde oder welches Substrat verwendest du zum Anbau?",
+    "culture-medium-placeholder": "Erde bzw. Substrat auswählen",
+    "culture-medium-coco": "Kokos",
+    "culture-medium-hydro": "Hydro",
+    "culture-medium-rockwool": "Steinwolle",
+    "culture-medium-soil": "Erde",
+    "culture-medium-perlite": "Perlite",
+    "culture-medium-vermiculite": "Vermiculit",
     "delete-button-label": "Grow löschen",
     "delete-grow-button-label": "Grow löschen",
     "disconnect-error": "Fehler beim Trennen der Pflanze",
     "edit-button-label": "Grow bearbeiten",
     "edit-grow-button-label": "Grow bearbeiten",
+    "environment-label": "Umgebung",
+    "environment-description": "Wähle die Umgebung, in der deine Pflanzen wachsen",
+    "environment-placeholder": "Umgebung auswählen",
+    "environment-greenhouse": "Gewächshaus",
+    "environment-hydroponic": "Hydroponik",
+    "environment-indoor": "Indoor",
+    "environment-outdoor": "Outdoor",
     "error-default": "Etwas ist schiefgelaufen. Bitte versuche es später erneut.",
     "error-title": "Ein Fehler ist aufgetreten",
+    "fertilizer-type-label": "Düngertyp",
+    "fertilizer-type-description": "Wähle den Typ des Düngers, den du verwendest",
+    "fertilizer-type-placeholder": "Düngertyp auswählen",
+    "fertilizer-type-organic": "Organisch",
+    "fertilizer-type-mineral": "Mineralisch",
+    "fertilizer-type-slow-release": "Langzeitdünger",
+    "fertilizer-form-label": "Düngerform",
+    "fertilizer-form-description": "Wähle die physische Form oder Anwendungsart deines Düngers",
+    "fertilizer-form-placeholder": "Düngerform auswählen",
+    "fertilizer-form-liquid": "Flüssig",
+    "fertilizer-form-granular": "Granulat",
+    "fertilizer-form-slow-release": "Langzeitdünger",
     "form-description-create-new-grow": "Bearbeite den Namen und weitere Details des Grows",
     "form-description-edit-grow": "Bearbeite den Namen und die Pflanzen des Grows.",
     "form-page-subtitle-edit": "Bearbeite einen Grow aus deiner Sammlung",
@@ -274,7 +305,6 @@
     "grow-name-description": "Gib deinem Grow einen Namen.",
     "grow-name-placeholder": "Gib den Namen des Grows ein",
     "growth-stage": "Wachstumsphase",
-    "header-image": "Titelbild",
     "header-image-description": "Füge ein Titelbild hinzu, um deine Grow-Umgebung zu präsentieren",
     "header-image-update-error-description": "Das Titelbild konnte nicht aktualisiert werden. Bitte versuche es erneut.",
     "header-image-update-error-title": "Fehler bei der Aktualisierung des Titelbilds",
@@ -408,14 +438,15 @@
   "Navigation": {
     "All Grows": "Alle Grows",
     "All Plants": "Alle Pflanzen",
-    "All Updates": "Alle Updates",
+    "All Posts": "Alle Posts",
+    "Following": "Folge ich",
     "Sidebar": {
       "title": "Angebote"
     },
     "Timelines": {
       "All Grows": "Alle Grows",
       "All Plants": "Alle Pflanzen",
-      "All Updates": "Alle Updates"
+      "All Posts": "Alle Posts"
     },
     "dashboard": "Dashboard",
     "dashboard-description": "Behalte deine Grows, deine Pflanzen und deine Fotos im Blick.",
@@ -436,32 +467,6 @@
     "timeline": "Community-Zeitleiste",
     "timeline-description": "Erlebe die gemeinsame Anbau-Reise mit Updates von dir und der Community.",
     "toggle-menu": "Menü umschalten"
-  },
-  "Timeline": {
-    "tabs": {
-      "public": "Alle",
-      "following": "Folge ich"
-    },
-    "public": {
-      "empty": {
-        "title": "Noch keine Beiträge",
-        "description": "Sei der Erste, der seine Anbau-Reise teilt!"
-      }
-    },
-    "following": {
-      "empty": {
-        "title": "Keine Beiträge von gefolgten Benutzern",
-        "description": "Folge anderen Growern, um ihre Updates hier zu sehen.",
-        "exploreButton": "Community erkunden"
-      }
-    },
-    "errors": {
-      "loadFailed": "Fehler beim Laden der Beiträge",
-      "noMore": "Keine weiteren Beiträge zu laden"
-    },
-    "actions": {
-      "retry": "Erneut versuchen"
-    }
   },
   "Notifications": {
     "ActivityFeed": {
@@ -839,9 +844,9 @@
       "unfollow-success-title": "Entfolgen"
     },
     "metadata": {
-      "user-not-found": "Benutzer nicht gefunden",
       "description": "Entdecke die Pflanzen und Grows von {name} auf Growagram",
-      "title": "Profil | {name}"
+      "title": "Profil | {name}",
+      "user-not-found": "Benutzer nicht gefunden"
     },
     "tabs": {
       "grows": "Grows",
@@ -940,5 +945,31 @@
     "light": "Hell",
     "system": "System",
     "toggle-theme": "Designthema umschalten"
+  },
+  "Timeline": {
+    "actions": {
+      "retry": "Erneut versuchen"
+    },
+    "errors": {
+      "loadFailed": "Fehler beim Laden der Beiträge",
+      "noMore": "Keine weiteren Beiträge zu laden"
+    },
+    "following": {
+      "empty": {
+        "description": "Folge anderen Growern, um ihre Updates hier zu sehen.",
+        "exploreButton": "Community erkunden",
+        "title": "Keine Beiträge von gefolgten Benutzern"
+      }
+    },
+    "public": {
+      "empty": {
+        "description": "Sei der Erste, der seine Anbau-Reise teilt!",
+        "title": "Noch keine Beiträge"
+      }
+    },
+    "tabs": {
+      "following": "Folge ich",
+      "public": "Alle"
+    }
   }
 }

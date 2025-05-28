@@ -14,11 +14,25 @@ import {
 export enum PlantsSortField {
   NAME = "name",
   CREATED_AT = "createdAt",
+  UPDATED_AT = "updatedAt",
 }
 
 export enum PlantsViewMode {
   PAGINATION = "pagination",
   INFINITE_SCROLL = "infinite-scroll",
+}
+
+// Plant strain types for filtering
+export enum StrainType {
+  INDICA = "indica",
+  SATIVA = "sativa",
+  HYBRID = "hybrid",
+}
+
+// Plant genetics types for filtering
+export enum GeneticsType {
+  AUTOFLOWERING = "autoflowering",
+  PHOTOPERIOD = "photoperiod",
 }
 
 export type GrowthStage = {

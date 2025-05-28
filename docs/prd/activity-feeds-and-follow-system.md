@@ -91,16 +91,19 @@ The current public timeline implementation creates confusion by mixing different
 
 To ensure proper data modeling and filtering, the following categorization defines which filters belong to which entities:
 
+**Note:** The enum values below represent the final implementation with enhanced options that provide better granularity for filtering and user experience compared to the initial minimal requirements. During development, these categories were expanded to better serve the growing community's needs.
+
 #### Grow Entity Fields
 
-- **Environment:** Indoor, Outdoor, Greenhouse
-- **Culture Medium:** Soil, Cocos, Hydroponic, Other
-- **Fertilizer Type:** Mineral, Organic, Mixed
+- **Environment:** Indoor, Outdoor, Greenhouse, Hydroponic
+- **Culture Medium:** Soil, Coco, Hydro, Rockwool, Perlite, Vermiculite
+- **Fertilizer Type:** Organic, Mineral
+- **Fertilizer Form:** Liquid, Granular, Slow Release
 - **Status:** All, Growing, Harvested _(calculated on-the-fly based on associated plants' growth stages)_
 
 #### Plant Entity Fields
 
-- **Growth Stage:** Seedling, Vegetative, Flowering, Harvested, Curing
+- **Growth Stage:** Planted, Seedling, Vegetation, Flowering, Harvested, Curing
 - **Strain Type:** Indica, Sativa, Hybrid
 - **Genetics Type:** Autoflowering, Photoperiod
 - **Associated Grow:** Filter by specific grows (relationship filter)
@@ -108,7 +111,7 @@ To ensure proper data modeling and filtering, the following categorization defin
 #### Calculated Fields Logic
 
 - **Grow Status** is determined by examining the growth stages of all plants associated with a grow:
-  - **Growing:** At least one plant in stages: Planted, Seedling, Vegetative, or Flowering
+  - **Growing:** At least one plant in stages: Planted, Seedling, Vegetation, or Flowering
   - **Harvested:** At least one plant in stages: Harvested or Curing
 
 ---
@@ -133,7 +136,6 @@ To ensure proper data modeling and filtering, the following categorization defin
 **Acceptance Criteria:**
 
 - [ ] Timeline loads with "All Posts" as default tab
-- [ ] Tabs switch content without page reload
 - [ ] Infinite scroll loads more posts when reaching bottom
 - [ ] Posts display consistent social interaction elements
 - [ ] Following tab requires user authentication
@@ -166,9 +168,10 @@ const followingPosts = await db.query.posts.findMany({
 
 - **Filter Categories (Grow Entity Fields):**
   - Status: All, Growing, Harvested _(calculated on-the-fly, see logic below)_
-  - Environment: Indoor, Outdoor, Greenhouse
-  - Culture medium: Soil, Cocos, Hydroponic, other
-  - Fertilizer type: mineral, organic, mixed
+  - Environment: Indoor, Outdoor, Greenhouse, Hydroponic
+  - Culture Medium: Soil, Coco, Hydro, Rockwool, Perlite, Vermiculite
+  - Fertilizer Type: Organic, Mineral
+  - Fertilizer Form: Liquid, Granular, Slow Release
 - **Sorting Options:**
   - Newest, Oldest, Most Popular, Most Comments, Most Likes
 - **Display Format:**
@@ -193,7 +196,7 @@ const followingPosts = await db.query.posts.findMany({
 The Grow Status filter is **calculated on-the-fly** based on the growth stages of plants associated with each grow, not stored as a hardcoded field:
 
 - **All:** No filtering applied, shows all grows
-- **Growing:** Shows grows that have one or more plants with growth stages: `Planted`, `Seedling`, `Vegetative`, or `Flowering`
+- **Growing:** Shows grows that have one or more plants with growth stages: `Planted`, `Seedling`, `Vegetation`, or `Flowering`
 - **Harvested:** Shows grows that have one or more plants with growth stages: `Harvested` or `Curing`
 
 ```typescript
@@ -206,7 +209,7 @@ const growingGrows = await db.query.grows.findMany({
         inArray(plants.growthStage, [
           "planted",
           "seedling",
-          "vegetative",
+          "vegetation",
           "flowering",
         ]),
       ),
@@ -233,7 +236,7 @@ const harvestedGrows = await db.query.grows.findMany({
 **Features:**
 
 - **Filter Categories (Plant Entity Fields):**
-  - Plant Growth Stages: Planted, Seedling, Vegetative, Flowering, Harvested, Curing
+  - Growth Stages: Planted, Seedling, Vegetation, Flowering, Harvested, Curing
   - Strain Type: Indica, Sativa, Hybrid
   - Genetics Type: Autoflowering, Photoperiod
   - Associated Grow: Filter by specific grows
@@ -450,7 +453,7 @@ export const plantRouter = {
           .enum([
             "all",
             "seedling",
-            "vegetative",
+            "vegetation",
             "flowering",
             "harvested",
             "curing",
@@ -609,22 +612,51 @@ src/components/features/Profile/
 
 ## Implementation Plan
 
+### Foundational Work Completed
+
+**✅ Database Schema Enhancements (Migration 0024)**
+
+- Enhanced `grows` table with filtering fields: `environment`, `culture_medium`, `fertilizer_type`
+- Added performance indexes for exploration queries
+- Type-safe enum definitions in TypeScript with enhanced values
+
+**✅ Form System Updates**
+
+- Updated `grow-form.tsx` with complete UI for all three new filtering fields
+- Enhanced strain creation with `strainType` and `geneticsType` fields
+- Updated Zod schemas for type-safe form validation
+
+**✅ API Layer Enhancements**
+
+- Enhanced grow and plant router mutations to handle new filtering fields
+- Single source of truth for type definitions using z.nativeEnum() references
+- Consistent enum usage across database, API, and frontend
+
+**✅ Navigation System Restructure**
+
+- Replaced tab-based timeline navigation with route-based responsive navigation
+- Updated `modulePaths` constants: removed PUBLICGROWS, PUBLICPLANTS; added FOLLOWINGTIMELINE
+- Restructured timeline routes: `/public/timeline` (All Public), `/public/timeline/following` (Following)
+- Removed `timeline-tabs.tsx` component in favor of existing responsive navigation pattern
+- Updated translation keys for new navigation items in English and German
+- Implemented separate layouts with proper prefetching for each timeline route
+
 ### Phase 1: Timeline System Restructure (Week 1-2)
 
 #### Week 1: Backend API Development
 
-- [ ] **Day 1-2:** Enhance post router with filtering and pagination
-  - Add `getFollowingTimeline` endpoint
-  - Implement cursor-based pagination
-  - Add filtering by user follows
-- [ ] **Day 3-4:** Database optimizations with Drizzle
-  - Add performance indexes using Drizzle schema syntax
-  - Optimize query performance with proper relations
-  - Test with realistic datasets
-- [ ] **Day 5-7:** API documentation and manual testing
-  - Comprehensive tRPC procedure documentation
-  - Manual testing of new endpoints
-  - Performance monitoring and optimization
+- [x] **Day 1-2:** Enhance post router with filtering and pagination
+  - ✅ Add `getFollowingTimeline` endpoint
+  - ✅ Implement cursor-based pagination
+  - ✅ Add filtering by user follows
+- [x] **Day 3-4:** Database optimizations with Drizzle
+  - ✅ Add performance indexes using Drizzle schema syntax
+  - ✅ Optimize query performance with proper relations
+  - ✅ Test with realistic datasets
+- [x] **Day 5-7:** API documentation and manual testing
+  - ✅ Comprehensive tRPC procedure documentation
+  - ✅ Manual testing of new endpoints
+  - ✅ Performance monitoring and optimization
 
 #### Week 2: Frontend Timeline Implementation
 
@@ -645,18 +677,18 @@ src/components/features/Profile/
 
 #### Week 3: Backend Exploration APIs
 
-- [ ] **Day 1-3:** Grow exploration API
-  - Implement `grows.explore` endpoint
-  - Add filtering and sorting logic
-  - Optimize query performance
-- [ ] **Day 4-5:** Plant exploration API
-  - Implement `plants.explore` endpoint
-  - Add plant-specific filters
-  - Search functionality
-- [ ] **Day 6-7:** Testing and optimization
-  - Performance testing with filters
-  - API response optimization
-  - Cache strategy implementation
+- [x] **Day 1-3:** Grow exploration API
+  - ✅ Implement `grows.explore` endpoint
+  - ✅ Add filtering and sorting logic
+  - ✅ Optimize query performance
+- [x] **Day 4-5:** Plant exploration API
+  - ✅ Implement `plants.explore` endpoint
+  - ✅ Add plant-specific filters
+  - ✅ Search functionality
+- [x] **Day 6-7:** Testing and optimization
+  - ✅ Performance testing with filters
+  - ✅ API response optimization
+  - ✅ Cache strategy implementation
 
 #### Week 4: Frontend Exploration Pages
 
@@ -871,7 +903,7 @@ const exploreGrows = await db.query.grows.findMany({
                   inArray(plants.growthStage, [
                     "planted",
                     "seedling",
-                    "vegetative",
+                    "vegetation",
                     "flowering",
                   ]),
                 ),

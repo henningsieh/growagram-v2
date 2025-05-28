@@ -14,12 +14,13 @@ import {
   uniqueIndex,
 } from "drizzle-orm/pg-core";
 import { CommentableEntityType } from "~/types/comment";
-import { CultureMedium, FertilizerType, GrowEnvironment } from "~/types/grow";
+import { CultureMedium, FertilizerType, FertilizerForm, GrowEnvironment } from "~/types/grow";
 import { LikeableEntityType } from "~/types/like";
 import {
   NotifiableEntityType,
   NotificationEventType,
 } from "~/types/notification";
+import { GeneticsType, StrainType } from "~/types/plant";
 import { PostableEntityType } from "~/types/post";
 import { UserRoles } from "~/types/user";
 
@@ -239,6 +240,8 @@ export const cannabisStrains = pgTable("cannabis_strain", {
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
   name: text("name").notNull(),
+  strainType: text("strain_type").$type<StrainType>(),
+  geneticsType: text("genetics_type").$type<GeneticsType>(),
   thcContent: integer("thc_content"),
   cbdContent: integer("cbd_content"),
   breederId: text("breeder_id")
@@ -271,6 +274,7 @@ export const grows = pgTable(
     environment: text("environment").$type<GrowEnvironment>(),
     cultureMedium: text("culture_medium").$type<CultureMedium>(),
     fertilizerType: text("fertilizer_type").$type<FertilizerType>(),
+    fertilizerForm: text("fertilizer_form").$type<FertilizerForm>(),
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
@@ -298,6 +302,9 @@ export const grows = pgTable(
     cultureMediumIdx: index("grows_culture_medium_idx").on(table.cultureMedium),
     fertilizerTypeIdx: index("grows_fertilizer_type_idx").on(
       table.fertilizerType,
+    ),
+    fertilizerFormIdx: index("grows_fertilizer_form_idx").on(
+      table.fertilizerForm,
     ),
     // Composite indexes for complex filtering queries
     environmentCreatedAtIdx: index("grows_environment_created_at_idx").on(

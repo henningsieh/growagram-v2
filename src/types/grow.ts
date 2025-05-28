@@ -32,7 +32,11 @@ export enum CultureMedium {
 // Fertilizer types for filtering
 export enum FertilizerType {
   ORGANIC = "organic",
-  SYNTHETIC = "synthetic",
+  MINERAL = "mineral",
+}
+
+// Fertilizer form/application method for filtering
+export enum FertilizerForm {
   LIQUID = "liquid",
   GRANULAR = "granular",
   SLOW_RELEASE = "slow_release",

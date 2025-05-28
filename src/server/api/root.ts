@@ -143,6 +143,10 @@ export type GetAllPlantsOutput = RouterOutput["plants"]["getAllPlants"];
 export type GetAllPlantsType = RouterOutput["plants"]["getAllPlants"]["plants"];
 export type GetAllPlantType = RouterOutput["plants"]["getAllPlants"]["plants"][number];
 
+export type ExplorePlantsOutput = RouterOutput["plants"]["explore"];
+export type ExplorePlantsType = RouterOutput["plants"]["explore"]["plants"];
+export type ExplorePlantType = RouterOutput["plants"]["explore"]["plants"][number];
+
 export type PlantByIdType = NonNullable<GetPlantByIdType>;
 export type PlantImagesType = NonNullable<GetPlantByIdType>["plantImages"];
 export type PlantImageType = NonNullable<GetPlantByIdType>["plantImages"][number];
@@ -152,6 +156,7 @@ export type GetOwnPlantsInput = RouterInput["plants"]["getOwnPlants"];
 export type GetPlantByIdInput = RouterInput["plants"]["getById"];
 export type CreateOrEditPlantInput = RouterInput["plants"]["createOrEdit"];
 export type GetAllPlantsInput = RouterInput["plants"]["getAllPlants"];
+export type ExplorePlantsInput = RouterInput["plants"]["explore"];
 export type GetConnectablePlantsInput = RouterInput["plants"]["getConnectablePlants"];
 
 // growRouter
@@ -165,10 +170,15 @@ export type GetAllGrowsOutput = RouterOutput["grows"]["getAllGrows"];
 export type GetAllGrowsType = RouterOutput["grows"]["getAllGrows"]["grows"];
 export type GetAllGrowType = RouterOutput["grows"]["getAllGrows"]["grows"][number];
 
+export type ExploreGrowsOutput = RouterOutput["grows"]["explore"];
+export type ExploreGrowsType = RouterOutput["grows"]["explore"]["grows"];
+export type ExploreGrowType = RouterOutput["grows"]["explore"]["grows"][number];
+
 //  INPUTS:
 export type GetGrowByIdInput = RouterInput["grows"]["getById"];
 export type GetOwnGrowsInput = RouterInput["grows"]["getOwnGrows"];
 export type GetAllGrowsInput = RouterInput["grows"]["getAllGrows"];
+export type ExploreGrowsInput = RouterInput["grows"]["explore"];
 export type CreateOrEditGrowInput = RouterInput["grows"]["createOrEdit"];
 export type GrowConnectPlantInput = RouterInput["grows"]["connectPlant"];
 export type GrowDisconnectPlantInput = RouterInput["grows"]["disconnectPlant"];

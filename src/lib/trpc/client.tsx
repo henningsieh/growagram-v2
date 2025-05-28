@@ -13,6 +13,8 @@ import {
 } from "@trpc/client";
 import { createTRPCContext } from "@trpc/tanstack-react-query";
 import SuperJSON from "superjson";
+import { TRPC_ENDPOINT } from "~/assets/constants";
+import { env } from "~/env";
 import type { AppRouter } from "../../server/api/root";
 import { makeQueryClient } from "./query-client";
 
@@ -35,9 +37,9 @@ function getUrl() {
   const base = (() => {
     if (typeof window !== "undefined") return "";
     if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
-    return "http://localhost:3000";
+    return env.NEXTAUTH_URL;
   })();
-  return `${base}/api/trpc`;
+  return `${base}${TRPC_ENDPOINT}`;
 }
 export function TRPCReactProvider(
   props: Readonly<{

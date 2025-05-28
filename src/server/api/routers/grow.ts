@@ -1,6 +1,6 @@
 // src/server/api/routers/grow.ts:
 import { TRPCError } from "@trpc/server";
-import { and, count, eq, lt } from "drizzle-orm";
+import { and, count, eq, ilike, lt } from "drizzle-orm";
 import { z } from "zod";
 import { PaginationItemsPerPage } from "~/assets/constants";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
@@ -12,7 +12,7 @@ import {
 } from "~/lib/trpc/init";
 import { connectPlantWithImagesQuery } from "~/server/api/routers/plantImages";
 import { GrowsSortField } from "~/types/grow";
-import { growExplorationSchema, growSchema } from "~/types/zodSchema";
+import { growExplorationSchema, growFormSchema } from "~/types/zodSchema";
 
 export const growRouter = createTRPCRouter({
   // Get paginated grows for the current user
@@ -75,6 +75,8 @@ export const growRouter = createTRPCRouter({
                 columns: {
                   id: true,
                   name: true,
+                  strainType: true,
+                  geneticsType: true,
                   thcContent: true,
                   cbdContent: true,
                 },
@@ -147,6 +149,8 @@ export const growRouter = createTRPCRouter({
                 columns: {
                   id: true,
                   name: true,
+                  strainType: true,
+                  geneticsType: true,
                   thcContent: true,
                   cbdContent: true,
                 },
@@ -187,6 +191,8 @@ export const growRouter = createTRPCRouter({
                 columns: {
                   id: true,
                   name: true,
+                  strainType: true,
+                  geneticsType: true,
                   thcContent: true,
                   cbdContent: true,
                 },
@@ -351,7 +357,7 @@ export const growRouter = createTRPCRouter({
     }),
 
   createOrEdit: protectedProcedure
-    .input(growSchema)
+    .input(growFormSchema)
     .mutation(async ({ ctx, input }) => {
       try {
         // Validate input (though Zod schema already does this)
@@ -386,12 +392,18 @@ export const growRouter = createTRPCRouter({
           .values({
             id: input.id || crypto.randomUUID(),
             name: input.name,
+            environment: input.environment,
+            cultureMedium: input.cultureMedium,
+            fertilizerType: input.fertilizerType,
             ownerId: ctx.session.user.id,
           })
           .onConflictDoUpdate({
             target: grows.id,
             set: {
               name: input.name,
+              environment: input.environment,
+              cultureMedium: input.cultureMedium,
+              fertilizerType: input.fertilizerType,
             },
           })
           .returning();
@@ -534,57 +546,120 @@ export const growRouter = createTRPCRouter({
         whereConditions.push(lt(grows.createdAt, new Date(cursor)));
       }
 
+      // Add search functionality if search term is provided
+      if (input.search) {
+        const searchTerm = `%${input.search}%`;
+        whereConditions.push(ilike(grows.name, searchTerm));
+      }
+
       const whereClause =
         whereConditions.length > 0 ? and(...whereConditions) : undefined;
 
-      // Get filtered grows with cursor-based pagination
-      const filteredGrows = await ctx.db.query.grows.findMany({
-        where: whereClause,
-        orderBy: (grows, { desc }) => [desc(grows.createdAt)],
-        limit: limit + 1, // Get one extra to determine if there's a next page
-        with: {
-          owner: true,
-          headerImage: true,
-          plants: {
-            with: {
-              owner: true,
-              grow: true,
-              strain: {
-                columns: {
-                  id: true,
-                  name: true,
-                  thcContent: true,
-                  cbdContent: true,
-                },
-                with: { breeder: { columns: { id: true, name: true } } },
+      try {
+        // Get filtered grows with cursor-based pagination
+        const filteredGrows = await ctx.db.query.grows.findMany({
+          where: whereClause,
+          orderBy: (grows, { desc }) => [desc(grows.createdAt)],
+          limit: limit + 1, // Get one extra to determine if there's a next page
+          with: {
+            owner: {
+              columns: {
+                id: true,
+                username: true,
+                email: true,
+                image: true,
+                createdAt: true,
               },
-              headerImage: { columns: { id: true, imageUrl: true } },
-              plantImages: connectPlantWithImagesQuery,
+            },
+            headerImage: true,
+            plants: {
+              with: {
+                owner: {
+                  columns: {
+                    id: true,
+                    username: true,
+                    email: true,
+                    image: true,
+                  },
+                },
+                grow: {
+                  columns: {
+                    id: true,
+                    name: true,
+                  },
+                },
+                strain: {
+                  columns: {
+                    id: true,
+                    name: true,
+                    strainType: true,
+                    geneticsType: true,
+                    thcContent: true,
+                    cbdContent: true,
+                  },
+                  with: {
+                    breeder: {
+                      columns: {
+                        id: true,
+                        name: true,
+                      },
+                    },
+                  },
+                },
+                headerImage: {
+                  columns: {
+                    id: true,
+                    imageUrl: true,
+                  },
+                },
+                plantImages: connectPlantWithImagesQuery,
+              },
             },
           },
-        },
-      });
+        });
 
-      // Determine if there's a next page and prepare cursor
-      const hasNextPage = filteredGrows.length > limit;
-      const items = hasNextPage ? filteredGrows.slice(0, -1) : filteredGrows;
-      const nextCursor = hasNextPage
-        ? items[items.length - 1]?.createdAt.toISOString()
-        : null;
+        // Determine if there's a next page and prepare cursor
+        const hasNextPage = filteredGrows.length > limit;
+        const items = hasNextPage ? filteredGrows.slice(0, -1) : filteredGrows;
+        const nextCursor = hasNextPage
+          ? items[items.length - 1]?.createdAt.toISOString()
+          : null;
 
-      // Get total count for the filtered results
-      const totalCountResult = await ctx.db
-        .select({ count: count() })
-        .from(grows)
-        .where(whereClause);
+        // Get total count for the filtered results
+        const totalCountResult = await ctx.db
+          .select({ count: count() })
+          .from(grows)
+          .where(whereClause);
 
-      const totalCount = Number(totalCountResult[0].count);
+        const totalCount = Number(totalCountResult[0]?.count ?? 0);
 
-      return {
-        grows: items,
-        nextCursor,
-        hasNextPage,
-        totalCount,
-      };
+        return {
+          grows: items,
+          nextCursor,
+          hasNextPage,
+          totalCount,
+          meta: {
+            appliedFilters: {
+              environment: input.environment,
+              cultureMedium: input.cultureMedium,
+              fertilizerType: input.fertilizerType,
+              ownerId: input.ownerId,
+              search: input.search,
+            },
+            pagination: {
+              limit,
+              cursor,
+              hasNextPage,
+              totalCount,
+            },
+          },
+        };
+      } catch (error) {
+        console.error("Error in grows.explore:", error);
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to fetch grows. Please try again.",
+        });
+      }
     }),
 });
