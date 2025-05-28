@@ -779,7 +779,7 @@ export function GrowForm({ grow }: { grow?: GetGrowByIdType }) {
                               {t("fertilizer-form-granular")}
                             </SelectItem>
                             <SelectItem value={FertilizerForm.SLOW_RELEASE}>
-                              {t("fertilizer-form-slow-release")}
+                              {t("fertilizer-form-slow_release")}
                             </SelectItem>
                           </SelectContent>
                         </Select>

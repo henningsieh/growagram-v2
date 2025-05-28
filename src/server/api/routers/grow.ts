@@ -537,6 +537,10 @@ export const growRouter = createTRPCRouter({
         whereConditions.push(eq(grows.fertilizerType, input.fertilizerType));
       }
 
+      if (input.fertilizerForm) {
+        whereConditions.push(eq(grows.fertilizerForm, input.fertilizerForm));
+      }
+
       if (input.ownerId) {
         whereConditions.push(eq(grows.ownerId, input.ownerId));
       }
@@ -643,6 +647,7 @@ export const growRouter = createTRPCRouter({
               environment: input.environment,
               cultureMedium: input.cultureMedium,
               fertilizerType: input.fertilizerType,
+              fertilizerForm: input.fertilizerForm,
               ownerId: input.ownerId,
               search: input.search,
             },

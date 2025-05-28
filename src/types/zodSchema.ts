@@ -2,7 +2,12 @@
 import { z } from "zod";
 import { routing } from "~/lib/i18n/routing";
 // Import filter enums
-import { CultureMedium, FertilizerType, FertilizerForm, GrowEnvironment } from "~/types/grow";
+import {
+  CultureMedium,
+  FertilizerForm,
+  FertilizerType,
+  GrowEnvironment,
+} from "~/types/grow";
 import { Locale } from "~/types/locale";
 import {
   NotifiableEntityType,

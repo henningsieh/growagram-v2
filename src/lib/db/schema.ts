@@ -14,7 +14,12 @@ import {
   uniqueIndex,
 } from "drizzle-orm/pg-core";
 import { CommentableEntityType } from "~/types/comment";
-import { CultureMedium, FertilizerType, FertilizerForm, GrowEnvironment } from "~/types/grow";
+import {
+  CultureMedium,
+  FertilizerForm,
+  FertilizerType,
+  GrowEnvironment,
+} from "~/types/grow";
 import { LikeableEntityType } from "~/types/like";
 import {
   NotifiableEntityType,
