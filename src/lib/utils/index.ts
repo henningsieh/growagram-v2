@@ -117,3 +117,7 @@ export function getDaysBetween(start: Date, end: Date): number {
   const millisecondsPerDay = 1000 * 60 * 60 * 24;
   return Math.ceil((end.getTime() - start.getTime()) / millisecondsPerDay);
 }
+
+// Metadata utilities
+export { generatePageMetadata, generateSiteMetadata } from "./metadata";
+export type { PageMetadataKey } from "./metadata";

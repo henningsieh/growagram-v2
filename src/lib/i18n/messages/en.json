@@ -242,6 +242,38 @@
     "path": "Requested path",
     "title": "Page Not Found"
   },
+  "Exploration": {
+    "Grows": {
+      "Filters": {
+        "activeFilters": "Active Filters",
+        "clearAll": "Clear All",
+        "search": {
+          "label": "Search Grows",
+          "placeholder": "Search by name, strain, or grower..."
+        },
+        "title": "Filter & Search"
+      },
+      "description": "Discover diverse growing environments and get inspiration from other growers",
+      "error-default": "Something went wrong. Please try again later. ",
+      "error-title": "Error loading grows",
+      "no-grows-found": "No grows found",
+      "no-more-grows": "No more grows",
+      "showing-results": "Show {count} of {total} grows",
+      "title": "Explore Grows",
+      "total-grows-available": "{total} Grows available",
+      "try-different-filters": "Try other filters or search all available Grows",
+      "updating-results": "Results will be updated. ..."
+    }
+  },
+  "Explore": {
+    "culture-medium": "Culture Medium",
+    "environment": "Environment",
+    "fertilizer-form": "Fertilizer Form",
+    "fertilizer-type": "Fertilizer Type",
+    "plant": "plant",
+    "plants": "plants",
+    "view-grow": "View Grow"
+  },
   "Grows": {
     "DeleteConfirmation": {
       "alertCautionText": "This action also deletes Updates and other postings if they have this Grow as their only reference!",
@@ -257,41 +289,41 @@
     "button-label-save-changes": "Save Changes",
     "change-image": "Change Image",
     "connect-error": "Error connecting plant",
-    "culture-medium-label": "Soil, Alternatives & More",
-    "culture-medium-description": "What kind of soil or material are you using for cultivation?",
-    "culture-medium-placeholder": "Select culture medium",
     "culture-medium-coco": "Coco",
+    "culture-medium-description": "What kind of soil or material are you using for cultivation?",
     "culture-medium-hydro": "Hydro",
+    "culture-medium-label": "Soil, Alternatives & More",
+    "culture-medium-perlite": "Perlite",
+    "culture-medium-placeholder": "Select culture medium",
     "culture-medium-rockwool": "Rockwool",
     "culture-medium-soil": "Soil",
-    "culture-medium-perlite": "Perlite",
     "culture-medium-vermiculite": "Vermiculite",
     "delete-button-label": "Delete Grow",
     "delete-grow-button-label": "Delete Grow",
     "disconnect-error": "Error disconnecting plant",
     "edit-button-label": "Edit Grow",
     "edit-grow-button-label": "Edit Grow",
-    "environment-label": "Environment",
     "environment-description": "Choose the environment where your plants are growing",
-    "environment-placeholder": "Select environment",
     "environment-greenhouse": "Greenhouse",
     "environment-hydroponic": "Hydroponic",
     "environment-indoor": "Indoor",
+    "environment-label": "Environment",
     "environment-outdoor": "Outdoor",
+    "environment-placeholder": "Select environment",
     "error-default": "Something went wrong. Please try again later.",
     "error-title": "An error occurred",
-    "fertilizer-type-label": "Fertilizer Type",
-    "fertilizer-type-description": "Choose the type of fertilizer you're using",
-    "fertilizer-type-placeholder": "Select fertilizer type",
-    "fertilizer-type-organic": "Organic fertilizer",
-    "fertilizer-type-mineral": "Mineral fertilizer",
-    "fertilizer-type-slow-release": "Slow Release",
-    "fertilizer-form-label": "Fertilizer Form",
     "fertilizer-form-description": "Choose the physical form or application method of your fertilizer",
-    "fertilizer-form-placeholder": "Select fertilizer form",
-    "fertilizer-form-liquid": "Liquid",
     "fertilizer-form-granular": "Granular",
-    "fertilizer-form-slow-release": "Slow Release",
+    "fertilizer-form-label": "Fertilizer Form",
+    "fertilizer-form-liquid": "Liquid",
+    "fertilizer-form-placeholder": "Select fertilizer form",
+    "fertilizer-form-slow_release": "Slow Release",
+    "fertilizer-type-description": "Choose the type of fertilizer you're using",
+    "fertilizer-type-label": "Fertilizer Type",
+    "fertilizer-type-mineral": "Mineral fertilizer",
+    "fertilizer-type-organic": "Organic fertilizer",
+    "fertilizer-type-placeholder": "Select fertilizer type",
+    "fertilizer-type-slow_release": "Slow Release",
     "form-description-create-new-grow": "Edit the name and further details of the grow",
     "form-description-edit-grow": "Modify your grow Environment",
     "form-page-subtitle-edit": "Edit this grow from your collection",
@@ -315,8 +347,10 @@
     "image-upload-success": "Image uploaded successfully",
     "mygrows-page-subtitle": "View and edit my grows",
     "mygrows-page-title": "My Grows",
+    "no-grows-found": "No grows found",
     "no-grows-have-been-found": "No grows have been found.",
     "no-grows-yet": "You haven&apos;t created any Grows yet.",
+    "no-more-grows": "No more grows",
     "no-plants-connectable": "No plants could be found. Either all your plants are assigned to other grows or you don't have any plants yet.",
     "no-plants-connected": "No plants connected yet.",
     "plants-selected": "{count} plant(s) selected.",
@@ -327,6 +361,7 @@
     "select-image": "Select Image",
     "select-plants": "Select Plants",
     "select-plants-optional": "Selecting plants is optional.",
+    "showing-results": "Showing {count} of {total} grows",
     "sort-grows-createdAt": "Created at",
     "sort-grows-updatedAt": "Updated at",
     "sort-label": "Sort by:",
@@ -343,7 +378,10 @@
         "title": "Plant Removed"
       }
     },
+    "total-grows-available": "{total} grows available",
+    "try-different-filters": "Try different filters or browse all available grows",
     "unexpected-error": "Unexpected error occurred.",
+    "updating-results": "Updating results...",
     "upload-image": "Upload Image",
     "uploading": "Uploading..."
   },
@@ -970,6 +1008,45 @@
     "tabs": {
       "following": "Following",
       "public": "All"
+    }
+  },
+  "Metadata": {
+    "site": {
+      "title": "GrowAGram - Cannabis Growing Community",
+      "description": "Join the leading cannabis growing community. Share your grows, learn from experts, track your plants, and connect with growers worldwide.",
+      "keywords": "cannabis growing, marijuana cultivation, grow journal, plant tracking, growing community, cannabis seeds, hydroponics, soil growing"
+    },
+    "pages": {
+      "explore": {
+        "title": "Explore Grows | Cannabis Growing Gallery | GrowAGram",
+        "description": "Discover and explore thousands of cannabis grows from our community. Filter by environment, growing medium, nutrients, strains and more. Learn from successful growing techniques.",
+        "keywords": "cannabis grows, growing gallery, marijuana cultivation, grow examples, cannabis strains, hydroponic grows, soil grows, indoor growing, outdoor growing"
+      },
+      "timeline": {
+        "title": "Growing Timeline | Cannabis Community Feed | GrowAGram",
+        "description": "Follow the latest updates from cannabis growers worldwide. See real-time progress, growing tips, and connect with the growing community.",
+        "keywords": "cannabis timeline, growing updates, marijuana community, grower feed, cannabis cultivation progress"
+      },
+      "plants": {
+        "title": "Cannabis Plants Gallery | Plant Tracking | GrowAGram",
+        "description": "Browse cannabis plants from growers worldwide. Track growth stages, compare strains, and learn from successful cultivation techniques.",
+        "keywords": "cannabis plants, marijuana plants, plant tracking, cannabis strains, growing stages, plant gallery"
+      },
+      "grows": {
+        "title": "Cannabis Grows | Complete Growing Journals | GrowAGram",
+        "description": "Complete cannabis growing journals from seed to harvest. Learn cultivation techniques, growing methods, and get inspired by successful grows.",
+        "keywords": "cannabis grows, growing journals, marijuana cultivation, grow diaries, cannabis growing guide, cultivation techniques"
+      },
+      "following": {
+        "title": "Following | Your Growing Network | GrowAGram",
+        "description": "Stay updated with growers you follow. See their latest grows, plants, and growing progress in your personalized feed.",
+        "keywords": "following growers, cannabis community, growing network, grower updates"
+      },
+      "dashboard": {
+        "title": "Dashboard | Manage Your Grows | GrowAGram",
+        "description": "Manage your cannabis grows, track plant progress, and organize your growing journey in your personal dashboard.",
+        "keywords": "grow dashboard, cannabis grow management, plant tracking, growing journal"
+      }
     }
   }
 }

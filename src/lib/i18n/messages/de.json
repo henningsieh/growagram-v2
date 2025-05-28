@@ -242,6 +242,38 @@
     "path": "Angefragter Pfad",
     "title": "Seite nicht gefunden"
   },
+  "Exploration": {
+    "Grows": {
+      "Filters": {
+        "activeFilters": "Aktive Filter",
+        "clearAll": "Alle löschen",
+        "search": {
+          "label": "Suche",
+          "placeholder": "Nach Grows suchen..."
+        },
+        "title": "Filter"
+      },
+      "description": "Entdecke vielfältige Anbauumgebungen und hole dir Inspiration von anderen Growern",
+      "error-default": "Etwas ist schiefgelaufen. Bitte versuche es später erneut.",
+      "error-title": "Fehler beim Laden der Grows",
+      "no-grows-found": "Keine Grows gefunden",
+      "no-more-grows": "Keine weiteren Grows",
+      "showing-results": "Zeige {count} von {total} Grows",
+      "title": "Erkunde Grows",
+      "total-grows-available": "{total} Grows verfügbar",
+      "try-different-filters": "Versuche andere Filter oder durchsuche alle verfügbaren Grows",
+      "updating-results": "Ergebnisse werden aktualisiert..."
+    }
+  },
+  "Explore": {
+    "culture-medium": "Kulturmedium",
+    "environment": "Umgebung",
+    "fertilizer-form": "Düngerform",
+    "fertilizer-type": "Düngertyp",
+    "plant": "Pflanze",
+    "plants": "Pflanzen",
+    "view-grow": "Grow ansehen"
+  },
   "Grows": {
     "DeleteConfirmation": {
       "alertCautionText": "Diese Aktion löscht auch Updates und andere Beiträge, wenn dieser Grow deren einzige Referenz ist!",
@@ -257,41 +289,41 @@
     "button-label-save-changes": "Änderungen speichern",
     "change-image": "Bild ändern",
     "connect-error": "Fehler beim Verbinden der Pflanze",
-    "culture-medium-label": "Erde, Alternativen & Co.",
-    "culture-medium-description": "Welche Erde oder welches Substrat verwendest du zum Anbau?",
-    "culture-medium-placeholder": "Erde bzw. Substrat auswählen",
     "culture-medium-coco": "Kokos",
+    "culture-medium-description": "Welche Erde oder welches Substrat verwendest du zum Anbau?",
     "culture-medium-hydro": "Hydro",
+    "culture-medium-label": "Erde, Alternativen & Co.",
+    "culture-medium-perlite": "Perlite",
+    "culture-medium-placeholder": "Erde bzw. Substrat auswählen",
     "culture-medium-rockwool": "Steinwolle",
     "culture-medium-soil": "Erde",
-    "culture-medium-perlite": "Perlite",
     "culture-medium-vermiculite": "Vermiculit",
     "delete-button-label": "Grow löschen",
     "delete-grow-button-label": "Grow löschen",
     "disconnect-error": "Fehler beim Trennen der Pflanze",
     "edit-button-label": "Grow bearbeiten",
     "edit-grow-button-label": "Grow bearbeiten",
-    "environment-label": "Umgebung",
     "environment-description": "Wähle die Umgebung, in der deine Pflanzen wachsen",
-    "environment-placeholder": "Umgebung auswählen",
     "environment-greenhouse": "Gewächshaus",
     "environment-hydroponic": "Hydroponik",
     "environment-indoor": "Indoor",
+    "environment-label": "Umgebung",
     "environment-outdoor": "Outdoor",
+    "environment-placeholder": "Umgebung auswählen",
     "error-default": "Etwas ist schiefgelaufen. Bitte versuche es später erneut.",
     "error-title": "Ein Fehler ist aufgetreten",
-    "fertilizer-type-label": "Düngertyp",
-    "fertilizer-type-description": "Wähle den Typ des Düngers, den du verwendest",
-    "fertilizer-type-placeholder": "Düngertyp auswählen",
-    "fertilizer-type-organic": "Organisch",
-    "fertilizer-type-mineral": "Mineralisch",
-    "fertilizer-type-slow-release": "Langzeitdünger",
-    "fertilizer-form-label": "Düngerform",
     "fertilizer-form-description": "Wähle die physische Form oder Anwendungsart deines Düngers",
-    "fertilizer-form-placeholder": "Düngerform auswählen",
-    "fertilizer-form-liquid": "Flüssig",
     "fertilizer-form-granular": "Granulat",
-    "fertilizer-form-slow-release": "Langzeitdünger",
+    "fertilizer-form-label": "Düngerform",
+    "fertilizer-form-liquid": "Flüssig",
+    "fertilizer-form-placeholder": "Düngerform auswählen",
+    "fertilizer-form-slow_release": "Langzeitdünger",
+    "fertilizer-type-description": "Wähle den Typ des Düngers, den du verwendest",
+    "fertilizer-type-label": "Düngertyp",
+    "fertilizer-type-mineral": "Mineralisch",
+    "fertilizer-type-organic": "Organisch",
+    "fertilizer-type-placeholder": "Düngertyp auswählen",
+    "fertilizer-type-slow_release": "Langzeitdünger",
     "form-description-create-new-grow": "Bearbeite den Namen und weitere Details des Grows",
     "form-description-edit-grow": "Bearbeite den Namen und die Pflanzen des Grows.",
     "form-page-subtitle-edit": "Bearbeite einen Grow aus deiner Sammlung",
@@ -315,8 +347,10 @@
     "image-upload-success": "Bild erfolgreich hochgeladen",
     "mygrows-page-subtitle": "Anzeige und Verwaltung meiner Grows",
     "mygrows-page-title": "Meine Grows",
+    "no-grows-found": "Keine Grows gefunden",
     "no-grows-have-been-found": "Es wurden keine Grows gefunden.",
     "no-grows-yet": "Du hast bisher keine Grows erstellt.",
+    "no-more-grows": "Keine weiteren Grows",
     "no-plants-connectable": "Es konnten keine Pflanzen gefunden werden. Entweder sind alle deine Pflanzen anderen Grows zugeordnet oder du hast noch keine Pflanzen.",
     "no-plants-connected": "Bisher keine Pflanzen zugeordnet.",
     "plants-selected": "{count} Pflanze(n) ausgewählt.",
@@ -327,6 +361,7 @@
     "select-image": "Bild auswählen",
     "select-plants": "Pflanzen auswählen",
     "select-plants-optional": "Die Auswahl von Pflanzen ist optional.",
+    "showing-results": "Zeige {count} von {total} Grows",
     "sort-grows-createdAt": "Erstellt am",
     "sort-grows-updatedAt": "Aktualisiert am",
     "sort-label": "Sortieren nach:",
@@ -343,7 +378,10 @@
         "title": "Pflanze entfernt"
       }
     },
+    "total-grows-available": "{total} Grows verfügbar",
+    "try-different-filters": "Versuche andere Filter oder durchsuche alle verfügbaren Grows",
     "unexpected-error": "Ein unerwarteter Fehler ist aufgetreten.",
+    "updating-results": "Ergebnisse werden aktualisiert...",
     "upload-image": "Bild hochladen",
     "uploading": "Wird hochgeladen..."
   },
@@ -970,6 +1008,45 @@
     "tabs": {
       "following": "Folge ich",
       "public": "Alle"
+    }
+  },
+  "Metadata": {
+    "site": {
+      "title": "GrowAGram - Cannabis Anbau Community",
+      "description": "Werde Teil der führenden Cannabis-Anbau-Community. Teile deine Grows, lerne von Experten, verfolge deine Pflanzen und vernetze dich mit Growern weltweit.",
+      "keywords": "Cannabis Anbau, Marihuana Kultivierung, Grow Journal, Pflanzen-Tracking, Anbau Community, Cannabis Samen, Hydroponik, Erde Anbau"
+    },
+    "pages": {
+      "explore": {
+        "title": "Grows Entdecken | Cannabis Anbau Galerie | GrowAGram",
+        "description": "Entdecke und erkunde tausende Cannabis-Grows unserer Community. Filtere nach Umgebung, Anbaumedium, Nährstoffen, Sorten und mehr. Lerne von erfolgreichen Anbautechniken.",
+        "keywords": "Cannabis Grows, Anbau Galerie, Marihuana Kultivierung, Anbau Beispiele, Cannabis Sorten, hydroponische Grows, Erde Grows, Indoor Anbau, Outdoor Anbau"
+      },
+      "timeline": {
+        "title": "Anbau Timeline | Cannabis Community Feed | GrowAGram",
+        "description": "Folge den neuesten Updates von Cannabis-Growern weltweit. Sieh Echtzeit-Fortschritte, Anbau-Tipps und vernetze dich mit der Anbau-Community.",
+        "keywords": "Cannabis Timeline, Anbau Updates, Marihuana Community, Grower Feed, Cannabis Anbau Fortschritt"
+      },
+      "plants": {
+        "title": "Cannabis Pflanzen Galerie | Pflanzen Tracking | GrowAGram",
+        "description": "Durchstöbere Cannabis-Pflanzen von Growern weltweit. Verfolge Wachstumsphasen, vergleiche Sorten und lerne von erfolgreichen Kultivierungstechniken.",
+        "keywords": "Cannabis Pflanzen, Marihuana Pflanzen, Pflanzen Tracking, Cannabis Sorten, Wachstumsphasen, Pflanzen Galerie"
+      },
+      "grows": {
+        "title": "Cannabis Grows | Komplette Anbau Journals | GrowAGram",
+        "description": "Komplette Cannabis-Anbau-Journale von Samen bis zur Ernte. Lerne Kultivierungstechniken, Anbaumethoden und lass dich von erfolgreichen Grows inspirieren.",
+        "keywords": "Cannabis Grows, Anbau Journals, Marihuana Kultivierung, Grow Diaries, Cannabis Anbau Guide, Kultivierungstechniken"
+      },
+      "following": {
+        "title": "Folge ich | Dein Anbau Netzwerk | GrowAGram",
+        "description": "Bleibe auf dem Laufenden mit Growern, denen du folgst. Sieh ihre neuesten Grows, Pflanzen und Anbau-Fortschritte in deinem personalisierten Feed.",
+        "keywords": "Grower folgen, Cannabis Community, Anbau Netzwerk, Grower Updates"
+      },
+      "dashboard": {
+        "title": "Dashboard | Verwalte deine Grows | GrowAGram",
+        "description": "Verwalte deine Cannabis-Grows, verfolge Pflanzen-Fortschritte und organisiere deine Anbau-Reise in deinem persönlichen Dashboard.",
+        "keywords": "Grow Dashboard, Cannabis Grow Management, Pflanzen Tracking, Anbau Journal"
+      }
     }
   }
 }
