@@ -96,7 +96,7 @@ To ensure proper data modeling and filtering, the following categorization defin
 #### Grow Entity Fields
 
 - **Environment:** Indoor, Outdoor, Greenhouse, Hydroponic
-- **Culture Medium:** Soil, Coco, Hydro, Rockwool, Perlite, Vermiculite
+- **Culture Medium:** Soil, Coco, Hydro, Rockwool, Perlite
 - **Fertilizer Type:** Organic, Mineral
 - **Fertilizer Form:** Liquid, Granular, Slow Release
 - **Status:** All, Growing, Harvested _(calculated on-the-fly based on associated plants' growth stages)_
@@ -169,7 +169,7 @@ const followingPosts = await db.query.posts.findMany({
 - **Filter Categories (Grow Entity Fields):**
   - Status: All, Growing, Harvested _(calculated on-the-fly, see logic below)_
   - Environment: Indoor, Outdoor, Greenhouse, Hydroponic
-  - Culture Medium: Soil, Coco, Hydro, Rockwool, Perlite, Vermiculite
+  - Culture Medium: Soil, Coco, Hydro, Rockwool, Perlite
   - Fertilizer Type: Organic, Mineral
   - Fertilizer Form: Liquid, Granular, Slow Release
 - **Sorting Options:**
@@ -692,18 +692,18 @@ src/components/features/Profile/
 
 #### Week 4: Frontend Exploration Pages
 
-- [ ] **Day 1-3:** Exploration page layouts
-  - Create exploration page templates
-  - Implement filter sidebars
-  - Grid layouts for entities
-- [ ] **Day 4-5:** Filter and search components
-  - Multi-select filter components
-  - Real-time search implementation
-  - URL parameter management
-- [ ] **Day 6-7:** Integration and styling
-  - Responsive design implementation
-  - Accessibility features
-  - Cross-browser testing
+- [x] **Day 1-3:** Exploration page layouts
+  - ✅ Create exploration page templates
+  - ✅ Implement filter sidebars
+  - ✅ Grid layouts for entities
+- [x] **Day 4-5:** Filter and search components
+  - ✅ Multi-select filter components
+  - ✅ Real-time search implementation
+  - ✅ URL parameter management
+- [x] **Day 6-7:** Integration and styling
+  - ✅ Responsive design implementation
+  - ✅ Accessibility features
+  - ✅ Cross-browser testing
 
 ### Phase 3: Activity Feeds (Week 5-6)
 

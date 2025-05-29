@@ -73,11 +73,20 @@ import type {
   GrowDisconnectPlantInput,
 } from "~/server/api/root";
 import {
+  CULTURE_MEDIUM_EMOJIS,
+  CULTURE_MEDIUM_TRANSLATION_KEYS,
   CultureMedium,
+  FERTILIZER_FORM_EMOJIS,
+  FERTILIZER_FORM_TRANSLATION_KEYS,
+  FERTILIZER_TYPE_EMOJIS,
+  FERTILIZER_TYPE_TRANSLATION_KEYS,
   FertilizerForm,
   FertilizerType,
+  GROW_ENVIRONMENT_EMOJIS,
+  GROW_ENVIRONMENT_TRANSLATION_KEYS,
   GrowEnvironment,
   GrowsSortField,
+  createLabelWithEmoji,
 } from "~/types/grow";
 import { growFormSchema } from "~/types/zodSchema";
 
@@ -422,450 +431,446 @@ export function GrowForm({ grow }: { grow?: GetGrowByIdType }) {
           <Form {...form}>
             <Card>
               <CardHeader className="p-2 pb-0 sm:p-3 sm:pb-0 lg:p-4 lg:pb-0 xl:p-6 xl:pb-0">
-                <CardTitle as="h2">{pageTexts.formTitle}</CardTitle>
+                <CardTitle className="text-xl font-semibold" as="h2">
+                  {pageTexts.formTitle}
+                </CardTitle>
                 <CardDescription>{pageTexts.formDescription}</CardDescription>
               </CardHeader>
-              <CardContent className="p-2 sm:p-3 lg:p-4 xl:p-6">
-                <div className="space-y-6">
-                  <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="font-semibold">
-                          {t("grow-name")}
-                        </FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <TentTree className="text-muted-foreground absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2" />
-                            <Input
-                              className="pl-10"
-                              placeholder={t("grow-name-placeholder")}
-                              {...field}
-                            />
-                          </div>
-                        </FormControl>
-                        <FormDescription>
-                          {t("grow-name-description")}
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  {/* Header Image Section */}
-                  <div className="space-y-2">
-                    <FormLabel className="font-semibold">
-                      {t("grow-header-image")}
-                    </FormLabel>
-
-                    <div className="flex flex-col gap-4">
-                      {/* Display current header image if exists */}
-                      {headerImageUrl && (
-                        <div className="relative aspect-video w-full max-w-md overflow-hidden rounded-md border">
-                          <Image
-                            fill
-                            sizes={RESPONSIVE_IMAGE_SIZES}
-                            src={headerImageUrl}
-                            alt={t("grow-header-image")}
-                            className="h-full w-full object-cover"
+              <CardContent className="space-y-8 p-2 sm:p-3 lg:p-4 xl:p-6">
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-primary text-lg font-semibold">
+                        {t("grow-name")}
+                      </FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <TentTree className="text-muted-foreground absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2" />
+                          <Input
+                            className="pl-10"
+                            placeholder={t("grow-name-placeholder")}
+                            {...field}
                           />
-                          <Button
-                            type="button"
-                            variant="destructive"
-                            size="icon"
-                            className="absolute top-2 right-2 h-8 w-8 rounded-full"
-                            onClick={() => {
-                              if (grow?.id) {
-                                updateHeaderImageMutation.mutate({
-                                  growId: grow.id,
-                                  headerImageId: null,
-                                });
-                                setHeaderImageUrl(null);
-                              }
-                            }}
-                            disabled={
-                              updateHeaderImageMutation.isPending ||
-                              isSubmitting
-                            }
-                          >
-                            <X className="h-4 w-4" />
-                          </Button>
                         </div>
-                      )}
+                      </FormControl>
+                      <FormDescription>
+                        {t("grow-name-description")}
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-                      {/* File selection input */}
-                      <div className="flex gap-2">
-                        <Input
-                          type="file"
-                          accept="image/*"
-                          ref={fileInputRef}
-                          className="hidden"
-                          onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            if (file) {
-                              setSelectedFile(file);
-                              // Create a preview URL
-                              const objectUrl = URL.createObjectURL(file);
-                              setHeaderImageUrl(objectUrl);
-                            }
-                          }}
+                {/* Header Image Section */}
+                <div className="space-y-2">
+                  <FormLabel className="text-primary text-lg font-semibold">
+                    {t("grow-header-image")}
+                  </FormLabel>
+
+                  <div className="flex flex-col gap-4">
+                    {/* Display current header image if exists */}
+                    {headerImageUrl && (
+                      <div className="relative aspect-video w-full max-w-md overflow-hidden rounded-md border">
+                        <Image
+                          fill
+                          sizes={RESPONSIVE_IMAGE_SIZES}
+                          src={headerImageUrl}
+                          alt={t("grow-header-image")}
+                          className="h-full w-full object-cover"
                         />
                         <Button
                           type="button"
-                          variant="outline"
-                          onClick={() => fileInputRef.current?.click()}
+                          variant="destructive"
+                          size="icon"
+                          className="absolute top-2 right-2 h-8 w-8 rounded-full"
+                          onClick={() => {
+                            if (grow?.id) {
+                              updateHeaderImageMutation.mutate({
+                                growId: grow.id,
+                                headerImageId: null,
+                              });
+                              setHeaderImageUrl(null);
+                            }
+                          }}
+                          disabled={
+                            updateHeaderImageMutation.isPending || isSubmitting
+                          }
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    )}
+
+                    {/* File selection input */}
+                    <div className="flex gap-2">
+                      <Input
+                        type="file"
+                        accept="image/*"
+                        ref={fileInputRef}
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            setSelectedFile(file);
+                            // Create a preview URL
+                            const objectUrl = URL.createObjectURL(file);
+                            setHeaderImageUrl(objectUrl);
+                          }
+                        }}
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={
+                          isUploadingImage ||
+                          isSubmitting ||
+                          updateHeaderImageMutation.isPending
+                        }
+                        className="flex gap-2"
+                      >
+                        <ImageIcon className="h-4 w-4" />
+                        {selectedFile ? t("change-image") : t("select-image")}
+                      </Button>
+                      {selectedFile && grow?.id && (
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          onClick={async () => {
+                            if (!selectedFile || !grow?.id) return;
+
+                            setIsUploadingImage(true);
+                            try {
+                              // Get a signed URL from the API
+                              const fileName = `${grow.id}-${Date.now()}-${selectedFile.name}`;
+                              const response = await fetch(
+                                "/api/getSignedURL",
+                                {
+                                  method: "POST",
+                                  headers: {
+                                    "Content-Type": "application/json",
+                                  },
+                                  body: JSON.stringify({
+                                    fileName,
+                                    fileType: selectedFile.type,
+                                  }),
+                                },
+                              );
+
+                              if (!response.ok) {
+                                throw new Error("Failed to get upload URL");
+                              }
+
+                              const { uploadUrl } = (await response.json()) as {
+                                uploadUrl: string;
+                              };
+
+                              // Upload file to S3
+                              const { url: imageUrl, eTag } = await uploadToS3(
+                                selectedFile,
+                                uploadUrl,
+                              );
+
+                              // Create image record - use the mutation defined at component level
+                              const [newImage] =
+                                await createPhotoMutation.mutateAsync({
+                                  // Let the server generate the ID
+                                  imageUrl,
+                                  s3Key: `photos/${fileName}`,
+                                  s3ETag: eTag,
+                                  originalFilename: selectedFile.name,
+                                  captureDate: new Date(),
+                                });
+
+                              // Update grow header image
+                              await updateHeaderImageMutation.mutateAsync({
+                                growId: grow.id,
+                                headerImageId: newImage.id,
+                              });
+
+                              setSelectedFile(null);
+                              toast.success(t("image-upload-success"));
+                            } catch (error) {
+                              console.error("Upload error:", error);
+                              toast.error(t("image-upload-error-title"), {
+                                description: t(
+                                  "image-upload-error-description",
+                                ),
+                              });
+                            } finally {
+                              setIsUploadingImage(false);
+                            }
+                          }}
                           disabled={
                             isUploadingImage ||
                             isSubmitting ||
                             updateHeaderImageMutation.isPending
                           }
-                          className="flex gap-2"
                         >
-                          <ImageIcon className="h-4 w-4" />
-                          {selectedFile ? t("change-image") : t("select-image")}
+                          {isUploadingImage ? (
+                            <>
+                              <SpinningLoader className="mr-2 h-4 w-4" />{" "}
+                              {t("uploading")}
+                            </>
+                          ) : (
+                            t("upload-image")
+                          )}
                         </Button>
-                        {selectedFile && grow?.id && (
-                          <Button
-                            type="button"
-                            variant="secondary"
-                            onClick={async () => {
-                              if (!selectedFile || !grow?.id) return;
-
-                              setIsUploadingImage(true);
-                              try {
-                                // Get a signed URL from the API
-                                const fileName = `${grow.id}-${Date.now()}-${selectedFile.name}`;
-                                const response = await fetch(
-                                  "/api/getSignedURL",
-                                  {
-                                    method: "POST",
-                                    headers: {
-                                      "Content-Type": "application/json",
-                                    },
-                                    body: JSON.stringify({
-                                      fileName,
-                                      fileType: selectedFile.type,
-                                    }),
-                                  },
-                                );
-
-                                if (!response.ok) {
-                                  throw new Error("Failed to get upload URL");
-                                }
-
-                                const { uploadUrl } =
-                                  (await response.json()) as {
-                                    uploadUrl: string;
-                                  };
-
-                                // Upload file to S3
-                                const { url: imageUrl, eTag } =
-                                  await uploadToS3(selectedFile, uploadUrl);
-
-                                // Create image record - use the mutation defined at component level
-                                const [newImage] =
-                                  await createPhotoMutation.mutateAsync({
-                                    // Let the server generate the ID
-                                    imageUrl,
-                                    s3Key: `photos/${fileName}`,
-                                    s3ETag: eTag,
-                                    originalFilename: selectedFile.name,
-                                    captureDate: new Date(),
-                                  });
-
-                                // Update grow header image
-                                await updateHeaderImageMutation.mutateAsync({
-                                  growId: grow.id,
-                                  headerImageId: newImage.id,
-                                });
-
-                                setSelectedFile(null);
-                                toast.success(t("image-upload-success"));
-                              } catch (error) {
-                                console.error("Upload error:", error);
-                                toast.error(t("image-upload-error-title"), {
-                                  description: t(
-                                    "image-upload-error-description",
-                                  ),
-                                });
-                              } finally {
-                                setIsUploadingImage(false);
-                              }
-                            }}
-                            disabled={
-                              isUploadingImage ||
-                              isSubmitting ||
-                              updateHeaderImageMutation.isPending
-                            }
-                          >
-                            {isUploadingImage ? (
-                              <>
-                                <SpinningLoader className="mr-2 h-4 w-4" />{" "}
-                                {t("uploading")}
-                              </>
-                            ) : (
-                              t("upload-image")
-                            )}
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                    <FormDescription>
-                      {t("header-image-description")}
-                    </FormDescription>
-                  </div>
-
-                  {/* Environment Field */}
-                  <FormField
-                    control={form.control}
-                    name="environment"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="font-semibold">
-                          {t("environment-label")}
-                        </FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue
-                                placeholder={t("environment-placeholder")}
-                              />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value={GrowEnvironment.INDOOR}>
-                              {t("environment-indoor")}
-                            </SelectItem>
-                            <SelectItem value={GrowEnvironment.OUTDOOR}>
-                              {t("environment-outdoor")}
-                            </SelectItem>
-                            <SelectItem value={GrowEnvironment.GREENHOUSE}>
-                              {t("environment-greenhouse")}
-                            </SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormDescription>
-                          {t("environment-description")}
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  {/* Culture Medium Field */}
-                  <FormField
-                    control={form.control}
-                    name="cultureMedium"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="font-semibold">
-                          {t("culture-medium-label")}
-                        </FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue
-                                placeholder={t("culture-medium-placeholder")}
-                              />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value={CultureMedium.SOIL}>
-                              {t("culture-medium-soil")}
-                            </SelectItem>
-                            <SelectItem value={CultureMedium.COCO}>
-                              {t("culture-medium-coco")}
-                            </SelectItem>
-                            <SelectItem value={CultureMedium.HYDRO}>
-                              {t("culture-medium-hydro")}
-                            </SelectItem>
-                            <SelectItem value={CultureMedium.ROCKWOOL}>
-                              {t("culture-medium-rockwool")}
-                            </SelectItem>
-                            <SelectItem value={CultureMedium.PERLITE}>
-                              {t("culture-medium-perlite")}
-                            </SelectItem>
-                            <SelectItem value={CultureMedium.VERMICULITE}>
-                              {t("culture-medium-vermiculite")}
-                            </SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormDescription>
-                          {t("culture-medium-description")}
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  {/* Fertilizer Type Field */}
-                  <FormField
-                    control={form.control}
-                    name="fertilizerType"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="font-semibold">
-                          {t("fertilizer-type-label")}
-                        </FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue
-                                placeholder={t("fertilizer-type-placeholder")}
-                              />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value={FertilizerType.ORGANIC}>
-                              {t("fertilizer-type-organic")}
-                            </SelectItem>
-                            <SelectItem value={FertilizerType.MINERAL}>
-                              {t("fertilizer-type-mineral")}
-                            </SelectItem>
-                            {/* <SelectItem value={FertilizerType.LIQUID}>
-                              {t("fertilizer-type-liquid")}
-                            </SelectItem>
-                            <SelectItem value={FertilizerType.GRANULAR}>
-                              {t("fertilizer-type-granular")}
-                            </SelectItem>
-                            <SelectItem value={FertilizerType.SLOW_RELEASE}>
-                              {t("fertilizer-type-slow-release")}
-                            </SelectItem> */}
-                          </SelectContent>
-                        </Select>
-                        <FormDescription>
-                          {t("fertilizer-type-description")}
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  {/* Fertilizer Form Field */}
-                  <FormField
-                    control={form.control}
-                    name="fertilizerForm"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="font-semibold">
-                          {t("fertilizer-form-label")}
-                        </FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue
-                                placeholder={t("fertilizer-form-placeholder")}
-                              />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value={FertilizerForm.LIQUID}>
-                              {t("fertilizer-form-liquid")}
-                            </SelectItem>
-                            <SelectItem value={FertilizerForm.GRANULAR}>
-                              {t("fertilizer-form-granular")}
-                            </SelectItem>
-                            <SelectItem value={FertilizerForm.SLOW_RELEASE}>
-                              {t("fertilizer-form-slow_release")}
-                            </SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormDescription>
-                          {t("fertilizer-form-description")}
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <div>
-                    <FormLabel className="mb-2 block font-semibold">
-                      {t("select-plants")}
-                    </FormLabel>
-
-                    <Command
-                      className="rounded-sm border shadow-md"
-                      shouldFilter={false}
-                    >
-                      <CommandInput
-                        placeholder={t("search-plants")}
-                        value={searchQuery}
-                        onValueChange={(value) => setSearchQuery(value)}
-                      />
-                      {isPending ? (
-                        <SpinningLoader className="m-4 size-12" />
-                      ) : (
-                        <CommandList className="min-h-24">
-                          <CommandEmpty className="mx-auto my-4 w-full space-y-2 p-4">
-                            <Alert variant="destructive">
-                              <CircleAlertIcon className="size-5" />
-                              {t("no-plants-connectable")}
-                            </Alert>
-                            <div className="flex justify-end">
-                              <Button className="p-0" variant="link" asChild>
-                                <Link
-                                  className="roundex-xs h-6 text-sm"
-                                  href={modulePaths.PLANTS.path}
-                                >
-                                  {t_nav("my-plants")}
-                                  <ArrowRight className="ml-1 h-4 w-4" />
-                                </Link>
-                              </Button>
-                            </div>
-                          </CommandEmpty>
-                          <CommandGroup>
-                            {filteredPlants.map((plant) => (
-                              <CommandItem
-                                key={plant.id}
-                                onSelect={() => togglePlantSelection(plant.id)}
-                                className={`cursor-pointer ${
-                                  selectedPlantIds.includes(plant.id)
-                                    ? "text-secondary font-bold"
-                                    : ""
-                                }`}
-                              >
-                                <div
-                                  className={`mr-2 flex h-4 w-4 items-center justify-center rounded-sm border ${
-                                    selectedPlantIds.includes(plant.id)
-                                      ? "border-secondary bg-secondary"
-                                      : "border-secondary"
-                                  }`}
-                                >
-                                  {selectedPlantIds.includes(plant.id) && (
-                                    <Check className="text-primary-foreground h-3 w-3" />
-                                  )}
-                                </div>
-                                <TagIcon className="mr-2 h-4 w-4" />
-                                <span>{plant.name}</span>
-                              </CommandItem>
-                            ))}
-                          </CommandGroup>
-                        </CommandList>
                       )}
-                    </Command>
+                    </div>
                   </div>
-
-                  <FormDescription className="mt-2">
-                    {selectedPlantIds.length > 0
-                      ? t("plants-selected", {
-                          count: selectedPlantIds.length,
-                        })
-                      : t("select-plants-optional")}
+                  <FormDescription>
+                    {t("header-image-description")}
                   </FormDescription>
                 </div>
+
+                {/* Grow Environment Settings - Mobile-optimized grid */}
+                <div className="space-y-4">
+                  <FormLabel className="text-primary text-lg font-semibold">
+                    {t("grow-environment-settings")}
+                  </FormLabel>
+
+                  {/* Environment and Culture Medium - Side by side on mobile */}
+                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-2">
+                    {/* Environment Field */}
+                    <FormField
+                      control={form.control}
+                      name="environment"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm font-medium">
+                            {t("environment-label")}
+                          </FormLabel>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger className="w-full">
+                                <SelectValue
+                                  placeholder={t("environment-placeholder")}
+                                />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {Object.values(GrowEnvironment).map(
+                                (environment) => (
+                                  <SelectItem
+                                    key={environment}
+                                    value={environment}
+                                  >
+                                    {createLabelWithEmoji(
+                                      GROW_ENVIRONMENT_EMOJIS[environment],
+                                      t(
+                                        GROW_ENVIRONMENT_TRANSLATION_KEYS[
+                                          environment
+                                        ],
+                                      ),
+                                    )}
+                                  </SelectItem>
+                                ),
+                              )}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    {/* Culture Medium Field */}
+                    <FormField
+                      control={form.control}
+                      name="cultureMedium"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm font-medium">
+                            {t("culture-medium-label")}
+                          </FormLabel>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger className="w-full">
+                                <SelectValue
+                                  placeholder={t("culture-medium-placeholder")}
+                                />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {Object.values(CultureMedium).map((medium) => (
+                                <SelectItem key={medium} value={medium}>
+                                  {createLabelWithEmoji(
+                                    CULTURE_MEDIUM_EMOJIS[medium],
+                                    t(CULTURE_MEDIUM_TRANSLATION_KEYS[medium]),
+                                  )}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  {/* Fertilizer Type and Form - Side by side on mobile */}
+                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-2">
+                    {/* Fertilizer Type Field */}
+                    <FormField
+                      control={form.control}
+                      name="fertilizerType"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm font-medium">
+                            {t("fertilizer-type-label")}
+                          </FormLabel>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger className="w-full">
+                                <SelectValue
+                                  placeholder={t("fertilizer-type-placeholder")}
+                                />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {Object.values(FertilizerType).map((type) => (
+                                <SelectItem key={type} value={type}>
+                                  {createLabelWithEmoji(
+                                    FERTILIZER_TYPE_EMOJIS[type],
+                                    t(FERTILIZER_TYPE_TRANSLATION_KEYS[type]),
+                                  )}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    {/* Fertilizer Form Field */}
+                    <FormField
+                      control={form.control}
+                      name="fertilizerForm"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-sm font-medium">
+                            {t("fertilizer-form-label")}
+                          </FormLabel>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger className="w-full">
+                                <SelectValue
+                                  placeholder={t("fertilizer-form-placeholder")}
+                                />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {Object.values(FertilizerForm).map((form) => (
+                                <SelectItem key={form} value={form}>
+                                  {createLabelWithEmoji(
+                                    FERTILIZER_FORM_EMOJIS[form],
+                                    t(FERTILIZER_FORM_TRANSLATION_KEYS[form]),
+                                  )}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  {/* Shared description for environment settings */}
+                  <FormDescription className="text-muted-foreground text-sm">
+                    {t("grow-environment-settings-description")}
+                  </FormDescription>
+                </div>
+
+                <div>
+                  <FormLabel className="text-primary text-lg font-semibold">
+                    {t("select-plants")}
+                  </FormLabel>
+
+                  <Command
+                    className="rounded-sm border shadow-md"
+                    shouldFilter={false}
+                  >
+                    <CommandInput
+                      placeholder={t("search-plants")}
+                      value={searchQuery}
+                      onValueChange={(value) => setSearchQuery(value)}
+                    />
+                    {isPending ? (
+                      <SpinningLoader className="m-4 size-12" />
+                    ) : (
+                      <CommandList className="min-h-24">
+                        <CommandEmpty className="mx-auto my-4 w-full space-y-2 p-4">
+                          <Alert variant="destructive">
+                            <CircleAlertIcon className="size-5" />
+                            {t("no-plants-connectable")}
+                          </Alert>
+                          <div className="flex justify-end">
+                            <Button className="p-0" variant="link" asChild>
+                              <Link
+                                className="roundex-xs h-6 text-sm"
+                                href={modulePaths.PLANTS.path}
+                              >
+                                {t_nav("my-plants")}
+                                <ArrowRight className="ml-1 h-4 w-4" />
+                              </Link>
+                            </Button>
+                          </div>
+                        </CommandEmpty>
+                        <CommandGroup>
+                          {filteredPlants.map((plant) => (
+                            <CommandItem
+                              key={plant.id}
+                              onSelect={() => togglePlantSelection(plant.id)}
+                              className={`cursor-pointer ${
+                                selectedPlantIds.includes(plant.id)
+                                  ? "text-secondary font-bold"
+                                  : ""
+                              }`}
+                            >
+                              <div
+                                className={`mr-2 flex h-4 w-4 items-center justify-center rounded-sm border ${
+                                  selectedPlantIds.includes(plant.id)
+                                    ? "border-secondary bg-secondary"
+                                    : "border-secondary"
+                                }`}
+                              >
+                                {selectedPlantIds.includes(plant.id) && (
+                                  <Check className="text-primary-foreground h-3 w-3" />
+                                )}
+                              </div>
+                              <TagIcon className="mr-2 h-4 w-4" />
+                              <span>{plant.name}</span>
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    )}
+                  </Command>
+                </div>
+
+                <FormDescription className="mt-2">
+                  {selectedPlantIds.length > 0
+                    ? t("plants-selected", {
+                        count: selectedPlantIds.length,
+                      })
+                    : t("select-plants-optional")}
+                </FormDescription>
               </CardContent>
 
               <CardFooter className="flex w-full gap-2 p-2 sm:p-3 md:gap-6 lg:p-4 xl:p-6">

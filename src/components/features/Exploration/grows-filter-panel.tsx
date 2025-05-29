@@ -18,10 +18,19 @@ import {
 } from "~/components/ui/select";
 import { Separator } from "~/components/ui/separator";
 import {
+  CULTURE_MEDIUM_EMOJIS,
+  CULTURE_MEDIUM_TRANSLATION_KEYS,
   CultureMedium,
+  FERTILIZER_FORM_EMOJIS,
+  FERTILIZER_FORM_TRANSLATION_KEYS,
+  FERTILIZER_TYPE_EMOJIS,
+  FERTILIZER_TYPE_TRANSLATION_KEYS,
   FertilizerForm,
   FertilizerType,
+  GROW_ENVIRONMENT_EMOJIS,
+  GROW_ENVIRONMENT_TRANSLATION_KEYS,
   GrowEnvironment,
+  createLabelWithEmoji,
 } from "~/types/grow";
 
 interface GrowFilterSidebarProps {
@@ -61,256 +70,183 @@ export function GrowsFilterPanel({ className }: GrowFilterSidebarProps) {
     await setFilters({ [key]: null });
   };
 
-  // Helper functions to get translated option text
+  // Helper functions to get translated option text with emojis
   const getEnvironmentLabel = (value: string) => {
-    switch (value) {
-      case "INDOOR":
-        return t("environment-indoor");
-      case "OUTDOOR":
-        return t("environment-outdoor");
-      case "GREENHOUSE":
-        return t("environment-greenhouse");
-      default:
-        return value;
-    }
+    const environment = value as GrowEnvironment;
+    return createLabelWithEmoji(
+      GROW_ENVIRONMENT_EMOJIS[environment] || "",
+      t(GROW_ENVIRONMENT_TRANSLATION_KEYS[environment] || value),
+    );
   };
 
   const getCultureMediumLabel = (value: string) => {
-    switch (value) {
-      case "SOIL":
-        return t("culture-medium-soil");
-      case "COCO":
-        return t("culture-medium-coco");
-      case "HYDRO":
-        return t("culture-medium-hydro");
-      case "ROCKWOOL":
-        return t("culture-medium-rockwool");
-      case "PERLITE":
-        return t("culture-medium-perlite");
-      case "VERMICULITE":
-        return t("culture-medium-vermiculite");
-      default:
-        return value;
-    }
+    const medium = value as CultureMedium;
+    return createLabelWithEmoji(
+      CULTURE_MEDIUM_EMOJIS[medium] || "",
+      t(CULTURE_MEDIUM_TRANSLATION_KEYS[medium] || value),
+    );
   };
 
   const getFertilizerTypeLabel = (value: string) => {
-    switch (value) {
-      case "ORGANIC":
-        return t("fertilizer-type-organic");
-      case "MINERAL":
-        return t("fertilizer-type-mineral");
-      default:
-        return value;
-    }
+    const type = value as FertilizerType;
+    return createLabelWithEmoji(
+      FERTILIZER_TYPE_EMOJIS[type] || "",
+      t(FERTILIZER_TYPE_TRANSLATION_KEYS[type] || value),
+    );
   };
 
   const getFertilizerFormLabel = (value: string) => {
-    switch (value) {
-      case "LIQUID":
-        return t("fertilizer-form-liquid");
-      case "GRANULAR":
-        return t("fertilizer-form-granular");
-      case "SLOW_RELEASE":
-        return t("fertilizer-form-slow_release");
-      default:
-        return value;
-    }
+    const form = value as FertilizerForm;
+    return createLabelWithEmoji(
+      FERTILIZER_FORM_EMOJIS[form] || "",
+      t(FERTILIZER_FORM_TRANSLATION_KEYS[form] || value),
+    );
   };
 
   return (
     <div className={className}>
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <FilterIcon className="h-5 w-5" />
-          <h2 className="text-lg font-semibold">{t_filter("title")}</h2>
+      {/* Header with Search - optimized for mobile */}
+      <div className="space-y-3">
+        {/* Filter title and search in one row */}
+        <div className="flex items-center gap-3">
+          <div className="flex shrink-0 items-center gap-2">
+            <FilterIcon className="h-5 w-5" />
+            <Label className="text-sm font-medium">{t_filter("title")}</Label>
+          </div>
+          {/* Search takes up available space */}
+          <div className="relative min-w-0 flex-1">
+            <SearchIcon className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
+            <Input
+              id="search"
+              placeholder={t_filter("search.placeholder")}
+              value={filters.search || ""}
+              onChange={(e) => setFilters({ search: e.target.value || null })}
+              className="h-9 pl-10"
+            />
+          </div>
+          {/* Clear all button */}
+          {hasActiveFilters && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={clearAllFilters}
+              className="text-muted-foreground hover:text-destructive h-9 shrink-0 px-2"
+            >
+              {t_filter("clearAll")}
+            </Button>
+          )}
         </div>
-        {hasActiveFilters && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={clearAllFilters}
-            className="text-muted-foreground hover:text-destructive"
-          >
-            {t_filter("clearAll")}
-          </Button>
-        )}
-      </div>
 
-      <Separator className="my-4" />
+        {/* Filter dropdowns in optimized mobile-first grid */}
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+          {/* Environment Filter */}
+          <div className="space-y-1">
+            <Label className="text-xs font-medium">
+              {t("environment-label")}
+            </Label>
+            <Select
+              value={filters.environment || undefined}
+              onValueChange={(value) =>
+                setFilters({ environment: value || null })
+              }
+            >
+              <SelectTrigger className="h-8 text-xs">
+                <SelectValue placeholder={t("environment-placeholder")} />
+              </SelectTrigger>
+              <SelectContent>
+                {Object.values(GrowEnvironment).map((environment) => (
+                  <SelectItem key={environment} value={environment}>
+                    {createLabelWithEmoji(
+                      GROW_ENVIRONMENT_EMOJIS[environment],
+                      t(GROW_ENVIRONMENT_TRANSLATION_KEYS[environment]),
+                    )}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
-      {/* Search */}
-      <div className="space-y-2">
-        <Label htmlFor="search" className="text-sm font-medium">
-          {t_filter("search.label")}
-        </Label>
-        <div className="relative">
-          <SearchIcon className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
-          <Input
-            id="search"
-            placeholder={t_filter("search.placeholder")}
-            value={filters.search || ""}
-            onChange={(e) => setFilters({ search: e.target.value || null })}
-            className="pl-10"
-          />
+          {/* Culture Medium Filter */}
+          <div className="space-y-1">
+            <Label className="text-xs font-medium">
+              {t("culture-medium-label")}
+            </Label>
+            <Select
+              value={filters.cultureMedium || undefined}
+              onValueChange={(value) =>
+                setFilters({ cultureMedium: value || null })
+              }
+            >
+              <SelectTrigger className="h-8 text-xs">
+                <SelectValue placeholder={t("culture-medium-placeholder")} />
+              </SelectTrigger>
+              <SelectContent>
+                {Object.values(CultureMedium).map((medium) => (
+                  <SelectItem key={medium} value={medium}>
+                    {createLabelWithEmoji(
+                      CULTURE_MEDIUM_EMOJIS[medium],
+                      t(CULTURE_MEDIUM_TRANSLATION_KEYS[medium]),
+                    )}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Fertilizer Type Filter */}
+          <div className="space-y-1">
+            <Label className="text-xs font-medium">
+              {t("fertilizer-type-label")}
+            </Label>
+            <Select
+              value={filters.fertilizerType || undefined}
+              onValueChange={(value) =>
+                setFilters({ fertilizerType: value || null })
+              }
+            >
+              <SelectTrigger className="h-8 text-xs">
+                <SelectValue placeholder={t("fertilizer-type-placeholder")} />
+              </SelectTrigger>
+              <SelectContent>
+                {Object.values(FertilizerType).map((type) => (
+                  <SelectItem key={type} value={type}>
+                    {createLabelWithEmoji(
+                      FERTILIZER_TYPE_EMOJIS[type],
+                      t(FERTILIZER_TYPE_TRANSLATION_KEYS[type]),
+                    )}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Fertilizer Form Filter */}
+          <div className="space-y-1">
+            <Label className="text-xs font-medium">
+              {t("fertilizer-form-label")}
+            </Label>
+            <Select
+              value={filters.fertilizerForm || undefined}
+              onValueChange={(value) =>
+                setFilters({ fertilizerForm: value || null })
+              }
+            >
+              <SelectTrigger className="h-8 text-xs">
+                <SelectValue placeholder={t("fertilizer-form-placeholder")} />
+              </SelectTrigger>
+              <SelectContent>
+                {Object.values(FertilizerForm).map((form) => (
+                  <SelectItem key={form} value={form}>
+                    {createLabelWithEmoji(
+                      FERTILIZER_FORM_EMOJIS[form],
+                      t(FERTILIZER_FORM_TRANSLATION_KEYS[form]),
+                    )}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
-      </div>
-
-      <Separator className="my-4" />
-
-      {/* Environment Filter */}
-      <div className="space-y-2">
-        <Label className="text-sm font-medium">{t("environment-label")}</Label>
-        <Select
-          value={filters.environment || undefined}
-          onValueChange={(value) => setFilters({ environment: value || null })}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder={t("environment-placeholder")} />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value={GrowEnvironment.INDOOR}>
-              {t("environment-indoor")}
-            </SelectItem>
-            <SelectItem value={GrowEnvironment.OUTDOOR}>
-              {t("environment-outdoor")}
-            </SelectItem>
-            <SelectItem value={GrowEnvironment.GREENHOUSE}>
-              {t("environment-greenhouse")}
-            </SelectItem>
-          </SelectContent>
-        </Select>
-        {filters.environment && (
-          <Badge
-            variant="secondary"
-            className="cursor-pointer"
-            onClick={() => clearFilter("environment")}
-          >
-            {getEnvironmentLabel(filters.environment)}
-            <XIcon className="ml-1 h-3 w-3" />
-          </Badge>
-        )}
-      </div>
-
-      {/* Culture Medium Filter */}
-      <div className="space-y-2">
-        <Label className="text-sm font-medium">
-          {t("culture-medium-label")}
-        </Label>
-        <Select
-          value={filters.cultureMedium || undefined}
-          onValueChange={(value) =>
-            setFilters({ cultureMedium: value || null })
-          }
-        >
-          <SelectTrigger>
-            <SelectValue placeholder={t("culture-medium-placeholder")} />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value={CultureMedium.SOIL}>
-              {t("culture-medium-soil")}
-            </SelectItem>
-            <SelectItem value={CultureMedium.COCO}>
-              {t("culture-medium-coco")}
-            </SelectItem>
-            <SelectItem value={CultureMedium.HYDRO}>
-              {t("culture-medium-hydro")}
-            </SelectItem>
-            <SelectItem value={CultureMedium.ROCKWOOL}>
-              {t("culture-medium-rockwool")}
-            </SelectItem>
-            <SelectItem value={CultureMedium.PERLITE}>
-              {t("culture-medium-perlite")}
-            </SelectItem>
-            <SelectItem value={CultureMedium.VERMICULITE}>
-              {t("culture-medium-vermiculite")}
-            </SelectItem>
-          </SelectContent>
-        </Select>
-        {filters.cultureMedium && (
-          <Badge
-            variant="secondary"
-            className="cursor-pointer"
-            onClick={() => clearFilter("cultureMedium")}
-          >
-            {getCultureMediumLabel(filters.cultureMedium)}
-            <XIcon className="ml-1 h-3 w-3" />
-          </Badge>
-        )}
-      </div>
-
-      {/* Fertilizer Type Filter */}
-      <div className="space-y-2">
-        <Label className="text-sm font-medium">
-          {t("fertilizer-type-label")}
-        </Label>
-        <Select
-          value={filters.fertilizerType || undefined}
-          onValueChange={(value) =>
-            setFilters({ fertilizerType: value || null })
-          }
-        >
-          <SelectTrigger>
-            <SelectValue placeholder={t("fertilizer-type-placeholder")} />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value={FertilizerType.ORGANIC}>
-              {t("fertilizer-type-organic")}
-            </SelectItem>
-            <SelectItem value={FertilizerType.MINERAL}>
-              {t("fertilizer-type-mineral")}
-            </SelectItem>
-          </SelectContent>
-        </Select>
-        {filters.fertilizerType && (
-          <Badge
-            variant="secondary"
-            className="cursor-pointer"
-            onClick={() => clearFilter("fertilizerType")}
-          >
-            {getFertilizerTypeLabel(filters.fertilizerType)}
-            <XIcon className="ml-1 h-3 w-3" />
-          </Badge>
-        )}
-      </div>
-
-      {/* Fertilizer Form Filter */}
-      <div className="space-y-2">
-        <Label className="text-sm font-medium">
-          {t("fertilizer-form-label")}
-        </Label>
-        <Select
-          value={filters.fertilizerForm || undefined}
-          onValueChange={(value) =>
-            setFilters({ fertilizerForm: value || null })
-          }
-        >
-          <SelectTrigger>
-            <SelectValue placeholder={t("fertilizer-form-placeholder")} />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value={FertilizerForm.LIQUID}>
-              {t("fertilizer-form-liquid")}
-            </SelectItem>
-            <SelectItem value={FertilizerForm.GRANULAR}>
-              {t("fertilizer-form-granular")}
-            </SelectItem>
-            <SelectItem value={FertilizerForm.SLOW_RELEASE}>
-              {t("fertilizer-form-slow_release")}
-            </SelectItem>
-          </SelectContent>
-        </Select>
-        {filters.fertilizerForm && (
-          <Badge
-            variant="secondary"
-            className="cursor-pointer"
-            onClick={() => clearFilter("fertilizerForm")}
-          >
-            {getFertilizerFormLabel(filters.fertilizerForm)}
-            <XIcon className="ml-1 h-3 w-3" />
-          </Badge>
-        )}
       </div>
 
       {/* Active Filters */}
