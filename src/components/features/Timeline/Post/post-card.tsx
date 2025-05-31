@@ -16,7 +16,7 @@ import { Card, CardContent } from "~/components/ui/card";
 import { useComments } from "~/hooks/use-comments";
 import { useLikeStatus } from "~/hooks/use-likes";
 import { useTRPC } from "~/lib/trpc/client";
-import { cn, formatDate, formatTime } from "~/lib/utils";
+import { cn, formatDateTime } from "~/lib/utils";
 import { GetPostType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
 import { LikeableEntityType } from "~/types/like";
@@ -88,8 +88,7 @@ export default function PostCard({ post, isSocialProp = true }: PostCardProps) {
       className="text-muted-foreground flex cursor-default items-center gap-2 text-sm whitespace-nowrap"
     >
       {<DotIcon size={24} className="xs:block -mx-2 hidden" />}
-      {formatDate(post.createdAt, locale as Locale)}{" "}
-      {formatTime(post.createdAt, locale as Locale)}
+      {formatDateTime(post.createdAt, locale as Locale)}
     </div>
   );
 

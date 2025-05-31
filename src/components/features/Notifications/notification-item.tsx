@@ -6,7 +6,7 @@ import { Button } from "~/components/ui/button";
 import { Skeleton } from "~/components/ui/skeleton";
 import { useNotifications } from "~/hooks/use-notifications";
 import { Link } from "~/lib/i18n/routing";
-import { cn, formatDate, formatTime } from "~/lib/utils";
+import { cn, formatDateTime } from "~/lib/utils";
 import type { GetAllNotificationType } from "~/server/api/root";
 import type { Locale } from "~/types/locale";
 
@@ -56,8 +56,7 @@ export function NotificationItem({
           </span>
         </p>
         <span className="text-muted-foreground text-xs">
-          {formatDate(notification.createdAt, locale as Locale)}{" "}
-          {formatTime(notification.createdAt, locale as Locale)}
+          {formatDateTime(notification.createdAt, locale as Locale)}
         </span>
       </div>
       {!notification.read && (

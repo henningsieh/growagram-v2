@@ -2,14 +2,8 @@
 import { type ClassValue, clsx } from "clsx";
 import { formatDistanceToNow as dateFnsFormatDistanceToNow } from "date-fns";
 import { de as deLocale } from "date-fns/locale";
-import TimeAgo from "javascript-time-ago";
-import de from "javascript-time-ago/locale/de";
-import en from "javascript-time-ago/locale/en";
 import { twMerge } from "tailwind-merge";
 import { Locale } from "~/types/locale";
-
-TimeAgo.addLocale(en);
-TimeAgo.addLocale(de);
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -27,57 +21,101 @@ export interface TimeFormatOptions {
   includeMinutes?: boolean;
 }
 
-export function formatDate(
+
+// Centralized date/time formatting for entity info
+export function formatDateTime(
   date: Date,
   locale: Locale,
-  options: DateFormatOptions = {},
-): string | null {
+): string {
   const now = new Date();
-  const diffInMinutes = (now.getTime() - date.getTime()) / 60000;
+  const diffInMs = now.getTime() - date.getTime();
+  const diffInMinutes = diffInMs / (1000 * 60);
+  const diffInHours = diffInMs / (1000 * 60 * 60);
+  const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
 
-  if (diffInMinutes < 1440 && !options.force) {
-    return null;
+  // Less than 1 hour: show relative time in minutes
+  if (diffInHours < 1) {
+    const minutes = Math.floor(diffInMinutes);
+    if (locale === "de") {
+      return `vor ${minutes === 1 ? "einer" : minutes} Minute${minutes === 1 ? "" : "n"}`;
+    }
+    return `${minutes} minute${minutes === 1 ? "" : "s"} ago`;
+  }
+
+  // Less than 24 hours: show relative time in hours
+  if (diffInHours < 24) {
+    const hours = Math.floor(diffInHours);
+    if (locale === "de") {
+      return `vor ${hours === 1 ? "einer" : hours} Std.`;
+    }
+    return `${hours} hour${hours === 1 ? "" : "s"} ago`;
+  }
+
+  // Less than 10 days: show relative time in days
+  if (diffInDays < 10) {
+    const days = Math.floor(diffInDays);
+    if (locale === "de") {
+      return `vor ${days === 1 ? "einem Tag" : days + " Tagen"}.`;
+    }
+    return `${days} day${days === 1 ? "" : "s"} ago`;
+  }
+
+  // 10 days or older: show absolute date in locale-specific format
+  let dateString = "";
+  if (locale === "de") {
+    // German: dd.mm.yy
+    const d = date;
+    dateString = `am ${d.getDate().toString().padStart(2, "0")}.${(d.getMonth() + 1)
+      .toString()
+      .padStart(2, "0")}.${d.getFullYear().toString().slice(-2)}`;
   } else {
-    const { month = "short", weekday, includeYear = true } = options;
-    const formatOptions: Intl.DateTimeFormatOptions = {
+    // English: mm/dd/yy
+    const d = date;
+    dateString = `at ${(d.getMonth() + 1)
+      .toString()
+      .padStart(2, "0")}/${d.getDate().toString().padStart(2, "0")}/${d
+      .getFullYear()
+      .toString()
+      .slice(-2)}`;
+  }
+  return dateString;
+}
+
+// Helper functions for formatting absolute date and time (e.g., for ban notifications)
+export function formatAbsoluteDate(
+  date: Date,
+  locale: Locale,
+  options: DateFormatOptions = {}
+): string {
+  if (locale === "de") {
+    const intl = new Intl.DateTimeFormat("de-DE", {
       day: "2-digit",
-      weekday: weekday,
-      month: month,
-      year: includeYear ? "numeric" : undefined,
-    };
-    return new Intl.DateTimeFormat(locale, formatOptions).format(date);
+      month: options.month === "long" ? "long" : "2-digit",
+      year: options.includeYear !== false ? "numeric" : undefined,
+    });
+    return intl.format(date);
+  } else {
+    const intl = new Intl.DateTimeFormat("en-US", {
+      day: "2-digit",
+      month: options.month === "long" ? "long" : "2-digit", 
+      year: options.includeYear !== false ? "numeric" : undefined,
+    });
+    return intl.format(date);
   }
 }
 
-export function formatTime(
-  time: Date,
+export function formatAbsoluteTime(
+  date: Date,
   locale: Locale,
-  options: TimeFormatOptions = {},
+  options: TimeFormatOptions = {}
 ): string {
-  const { includeSeconds = false, includeMinutes = true } = options;
-  const now = new Date();
-  const diffInMinutes = (now.getTime() - time.getTime()) / 60000;
-
-  const timeAgo = new TimeAgo(locale);
-  if (diffInMinutes < 1440) {
-    return timeAgo.format(time);
-  } else {
-    const testFormat = new Intl.DateTimeFormat(locale, { hour: "numeric" });
-    const inferredHour12 = testFormat.resolvedOptions().hour12 ?? false;
-
-    const formatOptions: Intl.DateTimeFormatOptions = {
-      hour: "2-digit",
-      minute: includeMinutes ? "2-digit" : undefined,
-      second: includeSeconds ? "2-digit" : undefined,
-      hour12: inferredHour12,
-    };
-    const timeString = new Intl.DateTimeFormat(locale, formatOptions).format(
-      time,
-    );
-
-    // Add localized time words
-    return locale === "de" ? `um ${timeString} Uhr` : `at ${timeString}`;
-  }
+  const intl = new Intl.DateTimeFormat(locale === "de" ? "de-DE" : "en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: options.includeSeconds ? "2-digit" : undefined,
+    hour12: locale === "en",
+  });
+  return intl.format(date);
 }
 
 export function formatDistanceToNowLocalized(
@@ -121,3 +159,5 @@ export function getDaysBetween(start: Date, end: Date): number {
 // Metadata utilities
 export { generatePageMetadata, generateSiteMetadata } from "./metadata";
 export type { PageMetadataKey } from "./metadata";
+
+

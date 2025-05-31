@@ -16,7 +16,7 @@ import {
 import { Badge } from "~/components/ui/badge";
 import { Card, CardContent, CardHeader } from "~/components/ui/card";
 import { Progress } from "~/components/ui/progress";
-import { formatDate } from "~/lib/utils";
+import { formatAbsoluteDate } from "~/lib/utils";
 import { calculateGrowthProgress } from "~/lib/utils/calculateGrowthProgress";
 import type { PlantByIdType } from "~/server/api/root";
 import { Locale } from "~/types/locale";
@@ -43,7 +43,7 @@ export function PlantProgressAndDates({ plant }: { plant: PlantByIdType }) {
           <HybridTooltip>
             <HybridTooltipTrigger className="flex cursor-default items-center font-mono text-sm font-semibold tracking-tighter">
               <NutIcon className={`text-planted mr-2 h-4 w-4`} />
-              {formatDate(plant.startDate, locale as Locale, {
+              {formatAbsoluteDate(plant.startDate, locale as Locale, {
                 force: true,
               })}
             </HybridTooltipTrigger>
@@ -71,7 +71,7 @@ export function PlantProgressAndDates({ plant }: { plant: PlantByIdType }) {
                 }`}
               />
               {plant.seedlingPhaseStart &&
-                formatDate(plant.seedlingPhaseStart, locale as Locale, {
+                formatAbsoluteDate(plant.seedlingPhaseStart, locale as Locale, {
                   force: true,
                 })}
             </HybridTooltipTrigger>
@@ -99,7 +99,7 @@ export function PlantProgressAndDates({ plant }: { plant: PlantByIdType }) {
                 }`}
               />
               {plant.vegetationPhaseStart &&
-                formatDate(plant.vegetationPhaseStart, locale as Locale, {
+                formatAbsoluteDate(plant.vegetationPhaseStart, locale as Locale, {
                   force: true,
                 })}
             </HybridTooltipTrigger>
@@ -127,7 +127,7 @@ export function PlantProgressAndDates({ plant }: { plant: PlantByIdType }) {
                 }`}
               />
               {plant.floweringPhaseStart &&
-                formatDate(plant.floweringPhaseStart, locale as Locale, {
+                formatAbsoluteDate(plant.floweringPhaseStart, locale as Locale, {
                   force: true,
                 })}
             </HybridTooltipTrigger>
@@ -153,7 +153,7 @@ export function PlantProgressAndDates({ plant }: { plant: PlantByIdType }) {
                 }`}
               />
               {plant.harvestDate &&
-                formatDate(plant.harvestDate, locale as Locale, {
+                formatAbsoluteDate(plant.harvestDate, locale as Locale, {
                   force: true,
                 })}
             </HybridTooltipTrigger>
@@ -179,7 +179,7 @@ export function PlantProgressAndDates({ plant }: { plant: PlantByIdType }) {
                 }`}
               />
               {plant.curingPhaseStart &&
-                formatDate(plant.curingPhaseStart, locale as Locale, {
+                formatAbsoluteDate(plant.curingPhaseStart, locale as Locale, {
                   force: true,
                 })}
             </HybridTooltipTrigger>

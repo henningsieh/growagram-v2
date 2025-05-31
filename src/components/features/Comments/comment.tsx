@@ -22,7 +22,7 @@ import { Input } from "~/components/ui/input";
 import { useComments } from "~/hooks/use-comments";
 import { useLikeStatus } from "~/hooks/use-likes";
 import { useTRPC } from "~/lib/trpc/client";
-import { formatDate, formatTime } from "~/lib/utils";
+import { formatDateTime } from "~/lib/utils";
 import type {
   GetCommentType,
   GetCommentsInput,
@@ -201,8 +201,7 @@ export const Comment: React.FC<CommentProps> = ({
   const dateElement = (
     <div className="text-muted-foreground flex items-center gap-1 text-sm whitespace-nowrap">
       {<DotIcon size={24} className="xs:block -mx-2 hidden" />}
-      {formatDate(comment.createdAt, locale as Locale)}{" "}
-      {formatTime(comment.createdAt, locale as Locale)}
+      {formatDateTime(comment.createdAt, locale as Locale)}
     </div>
   );
 

@@ -3,7 +3,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import { Calendar1Icon, EditIcon } from "lucide-react";
 import { CardDescription } from "~/components/ui/card";
-import { formatDate, formatTime } from "~/lib/utils";
+import { formatDateTime } from "~/lib/utils";
 import { Locale } from "~/types/locale";
 
 interface EntityDateInfoProps {
@@ -33,7 +33,7 @@ export function EntityDateInfo({
         <div title={t("updated-at")} className="flex items-center gap-2">
           <EditIcon size={16} className="shrink-0" />
           <span className="block">
-            {formatDate(updatedAt, locale)} {formatTime(updatedAt, locale)}
+            {formatDateTime(updatedAt, locale)}
           </span>
         </div>
       )}
@@ -42,7 +42,7 @@ export function EntityDateInfo({
       <div title={t("created-at")} className="flex items-center gap-2">
         <Calendar1Icon size={16} className="shrink-0" />
         <span className="block">
-          {formatDate(createdAt, locale)} {formatTime(createdAt, locale)}
+          {formatDateTime(createdAt, locale)}
         </span>
       </div>
     </CardDescription>

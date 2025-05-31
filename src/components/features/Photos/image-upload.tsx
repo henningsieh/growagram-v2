@@ -19,7 +19,7 @@ import { Label } from "~/components/ui/label";
 import { Progress as ProgressBar } from "~/components/ui/progress";
 import { useRouter } from "~/lib/i18n/routing";
 import { useTRPC } from "~/lib/trpc/client";
-import { cn, formatDate, formatTime } from "~/lib/utils";
+import { cn, formatDateTime } from "~/lib/utils";
 import { readExif } from "~/lib/utils/readExif";
 import { uploadToS3 } from "~/lib/utils/uploadToS3";
 import type { CreatePhotoInput } from "~/server/api/root";
@@ -328,11 +328,7 @@ export default function PhotoUpload() {
                         <div className="flex justify-between">
                           <span>{t("upload.preview.capturedate-label")}</span>
                           <span>
-                            {formatDate(
-                              preview.exifData.captureDate,
-                              locale as Locale,
-                            )}{" "}
-                            {formatTime(
+                            {formatDateTime(
                               preview.exifData.captureDate,
                               locale as Locale,
                             )}

@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { useLocale } from "next-intl";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
-import { formatDate, formatTime } from "~/lib/utils";
+import { formatAbsoluteDate, formatAbsoluteTime } from "~/lib/utils";
 import type { Locale } from "~/types/locale";
 
 export function BanNotification() {
@@ -22,11 +22,11 @@ export function BanNotification() {
 
     if (error === "banned" && bannedUntil) {
       const bannedUntilDate = new Date(bannedUntil);
-      const formattedDate = formatDate(bannedUntilDate, locale, {
+      const formattedDate = formatAbsoluteDate(bannedUntilDate, locale, {
         force: true,
         month: "long",
       });
-      const formattedTime = formatTime(bannedUntilDate, locale);
+      const formattedTime = formatAbsoluteTime(bannedUntilDate, locale);
 
       // Create the toast message with the formatted date using translations
       toast.error(t("account_banned"), {

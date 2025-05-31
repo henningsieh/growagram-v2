@@ -40,7 +40,7 @@ import { useComments } from "~/hooks/use-comments";
 import { useLikeStatus } from "~/hooks/use-likes";
 import { Link, useRouter } from "~/lib/i18n/routing";
 import { useTRPC } from "~/lib/trpc/client";
-import { cn, formatDate, formatTime } from "~/lib/utils";
+import { cn, formatDateTime } from "~/lib/utils";
 import type { GetOwnPhotoType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
 import { PhotosSortField } from "~/types/image";
@@ -268,8 +268,7 @@ export default function PhotoCard({
                     )}
                   >
                     <UploadCloud size={20} />
-                    {formatDate(photo.createdAt, locale as Locale)}{" "}
-                    {formatTime(photo.createdAt, locale as Locale)}
+                    {formatDateTime(photo.createdAt, locale as Locale)}
                   </p>
                 </TooltipTrigger>
                 <TooltipContent>
@@ -289,8 +288,7 @@ export default function PhotoCard({
                     )}
                   >
                     <Camera size={20} />
-                    {formatDate(photo.captureDate, locale as Locale)}{" "}
-                    {formatTime(photo.captureDate, locale as Locale)}
+                    {formatDateTime(photo.captureDate, locale as Locale)}
                   </p>
                 </TooltipTrigger>
                 <TooltipContent>

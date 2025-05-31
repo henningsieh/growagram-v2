@@ -40,7 +40,7 @@ import { useComments } from "~/hooks/use-comments";
 import { useLikeStatus } from "~/hooks/use-likes";
 import { Link, useRouter } from "~/lib/i18n/routing";
 import { useTRPC } from "~/lib/trpc/client";
-import { cn, formatDate, formatTime } from "~/lib/utils";
+import { cn, formatDateTime } from "~/lib/utils";
 import type { PlantByIdType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
 import { LikeableEntityType } from "~/types/like";
@@ -144,8 +144,7 @@ export default function PlantCard({
       className="text-muted-foreground flex items-center gap-1 text-sm whitespace-nowrap underline-offset-3 hover:underline"
     >
       {<DotIcon size={24} className="hidden sm:block" />}
-      {formatDate(plant.updatedAt, locale as Locale)}{" "}
-      {formatTime(plant.updatedAt, locale as Locale)}
+      {formatDateTime(plant.updatedAt, locale as Locale)}
     </Link>
   );
 

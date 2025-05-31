@@ -11,7 +11,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "~/components/ui/carousel";
-import { formatDate, formatTime } from "~/lib/utils";
+import { formatDateTime } from "~/lib/utils";
 import type { ImageType, PlantImagesType } from "~/server/api/root";
 import type { Locale } from "~/types/locale";
 
@@ -53,7 +53,7 @@ export const ImageCarousel = ({
       onClick={() => openImageModal(image.imageUrl)}
       role="button"
       tabIndex={0}
-      aria-label={`View full size image from ${formatDate(image.captureDate, locale)}`}
+      aria-label={`View full size image from ${formatDateTime(image.captureDate, locale)}`}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
           openImageModal(image.imageUrl);
@@ -81,8 +81,7 @@ export const ImageCarousel = ({
         <div className="flex items-center gap-2 font-mono text-sm">
           <CameraIcon size={16} />
           <span>
-            {formatDate(image.captureDate, locale)}{" "}
-            {formatTime(image.captureDate, locale)}
+            {formatDateTime(image.captureDate, locale)}
           </span>
         </div>
       </div>

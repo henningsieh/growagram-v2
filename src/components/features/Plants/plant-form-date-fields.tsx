@@ -14,7 +14,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "~/components/ui/popover";
-import { cn, formatDate } from "~/lib/utils";
+import { cn, formatAbsoluteDate } from "~/lib/utils";
 import { Locale } from "~/types/locale";
 
 type PlantFormDateFieldProps<TFieldValues extends FieldValues> = {
@@ -62,7 +62,7 @@ export default function PlantFormDateField<TFieldValues extends FieldValues>({
                 <div className="flex items-center gap-2">
                   <Icon size={20} className={cn("opacity-80", iconClassName)} />
                   {field.value
-                    ? formatDate(field.value, locale as Locale, { force: true })
+                    ? formatAbsoluteDate(field.value, locale as Locale, { force: true })
                     : t("form-pick-a-date")}
                 </div>
                 {field.value && (

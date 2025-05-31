@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { CameraIcon, FileIcon, UploadCloudIcon } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import { formatDate, formatTime } from "~/lib/utils";
+import { formatDateTime } from "~/lib/utils";
 import type { GetOwnPhotoType } from "~/server/api/root";
 import { Locale } from "~/types/locale";
 
@@ -25,14 +25,12 @@ export function ImageDetailsCard({ image, locale }: ImageDetailsProps) {
     {
       icon: <CameraIcon className="h-5 w-5" />,
       title: "Capture Date",
-      content: `${formatDate(image.captureDate, locale as Locale)} 
-      ${formatTime(image.captureDate, locale as Locale)}`,
+      content: formatDateTime(image.captureDate, locale as Locale),
     },
     {
       icon: <UploadCloudIcon className="h-5 w-5" />,
       title: "Upload Date",
-      content: `${formatDate(image.createdAt, locale as Locale)}
-      ${formatTime(image.createdAt, locale as Locale)}`,
+      content: formatDateTime(image.createdAt, locale as Locale),
     },
   ];
 
