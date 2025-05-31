@@ -1,4 +1,21 @@
-# GrowAGram 🪴 Track Your Grow 📜
+# GrowAG- 🖋️ **- 🖋️ **Grow Journal System\*\* - Detailed tracking with timeline views
+
+- 🌿 **Plant Database** - Comprehensive plant information management
+- 👥 **Social Features** - Follow, like, comment, and notification systems
+- 🔍 **Grows Discovery** - Advanced filtering and search for grows exploration
+- 📊 **Analytics Dashboard** - User statistics and insights (partially implemented)
+- 🔔 **Real-time Notifications** - Factory-based notification system
+- 🌍 **Internationalization** - Multi-language support (German/English)
+- 📱 **Mobile-First Design** - Responsive across all devices
+- 🔒 **Security** - Comprehensive authentication and authorizationrnal System\*\* - Detailed tracking with timeline views
+
+- 🌿 **Plant Database** - Comprehensive plant information management
+- � **Social Features** - Follow, like, comment, and notification systems
+- �🔍 **Exploration Pages** - Advanced filtering and search for Grows discovery
+- 🔔 **Real-time Notifications** - Factory-based notification system
+- 🌍 **Internationalization** - Multi-language support (German/English)
+- 📱 **Mobile-First Design** - Responsive across all devices
+- 🔒 **Security** - Comprehensive authentication and authorization**Exploration Pages** - Advanced filtering and search for content discovery🪴 Track Your Grow 📜
 
 [![Version](https://img.shields.io/badge/Version-0.9.0--beta.1-blue?style=for-the-badge&logo=npm&logoColor=white)](https://github.com/henningsieh/growagram-v2)
 
@@ -10,6 +27,7 @@ GrowAGram is a modern social platform for plant enthusiasts to document and shar
 - 🌿 **Plant Database** - Comprehensive plant information management
 - 👥 **Social Features** - Follow, like, comment, and notification systems
 - 📊 **Analytics Dashboard** - Growing statistics and insights
+- � **Exploration Pages** - Advanced filtering and search for content discovery
 - 🔔 **Real-time Notifications** - Factory-based notification system
 - 🌍 **Internationalization** - Multi-language support (German/English)
 - 📱 **Mobile-First Design** - Responsive across all devices
@@ -32,9 +50,11 @@ GrowAGram is a modern social platform for plant enthusiasts to document and shar
 [![TanStack Query](https://img.shields.io/badge/TanStack_Query-5-ff4154?style=for-the-badge&logo=react&logoColor=white)](https://tanstack.com/query/latest)
 [![Framer Motion](https://img.shields.io/badge/Framer_Motion-11-0055FF?style=for-the-badge&logo=framer&logoColor=white)](https://www.framer.com/motion/)
 [![next-intl](https://img.shields.io/badge/next--intl-3-black?style=for-the-badge&logo=next.js&logoColor=white)](https://next-intl-docs.vercel.app/)
+[![nuqs](https://img.shields.io/badge/nuqs-Latest-blue?style=for-the-badge&logo=typescript&logoColor=white)](https://nuqs.47ng.com/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 [![shadcn/ui](https://img.shields.io/badge/shadcn/ui-Latest-black?style=for-the-badge&logo=shadcnui&logoColor=white)](https://ui.shadcn.com)
 [![MinIO](https://img.shields.io/badge/MinIO-S3%20Compatible-c72c48?style=for-the-badge&logo=minio&logoColor=white)](https://min.io)
+[![Bun](https://img.shields.io/badge/Bun-Latest-black?style=for-the-badge&logo=bun&logoColor=white)](https://bun.sh)
 [![Docker](https://img.shields.io/badge/Docker-Latest-2496ed?style=for-the-badge&logo=docker&logoColor=white)](https://docker.com)
 [![MIT License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge&logo=opensourceinitiative&logoColor=white)](LICENSE)
 
@@ -62,10 +82,11 @@ GrowAGram is a modern social platform for plant enthusiasts to document and shar
 
 ## 📊 Project Status
 
-⚧️ **Active Development** | Phase 1 Complete, Phase 2 in Progress
+⚧️ **Active Development** | Phase 1 Complete, Phase 2 Partially Complete
 
 **Recent Achievements:**
 
+- ✅ **Explore Grows Complete** - Advanced filtering and search for Grows discovery
 - ✅ **Notifications System Refactored** - Replaced monolithic code with clean factory-based architecture
 - ✅ **Badge System Improved** - Automated GitHub integration for real-time dependency tracking
 - ✅ **Image Infrastructure** - Migrated to self-hosted MinIO for better performance and control
@@ -78,7 +99,7 @@ GrowAGram is a modern social platform for plant enthusiasts to document and shar
 - 🔨 In Progress
 - ✅ Completed
 
-### Phase 1: Core Platform (90% Complete)
+### Phase 1: Core Platform (100% Complete)
 
 #### Core Features
 
@@ -88,10 +109,8 @@ GrowAGram is a modern social platform for plant enthusiasts to document and shar
 - ✅ Public timeline Posts (reference Grows, Plants or Fotos)
 - ✅ User banning system with Edge-compatible implementation
 - ✅ **Factory-based notifications system** - Clean, extensible architecture
-- 🔨 Additional features for Admin role (content moderation)
-- 🔨 Activity feeds/timelines for Users, Grows and Plants
-- 🔨 Follow system with Following timeline
 - ✅ User profile enhancements
+- ✅ Follow system implementation
 
 #### Image Management and Storage Infrastructure
 
@@ -102,19 +121,31 @@ GrowAGram is a modern social platform for plant enthusiasts to document and shar
 - ✅ EXIF data extraction
 - ✅ Many-to-Many relations: Grows <-> Plants <-> Photos
 
-### Phase 2: Social Features
+### Phase 2: Exploration Pages (Partially Complete)
+
+#### Content Discovery Features
+
+- ✅ **Explore Grows** - Advanced filtering and search for Grows discovery
+- ✅ **Filter Components** - Multi-select filters with URL parameter management
+- ✅ **Search Functionality** - Real-time search implementation
+- ✅ **Grid Layouts** - Responsive design for entity display
+- ✅ **Performance Optimization** - Query optimization and caching strategies
+- ⏳ **Explore Plants** - Plant exploration page (postponed for future development)
+
+### Phase 3: Social Features (In Progress)
 
 #### Community Features
 
 - ✅ Comments system
 - ✅ Like functionality
 - ✅ **Notifications system** - Factory-based architecture with real-time updates
+- 🔨 Activity feeds/timelines for Users, Grows and Plants
+- 🔨 Following timeline
 - ⏳ User mentions in posts/comments
-- ⏳ Advanced search features
 - ⏳ Private messaging
 - ⏳ Chat rooms
 
-### Phase 3: Advanced Features
+### Phase 4: Advanced Features
 
 #### Monetization & Analytics
 
