@@ -21,7 +21,7 @@ export default function ExploreLayout({ children }: ExploreLayoutProps) {
       <div className="bg-background/95 supports-[backdrop-filter]:bg-background/60 border-b backdrop-blur">
         <div className="container flex min-h-14 max-w-screen-2xl items-center p-2 md:p-6">
           <div className="flex flex-col space-y-1">
-            <h1 className="text-xl font-semibold tracking-tight">
+            <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl md:text-4xl lg:text-5xl">
               {t("Grows.title")}
             </h1>
             <p className="text-muted-foreground text-sm">

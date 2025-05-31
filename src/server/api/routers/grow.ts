@@ -597,32 +597,12 @@ export const growRouter = createTRPCRouter({
           orderBy: (grows, { desc }) => [desc(grows.createdAt)],
           limit: limit + 1, // Get one extra to determine if there's a next page
           with: {
-            owner: {
-              columns: {
-                id: true,
-                username: true,
-                email: true,
-                image: true,
-                createdAt: true,
-              },
-            },
+            owner: true,
             headerImage: true,
             plants: {
               with: {
-                owner: {
-                  columns: {
-                    id: true,
-                    username: true,
-                    email: true,
-                    image: true,
-                  },
-                },
-                grow: {
-                  columns: {
-                    id: true,
-                    name: true,
-                  },
-                },
+                owner: true,
+                grow: true,
                 strain: {
                   columns: {
                     id: true,
@@ -632,21 +612,9 @@ export const growRouter = createTRPCRouter({
                     thcContent: true,
                     cbdContent: true,
                   },
-                  with: {
-                    breeder: {
-                      columns: {
-                        id: true,
-                        name: true,
-                      },
-                    },
-                  },
+                  with: { breeder: { columns: { id: true, name: true } } },
                 },
-                headerImage: {
-                  columns: {
-                    id: true,
-                    imageUrl: true,
-                  },
-                },
+                headerImage: { columns: { id: true, imageUrl: true } },
                 plantImages: connectPlantWithImagesQuery,
               },
             },

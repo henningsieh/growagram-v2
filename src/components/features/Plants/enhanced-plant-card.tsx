@@ -28,7 +28,7 @@ import { Link } from "~/lib/i18n/routing";
 import {
   type DateFormatOptions,
   cn,
-  formatDate,
+  formatAbsoluteDate,
   formatDaysRemaining,
   formatDistanceToNowLocalized,
 } from "~/lib/utils";
@@ -165,7 +165,7 @@ export function EnhancedPlantCard({ plant }: EnhancedPlantCardProps) {
                 <HybridTooltipTrigger className="flex items-center gap-2">
                   <NutIcon className="h-4 w-4 shrink-0" />
                   <span className="text-xs whitespace-nowrap">
-                    {formatDate(plant.startDate, locale, {
+                    {formatAbsoluteDate(plant.startDate, locale, {
                       includeYear: false,
                     } as DateFormatOptions)}
                   </span>
@@ -189,7 +189,7 @@ export function EnhancedPlantCard({ plant }: EnhancedPlantCardProps) {
                           {":"}
                         </p>
                         <p className="text-base">
-                          {formatDate(progress.estimatedHarvestDate, locale, {
+                          {formatAbsoluteDate(progress.estimatedHarvestDate, locale, {
                             includeYear: true,
                             force: true,
                           } as DateFormatOptions)}{" "}

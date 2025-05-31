@@ -8,9 +8,9 @@ import type { z } from "zod";
 import { PaginationItemsPerPage } from "~/assets/constants";
 import ResponsiveGrid from "~/components/Layouts/responsive-grid";
 import InfiniteScrollLoader from "~/components/atom/infinite-scroll-loader";
+import { GrowCard } from "~/components/features/Grows/grow-card";
 import { useTRPC } from "~/lib/trpc/client";
 import { growExplorationSchema } from "../../../types/zodSchema";
-import { ExploreGrowCard } from "./explore-grow-card";
 import { ExploreGrowsEmptyState } from "./explore-grows-empty-state";
 
 interface ExploreGrowsGridProps {
@@ -111,7 +111,7 @@ export function ExploreGrowsGrid({ filters }: ExploreGrowsGridProps) {
               delay: index * 0.05, // Stagger animation
             }}
           >
-            <ExploreGrowCard grow={grow} />
+            <GrowCard grow={grow} isSocial={true} />
           </motion.div>
         ))}
       </ResponsiveGrid>

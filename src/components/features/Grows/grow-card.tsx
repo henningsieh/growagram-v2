@@ -7,9 +7,7 @@ import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useMutation } from "@tanstack/react-query";
 import { useQueryClient } from "@tanstack/react-query";
-import { AnimatePresence, motion } from "framer-motion";
 import {
-  AlertCircleIcon,
   DotIcon,
   EditIcon,
   MessageSquareTextIcon,
@@ -27,18 +25,32 @@ import { EntityDateInfo } from "~/components/atom/entity-date-info";
 import { OwnerDropdownMenu } from "~/components/atom/owner-dropdown-menu";
 import { SocialCardFooter } from "~/components/atom/social-card-footer";
 import { Comments } from "~/components/features/Comments/comments";
-import { EnhancedPlantCard } from "~/components/features/Plants/enhanced-plant-card.tsx";
 import { PostFormModal } from "~/components/features/Timeline/Post/post-form-modal";
-import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardTitle } from "~/components/ui/card";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "~/components/ui/tooltip";
 import { useComments } from "~/hooks/use-comments";
 import { useLikeStatus } from "~/hooks/use-likes";
 import { Link, useRouter } from "~/lib/i18n/routing";
 import { useTRPC } from "~/lib/trpc/client";
-import { cn, formatDate, formatTime } from "~/lib/utils";
+import { cn, formatDateTime } from "~/lib/utils";
 import type { GetAllGrowType, GetOwnGrowType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
+import {
+  CultureMedium,
+  FertilizerForm,
+  FertilizerType,
+  GrowEnvironment,
+  getCultureMediumEmoji,
+  getFertilizerFormEmoji,
+  getFertilizerTypeEmoji,
+  getGrowEnvironmentEmoji,
+} from "~/types/grow";
 import { LikeableEntityType } from "~/types/like";
 import { Locale } from "~/types/locale";
 import { PostableEntityType } from "~/types/post";
@@ -134,8 +146,7 @@ export function GrowCard({
       className="text-muted-foreground flex items-center gap-1 text-sm whitespace-nowrap underline-offset-3 hover:underline"
     >
       {<DotIcon size={24} className="xs:block -mx-2 hidden" />}
-      {formatDate(grow.updatedAt, locale as Locale)}{" "}
-      {formatTime(grow.updatedAt, locale as Locale)}
+      {formatDateTime(grow.updatedAt, locale as Locale)}
     </Link>
   );
 
@@ -230,48 +241,98 @@ export function GrowCard({
             updatedAt={grow.updatedAt}
           />
 
-          <div className="justify-top flex h-full flex-1 flex-col">
-            <div
-              className={cn(
-                "custom-scrollbar max-h-72 flex-1 space-y-2 overflow-y-auto",
-                grow.plants.length > 2 && "pr-3",
-              )}
-            >
-              <AnimatePresence>
-                {grow.plants.length ? (
-                  grow.plants.map((plant) => (
-                    <motion.div
-                      key={plant.id}
-                      initial={{ opacity: 0, y: -30 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -20 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <EnhancedPlantCard plant={plant} />
-                    </motion.div>
-                  ))
-                ) : (
-                  <Alert variant="destructive" className="bg-accent/20">
-                    <AlertCircleIcon className="h-4 w-4" />
-                    <AlertTitle>{t("no-plants-connected")}</AlertTitle>
-                    <AlertDescription>
-                      <Button
-                        variant="link"
-                        className="text-primary p-0 font-semibold"
-                        asChild
-                      >
-                        <Link
-                          href={`${modulePaths.GROWS.path}/${grow.id}/form`}
-                        >
-                          {t("button-label-connect-plants")}
-                        </Link>
-                      </Button>
-                    </AlertDescription>
-                  </Alert>
-                )}
-              </AnimatePresence>
-            </div>
+          {/* Exploration Info */}
+          <TooltipProvider>
+            <div className="grid grid-cols-2 gap-2">
+              {/* Environment */}
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="text-muted-foreground flex items-center gap-1 text-xs">
+                    <span className="text-sm">
+                      {grow.environment
+                        ? getGrowEnvironmentEmoji(grow.environment)
+                        : getGrowEnvironmentEmoji(GrowEnvironment.INDOOR)}
+                    </span>
+                    <span className="truncate">
+                      {grow.environment || "Not specified"}
+                    </span>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>
+                    {"Environment:"} {grow.environment || "Not specified"}
+                  </p>
+                </TooltipContent>
+              </Tooltip>
 
+              {/* Culture Medium */}
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="text-muted-foreground flex items-center gap-1 text-xs">
+                    <span className="text-sm">
+                      {grow.cultureMedium
+                        ? getCultureMediumEmoji(grow.cultureMedium)
+                        : getCultureMediumEmoji(CultureMedium.SOIL)}
+                    </span>
+                    <span className="truncate">
+                      {grow.cultureMedium || "Not specified"}
+                    </span>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>
+                    {"Culture Medium:"} {grow.cultureMedium || "Not specified"}
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+
+              {/* Fertilizer Type */}
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="text-muted-foreground flex items-center gap-1 text-xs">
+                    <span className="text-sm">
+                      {grow.fertilizerType
+                        ? getFertilizerTypeEmoji(grow.fertilizerType)
+                        : getFertilizerTypeEmoji(FertilizerType.ORGANIC)}
+                    </span>
+                    <span className="truncate">
+                      {grow.fertilizerType || "Not specified"}
+                    </span>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>
+                    {"Fertilizer Type:"}{" "}
+                    {grow.fertilizerType || "Not specified"}
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+
+              {/* Fertilizer Form */}
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="text-muted-foreground flex items-center gap-1 text-xs">
+                    <span className="text-sm">
+                      {grow.fertilizerForm
+                        ? getFertilizerFormEmoji(grow.fertilizerForm)
+                        : getFertilizerFormEmoji(FertilizerForm.LIQUID)}
+                    </span>
+                    <span className="truncate">
+                      {grow.fertilizerForm || "Not specified"}
+                    </span>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>
+                    {"Fertilizer Form:"}{" "}
+                    {grow.fertilizerForm || "Not specified"}
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
+          </TooltipProvider>
+
+          <div className="justify-top flex h-full flex-1 flex-col">
             {!isSocial && (
               <Button
                 size={"sm"}

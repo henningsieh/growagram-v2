@@ -39,7 +39,7 @@ function AvatarCardHeader({
   actions,
 }: SocialHeaderProps) {
   return (
-    <CardHeader className="flex h-12.5 items-center justify-between space-y-0 px-1 py-0 pt-0">
+    <CardHeader className="flex items-center justify-between space-y-0 p-1">
       <div className="flex items-center gap-2">
         <CustomAvatar
           size={36}

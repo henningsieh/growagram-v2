@@ -22,7 +22,7 @@ import {
 } from "~/components/ui/card";
 import { useIsMobile } from "~/hooks/use-mobile";
 import { Link } from "~/lib/i18n/routing";
-import { type DateFormatOptions, formatDate } from "~/lib/utils";
+import { type DateFormatOptions, formatAbsoluteDate } from "~/lib/utils";
 import type { GetAllGrowType } from "~/server/api/root";
 import { Locale } from "~/types/locale";
 
@@ -80,7 +80,7 @@ export function EmbeddedGrowCard({ grow }: EmbeddedGrowCardProps) {
                   <HybridTooltipTrigger className="flex items-center gap-2">
                     <Calendar1Icon className="h-4 w-4 shrink-0" />
                     <span className="text-sm whitespace-nowrap">
-                      {formatDate(
+                      {formatAbsoluteDate(
                         grow.createdAt,
                         locale as Locale,
                         {
