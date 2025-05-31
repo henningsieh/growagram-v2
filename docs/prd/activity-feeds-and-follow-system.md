@@ -6,13 +6,38 @@
 **Created:** May 26, 2025  
 **Last Updated:** May 26, 2025  
 **Project:** GrowAGram v2  
-**Phase:** Phase 2 - Social Features
+**Phase:** Phase 2 - Exploration Pages
 
 ---
 
 ## Executive Summary
 
 This PRD outlines the comprehensive design and implementation strategy for Activity Feeds/Timelines and Follow System features in GrowAGram. These features will transform the current public timeline into a more sophisticated social platform with personalized feeds, exploration pages, and user-centric content discovery.
+
+---
+
+## Project Overview
+
+GrowAGram is a modern social platform for plant enthusiasts built with:
+
+- **Frontend**: React 19, Next.js 15, TypeScript, Tailwind CSS v4
+- **Backend**: tRPC, Auth.js, PostgreSQL with Drizzle ORM
+- **Storage**: Self-hosted MinIO on Hetzner Cloud
+- **Deployment**: Docker with Coolify CI/CD
+
+## Development Phase
+
+Currently in **Phase 2** (Exploration Pages - Complete) of 3-phase roadmap:
+
+1. ✅ **Phase 1**: Core Platform (Complete)
+2. ✅ **Phase 2**: Exploration Pages (Complete)
+3. 📋 **Phase 3**: Advanced Features & Monetization
+
+## Important Note
+
+This is an active hobby project. **Never hallucinate about features or implementations** - ask for clarification when uncertain!
+
+---
 
 ## Table of Contents
 
