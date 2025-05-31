@@ -38,16 +38,17 @@ src/
 
 This document serves as the main entry point for all development guidelines. For detailed information on specific topics, refer to the specialized instruction files below:
 
-| Topic                    | File                                                                             | Description                                                     |
-| ------------------------ | -------------------------------------------------------------------------------- | --------------------------------------------------------------- |
-| **Technology Stack**     | [tech-stack.instructions.md](./tech-stack.instructions.md)                       | Package management, architecture, and integrations              |
-| **TypeScript**           | [typescript-guidelines.instructions.md](./typescript-guidelines.instructions.md) | Type safety, Zod schemas, and TypeScript patterns               |
-| **React & Next.js**      | [react-nextjs.instructions.md](./react-nextjs.instructions.md)                   | Component structure, hooks, and animation guidelines            |
-| **Styling & i18n**       | [styling-i18n.instructions.md](./styling-i18n.instructions.md)                   | Tailwind CSS, responsive design, and internationalization       |
-| **Database & tRPC**      | [database-trpc.instructions.md](./database-trpc.instructions.md)                 | Drizzle ORM, tRPC procedures, and state management              |
-| **Performance & SEO**    | [performance-seo.instructions.md](./performance-seo.instructions.md)             | Core Web Vitals, optimization, and SEO strategies               |
-| **Development Workflow** | [development-workflow.instructions.md](./development-workflow.instructions.md)   | Git workflow, documentation, and code organization              |
-| **Security & Testing**   | [security-testing.instructions.md](./security-testing.instructions.md)           | Authentication, security practices, error handling, and testing |
+```markdown
+| Topic                    | File                                                                                                | Description                                                     |
+| ------------------------ | --------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| **Technology Stack**     | [tech-stack.instructions.md](.github/instructions/tech-stack.instructions.md)                       | Package management, architecture, and integrations              |
+| **TypeScript**           | [typescript-guidelines.instructions.md](.github/instructions/typescript-guidelines.instructions.md) | Type safety, Zod schemas, and TypeScript patterns               |
+| **React & Next.js**      | [react-nextjs.instructions.md](.github/instructions/react-nextjs.instructions.md)                   | Component structure, hooks, and animation guidelines            |
+| **Styling & i18n**       | [styling-i18n.instructions.md](.github/instructions/styling-i18n.instructions.md)                   | Tailwind CSS, responsive design, and internationalization       |
+| **Database & tRPC**      | [database-trpc.instructions.md](.github/instructions/database-trpc.instructions.md)                 | Drizzle ORM, tRPC procedures, and state management              |
+| **Performance & SEO**    | [performance-seo.instructions.md](.github/instructions/performance-seo.instructions.md)             | Core Web Vitals, optimization, and SEO strategies               |
+| **Development Workflow** | [development-workflow.instructions.md](.github/instructions/development-workflow.instructions.md)   | Git workflow, documentation, and code organization              |
+| **Security & Testing**   | [security-testing.instructions.md](.github/instructions/security-testing.instructions.md)           | Authentication, security practices, error handling, and testing |
 
 ---
 
@@ -122,3 +123,4 @@ Remember: These guidelines ensure that GrowAGram maintains high code quality, pe
 ---
 
 _For specific guidelines, navigate to the relevant instruction file above._
+```
