@@ -123,9 +123,9 @@ export function EnhancedPlantCard({ plant }: EnhancedPlantCardProps) {
                   <Button
                     asChild
                     size={"icon"}
-                    variant="grow"
+                    variant="secondary"
                     className="size-5.5 rounded-sm"
-                    aria-label={t("Account.account-info-title")}
+                    aria-label={"Link to Grow"}
                   >
                     <Link
                       href={`${modulePaths.PUBLICGROWS.path}/${plant.grow.id}`}

@@ -9,15 +9,9 @@ const buttonVariants = cva(
     variants: {
       variant: {
         primary:
-          "bg-primary/90 border border-primary text-primary-foreground shadow-sm hover:bg-primary/80",
+          "bg-primary text-primary-foreground shadow-xs hover:bg-primary/90",
         secondary:
-          "bg-secondary/90 text-secondary-foreground shadow-xs hover:bg-secondary/80",
-        timeline: 
-          "bg-input/90 border border-input text-foreground shadow-md hover:bg-input/80",
-        grow: 
-          "bg-secondary/90 border border-secondary/80 text-secondary-foreground shadow-md hover:bg-secondary/80",
-        plant: 
-          "bg-primary/90 border border-primary/80 text-primary-foreground shadow-md hover:bg-primary/80",
+          "bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80",
         outline:
           "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
         ghost: "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",

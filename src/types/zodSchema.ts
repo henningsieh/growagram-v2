@@ -88,6 +88,9 @@ export const growFormSchema = z.object({
   cultureMedium: z.nativeEnum(CultureMedium).optional(),
   fertilizerType: z.nativeEnum(FertilizerType).optional(),
   fertilizerForm: z.nativeEnum(FertilizerForm).optional(),
+  // Header image handling - integrated into main form
+  headerImageId: z.string().optional(),
+  removeHeaderImage: z.boolean().optional(),
 });
 
 // form schema for user editing

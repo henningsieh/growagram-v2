@@ -111,26 +111,26 @@ export function GrowsFilterPanel({ className }: GrowFilterSidebarProps) {
         <div className="flex items-center gap-3">
           <div className="flex shrink-0 items-center gap-2">
             <FilterIcon className="h-5 w-5" />
-            <Label className="text-sm font-medium">{t_filter("title")}</Label>
+            <Label className="text-xl font-bold">{t_filter("title")}</Label>
           </div>
           {/* Search takes up available space */}
           <div className="relative min-w-0 flex-1">
-            <SearchIcon className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
+            <SearchIcon className="text-muted-foreground absolute top-1/2 left-3 size-5 -translate-y-1/2" />
             <Input
               id="search"
               placeholder={t_filter("search.placeholder")}
               value={filters.search || ""}
               onChange={(e) => setFilters({ search: e.target.value || null })}
-              className="h-9 pl-10"
+              className="h-9 pl-10 text-base md:text-lg"
             />
           </div>
           {/* Clear all button */}
           {hasActiveFilters && (
             <Button
-              variant="ghost"
+              variant="destructive"
               size="sm"
               onClick={clearAllFilters}
-              className="text-muted-foreground hover:text-destructive h-9 shrink-0 px-2"
+              // className="text-muted-foreground hover:text-destructive h-9 shrink-0 px-2"
             >
               {t_filter("clearAll")}
             </Button>
@@ -141,16 +141,17 @@ export function GrowsFilterPanel({ className }: GrowFilterSidebarProps) {
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
           {/* Environment Filter */}
           <div className="space-y-1">
-            <Label className="text-xs font-medium">
+            <Label className="text-sm font-semibold">
               {t("environment-label")}
             </Label>
             <Select
+              key={`environment-${filters.environment || "empty"}`}
               value={filters.environment || undefined}
               onValueChange={(value) =>
                 setFilters({ environment: value || null })
               }
             >
-              <SelectTrigger className="h-8 text-xs">
+              <SelectTrigger className="h-8 w-full text-xs">
                 <SelectValue placeholder={t("environment-placeholder")} />
               </SelectTrigger>
               <SelectContent>
@@ -168,16 +169,17 @@ export function GrowsFilterPanel({ className }: GrowFilterSidebarProps) {
 
           {/* Culture Medium Filter */}
           <div className="space-y-1">
-            <Label className="text-xs font-medium">
+            <Label className="text-sm font-semibold">
               {t("culture-medium-label")}
             </Label>
             <Select
+              key={`cultureMedium-${filters.cultureMedium || "empty"}`}
               value={filters.cultureMedium || undefined}
               onValueChange={(value) =>
                 setFilters({ cultureMedium: value || null })
               }
             >
-              <SelectTrigger className="h-8 text-xs">
+              <SelectTrigger className="h-8 w-full text-xs">
                 <SelectValue placeholder={t("culture-medium-placeholder")} />
               </SelectTrigger>
               <SelectContent>
@@ -195,16 +197,17 @@ export function GrowsFilterPanel({ className }: GrowFilterSidebarProps) {
 
           {/* Fertilizer Type Filter */}
           <div className="space-y-1">
-            <Label className="text-xs font-medium">
+            <Label className="text-sm font-semibold">
               {t("fertilizer-type-label")}
             </Label>
             <Select
+              key={`fertilizerType-${filters.fertilizerType || "empty"}`}
               value={filters.fertilizerType || undefined}
               onValueChange={(value) =>
                 setFilters({ fertilizerType: value || null })
               }
             >
-              <SelectTrigger className="h-8 text-xs">
+              <SelectTrigger className="h-8 w-full text-xs">
                 <SelectValue placeholder={t("fertilizer-type-placeholder")} />
               </SelectTrigger>
               <SelectContent>
@@ -222,16 +225,17 @@ export function GrowsFilterPanel({ className }: GrowFilterSidebarProps) {
 
           {/* Fertilizer Form Filter */}
           <div className="space-y-1">
-            <Label className="text-xs font-medium">
+            <Label className="text-sm font-semibold">
               {t("fertilizer-form-label")}
             </Label>
             <Select
+              key={`fertilizerForm-${filters.fertilizerForm || "empty"}`}
               value={filters.fertilizerForm || undefined}
               onValueChange={(value) =>
                 setFilters({ fertilizerForm: value || null })
               }
             >
-              <SelectTrigger className="h-8 text-xs">
+              <SelectTrigger className="h-8 w-full text-xs">
                 <SelectValue placeholder={t("fertilizer-form-placeholder")} />
               </SelectTrigger>
               <SelectContent>

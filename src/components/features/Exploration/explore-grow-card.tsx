@@ -17,6 +17,7 @@ import {
 } from "~/components/ui/tooltip";
 import { formatDate } from "~/lib/utils";
 import type { AppRouter } from "~/server/api/root";
+import { modulePaths } from "../../../assets/constants";
 
 // Type for a single grow from the explore endpoint
 type ExploreGrow =
@@ -225,7 +226,7 @@ export function ExploreGrowCard({ grow }: ExploreGrowCardProps) {
             </div>
 
             <Link
-              href={`/app/grows/${grow.id}`}
+              href={`${modulePaths.PUBLICGROWS.path}/${grow.id}`}
               className="text-primary hover:text-primary/80 inline-flex items-center gap-1 text-xs transition-colors"
             >
               <Eye className="h-3 w-3" />

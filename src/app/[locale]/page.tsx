@@ -82,7 +82,7 @@ export default function LandingPage() {
                     </Link>
                   </Button>
                   <Button asChild size="lg" variant="outline">
-                    <Link href="/public/grows">
+                    <Link href={modulePaths.EXPLOREGROWS.path}>
                       {t("HeroSection.cta-button-pricing")}
                     </Link>
                   </Button>

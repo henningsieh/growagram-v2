@@ -65,14 +65,29 @@ export const modulePaths = {
     path: "/public/timeline/following",
     protected: false,
   },
+  EXPLOREGROWS: {
+    name: "Explore Grows",
+    path: "/public/grows/explore",
+    protected: false,
+  },
   PUBLICGROWS: {
-    name: "All Grows",
+    name: "Public Grows",
     path: "/public/grows",
     protected: false,
   },
   PUBLICPLANTS: {
     name: "All Plants",
     path: "/public/plants",
+    protected: false,
+  },
+  PUBLICPHOTOS: {
+    name: "All Photos",
+    path: "/public/photos",
+    protected: false,
+  },
+  PUBLICPOSTS: {
+    name: "Public Posts",
+    path: "/public/posts",
     protected: false,
   },
   PUBLICPROFILE: {

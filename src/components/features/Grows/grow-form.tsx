@@ -63,7 +63,6 @@ import {
 } from "~/components/ui/select";
 import { Link, useRouter } from "~/lib/i18n/routing";
 import { useTRPC } from "~/lib/trpc/client";
-import { uploadToS3 } from "~/lib/utils/uploadToS3";
 import type {
   CreateOrEditGrowInput,
   GetConnectablePlantsInput,
@@ -225,38 +224,12 @@ export function GrowForm({ grow }: { grow?: GetGrowByIdType }) {
   const [headerImageUrl, setHeaderImageUrl] = React.useState<string | null>(
     grow?.headerImage?.imageUrl || null,
   );
-  const [isUploadingImage, setIsUploadingImage] = React.useState(false);
   const [selectedFile, setSelectedFile] = React.useState<File | null>(null);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   // Create a photo mutation - defined at component level
   const createPhotoMutation = useMutation(
     trpc.photos.createPhoto.mutationOptions(),
-  );
-
-  // Header image update mutation
-  const updateHeaderImageMutation = useMutation(
-    trpc.grows.updateHeaderImage.mutationOptions({
-      onSuccess: async () => {
-        toast(t("header-image-update-success-title"), {
-          description: t("header-image-update-success-description"),
-        });
-        await queryClient.invalidateQueries(
-          trpc.grows.getOwnGrows.pathFilter(),
-        );
-        if (grow?.id) {
-          await queryClient.invalidateQueries(
-            trpc.grows.getById.queryFilter({ id: grow.id }),
-          );
-        }
-      },
-      onError: (error) => {
-        toast.error(t("header-image-update-error-title"), {
-          description:
-            error.message || t("header-image-update-error-description"),
-        });
-      },
-    }),
   );
 
   const filteredPlants = React.useMemo(() => {
@@ -278,6 +251,8 @@ export function GrowForm({ grow }: { grow?: GetGrowByIdType }) {
       cultureMedium: grow?.cultureMedium || undefined,
       fertilizerType: grow?.fertilizerType || undefined,
       fertilizerForm: grow?.fertilizerForm || undefined,
+      headerImageId: grow?.headerImage?.id || undefined,
+      removeHeaderImage: false,
     },
   });
 
@@ -384,13 +359,62 @@ export function GrowForm({ grow }: { grow?: GetGrowByIdType }) {
       },
     }),
   );
-
   async function onSubmit(values: FormValues) {
     setIsSubmitting(true);
 
     try {
+      // Handle header image upload if a new file is selected
+      const updatedValues = { ...values };
+
+      if (selectedFile) {
+        // Upload the new image first - follow the same pattern as image-upload.tsx
+
+        // Get signed URL for upload
+        const response = await fetch("/api/getSignedURL", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            fileName: selectedFile.name,
+            fileType: selectedFile.type,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to get signed URL");
+        }
+
+        const { uploadUrl } = (await response.json()) as { uploadUrl: string };
+
+        // Upload to S3
+        const { uploadToS3 } = await import("~/lib/utils/uploadToS3");
+        const { url: s3Url, eTag } = await uploadToS3(
+          selectedFile,
+          uploadUrl,
+          () => {}, // No progress callback for single file
+        );
+
+        // Create the photo record
+        const newImages = await createPhotoMutation.mutateAsync({
+          imageUrl: s3Url,
+          s3Key: `photos/${selectedFile.name}`,
+          s3ETag: eTag,
+          captureDate: new Date(),
+          originalFilename: selectedFile.name,
+        });
+
+        // Update form values to include the new image ID
+        // The mutation returns an array, so get the first element
+        if (newImages && newImages.length > 0) {
+          updatedValues.headerImageId = newImages[0]?.id;
+          updatedValues.removeHeaderImage = false;
+        }
+      }
+
+      // Submit the form with all data including header image
       await createOrEditGrowMutation.mutateAsync(
-        values satisfies CreateOrEditGrowInput,
+        updatedValues satisfies CreateOrEditGrowInput,
       );
     } catch (error) {
       // Catch any unexpected errors during submission
@@ -471,7 +495,7 @@ export function GrowForm({ grow }: { grow?: GetGrowByIdType }) {
 
                   <div className="flex flex-col gap-4">
                     {/* Display current header image if exists */}
-                    {headerImageUrl && (
+                    {headerImageUrl && !form.watch("removeHeaderImage") && (
                       <div className="relative aspect-video w-full max-w-md overflow-hidden rounded-md border">
                         <Image
                           fill
@@ -486,17 +510,13 @@ export function GrowForm({ grow }: { grow?: GetGrowByIdType }) {
                           size="icon"
                           className="absolute top-2 right-2 h-8 w-8 rounded-full"
                           onClick={() => {
-                            if (grow?.id) {
-                              updateHeaderImageMutation.mutate({
-                                growId: grow.id,
-                                headerImageId: null,
-                              });
-                              setHeaderImageUrl(null);
-                            }
+                            // Mark image for removal in form state
+                            form.setValue("removeHeaderImage", true);
+                            form.setValue("headerImageId", undefined);
+                            setHeaderImageUrl(null);
+                            setSelectedFile(null);
                           }}
-                          disabled={
-                            updateHeaderImageMutation.isPending || isSubmitting
-                          }
+                          disabled={isSubmitting}
                         >
                           <X className="h-4 w-4" />
                         </Button>
@@ -517,6 +537,8 @@ export function GrowForm({ grow }: { grow?: GetGrowByIdType }) {
                             // Create a preview URL
                             const objectUrl = URL.createObjectURL(file);
                             setHeaderImageUrl(objectUrl);
+                            // Reset remove flag when new image is selected
+                            form.setValue("removeHeaderImage", false);
                           }
                         }}
                       />
@@ -524,102 +546,21 @@ export function GrowForm({ grow }: { grow?: GetGrowByIdType }) {
                         type="button"
                         variant="outline"
                         onClick={() => fileInputRef.current?.click()}
-                        disabled={
-                          isUploadingImage ||
-                          isSubmitting ||
-                          updateHeaderImageMutation.isPending
-                        }
+                        disabled={isSubmitting}
                         className="flex gap-2"
                       >
                         <ImageIcon className="h-4 w-4" />
                         {selectedFile ? t("change-image") : t("select-image")}
                       </Button>
-                      {selectedFile && grow?.id && (
-                        <Button
-                          type="button"
-                          variant="secondary"
-                          onClick={async () => {
-                            if (!selectedFile || !grow?.id) return;
-
-                            setIsUploadingImage(true);
-                            try {
-                              // Get a signed URL from the API
-                              const fileName = `${grow.id}-${Date.now()}-${selectedFile.name}`;
-                              const response = await fetch(
-                                "/api/getSignedURL",
-                                {
-                                  method: "POST",
-                                  headers: {
-                                    "Content-Type": "application/json",
-                                  },
-                                  body: JSON.stringify({
-                                    fileName,
-                                    fileType: selectedFile.type,
-                                  }),
-                                },
-                              );
-
-                              if (!response.ok) {
-                                throw new Error("Failed to get upload URL");
-                              }
-
-                              const { uploadUrl } = (await response.json()) as {
-                                uploadUrl: string;
-                              };
-
-                              // Upload file to S3
-                              const { url: imageUrl, eTag } = await uploadToS3(
-                                selectedFile,
-                                uploadUrl,
-                              );
-
-                              // Create image record - use the mutation defined at component level
-                              const [newImage] =
-                                await createPhotoMutation.mutateAsync({
-                                  // Let the server generate the ID
-                                  imageUrl,
-                                  s3Key: `photos/${fileName}`,
-                                  s3ETag: eTag,
-                                  originalFilename: selectedFile.name,
-                                  captureDate: new Date(),
-                                });
-
-                              // Update grow header image
-                              await updateHeaderImageMutation.mutateAsync({
-                                growId: grow.id,
-                                headerImageId: newImage.id,
-                              });
-
-                              setSelectedFile(null);
-                              toast.success(t("image-upload-success"));
-                            } catch (error) {
-                              console.error("Upload error:", error);
-                              toast.error(t("image-upload-error-title"), {
-                                description: t(
-                                  "image-upload-error-description",
-                                ),
-                              });
-                            } finally {
-                              setIsUploadingImage(false);
-                            }
-                          }}
-                          disabled={
-                            isUploadingImage ||
-                            isSubmitting ||
-                            updateHeaderImageMutation.isPending
-                          }
-                        >
-                          {isUploadingImage ? (
-                            <>
-                              <SpinningLoader className="mr-2 h-4 w-4" />{" "}
-                              {t("uploading")}
-                            </>
-                          ) : (
-                            t("upload-image")
-                          )}
-                        </Button>
-                      )}
                     </div>
+
+                    {selectedFile && (
+                      <p className="text-muted-foreground text-sm">
+                        {t("selected-file")}
+                        {": "}
+                        {selectedFile.name}
+                      </p>
+                    )}
                   </div>
                   <FormDescription>
                     {t("header-image-description")}

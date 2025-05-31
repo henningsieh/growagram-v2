@@ -2,6 +2,7 @@
  * Centralized notification types and constants
  * This file contains all notification-related types, enums, and constants
  */
+import { modulePaths } from "~/assets/constants";
 
 // Notification event types that can be sent
 export enum NotificationEventType {
@@ -93,23 +94,23 @@ export interface NotificationCreationResult {
 // URL patterns for different entity types
 export const URL_PATTERNS = {
   [NotifiableEntityType.USER]: (entityId: string) =>
-    `/public/profile/${entityId}`,
+    `${modulePaths.PUBLICPROFILE.path}/${entityId}`,
   [NotifiableEntityType.POST]: (entityId: string, commentId?: string) =>
     commentId
-      ? `/public/posts/${entityId}?commentId=${commentId}`
-      : `/public/posts/${entityId}`,
+      ? `${modulePaths.PUBLICPOSTS.path}/${entityId}?commentId=${commentId}`
+      : `${modulePaths.PUBLICPOSTS.path}/${entityId}`,
   [NotifiableEntityType.GROW]: (entityId: string, commentId?: string) =>
     commentId
-      ? `/public/grows/${entityId}?commentId=${commentId}`
-      : `/public/grows/${entityId}`,
+      ? `${modulePaths.PUBLICGROWS.path}/${entityId}?commentId=${commentId}`
+      : `${modulePaths.PUBLICGROWS.path}/${entityId}`,
   [NotifiableEntityType.PLANT]: (entityId: string, commentId?: string) =>
     commentId
-      ? `/public/plants/${entityId}?commentId=${commentId}`
-      : `/public/plants/${entityId}`,
+      ? `${modulePaths.PUBLICPLANTS.path}/${entityId}?commentId=${commentId}`
+      : `${modulePaths.PUBLICPLANTS.path}/${entityId}`,
   [NotifiableEntityType.PHOTO]: (entityId: string, commentId?: string) =>
     commentId
-      ? `/public/photos/${entityId}?commentId=${commentId}`
-      : `/public/photos/${entityId}`,
+      ? `${modulePaths.PUBLICPHOTOS.path}/${entityId}?commentId=${commentId}`
+      : `${modulePaths.PUBLICPHOTOS.path}/${entityId}`,
   [NotifiableEntityType.COMMENT]: (entityId: string) => `#comment-${entityId}`, // Will be resolved by parent entity
 } as const;
 

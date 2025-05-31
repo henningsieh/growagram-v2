@@ -386,6 +386,35 @@ export const growRouter = createTRPCRouter({
           }
         }
 
+        // Handle header image validation if provided
+        let headerImageId: string | null = null;
+
+        if (input.removeHeaderImage) {
+          // Explicitly remove header image
+          headerImageId = null;
+        } else if (input.headerImageId) {
+          // Verify image exists and is owned by the user
+          const image = await ctx.db.query.images.findFirst({
+            where: eq(images.id, input.headerImageId),
+          });
+
+          if (!image) {
+            throw new TRPCError({
+              code: "NOT_FOUND",
+              message: "Header image not found.",
+            });
+          }
+
+          if (image.ownerId !== ctx.session.user.id) {
+            throw new TRPCError({
+              code: "UNAUTHORIZED",
+              message: "User is not owner of this header image.",
+            });
+          }
+
+          headerImageId = input.headerImageId;
+        }
+
         // Create or update grow
         const newGrow = await ctx.db
           .insert(grows)
@@ -396,6 +425,7 @@ export const growRouter = createTRPCRouter({
             cultureMedium: input.cultureMedium,
             fertilizerType: input.fertilizerType,
             ownerId: ctx.session.user.id,
+            headerImageId: headerImageId,
           })
           .onConflictDoUpdate({
             target: grows.id,
@@ -404,6 +434,7 @@ export const growRouter = createTRPCRouter({
               environment: input.environment,
               cultureMedium: input.cultureMedium,
               fertilizerType: input.fertilizerType,
+              headerImageId: headerImageId,
             },
           })
           .returning();

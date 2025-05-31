@@ -30,4 +30,7 @@
     "@radix-ui",
     "next/router"
   ]
+  // "typescript.tsserver.maxTsServerMemory": 1014,
+  // "typescript.experimental.useTsgo": false,
+  // "typescript.tsdk": "node_modules/typescript/lib"
 }

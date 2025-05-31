@@ -16,9 +16,9 @@
         },
         "items": [
           {
-            "title": "grows",
-            "href": "/public/grows",
-            "description": "grows-description",
+            "title": "explore-grows",
+            "href": "/public/grows/explore",
+            "description": "explore-grows-description",
             "icon": "TentTreeIcon"
           },
           {

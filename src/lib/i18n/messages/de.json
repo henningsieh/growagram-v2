@@ -237,9 +237,17 @@
   },
   "Errors": {
     "backToHome": "Startseite",
+    "dev-details-title": "Fehlerdetails (nur Entwicklung)",
+    "generic-message": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es erneut.",
+    "generic-title": "Etwas ist schiefgelaufen",
     "goBack": "Gehe zurück",
     "message": "Entschuldigung, wir konnten die von Ihnen gesuchte Seite nicht finden.",
+    "network-message": "Verbindung zum Server fehlgeschlagen. Bitte überprüfe deine Internetverbindung und versuche es erneut.",
+    "network-title": "Verbindungsfehler",
     "path": "Angefragter Pfad",
+    "retry-button": "Erneut versuchen",
+    "server-message": "Der Server hat einen Fehler festgestellt. Bitte versuche es später erneut.",
+    "server-title": "Serverfehler",
     "title": "Seite nicht gefunden"
   },
   "Exploration": {
@@ -290,11 +298,11 @@
     "change-image": "Bild ändern",
     "connect-error": "Fehler beim Verbinden der Pflanze",
     "culture-medium-coco": "Kokos",
-    "culture-medium-description": "Welche Erde oder welches Substrat verwendest du zum Anbau?",
+    "culture-medium-description": "Welches Substrat oder welches Nährmedium verwendest du zum Anbau?",
     "culture-medium-hydro": "Hydro",
-    "culture-medium-label": "Erde, Alternativen & Co.",
+    "culture-medium-label": "Substrat / Nährmedium",
     "culture-medium-perlite": "Perlite",
-    "culture-medium-placeholder": "Erde bzw. Substrat auswählen",
+    "culture-medium-placeholder": "Substrat auswählen ...",
     "culture-medium-rockwool": "Steinwolle",
     "culture-medium-soil": "Erde",
     "delete-button-label": "Grow löschen",
@@ -315,7 +323,7 @@
     "fertilizer-form-granular": "Granulat",
     "fertilizer-form-label": "Düngerform",
     "fertilizer-form-liquid": "Flüssig",
-    "fertilizer-form-placeholder": "---",
+    "fertilizer-form-placeholder": "Düngerform auswählen",
     "fertilizer-form-slow_release": "Langzeitdünger",
     "fertilizer-type-description": "Wähle den Typ des Düngers, den du verwendest",
     "fertilizer-type-label": "Düngertyp",
@@ -362,6 +370,7 @@
     "select-image": "Bild auswählen",
     "select-plants": "Pflanzen auswählen",
     "select-plants-optional": "Die Auswahl von Pflanzen ist optional.",
+    "selected-file": "Datei:",
     "showing-results": "Zeige {count} von {total} Grows",
     "sort-grows-createdAt": "Erstellt am",
     "sort-grows-updatedAt": "Aktualisiert am",
@@ -379,10 +388,7 @@
         "title": "Pflanze entfernt"
       }
     },
-    "total-grows-available": "{total} Grows verfügbar",
-    "try-different-filters": "Versuche andere Filter oder durchsuche alle verfügbaren Grows",
     "unexpected-error": "Ein unerwarteter Fehler ist aufgetreten.",
-    "updating-results": "Ergebnisse werden aktualisiert...",
     "upload-image": "Bild hochladen",
     "uploading": "Wird hochgeladen..."
   },
@@ -474,8 +480,47 @@
     "submit": "Mit E-Mail-Adresse anmelden",
     "title": "Bei GrowAGram einloggen"
   },
+  "Metadata": {
+    "pages": {
+      "dashboard": {
+        "description": "Verwalte deine Cannabis-Grows, verfolge Pflanzen-Fortschritte und organisiere deine Anbau-Reise in deinem persönlichen Dashboard.",
+        "keywords": "Grow Dashboard, Cannabis Grow Management, Pflanzen Tracking, Anbau Journal",
+        "title": "Dashboard | Verwalte deine Grows | GrowAGram"
+      },
+      "explore": {
+        "description": "Entdecke und erkunde tausende Cannabis-Grows unserer Community. Filtere nach Umgebung, Anbaumedium, Nährstoffen, Sorten und mehr. Lerne von erfolgreichen Anbautechniken.",
+        "keywords": "Cannabis Grows, Anbau Galerie, Marihuana Kultivierung, Anbau Beispiele, Cannabis Sorten, hydroponische Grows, Erde Grows, Indoor Anbau, Outdoor Anbau",
+        "title": "Grows Entdecken | Cannabis Anbau Galerie | GrowAGram"
+      },
+      "following": {
+        "description": "Bleibe auf dem Laufenden mit Growern, denen du folgst. Sieh ihre neuesten Grows, Pflanzen und Anbau-Fortschritte in deinem personalisierten Feed.",
+        "keywords": "Grower folgen, Cannabis Community, Anbau Netzwerk, Grower Updates",
+        "title": "Folge ich | Dein Anbau Netzwerk | GrowAGram"
+      },
+      "grows": {
+        "description": "Komplette Cannabis-Anbau-Journale von Samen bis zur Ernte. Lerne Kultivierungstechniken, Anbaumethoden und lass dich von erfolgreichen Grows inspirieren.",
+        "keywords": "Cannabis Grows, Anbau Journals, Marihuana Kultivierung, Grow Diaries, Cannabis Anbau Guide, Kultivierungstechniken",
+        "title": "Cannabis Grows | Komplette Anbau Journals | GrowAGram"
+      },
+      "plants": {
+        "description": "Durchstöbere Cannabis-Pflanzen von Growern weltweit. Verfolge Wachstumsphasen, vergleiche Sorten und lerne von erfolgreichen Kultivierungstechniken.",
+        "keywords": "Cannabis Pflanzen, Marihuana Pflanzen, Pflanzen Tracking, Cannabis Sorten, Wachstumsphasen, Pflanzen Galerie",
+        "title": "Cannabis Pflanzen Galerie | Pflanzen Tracking | GrowAGram"
+      },
+      "timeline": {
+        "description": "Folge den neuesten Updates von Cannabis-Growern weltweit. Sieh Echtzeit-Fortschritte, Anbau-Tipps und vernetze dich mit der Anbau-Community.",
+        "keywords": "Cannabis Timeline, Anbau Updates, Marihuana Community, Grower Feed, Cannabis Anbau Fortschritt",
+        "title": "Anbau Timeline | Cannabis Community Feed | GrowAGram"
+      }
+    },
+    "site": {
+      "description": "Werde Teil der führenden Cannabis-Anbau-Community. Teile deine Grows, lerne von Experten, verfolge deine Pflanzen und vernetze dich mit Growern weltweit.",
+      "keywords": "Cannabis Anbau, Marihuana Kultivierung, Grow Journal, Pflanzen-Tracking, Anbau Community, Cannabis Samen, Hydroponik, Erde Anbau",
+      "title": "GrowAGram - Cannabis Anbau Community"
+    }
+  },
   "Navigation": {
-    "All Grows": "Alle Grows",
+    "All Grows": "Grows entdecken",
     "All Plants": "Alle Pflanzen",
     "All Posts": "Alle Posts",
     "Following": "Folge ich",
@@ -483,16 +528,16 @@
       "title": "Angebote"
     },
     "Timelines": {
-      "All Grows": "Alle Grows",
+      "All Grows": "Grows erkunden",
       "All Plants": "Alle Pflanzen",
       "All Posts": "Alle Posts"
     },
     "dashboard": "Dashboard",
     "dashboard-description": "Behalte deine Grows, deine Pflanzen und deine Fotos im Blick.",
     "discover": "Entdecken",
+    "explore-grows": "Grows erkunden",
+    "explore-grows-description": "Entdecke vielfältige Anbauumgebungen und hole dir Inspiration von anderen Growern.",
     "grower-menu": "Grower-Bereich",
-    "grows": "Alle Grows",
-    "grows-description": "Entdecke vielfältige Anbauumgebungen und hole dir Inspiration von anderen Growern.",
     "home": "Home",
     "my-grows": "Meine Grows",
     "my-grows-subline": "Verwalte und gruppiere deine Pflanzen in Grows.",
@@ -1009,45 +1054,6 @@
     "tabs": {
       "following": "Folge ich",
       "public": "Alle"
-    }
-  },
-  "Metadata": {
-    "site": {
-      "title": "GrowAGram - Cannabis Anbau Community",
-      "description": "Werde Teil der führenden Cannabis-Anbau-Community. Teile deine Grows, lerne von Experten, verfolge deine Pflanzen und vernetze dich mit Growern weltweit.",
-      "keywords": "Cannabis Anbau, Marihuana Kultivierung, Grow Journal, Pflanzen-Tracking, Anbau Community, Cannabis Samen, Hydroponik, Erde Anbau"
-    },
-    "pages": {
-      "explore": {
-        "title": "Grows Entdecken | Cannabis Anbau Galerie | GrowAGram",
-        "description": "Entdecke und erkunde tausende Cannabis-Grows unserer Community. Filtere nach Umgebung, Anbaumedium, Nährstoffen, Sorten und mehr. Lerne von erfolgreichen Anbautechniken.",
-        "keywords": "Cannabis Grows, Anbau Galerie, Marihuana Kultivierung, Anbau Beispiele, Cannabis Sorten, hydroponische Grows, Erde Grows, Indoor Anbau, Outdoor Anbau"
-      },
-      "timeline": {
-        "title": "Anbau Timeline | Cannabis Community Feed | GrowAGram",
-        "description": "Folge den neuesten Updates von Cannabis-Growern weltweit. Sieh Echtzeit-Fortschritte, Anbau-Tipps und vernetze dich mit der Anbau-Community.",
-        "keywords": "Cannabis Timeline, Anbau Updates, Marihuana Community, Grower Feed, Cannabis Anbau Fortschritt"
-      },
-      "plants": {
-        "title": "Cannabis Pflanzen Galerie | Pflanzen Tracking | GrowAGram",
-        "description": "Durchstöbere Cannabis-Pflanzen von Growern weltweit. Verfolge Wachstumsphasen, vergleiche Sorten und lerne von erfolgreichen Kultivierungstechniken.",
-        "keywords": "Cannabis Pflanzen, Marihuana Pflanzen, Pflanzen Tracking, Cannabis Sorten, Wachstumsphasen, Pflanzen Galerie"
-      },
-      "grows": {
-        "title": "Cannabis Grows | Komplette Anbau Journals | GrowAGram",
-        "description": "Komplette Cannabis-Anbau-Journale von Samen bis zur Ernte. Lerne Kultivierungstechniken, Anbaumethoden und lass dich von erfolgreichen Grows inspirieren.",
-        "keywords": "Cannabis Grows, Anbau Journals, Marihuana Kultivierung, Grow Diaries, Cannabis Anbau Guide, Kultivierungstechniken"
-      },
-      "following": {
-        "title": "Folge ich | Dein Anbau Netzwerk | GrowAGram",
-        "description": "Bleibe auf dem Laufenden mit Growern, denen du folgst. Sieh ihre neuesten Grows, Pflanzen und Anbau-Fortschritte in deinem personalisierten Feed.",
-        "keywords": "Grower folgen, Cannabis Community, Anbau Netzwerk, Grower Updates"
-      },
-      "dashboard": {
-        "title": "Dashboard | Verwalte deine Grows | GrowAGram",
-        "description": "Verwalte deine Cannabis-Grows, verfolge Pflanzen-Fortschritte und organisiere deine Anbau-Reise in deinem persönlichen Dashboard.",
-        "keywords": "Grow Dashboard, Cannabis Grow Management, Pflanzen Tracking, Anbau Journal"
-      }
     }
   }
 }

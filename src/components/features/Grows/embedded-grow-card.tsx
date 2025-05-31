@@ -4,6 +4,7 @@ import * as React from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { AnimatePresence, motion } from "framer-motion";
 import { Calendar1Icon, TentTreeIcon } from "lucide-react";
+import { modulePaths } from "~/assets/constants";
 import {
   HybridTooltip,
   HybridTooltipContent,
@@ -50,7 +51,7 @@ export function EmbeddedGrowCard({ grow }: EmbeddedGrowCardProps) {
               className="text-secondary text-lg has-[>svg]:px-0"
             >
               <Link
-                href={`/public/grows/${grow.id}`}
+                href={`${modulePaths.PUBLICGROWS.path}/${grow.id}`}
                 className="items-center gap-2"
               >
                 <TentTreeIcon size={20} />

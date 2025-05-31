@@ -303,15 +303,7 @@ export function DashboardContent() {
                 <CardContent>
                   <div className="space-y-8">
                     {/* Use a state to control mounting */}
-                    {activeTab === "activity" && (
-                      <React.Suspense
-                        fallback={
-                          <div className="bg-muted/20 h-96 animate-pulse rounded-md" />
-                        }
-                      >
-                        <NotificationsFeed />
-                      </React.Suspense>
-                    )}
+                    {activeTab === "activity" && <NotificationsFeed />}
                   </div>
                 </CardContent>
               </Card>

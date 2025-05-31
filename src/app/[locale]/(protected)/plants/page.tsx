@@ -107,7 +107,7 @@ export default function MyPlantsPage() {
         subtitle={t("myplants-page-subtitle")}
         buttonLink="/plants/new/form"
         buttonLabel={t("button-label-create-plant")}
-        buttonVariant="plant"
+        buttonVariant={"primary"}
       >
         <SortFilterControls
           isFetching={isFetching}

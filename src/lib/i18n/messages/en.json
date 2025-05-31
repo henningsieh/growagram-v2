@@ -237,9 +237,17 @@
   },
   "Errors": {
     "backToHome": "Home",
+    "dev-details-title": "Error Details (Development Only)",
+    "generic-message": "An unexpected error occurred. Please try again.",
+    "generic-title": "Something went wrong",
     "goBack": "Go Back",
     "message": "Sorry, we couldn't find the page you're looking for.",
+    "network-message": "Unable to connect to the server. Please check your internet connection and try again.",
+    "network-title": "Connection Error",
     "path": "Requested path",
+    "retry-button": "Try Again",
+    "server-message": "The server encountered an error. Please try again later.",
+    "server-title": "Server Error",
     "title": "Page Not Found"
   },
   "Exploration": {
@@ -289,12 +297,12 @@
     "button-label-save-changes": "Save Changes",
     "change-image": "Change Image",
     "connect-error": "Error connecting plant",
-    "culture-medium-coco": "Coco",
-    "culture-medium-description": "What kind of soil or material are you using for cultivation?",
+    "culture-medium-coco": "Coconut",
+    "culture-medium-description": "Which soil or substrate are you using for cultivation?",
     "culture-medium-hydro": "Hydro",
-    "culture-medium-label": "Soil, Alternatives & More",
+    "culture-medium-label": "Substrate / culture medium",
     "culture-medium-perlite": "Perlite",
-    "culture-medium-placeholder": "Select culture medium",
+    "culture-medium-placeholder": "Select substrate ...",
     "culture-medium-rockwool": "Rockwool",
     "culture-medium-soil": "Soil",
     "delete-button-label": "Delete Grow",
@@ -315,7 +323,7 @@
     "fertilizer-form-granular": "Granular",
     "fertilizer-form-label": "Fertilizer Form",
     "fertilizer-form-liquid": "Liquid",
-    "fertilizer-form-placeholder": "---",
+    "fertilizer-form-placeholder": "Select fertilizer form",
     "fertilizer-form-slow_release": "Slow Release",
     "fertilizer-type-description": "Choose the type of fertilizer you're using",
     "fertilizer-type-label": "Fertilizer Type",
@@ -362,6 +370,7 @@
     "select-image": "Select Image",
     "select-plants": "Select Plants",
     "select-plants-optional": "Selecting plants is optional.",
+    "selected-file": "File:",
     "showing-results": "Showing {count} of {total} grows",
     "sort-grows-createdAt": "Created at",
     "sort-grows-updatedAt": "Updated at",
@@ -379,10 +388,7 @@
         "title": "Plant Removed"
       }
     },
-    "total-grows-available": "{total} grows available",
-    "try-different-filters": "Try different filters or browse all available grows",
     "unexpected-error": "Unexpected error occurred.",
-    "updating-results": "Updating results...",
     "upload-image": "Upload Image",
     "uploading": "Uploading..."
   },
@@ -474,8 +480,47 @@
     "submit": "Login",
     "title": "GrowAGram Login"
   },
+  "Metadata": {
+    "pages": {
+      "dashboard": {
+        "description": "Manage your cannabis grows, track plant progress, and organize your growing journey in your personal dashboard.",
+        "keywords": "grow dashboard, cannabis grow management, plant tracking, growing journal",
+        "title": "Dashboard | Manage Your Grows | GrowAGram"
+      },
+      "explore": {
+        "description": "Discover and explore thousands of cannabis grows from our community. Filter by environment, growing medium, nutrients, strains and more. Learn from successful growing techniques.",
+        "keywords": "cannabis grows, growing gallery, marijuana cultivation, grow examples, cannabis strains, hydroponic grows, soil grows, indoor growing, outdoor growing",
+        "title": "Explore Grows | Cannabis Growing Gallery | GrowAGram"
+      },
+      "following": {
+        "description": "Stay updated with growers you follow. See their latest grows, plants, and growing progress in your personalized feed.",
+        "keywords": "following growers, cannabis community, growing network, grower updates",
+        "title": "Following | Your Growing Network | GrowAGram"
+      },
+      "grows": {
+        "description": "Complete cannabis growing journals from seed to harvest. Learn cultivation techniques, growing methods, and get inspired by successful grows.",
+        "keywords": "cannabis grows, growing journals, marijuana cultivation, grow diaries, cannabis growing guide, cultivation techniques",
+        "title": "Cannabis Grows | Complete Growing Journals | GrowAGram"
+      },
+      "plants": {
+        "description": "Browse cannabis plants from growers worldwide. Track growth stages, compare strains, and learn from successful cultivation techniques.",
+        "keywords": "cannabis plants, marijuana plants, plant tracking, cannabis strains, growing stages, plant gallery",
+        "title": "Cannabis Plants Gallery | Plant Tracking | GrowAGram"
+      },
+      "timeline": {
+        "description": "Follow the latest updates from cannabis growers worldwide. See real-time progress, growing tips, and connect with the growing community.",
+        "keywords": "cannabis timeline, growing updates, marijuana community, grower feed, cannabis cultivation progress",
+        "title": "Growing Timeline | Cannabis Community Feed | GrowAGram"
+      }
+    },
+    "site": {
+      "description": "Join the leading cannabis growing community. Share your grows, learn from experts, track your plants, and connect with growers worldwide.",
+      "keywords": "cannabis growing, marijuana cultivation, grow journal, plant tracking, growing community, cannabis seeds, hydroponics, soil growing",
+      "title": "GrowAGram - Cannabis Growing Community"
+    }
+  },
   "Navigation": {
-    "All Grows": "All Grows",
+    "All Grows": "Explore Grows",
     "All Plants": "All Plants",
     "All Posts": "All Posts",
     "Following": "Following",
@@ -483,18 +528,18 @@
       "title": "Deals"
     },
     "Timelines": {
-      "All Grows": "All Grows",
+      "All Grows": "Explore Grows",
       "All Plants": "All Plants",
       "All Posts": "All Posts"
     },
     "dashboard": "Dashboard",
     "dashboard-description": "Keep an eye on your grows, your plants and your photos.",
     "discover": "Discover",
+    "explore-grows": "Explore Grows",
+    "explore-grows-description": "Explore diverse cultivation environments and draw inspiration from fellow growers.",
     "grower-menu": "Grower's Platform",
-    "grows": "All Grows",
-    "grows-description": "Explore diverse cultivation environments and draw inspiration from fellow growers.",
     "home": "Home",
-    "my-grows": "My Grows",
+    "my-grows": "My grows",
     "my-grows-subline": "Manage and group your plants in Grows.",
     "my-photos": "My photos",
     "my-photos-subline": "Manage your photos and link them to plants.",
@@ -812,7 +857,7 @@
     "recent-photos": "Photos overview",
     "recent-photos-description": "Your recent photos",
     "total-photos": "Total Photos",
-    "total-photos-description": "All photos",
+    "total-photos-description": "All Photos",
     "total-plants": "Total plants",
     "updated-at": "updated on",
     "view-all-photos": "to your Photos",
@@ -1009,45 +1054,6 @@
     "tabs": {
       "following": "Following",
       "public": "All"
-    }
-  },
-  "Metadata": {
-    "site": {
-      "title": "GrowAGram - Cannabis Growing Community",
-      "description": "Join the leading cannabis growing community. Share your grows, learn from experts, track your plants, and connect with growers worldwide.",
-      "keywords": "cannabis growing, marijuana cultivation, grow journal, plant tracking, growing community, cannabis seeds, hydroponics, soil growing"
-    },
-    "pages": {
-      "explore": {
-        "title": "Explore Grows | Cannabis Growing Gallery | GrowAGram",
-        "description": "Discover and explore thousands of cannabis grows from our community. Filter by environment, growing medium, nutrients, strains and more. Learn from successful growing techniques.",
-        "keywords": "cannabis grows, growing gallery, marijuana cultivation, grow examples, cannabis strains, hydroponic grows, soil grows, indoor growing, outdoor growing"
-      },
-      "timeline": {
-        "title": "Growing Timeline | Cannabis Community Feed | GrowAGram",
-        "description": "Follow the latest updates from cannabis growers worldwide. See real-time progress, growing tips, and connect with the growing community.",
-        "keywords": "cannabis timeline, growing updates, marijuana community, grower feed, cannabis cultivation progress"
-      },
-      "plants": {
-        "title": "Cannabis Plants Gallery | Plant Tracking | GrowAGram",
-        "description": "Browse cannabis plants from growers worldwide. Track growth stages, compare strains, and learn from successful cultivation techniques.",
-        "keywords": "cannabis plants, marijuana plants, plant tracking, cannabis strains, growing stages, plant gallery"
-      },
-      "grows": {
-        "title": "Cannabis Grows | Complete Growing Journals | GrowAGram",
-        "description": "Complete cannabis growing journals from seed to harvest. Learn cultivation techniques, growing methods, and get inspired by successful grows.",
-        "keywords": "cannabis grows, growing journals, marijuana cultivation, grow diaries, cannabis growing guide, cultivation techniques"
-      },
-      "following": {
-        "title": "Following | Your Growing Network | GrowAGram",
-        "description": "Stay updated with growers you follow. See their latest grows, plants, and growing progress in your personalized feed.",
-        "keywords": "following growers, cannabis community, growing network, grower updates"
-      },
-      "dashboard": {
-        "title": "Dashboard | Manage Your Grows | GrowAGram",
-        "description": "Manage your cannabis grows, track plant progress, and organize your growing journey in your personal dashboard.",
-        "keywords": "grow dashboard, cannabis grow management, plant tracking, growing journal"
-      }
     }
   }
 }

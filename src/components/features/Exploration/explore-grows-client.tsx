@@ -1,18 +1,20 @@
-// src/app/[locale]/public/explore/page.tsx
 "use client";
 
+import * as React from "react";
 import { parseAsString, useQueryStates } from "nuqs";
-import { ExploreGrowsGrid } from "~/components/features/Exploration/explore-grows-grid";
+import { ErrorBoundary } from "react-error-boundary";
+import { PaginationItemsPerPage } from "~/assets/constants";
+import { GenericError } from "~/components/atom/generic-error";
 import {
   CultureMedium,
   FertilizerForm,
   FertilizerType,
   GrowEnvironment,
 } from "~/types/grow";
+import { ExploreGrowsGrid } from "./explore-grows-grid";
+import { ExploreGrowsLoading } from "./explore-grows-loading";
 
-// src/app/[locale]/public/explore/page.tsx
-
-export default function ExplorePage() {
+export function ExploreGrowsClient() {
   // Get filter state from URL query parameters
   const [filters] = useQueryStates({
     search: parseAsString.withDefault(""),
@@ -22,7 +24,7 @@ export default function ExplorePage() {
     fertilizerForm: parseAsString,
   });
 
-  // Transform URL filters to API format
+  // Transform URL filters to API format - same logic as server-side
   const exploreFilters = {
     search: filters.search || undefined,
     environment: filters.environment
@@ -37,8 +39,14 @@ export default function ExplorePage() {
     fertilizerForm: filters.fertilizerForm
       ? (filters.fertilizerForm as FertilizerForm)
       : undefined,
-    limit: 12, // Default items per page for exploration
+    limit: PaginationItemsPerPage.PUBLIC_GROWS_PER_PAGE,
   };
 
-  return <ExploreGrowsGrid filters={exploreFilters} />;
+  return (
+    <ErrorBoundary FallbackComponent={GenericError}>
+      <React.Suspense fallback={<ExploreGrowsLoading />}>
+        <ExploreGrowsGrid filters={exploreFilters} />
+      </React.Suspense>
+    </ErrorBoundary>
+  );
 }

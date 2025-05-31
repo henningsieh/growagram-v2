@@ -9,6 +9,7 @@ import {
 } from "@tanstack/react-query";
 import { useSubscription } from "@trpc/tanstack-react-query";
 import { toast } from "sonner";
+import { modulePaths } from "~/assets/constants";
 import { useTRPC } from "~/lib/trpc/client";
 import {
   type GetAllNotificationType,
@@ -206,19 +207,19 @@ export function useNotifications(onlyUnread = true): UseNotificationsReturn {
     return (notification: GetAllNotificationType) => {
       switch (notification.entityType) {
         case NotifiableEntityType.USER:
-          return `/public/profile/${notification.actor.id}`; // Profile of user who followed
+          return `${modulePaths.PUBLICPROFILE.path}/${notification.actor.id}`; // Profile of user who followed
         case NotifiableEntityType.POST:
           return `#${notification.entityId}`; // FIXME: Post that was liked or commented on
         case NotifiableEntityType.GROW:
-          return `/public/grows/${notification.entityId}${
+          return `${modulePaths.PUBLICGROWS.path}/${notification.entityId}${
             notification.commentId ? `?commentId=${notification.commentId}` : ""
           }`; // Grow that was liked or commented on
         case NotifiableEntityType.PLANT:
-          return `/public/plants/${notification.entityId}${
+          return `${modulePaths.PUBLICPLANTS.path}/${notification.entityId}${
             notification.commentId ? `?commentId=${notification.commentId}` : ""
           }`; // Plant that was liked or commented on
         case NotifiableEntityType.PHOTO:
-          return `/public/photos/${notification.entityId}${
+          return `${modulePaths.PUBLICPHOTOS.path}/${notification.entityId}${
             notification.commentId ? `?commentId=${notification.commentId}` : ""
           }`; // Photo that was liked or commented on
         case NotifiableEntityType.COMMENT:

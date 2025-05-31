@@ -235,7 +235,9 @@ export default function PlantCard({
                 {/* Grow Badge-Link */}
                 {plant.grow && (
                   <div className="flex flex-wrap gap-2 p-0">
-                    <Link href={`/public/grows/${plant.grow.id}`}>
+                    <Link
+                      href={`${modulePaths.PUBLICGROWS.path}/${plant.grow.id}`}
+                    >
                       <Badge
                         variant="grow"
                         className="flex max-w-32 items-center gap-1 overflow-hidden rounded-sm text-ellipsis whitespace-nowrap"

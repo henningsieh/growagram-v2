@@ -129,7 +129,7 @@ export function GrowCard({
 
   const dateElement = (
     <Link
-      href={`/public/grows/${grow.id}`}
+      href={`${modulePaths.PUBLICGROWS.path}/${grow.id}`}
       title={tCommon("updated-at")}
       className="text-muted-foreground flex items-center gap-1 text-sm whitespace-nowrap underline-offset-3 hover:underline"
     >
