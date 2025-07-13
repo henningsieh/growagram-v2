@@ -1,5 +1,9 @@
 ---
 applyTo: "**"
+title: "Dialog & Modal Patterns"
+description: "ResponsiveDialog component usage, modal patterns, and composition guidelines"
+tags: [dialog, modal, ui, components, responsive]
+last_updated: 2025-01-07
 ---
 
 # 🪟 Dialog & Modal Patterns
@@ -294,3 +298,13 @@ This pattern ensures:
 - Consistent user experience across the application
 - Better performance through proper component separation
 - Improved developer experience with predictable patterns
+
+---
+
+## Related Resources
+
+- **[React & Next.js Guidelines](./react-nextjs.instructions.md)** - Component structure and patterns
+- **[Styling & i18n](./styling-i18n.instructions.md)** - Dialog styling and internationalization
+- **[TypeScript Guidelines](./typescript-guidelines.instructions.md)** - Component props and type definitions
+- **[Performance & SEO](./performance-seo.instructions.md)** - Modal performance optimization
+- **[Security & Testing](./security-testing.instructions.md)** - Dialog security and testing patterns

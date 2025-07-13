@@ -1,5 +1,9 @@
 ---
 applyTo: "**"
+title: "Development Workflow & Process"
+description: "Git workflow, code review process, and development best practices"
+tags: [workflow, git, development, process, code-review]
+last_updated: 2025-01-07
 ---
 
 # 🔧 Development Workflow & Process
@@ -402,3 +406,13 @@ module.exports = {
 - Plan for scalability
 
 Remember: This is an active development project in Phase 1 of 3. Prioritize clean, maintainable code that supports the growing feature set and user base.
+
+---
+
+## Related Resources
+
+- **[Badge System](./badge-system.instructions.md)** - README badge management and version tracking
+- **[Security & Testing](./security-testing.instructions.md)** - Security review processes and testing guidelines
+- **[Technology Stack](./tech-stack.instructions.md)** - Development environment and package management
+- **[Performance & SEO](./performance-seo.instructions.md)** - Performance optimization in development workflow
+- **[TypeScript Guidelines](./typescript-guidelines.instructions.md)** - Code quality and type safety standards

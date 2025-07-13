@@ -1,5 +1,9 @@
 ---
 applyTo: "**"
+title: "Badge System Documentation"
+description: "README badge management, version tracking, and maintenance workflow for private repositories"
+tags: [badges, documentation, versioning, maintenance, readme]
+last_updated: 2025-01-07
 ---
 
 # 🏷️ Badge System Documentation and Guidelines
@@ -40,26 +44,26 @@ Based on `package.json` version **0.9.0-beta.1**:
 
 ### Core Framework
 
-- **Next.js**: 15.2.4
+- **Next.js**: 15.3.4
 - **React**: 19.1.0
-- **TypeScript**: 5.8.2
+- **TypeScript**: 5.8.3
 
 ### Backend & Data
 
-- **tRPC**: 11.1.2
+- **tRPC**: 11.4.3
 - **Drizzle ORM**: 0.35.3
-- **NextAuth.js**: 5.0.0-beta.25
+- **NextAuth.js**: 5.0.0-beta.29
 
 ### UI & Styling
 
-- **Tailwind CSS**: 4.1.1
+- **Tailwind CSS**: 4.1.11
 - **Framer Motion**: 11.18.2
-- **TanStack Query**: 5.71.5
+- **TanStack Query**: 5.81.5
 
 ### Build Tools
 
 - **Node.js**: 20 (required)
-- **PostCSS**: 8.5.3
+- **PostCSS**: 8.5.6
 
 ## Badge Types and Examples
 
@@ -78,9 +82,9 @@ Shows the current project version from `package.json`:
 Core framework and library versions (manually maintained):
 
 ```markdown
-[![Next.js](https://img.shields.io/badge/Next.js-15-black?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
-[![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=white)](https://reactjs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-15.3.4-black?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19.1.0-61DAFB?style=for-the-badge&logo=react&logoColor=white)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.8.3-blue?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 ```
 
 ### 3. Infrastructure & Services Badges
@@ -112,7 +116,7 @@ https://img.shields.io/badge/{label}-{message}-{color}?{params}
 **Example:**
 
 ```
-https://img.shields.io/badge/Next.js-15-black?style=for-the-badge&logo=next.js&logoColor=white
+https://img.shields.io/badge/Next.js-15.3.4-black?style=for-the-badge&logo=next.js&logoColor=white
 ```
 
 ### Common Parameters
@@ -161,12 +165,12 @@ Common logos available through Simple Icons:
 
 <!-- Core technology stack -->
 
-[![Next.js](https://img.shields.io/badge/Next.js-15-black?style=for-the-badge&logo=next.js&logoColor=white)](...)
-[![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=white)](...)
+[![Next.js](https://img.shields.io/badge/Next.js-15.3.4-black?style=for-the-badge&logo=next.js&logoColor=white)](...)
+[![React](https://img.shields.io/badge/React-19.1.0-61DAFB?style=for-the-badge&logo=react&logoColor=white)](...)
 
 <!-- Backend technologies -->
 
-[![tRPC](https://img.shields.io/badge/tRPC-11-398CCB?style=for-the-badge&logo=typescript&logoColor=white)](...)
+[![tRPC](https://img.shields.io/badge/tRPC-11.4.3-398CCB?style=for-the-badge&logo=typescript&logoColor=white)](...)
 
 <!-- Infrastructure -->
 

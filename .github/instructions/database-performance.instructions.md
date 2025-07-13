@@ -1,5 +1,9 @@
 ---
 applyTo: "**"
+title: "Database Performance Optimization"
+description: "PostgreSQL optimization strategies, indexing, query performance, and monitoring"
+tags: [database, performance, postgresql, indexing, optimization]
+last_updated: 2025-01-07
 ---
 
 # 🚀 Database Performance Optimization
@@ -403,11 +407,16 @@ ON "public_post" USING btree ("created_at" DESC NULLS LAST);
 - Database connection pool exhaustion
 - Index scan ratio degradation
 
-## 🔄 Related Resources
+## Related Resources
 
-- **Database Setup**: See `/database/README.md` for structure and migrations
-- **Performance SEO**: See `performance-seo.instructions.md` for web/frontend performance (separate from DB)
-- **Coding Guidelines**: See `coding-guidelines.instructions.md` for database query patterns
+- **[Database & tRPC](./database-trpc.instructions.md)** - Database query patterns and tRPC procedures
+- **[Performance & SEO](./performance-seo.instructions.md)** - Frontend performance optimization (separate from DB)
+- **[Technology Stack](./tech-stack.instructions.md)** - Database configuration and setup
+- **[TypeScript Guidelines](./typescript-guidelines.instructions.md)** - Type-safe database operations
+- **[Development Workflow](./development-workflow.instructions.md)** - Database migration and development processes
+
+**External Resources:**
+
 - PostgreSQL Index Documentation: https://www.postgresql.org/docs/current/indexes.html
 - Drizzle ORM Performance Guide: https://orm.drizzle.team/docs/performance
 

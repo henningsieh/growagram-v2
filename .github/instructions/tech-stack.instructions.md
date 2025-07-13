@@ -1,5 +1,9 @@
 ---
 applyTo: "**"
+title: "Technology Stack & Architecture"
+description: "Core technologies, package management, development workflows, and architecture patterns"
+tags: [tech-stack, architecture, bun, next-js, development]
+last_updated: 2025-01-07
 ---
 
 # 🏗️ Tech Stack & Architecture
@@ -32,25 +36,32 @@ The project includes the following predefined scripts (run with `bun run <script
 
 #### Development Scripts
 
-- `bun run dev` - Start development server with Turbopack
+- `bun run dev` - Start development server with Turbopack (hot reload enabled)
 - `bun run predev` - Run database generation and migration before dev (automatic)
 
 #### Build & Production Scripts
 
-- `bun run build` - Build the production application
+- `bun run build` - Build the production application (includes optimizations)
 - `bun run prebuild` - Run database generation and migration before build (automatic)
-- `bun run start` - Start the production server
+- `bun run start` - Start the production server (requires build first)
 
 #### Database Scripts
 
-- `bun run db:generate` - Generate Drizzle schema files
-- `bun run db:migrate` - Run database migrations
+- `bun run db:generate` - Generate Drizzle schema files from database
+- `bun run db:migrate` - Run database migrations to update schema
+- `bun run db:push` - Push schema changes directly to database (development only)
 - `bun run db:studio` - Open Drizzle Studio in the browser for database management
 
 #### Code Quality Scripts
 
-- `bun run lint` - Run Next.js linter
-- `bun run format` - Format code with Prettier
+- `bun run lint` - Run Next.js linter with custom rules
+- `bun run format` - Format code with Prettier (includes import sorting)
+
+#### Cleanup Scripts
+
+- `bun run clean-dev` - Remove development build artifacts (.next-dev, out)
+- `bun run clean-prod` - Remove production build artifacts (.next-prod, out)  
+- `bun run clean-all` - Remove all build artifacts (both dev and prod)
 
 #### Type Checking
 
@@ -173,3 +184,13 @@ src/
 - Use S3-compatible API patterns
 - Implement proper file upload handling
 - Handle image optimization
+
+---
+
+## Related Resources
+
+- **[TypeScript Guidelines](./typescript-guidelines.instructions.md)** - Type safety patterns for tech stack components
+- **[React & Next.js Guidelines](./react-nextjs.instructions.md)** - Component structure and framework usage
+- **[Database & tRPC](./database-trpc.instructions.md)** - Backend architecture and API patterns
+- **[Development Workflow](./development-workflow.instructions.md)** - Package management and development processes
+- **[Performance & SEO](./performance-seo.instructions.md)** - Build optimization and performance strategies

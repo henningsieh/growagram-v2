@@ -1,5 +1,9 @@
 ---
 applyTo: "**"
+title: "React & Next.js Guidelines"
+description: "Component structure, hooks usage patterns, and animation guidelines"
+tags: [react, next-js, components, hooks, animation]
+last_updated: 2025-01-07
 ---
 
 # ⚛️ React & Next.js Guidelines
@@ -239,3 +243,14 @@ const containerVariants = {
 - Use subtle animations for better UX
 - Implement consistent motion patterns
 - Provide reduced motion alternatives
+
+---
+
+## Related Resources
+
+- **[Technology Stack](./tech-stack.instructions.md)** - Core frameworks and development setup
+- **[TypeScript Guidelines](./typescript-guidelines.instructions.md)** - Component props and interface definitions
+- **[Dialog Patterns](./dialog-patterns.instructions.md)** - ResponsiveDialog usage and modal patterns
+- **[Styling & i18n](./styling-i18n.instructions.md)** - Component styling and internationalization
+- **[Database & tRPC](./database-trpc.instructions.md)** - Data fetching and state management patterns
+- **[Performance & SEO](./performance-seo.instructions.md)** - Component optimization and loading strategies
