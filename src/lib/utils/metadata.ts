@@ -12,12 +12,12 @@ export type PageMetadataKey =
 /**
  * Generates localized metadata for pages using next-intl translations
  * @param page - The page key from the metadata translations
- * @param locale - The locale (optional, will be detected if not provided)
+ * @param locale - The locale (required for proper internationalization)
  * @returns Promise<Metadata> - Next.js metadata object
  */
 export async function generatePageMetadata(
   page: PageMetadataKey,
-  locale?: string,
+  locale: string,
 ): Promise<Metadata> {
   const t = await getTranslations({ locale, namespace: "Metadata" });
 
@@ -53,10 +53,10 @@ export async function generatePageMetadata(
 
 /**
  * Generates site-wide metadata using next-intl translations
- * @param locale - The locale (optional, will be detected if not provided)
+ * @param locale - The locale (required for proper internationalization)
  * @returns Promise<Metadata> - Next.js metadata object
  */
-export async function generateSiteMetadata(locale?: string): Promise<Metadata> {
+export async function generateSiteMetadata(locale: string): Promise<Metadata> {
   const t = await getTranslations({ locale, namespace: "Metadata" });
 
   return {

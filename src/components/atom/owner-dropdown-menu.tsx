@@ -1,6 +1,6 @@
 import { useTranslations } from "next-intl";
 import {
-  EditIcon,
+  Edit3Icon,
   ExternalLinkIcon,
   MoreHorizontalIcon,
   Trash2Icon,
@@ -89,7 +89,7 @@ export function OwnerDropdownMenu({
             href={`/${entityType.toLowerCase()}/${entityId}/form`}
             className="flex cursor-pointer items-center"
           >
-            <EditIcon className="mr-2 h-4 w-4" />
+            <Edit3Icon className="mr-2 h-4 w-4" />
             {t(`${entityType}.edit-button-label`)}
           </Link>
         </DropdownMenuItem>

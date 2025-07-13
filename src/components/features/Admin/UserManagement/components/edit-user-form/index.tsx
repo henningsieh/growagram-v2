@@ -1,8 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
+import { useLocale, useTranslations } from "next-intl";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
 import { useMutation } from "@tanstack/react-query";
@@ -14,6 +13,7 @@ import {
   AtSign,
   Ban,
   CheckIcon,
+  Clock,
   Edit,
   LockIcon,
   Mail,
@@ -32,6 +32,7 @@ import FormContent from "~/components/Layouts/form-content";
 import PageHeader from "~/components/Layouts/page-header";
 import { CustomAvatar } from "~/components/atom/custom-avatar";
 import SpinningLoader from "~/components/atom/spinning-loader";
+import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
 import { Button } from "~/components/ui/button";
 import {
   Card,
@@ -60,7 +61,15 @@ import {
 import { Separator } from "~/components/ui/separator";
 import { Textarea } from "~/components/ui/textarea";
 import { useIsMobile } from "~/hooks/use-mobile";
+import { useRouter } from "~/lib/i18n/routing";
 import { useTRPC } from "~/lib/trpc/client";
+import {
+  formatAbsoluteDate,
+  getBanExpirationDate,
+  isPermanentBan,
+  isUserBanned,
+} from "~/lib/utils";
+import type { Locale } from "~/types/locale";
 import { UserRoles } from "~/types/user";
 import { adminEditUserSchema } from "~/types/zodSchema";
 
@@ -98,6 +107,7 @@ type AdminEditUserInput = z.infer<typeof adminEditUserSchema>;
 export default function AdminUserEditForm({ userId }: { userId: string }) {
   const trpc = useTRPC();
   const t = useTranslations("AdminArea.user-management.edit-form");
+  const locale = useLocale() as Locale;
   const router = useRouter();
   const isMobile = useIsMobile();
   const queryClient = useQueryClient();
@@ -211,12 +221,10 @@ export default function AdminUserEditForm({ userId }: { userId: string }) {
     await unbanUserMutation.mutateAsync({ userId });
   };
 
-  // Check if user is currently banned
-  const isUserBanned = React.useMemo(() => {
-    if (!user?.bannedUntil) return false;
-    const bannedUntil = new Date(user.bannedUntil);
-    return bannedUntil > new Date() || user.bannedUntil === null; // null means permanent ban
-  }, [user?.bannedUntil]);
+  // Check if user is currently banned using utility function
+  const userIsBanned = React.useMemo(() => {
+    return isUserBanned(user);
+  }, [user]);
 
   // Initialize form with user data when it's loaded
   const form = useForm<AdminEditUserInput>({
@@ -593,7 +601,7 @@ export default function AdminUserEditForm({ userId }: { userId: string }) {
                         className="from-destructive/10 absolute inset-0 bg-linear-to-br to-transparent"
                       />
                       <div className="flex items-center gap-4">
-                        <ShieldAlert className="text-destructive h-8 w-8" />
+                        <ShieldAlert className="text-destructive size-9" />
                         <div className="flex flex-col">
                           <CardTitle className="text-xl font-bold">
                             {t("ban-title")}
@@ -605,6 +613,31 @@ export default function AdminUserEditForm({ userId }: { userId: string }) {
                       </div>
                     </CardHeader>
                     <Separator className="opacity-50" />
+
+                    {/* Already Banned Warning */}
+                    {userIsBanned && (
+                      <div className="p-4">
+                        <Alert variant="warning">
+                          <Clock className="h-8 w-8" />
+                          <AlertTitle className="text-lg">
+                            {t("ban-warning-title")}
+                          </AlertTitle>
+                          <AlertDescription>
+                            {isPermanentBan(user)
+                              ? t("user-ban-permanent-message")
+                              : t("user-ban-message", {
+                                  date: getBanExpirationDate(user)
+                                    ? formatAbsoluteDate(
+                                        getBanExpirationDate(user)!,
+                                        locale,
+                                      )
+                                    : "",
+                                })}
+                          </AlertDescription>
+                        </Alert>
+                      </div>
+                    )}
+
                     <CardContent className="p-2 sm:p-8">
                       <motion.div
                         variants={formVariants}
@@ -718,7 +751,7 @@ export default function AdminUserEditForm({ userId }: { userId: string }) {
               </Form>
 
               {/* Unban User Button */}
-              {isUserBanned && (
+              {userIsBanned && (
                 <Card className="mt-4 overflow-hidden border-2 backdrop-blur">
                   <CardHeader className="relative">
                     <motion.div

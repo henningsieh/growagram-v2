@@ -8,8 +8,13 @@ import { generatePageMetadata } from "~/lib/utils/metadata";
 import type { GetOwnGrowsInput } from "~/server/api/root";
 import { GrowsSortField } from "~/types/grow";
 
-export async function generateMetadata(): Promise<Metadata> {
-  return generatePageMetadata("grows");
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  return generatePageMetadata("grows", locale);
 }
 
 export default async function MyGrowsLayout({

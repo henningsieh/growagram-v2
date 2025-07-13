@@ -1,10 +1,10 @@
 // src/server/api/routers/grow.ts:
 import { TRPCError } from "@trpc/server";
-import { and, count, eq, ilike, lt } from "drizzle-orm";
+import { and, asc, count, desc, eq, ilike, or } from "drizzle-orm";
 import { z } from "zod";
 import { PaginationItemsPerPage } from "~/assets/constants";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
-import { grows, images, plants } from "~/lib/db/schema";
+import { grows, images, plants, users } from "~/lib/db/schema";
 import {
   createTRPCRouter,
   protectedProcedure,
@@ -424,6 +424,7 @@ export const growRouter = createTRPCRouter({
             environment: input.environment,
             cultureMedium: input.cultureMedium,
             fertilizerType: input.fertilizerType,
+            fertilizerForm: input.fertilizerForm,
             ownerId: ctx.session.user.id,
             headerImageId: headerImageId,
           })
@@ -434,6 +435,7 @@ export const growRouter = createTRPCRouter({
               environment: input.environment,
               cultureMedium: input.cultureMedium,
               fertilizerType: input.fertilizerType,
+              fertilizerForm: input.fertilizerForm,
               headerImageId: headerImageId,
             },
           })
@@ -556,6 +558,20 @@ export const growRouter = createTRPCRouter({
       // Build where conditions dynamically
       const whereConditions = [];
 
+      // Create dynamic ordering helper function
+      const getSortField = (field: GrowsSortField) => {
+        switch (field) {
+          case GrowsSortField.NAME:
+            return grows.name;
+          case GrowsSortField.CREATED_AT:
+            return grows.createdAt;
+          case GrowsSortField.UPDATED_AT:
+            return grows.updatedAt;
+          default:
+            return grows.createdAt;
+        }
+      };
+
       if (input.environment) {
         whereConditions.push(eq(grows.environment, input.environment));
       }
@@ -576,26 +592,120 @@ export const growRouter = createTRPCRouter({
         whereConditions.push(eq(grows.ownerId, input.ownerId));
       }
 
-      // Apply cursor pagination if cursor is provided
-      if (cursor) {
-        whereConditions.push(lt(grows.createdAt, new Date(cursor)));
+      // Handle filtering by username if provided
+      if (input.username) {
+        const username = input.username.trim();
+        if (username.length > 0) {
+          const searchPattern = `%${username}%`;
+
+          // Find matching users
+          const matchingUsers = await ctx.db
+            .select({ id: users.id })
+            .from(users)
+            .where(ilike(users.username, searchPattern));
+
+          if (matchingUsers.length > 0) {
+            const userIds = matchingUsers.map((user) => user.id);
+            // Search grows by matching user IDs
+            whereConditions.push(
+              or(...userIds.map((userId) => eq(grows.ownerId, userId))),
+            );
+          } else {
+            // No matching users found, add impossible condition to return empty results
+            whereConditions.push(eq(grows.id, "impossible-id"));
+          }
+        }
       }
+
+      // Apply offset-based pagination (same as getAllGrows)
+      const offset = cursor ? (cursor - 1) * limit : 0;
 
       // Add search functionality if search term is provided
       if (input.search) {
-        const searchTerm = `%${input.search}%`;
-        whereConditions.push(ilike(grows.name, searchTerm));
+        const searchTerm = input.search.trim();
+
+        // Check if search starts with @ for user search
+        if (searchTerm.startsWith("@")) {
+          const username = searchTerm.slice(1); // Remove @ symbol
+          if (username.length > 0) {
+            const searchPattern = `%${username}%`;
+
+            // First find matching users
+            const matchingUsers = await ctx.db
+              .select({ id: users.id })
+              .from(users)
+              .where(ilike(users.username, searchPattern));
+
+            if (matchingUsers.length > 0) {
+              const userIds = matchingUsers.map((user) => user.id);
+              // Search grows by matching user IDs
+              whereConditions.push(
+                or(...userIds.map((userId) => eq(grows.ownerId, userId))),
+              );
+            } else {
+              // No matching users found, add impossible condition to return empty results
+              whereConditions.push(eq(grows.id, "impossible-id"));
+            }
+          }
+        } else {
+          // Check if search contains both grow name and username
+          if (searchTerm.includes("@")) {
+            // Split search term to handle "grow name @username" format
+            const parts = searchTerm.split("@");
+            const growNamePart = parts[0]?.trim();
+            const usernamePart = parts[1]?.trim();
+
+            const searchConditions = [];
+
+            // Add grow name search if present
+            if (growNamePart && growNamePart.length > 0) {
+              searchConditions.push(ilike(grows.name, `%${growNamePart}%`));
+            }
+
+            // Add username search if present
+            if (usernamePart && usernamePart.length > 0) {
+              const matchingUsers = await ctx.db
+                .select({ id: users.id })
+                .from(users)
+                .where(ilike(users.username, `%${usernamePart}%`));
+
+              if (matchingUsers.length > 0) {
+                const userIds = matchingUsers.map((user) => user.id);
+                searchConditions.push(
+                  or(...userIds.map((userId) => eq(grows.ownerId, userId))),
+                );
+              } else {
+                // No matching users found, add impossible condition to return empty results
+                searchConditions.push(eq(grows.id, "impossible-id"));
+              }
+            }
+
+            // Use AND condition to require both grow name and username match
+            if (searchConditions.length > 0) {
+              whereConditions.push(and(...searchConditions));
+            }
+          } else {
+            // Regular search in grow name
+            const searchPattern = `%${searchTerm}%`;
+            whereConditions.push(ilike(grows.name, searchPattern));
+          }
+        }
       }
 
       const whereClause =
         whereConditions.length > 0 ? and(...whereConditions) : undefined;
 
+      // Create dynamic ordering based on sortField and sortOrder
+      const sortDirection = input.sortOrder === SortOrder.ASC ? asc : desc;
+      const orderByClause = sortDirection(getSortField(input.sortField));
+
       try {
-        // Get filtered grows with cursor-based pagination
+        // Get filtered grows with offset-based pagination (same as getAllGrows)
         const filteredGrows = await ctx.db.query.grows.findMany({
           where: whereClause,
-          orderBy: (grows, { desc }) => [desc(grows.createdAt)],
+          orderBy: orderByClause,
           limit: limit + 1, // Get one extra to determine if there's a next page
+          offset: offset,
           with: {
             owner: true,
             headerImage: true,
@@ -621,12 +731,11 @@ export const growRouter = createTRPCRouter({
           },
         });
 
-        // Determine if there's a next page and prepare cursor
+        // Determine if there's a next page and prepare cursor (offset-based like getAllGrows)
         const hasNextPage = filteredGrows.length > limit;
         const items = hasNextPage ? filteredGrows.slice(0, -1) : filteredGrows;
-        const nextCursor = hasNextPage
-          ? items[items.length - 1]?.createdAt.toISOString()
-          : null;
+        const currentPage = cursor || 1;
+        const nextCursor = hasNextPage ? currentPage + 1 : null;
 
         // Get total count for the filtered results
         const totalCountResult = await ctx.db

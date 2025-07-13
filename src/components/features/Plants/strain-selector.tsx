@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { useQuery } from "@tanstack/react-query";
 import { useMutation } from "@tanstack/react-query";
 import { useQueryClient } from "@tanstack/react-query";
-import { BeanIcon } from "lucide-react";
+import { DnaIcon } from "lucide-react";
 import { toast } from "sonner";
 import { ComboboxWithCreate } from "~/components/atom/combobox-with-create";
 import type { ComboboxOption } from "~/components/atom/combobox-with-create";
@@ -112,7 +112,7 @@ export function StrainSelector({
   if (isStrainsLoading) {
     return (
       <div className="relative">
-        <BeanIcon className="text-muted-foreground absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2" />
+        <DnaIcon className="text-muted-foreground absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2" />
         <div className="bg-muted flex h-10 items-center rounded-md border pl-10">
           <SpinningLoader className="size-5" />
         </div>
@@ -136,7 +136,7 @@ export function StrainSelector({
         triggerClassName="bg-muted text-foreground md:text-base"
         disabled={disabled || !breederId || createStrainMutation.isPending}
         onCreateOption={handleCreateStrain}
-        icon={BeanIcon}
+        icon={DnaIcon}
       />
       {error && <FormError message={error} />}
     </div>

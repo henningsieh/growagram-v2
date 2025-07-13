@@ -1,5 +1,5 @@
 import { useTranslations } from "next-intl";
-import { BeanIcon, Dna, FlaskConical } from "lucide-react";
+import { CannabisIcon, DnaIcon, FlaskConical } from "lucide-react";
 import {
   HybridTooltip,
   HybridTooltipContent,
@@ -16,15 +16,18 @@ export default function StrainBadge({ strain }: { strain: StrainType }) {
       {strain && (
         <HybridTooltip>
           <HybridTooltipTrigger className="cursor-help">
-            <Badge variant="strain" className="ml-auto flex items-center gap-1">
-              <BeanIcon className="h-3.5 w-3.5" />
+            <Badge
+              variant="strain"
+              className="ml-auto flex items-center gap-1 [&>svg]:size-4"
+            >
+              <DnaIcon className="shrink-0" />
               <span>{strain.name}</span>
             </Badge>
           </HybridTooltipTrigger>
           <HybridTooltipContent className="text-seedling">
             <div className="space-y-2 p-1">
               <div className="flex items-center gap-2">
-                <Dna className="h-4 w-4" />
+                <CannabisIcon className="h-4 w-4" />
                 <span>
                   {t("breeder")}
                   {": "}

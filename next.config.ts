@@ -1,7 +1,7 @@
 // next.config.mjs
+import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
-import type { NextConfig } from 'next';
-import type { Configuration as WebpackConfig } from 'webpack';
+import type { Configuration as WebpackConfig } from "webpack";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -67,7 +67,7 @@ const nextConfig = {
         "url-loader",
       ],
     });
-    
+
     return config;
   },
 } satisfies NextConfig;

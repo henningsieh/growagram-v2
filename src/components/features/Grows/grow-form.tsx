@@ -4,9 +4,7 @@ import * as React from "react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQuery } from "@tanstack/react-query";
-import { useMutation } from "@tanstack/react-query";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { TRPCClientError } from "@trpc/client";
 import {
   ArrowRight,
@@ -63,6 +61,16 @@ import {
 } from "~/components/ui/select";
 import { Link, useRouter } from "~/lib/i18n/routing";
 import { useTRPC } from "~/lib/trpc/client";
+import {
+  getCultureMediumEmoji,
+  getCultureMediumTranslationKey,
+  getFertilizerFormEmoji,
+  getFertilizerFormTranslationKey,
+  getFertilizerTypeEmoji,
+  getFertilizerTypeTranslationKey,
+  getGrowEnvironmentEmoji,
+  getGrowEnvironmentTranslationKey,
+} from "~/lib/utils";
 import type {
   CreateOrEditGrowInput,
   GetConnectablePlantsInput,
@@ -72,24 +80,19 @@ import type {
   GrowDisconnectPlantInput,
 } from "~/server/api/root";
 import {
-  CULTURE_MEDIUM_EMOJIS,
-  CULTURE_MEDIUM_TRANSLATION_KEYS,
   CultureMedium,
-  FERTILIZER_FORM_EMOJIS,
-  FERTILIZER_FORM_TRANSLATION_KEYS,
-  FERTILIZER_TYPE_EMOJIS,
-  FERTILIZER_TYPE_TRANSLATION_KEYS,
   FertilizerForm,
   FertilizerType,
-  GROW_ENVIRONMENT_EMOJIS,
-  GROW_ENVIRONMENT_TRANSLATION_KEYS,
   GrowEnvironment,
   GrowsSortField,
-  createLabelWithEmoji,
 } from "~/types/grow";
 import { growFormSchema } from "~/types/zodSchema";
 
 type FormValues = z.infer<typeof growFormSchema>;
+
+const createLabelWithEmoji = (emoji: string, label: string): string => {
+  return `${emoji} ${label}`;
+};
 
 export function GrowForm({ grow }: { grow?: GetGrowByIdType }) {
   const trpc = useTRPC();
@@ -455,12 +458,13 @@ export function GrowForm({ grow }: { grow?: GetGrowByIdType }) {
           <Form {...form}>
             <Card>
               <CardHeader className="p-2 pb-0 sm:p-3 sm:pb-0 lg:p-4 lg:pb-0 xl:p-6 xl:pb-0">
-                <CardTitle className="text-xl font-semibold" as="h2">
+                <CardTitle as="h2" className="text-3xl">
                   {pageTexts.formTitle}
                 </CardTitle>
                 <CardDescription>{pageTexts.formDescription}</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-8 p-2 sm:p-3 lg:p-4 xl:p-6">
+              <CardContent className="space-y-6 p-2 sm:p-3 lg:p-4 xl:p-6">
+                {/* Row 1: Grow Name (Full Width) */}
                 <FormField
                   control={form.control}
                   name="name"
@@ -473,7 +477,7 @@ export function GrowForm({ grow }: { grow?: GetGrowByIdType }) {
                         <div className="relative">
                           <TentTree className="text-muted-foreground absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2" />
                           <Input
-                            className="pl-10"
+                            className="bg-muted text-foreground pl-10 md:text-base"
                             placeholder={t("grow-name-placeholder")}
                             {...field}
                           />
@@ -487,134 +491,235 @@ export function GrowForm({ grow }: { grow?: GetGrowByIdType }) {
                   )}
                 />
 
-                {/* Header Image Section */}
-                <div className="space-y-2">
-                  <FormLabel className="text-primary text-lg font-semibold">
-                    {t("grow-header-image")}
-                  </FormLabel>
+                {/* Row 2: Plant Connections and Header Image Side by Side */}
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                  {/* Plant Connections */}
+                  <div>
+                    <FormLabel className="text-primary text-lg font-semibold">
+                      {t("select-plants")}
+                    </FormLabel>
 
-                  <div className="flex flex-col gap-4">
-                    {/* Display current header image if exists */}
-                    {headerImageUrl && !form.watch("removeHeaderImage") && (
-                      <div className="relative aspect-video w-full max-w-md overflow-hidden rounded-md border">
-                        <Image
-                          fill
-                          sizes={RESPONSIVE_IMAGE_SIZES}
-                          src={headerImageUrl}
-                          alt={t("grow-header-image")}
-                          className="h-full w-full object-cover"
+                    <Command
+                      className="mt-2 rounded-sm border shadow-md"
+                      shouldFilter={false}
+                    >
+                      <CommandInput
+                        placeholder={t("search-plants")}
+                        value={searchQuery}
+                        onValueChange={(value) => setSearchQuery(value)}
+                      />
+                      {isPending ? (
+                        <SpinningLoader className="m-4 size-12" />
+                      ) : (
+                        <CommandList className="min-h-24">
+                          <CommandEmpty className="mx-auto my-4 w-full space-y-2 p-4">
+                            <Alert variant="destructive">
+                              <CircleAlertIcon className="size-5" />
+                              {t("no-plants-connectable")}
+                            </Alert>
+                            <div className="flex justify-end">
+                              <Button className="p-0" variant="link" asChild>
+                                <Link
+                                  className="roundex-xs h-6 text-sm"
+                                  href={modulePaths.PLANTS.path}
+                                >
+                                  {t_nav("my-plants")}
+                                  <ArrowRight className="ml-1 h-4 w-4" />
+                                </Link>
+                              </Button>
+                            </div>
+                          </CommandEmpty>
+                          <CommandGroup>
+                            {filteredPlants.map((plant) => (
+                              <CommandItem
+                                key={plant.id}
+                                onSelect={() => togglePlantSelection(plant.id)}
+                                className={`cursor-pointer ${
+                                  selectedPlantIds.includes(plant.id)
+                                    ? "text-secondary font-bold"
+                                    : ""
+                                }`}
+                              >
+                                <div
+                                  className={`mr-2 flex h-4 w-4 items-center justify-center rounded-sm border ${
+                                    selectedPlantIds.includes(plant.id)
+                                      ? "border-secondary bg-secondary"
+                                      : "border-secondary"
+                                  }`}
+                                >
+                                  {selectedPlantIds.includes(plant.id) && (
+                                    <Check className="text-primary-foreground h-3 w-3" />
+                                  )}
+                                </div>
+                                <TagIcon className="mr-2 h-4 w-4" />
+                                <span>{plant.name}</span>
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      )}
+                    </Command>
+
+                    <FormDescription className="mt-2">
+                      {selectedPlantIds.length > 0
+                        ? t("plants-selected", {
+                            count: selectedPlantIds.length,
+                          })
+                        : t("select-plants-optional")}
+                    </FormDescription>
+                  </div>
+
+                  {/* Header Image */}
+                  <div>
+                    <FormLabel className="text-primary text-lg font-semibold">
+                      {t("grow-header-image")}
+                    </FormLabel>
+
+                    <div className="mt-2 flex flex-col gap-4">
+                      {/* Display current header image if exists */}
+                      {headerImageUrl && !form.watch("removeHeaderImage") && (
+                        <div className="relative aspect-video w-full overflow-hidden rounded-md border">
+                          <Image
+                            fill
+                            sizes={RESPONSIVE_IMAGE_SIZES}
+                            src={headerImageUrl}
+                            alt={t("grow-header-image")}
+                            className="h-full w-full object-cover"
+                          />
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            size="icon"
+                            className="absolute top-2 right-2 h-8 w-8 rounded-full"
+                            onClick={() => {
+                              // Mark image for removal in form state
+                              form.setValue("removeHeaderImage", true);
+                              form.setValue("headerImageId", undefined);
+                              setHeaderImageUrl(null);
+                              setSelectedFile(null);
+                            }}
+                            disabled={isSubmitting}
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      )}
+
+                      {/* File selection input */}
+                      <div className="flex gap-2">
+                        <Input
+                          type="file"
+                          accept="image/*"
+                          ref={fileInputRef}
+                          className="hidden"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              setSelectedFile(file);
+                              // Create a preview URL
+                              const objectUrl = URL.createObjectURL(file);
+                              setHeaderImageUrl(objectUrl);
+                              // Reset remove flag when new image is selected
+                              form.setValue("removeHeaderImage", false);
+                            }
+                          }}
                         />
                         <Button
                           type="button"
-                          variant="destructive"
-                          size="icon"
-                          className="absolute top-2 right-2 h-8 w-8 rounded-full"
-                          onClick={() => {
-                            // Mark image for removal in form state
-                            form.setValue("removeHeaderImage", true);
-                            form.setValue("headerImageId", undefined);
-                            setHeaderImageUrl(null);
-                            setSelectedFile(null);
-                          }}
+                          variant="outline"
+                          onClick={() => fileInputRef.current?.click()}
                           disabled={isSubmitting}
+                          className="flex gap-2"
                         >
-                          <X className="h-4 w-4" />
+                          <ImageIcon className="h-4 w-4" />
+                          {selectedFile ? t("change-image") : t("select-image")}
                         </Button>
                       </div>
-                    )}
 
-                    {/* File selection input */}
-                    <div className="flex gap-2">
-                      <Input
-                        type="file"
-                        accept="image/*"
-                        ref={fileInputRef}
-                        className="hidden"
-                        onChange={(e) => {
-                          const file = e.target.files?.[0];
-                          if (file) {
-                            setSelectedFile(file);
-                            // Create a preview URL
-                            const objectUrl = URL.createObjectURL(file);
-                            setHeaderImageUrl(objectUrl);
-                            // Reset remove flag when new image is selected
-                            form.setValue("removeHeaderImage", false);
-                          }
-                        }}
-                      />
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => fileInputRef.current?.click()}
-                        disabled={isSubmitting}
-                        className="flex gap-2"
-                      >
-                        <ImageIcon className="h-4 w-4" />
-                        {selectedFile ? t("change-image") : t("select-image")}
-                      </Button>
+                      {selectedFile && (
+                        <p className="text-muted-foreground text-sm">
+                          {t("selected-file")}
+                          {": "}
+                          {selectedFile.name}
+                        </p>
+                      )}
                     </div>
-
-                    {selectedFile && (
-                      <p className="text-muted-foreground text-sm">
-                        {t("selected-file")}
-                        {": "}
-                        {selectedFile.name}
-                      </p>
-                    )}
+                    <FormDescription className="mt-2">
+                      {t("header-image-description")}
+                    </FormDescription>
                   </div>
-                  <FormDescription>
-                    {t("header-image-description")}
-                  </FormDescription>
                 </div>
 
-                {/* Grow Environment Settings - Mobile-optimized grid */}
-                <div className="space-y-4">
-                  <FormLabel className="text-primary text-lg font-semibold">
+                {/* Section 3: Environment Settings with proper spacing */}
+                <div className="space-y-6">
+                  <CardTitle as="h3" className="text-2xl">
                     {t("grow-environment-settings")}
-                  </FormLabel>
+                  </CardTitle>
 
-                  {/* Environment and Culture Medium - Side by side on mobile */}
-                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-2">
+                  <div className="grid grid-cols-1 items-start gap-6 md:grid-cols-2 md:gap-4 lg:gap-6 xl:gap-8">
                     {/* Environment Field */}
                     <FormField
                       control={form.control}
                       name="environment"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-sm font-medium">
+                          <FormLabel className="text-primary text-lg font-semibold">
                             {t("environment-label")}
                           </FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                          >
-                            <FormControl>
-                              <SelectTrigger className="w-full">
-                                <SelectValue
-                                  placeholder={t("environment-placeholder")}
-                                />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {Object.values(GrowEnvironment).map(
-                                (environment) => (
-                                  <SelectItem
-                                    key={environment}
-                                    value={environment}
-                                  >
-                                    {createLabelWithEmoji(
-                                      GROW_ENVIRONMENT_EMOJIS[environment],
-                                      t(
-                                        GROW_ENVIRONMENT_TRANSLATION_KEYS[
-                                          environment
-                                        ],
-                                      ),
-                                    )}
-                                  </SelectItem>
-                                ),
-                              )}
-                            </SelectContent>
-                          </Select>
+                          <div className="flex items-center gap-2">
+                            <Select
+                              key={`environment-${field.value || "empty"}`}
+                              value={field.value || undefined}
+                              onValueChange={(value) =>
+                                field.onChange(value || undefined)
+                              }
+                            >
+                              <FormControl>
+                                <SelectTrigger className="bg-muted text-foreground w-full pl-10 md:text-base">
+                                  <SelectValue
+                                    placeholder={t("environment-placeholder")}
+                                  />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                {Object.values(GrowEnvironment).map(
+                                  (environment) => (
+                                    <SelectItem
+                                      key={environment}
+                                      value={environment}
+                                    >
+                                      {createLabelWithEmoji(
+                                        getGrowEnvironmentEmoji(environment),
+                                        t(
+                                          getGrowEnvironmentTranslationKey(
+                                            environment,
+                                          ),
+                                        ),
+                                      )}
+                                    </SelectItem>
+                                  ),
+                                )}
+                              </SelectContent>
+                            </Select>
+                            {field.value && (
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={(event) => {
+                                  event.preventDefault();
+                                  event.stopPropagation();
+                                  field.onChange(null);
+                                }}
+                                className="flex-shrink-0 px-2"
+                              >
+                                <X className="size-4" />
+                              </Button>
+                            )}
+                          </div>
+                          <FormDescription>
+                            {t("environment-description")}
+                          </FormDescription>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -626,70 +731,117 @@ export function GrowForm({ grow }: { grow?: GetGrowByIdType }) {
                       name="cultureMedium"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-sm font-medium">
+                          <FormLabel className="text-primary text-lg font-semibold">
                             {t("culture-medium-label")}
                           </FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                          >
-                            <FormControl>
-                              <SelectTrigger className="w-full">
-                                <SelectValue
-                                  placeholder={t("culture-medium-placeholder")}
-                                />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {Object.values(CultureMedium).map((medium) => (
-                                <SelectItem key={medium} value={medium}>
-                                  {createLabelWithEmoji(
-                                    CULTURE_MEDIUM_EMOJIS[medium],
-                                    t(CULTURE_MEDIUM_TRANSLATION_KEYS[medium]),
-                                  )}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
+                          <div className="flex items-center gap-2">
+                            <Select
+                              key={`cultureMedium-${field.value || "empty"}`}
+                              value={field.value || undefined}
+                              onValueChange={(value) =>
+                                field.onChange(value || undefined)
+                              }
+                            >
+                              <FormControl>
+                                <SelectTrigger className="bg-muted text-foreground w-full pl-10 md:text-base">
+                                  <SelectValue
+                                    placeholder={t(
+                                      "culture-medium-placeholder",
+                                    )}
+                                  />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                {Object.values(CultureMedium).map((medium) => (
+                                  <SelectItem key={medium} value={medium}>
+                                    {createLabelWithEmoji(
+                                      getCultureMediumEmoji(medium),
+                                      t(getCultureMediumTranslationKey(medium)),
+                                    )}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            {field.value && (
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={(event) => {
+                                  event.preventDefault();
+                                  event.stopPropagation();
+                                  field.onChange(null);
+                                }}
+                                className="flex-shrink-0 px-2"
+                              >
+                                <X className="size-4" />
+                              </Button>
+                            )}
+                          </div>
+                          <FormDescription>
+                            {t("culture-medium-description")}
+                          </FormDescription>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
-                  </div>
 
-                  {/* Fertilizer Type and Form - Side by side on mobile */}
-                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-2">
                     {/* Fertilizer Type Field */}
                     <FormField
                       control={form.control}
                       name="fertilizerType"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-sm font-medium">
+                          <FormLabel className="text-primary text-lg font-semibold">
                             {t("fertilizer-type-label")}
                           </FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                          >
-                            <FormControl>
-                              <SelectTrigger className="w-full">
-                                <SelectValue
-                                  placeholder={t("fertilizer-type-placeholder")}
-                                />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {Object.values(FertilizerType).map((type) => (
-                                <SelectItem key={type} value={type}>
-                                  {createLabelWithEmoji(
-                                    FERTILIZER_TYPE_EMOJIS[type],
-                                    t(FERTILIZER_TYPE_TRANSLATION_KEYS[type]),
-                                  )}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
+                          <div className="flex items-center gap-2">
+                            <Select
+                              key={`fertilizerType-${field.value || "empty"}`}
+                              value={field.value || undefined}
+                              onValueChange={(value) =>
+                                field.onChange(value || undefined)
+                              }
+                            >
+                              <FormControl>
+                                <SelectTrigger className="bg-muted text-foreground w-full pl-10 md:text-base">
+                                  <SelectValue
+                                    placeholder={t(
+                                      "fertilizer-type-placeholder",
+                                    )}
+                                  />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                {Object.values(FertilizerType).map((type) => (
+                                  <SelectItem key={type} value={type}>
+                                    {createLabelWithEmoji(
+                                      getFertilizerTypeEmoji(type),
+                                      t(getFertilizerTypeTranslationKey(type)),
+                                    )}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            {field.value && (
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={(event) => {
+                                  event.preventDefault();
+                                  event.stopPropagation();
+                                  field.onChange(null);
+                                }}
+                                className="flex-shrink-0 px-2"
+                              >
+                                <X className="size-4" />
+                              </Button>
+                            )}
+                          </div>
+                          <FormDescription>
+                            {t("fertilizer-type-description")}
+                          </FormDescription>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -701,117 +853,62 @@ export function GrowForm({ grow }: { grow?: GetGrowByIdType }) {
                       name="fertilizerForm"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-sm font-medium">
+                          <FormLabel className="text-primary text-lg font-semibold">
                             {t("fertilizer-form-label")}
                           </FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                          >
-                            <FormControl>
-                              <SelectTrigger className="w-full">
-                                <SelectValue
-                                  placeholder={t("fertilizer-form-placeholder")}
-                                />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {Object.values(FertilizerForm).map((form) => (
-                                <SelectItem key={form} value={form}>
-                                  {createLabelWithEmoji(
-                                    FERTILIZER_FORM_EMOJIS[form],
-                                    t(FERTILIZER_FORM_TRANSLATION_KEYS[form]),
-                                  )}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
+                          <div className="flex items-center gap-2">
+                            <Select
+                              key={`fertilizerForm-${field.value || "empty"}`}
+                              value={field.value || undefined}
+                              onValueChange={(value) =>
+                                field.onChange(value || undefined)
+                              }
+                            >
+                              <FormControl>
+                                <SelectTrigger className="bg-muted text-foreground w-full pl-10 md:text-base">
+                                  <SelectValue
+                                    placeholder={t(
+                                      "fertilizer-type-placeholder",
+                                    )}
+                                  />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                {Object.values(FertilizerForm).map((form) => (
+                                  <SelectItem key={form} value={form}>
+                                    {createLabelWithEmoji(
+                                      getFertilizerFormEmoji(form),
+                                      t(getFertilizerFormTranslationKey(form)),
+                                    )}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            {field.value && (
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={(event) => {
+                                  event.preventDefault();
+                                  event.stopPropagation();
+                                  field.onChange(null);
+                                }}
+                                className="flex-shrink-0 px-2"
+                              >
+                                <X className="size-4" />
+                              </Button>
+                            )}
+                          </div>
+                          <FormDescription>
+                            {t("fertilizer-type-description")}
+                          </FormDescription>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
                   </div>
-
-                  {/* Shared description for environment settings */}
-                  <FormDescription className="text-muted-foreground text-sm">
-                    {t("grow-environment-settings-description")}
-                  </FormDescription>
                 </div>
-
-                <div>
-                  <FormLabel className="text-primary text-lg font-semibold">
-                    {t("select-plants")}
-                  </FormLabel>
-
-                  <Command
-                    className="rounded-sm border shadow-md"
-                    shouldFilter={false}
-                  >
-                    <CommandInput
-                      placeholder={t("search-plants")}
-                      value={searchQuery}
-                      onValueChange={(value) => setSearchQuery(value)}
-                    />
-                    {isPending ? (
-                      <SpinningLoader className="m-4 size-12" />
-                    ) : (
-                      <CommandList className="min-h-24">
-                        <CommandEmpty className="mx-auto my-4 w-full space-y-2 p-4">
-                          <Alert variant="destructive">
-                            <CircleAlertIcon className="size-5" />
-                            {t("no-plants-connectable")}
-                          </Alert>
-                          <div className="flex justify-end">
-                            <Button className="p-0" variant="link" asChild>
-                              <Link
-                                className="roundex-xs h-6 text-sm"
-                                href={modulePaths.PLANTS.path}
-                              >
-                                {t_nav("my-plants")}
-                                <ArrowRight className="ml-1 h-4 w-4" />
-                              </Link>
-                            </Button>
-                          </div>
-                        </CommandEmpty>
-                        <CommandGroup>
-                          {filteredPlants.map((plant) => (
-                            <CommandItem
-                              key={plant.id}
-                              onSelect={() => togglePlantSelection(plant.id)}
-                              className={`cursor-pointer ${
-                                selectedPlantIds.includes(plant.id)
-                                  ? "text-secondary font-bold"
-                                  : ""
-                              }`}
-                            >
-                              <div
-                                className={`mr-2 flex h-4 w-4 items-center justify-center rounded-sm border ${
-                                  selectedPlantIds.includes(plant.id)
-                                    ? "border-secondary bg-secondary"
-                                    : "border-secondary"
-                                }`}
-                              >
-                                {selectedPlantIds.includes(plant.id) && (
-                                  <Check className="text-primary-foreground h-3 w-3" />
-                                )}
-                              </div>
-                              <TagIcon className="mr-2 h-4 w-4" />
-                              <span>{plant.name}</span>
-                            </CommandItem>
-                          ))}
-                        </CommandGroup>
-                      </CommandList>
-                    )}
-                  </Command>
-                </div>
-
-                <FormDescription className="mt-2">
-                  {selectedPlantIds.length > 0
-                    ? t("plants-selected", {
-                        count: selectedPlantIds.length,
-                      })
-                    : t("select-plants-optional")}
-                </FormDescription>
               </CardContent>
 
               <CardFooter className="flex w-full gap-2 p-2 sm:p-3 md:gap-6 lg:p-4 xl:p-6">

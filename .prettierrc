@@ -6,11 +6,16 @@
   "importOrder": [
     "^react$",
     "^react/(.*)$",
-    "^next",
+    "^(next$|next/(.*)$)",
+    "^next-(.*)$",
     "^@?\\w",
-    "^(~|@|components/)",
+    "^~/components/ui/",
+    "^~/components/",
+    "^~/lib/",
+    "^~/assets/",
+    "^~/styles/",
     "^[./]"
   ],
-  "importOrderSeparation": false,
+  "importOrderSeparation": true,
   "importOrderSortSpecifiers": true
 }

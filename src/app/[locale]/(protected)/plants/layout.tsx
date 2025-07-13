@@ -8,8 +8,13 @@ import { generatePageMetadata } from "~/lib/utils/metadata";
 import type { GetOwnPlantsInput } from "~/server/api/root";
 import { PlantsSortField } from "~/types/plant";
 
-export async function generateMetadata(): Promise<Metadata> {
-  return generatePageMetadata("plants");
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  return generatePageMetadata("plants", locale);
 }
 
 export default async function MyPlantsLayout({

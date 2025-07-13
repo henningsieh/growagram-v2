@@ -6,8 +6,13 @@ import { TimelineNavigationLayout } from "~/components/features/Timeline/timelin
 import { getQueryClient, trpc } from "~/lib/trpc/server";
 import { generatePageMetadata } from "~/lib/utils/metadata";
 
-export async function generateMetadata(): Promise<Metadata> {
-  return generatePageMetadata("timeline");
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  return generatePageMetadata("timeline", locale);
 }
 
 export default async function TimelineLayout({

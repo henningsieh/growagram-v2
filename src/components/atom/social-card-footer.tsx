@@ -4,7 +4,7 @@ import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 // eslint-disable-next-line no-restricted-imports
 import Link from "next/link";
-import { ChartColumn, MessagesSquareIcon, Share } from "lucide-react";
+import { ChartColumnIcon, MessagesSquareIcon, ShareIcon } from "lucide-react";
 import { LikeButton } from "~/components/atom/like-button";
 import SpinningLoader from "~/components/atom/spinning-loader";
 import { Button } from "~/components/ui/button";
@@ -109,7 +109,7 @@ export const SocialCardFooter: React.FC<CardFooterProps> = ({
             size="sm"
             disabled={!user}
           >
-            <ChartColumn className="h-4 w-4" />
+            <ChartColumnIcon className="h-4 w-4" />
             <span>{stats.views}</span>
           </Button>,
           t("CardFooter.Login to see detailed view statistics"),
@@ -135,7 +135,7 @@ export const SocialCardFooter: React.FC<CardFooterProps> = ({
             size="sm"
             disabled={!user}
           >
-            <Share className="h-4 w-4" />
+            <ShareIcon className="h-4 w-4" />
           </Button>,
           t("CardFooter.Please log in to share this content"),
         )}

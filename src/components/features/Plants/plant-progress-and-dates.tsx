@@ -99,9 +99,13 @@ export function PlantProgressAndDates({ plant }: { plant: PlantByIdType }) {
                 }`}
               />
               {plant.vegetationPhaseStart &&
-                formatAbsoluteDate(plant.vegetationPhaseStart, locale as Locale, {
-                  force: true,
-                })}
+                formatAbsoluteDate(
+                  plant.vegetationPhaseStart,
+                  locale as Locale,
+                  {
+                    force: true,
+                  },
+                )}
             </HybridTooltipTrigger>
             <HybridTooltipContent
               side="right"
@@ -127,9 +131,13 @@ export function PlantProgressAndDates({ plant }: { plant: PlantByIdType }) {
                 }`}
               />
               {plant.floweringPhaseStart &&
-                formatAbsoluteDate(plant.floweringPhaseStart, locale as Locale, {
-                  force: true,
-                })}
+                formatAbsoluteDate(
+                  plant.floweringPhaseStart,
+                  locale as Locale,
+                  {
+                    force: true,
+                  },
+                )}
             </HybridTooltipTrigger>
             <HybridTooltipContent
               side="right"

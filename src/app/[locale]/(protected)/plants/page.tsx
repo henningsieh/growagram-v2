@@ -4,7 +4,7 @@
 import * as React from "react";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
-import { Infinity, Calendar, TagIcon } from "lucide-react";
+import { Infinity, Calendar1Icon, Edit3Icon, TagIcon } from "lucide-react";
 import { modulePaths } from "~/assets/constants";
 import { BreadcrumbSetter } from "~/components/Layouts/Breadcrumbs/breadcrumb-setter";
 import PageHeader from "~/components/Layouts/page-header";
@@ -95,7 +95,12 @@ export default function MyPlantsPage() {
     {
       field: PlantsSortField.CREATED_AT,
       label: t("sort-plants-createdAt"),
-      icon: <Calendar className="h-5 w-5" />,
+      icon: <Calendar1Icon className="h-5 w-5" />,
+    },
+    {
+      field: PlantsSortField.UPDATED_AT,
+      label: t("sort-plants-updatedAt"),
+      icon: <Edit3Icon className="h-5 w-5" />,
     },
   ];
 

@@ -13,12 +13,12 @@ import * as React from "react";
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import type { VariantProps } from "class-variance-authority";
-import { ClockIcon, Flower2Icon, TentTree } from "lucide-react";
+import { ClockIcon, Flower2Icon, TentTreeIcon } from "lucide-react";
 import { modulePaths } from "~/assets/constants";
 import { Button, buttonVariants } from "~/components/ui/button";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { Link, usePathname } from "~/lib/i18n/routing";
-import { cn } from "~/lib/utils";
+import { cn } from "~/lib/utils"
 
 interface ComponentProps {
   // Define props with proper TypeScript types
@@ -48,7 +48,30 @@ function HelperComponent() {
   - Event handlers
   - State management
   - Browser APIs
-  - Animations with framer-motion
+
+## Dialog & Modal Components
+
+**Always use ResponsiveDialog for modal interactions.** See [Dialog Patterns](.github/instructions/dialog-patterns.instructions.md) for complete guidelines and examples.
+
+## Component Separation
+
+**Break down complex components following the established patterns:**
+
+- **Main component**: < 200 lines, handles primary logic
+- **Dialog components**: < 150 lines, manage modal interactions
+- **Content sections**: < 250 lines, focused functionality
+- **Sub-components**: Single responsibility, reusable pieces
+
+### File Organization
+
+```
+components/features/FeatureName/
+├── index.ts                    # Clean exports
+├── feature-main.tsx           # Primary component
+├── feature-dialog.tsx         # Modal wrapper (if needed)
+├── feature-controls.tsx       # Form/control components
+└── sub-components/           # Additional focused components
+```
 
 ## Loading States
 

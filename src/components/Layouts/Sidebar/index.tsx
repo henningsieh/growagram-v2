@@ -375,9 +375,9 @@ function ProtectedSidebarContent({
       {/* Sidebar Inset: Content Area */}
       <SidebarInset className="@container/maincontent min-h-[calc(100svh-5rem)] flex-1">
         {/* Fixed Header with Sidebar Toggle and Breadcrumbs */}
-        <header className="bg-background/80 fixed top-14 z-10 ml-2 flex h-10 w-full shrink-0 items-center justify-between gap-2 border-b shadow-sm backdrop-blur">
+        <header className="bg-background/80 fixed top-14 z-10 ml-1.5 flex h-10 w-full shrink-0 items-center justify-between gap-2 border-b shadow-sm backdrop-blur lg:ml-3.5">
           <div className="flex h-6 items-center gap-1">
-            <SidebarTrigger className="text-primary" />
+            <SidebarTrigger className="text-primary stroke-3" />
             <Separator orientation="vertical" />
             <NavigationBreadcrumbs className="ml-1" />
           </div>

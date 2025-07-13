@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import { useQueryClient } from "@tanstack/react-query";
 import { MoreHorizontal } from "lucide-react";
@@ -14,13 +13,16 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuPortal,
   DropdownMenuSeparator,
   DropdownMenuSub,
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
+import { useRouter } from "~/lib/i18n/routing";
 import { useTRPC } from "~/lib/trpc/client";
+import { isUserBanned } from "~/lib/utils";
 import type { AdminUserListItem } from "~/server/api/root";
 
 interface ActionsCellProps {
@@ -33,12 +35,10 @@ export function ActionsCell({ user }: ActionsCellProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
 
-  // Check if user is currently banned
-  const isUserBanned = React.useMemo(() => {
-    if (!user.bannedUntil) return false;
-    const bannedUntil = new Date(user.bannedUntil);
-    return bannedUntil > new Date() || user.bannedUntil === null; // null means permanent ban
-  }, [user.bannedUntil]);
+  // Check if user is currently banned using utility function
+  const userIsBanned = React.useMemo(() => {
+    return isUserBanned(user);
+  }, [user]);
 
   // Ban user mutation
   const banUserMutation = useMutation(
@@ -133,7 +133,7 @@ export function ActionsCell({ user }: ActionsCellProps) {
           {t("buttons.edit-details")}
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        {isUserBanned ? (
+        {userIsBanned ? (
           <DropdownMenuItem
             className="text-destructive"
             onClick={handleUnbanUser}
@@ -145,16 +145,18 @@ export function ActionsCell({ user }: ActionsCellProps) {
             <DropdownMenuSubTrigger className="text-destructive">
               {t("buttons.ban-user")}
             </DropdownMenuSubTrigger>
-            <DropdownMenuSubContent>
-              {BAN_DURATIONS.map((duration) => (
-                <DropdownMenuItem
-                  key={duration.value}
-                  onClick={() => handleBanUser(duration.value)}
-                >
-                  {duration.label}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuSubContent>
+            <DropdownMenuPortal>
+              <DropdownMenuSubContent>
+                {BAN_DURATIONS.map((duration) => (
+                  <DropdownMenuItem
+                    key={duration.value}
+                    onClick={() => handleBanUser(duration.value)}
+                  >
+                    {duration.label}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuSubContent>
+            </DropdownMenuPortal>
           </DropdownMenuSub>
         )}
         <DropdownMenuSeparator />

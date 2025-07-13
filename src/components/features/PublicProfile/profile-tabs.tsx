@@ -72,7 +72,9 @@ export const ProfileTabs = ({ profile }: ProfileTabsProps) => {
 
       <TabsContent value="grows">
         <div className="grid grid-cols-1 gap-4">
-          {profile.grows?.map((grow) => <GrowCard key={grow.id} grow={grow} />)}
+          {profile.grows?.map((grow) => (
+            <GrowCard key={grow.id} grow={grow} />
+          ))}
         </div>
       </TabsContent>
 

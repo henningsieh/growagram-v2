@@ -10,17 +10,17 @@
 
 The current notifications system in GrowAGram lacks clean architecture and maintainability. This document outlines requirements for refactoring the notifications feature to create a more organized, maintainable, and scalable system while preserving all existing functionality.
 
-## 2. Problem Statement
+## 2. Problem Statement ✅ RESOLVED
 
-The current implementation of the notifications feature has several issues:
+~~The original implementation of the notifications feature had several issues:~~
 
-- Complex and difficult-to-follow code flow in `getNotificationText` and `getNotificationHref`
-- Unclear recipient selection logic scattered throughout the codebase
-- Lack of clear domain model for notification types and their relationships to entities
-- Tightly coupled notification generation and delivery logic
-- Non-standardized approach to URL generation for different notification types
+- ~~Complex and difficult-to-follow code flow in `getNotificationText` and `getNotificationHref`~~ ✅ **FIXED**: Server-side notification service eliminates client-side text/href logic
+- ~~Unclear recipient selection logic scattered throughout the codebase~~ ✅ **FIXED**: Centralized `NotificationRecipientResolver` class
+- ~~Lack of clear domain model for notification types and their relationships to entities~~ ✅ **FIXED**: Factory pattern with clear notification types
+- ~~Tightly coupled notification generation and delivery logic~~ ✅ **FIXED**: Separated concerns with factory-based architecture
+- ~~Non-standardized approach to URL generation for different notification types~~ ✅ **FIXED**: `NotificationUrlGenerator` and server-side URL generation
 
-These issues make the code difficult to maintain, extend with new notification types, and debug when problems arise.
+**All original problems have been resolved.** The notification system now features clean architecture, server-side text/href generation, and fully translated notifications delivered ready-to-display to the frontend.
 
 ## 3. User Stories
 
@@ -165,19 +165,16 @@ The new **Factory Pattern** creates notifications in a clean, organized way:
 #### ✅ **Complete Migration**
 
 1. **Updated all 3 API routes** to use the new factory system:
-
    - `src/server/api/routers/users.ts` (follow notifications)
    - `src/server/api/routers/comments.ts` (comment notifications)
    - `src/server/api/routers/likes.ts` (like notifications)
 
 2. **Consolidated type definitions**:
-
    - **Centralized Types**: All notification types moved to `src/types/notification.ts`
    - **DRY Principle**: Eliminated duplicate type definitions across multiple files
    - **Single Source of Truth**: One canonical location for all notification interfaces and constants
 
 3. **Removed legacy code**:
-
    - Deleted the old `createNotification` function from `index.ts`
    - Removed unused `v2.ts` files
    - Cleaned up exports from `core.ts`
@@ -316,7 +313,42 @@ The new architecture provides a solid foundation for future enhancements:
 - **Test Coverage**: Ready for comprehensive unit testing
 - **Documentation**: Self-documenting code with clear interfaces
 
-### 11.12 Conclusion
+### 11.12 Latest Enhancement: Server-Side Notification Service
+
+**Post-Implementation Addition** (Beyond Original PRD Scope)
+
+After the initial factory refactoring was completed, an additional enhancement was implemented to eliminate client-side roundtrips for notification text and URL generation:
+
+#### ✅ **ServerSideNotificationService**
+
+**Location**: `src/lib/notifications/server-side.ts`
+
+**Features**:
+
+- **Server-side text generation**: Notifications are pre-translated using the user's locale
+- **Server-side URL generation**: Notification hrefs are computed on the server, eliminating client-side logic
+- **Comment notification resolution**: Special handling for comment notifications that need parent entity resolution
+- **Full internationalization**: Uses `next-intl/server` for proper server-side translations
+
+#### ✅ **Updated tRPC Router**
+
+The notification router now enriches each notification with:
+
+```typescript
+// Added fields computed server-side:
+notificationText: string,    // Translated text ready for display
+notificationHref: string,    // Correct URL ready for navigation
+```
+
+#### ✅ **Frontend Simplification**
+
+- **Before**: Complex client-side logic in `useNotifications` and `NotificationItem`
+- **After**: Direct consumption of server-computed `notificationText` and `notificationHref`
+- **Result**: Faster rendering, fewer roundtrips, simpler frontend code
+
+This enhancement represents the final evolution of the notification system, moving from factory-based creation to complete server-side rendering of notification content.
+
+### 11.13 Conclusion
 
 The notifications system refactoring represents a successful example of clean architecture principles applied to a working system. The factory pattern implementation provides:
 

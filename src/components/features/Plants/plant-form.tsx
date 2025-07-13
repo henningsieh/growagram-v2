@@ -1,8 +1,17 @@
 "use client";
 
 // src/components/features/Plants/plant-form.tsx:
+import type {
+  CreateOrEditPlantInput,
+  GetOwnPlantsInput,
+  GetPlantByIdType,
+} from "~/server/api/root";
+import { plantFormSchema } from "~/types/zodSchema";
+
 import * as React from "react";
+
 import { useTranslations } from "next-intl";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
 import { useMutation } from "@tanstack/react-query";
@@ -20,10 +29,7 @@ import {
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { PaginationItemsPerPage, modulePaths } from "~/assets/constants";
-import FormContent from "~/components/Layouts/form-content";
-import PageHeader from "~/components/Layouts/page-header";
-import SpinningLoader from "~/components/atom/spinning-loader";
+
 import { Button } from "~/components/ui/button";
 import {
   Card,
@@ -50,19 +56,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
+
+import FormContent from "~/components/Layouts/form-content";
+import PageHeader from "~/components/Layouts/page-header";
+import SpinningLoader from "~/components/atom/spinning-loader";
+
 import { useRouter } from "~/lib/i18n/routing";
 import { useTRPC } from "~/lib/trpc/client";
-import type {
-  CreateOrEditPlantInput,
-  GetOwnPlantsInput,
-  GetPlantByIdType,
-} from "~/server/api/root";
-import { plantFormSchema } from "~/types/zodSchema";
+
+import { PaginationItemsPerPage, modulePaths } from "~/assets/constants";
+
 import { BreederSelector } from "./breeder-selector";
 import PlantFormDateField from "./plant-form-date-fields";
 import { StrainSelector } from "./strain-selector";
-
-type FormValues = z.infer<typeof plantFormSchema>;
 
 export default function PlantForm({ plant }: { plant?: GetPlantByIdType }) {
   const trpc = useTRPC();
@@ -75,6 +81,8 @@ export default function PlantForm({ plant }: { plant?: GetPlantByIdType }) {
   const [selectedBreederId, setSelectedBreederId] = React.useState<
     string | null | undefined
   >(plant?.strain?.breeder.id || null);
+
+  type FormValues = z.infer<typeof plantFormSchema>;
 
   const form = useForm<FormValues>({
     mode: "onBlur",
@@ -168,6 +176,7 @@ export default function PlantForm({ plant }: { plant?: GetPlantByIdType }) {
           : t("form-pagerheader-new-subtitle")
       }
       buttonLabel={t("form-pageheader-backButtonLabel")}
+      buttonVariant={"outline"}
       buttonLink={modulePaths.PLANTS.path}
     >
       <FormContent>
@@ -175,141 +184,156 @@ export default function PlantForm({ plant }: { plant?: GetPlantByIdType }) {
           <Form {...form}>
             <Card>
               <CardHeader className="p-2 pb-0 sm:p-3 sm:pb-0 lg:p-4 lg:pb-0 xl:p-6 xl:pb-0">
-                <CardTitle as="h2">{t("form-heading")}</CardTitle>
+                <CardTitle as="h2" className="text-3xl">
+                  {t("form-heading")}
+                </CardTitle>
                 <CardDescription>
                   {t("form-heading-description")}
                 </CardDescription>
               </CardHeader>
               <CardContent className="p-2 sm:p-3 lg:p-4 xl:p-6">
                 <div className="space-y-6">
-                  <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="font-semibold">
-                          {t("form-nickname")}
-                        </FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <TagIcon className="text-muted-foreground absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2" />
-                            <Input
-                              className="bg-muted text-foreground pl-10 md:text-base"
-                              placeholder="Enter plant name"
-                              {...field}
-                            />
-                          </div>
-                        </FormControl>
-                        <FormDescription>
-                          {t("form-nickname-description")}
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                  <div className="grid grid-cols-1 items-start gap-6 md:grid-cols-2 md:gap-4 lg:gap-6 xl:gap-8">
+                    {/* Plant Name */}
+                    <FormField
+                      control={form.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-primary text-lg font-semibold">
+                            {t("form-nickname")}
+                          </FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <TagIcon className="text-muted-foreground absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2" />
+                              <Input
+                                className="bg-muted text-foreground pl-10 md:text-base"
+                                placeholder="Enter plant name"
+                                {...field}
+                              />
+                            </div>
+                          </FormControl>
+                          <FormDescription>
+                            {t("form-nickname-description")}
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                  {/* Breeder Selection with Create */}
-                  <FormField
-                    control={form.control}
-                    name="breederId"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="font-semibold">
-                          {t("breeder")}
-                        </FormLabel>
-                        <FormControl>
-                          <div>
+                    {/* Grow ID */}
+                    <FormField
+                      control={form.control}
+                      name="growId"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-primary text-lg font-semibold">
+                            {t("form-grow")}
+                          </FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <TentTreeIcon className="text-muted-foreground absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2" />
+                              {isGrowsLoading ? (
+                                <SpinningLoader className="size-9" />
+                              ) : (
+                                <Select
+                                  value={field.value || undefined}
+                                  onValueChange={field.onChange}
+                                >
+                                  <SelectTrigger className="bg-muted text-foreground w-full pl-10 md:text-base">
+                                    <SelectValue
+                                      placeholder={t("form-grow-placeholder")}
+                                    />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {growsData?.grows.map((grow) => (
+                                      <SelectItem key={grow.id} value={grow.id}>
+                                        {grow.name}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              )}
+                            </div>
+                          </FormControl>
+                          <FormDescription>
+                            {t("form-grow-description")}
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    {/* Breeder Selection with Create */}
+                    <FormField
+                      control={form.control}
+                      name="breederId"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-primary text-lg font-semibold">
+                            {t("breeder")}
+                          </FormLabel>
+                          <FormControl>
                             <BreederSelector
                               value={field.value}
                               onChange={field.onChange}
                               disabled={isSubmitting}
+                              existingBreeder={
+                                plant?.strain?.breeder
+                                  ? {
+                                      id: plant.strain.breeder.id,
+                                      name: plant.strain.breeder.name,
+                                    }
+                                  : null
+                              }
                             />
-                          </div>
-                        </FormControl>
-                        <FormDescription>
-                          {t("form-breeder-description")}
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                          </FormControl>
+                          <FormDescription>
+                            {t("form-breeder-description")}
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                  {/* Strain Selection with Create - using new component */}
-                  <FormField
-                    control={form.control}
-                    name="strainId"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="font-semibold">
-                          {t("strain")}
-                        </FormLabel>
-                        <FormControl>
-                          <StrainSelector
-                            value={field.value}
-                            breederId={selectedBreederId}
-                            onChange={field.onChange}
-                            disabled={isSubmitting}
-                            existingStrain={
-                              plant?.strain
-                                ? {
-                                    id: plant.strain.id,
-                                    name: plant.strain.name,
-                                  }
-                                : null
-                            }
-                          />
-                        </FormControl>
-                        <FormDescription>
-                          {t("form-strain-description")}
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                    {/* Strain Selection with Create - using new component */}
+                    <FormField
+                      control={form.control}
+                      name="strainId"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-primary text-lg font-semibold">
+                            {t("strain")}
+                          </FormLabel>
+                          <FormControl>
+                            <StrainSelector
+                              value={field.value}
+                              breederId={selectedBreederId}
+                              onChange={field.onChange}
+                              disabled={isSubmitting}
+                              existingStrain={
+                                plant?.strain
+                                  ? {
+                                      id: plant.strain.id,
+                                      name: plant.strain.name,
+                                    }
+                                  : null
+                              }
+                            />
+                          </FormControl>
+                          <FormDescription>
+                            {t("form-strain-description")}
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
 
-                  <FormField
-                    control={form.control}
-                    name="growId"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="font-semibold">
-                          {t("form-grow")}
-                        </FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <TentTreeIcon className="text-muted-foreground absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2" />
-                            {isGrowsLoading ? (
-                              <SpinningLoader />
-                            ) : (
-                              <Select
-                                value={field.value || undefined}
-                                onValueChange={field.onChange}
-                              >
-                                <SelectTrigger className="bg-muted text-foreground w-full pl-10 md:text-base">
-                                  <SelectValue
-                                    placeholder={t("form-grow-placeholder")}
-                                  />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {growsData?.grows.map((grow) => (
-                                    <SelectItem key={grow.id} value={grow.id}>
-                                      {grow.name}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                            )}
-                          </div>
-                        </FormControl>
-                        <FormDescription>
-                          {t("form-grow-description")}
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-4 lg:gap-6 xl:gap-8">
+                  <CardTitle as="h3" className="mb-4 text-2xl">
+                    {t("form-phases-heading")}
+                  </CardTitle>
+                  <div className="grid grid-cols-1 items-start gap-6 md:grid-cols-2 md:gap-4 lg:gap-6 xl:gap-8">
                     {/* Planting Phase */}
                     <FormField
                       control={form.control}

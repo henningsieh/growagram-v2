@@ -189,10 +189,14 @@ export function EnhancedPlantCard({ plant }: EnhancedPlantCardProps) {
                           {":"}
                         </p>
                         <p className="text-base">
-                          {formatAbsoluteDate(progress.estimatedHarvestDate, locale, {
-                            includeYear: true,
-                            force: true,
-                          } as DateFormatOptions)}{" "}
+                          {formatAbsoluteDate(
+                            progress.estimatedHarvestDate,
+                            locale,
+                            {
+                              includeYear: true,
+                              force: true,
+                            } as DateFormatOptions,
+                          )}{" "}
                           {`(in ${formatDaysRemaining(
                             progress.daysUntilNextPhase,
                             t("Platform.day"),

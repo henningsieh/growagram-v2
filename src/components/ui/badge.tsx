@@ -14,7 +14,7 @@ const badgeVariants = cva(
         secondary:
           "border-transparent bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90",
         grow: 
-          "bg-secondary/80 border border border-secondary text-secondary-foreground shadow-2xs hover:bg-secondary/60",
+          "bg-secondary/50 text-foreground dark:bg-secondary/50 border border border-secondary dark:text-secondary-foreground shadow-2xs dark:hover:bg-secondary/70 hover:bg-secondary/80",
         plant: 
           "bg-primary/80 border border border-primary text-primary-foreground shadow-2xs hover:bg-primary/60",
         strain: 

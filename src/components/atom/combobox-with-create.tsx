@@ -37,6 +37,8 @@ export type ComboboxWithCreateProps = {
   onCreateOption?: (label: string) => Promise<string> | string;
   icon?: LucideIcon;
   iconClassName?: string;
+  onSearchChange?: (value: string) => void;
+  searchTerm?: string;
 };
 
 export function ComboboxWithCreate({
@@ -52,11 +54,19 @@ export function ComboboxWithCreate({
   onCreateOption,
   icon: Icon,
   iconClassName,
+  onSearchChange,
+  searchTerm,
 }: ComboboxWithCreateProps) {
   const [open, setOpen] = React.useState(false);
   const [inputValue, setInputValue] = React.useState("");
   const [isCreating, setIsCreating] = React.useState(false);
   const t = useTranslations("Platform");
+
+  // Use external search term if provided, otherwise use internal state
+  const handleSearchChange = (newValue: string) => {
+    setInputValue(newValue);
+    onSearchChange?.(newValue);
+  };
 
   // Use translations with fallbacks to props
   const translatedPlaceholder = placeholder || t("combobox-placeholder");
@@ -74,21 +84,24 @@ export function ComboboxWithCreate({
   }, [selectedOption, open]);
 
   // Get filtered options based on input
-  const filteredOptions = options.filter((option) =>
-    option.label.toLowerCase().includes(inputValue.toLowerCase()),
-  );
+  const filteredOptions = onSearchChange
+    ? options // When using external search, don't filter - filtering happens on server
+    : options.filter((option) =>
+        option.label.toLowerCase().includes(inputValue.toLowerCase()),
+      );
 
   const handleCreateNew = async () => {
-    if (!inputValue.trim() || isCreating) return;
+    const searchValue = onSearchChange ? (searchTerm ?? "") : inputValue;
+    if (!searchValue.trim() || isCreating) return;
 
     setIsCreating(true);
     try {
       if (onCreateOption) {
-        const newValue = await onCreateOption(inputValue);
+        const newValue = await onCreateOption(searchValue);
         onChange(newValue);
       } else {
         // Default behavior if no creation handler provided
-        onChange(inputValue);
+        onChange(searchValue);
       }
       setOpen(false);
     } catch (error) {
@@ -99,8 +112,9 @@ export function ComboboxWithCreate({
   };
 
   // Check if the exact input matches any existing option
+  const currentSearchValue = onSearchChange ? (searchTerm ?? "") : inputValue;
   const exactMatch = options.some(
-    (option) => option.label.toLowerCase() === inputValue.toLowerCase(),
+    (option) => option.label.toLowerCase() === currentSearchValue.toLowerCase(),
   );
 
   return (
@@ -121,6 +135,7 @@ export function ComboboxWithCreate({
             // Clear input when opening if no selection
             if (!selectedOption) {
               setInputValue("");
+              onSearchChange?.("");
             }
           }}
         >
@@ -144,14 +159,14 @@ export function ComboboxWithCreate({
         <Command shouldFilter={false}>
           <CommandInput
             placeholder={translatedPlaceholder}
-            onValueChange={setInputValue}
-            value={inputValue}
+            onValueChange={handleSearchChange}
+            value={onSearchChange ? (searchTerm ?? "") : inputValue}
           />
           <CommandList>
             {filteredOptions.length === 0 && (
               <CommandEmpty>
                 {translatedEmptyMessage}
-                {inputValue && onCreateOption && !exactMatch && (
+                {currentSearchValue && onCreateOption && !exactMatch && (
                   <Button
                     variant="ghost"
                     className="mt-2 w-full justify-start"
@@ -161,7 +176,7 @@ export function ComboboxWithCreate({
                     <Plus className="mr-2 h-4 w-4" />
                     {translatedCreateNewMessage}
                     {': "'}
-                    {inputValue}
+                    {currentSearchValue}
                     {'"'}
                     {isCreating && "..."}
                   </Button>

@@ -14,7 +14,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "~/components/ui/popover";
-import { cn, formatAbsoluteDate } from "~/lib/utils";
+import { cn, formatAbsoluteDate, getDateFnsLocale } from "~/lib/utils";
 import { Locale } from "~/types/locale";
 
 type PlantFormDateFieldProps<TFieldValues extends FieldValues> = {
@@ -32,7 +32,7 @@ export default function PlantFormDateField<TFieldValues extends FieldValues>({
   icon: Icon,
   iconClassName,
 }: PlantFormDateFieldProps<TFieldValues>) {
-  const locale = useLocale();
+  const locale = useLocale() as Locale;
   const t = useTranslations("Plants");
 
   const handleDateSelect = (date: Date | undefined) => {
@@ -46,7 +46,9 @@ export default function PlantFormDateField<TFieldValues extends FieldValues>({
 
   return (
     <FormItem className="flex flex-col">
-      <FormLabel className="font-semibold">{label}</FormLabel>
+      <FormLabel className="text-primary text-lg font-semibold">
+        {label}
+      </FormLabel>
       <div className="flex items-center space-x-2">
         <Popover>
           <PopoverTrigger asChild>
@@ -62,16 +64,18 @@ export default function PlantFormDateField<TFieldValues extends FieldValues>({
                 <div className="flex items-center gap-2">
                   <Icon size={20} className={cn("opacity-80", iconClassName)} />
                   {field.value
-                    ? formatAbsoluteDate(field.value, locale as Locale, { force: true })
+                    ? formatAbsoluteDate(field.value, locale, {
+                        force: true,
+                      })
                     : t("form-pick-a-date")}
                 </div>
                 {field.value && (
                   <div
                     role="button"
-                    className="ml-auto h-6 w-6 cursor-pointer rounded-md border-2"
+                    className="ml-auto cursor-pointer rounded-md border-2"
                     onClick={handleResetClick}
                   >
-                    <X className="h-5 w-5" />
+                    <X className="size-5" />
                   </div>
                 )}
               </Button>
@@ -80,8 +84,10 @@ export default function PlantFormDateField<TFieldValues extends FieldValues>({
           <PopoverContent className="border-primary w-auto p-0" align="start">
             <Calendar
               mode="single"
+              locale={getDateFnsLocale(locale)}
               selected={field.value}
               onSelect={handleDateSelect}
+              defaultMonth={field.value || new Date()}
               initialFocus
             />
           </PopoverContent>

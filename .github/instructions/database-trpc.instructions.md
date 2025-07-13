@@ -211,3 +211,68 @@ const result = await db.execute(sql`
 - Use Drizzle's migration system
 - Include proper constraints and indexes in migrations
 - Test migrations on development data before production
+
+## 🔄 Related Resources
+
+- **Database Performance**: See [database-performance.instructions.md](.github/instructions/database-performance.instructions.md) for indexing, query optimization, and performance monitoring
+- **TypeScript Guidelines**: See [typescript-guidelines.instructions.md](.github/instructions/typescript-guidelines.instructions.md) for Zod schema patterns
+- **Performance & SEO**: See [performance-seo.instructions.md](.github/instructions/performance-seo.instructions.md) for web performance optimization
+
+---
+
+_For database-specific performance optimization including indexing strategies and query performance, see the dedicated database performance optimization guide._
+
+### Notification System Architecture
+
+**GrowAGram uses a factory-based notification system with server-side text/href generation.**
+
+#### Factory Pattern Usage
+
+```typescript
+// Use the NotificationFactoryRegistry for creating notifications
+import { NotificationFactoryRegistry } from "~/lib/notifications/factories";
+
+// Create notifications in API routes
+await NotificationFactoryRegistry.createNotification(
+  NotificationEventType.NEW_LIKE,
+  {
+    entityType: NotifiableEntityType.POST,
+    entityId: postId,
+    actorId: userId,
+    actorName: user.name,
+    actorUsername: user.username,
+    actorImage: user.image,
+  },
+);
+```
+
+#### Server-Side Text/Href Generation
+
+```typescript
+// Notifications are enriched server-side with computed fields
+export const notificationRouter = createTRPCRouter({
+  getAll: protectedProcedure.query(async ({ ctx }) => {
+    // Each notification gets server-computed fields:
+    // - notificationText: Translated text ready for display
+    // - notificationHref: Correct URL ready for navigation
+  }),
+});
+```
+
+#### Key Benefits
+
+- **Zero client-side roundtrips**: Text and URLs computed server-side
+- **Full internationalization**: Server-side translations using user's locale
+- **Type safety**: Factory pattern ensures consistent notification creation
+- **Maintainability**: Each notification type has its own factory class
+
+#### Architecture Files
+
+```
+src/lib/notifications/
+├── factories.ts         # NotificationFactoryRegistry and type-specific factories
+├── server-side.ts       # ServerSideNotificationService for text/href generation
+├── templates.ts         # NotificationTemplateGenerator (legacy, now server-side)
+├── recipients.ts        # NotificationRecipientResolver
+└── urls.ts             # NotificationUrlGenerator
+```

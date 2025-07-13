@@ -146,7 +146,12 @@ export type GetAllPlantType = RouterOutput["plants"]["getAllPlants"]["plants"][n
 
 export type PlantByIdType = NonNullable<GetPlantByIdType>;
 export type PlantImagesType = NonNullable<GetPlantByIdType>["plantImages"];
-// export type PlantImageType = NonNullable<GetPlantByIdType>["plantImages"][number];
+
+
+// Option 1: Extract the grow type and make it non-nullable
+export type PlantGrowType = NonNullable<NonNullable<PlantByIdType>["grow"]>;
+
+
 export type ImageType = NonNullable<GetPlantByIdType>["plantImages"][number]["image"];
 //  INPUTS:
 export type GetOwnPlantsInput = RouterInput["plants"]["getOwnPlants"];

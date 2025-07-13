@@ -3,6 +3,7 @@ import { and, count, desc, eq } from "drizzle-orm";
 import EventEmitter, { on } from "node:events";
 import { z } from "zod";
 import { notifications } from "~/lib/db/schema";
+import { ServerSideNotificationService } from "~/lib/notifications/server-side";
 import { createTRPCRouter, protectedProcedure } from "~/lib/trpc/init";
 import { NotificationEvent } from "~/types/notification";
 
@@ -87,6 +88,10 @@ export const notificationRouter = createTRPCRouter({
       const page = input?.page ?? 1;
       const onlyUnread = input?.onlyUnread ?? false;
 
+      // Extract locale from request headers (fallback to 'en')
+      const acceptLanguage = ctx.req?.headers.get("accept-language");
+      const locale = acceptLanguage?.startsWith("de") ? "de" : "en";
+
       // Calculate offset based on page number (like in grows)
       const offset = (page - 1) * limit;
 
@@ -105,7 +110,7 @@ export const notificationRouter = createTRPCRouter({
         .then((result) => result[0]?.count || 0);
 
       // Get paginated results based on offset
-      const results = await ctx.db.query.notifications.findMany({
+      const rawResults = await ctx.db.query.notifications.findMany({
         orderBy: [desc(notifications.createdAt)],
         where: whereConditions,
         columns: {
@@ -124,11 +129,36 @@ export const notificationRouter = createTRPCRouter({
         offset: offset,
       });
 
+      // Enrich notifications with computed text and href server-side
+      const enrichedResults = await Promise.all(
+        rawResults.map(async (notification) => {
+          const [notificationText, notificationHref] = await Promise.all([
+            ServerSideNotificationService.generateNotificationText(
+              notification.type,
+              notification.entityType,
+              locale,
+            ),
+            ServerSideNotificationService.generateNotificationHref(
+              notification.entityType,
+              notification.entityId,
+              notification.commentId ?? undefined,
+            ),
+          ]);
+
+          return {
+            ...notification,
+            // Add computed fields
+            notificationText,
+            notificationHref,
+          };
+        }),
+      );
+
       const totalCount = Number(totalCountResult);
       const totalPages = Math.ceil(totalCount / limit);
 
       return {
-        items: results,
+        items: enrichedResults,
         page,
         nextPage: page < totalPages ? page + 1 : undefined,
         totalPages,

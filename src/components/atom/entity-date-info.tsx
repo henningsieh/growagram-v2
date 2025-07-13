@@ -1,7 +1,7 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { Calendar1Icon, EditIcon } from "lucide-react";
+import { Calendar1Icon, Edit3Icon } from "lucide-react";
 import { CardDescription } from "~/components/ui/card";
 import { formatDateTime } from "~/lib/utils";
 import { Locale } from "~/types/locale";
@@ -31,19 +31,15 @@ export function EntityDateInfo({
       {/* Updated At Date */}
       {updatedAt && (
         <div title={t("updated-at")} className="flex items-center gap-2">
-          <EditIcon size={16} className="shrink-0" />
-          <span className="block">
-            {formatDateTime(updatedAt, locale)}
-          </span>
+          <Edit3Icon size={16} className="shrink-0" />
+          <span className="block">{formatDateTime(updatedAt, locale)}</span>
         </div>
       )}
 
       {/* Created At Date */}
       <div title={t("created-at")} className="flex items-center gap-2">
         <Calendar1Icon size={16} className="shrink-0" />
-        <span className="block">
-          {formatDateTime(createdAt, locale)}
-        </span>
+        <span className="block">{formatDateTime(createdAt, locale)}</span>
       </div>
     </CardDescription>
   );

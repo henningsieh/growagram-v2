@@ -32,13 +32,21 @@ applyTo: "**"
 - Keep project status updated
 - Document new features
 - Maintain deployment instructions
+- **Update version badges** when dependencies change (see [Badge System](.github/instructions/badge-system.instructions.md))
+
+### Badge System Integration
+
+- Update README badges as part of release process
+- Verify badge accuracy with each major version change
+- Follow static badge guidelines for private repository
+- Test badge rendering after updates
 
 ## Future Considerations
 
 ### Roadmap Alignment
 
-- Phase 1: Core Platform (85% Complete)
-- Phase 2: Social Features
+- Phase 1: Core Platform (100% Complete)
+- Phase 2: Social Features (In Progress)
 - Phase 3: Advanced Features & Monetization
 
 ### Technical Debt

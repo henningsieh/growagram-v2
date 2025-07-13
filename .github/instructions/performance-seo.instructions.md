@@ -139,14 +139,12 @@ export default async function UserDashboard() {
 ### Implementation Guidelines
 
 1. **Content Discovery Pages Examples:**
-
    - `/explore/grows` - Public grow listings
    - `/search` - Search results pages
    - `/categories/[category]` - Category pages
    - `/users/[username]/public` - Public user profiles
 
 2. **Landing/Marketing Pages Examples:**
-
    - `/` - Homepage
    - `/pricing` - Pricing page
    - `/about` - About page

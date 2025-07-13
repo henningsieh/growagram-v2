@@ -3,14 +3,13 @@
 import { useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { useLocale } from "next-intl";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { formatAbsoluteDate, formatAbsoluteTime } from "~/lib/utils";
 import type { Locale } from "~/types/locale";
 
 export function BanNotification() {
   const searchParams = useSearchParams();
-  const router = useRouter();
   const locale = useLocale() as Locale;
   const t = useTranslations("Authentication.ban");
 
@@ -42,24 +41,9 @@ export function BanNotification() {
         duration: 10000,
       });
 
-      // Clean up the URL by removing the ban parameters
-      // Create a new URL without the ban parameters
-      const url = new URL(window.location.href);
-      url.searchParams.delete("bannedUntil");
-      url.searchParams.delete("banReason");
-      //   url.searchParams.delete("error");
-
-      console.debug("removing the ban parameters");
-
-      // Only keep other parameters if they exist, but ensure we keep 'error=banned'
-      const newUrl =
-        url.pathname +
-        (url.searchParams.toString() ? "?" + url.searchParams.toString() : "");
-
-      // Use router.replace to update the URL without adding to history
-      router.replace(newUrl);
+      // No URL manipulation - keep it simple and avoid routing issues
     }
-  }, [searchParams, locale, t, router]);
+  }, [searchParams, locale, t]);
 
   return null;
 }

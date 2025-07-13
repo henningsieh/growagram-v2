@@ -1,20 +1,28 @@
 import type React from "react";
+
 import type { Metadata } from "next";
+import { Grandstander, Nunito } from "next/font/google";
+
 import { SessionProvider } from "next-auth/react";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
-import { Grandstander, Nunito } from "next/font/google";
+
 import { NuqsAdapter } from "nuqs/adapters/next/app";
-import { APP_SETTINGS } from "~/assets/constants";
+
+import { Toaster } from "~/components/ui/sonner";
+
 import { AppFooter } from "~/components/Layouts/Footer/app-footer";
 import { MainNavigationBar } from "~/components/Layouts/MainNavigationBar";
 import { PhotoModalProvider } from "~/components/Layouts/photo-modal-provider";
 import { EnhancedProgressProvider } from "~/components/Layouts/progress-provider";
 import { ThemeProvider } from "~/components/Layouts/theme-provider";
 import { BanNotification } from "~/components/atom/ban-notification";
-import { Toaster } from "~/components/ui/sonner";
+
 import { BreadcrumbProvider } from "~/lib/breadcrumbs/breadcrumb-context";
 import { TRPCReactProvider } from "~/lib/trpc/client";
+
+import { APP_SETTINGS } from "~/assets/constants";
+
 import "~/styles/globals.css";
 
 const nunito = Nunito({

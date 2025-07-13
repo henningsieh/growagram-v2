@@ -69,9 +69,9 @@ export default function MobileNavigationMenu() {
             {processedNavigation.navigationItems
               .filter((item) => item.type !== "link" && item.content)
               .map((item: ProcessedNavigationItem) => (
-                <>
+                <React.Fragment key={item.title}>
                   <Separator className="bg-secondary/50 my-1" />
-                  <div key={item.title} className="pb-3">
+                  <div className="pb-3">
                     <h3 className="text-primary px-3 py-2 text-xl font-bold">
                       {t(item.title)}
                     </h3>
@@ -123,7 +123,7 @@ export default function MobileNavigationMenu() {
                       ))}
                     </div>
                   </div>
-                </>
+                </React.Fragment>
               ))}
           </div>
         </ScrollArea>

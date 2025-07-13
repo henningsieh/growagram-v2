@@ -55,7 +55,7 @@ export const adminRouter = {
       if (!user) {
         throw new TRPCError({
           code: "NOT_FOUND",
-          message: "User not found",
+          message: "Grower not found",
         });
       }
 
@@ -97,7 +97,7 @@ export const adminRouter = {
       if (!updatedUser.length) {
         throw new TRPCError({
           code: "NOT_FOUND",
-          message: "User not found",
+          message: "Grower not found",
         });
       }
 

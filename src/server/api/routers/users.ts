@@ -1,6 +1,6 @@
 // src/server/api/routers/users.ts:
 import { TRPCError } from "@trpc/server";
-import { and, eq, not } from "drizzle-orm";
+import { and, asc, eq, ilike, isNotNull, not } from "drizzle-orm";
 import { z } from "zod";
 import { hashPassword } from "~/lib/auth/password";
 import { userFollows, users, verificationTokens } from "~/lib/db/schema";
@@ -346,5 +346,34 @@ export const userRouter = {
             eq(userFollows.followingId, input.userId),
           ),
         );
+    }),
+
+  // Search users by username for @ mention functionality
+  searchUsers: publicProcedure
+    .input(
+      z.object({
+        username: z.string().min(1).max(50),
+        limit: z.number().min(1).max(20).default(10),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const searchTerm = `%${input.username}%`;
+
+      const matchingUsers = await ctx.db.query.users.findMany({
+        where: and(
+          ilike(users.username, searchTerm),
+          isNotNull(users.username), // Ensure username is not null
+        ),
+        columns: {
+          id: true,
+          username: true,
+          name: true,
+          image: true,
+        },
+        limit: input.limit,
+        orderBy: asc(users.username), // Order alphabetically for better UX
+      });
+
+      return matchingUsers;
     }),
 };
