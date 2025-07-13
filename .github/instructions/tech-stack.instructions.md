@@ -1,5 +1,9 @@
 ---
 applyTo: "**"
+title: "Technology Stack & Architecture"
+description: "Core technologies, package management, development workflows, and architecture patterns"
+tags: [tech-stack, architecture, bun, next-js, development]
+last_updated: 2025-01-07
 ---
 
 # 🏗️ Tech Stack & Architecture

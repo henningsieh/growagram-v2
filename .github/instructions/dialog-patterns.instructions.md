@@ -1,5 +1,9 @@
 ---
 applyTo: "**"
+title: "Dialog & Modal Patterns"
+description: "ResponsiveDialog component usage, modal patterns, and composition guidelines"
+tags: [dialog, modal, ui, components, responsive]
+last_updated: 2025-01-07
 ---
 
 # 🪟 Dialog & Modal Patterns

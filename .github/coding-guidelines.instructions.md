@@ -1,5 +1,9 @@
 ---
 applyTo: "**/*"
+title: "GrowAGram Coding Guidelines"
+description: "Main entry point for all development guidelines and best practices"
+tags: [guidelines, coding, development, best-practices, navigation]
+last_updated: 2025-01-07
 ---
 
 # GrowAGram - Coding Guideline

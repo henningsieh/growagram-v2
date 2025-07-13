@@ -1,5 +1,9 @@
 ---
 applyTo: "**"
+title: "Performance & SEO Optimization"
+description: "Core Web Vitals, performance optimization techniques, and SEO strategies"
+tags: [performance, seo, optimization, web-vitals, next-js]
+last_updated: 2025-01-07
 ---
 
 # ⚡ Performance & SEO Optimization

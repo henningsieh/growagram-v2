@@ -1,5 +1,9 @@
 ---
 applyTo: "**"
+title: "TypeScript Guidelines"
+description: "Type safety patterns, Zod schemas, and TypeScript best practices"
+tags: [typescript, type-safety, zod, patterns, guidelines]
+last_updated: 2025-01-07
 ---
 
 # 🔷 TypeScript Guidelines

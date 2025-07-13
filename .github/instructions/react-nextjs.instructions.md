@@ -1,5 +1,9 @@
 ---
 applyTo: "**"
+title: "React & Next.js Guidelines"
+description: "Component structure, hooks usage patterns, and animation guidelines"
+tags: [react, next-js, components, hooks, animation]
+last_updated: 2025-01-07
 ---
 
 # ⚛️ React & Next.js Guidelines

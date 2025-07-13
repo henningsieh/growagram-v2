@@ -1,5 +1,9 @@
 ---
 applyTo: "**"
+title: "Security, Testing & Documentation"
+description: "Authentication patterns, security practices, error handling, and testing guidelines"
+tags: [security, testing, authentication, documentation, error-handling]
+last_updated: 2025-01-07
 ---
 
 # 🔒 Security, Testing & Documentation

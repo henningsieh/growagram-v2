@@ -1,5 +1,9 @@
 ---
 applyTo: "**"
+title: "Development Workflow & Process"
+description: "Git workflow, code review process, and development best practices"
+tags: [workflow, git, development, process, code-review]
+last_updated: 2025-01-07
 ---
 
 # 🔧 Development Workflow & Process

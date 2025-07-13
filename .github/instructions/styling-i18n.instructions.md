@@ -1,5 +1,9 @@
 ---
 applyTo: "**"
+title: "Styling & Internationalization"
+description: "Tailwind CSS patterns, responsive design, and internationalization guidelines"
+tags: [styling, tailwind, responsive, i18n, forms]
+last_updated: 2025-01-07
 ---
 
 # 🎨 Styling & Internationalization

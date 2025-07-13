@@ -1,6 +1,7 @@
 ---
-title: Database Performance Optimization
-description: Performance optimization guide for PostgreSQL database including indexing strategies, query optimization, and performance monitoring
+applyTo: "**"
+title: "Database Performance Optimization"
+description: "PostgreSQL optimization strategies, indexing, query performance, and monitoring"
 tags: [database, performance, postgresql, indexing, optimization]
 last_updated: 2025-01-07
 ---
