@@ -29,8 +29,33 @@
   "typescript.preferences.autoImportSpecifierExcludeRegexes": [
     "@radix-ui",
     "next/router"
-  ]
-  // "typescript.tsserver.maxTsServerMemory": 1014,
+  ],
+  "files.watcherExclude": {
+    "**/node_modules/**": true,
+    "**/.git/**": true,
+    "**/dist/**": true,
+    "**/build/**": true,
+    "**/.next/**": true,
+    "**/.next-dev/**": true,
+    "**/.next-prod/**": true,
+    "**/out/**": true,
+    "**/coverage/**": true
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/.git": true,
+    "**/dist": true,
+    "**/build": true,
+    "**/.next": true,
+    "**/.next-dev/**": true,
+    "**/.next-prod/**": true,
+    "**/out": true,
+    "**/coverage": true
+  },
+  "typescript.tsserver.maxTsServerMemory": 2048,
+  "typescript.disableAutomaticTypeAcquisition": true,
+  "typescript.tsserver.enable": false
+
   // "typescript.experimental.useTsgo": false,
   // "typescript.tsdk": "node_modules/typescript/lib"
 }

@@ -9,7 +9,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   DotIcon,
-  EditIcon,
+  Edit3Icon,
   MessageSquareTextIcon,
   Trash2Icon,
 } from "lucide-react";
@@ -38,7 +38,18 @@ import { useComments } from "~/hooks/use-comments";
 import { useLikeStatus } from "~/hooks/use-likes";
 import { Link, useRouter } from "~/lib/i18n/routing";
 import { useTRPC } from "~/lib/trpc/client";
-import { cn, formatDateTime } from "~/lib/utils";
+import {
+  cn,
+  formatDateTime,
+  getCultureMediumEmoji,
+  getCultureMediumTranslationKey,
+  getFertilizerFormEmoji,
+  getFertilizerFormTranslationKey,
+  getFertilizerTypeEmoji,
+  getFertilizerTypeTranslationKey,
+  getGrowEnvironmentEmoji,
+  getGrowEnvironmentTranslationKey,
+} from "~/lib/utils";
 import type { GetAllGrowType, GetOwnGrowType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
 import {
@@ -46,10 +57,6 @@ import {
   FertilizerForm,
   FertilizerType,
   GrowEnvironment,
-  getCultureMediumEmoji,
-  getFertilizerFormEmoji,
-  getFertilizerTypeEmoji,
-  getGrowEnvironmentEmoji,
 } from "~/types/grow";
 import { LikeableEntityType } from "~/types/like";
 import { Locale } from "~/types/locale";
@@ -120,7 +127,7 @@ export function GrowCard({
 
   if (user && user.id === grow.ownerId) {
     growActions.push({
-      icon: EditIcon,
+      icon: Edit3Icon,
       label: t("edit-button-label"),
       variant: "ghost",
       onClick: () => {
@@ -254,13 +261,19 @@ export function GrowCard({
                         : getGrowEnvironmentEmoji(GrowEnvironment.INDOOR)}
                     </span>
                     <span className="truncate">
-                      {grow.environment || "Not specified"}
+                      {grow.environment
+                        ? t(getGrowEnvironmentTranslationKey(grow.environment))
+                        : t("not-specified")}
                     </span>
                   </div>
                 </TooltipTrigger>
                 <TooltipContent>
                   <p>
-                    {"Environment:"} {grow.environment || "Not specified"}
+                    {t("environment-label")}
+                    {": "}
+                    {grow.environment
+                      ? t(getGrowEnvironmentTranslationKey(grow.environment))
+                      : t("not-specified")}
                   </p>
                 </TooltipContent>
               </Tooltip>
@@ -275,13 +288,19 @@ export function GrowCard({
                         : getCultureMediumEmoji(CultureMedium.SOIL)}
                     </span>
                     <span className="truncate">
-                      {grow.cultureMedium || "Not specified"}
+                      {grow.cultureMedium
+                        ? t(getCultureMediumTranslationKey(grow.cultureMedium))
+                        : t("not-specified")}
                     </span>
                   </div>
                 </TooltipTrigger>
                 <TooltipContent>
                   <p>
-                    {"Culture Medium:"} {grow.cultureMedium || "Not specified"}
+                    {t("culture-medium-label")}
+                    {": "}
+                    {grow.cultureMedium
+                      ? t(getCultureMediumTranslationKey(grow.cultureMedium))
+                      : t("not-specified")}
                   </p>
                 </TooltipContent>
               </Tooltip>
@@ -296,14 +315,23 @@ export function GrowCard({
                         : getFertilizerTypeEmoji(FertilizerType.ORGANIC)}
                     </span>
                     <span className="truncate">
-                      {grow.fertilizerType || "Not specified"}
+                      {grow.fertilizerType
+                        ? t(
+                            getFertilizerTypeTranslationKey(
+                              grow.fertilizerType,
+                            ),
+                          )
+                        : t("not-specified")}
                     </span>
                   </div>
                 </TooltipTrigger>
                 <TooltipContent>
                   <p>
-                    {"Fertilizer Type:"}{" "}
-                    {grow.fertilizerType || "Not specified"}
+                    {t("fertilizer-type-label")}
+                    {": "}
+                    {grow.fertilizerType
+                      ? t(getFertilizerTypeTranslationKey(grow.fertilizerType))
+                      : t("not-specified")}
                   </p>
                 </TooltipContent>
               </Tooltip>
@@ -318,14 +346,23 @@ export function GrowCard({
                         : getFertilizerFormEmoji(FertilizerForm.LIQUID)}
                     </span>
                     <span className="truncate">
-                      {grow.fertilizerForm || "Not specified"}
+                      {grow.fertilizerForm
+                        ? t(
+                            getFertilizerFormTranslationKey(
+                              grow.fertilizerForm,
+                            ),
+                          )
+                        : t("not-specified")}
                     </span>
                   </div>
                 </TooltipTrigger>
                 <TooltipContent>
                   <p>
-                    {"Fertilizer Form:"}{" "}
-                    {grow.fertilizerForm || "Not specified"}
+                    {t("fertilizer-form-label")}
+                    {": "}
+                    {grow.fertilizerForm
+                      ? t(getFertilizerFormTranslationKey(grow.fertilizerForm))
+                      : t("not-specified")}
                   </p>
                 </TooltipContent>
               </Tooltip>

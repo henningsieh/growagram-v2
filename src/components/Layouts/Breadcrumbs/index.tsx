@@ -45,11 +45,11 @@ export function NavigationBreadcrumbs({
                 className={index === 0 ? "hidden md:block" : undefined}
               >
                 {item.isCurrentPage || isLast ? (
-                  <BreadcrumbPage className="text-sm font-semibold">
+                  <BreadcrumbPage className="text-lg font-semibold">
                     {label}
                   </BreadcrumbPage>
                 ) : (
-                  <BreadcrumbLink asChild>
+                  <BreadcrumbLink asChild className="text-lg font-semibold">
                     <Link href={item.path}>{label}</Link>
                   </BreadcrumbLink>
                 )}

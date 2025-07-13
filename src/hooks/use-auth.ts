@@ -2,7 +2,7 @@
 
 // src/hooks/useAuth.ts
 import { signOut } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "~/lib/i18n/routing";
 
 export function useSignOut() {
   const router = useRouter();

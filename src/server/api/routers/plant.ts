@@ -370,14 +370,35 @@ export const plantRouter = {
       return { success: !!deletedImage };
     }),
 
-  // Get all breeders
-  getBreeders: publicProcedure.query(async ({ ctx }) => {
-    const allBreeders = await ctx.db.query.breeders.findMany({
-      orderBy: (breeders, { asc }) => [asc(breeders.name)],
-    });
+  // Get breeders with optional search filtering
+  getBreeders: publicProcedure
+    .input(
+      z
+        .object({
+          search: z.string().optional(),
+          limit: z.number().min(1).max(100).default(50).optional(),
+        })
+        .default({}),
+    )
+    .query(async ({ ctx, input }) => {
+      const search = input?.search;
+      const limit = input?.limit ?? 50;
 
-    return allBreeders;
-  }),
+      // If no search term provided, return empty array to encourage search usage
+      if (!search || search.length < 3) {
+        return [];
+      }
+
+      const searchTerm = `%${search}%`;
+
+      const filteredBreeders = await ctx.db.query.breeders.findMany({
+        where: (breeders, { ilike }) => ilike(breeders.name, searchTerm),
+        orderBy: (breeders, { asc }) => [asc(breeders.name)],
+        limit: limit,
+      });
+
+      return filteredBreeders;
+    }),
 
   // Get strain by id
   getStrainById: publicProcedure

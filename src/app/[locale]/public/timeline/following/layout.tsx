@@ -5,8 +5,13 @@ import { PaginationItemsPerPage } from "~/assets/constants";
 import { getQueryClient, trpc } from "~/lib/trpc/server";
 import { generatePageMetadata } from "~/lib/utils/metadata";
 
-export async function generateMetadata(): Promise<Metadata> {
-  return generatePageMetadata("following");
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  return generatePageMetadata("following", locale);
 }
 
 export default async function FollowingTimelineLayout({

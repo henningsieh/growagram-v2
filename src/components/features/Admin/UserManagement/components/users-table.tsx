@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useQuery } from "@tanstack/react-query";
 import {
   type ColumnFiltersState,
@@ -39,11 +39,13 @@ import {
   TableRow,
 } from "~/components/ui/table";
 import { useTRPC } from "~/lib/trpc/client.tsx";
-import { columns } from "./columns.tsx";
+import type { Locale } from "~/types/locale";
+import { createColumns } from "./columns.tsx";
 
 export function UsersTable() {
   const trpc = useTRPC();
   const t = useTranslations("AdminArea");
+  const locale = useLocale() as Locale;
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   // Set default column visibility - hide emailVerified column
@@ -59,6 +61,9 @@ export function UsersTable() {
       refetchOnWindowFocus: false,
     }),
   );
+
+  // Create columns with translations and locale
+  const columns = createColumns(t, locale);
 
   const table = useReactTable({
     data: users || [],
@@ -80,14 +85,14 @@ export function UsersTable() {
   });
 
   return (
-    <Card className="rounded-md">
+    <Card className="w-full rounded-md">
       <CardHeader>
         <CardTitle className="text-lg" as="h3">
           {t("user-management.title")}
         </CardTitle>
         <CardDescription>{t("user-management.description")}</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="space-y-4">
         <div className="flex items-center justify-between py-4">
           <Input
             placeholder={t("user-management.search-placeholder")}
@@ -125,63 +130,65 @@ export function UsersTable() {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-        <div className="rounded-md border">
-          {isLoading ? (
-            <div className="flex h-[300px] w-full items-center justify-center">
-              <Loader2 className="text-primary h-8 w-8 animate-spin" />
-            </div>
-          ) : (
-            <Table>
-              <TableHeader>
-                {table.getHeaderGroups().map((headerGroup) => (
-                  <TableRow key={headerGroup.id}>
-                    {headerGroup.headers.map((header) => {
-                      return (
-                        <TableHead key={header.id}>
-                          {header.isPlaceholder
-                            ? null
-                            : flexRender(
-                                header.column.columnDef.header,
-                                header.getContext(),
-                              )}
-                        </TableHead>
-                      );
-                    })}
-                  </TableRow>
-                ))}
-              </TableHeader>
-              <TableBody>
-                {table.getRowModel().rows?.length ? (
-                  table.getRowModel().rows.map((row) => (
-                    <TableRow
-                      key={row.id}
-                      data-state={row.getIsSelected() && "selected"}
-                    >
-                      {row.getVisibleCells().map((cell) => (
-                        <TableCell key={cell.id}>
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext(),
-                          )}
-                        </TableCell>
-                      ))}
+        <div className="w-full overflow-hidden rounded-md border">
+          <div className="w-full overflow-x-auto">
+            {isLoading ? (
+              <div className="flex h-[300px] w-full items-center justify-center">
+                <Loader2 className="text-primary h-8 w-8 animate-spin" />
+              </div>
+            ) : (
+              <Table>
+                <TableHeader>
+                  {table.getHeaderGroups().map((headerGroup) => (
+                    <TableRow key={headerGroup.id}>
+                      {headerGroup.headers.map((header) => {
+                        return (
+                          <TableHead key={header.id}>
+                            {header.isPlaceholder
+                              ? null
+                              : flexRender(
+                                  header.column.columnDef.header,
+                                  header.getContext(),
+                                )}
+                          </TableHead>
+                        );
+                      })}
                     </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell
-                      colSpan={columns.length}
-                      className="h-24 text-center"
-                    >
-                      {users?.length === 0
-                        ? t("user-management.no-users")
-                        : t("user-management.no-results")}
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          )}
+                  ))}
+                </TableHeader>
+                <TableBody>
+                  {table.getRowModel().rows?.length ? (
+                    table.getRowModel().rows.map((row) => (
+                      <TableRow
+                        key={row.id}
+                        data-state={row.getIsSelected() && "selected"}
+                      >
+                        {row.getVisibleCells().map((cell) => (
+                          <TableCell key={cell.id}>
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext(),
+                            )}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell
+                        colSpan={columns.length}
+                        className="h-24 text-center"
+                      >
+                        {users?.length === 0
+                          ? t("user-management.no-users")
+                          : t("user-management.no-results")}
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            )}
+          </div>
         </div>
         <div className="flex items-center justify-end space-x-2 py-4">
           <div className="text-muted-foreground flex-1 text-sm">

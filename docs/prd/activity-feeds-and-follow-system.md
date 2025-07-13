@@ -183,7 +183,7 @@ const followingPosts = await db.query.posts.findMany({
 
 ### 2. Exploration Pages
 
-#### 2.1 Explore Grows (/public/explore/grows)
+#### 2.1 Explore Grows (/public/grows/explore)
 
 **Description:** Dedicated page for browsing and discovering grows
 

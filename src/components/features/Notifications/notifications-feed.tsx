@@ -97,8 +97,3 @@ export function NotificationsFeed() {
     </Card>
   );
 }
-
-// This is specifically for the dashboard
-export function DashboardNotificationsFeed() {
-  return <NotificationsFeed />;
-}

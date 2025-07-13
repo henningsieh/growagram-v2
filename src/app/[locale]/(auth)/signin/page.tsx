@@ -24,7 +24,7 @@ import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { Link, useRouter } from "~/lib/i18n/routing";
 
-export default function Page() {
+export default function SignInPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const t = useTranslations("LoginPage");

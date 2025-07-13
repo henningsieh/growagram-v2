@@ -1,14 +1,20 @@
 // src/assets/constants.ts:
 import DEFlag from "~/assets/flags/germany-svgrepo-com.svg";
 import USFlag from "~/assets/flags/united-states-svgrepo-com.svg";
+import {
+  GrowEnvironment,
+  CultureMedium,
+  FertilizerType,
+  FertilizerForm,
+} from "~/types/grow";
 
 export const PaginationItemsPerPage = {
-  PHOTOS_PER_PAGE: 6,
-  PLANTS_PER_PAGE: 6,
-  GROWS_PER_PAGE: 6,
+  PHOTOS_PER_PAGE: 12,
+  PLANTS_PER_PAGE: 12,
+  GROWS_PER_PAGE: 12,
   PUBLIC_GROWS_PER_PAGE: 12,
   PUBLIC_PLANTS_PER_PAGE: 12,
-  PUBLIC_TIMELINE_PER_PAGE: 12,
+  PUBLIC_TIMELINE_PER_PAGE: 2,
   FOLLOWING_TIMELINE_PER_PAGE: 12,
   MAX_DEFAULT_ITEMS: 1296,
 };
@@ -152,3 +158,32 @@ export const BAN_DURATIONS = [
   { value: "365d",  label: "1 year",    milliseconds: 365 * 24 * 60 * 60 * 1000 },
   { value: "permanent", label: "Permanent", milliseconds: -1 },
 ];
+
+// Emoji configuration for grow filter options
+export const GROW_FILTER_EMOJIS = {
+  // Environment emojis
+  ENVIRONMENT: {
+    [GrowEnvironment.INDOOR]: "💡",
+    [GrowEnvironment.OUTDOOR]: "🌞", 
+    [GrowEnvironment.GREENHOUSE]: "🏕️",
+  },
+  // Culture medium emojis
+  CULTURE_MEDIUM: {
+    [CultureMedium.SOIL]: "🌱",
+    [CultureMedium.COCO]: "🥥",
+    [CultureMedium.HYDROPONIC]: "🌊",
+    [CultureMedium.ROCKWOOL]: "🧱",
+    [CultureMedium.PERLITE]: "⚪",
+  },
+  // Fertilizer type emojis
+  FERTILIZER_TYPE: {
+    [FertilizerType.ORGANIC]: "🌿",
+    [FertilizerType.MINERAL]: "🧪",
+  },
+  // Fertilizer form emojis
+  FERTILIZER_FORM: {
+    [FertilizerForm.LIQUID]: "💧",
+    [FertilizerForm.GRANULAR]: "💎",
+    [FertilizerForm.SLOW_RELEASE]: "⏱️",
+  },
+} as const;

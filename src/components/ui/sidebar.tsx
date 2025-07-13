@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
-import { VariantProps, cva } from "class-variance-authority"
+import { cva, VariantProps } from "class-variance-authority"
 import { PanelLeftIcon } from "lucide-react"
 
 import { useIsMobile } from "~/hooks/use-mobile"
@@ -273,7 +273,7 @@ function SidebarTrigger({
       }}
       {...props}
     >
-      <PanelLeftIcon strokeWidth={2.66} className="size-5" />
+      <PanelLeftIcon strokeWidth={2.66} className="size-6" />
       <span className="sr-only">Toggle Sidebar</span>
     </Button>
   )

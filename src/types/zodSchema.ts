@@ -1,5 +1,6 @@
 // src/types/zodSchema.ts:
 import { z } from "zod";
+import { SortOrder } from "~/components/atom/sort-filter-controls";
 import { routing } from "~/lib/i18n/routing";
 // Import filter enums
 import {
@@ -7,12 +8,9 @@ import {
   FertilizerForm,
   FertilizerType,
   GrowEnvironment,
+  GrowsSortField,
 } from "~/types/grow";
 import { Locale } from "~/types/locale";
-import {
-  NotifiableEntityType,
-  NotificationEventType,
-} from "~/types/notification";
 import {
   GeneticsType,
   type GrowthPhase,
@@ -84,10 +82,10 @@ export const growFormSchema = z.object({
   id: z.string().optional(),
   name: z.string().min(1, "Grow name is required"),
   // Grow Entity Fields for exploration and filtering
-  environment: z.nativeEnum(GrowEnvironment).optional(),
-  cultureMedium: z.nativeEnum(CultureMedium).optional(),
-  fertilizerType: z.nativeEnum(FertilizerType).optional(),
-  fertilizerForm: z.nativeEnum(FertilizerForm).optional(),
+  environment: z.nativeEnum(GrowEnvironment).nullish(),
+  cultureMedium: z.nativeEnum(CultureMedium).nullish(),
+  fertilizerType: z.nativeEnum(FertilizerType).nullish(),
+  fertilizerForm: z.nativeEnum(FertilizerForm).nullish(),
   // Header image handling - integrated into main form
   headerImageId: z.string().optional(),
   removeHeaderImage: z.boolean().optional(),
@@ -120,15 +118,15 @@ export const adminEditUserSchema = z.object({
   name: z.string().min(2).max(50).optional(),
   username: z.string().min(3).max(30).optional(),
   email: z.string().email().optional(),
-  role: z.enum([UserRoles.ADMIN, UserRoles.MOD, UserRoles.USER]),
+  role: z.nativeEnum(UserRoles),
   image: z.string().optional().nullable(),
 });
 
 // Schema for updating a user's role by an admin
-export const updateUserRoleSchema = z.object({
-  userId: z.string(),
-  role: z.enum([UserRoles.ADMIN, UserRoles.MOD, UserRoles.USER]),
-});
+// export const updateUserRoleSchema = z.object({
+//   userId: z.string(),
+//   role: z.nativeEnum(UserRoles),
+// });
 
 export function createRegisterSchema(t: (key: string) => string) {
   return z.object({
@@ -169,12 +167,12 @@ export const timelinePaginationSchema = z.object({
   limit: z.number().min(1).max(50).default(20),
 });
 
-export const enhancedTimelinePaginationSchema = timelinePaginationSchema.extend(
-  {
-    followingOnly: z.boolean().default(false),
-    userId: z.string().optional(), // For user-specific feeds
-  },
-);
+// export const enhancedTimelinePaginationSchema = timelinePaginationSchema.extend(
+//   {
+//     followingOnly: z.boolean().default(false),
+//     userId: z.string().optional(), // For user-specific feeds
+//   },
+// );
 
 // schema for updating user tokens
 export const updateTokensSchema = z.object({
@@ -185,29 +183,34 @@ export const updateTokensSchema = z.object({
   refreshTokenExpiresIn: z.number(),
 });
 
-export const createNotificationSchema = z.object({
-  notificationEventType: z.nativeEnum(NotificationEventType),
-  commentId: z.string().optional(),
-  notifiableEntity: z.object({
-    type: z.nativeEnum(NotifiableEntityType),
-    id: z.string(),
-  }),
-  actorData: z.object({
-    id: z.string().min(1),
-    name: z.string().min(1),
-    username: z.string().nullable(),
-    image: z.string().nullable(),
-  }),
-});
+// export const createNotificationSchema = z.object({
+//   notificationEventType: z.nativeEnum(NotificationEventType),
+//   commentId: z.string().optional(),
+//   notifiableEntity: z.object({
+//     type: z.nativeEnum(NotifiableEntityType),
+//     id: z.string(),
+//   }),
+//   actorData: z.object({
+//     id: z.string().min(1),
+//     name: z.string().min(1),
+//     username: z.string().nullable(),
+//     image: z.string().nullable(),
+//   }),
+// });
 
 // Exploration and filtering schemas
-export const growExplorationSchema = timelinePaginationSchema.extend({
+export const growExplorationSchema = z.object({
   environment: z.nativeEnum(GrowEnvironment).optional(),
   cultureMedium: z.nativeEnum(CultureMedium).optional(),
   fertilizerType: z.nativeEnum(FertilizerType).optional(),
   fertilizerForm: z.nativeEnum(FertilizerForm).optional(),
-  ownerId: z.string().optional(), // Filter by specific user
+  ownerId: z.string().optional(), // Filter by specific user ID
+  username: z.string().optional(), // Filter by username (@username)
   search: z.string().optional(), // Search in grow name
+  sortField: z.nativeEnum(GrowsSortField).default(GrowsSortField.CREATED_AT),
+  sortOrder: z.nativeEnum(SortOrder).default(SortOrder.DESC),
+  cursor: z.number().min(1).default(1), // Page number for offset-based pagination
+  limit: z.number().min(1).max(1000).default(20),
 });
 
 export const plantExplorationSchema = timelinePaginationSchema.extend({
@@ -228,29 +231,29 @@ export const plantExplorationSchema = timelinePaginationSchema.extend({
 });
 
 // Activity feed schemas
-export const activityFeedSchema = timelinePaginationSchema.extend({
-  entityType: z.nativeEnum(PostableEntityType).optional(), // Filter by entity type
-  userId: z.string().optional(), // For user-specific activity
-});
+// export const activityFeedSchema = timelinePaginationSchema.extend({
+//   entityType: z.nativeEnum(PostableEntityType).optional(), // Filter by entity type
+//   userId: z.string().optional(), // For user-specific activity
+// });
 
 // Timeline management schemas
-export const userTimelineSchema = z.object({
-  userId: z.string(),
-  cursor: z.string().datetime().nullish(),
-  limit: z.number().min(1).max(50).default(20),
-  includeFollowing: z.boolean().default(true), // Include posts from followed users
-});
+// export const userTimelineSchema = z.object({
+//   userId: z.string(),
+//   cursor: z.string().datetime().nullish(),
+//   limit: z.number().min(1).max(50).default(20),
+//   includeFollowing: z.boolean().default(true), // Include posts from followed users
+// });
 
-export const entityTimelineSchema = z.object({
-  entityId: z.string(),
-  entityType: z.nativeEnum(PostableEntityType),
-  cursor: z.string().datetime().nullish(),
-  limit: z.number().min(1).max(50).default(20),
-});
+// export const entityTimelineSchema = z.object({
+//   entityId: z.string(),
+//   entityType: z.nativeEnum(PostableEntityType),
+//   cursor: z.string().datetime().nullish(),
+//   limit: z.number().min(1).max(50).default(20),
+// });
 
 // Type exports for the new schemas
-export type GrowExplorationInput = z.infer<typeof growExplorationSchema>;
-export type PlantExplorationInput = z.infer<typeof plantExplorationSchema>;
-export type ActivityFeedInput = z.infer<typeof activityFeedSchema>;
-export type UserTimelineInput = z.infer<typeof userTimelineSchema>;
-export type EntityTimelineInput = z.infer<typeof entityTimelineSchema>;
+// export type GrowExplorationInput = z.infer<typeof growExplorationSchema>;
+// export type PlantExplorationInput = z.infer<typeof plantExplorationSchema>;
+// export type ActivityFeedInput = z.infer<typeof activityFeedSchema>;
+// export type UserTimelineInput = z.infer<typeof userTimelineSchema>;
+// export type EntityTimelineInput = z.infer<typeof entityTimelineSchema>;

@@ -3,7 +3,7 @@
 import * as React from "react";
 
 export type BreadcrumbItem = {
-  translationKey?: string;
+  translationKey: string;
   path: string;
   isCurrentPage?: boolean;
 };

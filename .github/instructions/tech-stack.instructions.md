@@ -1,5 +1,9 @@
 ---
 applyTo: "**"
+title: "Technology Stack & Architecture"
+description: "Core technologies, package management, development workflows, and architecture patterns"
+tags: [tech-stack, architecture, bun, next-js, development]
+last_updated: 2025-01-07
 ---
 
 # 🏗️ Tech Stack & Architecture
@@ -32,25 +36,32 @@ The project includes the following predefined scripts (run with `bun run <script
 
 #### Development Scripts
 
-- `bun run dev` - Start development server with Turbopack
+- `bun run dev` - Start development server with Turbopack (hot reload enabled)
 - `bun run predev` - Run database generation and migration before dev (automatic)
 
 #### Build & Production Scripts
 
-- `bun run build` - Build the production application
+- `bun run build` - Build the production application (includes optimizations)
 - `bun run prebuild` - Run database generation and migration before build (automatic)
-- `bun run start` - Start the production server
+- `bun run start` - Start the production server (requires build first)
 
 #### Database Scripts
 
-- `bun run db:generate` - Generate Drizzle schema files
-- `bun run db:migrate` - Run database migrations
+- `bun run db:generate` - Generate Drizzle schema files from database
+- `bun run db:migrate` - Run database migrations to update schema
+- `bun run db:push` - Push schema changes directly to database (development only)
 - `bun run db:studio` - Open Drizzle Studio in the browser for database management
 
 #### Code Quality Scripts
 
-- `bun run lint` - Run Next.js linter
-- `bun run format` - Format code with Prettier
+- `bun run lint` - Run Next.js linter with custom rules
+- `bun run format` - Format code with Prettier (includes import sorting)
+
+#### Cleanup Scripts
+
+- `bun run clean-dev` - Remove development build artifacts (.next-dev, out)
+- `bun run clean-prod` - Remove production build artifacts (.next-prod, out)  
+- `bun run clean-all` - Remove all build artifacts (both dev and prod)
 
 #### Type Checking
 
@@ -72,6 +83,60 @@ bun run db:migrate
 # Code formatting
 bun run format
 ```
+
+### Current Dependency Versions
+
+Based on `package.json` version **0.9.0-beta.1**, key dependencies include:
+
+#### Core Framework
+- **Next.js**: 15.3.4 (with Turbopack for fast builds)
+- **React**: 19.1.0 (latest with concurrent features)
+- **TypeScript**: 5.8.3 (strict mode enabled)
+
+#### Backend & API
+- **tRPC**: 11.4.3 (type-safe API routes)
+- **Drizzle ORM**: 0.35.3 (TypeScript ORM for PostgreSQL)
+- **NextAuth.js**: 5.0.0-beta.29 (authentication)
+- **PostgreSQL**: 3.4.7 (database driver)
+
+#### UI & Styling
+- **Tailwind CSS**: 4.1.11 (latest v4 with performance improvements)
+- **Radix UI**: Latest components for accessibility
+- **Framer Motion**: 11.18.2 (animations)
+- **Lucide React**: 0.525.0 (icon library)
+
+#### Development Tools
+- **Bun**: Package manager and runtime
+- **ESLint**: Code linting with Next.js preset
+- **Prettier**: Code formatting with import sorting
+- **Drizzle Studio**: Database management UI
+
+### Bun-Specific Features
+
+#### Fast Package Installation
+```bash
+# Bun installs packages significantly faster than npm/yarn
+bun install  # ~2-3x faster than npm install
+
+# Adding packages
+bun add react-hook-form zod  # Add multiple packages
+bun add -D @types/node       # Add dev dependencies
+bun remove unused-package    # Remove packages
+```
+
+#### Built-in Development Server
+```bash
+# Bun can run TypeScript files directly
+bunx file.ts  # No compilation needed
+
+# Run Next.js with Bun (when configured)
+bun run dev   # Uses Next.js dev server with Turbopack
+```
+
+#### Package Resolution
+- **Workspaces**: Bun supports monorepo workspaces
+- **Node.js Compatibility**: 99%+ compatibility with npm packages
+- **Native Performance**: Written in Zig for speed
 
 ## File Structure & Organization
 
@@ -119,3 +184,13 @@ src/
 - Use S3-compatible API patterns
 - Implement proper file upload handling
 - Handle image optimization
+
+---
+
+## Related Resources
+
+- **[TypeScript Guidelines](./typescript-guidelines.instructions.md)** - Type safety patterns for tech stack components
+- **[React & Next.js Guidelines](./react-nextjs.instructions.md)** - Component structure and framework usage
+- **[Database & tRPC](./database-trpc.instructions.md)** - Backend architecture and API patterns
+- **[Development Workflow](./development-workflow.instructions.md)** - Package management and development processes
+- **[Performance & SEO](./performance-seo.instructions.md)** - Build optimization and performance strategies

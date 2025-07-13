@@ -2,62 +2,62 @@
 
 import * as React from "react";
 import { useTranslations } from "next-intl";
-import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import type { z } from "zod";
-import { PaginationItemsPerPage } from "~/assets/constants";
 import ResponsiveGrid from "~/components/Layouts/responsive-grid";
 import InfiniteScrollLoader from "~/components/atom/infinite-scroll-loader";
+import SpinningLoader from "~/components/atom/spinning-loader";
 import { GrowCard } from "~/components/features/Grows/grow-card";
 import { useTRPC } from "~/lib/trpc/client";
-import { growExplorationSchema } from "../../../types/zodSchema";
-import { ExploreGrowsEmptyState } from "./explore-grows-empty-state";
+import type { ExploreGrowsInput } from "~/server/api/root";
 
 interface ExploreGrowsGridProps {
-  filters: z.infer<typeof growExplorationSchema>;
+  filters: ExploreGrowsInput;
 }
 
 export function ExploreGrowsGrid({ filters }: ExploreGrowsGridProps) {
   const trpc = useTRPC();
-  const t = useTranslations("Exploration.Grows");
+  const t = useTranslations("Grows");
 
-  const { data, isFetching, hasNextPage, fetchNextPage, isFetchingNextPage } =
-    useSuspenseInfiniteQuery(
-      trpc.grows.explore.infiniteQueryOptions(
-        {
-          ...filters,
-          limit: PaginationItemsPerPage.PUBLIC_GROWS_PER_PAGE,
-        },
-        {
-          getNextPageParam: (lastPage) => lastPage.nextCursor,
-        },
-      ),
-    );
+  const {
+    data,
+    isLoading,
+    isFetching: isFetchingNextPage,
+    hasNextPage,
+    fetchNextPage,
+    error,
+  } = useInfiniteQuery(
+    trpc.grows.explore.infiniteQueryOptions(filters, {
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      refetchOnWindowFocus: false,
+    }),
+  );
 
-  // Extract grows from pages
-  const grows = data.pages.flatMap((page) => page.grows);
-
-  // Get meta info from the first page
-  const meta = data.pages[0]?.meta;
+  // Flatten all pages into a single array of grows
+  const grows = React.useMemo(
+    () => data?.pages?.flatMap((page) => page.grows) ?? [],
+    [data?.pages],
+  );
 
   // Intersection Observer callback for infinite scroll
   const onIntersect = React.useCallback(
     (entries: IntersectionObserverEntry[]) => {
       const firstEntry = entries[0];
-      if (firstEntry.isIntersecting && hasNextPage && !isFetchingNextPage) {
+      if (firstEntry?.isIntersecting && hasNextPage && !isFetchingNextPage) {
         void fetchNextPage();
       }
     },
     [fetchNextPage, hasNextPage, isFetchingNextPage],
   );
 
-  // Set up intersection observer
   const loadingRef = React.useRef<HTMLDivElement>(null);
+
   React.useEffect(() => {
     const observer = new IntersectionObserver(onIntersect, {
-      root: null,
-      rootMargin: "100px", // Start loading 100px before the element is visible
-      threshold: 0.01,
+      root: null, // Use viewport as root
+      rootMargin: "200px", // Load next page 200px before reaching the bottom
+      threshold: 0.01, // Trigger when even 1% of the element is visible
     });
 
     if (loadingRef.current) {
@@ -67,39 +67,62 @@ export function ExploreGrowsGrid({ filters }: ExploreGrowsGridProps) {
     return () => observer.disconnect();
   }, [onIntersect]);
 
+  // Handle loading state
+  if (isLoading) {
+    return (
+      <div className="flex min-h-96 items-center justify-center">
+        <SpinningLoader className="text-secondary" />
+      </div>
+    );
+  }
+
+  // Handle error state
+  if (error) {
+    return (
+      <div className="flex min-h-96 items-center justify-center">
+        <p className="text-destructive text-center">
+          {t("error-title")}
+          {": "}
+          {error.message}
+        </p>
+      </div>
+    );
+  }
+
   // Handle empty state
-  if (!grows.length) {
-    return <ExploreGrowsEmptyState />;
+  if (grows.length === 0) {
+    return (
+      <div className="flex min-h-96 items-center justify-center">
+        <p className="text-muted-foreground text-center">
+          {t("no-grows-have-been-found")}
+        </p>
+      </div>
+    );
   }
 
   return (
-    <div className="space-y-4">
-      {/* Results header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-muted-foreground text-sm">
-            {meta?.pagination?.totalCount !== undefined && (
-              <>
-                {t("showing-results", {
-                  defaultValue: "Showing {count} of {total} grows",
-                  count: grows.length,
-                  total: meta.pagination.totalCount,
-                })}
-              </>
-            )}
-          </p>
-        </div>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+      className="space-y-6"
+    >
+      {/* Results count */}
+      {data?.pages?.[0]?.totalCount !== undefined && (
+        <motion.p
+          className="text-muted-foreground text-sm"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.1 }}
+        >
+          {t("showing-results", {
+            count: grows.length,
+            total: data.pages[0].totalCount,
+          })}
+        </motion.p>
+      )}
 
-        {/* Loading indicator when fetching more */}
-        {isFetching && !isFetchingNextPage && (
-          <div className="text-muted-foreground flex items-center gap-2 text-sm">
-            <div className="h-3 w-3 animate-spin rounded-full border-2 border-current border-t-transparent" />
-            {t("updating-results")}
-          </div>
-        )}
-      </div>
-
-      {/* Grows grid */}
+      {/* Responsive Grid */}
       <ResponsiveGrid>
         {grows.map((grow, index) => (
           <motion.div
@@ -108,25 +131,23 @@ export function ExploreGrowsGrid({ filters }: ExploreGrowsGridProps) {
             animate={{ opacity: 1, y: 0 }}
             transition={{
               duration: 0.3,
-              delay: index * 0.05, // Stagger animation
+              delay: Math.min(index * 0.05, 0.5), // Stagger animation, max 0.5s delay
             }}
           >
-            <GrowCard grow={grow} isSocial={true} />
+            <GrowCard grow={grow} isSocial={false} />
           </motion.div>
         ))}
       </ResponsiveGrid>
 
-      {/* Infinite scroll loader */}
+      {/* Infinite Scroll Loader */}
       <InfiniteScrollLoader
         ref={loadingRef}
-        isLoading={isFetching}
+        isLoading={false}
         isFetchingNextPage={isFetchingNextPage}
         hasNextPage={hasNextPage}
         itemsLength={grows.length}
-        noMoreMessage={t("no-more-grows", {
-          defaultValue: "No more grows to load.",
-        })}
+        noMoreMessage={t("no-more-grows")}
       />
-    </div>
+    </motion.div>
   );
 }

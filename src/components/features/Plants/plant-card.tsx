@@ -4,13 +4,11 @@
 import * as React from "react";
 import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
-import { useMutation } from "@tanstack/react-query";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   DotIcon,
-  EditIcon,
+  Edit3Icon,
   MessageSquareTextIcon,
-  TentTreeIcon,
   Trash2Icon,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -20,6 +18,7 @@ import AvatarCardHeader, {
 } from "~/components/atom/avatar-card-header";
 import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
 import { EntityDateInfo } from "~/components/atom/entity-date-info";
+import GrowBadge from "~/components/atom/grow-badge";
 import { TouchProvider } from "~/components/atom/hybrid-tooltip";
 import { OwnerDropdownMenu } from "~/components/atom/owner-dropdown-menu";
 import { SocialCardFooter } from "~/components/atom/social-card-footer";
@@ -28,7 +27,6 @@ import { Comments } from "~/components/features/Comments/comments";
 import { ImageCarousel } from "~/components/features/Plants/image-carousel";
 import { PlantProgressAndDates } from "~/components/features/Plants/plant-progress-and-dates";
 import { PostFormModal } from "~/components/features/Timeline/Post/post-form-modal";
-import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import {
   Card,
@@ -41,7 +39,7 @@ import { useLikeStatus } from "~/hooks/use-likes";
 import { Link, useRouter } from "~/lib/i18n/routing";
 import { useTRPC } from "~/lib/trpc/client";
 import { cn, formatDateTime } from "~/lib/utils";
-import type { PlantByIdType } from "~/server/api/root";
+import type { PlantByIdType, PlantGrowType } from "~/server/api/root";
 import { CommentableEntityType } from "~/types/comment";
 import { LikeableEntityType } from "~/types/like";
 import { Locale } from "~/types/locale";
@@ -117,7 +115,7 @@ export default function PlantCard({
   // Edit Action (visible to owner only)
   if (user && user.id === plant.ownerId) {
     growActions.push({
-      icon: EditIcon,
+      icon: Edit3Icon,
       label: t("edit-button-label"),
       variant: "ghost",
       onClick: () => {
@@ -222,35 +220,20 @@ export default function PlantCard({
               updatedAt={plant.updatedAt}
             />
 
-            {/* Plant Progress and Dates */}
-            <PlantProgressAndDates plant={plant} />
-
             <CardDescription>
-              <div className="flex min-h-6 items-center justify-between gap-2 p-0">
-                {/* Strain Tooltip */}
-                <div>
-                  {plant.strain && <StrainBadge strain={plant.strain} />}
-                </div>
+              <div className="flex min-h-6 items-center justify-end gap-2 p-0">
+                {/* Strain Badge with Tooltip */}
+                {plant.strain && <StrainBadge strain={plant.strain} />}
+
                 {/* Grow Badge-Link */}
                 {plant.grow && (
-                  <div className="flex flex-wrap gap-2 p-0">
-                    <Link
-                      href={`${modulePaths.PUBLICGROWS.path}/${plant.grow.id}`}
-                    >
-                      <Badge
-                        variant="grow"
-                        className="flex max-w-32 items-center gap-1 overflow-hidden rounded-sm text-ellipsis whitespace-nowrap"
-                      >
-                        <TentTreeIcon className="h-4 w-4 shrink-0" />
-                        <span className="overflow-hidden text-ellipsis">
-                          {plant.grow.name}
-                        </span>
-                      </Badge>
-                    </Link>
-                  </div>
+                  <GrowBadge grow={plant.grow satisfies PlantGrowType} />
                 )}
               </div>
             </CardDescription>
+
+            {/* Plant Progress and Dates */}
+            <PlantProgressAndDates plant={plant} />
 
             {!isSocial && (
               <Button

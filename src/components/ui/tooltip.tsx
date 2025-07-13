@@ -3,7 +3,7 @@
 import * as React from "react"
 import * as TooltipPrimitive from "@radix-ui/react-tooltip"
 
-import { cn } from "~/lib/utils"
+import { cn } from "~/lib/utils/index"
 
 function TooltipProvider({
   delayDuration = 0,
@@ -52,18 +52,7 @@ function TooltipContent({
         {...props}
       >
         {children}
-        
-        { /**
-           * Fixes the issue of the Tooltip arrow overlapping or misaligning with the Tooltip content.
-           * 
-           * References:
-           * - Issue: https://github.com/shadcn-ui/ui/issues/6933
-           * - Pull Request: https://github.com/shadcn-ui/ui/pull/6934/files
-           */
-        }
-        {/* <TooltipPrimitive.Arrow className="bg-primary fill-primary z-50 size-2.5 translate-y-[calc(-50%_-_2px)] rotate-45 rounded-[2px]" /> */}
-        <TooltipPrimitive.Arrow className="fill-primary rounded-[2px]" />
-        
+        <TooltipPrimitive.Arrow className="bg-primary fill-primary z-50 size-2.5 translate-y-[calc(-50%_-_2px)] rotate-45 rounded-[2px]" />
       </TooltipPrimitive.Content>
     </TooltipPrimitive.Portal>
   )

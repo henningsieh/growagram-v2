@@ -5,8 +5,13 @@ import { getQueryClient, trpc } from "~/lib/trpc/server";
 import { generatePageMetadata } from "~/lib/utils/metadata";
 import type { GetAllPlantsInput } from "~/server/api/root";
 
-export async function generateMetadata(): Promise<Metadata> {
-  return generatePageMetadata("plants");
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  return generatePageMetadata("plants", locale);
 }
 
 export default async function PublicPlantsLayout({

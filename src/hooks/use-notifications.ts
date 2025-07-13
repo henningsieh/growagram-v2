@@ -1,24 +1,15 @@
 import * as React from "react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
-import {
-  skipToken,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSubscription } from "@trpc/tanstack-react-query";
 import { toast } from "sonner";
-import { modulePaths } from "~/assets/constants";
 import { useTRPC } from "~/lib/trpc/client";
 import {
   type GetAllNotificationType,
   type GetAllNotificationsInput,
 } from "~/server/api/root";
-import {
-  NotifiableEntityType,
-  NotificationEventType,
-} from "~/types/notification";
+import { NotificationEventType } from "~/types/notification";
 
 interface UseNotificationsReturn {
   all: GetAllNotificationType[];
@@ -33,13 +24,6 @@ interface UseNotificationsReturn {
   error: unknown;
   subscriptionStatus: string;
   subscriptionError: unknown;
-  getNotificationText: (
-    type: NotificationEventType,
-    entityType: NotifiableEntityType,
-  ) => string;
-  getNotificationHref: (
-    notification: GetAllNotificationType,
-  ) => string | undefined;
   markAllAsRead: () => void;
   markAsRead: (params: { id: string }) => void;
 }
@@ -91,46 +75,6 @@ export function useNotifications(onlyUnread = true): UseNotificationsReturn {
     }
   }, [query.data]);
 
-  const getEntityTypeText = React.useCallback(
-    (entityType: NotifiableEntityType) => {
-      switch (entityType) {
-        case NotifiableEntityType.GROW:
-          return t("entity_grow");
-        case NotifiableEntityType.PLANT:
-          return t("entity_plant");
-        case NotifiableEntityType.PHOTO:
-          return t("entity_photo");
-        case NotifiableEntityType.POST:
-          return t("entity_post");
-        case NotifiableEntityType.COMMENT:
-          return t("entity_comment");
-        default:
-          return "";
-      }
-    },
-    [t],
-  );
-
-  const getNotificationText = React.useCallback(
-    (type: NotificationEventType, entityType: NotifiableEntityType) => {
-      const entityText = getEntityTypeText(entityType);
-
-      switch (type) {
-        case NotificationEventType.NEW_FOLLOW:
-          return t("new_follow");
-        case NotificationEventType.NEW_LIKE: {
-          return `${t("new_like")} ${entityText}`;
-        }
-        case NotificationEventType.NEW_COMMENT: {
-          return `${t("new_comment")} ${entityText}`;
-        }
-        default:
-          return t("new_notification");
-      }
-    },
-    [t, getEntityTypeText],
-  );
-
   // Always call useSubscription unconditionally
   const isSubscriptionEnabled = status === "authenticated";
   // Determine the value for lastEventId to be sent to the API
@@ -145,12 +89,10 @@ export function useNotifications(onlyUnread = true): UseNotificationsReturn {
         enabled: isSubscriptionEnabled, // Control the subscription lifecycle
         onData: (notification) => {
           setLastEventId(notification.id);
-          const notificationText = getNotificationText(
-            notification.type,
-            notification.entityType,
-          );
+          // Use a generic notification message for real-time notifications
+          // The detailed text will be computed server-side when fetched
           toast(t("new_notification"), {
-            description: `${notification.actor.name} ${notificationText}`,
+            description: `${notification.actor.name} interacted with your content`,
           });
           void queryClient.invalidateQueries(
             trpc.notifications.getAll.pathFilter(),
@@ -187,53 +129,6 @@ export function useNotifications(onlyUnread = true): UseNotificationsReturn {
     }),
   );
 
-  const commentId = allNotifications?.find(
-    (n) => n.entityType === NotifiableEntityType.COMMENT,
-  )?.entityId;
-
-  const { data: commentableEntity, isLoading: isCommentLoading } = useQuery(
-    trpc.comments.getParentEntity.queryOptions(
-      commentId ? { commentId } : skipToken,
-      {
-        enabled: Boolean(commentId),
-      },
-    ),
-  );
-
-  /**
-   * Get the href for a notification
-   */
-  const getNotificationHref = React.useMemo(() => {
-    return (notification: GetAllNotificationType) => {
-      switch (notification.entityType) {
-        case NotifiableEntityType.USER:
-          return `${modulePaths.PUBLICPROFILE.path}/${notification.actor.id}`; // Profile of user who followed
-        case NotifiableEntityType.POST:
-          return `#${notification.entityId}`; // FIXME: Post that was liked or commented on
-        case NotifiableEntityType.GROW:
-          return `${modulePaths.PUBLICGROWS.path}/${notification.entityId}${
-            notification.commentId ? `?commentId=${notification.commentId}` : ""
-          }`; // Grow that was liked or commented on
-        case NotifiableEntityType.PLANT:
-          return `${modulePaths.PUBLICPLANTS.path}/${notification.entityId}${
-            notification.commentId ? `?commentId=${notification.commentId}` : ""
-          }`; // Plant that was liked or commented on
-        case NotifiableEntityType.PHOTO:
-          return `${modulePaths.PUBLICPHOTOS.path}/${notification.entityId}${
-            notification.commentId ? `?commentId=${notification.commentId}` : ""
-          }`; // Photo that was liked or commented on
-        case NotifiableEntityType.COMMENT:
-          if (!commentableEntity || isCommentLoading) {
-            return undefined;
-          }
-          return `/public/${commentableEntity.entityType}s/${commentableEntity.entityId}?commentId=${notification.entityId}`;
-
-        default:
-          return "#"; // Fallback
-      }
-    };
-  }, [commentableEntity, isCommentLoading]);
-
   return {
     all: allNotifications ?? [],
     grouped: {
@@ -255,8 +150,6 @@ export function useNotifications(onlyUnread = true): UseNotificationsReturn {
     error: query.error,
     subscriptionStatus: subscription.status,
     subscriptionError: subscription.error,
-    getNotificationText,
-    getNotificationHref,
     markAllAsRead,
     markAsRead,
   };

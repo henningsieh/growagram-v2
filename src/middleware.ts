@@ -103,16 +103,11 @@ export default async function middleware(req: NextRequest) {
             `User is banned until ${bannedUntil.toLocaleString()}. Reason: ${user.banReason || "No reason provided"}`,
           );
 
-          // Sign the user out by destroying the session
-          await fetch(`${baseUrl}/api/auth/signout`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({}),
-          });
-
-          const redirectUrl = new URL(modulePaths.SIGNIN.path, baseUrl);
+          // Create redirect URL with locale to prevent double-locale redirects
+          const signinPath = currentLocale
+            ? `/${currentLocale}${modulePaths.SIGNIN.path}`
+            : modulePaths.SIGNIN.path;
+          const redirectUrl = new URL(signinPath, baseUrl);
           redirectUrl.searchParams.append("error", "banned");
           // Add ban details to URL parameters for the client-side toast
           redirectUrl.searchParams.append(
@@ -123,7 +118,35 @@ export default async function middleware(req: NextRequest) {
             redirectUrl.searchParams.append("banReason", user.banReason);
           }
 
-          return NextResponse.redirect(redirectUrl);
+          const response = NextResponse.redirect(redirectUrl);
+
+          // Clear Auth.js session cookies to force logout
+          const cookieName = env.NEXTAUTH_URL.startsWith("https")
+            ? "__Secure-authjs.session-token"
+            : "authjs.session-token";
+
+          const csrfCookieName = env.NEXTAUTH_URL.startsWith("https")
+            ? "__Secure-authjs.csrf-token"
+            : "authjs.csrf-token";
+
+          // Delete the session and CSRF cookies
+          response.cookies.set(cookieName, "", {
+            expires: new Date(0),
+            path: "/",
+            httpOnly: true,
+            secure: env.NEXTAUTH_URL.startsWith("https"),
+            sameSite: "lax",
+          });
+
+          response.cookies.set(csrfCookieName, "", {
+            expires: new Date(0),
+            path: "/",
+            httpOnly: true,
+            secure: env.NEXTAUTH_URL.startsWith("https"),
+            sameSite: "lax",
+          });
+
+          return response;
         }
       }
     } else {

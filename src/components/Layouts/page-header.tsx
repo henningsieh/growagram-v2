@@ -1,5 +1,5 @@
 // src/components/Layouts/page-header.tsx:
-import { ReadonlyURLSearchParams } from "next/navigation";
+import type { ReadonlyURLSearchParams } from "next/navigation";
 import type { VariantProps } from "class-variance-authority";
 import { Button, buttonVariants } from "~/components/ui/button";
 import { Link } from "~/lib/i18n/routing";

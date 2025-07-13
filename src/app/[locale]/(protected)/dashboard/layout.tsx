@@ -2,8 +2,13 @@
 import { Metadata } from "next";
 import { generatePageMetadata } from "~/lib/utils/metadata";
 
-export async function generateMetadata(): Promise<Metadata> {
-  return generatePageMetadata("dashboard");
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  return generatePageMetadata("dashboard", locale);
 }
 
 interface DashboardLayoutProps {

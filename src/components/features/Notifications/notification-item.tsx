@@ -18,12 +18,12 @@ export function NotificationItem({
   close,
   ...notification
 }: NotificationItemProps) {
-  const { markAsRead, getNotificationText, getNotificationHref } =
-    useNotifications();
+  const { markAsRead } = useNotifications();
   const t = useTranslations("Notifications");
   const locale = useLocale();
 
-  const href = getNotificationHref(notification);
+  // Use the computed fields from the backend
+  const href = notification.notificationHref;
 
   if (!href) {
     return <NotificationSkeleton />;
@@ -51,8 +51,7 @@ export function NotificationItem({
       <div className="flex flex-col">
         <p className="text-sm">
           <span className="font-medium">
-            {notification.actor.name}{" "}
-            {getNotificationText(notification.type, notification.entityType)}
+            {notification.actor.name} {notification.notificationText}
           </span>
         </p>
         <span className="text-muted-foreground text-xs">

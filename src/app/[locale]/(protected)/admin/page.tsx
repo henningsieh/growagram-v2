@@ -20,7 +20,7 @@ export default async function AdminPage() {
   // Create breadcrumbs for this page using sidebar translation keys
   const breadcrumbs = createBreadcrumbs([
     {
-      translationKey: "Sidebar.navMain.Admin.items.Administration",
+      translationKey: "AdminArea.navigation.label",
       path: modulePaths.ADMINISTRATION.path,
     },
   ]);
