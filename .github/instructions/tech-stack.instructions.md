@@ -60,7 +60,7 @@ The project includes the following predefined scripts (run with `bun run <script
 #### Cleanup Scripts
 
 - `bun run clean-dev` - Remove development build artifacts (.next-dev, out)
-- `bun run clean-prod` - Remove production build artifacts (.next-prod, out)  
+- `bun run clean-prod` - Remove production build artifacts (.next-prod, out)
 - `bun run clean-all` - Remove all build artifacts (both dev and prod)
 
 #### Type Checking
@@ -89,23 +89,27 @@ bun run format
 Based on `package.json` version **0.9.0-beta.1**, key dependencies include:
 
 #### Core Framework
+
 - **Next.js**: 15.3.4 (with Turbopack for fast builds)
 - **React**: 19.1.0 (latest with concurrent features)
 - **TypeScript**: 5.8.3 (strict mode enabled)
 
 #### Backend & API
+
 - **tRPC**: 11.4.3 (type-safe API routes)
 - **Drizzle ORM**: 0.35.3 (TypeScript ORM for PostgreSQL)
 - **NextAuth.js**: 5.0.0-beta.29 (authentication)
 - **PostgreSQL**: 3.4.7 (database driver)
 
 #### UI & Styling
+
 - **Tailwind CSS**: 4.1.11 (latest v4 with performance improvements)
 - **Radix UI**: Latest components for accessibility
 - **Framer Motion**: 11.18.2 (animations)
 - **Lucide React**: 0.525.0 (icon library)
 
 #### Development Tools
+
 - **Bun**: Package manager and runtime
 - **ESLint**: Code linting with Next.js preset
 - **Prettier**: Code formatting with import sorting
@@ -114,6 +118,7 @@ Based on `package.json` version **0.9.0-beta.1**, key dependencies include:
 ### Bun-Specific Features
 
 #### Fast Package Installation
+
 ```bash
 # Bun installs packages significantly faster than npm/yarn
 bun install  # ~2-3x faster than npm install
@@ -125,6 +130,7 @@ bun remove unused-package    # Remove packages
 ```
 
 #### Built-in Development Server
+
 ```bash
 # Bun can run TypeScript files directly
 bunx file.ts  # No compilation needed
@@ -134,6 +140,7 @@ bun run dev   # Uses Next.js dev server with Turbopack
 ```
 
 #### Package Resolution
+
 - **Workspaces**: Bun supports monorepo workspaces
 - **Node.js Compatibility**: 99%+ compatibility with npm packages
 - **Native Performance**: Written in Zig for speed

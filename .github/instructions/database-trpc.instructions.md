@@ -1,10 +1,13 @@
 ---
 applyTo: "**"
-title: "Database, tRPC & State Management"
 description: "Drizzle ORM patterns, tRPC procedures, and state management strategies"
+---
+
+<!--
+title: "Database, tRPC & State Management"
 tags: [database, trpc, drizzle, state-management, queries]
 last_updated: 2025-01-07
----
+-->
 
 # 🗄️ Database, tRPC & State Management
 

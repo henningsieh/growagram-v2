@@ -1,10 +1,13 @@
 ---
 applyTo: "**"
-title: "Styling & Internationalization"
 description: "Tailwind CSS patterns, responsive design, and internationalization guidelines"
+---
+
+<!--
+title: "Styling & Internationalization"
 tags: [styling, tailwind, responsive, i18n, forms]
 last_updated: 2025-01-07
----
+-->
 
 # 🎨 Styling & Internationalization
 
@@ -34,7 +37,7 @@ className="xs:h-16 xs:w-16 h-14 w-14 sm:h-24 sm:w-24"
 ```typescript
 // GrowAGram uses a mobile-first approach with these breakpoints:
 // xs: 480px   - Small mobile
-// sm: 640px   - Large mobile  
+// sm: 640px   - Large mobile
 // md: 768px   - Tablet
 // lg: 1024px  - Desktop
 // xl: 1280px  - Large desktop
@@ -100,13 +103,13 @@ className="xs:h-16 xs:w-16 h-14 w-14 sm:h-24 sm:w-24"
 
 ```typescript
 // Use new Tailwind v4 features
-className="bg-gradient-to-r from-primary to-secondary animate-fade-in"
+className = "bg-gradient-to-r from-primary to-secondary animate-fade-in";
 
 // Modern container queries (when available)
-className="@container/card @md:flex-row @lg:gap-8"
+className = "@container/card @md:flex-row @lg:gap-8";
 
 // Enhanced color system
-className="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+className = "bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100";
 ```
 
 ### CSS Custom Properties

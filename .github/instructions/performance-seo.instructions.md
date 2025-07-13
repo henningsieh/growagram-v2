@@ -1,10 +1,13 @@
 ---
 applyTo: "**"
-title: "Performance & SEO Optimization"
 description: "Core Web Vitals, performance optimization techniques, and SEO strategies"
+---
+
+<!--
+title: "Performance & SEO Optimization"
 tags: [performance, seo, optimization, web-vitals, next-js]
 last_updated: 2025-01-07
----
+-->
 
 # ⚡ Performance & SEO Optimization
 
@@ -560,13 +563,15 @@ export default nextConfig;
 
 ```css
 /* styles/globals.css */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 
 /* Preload critical fonts */
 @font-face {
-  font-family: 'Inter';
+  font-family: "Inter";
   font-weight: 400;
-  src: local('Inter Regular'), url('/fonts/inter-regular.woff2') format('woff2');
+  src:
+    local("Inter Regular"),
+    url("/fonts/inter-regular.woff2") format("woff2");
   font-display: swap;
 }
 ```
@@ -588,17 +593,17 @@ export function PostSkeleton() {
           <Skeleton className="h-3 w-20" />
         </div>
       </div>
-      
+
       {/* Image skeleton with exact aspect ratio */}
       <Skeleton className="aspect-square w-full rounded-lg" />
-      
+
       {/* Content skeleton */}
       <div className="space-y-2">
         <Skeleton className="h-4 w-full" />
         <Skeleton className="h-4 w-3/4" />
         <Skeleton className="h-4 w-1/2" />
       </div>
-      
+
       {/* Action buttons skeleton */}
       <div className="flex space-x-4">
         <Skeleton className="h-8 w-16" />
@@ -629,7 +634,7 @@ export function PostGrid({ posts }: { posts: Post[] }) {
 // ✅ CORRECT: Reserve space for dynamic content
 export function DynamicContent() {
   const [isLoaded, setIsLoaded] = useState(false);
-  
+
   return (
     <div className="min-h-[200px] flex items-center justify-center">
       {!isLoaded ? (
@@ -672,7 +677,7 @@ import { useDebouncedCallback } from "use-debounce";
 export function SearchInput() {
   const [query, setQuery] = useState("");
   const { mutate: search } = api.search.plants.useMutation();
-  
+
   const debouncedSearch = useDebouncedCallback(
     (value: string) => {
       if (value.length > 2) {
@@ -681,7 +686,7 @@ export function SearchInput() {
     },
     300 // 300ms delay
   );
-  
+
   return (
     <input
       type="text"
@@ -709,7 +714,7 @@ export function InfinitePostList() {
       getNextPageParam: (lastPage) => lastPage.nextCursor,
     }
   );
-  
+
   // Throttled scroll handler
   const handleScroll = useCallback(
     throttle(() => {
@@ -724,12 +729,12 @@ export function InfinitePostList() {
     }, 100),
     [hasNextPage, isFetchingNextPage, fetchNextPage]
   );
-  
+
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [handleScroll]);
-  
+
   return (
     <div className="space-y-6">
       {data?.pages.map((page) =>
@@ -767,17 +772,17 @@ const AdminPanel = dynamic(() => import("./AdminPanel"), {
 export function GrowDetailsPage({ grow }: { grow: Grow }) {
   const { data: user } = api.user.getCurrent.useQuery();
   const isAdmin = user?.role === "admin";
-  
+
   return (
     <div className="space-y-6">
       <GrowHeader grow={grow} />
       <GrowContent grow={grow} />
-      
+
       {/* Analytics loaded only when needed */}
       <React.Suspense fallback={<AnalyticsSkeleton />}>
         <GrowAnalytics growId={grow.id} />
       </React.Suspense>
-      
+
       {/* Admin panel loaded only for admins */}
       {isAdmin && (
         <React.Suspense fallback={<div>Loading admin tools...</div>}>
@@ -817,7 +822,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
   useEffect(() => {
     reportWebVitals();
   }, []);
-  
+
   return <Component {...pageProps} />;
 }
 ```
@@ -830,7 +835,7 @@ const nextConfig: NextConfig = {
   experimental: {
     bundlePagesRouterDependencies: true,
   },
-  
+
   // Bundle analyzer
   webpack: (config, { isServer }) => {
     if (!isServer) {
@@ -839,14 +844,14 @@ const nextConfig: NextConfig = {
         fs: false,
       };
     }
-    
+
     return config;
   },
-  
+
   // Performance optimizations
   compress: true,
   poweredByHeader: false,
-  
+
   // Image optimization
   images: {
     formats: ["image/avif", "image/webp"],
@@ -867,7 +872,7 @@ export default nextConfig;
 export function PostCard({ post }: { post: Post }) {
   const prefetchUserProfile = api.user.getProfile.usePrefetch();
   const prefetchGrowDetails = api.grows.getById.usePrefetch();
-  
+
   return (
     <div
       className="post-card"
@@ -888,7 +893,7 @@ export function PostCard({ post }: { post: Post }) {
 export function LazyImage({ src, alt, ...props }: ImageProps) {
   const [isInView, setIsInView] = useState(false);
   const imgRef = useRef<HTMLDivElement>(null);
-  
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -899,14 +904,14 @@ export function LazyImage({ src, alt, ...props }: ImageProps) {
       },
       { threshold: 0.1 }
     );
-    
+
     if (imgRef.current) {
       observer.observe(imgRef.current);
     }
-    
+
     return () => observer.disconnect();
   }, []);
-  
+
   return (
     <div ref={imgRef} className="aspect-square bg-gray-100">
       {isInView ? (

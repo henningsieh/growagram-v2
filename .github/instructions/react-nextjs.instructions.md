@@ -1,10 +1,13 @@
 ---
 applyTo: "**"
-title: "React & Next.js Guidelines"
 description: "Component structure, hooks usage patterns, and animation guidelines"
+---
+
+<!--
+title: "React & Next.js Guidelines"
 tags: [react, next-js, components, hooks, animation]
 last_updated: 2025-01-07
----
+-->
 
 # ⚛️ React & Next.js Guidelines
 
@@ -55,7 +58,7 @@ function HelperComponent() {
 
 ## Dialog & Modal Components
 
-**Always use ResponsiveDialog for modal interactions.** See [Dialog Patterns](.github/instructions/dialog-patterns.instructions.md) for complete guidelines and examples.
+**Always use ResponsiveDialog for modal interactions.** See [Dialog Patterns](./dialog-patterns.instructions.md) for complete guidelines and examples.
 
 ## Component Separation
 
@@ -98,7 +101,7 @@ components/features/FeatureName/
 function useGrowData(growId: string) {
   const { data, error, isLoading } = trpc.grows.getById.useQuery(
     { id: growId },
-    { enabled: !!growId }
+    { enabled: !!growId },
   );
 
   return {
@@ -154,7 +157,7 @@ function ExploreFilters({ children }: { children: React.ReactNode }) {
 // Sub-components that consume context
 ExploreFilters.Search = function FilterSearch() {
   const { filters, setFilters } = useFilterContext();
-  
+
   return (
     <Input
       placeholder="Search grows..."
@@ -166,9 +169,9 @@ ExploreFilters.Search = function FilterSearch() {
 
 ExploreFilters.Environment = function FilterEnvironment() {
   const { filters, setFilters } = useFilterContext();
-  
+
   return (
-    <Select 
+    <Select
       value={filters.environment}
       onValueChange={(value) => setFilters(prev => ({ ...prev, environment: value }))}
     >

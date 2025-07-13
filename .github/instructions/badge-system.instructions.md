@@ -1,10 +1,13 @@
 ---
 applyTo: "**"
-title: "Badge System Documentation"
 description: "README badge management, version tracking, and maintenance workflow for private repositories"
+---
+
+<!--
+title: "Badge System Documentation"
 tags: [badges, documentation, versioning, maintenance, readme]
 last_updated: 2025-01-07
----
+-->
 
 # 🏷️ Badge System Documentation and Guidelines
 

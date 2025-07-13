@@ -1,10 +1,13 @@
 ---
 applyTo: "**"
-title: "Database Performance Optimization"
 description: "PostgreSQL optimization strategies, indexing, query performance, and monitoring"
+---
+
+<!--
+title: "Database Performance Optimization"
 tags: [database, performance, postgresql, indexing, optimization]
 last_updated: 2025-01-07
----
+-->
 
 # 🚀 Database Performance Optimization
 
