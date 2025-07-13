@@ -85,6 +85,137 @@ components/features/FeatureName/
 </div>
 ```
 
+## Advanced Component Patterns
+
+### Custom Hooks Usage
+
+```typescript
+// Custom data fetching hook
+function useGrowData(growId: string) {
+  const { data, error, isLoading } = trpc.grows.getById.useQuery(
+    { id: growId },
+    { enabled: !!growId }
+  );
+
+  return {
+    grow: data,
+    error,
+    isLoading,
+  };
+}
+
+// Custom form hook with validation
+function useGrowForm() {
+  const form = useForm<GrowFormData>({
+    resolver: zodResolver(growFormSchema),
+    defaultValues: {
+      name: "",
+      environment: undefined,
+    },
+  });
+
+  const saveMutation = trpc.grows.create.useMutation();
+
+  const handleSubmit = async (data: GrowFormData) => {
+    try {
+      await saveMutation.mutateAsync(data);
+      toast.success("Grow created successfully");
+    } catch (error) {
+      toast.error("Failed to create grow");
+    }
+  };
+
+  return {
+    form,
+    handleSubmit: form.handleSubmit(handleSubmit),
+    isSubmitting: saveMutation.isPending,
+  };
+}
+```
+
+### Compound Component Pattern
+
+```typescript
+// Main component that provides context
+function ExploreFilters({ children }: { children: React.ReactNode }) {
+  const [filters, setFilters] = React.useState<FilterState>({});
+
+  return (
+    <FilterContext.Provider value={{ filters, setFilters }}>
+      <div className="space-y-4">{children}</div>
+    </FilterContext.Provider>
+  );
+}
+
+// Sub-components that consume context
+ExploreFilters.Search = function FilterSearch() {
+  const { filters, setFilters } = useFilterContext();
+  
+  return (
+    <Input
+      placeholder="Search grows..."
+      value={filters.search || ""}
+      onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
+    />
+  );
+};
+
+ExploreFilters.Environment = function FilterEnvironment() {
+  const { filters, setFilters } = useFilterContext();
+  
+  return (
+    <Select 
+      value={filters.environment}
+      onValueChange={(value) => setFilters(prev => ({ ...prev, environment: value }))}
+    >
+      {/* Options */}
+    </Select>
+  );
+};
+
+// Usage
+<ExploreFilters>
+  <ExploreFilters.Search />
+  <ExploreFilters.Environment />
+</ExploreFilters>
+```
+
+### Error Boundary Pattern
+
+```typescript
+class GrowErrorBoundary extends React.Component<
+  { children: React.ReactNode; fallback?: React.ComponentType },
+  { hasError: boolean }
+> {
+  constructor(props: any) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error('Grow component error:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      const Fallback = this.props.fallback || DefaultErrorFallback;
+      return <Fallback />;
+    }
+
+    return this.props.children;
+  }
+}
+
+// Usage
+<GrowErrorBoundary fallback={GrowErrorFallback}>
+  <GrowComponent />
+</GrowErrorBoundary>
+```
+
 ## Animation Guidelines
 
 ### Framer Motion

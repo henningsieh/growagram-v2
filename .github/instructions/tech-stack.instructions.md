@@ -73,6 +73,60 @@ bun run db:migrate
 bun run format
 ```
 
+### Current Dependency Versions
+
+Based on `package.json` version **0.9.0-beta.1**, key dependencies include:
+
+#### Core Framework
+- **Next.js**: 15.3.4 (with Turbopack for fast builds)
+- **React**: 19.1.0 (latest with concurrent features)
+- **TypeScript**: 5.8.3 (strict mode enabled)
+
+#### Backend & API
+- **tRPC**: 11.4.3 (type-safe API routes)
+- **Drizzle ORM**: 0.35.3 (TypeScript ORM for PostgreSQL)
+- **NextAuth.js**: 5.0.0-beta.29 (authentication)
+- **PostgreSQL**: 3.4.7 (database driver)
+
+#### UI & Styling
+- **Tailwind CSS**: 4.1.11 (latest v4 with performance improvements)
+- **Radix UI**: Latest components for accessibility
+- **Framer Motion**: 11.18.2 (animations)
+- **Lucide React**: 0.525.0 (icon library)
+
+#### Development Tools
+- **Bun**: Package manager and runtime
+- **ESLint**: Code linting with Next.js preset
+- **Prettier**: Code formatting with import sorting
+- **Drizzle Studio**: Database management UI
+
+### Bun-Specific Features
+
+#### Fast Package Installation
+```bash
+# Bun installs packages significantly faster than npm/yarn
+bun install  # ~2-3x faster than npm install
+
+# Adding packages
+bun add react-hook-form zod  # Add multiple packages
+bun add -D @types/node       # Add dev dependencies
+bun remove unused-package    # Remove packages
+```
+
+#### Built-in Development Server
+```bash
+# Bun can run TypeScript files directly
+bunx file.ts  # No compilation needed
+
+# Run Next.js with Bun (when configured)
+bun run dev   # Uses Next.js dev server with Turbopack
+```
+
+#### Package Resolution
+- **Workspaces**: Bun supports monorepo workspaces
+- **Node.js Compatibility**: 99%+ compatibility with npm packages
+- **Native Performance**: Written in Zig for speed
+
 ## File Structure & Organization
 
 ### Directory Structure

@@ -212,6 +212,257 @@ const result = await db.execute(sql`
 - Include proper constraints and indexes in migrations
 - Test migrations on development data before production
 
+## Advanced tRPC Patterns
+
+### Complex Query Procedures
+
+```typescript
+// Advanced grow exploration with filtering and pagination
+export const growRouter = createTRPCRouter({
+  explore: publicProcedure
+    .input(growExplorationSchema)
+    .query(async ({ ctx, input }) => {
+      const { cursor, limit = 20, search, environment, cultureMedium } = input;
+
+      // Build dynamic where conditions
+      const whereConditions = [];
+
+      if (environment) {
+        whereConditions.push(eq(grows.environment, environment));
+      }
+
+      if (cultureMedium) {
+        whereConditions.push(eq(grows.cultureMedium, cultureMedium));
+      }
+
+      if (search) {
+        whereConditions.push(ilike(grows.name, `%${search}%`));
+      }
+
+      const whereClause =
+        whereConditions.length > 0 ? and(...whereConditions) : undefined;
+
+      const results = await ctx.db.query.grows.findMany({
+        where: whereClause,
+        orderBy: desc(grows.createdAt),
+        limit: limit + 1,
+        offset: cursor ? (cursor - 1) * limit : 0,
+        with: {
+          owner: {
+            columns: {
+              id: true,
+              username: true,
+              name: true,
+              image: true,
+            },
+          },
+          plants: {
+            columns: {
+              id: true,
+              name: true,
+              growthStage: true,
+            },
+          },
+          _count: {
+            plants: true,
+            likes: true,
+          },
+        },
+      });
+
+      const hasNextPage = results.length > limit;
+      const items = hasNextPage ? results.slice(0, -1) : results;
+
+      return {
+        items,
+        nextCursor: hasNextPage ? (cursor || 1) + 1 : null,
+      };
+    }),
+});
+```
+
+### Mutation Procedures with Optimistic Updates
+
+```typescript
+// Create grow with proper error handling and optimistic updates
+export const growRouter = createTRPCRouter({
+  create: protectedProcedure
+    .input(growFormSchema)
+    .mutation(async ({ ctx, input }) => {
+      try {
+        // Transaction for atomic operations
+        const result = await ctx.db.transaction(async (tx) => {
+          // Create the grow
+          const [newGrow] = await tx
+            .insert(grows)
+            .values({
+              name: input.name,
+              environment: input.environment,
+              cultureMedium: input.cultureMedium,
+              fertilizerType: input.fertilizerType,
+              ownerId: ctx.session.user.id,
+            })
+            .returning();
+
+          if (!newGrow) {
+            throw new TRPCError({
+              code: "INTERNAL_SERVER_ERROR",
+              message: "Failed to create grow",
+            });
+          }
+
+          // Connect plants if provided
+          if (input.plantIds?.length) {
+            await tx
+              .update(plants)
+              .set({ growId: newGrow.id })
+              .where(
+                and(
+                  inArray(plants.id, input.plantIds),
+                  eq(plants.ownerId, ctx.session.user.id),
+                ),
+              );
+          }
+
+          return newGrow;
+        });
+
+        // Invalidate related queries
+        await ctx.revalidator.revalidateTag("user-grows");
+
+        return result;
+      } catch (error) {
+        if (error instanceof TRPCError) {
+          throw error;
+        }
+
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "An unexpected error occurred while creating the grow",
+        });
+      }
+    }),
+});
+```
+
+### Subscription Procedures for Real-time Updates
+
+```typescript
+// Real-time notification subscription
+export const notificationRouter = createTRPCRouter({
+  subscribe: protectedProcedure
+    .input(
+      z.object({
+        lastEventId: z.string().optional(),
+      }),
+    )
+    .subscription(async function* ({ ctx, input }) {
+      const userId = ctx.session.user.id;
+
+      // Listen for new notifications
+      for await (const [notification] of on(
+        notificationEmitter,
+        "new-notification",
+      )) {
+        // Only emit notifications for the current user
+        if (notification.recipientId === userId) {
+          yield notification;
+        }
+      }
+    }),
+
+  // Batch mark as read for performance
+  markMultipleAsRead: protectedProcedure
+    .input(
+      z.object({
+        notificationIds: z.array(z.string().uuid()),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const updated = await ctx.db
+        .update(notifications)
+        .set({
+          isRead: true,
+          readAt: new Date(),
+        })
+        .where(
+          and(
+            inArray(notifications.id, input.notificationIds),
+            eq(notifications.recipientId, ctx.session.user.id),
+          ),
+        )
+        .returning({ id: notifications.id });
+
+      return {
+        updatedCount: updated.length,
+        updatedIds: updated.map((n) => n.id),
+      };
+    }),
+});
+```
+
+### Input Validation and Sanitization
+
+```typescript
+// Advanced input validation for user content
+export const postRouter = createTRPCRouter({
+  create: protectedProcedure
+    .input(
+      z.object({
+        content: z
+          .string()
+          .min(1, "Post content is required")
+          .max(2000, "Post content too long")
+          .transform((val) => val.trim()), // Sanitize input
+        entityType: z.nativeEnum(PostableEntityType),
+        entityId: z.string().uuid(),
+        images: z
+          .array(
+            z.object({
+              id: z.string().uuid(),
+              alt: z.string().max(200).optional(),
+            }),
+          )
+          .max(10, "Too many images"),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      // Verify entity exists and user has permission
+      const entity = await ctx.db.query[`${input.entityType}s`].findFirst({
+        where: (table, { eq }) => eq(table.id, input.entityId),
+        columns: { id: true, ownerId: true },
+      });
+
+      if (!entity) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: `${input.entityType} not found`,
+        });
+      }
+
+      if (entity.ownerId !== ctx.session.user.id) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You can only post to your own content",
+        });
+      }
+
+      // Create post with validated input
+      const [newPost] = await ctx.db
+        .insert(posts)
+        .values({
+          content: input.content,
+          entityType: input.entityType,
+          entityId: input.entityId,
+          authorId: ctx.session.user.id,
+        })
+        .returning();
+
+      return newPost;
+    }),
+});
+```
+
 ## 🔄 Related Resources
 
 - **Database Performance**: See [database-performance.instructions.md](.github/instructions/database-performance.instructions.md) for indexing, query optimization, and performance monitoring

@@ -8,7 +8,6 @@ applyTo: "**/*"
 
 This document serves as the main entry point for all development guidelines. For detailed information on specific topics, refer to the specialized instruction files below:
 
-```markdown
 | Topic                    | File                                                                                          | Description                                                         |
 | ------------------------ | --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
 | **Technology Stack**     | [tech-stack.instructions.md](./instructions/tech-stack.instructions.md)                       | Package management, architecture, and integrations                  |
@@ -22,8 +21,9 @@ This document serves as the main entry point for all development guidelines. For
 | **Performance & SEO**    | [performance-seo.instructions.md](./instructions/performance-seo.instructions.md)             | Core Web Vitals, optimization, and SEO strategies                   |
 | **Development Workflow** | [development-workflow.instructions.md](./instructions/development-workflow.instructions.md)   | Git workflow, documentation, and code organization                  |
 | **Security & Testing**   | [security-testing.instructions.md](./instructions/security-testing.instructions.md)           | Authentication, security practices, error handling, and testing     |
+| **THIS FILE**            | [coding-guidelines.instructions.md](./coding-guidelines.instructions.md)                      | General coding practices, conventions, and best practices           |
 
----
+## _For specific guidelines, navigate to the relevant instruction file above._
 
 ## Project Overview
 
@@ -50,21 +50,19 @@ GrowAGram is a Next.js-based social media platform for plant enthusiasts, built 
 - **🪟 Responsive Dialogs**: Standardized modal patterns with composition-based components
 
 ### Project Structure
+
 ```
-
 src/
-├── app/ # Next.js App Router
+├── app/        # Next.js App Router
 ├── components/ # Reusable UI components
-├── hooks/ # Custom React hooks
-├── lib/ # Utility libraries and configurations
-├── server/ # Server-side code (tRPC routers, actions)
-├── styles/ # Global styles
-└── types/ # TypeScript type definitions
-
+├── hooks/      # Custom React hooks
+├── lib/        # Utility libraries and configurations
+├── server/     # Server-side code (tRPC routers, actions)
+├── styles/     # Global styles
+└── types/      # TypeScript type definitions
 ```
 
 ---
-
 
 ## Core Principles
 
@@ -135,6 +133,3 @@ These guidelines are living documents that should evolve with the project. When 
 Remember: These guidelines ensure that GrowAGram maintains high code quality, performance, and maintainability across all development efforts.
 
 ---
-
-_For specific guidelines, navigate to the relevant instruction file above._
-```
