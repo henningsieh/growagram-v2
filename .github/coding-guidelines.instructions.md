@@ -12,20 +12,19 @@ last_updated: 2025-01-07
 
 This document serves as the main entry point for all development guidelines. For detailed information on specific topics, refer to the specialized instruction files below:
 
-```markdown
 | Topic                    | File                                                                                          | Description                                                         |
 | ------------------------ | --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| **Technology Stack**     | [tech-stack.instructions.md](./instructions/tech-stack.instructions.md)                       | Package management, architecture, and integrations                  |
-| **TypeScript**           | [typescript-guidelines.instructions.md](./instructions/typescript-guidelines.instructions.md) | Type safety, Zod schemas, and TypeScript patterns                   |
-| **React & Next.js**      | [react-nextjs.instructions.md](./instructions/react-nextjs.instructions.md)                   | Component structure, hooks, and animation guidelines                |
-| **Styling & i18n**       | [styling-i18n.instructions.md](./instructions/styling-i18n.instructions.md)                   | Tailwind CSS, responsive design, and internationalization           |
-| **Badge System**         | [badge-system.instructions.md](./instructions/badge-system.instructions.md)                   | README badge management, versioning, and maintenance workflow       |
-| **Dialog Patterns**      | [dialog-patterns.instructions.md](./instructions/dialog-patterns.instructions.md)             | ResponsiveDialog usage, modal patterns, and component composition   |
-| **Database & tRPC**      | [database-trpc.instructions.md](./instructions/database-trpc.instructions.md)                 | Drizzle ORM, tRPC procedures, and state management                  |
-| **Database Performance** | [database-performance.instructions.md](./instructions/database-performance.instructions.md)   | PostgreSQL indexing, query optimization, and performance monitoring |
-| **Performance & SEO**    | [performance-seo.instructions.md](./instructions/performance-seo.instructions.md)             | Core Web Vitals, optimization, and SEO strategies                   |
-| **Development Workflow** | [development-workflow.instructions.md](./instructions/development-workflow.instructions.md)   | Git workflow, documentation, and code organization                  |
-| **Security & Testing**   | [security-testing.instructions.md](./instructions/security-testing.instructions.md)           | Authentication, security practices, error handling, and testing     |
+| **Technology Stack**     | [tech-stack.instructions.md](./instructions/tech-stack.instructions.md)                       | Core technologies, package management, and architecture patterns                  |
+| **TypeScript**           | [typescript-guidelines.instructions.md](./instructions/typescript-guidelines.instructions.md) | Type safety patterns, Zod schemas, and TypeScript best practices                   |
+| **React & Next.js**      | [react-nextjs.instructions.md](./instructions/react-nextjs.instructions.md)                   | Component structure, hooks usage patterns, and animation guidelines                |
+| **Styling & i18n**       | [styling-i18n.instructions.md](./instructions/styling-i18n.instructions.md)                   | Tailwind CSS patterns, responsive design, and internationalization guidelines           |
+| **Badge System**         | [badge-system.instructions.md](./instructions/badge-system.instructions.md)                   | README badge management, version tracking, and maintenance workflow       |
+| **Dialog Patterns**      | [dialog-patterns.instructions.md](./instructions/dialog-patterns.instructions.md)             | ResponsiveDialog component usage, modal patterns, and composition guidelines   |
+| **Database & tRPC**      | [database-trpc.instructions.md](./instructions/database-trpc.instructions.md)                 | Drizzle ORM patterns, tRPC procedures, and state management strategies                  |
+| **Database Performance** | [database-performance.instructions.md](./instructions/database-performance.instructions.md)   | PostgreSQL optimization strategies, indexing, and performance monitoring |
+| **Performance & SEO**    | [performance-seo.instructions.md](./instructions/performance-seo.instructions.md)             | Core Web Vitals, performance optimization techniques, and SEO strategies                   |
+| **Development Workflow** | [development-workflow.instructions.md](./instructions/development-workflow.instructions.md)   | Git workflow, code review process, and development best practices                  |
+| **Security & Testing**   | [security-testing.instructions.md](./instructions/security-testing.instructions.md)           | Authentication patterns, security practices, and testing guidelines     |
 
 ---
 
@@ -141,4 +140,3 @@ Remember: These guidelines ensure that GrowAGram maintains high code quality, pe
 ---
 
 _For specific guidelines, navigate to the relevant instruction file above._
-```

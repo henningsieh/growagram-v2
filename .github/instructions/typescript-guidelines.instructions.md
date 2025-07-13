@@ -111,6 +111,117 @@ export const growFilterSchema = z.object({
 export type GrowFilterInput = z.infer<typeof growFilterSchema>;
 ```
 
+### Advanced Zod Schema Patterns
+
+#### Complex Validation Schemas
+
+```typescript
+// User registration schema with validation
+export const userRegistrationSchema = z.object({
+  username: z.string()
+    .min(3, "Username must be at least 3 characters")
+    .max(20, "Username cannot exceed 20 characters")
+    .regex(/^[a-zA-Z0-9_]+$/, "Username can only contain letters, numbers, and underscores"),
+  email: z.string()
+    .email("Invalid email format")
+    .refine(async (email) => {
+      // Custom async validation
+      const exists = await checkEmailExists(email);
+      return !exists;
+    }, "Email already exists"),
+  password: z.string()
+    .min(8, "Password must be at least 8 characters")
+    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, "Password must contain uppercase, lowercase, and number"),
+  confirmPassword: z.string(),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
+});
+
+// Plant post creation schema
+export const plantPostSchema = z.object({
+  title: z.string().min(1, "Title is required").max(100, "Title too long"),
+  description: z.string().optional(),
+  images: z.array(z.string().url("Invalid image URL")).min(1, "At least one image required"),
+  tags: z.array(z.string()).max(10, "Maximum 10 tags allowed"),
+  growthStage: z.nativeEnum(PlantGrowthStages),
+  location: z.object({
+    lat: z.number().min(-90).max(90),
+    lng: z.number().min(-180).max(180),
+    address: z.string().optional(),
+  }).optional(),
+  metadata: z.object({
+    cameraModel: z.string().optional(),
+    timestamp: z.date(),
+    private: z.boolean().default(false),
+  }),
+});
+```
+
+#### Enum Best Practices
+
+```typescript
+// ✅ CORRECT: Use const assertions for type safety
+export const NOTIFICATION_TYPES = [
+  "like",
+  "comment", 
+  "follow",
+  "mention",
+  "grow_update"
+] as const;
+
+export type NotificationType = (typeof NOTIFICATION_TYPES)[number];
+
+export const notificationSchema = z.object({
+  type: z.enum(NOTIFICATION_TYPES),
+  recipientId: z.string().uuid(),
+  senderId: z.string().uuid(),
+  message: z.string(),
+  read: z.boolean().default(false),
+  createdAt: z.date().default(() => new Date()),
+});
+
+// ✅ CORRECT: String enum with validation
+export enum UserRole {
+  ADMIN = "admin",
+  MODERATOR = "moderator", 
+  USER = "user",
+  GUEST = "guest"
+}
+
+export const userRoleSchema = z.nativeEnum(UserRole);
+```
+
+### Type Safety Best Practices
+
+```typescript
+// ✅ CORRECT: Use strict TypeScript configuration
+// tsconfig.json
+{
+  "compilerOptions": {
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noUncheckedIndexedAccess": true
+  }
+}
+
+// ✅ CORRECT: Use branded types for domain objects
+type UserId = string & { readonly _brand: unique symbol };
+type PlantId = string & { readonly _brand: unique symbol };
+type GrowId = string & { readonly _brand: unique symbol };
+
+// ✅ CORRECT: Use utility types effectively
+type PartialUser = Partial<User>;
+type RequiredUser = Required<User>;
+type UserWithoutId = Omit<User, "id">;
+type UserKeys = keyof User;
+type UserValues = User[keyof User];
+```
+
 ### Frontend Component Type Usage
 
 ```typescript
@@ -144,3 +255,13 @@ export const grows = pgTable("grows", {
   // ...
 });
 ```
+
+---
+
+## Related Resources
+
+- **[Technology Stack](./tech-stack.instructions.md)** - Core technologies and architectural patterns
+- **[Database & tRPC](./database-trpc.instructions.md)** - Type-safe API patterns and database schemas
+- **[React & Next.js Guidelines](./react-nextjs.instructions.md)** - Component props and interface definitions
+- **[Security & Testing](./security-testing.instructions.md)** - Type safety in authentication and validation
+- **[Styling & i18n](./styling-i18n.instructions.md)** - TypeScript patterns for styling and internationalization

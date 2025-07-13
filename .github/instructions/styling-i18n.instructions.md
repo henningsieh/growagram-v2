@@ -27,6 +27,88 @@ className={`text-${color}/70 hover:text-${color} text-xs`}
 className="xs:h-16 xs:w-16 h-14 w-14 sm:h-24 sm:w-24"
 ```
 
+### Responsive Design Patterns
+
+#### Breakpoint System
+
+```typescript
+// GrowAGram uses a mobile-first approach with these breakpoints:
+// xs: 480px   - Small mobile
+// sm: 640px   - Large mobile  
+// md: 768px   - Tablet
+// lg: 1024px  - Desktop
+// xl: 1280px  - Large desktop
+// 2xl: 1536px - Extra large desktop
+
+// Example responsive component
+<div className="
+  grid grid-cols-1 gap-4
+  sm:grid-cols-2 sm:gap-6
+  md:grid-cols-3 md:gap-8
+  lg:grid-cols-4 lg:gap-10
+  xl:grid-cols-5 xl:gap-12
+">
+  {/* Content */}
+</div>
+```
+
+#### Container Patterns
+
+```typescript
+// Standard page container with responsive padding
+<div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12">
+  {/* Page content */}
+</div>
+
+// Card grid responsive layout
+<div className="grid grid-cols-1 gap-4 xs:grid-cols-2 sm:gap-6 md:grid-cols-3 lg:grid-cols-4">
+  {/* Cards */}
+</div>
+
+// Sidebar layout with responsive behavior
+<div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
+  <aside className="w-full lg:w-1/4 xl:w-1/5">
+    {/* Sidebar */}
+  </aside>
+  <main className="flex-1">
+    {/* Main content */}
+  </main>
+</div>
+```
+
+#### Typography Responsive Patterns
+
+```typescript
+// Responsive text sizing
+<h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl">
+  {title}
+</h1>
+
+<p className="text-sm sm:text-base md:text-lg leading-relaxed">
+  {description}
+</p>
+
+// Responsive button sizing
+<Button className="px-4 py-2 sm:px-6 sm:py-3 md:px-8 md:py-4 text-sm sm:text-base md:text-lg">
+  {buttonText}
+</Button>
+```
+
+### Tailwind CSS v4 Specifics
+
+#### New Features Usage
+
+```typescript
+// Use new Tailwind v4 features
+className="bg-gradient-to-r from-primary to-secondary animate-fade-in"
+
+// Modern container queries (when available)
+className="@container/card @md:flex-row @lg:gap-8"
+
+// Enhanced color system
+className="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+```
+
 ### CSS Custom Properties
 
 - Maintain Tailwind's design system
@@ -368,3 +450,13 @@ const messages = await import(`~/messages/${locale}.json`);
 - [ ] Professional tone maintained throughout
 - [x] Search labels are consistent
 - [x] Success/error messages are parallel
+
+---
+
+## Related Resources
+
+- **[React & Next.js Guidelines](./react-nextjs.instructions.md)** - Component structure and styling patterns
+- **[TypeScript Guidelines](./typescript-guidelines.instructions.md)** - Type-safe styling and i18n patterns
+- **[Dialog Patterns](./dialog-patterns.instructions.md)** - Modal styling and responsive behavior
+- **[Technology Stack](./tech-stack.instructions.md)** - Build configuration and Tailwind setup
+- **[Performance & SEO](./performance-seo.instructions.md)** - CSS optimization and responsive images
