@@ -1,7 +1,9 @@
 "use server";
 
-import nodemailer, { type TransportOptions } from "nodemailer";
 import { env } from "~/env";
+
+import nodemailer, { type TransportOptions } from "nodemailer";
+
 import type { Locale } from "~/types/locale";
 
 const transporter = nodemailer.createTransport({

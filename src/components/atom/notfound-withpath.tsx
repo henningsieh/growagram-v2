@@ -1,9 +1,14 @@
+// src/components/atom/notfound-withpath.tsx
+
 "use client";
 
 import { useTranslations } from "next-intl";
+
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeftIcon, HomeIcon, XCircle } from "lucide-react";
+
 import { Button } from "~/components/ui/button";
+
 import { Link, usePathname, useRouter } from "~/lib/i18n/routing";
 
 const containerVariants = {

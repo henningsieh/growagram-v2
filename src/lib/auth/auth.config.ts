@@ -1,4 +1,6 @@
 // src/lib/auth/auth.config.ts:
+import { env } from "~/env";
+
 import type { NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import Discord from "next-auth/providers/discord";
@@ -7,11 +9,13 @@ import GitHub from "next-auth/providers/github";
 import Github from "next-auth/providers/github";
 import Google from "next-auth/providers/google";
 import Twitter from "next-auth/providers/twitter";
-import { modulePaths } from "~/assets/constants";
-import { env } from "~/env";
+
+import { UserRoles } from "~/types/user";
+
 import { comparePasswords } from "~/lib/auth/password";
 import { db } from "~/lib/db";
-import { UserRoles } from "~/types/user";
+
+import { modulePaths } from "~/assets/constants";
 
 // Notice this is only an object, not a full Auth.js
 // instance... in order to get "Auth on Edge" running.

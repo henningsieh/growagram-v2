@@ -1,17 +1,23 @@
 "use client";
 
 // src/app/[locale]/(protected)/premium/page.tsx:
-import { useTranslations } from "next-intl";
-import { AnimatePresence, motion } from "framer-motion";
 import { PremiumBenefits } from "~/app/[locale]/(protected)/premium/PremiumBenefits";
 import { PremiumFAQ } from "~/app/[locale]/(protected)/premium/PremiumFAQ";
-import { modulePaths } from "~/assets/constants";
+
+import { useTranslations } from "next-intl";
+
+import { AnimatePresence, motion } from "framer-motion";
+
+import { Card, CardContent } from "~/components/ui/card";
+
 import { BreadcrumbSetter } from "~/components/Layouts/Breadcrumbs/breadcrumb-setter";
 import FormContent from "~/components/Layouts/form-content";
 import PageHeader from "~/components/Layouts/page-header";
 import ConnectSteadyHQButton from "~/components/atom/steady-connect-button";
-import { Card, CardContent } from "~/components/ui/card";
+
 import { createBreadcrumbs } from "~/lib/breadcrumbs/breadcrumbs";
+
+import { modulePaths } from "~/assets/constants";
 
 const containerVariants = {
   hidden: { opacity: 0 },

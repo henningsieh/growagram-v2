@@ -1,6 +1,8 @@
 // src/components/atom/highlight-element.tsx:
 import * as React from "react";
+
 import { HTMLMotionProps, motion, useAnimation } from "framer-motion";
+
 import { cn } from "~/lib/utils";
 
 interface HighlightElementProps

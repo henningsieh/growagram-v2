@@ -1,10 +1,12 @@
 import { eq } from "drizzle-orm";
-import { db } from "~/lib/db";
-import { getAllParentCommentAuthors } from "~/lib/db/utils";
+
 import {
   NotifiableEntityType,
   NotificationEventType,
 } from "~/types/notification";
+
+import { db } from "~/lib/db";
+import { getAllParentCommentAuthors } from "~/lib/db/utils";
 
 /**
  * Determines who should receive notifications for different events

@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
+
 import { useLocale, useTranslations } from "next-intl";
+
 import { useQuery } from "@tanstack/react-query";
 import {
   type ColumnFiltersState,
@@ -14,7 +16,9 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+
 import { ChevronDown, Loader2 } from "lucide-react";
+
 import { Button } from "~/components/ui/button";
 import {
   Card,
@@ -38,8 +42,11 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
-import { useTRPC } from "~/lib/trpc/client.tsx";
+
 import type { Locale } from "~/types/locale";
+
+import { useTRPC } from "~/lib/trpc/client.tsx";
+
 import { createColumns } from "./columns.tsx";
 
 export function UsersTable() {

@@ -2,19 +2,26 @@
 
 // src/components/features/Grows/Views/infinite-scroll.tsx:
 import * as React from "react";
+
 import { useTranslations } from "next-intl";
+
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useQueryClient } from "@tanstack/react-query";
-import { PaginationItemsPerPage, modulePaths } from "~/assets/constants";
+
 import ResponsiveGrid from "~/components/Layouts/responsive-grid";
 import InfiniteScrollLoader from "~/components/atom/infinite-scroll-loader";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
 import SpinningLoader from "~/components/atom/spinning-loader";
 import { GrowCard } from "~/components/features/Grows/grow-card";
+
+import type { GetOwnGrowsInput, GetOwnGrowsType } from "~/server/api/root";
+
+import { GrowsSortField } from "~/types/grow";
+
 import { useRouter } from "~/lib/i18n/routing";
 import { useTRPC } from "~/lib/trpc/client";
-import type { GetOwnGrowsInput, GetOwnGrowsType } from "~/server/api/root";
-import { GrowsSortField } from "~/types/grow";
+
+import { PaginationItemsPerPage, modulePaths } from "~/assets/constants";
 
 export default function InfiniteScrollGrowsView({
   sortField,

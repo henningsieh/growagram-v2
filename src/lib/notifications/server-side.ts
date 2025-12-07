@@ -1,12 +1,15 @@
 import { getTranslations } from "next-intl/server";
+
 import { eq } from "drizzle-orm";
-import { db } from "~/lib/db";
-import { comments } from "~/lib/db/schema";
+
 import {
   NotifiableEntityType,
   NotificationEventType,
   URL_PATTERNS,
 } from "~/types/notification";
+
+import { db } from "~/lib/db";
+import { comments } from "~/lib/db/schema";
 
 /**
  * Server-side notification service that generates translated text and URLs

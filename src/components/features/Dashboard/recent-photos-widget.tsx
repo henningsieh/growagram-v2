@@ -1,9 +1,11 @@
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+
 import Image from "next/image";
+
+import { useTranslations } from "next-intl";
+
 import { ArrowRight, ImageIcon } from "lucide-react";
-import { modulePaths } from "~/assets/constants";
-import { useImageModal } from "~/components/Layouts/photo-modal-provider";
+
 import { Button } from "~/components/ui/button";
 import {
   Card,
@@ -13,7 +15,12 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 import { Skeleton } from "~/components/ui/skeleton";
+
+import { useImageModal } from "~/components/Layouts/photo-modal-provider";
+
 import { Link } from "~/lib/i18n/routing";
+
+import { modulePaths } from "~/assets/constants";
 
 interface RecentPhotosWidgetProps {
   photos?: {

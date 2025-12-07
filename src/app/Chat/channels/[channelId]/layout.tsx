@@ -1,9 +1,14 @@
+import { CreateChannelDialog } from "~/app/Chat/channels/create-channel";
+
 import * as React from "react";
+
 import Link from "next/link";
+
 import { HashtagIcon } from "@heroicons/react/24/outline";
 import { cx } from "class-variance-authority";
-import { CreateChannelDialog } from "~/app/Chat/channels/create-channel";
+
 import { Button } from "~/components/button";
+
 import { SignedIn, SignedOut, auth, signIn, signOut } from "~/lib/auth/index";
 import { caller } from "~/lib/trpc/server";
 

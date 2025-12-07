@@ -1,11 +1,14 @@
 // src/trpc/init.ts:
 import { cache } from "react";
+
 import { TRPCError, initTRPC } from "@trpc/server";
-import { FetchCreateContextFnOptions } from "@trpc/server/adapters/fetch";
+import type { FetchCreateContextFnOptions } from "@trpc/server/adapters/fetch";
 import superjson from "superjson";
+
+import { UserRoles } from "~/types/user";
+
 import { auth } from "~/lib/auth";
 import { db } from "~/lib/db";
-import { UserRoles } from "~/types/user";
 
 /**
  * 1. CONTEXT
@@ -107,7 +110,7 @@ export const createTRPCRouter = t.router;
  * network latency that would occur in production but not in local development.
  */
 const timingMiddleware = t.middleware(async ({ next, path }) => {
-  const start = Date.now();
+  const start = performance.now();
 
   if (process.env.NODE_ENV === "development") {
     const randomNumber = (min: number, max: number) =>
@@ -125,8 +128,8 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
   }
 
   const result = await next();
-  const end = Date.now();
-  console.log(`[TRPC] ${path} took ${end - start}ms to execute`);
+  const end = performance.now();
+  console.log(`[TRPC] ${path} took ${(end - start).toFixed(2)}ms to execute`);
 
   return result;
 });

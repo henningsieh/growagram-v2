@@ -728,13 +728,13 @@ export const postRouter = createTRPCRouter({
 #### Basic Query with Input Validation
 
 ```typescript
+import { z } from "zod";
+
 import {
   createTRPCRouter,
   protectedProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
-
-import { z } from "zod";
 
 export const growRouter = createTRPCRouter({
   // Public query - no authentication required

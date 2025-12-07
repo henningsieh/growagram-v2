@@ -1,18 +1,12 @@
 "use client";
 
 import * as React from "react";
+
 import { useLocale, useTranslations } from "next-intl";
+
 import { AnimatePresence, motion } from "framer-motion";
 import { Clock, type LucideIcon, NutIcon, TentTreeIcon } from "lucide-react";
-import { modulePaths } from "~/assets/constants";
-import { CustomAvatar } from "~/components/atom/custom-avatar";
-import {
-  HybridTooltip,
-  HybridTooltipContent,
-  HybridTooltipTrigger,
-  TouchProvider,
-} from "~/components/atom/hybrid-tooltip";
-import StrainBadge from "~/components/atom/strain-badge";
+
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import {
@@ -23,7 +17,21 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 import { Progress } from "~/components/ui/progress";
-import { useIsMobile } from "~/hooks/use-mobile";
+
+import { CustomAvatar } from "~/components/atom/custom-avatar";
+import {
+  HybridTooltip,
+  HybridTooltipContent,
+  HybridTooltipTrigger,
+  TouchProvider,
+} from "~/components/atom/hybrid-tooltip";
+import StrainBadge from "~/components/atom/strain-badge";
+
+import type { GetAllPlantType } from "~/server/api/root";
+
+import { Locale } from "~/types/locale";
+import { PlantGrowthStages } from "~/types/plant";
+
 import { Link } from "~/lib/i18n/routing";
 import {
   type DateFormatOptions,
@@ -33,9 +41,10 @@ import {
   formatDistanceToNowLocalized,
 } from "~/lib/utils";
 import { calculateGrowthProgress } from "~/lib/utils/calculateGrowthProgress";
-import type { GetAllPlantType } from "~/server/api/root";
-import { Locale } from "~/types/locale";
-import { PlantGrowthStages } from "~/types/plant";
+
+import { useIsMobile } from "~/hooks/use-mobile";
+
+import { modulePaths } from "~/assets/constants";
 
 interface EnhancedPlantCardProps {
   plant: GetAllPlantType;

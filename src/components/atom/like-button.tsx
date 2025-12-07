@@ -2,18 +2,26 @@
 
 // src/components/atom/like-button.tsx:
 import * as React from "react";
+
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
+
 import { useMutation } from "@tanstack/react-query";
+
 import { AnimatePresence, motion } from "framer-motion";
 import { Heart } from "lucide-react";
 import { toast } from "sonner";
-import SpinningLoader from "~/components/atom/spinning-loader";
+
 import { Button } from "~/components/ui/button";
+
+import SpinningLoader from "~/components/atom/spinning-loader";
+
+import { ToggleLikeInput } from "~/server/api/root";
+
+import { LikeableEntityType } from "~/types/like";
+
 import { useTRPC } from "~/lib/trpc/client";
 import { cn } from "~/lib/utils";
-import { ToggleLikeInput } from "~/server/api/root";
-import { LikeableEntityType } from "~/types/like";
 
 interface LikeButtonProps {
   entityId: string;

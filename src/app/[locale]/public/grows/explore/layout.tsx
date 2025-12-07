@@ -1,7 +1,11 @@
 import * as React from "react";
+
 import { Metadata } from "next";
+
 import { useTranslations } from "next-intl";
+
 import { SearchIcon, StarIcon, TrendingUpIcon, UsersIcon } from "lucide-react";
+
 import { cn } from "~/lib/utils";
 import { generatePageMetadata } from "~/lib/utils/metadata";
 

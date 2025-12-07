@@ -1,7 +1,10 @@
 // src/lib/auth/index.ts:
 import * as React from "react";
+
 import NextAuth, { Session } from "next-auth";
+
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
+
 import authConfig from "~/lib/auth/auth.config.ts";
 import { db } from "~/lib/db";
 

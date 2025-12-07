@@ -2,11 +2,15 @@
 
 // src/components/features/Grows/grow-card.tsx:
 import * as React from "react";
+
+import Image from "next/image";
+
 import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
-import Image from "next/image";
+
 import { useMutation } from "@tanstack/react-query";
 import { useQueryClient } from "@tanstack/react-query";
+
 import {
   DotIcon,
   Edit3Icon,
@@ -14,18 +18,7 @@ import {
   Trash2Icon,
 } from "lucide-react";
 import { toast } from "sonner";
-import { modulePaths } from "~/assets/constants";
-import landscapePlaceholder from "~/assets/landscape-placeholdersvg.svg";
-import { RESPONSIVE_IMAGE_SIZES } from "~/components/Layouts/responsive-grid";
-import AvatarCardHeader, {
-  ActionItem,
-} from "~/components/atom/avatar-card-header";
-import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
-import { EntityDateInfo } from "~/components/atom/entity-date-info";
-import { OwnerDropdownMenu } from "~/components/atom/owner-dropdown-menu";
-import { SocialCardFooter } from "~/components/atom/social-card-footer";
-import { Comments } from "~/components/features/Comments/comments";
-import { PostFormModal } from "~/components/features/Timeline/Post/post-form-modal";
+
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardTitle } from "~/components/ui/card";
 import {
@@ -34,8 +27,30 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "~/components/ui/tooltip";
-import { useComments } from "~/hooks/use-comments";
-import { useLikeStatus } from "~/hooks/use-likes";
+
+import { RESPONSIVE_IMAGE_SIZES } from "~/components/Layouts/responsive-grid";
+import { ActionItem, ActionsMenu } from "~/components/atom/actions-menu";
+import AvatarCardHeader from "~/components/atom/avatar-card-header";
+import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
+import { EntityDateInfo } from "~/components/atom/entity-date-info";
+import { SocialCardFooter } from "~/components/atom/social-card-footer";
+import { Comments } from "~/components/features/Comments/comments";
+import { PostFormModal } from "~/components/features/Timeline/Post/post-form-modal";
+
+import type { GetAllGrowType, GetOwnGrowType } from "~/server/api/root";
+
+import { CommentableEntityType } from "~/types/comment";
+import {
+  CultureMedium,
+  FertilizerForm,
+  FertilizerType,
+  GrowEnvironment,
+} from "~/types/grow";
+import { LikeableEntityType } from "~/types/like";
+import { Locale } from "~/types/locale";
+import { PostableEntityType } from "~/types/post";
+import { UserRoles } from "~/types/user";
+
 import { Link, useRouter } from "~/lib/i18n/routing";
 import { useTRPC } from "~/lib/trpc/client";
 import {
@@ -50,18 +65,11 @@ import {
   getGrowEnvironmentEmoji,
   getGrowEnvironmentTranslationKey,
 } from "~/lib/utils";
-import type { GetAllGrowType, GetOwnGrowType } from "~/server/api/root";
-import { CommentableEntityType } from "~/types/comment";
-import {
-  CultureMedium,
-  FertilizerForm,
-  FertilizerType,
-  GrowEnvironment,
-} from "~/types/grow";
-import { LikeableEntityType } from "~/types/like";
-import { Locale } from "~/types/locale";
-import { PostableEntityType } from "~/types/post";
-import { UserRoles } from "~/types/user";
+
+import { useComments } from "~/hooks/use-comments";
+import { useLikeStatus } from "~/hooks/use-likes";
+
+import { APP_SETTINGS, modulePaths } from "~/assets/constants";
 
 interface GrowCardProps {
   grow: GetOwnGrowType | GetAllGrowType;
@@ -123,8 +131,10 @@ export function GrowCard({
     setIsDeleteDialogOpen(false);
   };
 
+  // Build actions array for both social and non-social modes
   const growActions: ActionItem[] = [];
 
+  // Owner actions: Edit (only for grow owners)
   if (user && user.id === grow.ownerId) {
     growActions.push({
       icon: Edit3Icon,
@@ -136,6 +146,7 @@ export function GrowCard({
     });
   }
 
+  // Admin/Owner actions: Delete (for grow owners OR admins)
   if (user && (user.id === grow.ownerId || user.role === UserRoles.ADMIN)) {
     growActions.push({
       icon: Trash2Icon,
@@ -191,7 +202,7 @@ export function GrowCard({
         <CardContent
           className={`flex h-full flex-col gap-1 ${isSocial ? "ml-12 pr-2 pl-0" : "p-2"}`}
         >
-          <div className="flex min-w-0 items-center justify-between gap-2">
+          <div className="flex min-w-0 justify-between gap-2">
             {/* Title Link */}
             <CardTitle as="h3" className="min-w-0">
               <Button
@@ -206,15 +217,8 @@ export function GrowCard({
                 </Link>
               </Button>
             </CardTitle>
-            {!isSocial && user && user.id === grow.ownerId && (
-              <OwnerDropdownMenu
-                isSocial={isSocial}
-                setIsSocial={setIsSocial}
-                isDeleting={deleteMutation.isPending}
-                handleDelete={handleDelete}
-                entityId={grow.id}
-                entityType="Grows"
-              />
+            {!isSocial && growActions.length > 0 && (
+              <ActionsMenu actions={growActions} />
             )}
           </div>
           {/* Header Image */}
@@ -233,7 +237,7 @@ export function GrowCard({
                   <Image
                     fill
                     sizes={RESPONSIVE_IMAGE_SIZES}
-                    src={landscapePlaceholder as string}
+                    src={APP_SETTINGS.PLACEHOLDER_IMAGE_PATH}
                     alt={grow.name || "Grow placeholder"}
                     className="h-full w-full object-cover opacity-40 transition-opacity duration-300 hover:opacity-50"
                     priority

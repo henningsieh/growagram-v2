@@ -1,12 +1,16 @@
 "use client";
 
 import * as React from "react";
+
 import { useTranslations } from "next-intl";
+
 import { useDebounce } from "@uidotdev/usehooks";
 import { FilterIcon, SearchIcon, X } from "lucide-react";
 import { parseAsString, useQueryStates } from "nuqs";
 import { ErrorBoundary } from "react-error-boundary";
-import { PaginationItemsPerPage } from "~/assets/constants";
+
+import { Button } from "~/components/ui/button";
+
 import { GenericError } from "~/components/atom/generic-error";
 import { Kbd } from "~/components/atom/kbd";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
@@ -14,10 +18,9 @@ import { ActiveFiltersBadges } from "~/components/features/Exploration/active-fi
 import { ExploreFiltersDialog } from "~/components/features/Exploration/explore-filters-dialog";
 import { ExploreGrowsGrid } from "~/components/features/Exploration/explore-grows-grid";
 import { ExploreGrowsLoading } from "~/components/features/Exploration/explore-grows-loading";
-import { Button } from "~/components/ui/button";
-import { useKeyboardShortcut } from "~/hooks/use-keyboard-shortcut";
-import { getKeyboardShortcut } from "~/lib/utils/platform";
+
 import type { ExploreGrowsInput } from "~/server/api/root";
+
 import {
   CultureMedium,
   FertilizerForm,
@@ -25,6 +28,12 @@ import {
   GrowEnvironment,
   GrowsSortField,
 } from "~/types/grow";
+
+import { getKeyboardShortcut } from "~/lib/utils/platform";
+
+import { useKeyboardShortcut } from "~/hooks/use-keyboard-shortcut";
+
+import { PaginationItemsPerPage } from "~/assets/constants";
 
 export function ExploreGrowsClient() {
   const t = useTranslations("Exploration");

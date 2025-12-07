@@ -1,10 +1,14 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
+
 import { Calendar1Icon, Edit3Icon } from "lucide-react";
+
 import { CardDescription } from "~/components/ui/card";
-import { formatDateTime } from "~/lib/utils";
+
 import { Locale } from "~/types/locale";
+
+import { formatDateTime } from "~/lib/utils";
 
 interface EntityDateInfoProps {
   createdAt: Date;

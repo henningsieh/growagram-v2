@@ -1,10 +1,15 @@
+import { CreateChannelDialog } from "~/app/Chat/channels/create-channel";
+
 import * as React from "react";
+
 // eslint-disable-next-line no-restricted-imports
 import Link from "next/link";
+
 import { HashtagIcon } from "@heroicons/react/24/outline";
 import { twMerge } from "tailwind-merge";
-import { CreateChannelDialog } from "~/app/Chat/channels/create-channel";
+
 import { buttonVariants } from "~/components/button";
+
 import { SignedIn, SignedOut } from "~/lib/auth/index";
 import { caller } from "~/lib/trpc/server";
 

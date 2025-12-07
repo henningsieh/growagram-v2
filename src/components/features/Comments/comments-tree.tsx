@@ -1,10 +1,15 @@
 // src/components/features/Comments/comments-tree.tsx:
 import type React from "react";
+
 import { useQuery } from "@tanstack/react-query";
+
 import { Comment } from "~/components/features/Comments/comment";
-import { useComments } from "~/hooks/use-comments";
-import { useTRPC } from "~/lib/trpc/client";
+
 import type { GetCommentType, GetRepliesInput } from "~/server/api/root";
+
+import { useTRPC } from "~/lib/trpc/client";
+
+import { useComments } from "~/hooks/use-comments";
 
 interface CommentsTreeProps {
   comment: GetCommentType;

@@ -2,9 +2,12 @@
 
 // src/components/features/Chat/chat-button.tsx
 import * as React from "react";
+
 import { MessageCircleIcon } from "lucide-react";
-import { ChatModal } from "~/components/features/Chat/chat-modal";
+
 import { Button } from "~/components/ui/button";
+
+import { ChatModal } from "~/components/features/Chat/chat-modal";
 
 export function ChatButton() {
   const [isOpen, setIsOpen] = React.useState(false);

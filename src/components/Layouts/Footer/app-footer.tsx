@@ -1,5 +1,6 @@
 // src/components/Layouts/Footer/app-footer.tsx:
 import * as React from "react";
+
 import { Link } from "~/lib/i18n/routing";
 
 export const AppFooter = () => {

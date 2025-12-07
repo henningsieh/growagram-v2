@@ -1,8 +1,12 @@
 // src/components/atom/custom-avatar.tsx:
 import * as React from "react";
+
 import Image from "next/image";
+
 import { User2 } from "lucide-react";
+
 import { Avatar, AvatarFallback } from "~/components/ui/avatar";
+
 import { cn } from "~/lib/utils";
 
 interface CustomAvatarProps extends React.HTMLAttributes<HTMLDivElement> {

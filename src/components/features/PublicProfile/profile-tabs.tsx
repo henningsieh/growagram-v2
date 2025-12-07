@@ -1,9 +1,12 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
+
 import { GrowCard } from "~/components/features/Grows/grow-card";
 import PlantCard from "~/components/features/Plants/plant-card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
+
 import type { PublicUserProfileType } from "~/server/api/root";
 
 interface ProfileTabsProps {

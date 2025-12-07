@@ -1,7 +1,8 @@
 // src/components/ui/delete-confirmation-dialog.tsx
 import { useTranslations } from "next-intl";
+
 import { AlertTriangle, Trash2 } from "lucide-react";
-import SpinningLoader from "~/components/atom/spinning-loader";
+
 import { Button } from "~/components/ui/button";
 import {
   Dialog,
@@ -11,6 +12,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "~/components/ui/dialog";
+
+import SpinningLoader from "~/components/atom/spinning-loader";
+
 import { cn } from "~/lib/utils";
 
 interface DeleteConfirmationDialogProps {

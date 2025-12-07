@@ -1,11 +1,14 @@
 "use client";
 
 import * as React from "react";
+
 import { useLocale, useTranslations } from "next-intl";
-import { zodResolver } from "@hookform/resolvers/zod";
+
 import { useQuery } from "@tanstack/react-query";
 import { useMutation } from "@tanstack/react-query";
 import { useQueryClient } from "@tanstack/react-query";
+
+import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -27,11 +30,7 @@ import {
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { BAN_DURATIONS } from "~/assets/constants";
-import FormContent from "~/components/Layouts/form-content";
-import PageHeader from "~/components/Layouts/page-header";
-import { CustomAvatar } from "~/components/atom/custom-avatar";
-import SpinningLoader from "~/components/atom/spinning-loader";
+
 import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
 import { Button } from "~/components/ui/button";
 import {
@@ -60,7 +59,16 @@ import {
 } from "~/components/ui/select";
 import { Separator } from "~/components/ui/separator";
 import { Textarea } from "~/components/ui/textarea";
-import { useIsMobile } from "~/hooks/use-mobile";
+
+import FormContent from "~/components/Layouts/form-content";
+import PageHeader from "~/components/Layouts/page-header";
+import { CustomAvatar } from "~/components/atom/custom-avatar";
+import SpinningLoader from "~/components/atom/spinning-loader";
+
+import type { Locale } from "~/types/locale";
+import { UserRoles } from "~/types/user";
+import { adminEditUserSchema } from "~/types/zodSchema";
+
 import { useRouter } from "~/lib/i18n/routing";
 import { useTRPC } from "~/lib/trpc/client";
 import {
@@ -69,9 +77,10 @@ import {
   isPermanentBan,
   isUserBanned,
 } from "~/lib/utils";
-import type { Locale } from "~/types/locale";
-import { UserRoles } from "~/types/user";
-import { adminEditUserSchema } from "~/types/zodSchema";
+
+import { useIsMobile } from "~/hooks/use-mobile";
+
+import { BAN_DURATIONS } from "~/assets/constants";
 
 // Form animations
 const formVariants = {

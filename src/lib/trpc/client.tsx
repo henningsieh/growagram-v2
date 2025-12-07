@@ -1,9 +1,13 @@
 "use client";
 
 // src/trpc/client.tsx:
+import { env } from "~/env";
+
 import { useState } from "react";
+
 import type { QueryClient } from "@tanstack/react-query";
 import { QueryClientProvider } from "@tanstack/react-query";
+
 import {
   createTRPCClient,
   httpBatchLink,
@@ -13,8 +17,9 @@ import {
 } from "@trpc/client";
 import { createTRPCContext } from "@trpc/tanstack-react-query";
 import SuperJSON from "superjson";
+
 import { TRPC_ENDPOINT } from "~/assets/constants";
-import { env } from "~/env";
+
 import type { AppRouter } from "../../server/api/root";
 import { makeQueryClient } from "./query-client";
 

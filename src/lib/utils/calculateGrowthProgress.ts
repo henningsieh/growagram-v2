@@ -1,12 +1,15 @@
 import type { LucideIcon } from "lucide-react";
-import { getDaysBetween, getWeeksBetween } from "~/lib/utils";
+
 import type { GetOwnPlantType } from "~/server/api/root";
+
 import {
   type GrowthPhase,
   buildPlantGrowthPhases,
   getGrowthStage,
   orderedPhases,
 } from "~/types/plant";
+
+import { getDaysBetween, getWeeksBetween } from "~/lib/utils";
 
 interface CalculateGrowthProgressParameters {
   currentPhase: GrowthPhase;

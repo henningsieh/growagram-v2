@@ -132,6 +132,7 @@ export const APP_SETTINGS = {
       flag: USFlag,
     },
   ] as const, // Ensures immutability and type inference
+  PLACEHOLDER_IMAGE_PATH: "/images/GrowAGram_Logo_big.png",
 };
 
 export const MAX_UPLOAD_FILE_SIZE = 10000000; // 10MB

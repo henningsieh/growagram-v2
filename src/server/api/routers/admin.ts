@@ -2,11 +2,14 @@
 import { TRPCError } from "@trpc/server";
 import { desc, eq } from "drizzle-orm";
 import { z } from "zod";
-import { BAN_DURATIONS } from "~/assets/constants";
-import { users } from "~/lib/db/schema";
-import { adminProcedure } from "~/lib/trpc/init";
+
 import { UserRoles } from "~/types/user";
 import { adminEditUserSchema } from "~/types/zodSchema";
+
+import { users } from "~/lib/db/schema";
+import { adminProcedure } from "~/lib/trpc/init";
+
+import { BAN_DURATIONS } from "~/assets/constants";
 
 export const adminRouter = {
   // Get all users with pagination

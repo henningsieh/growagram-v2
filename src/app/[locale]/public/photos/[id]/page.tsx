@@ -1,9 +1,12 @@
 // src/app/[locale]/(public)/public/timeline/page.tsx:
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+
 import PhotoCard from "~/components/features/Photos/photo-card";
-import { caller } from "~/lib/trpc/server";
+
 import type { GetPhotoByIdInput } from "~/server/api/root";
+
+import { caller } from "~/lib/trpc/server";
 
 type PublicPhotoByIdProps = {
   params: Promise<GetPhotoByIdInput>;

@@ -2,12 +2,10 @@
 import { TRPCError } from "@trpc/server";
 import { and, asc, eq, ilike, isNotNull, not } from "drizzle-orm";
 import { z } from "zod";
-import { hashPassword } from "~/lib/auth/password";
-import { userFollows, users, verificationTokens } from "~/lib/db/schema";
-import { NotificationFactoryRegistry } from "~/lib/notifications/core";
-import { protectedProcedure, publicProcedure } from "~/lib/trpc/init";
+
 import { sendVerificationEmail } from "~/server/actions/sendVerificationEmail";
 import { connectPlantWithImagesQuery } from "~/server/api/routers/plantImages";
+
 import {
   NotifiableEntityType,
   NotificationEventType,
@@ -18,6 +16,11 @@ import {
   updateTokensSchema,
   userEditSchema,
 } from "~/types/zodSchema";
+
+import { hashPassword } from "~/lib/auth/password";
+import { userFollows, users, verificationTokens } from "~/lib/db/schema";
+import { NotificationFactoryRegistry } from "~/lib/notifications/core";
+import { protectedProcedure, publicProcedure } from "~/lib/trpc/init";
 
 // Fake translation function for server-side use of translated ZOD schema messages
 const outsideReactT = (key: string) => key; // Just returns the key, or provide basic English messages

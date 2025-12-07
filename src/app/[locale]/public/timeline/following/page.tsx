@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+
 import InfiniteScrollLoader from "~/components/atom/infinite-scroll-loader";
 import FollowingTimeline from "~/components/features/Timeline/following-timeline";
 

@@ -2,19 +2,19 @@
 
 // src/components/features/Images/image-details-card.tsx:
 import * as React from "react";
-import { useLocale, useTranslations } from "next-intl";
+
 import { useSearchParams } from "next/navigation";
+
+import { useLocale, useTranslations } from "next-intl";
+
 import { useQuery } from "@tanstack/react-query";
 import { useMutation } from "@tanstack/react-query";
 import { useQueryClient } from "@tanstack/react-query";
+
 import { TRPCClientError } from "@trpc/client";
 import { Check, Flower2Icon } from "lucide-react";
 import { toast } from "sonner";
-import { modulePaths } from "~/assets/constants";
-import FormContent from "~/components/Layouts/form-content";
-import PageHeader from "~/components/Layouts/page-header";
-import SpinningLoader from "~/components/atom/spinning-loader";
-import { ImageDetailsCard } from "~/components/features/Photos/image-details-card";
+
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import {
@@ -33,9 +33,18 @@ import {
   CommandItem,
   CommandList,
 } from "~/components/ui/command";
+
+import FormContent from "~/components/Layouts/form-content";
+import PageHeader from "~/components/Layouts/page-header";
+import SpinningLoader from "~/components/atom/spinning-loader";
+import { ImageDetailsCard } from "~/components/features/Photos/image-details-card";
+
+import type { GetOwnPlantsInput, GetPhotoByIdType } from "~/server/api/root";
+
 import { useRouter } from "~/lib/i18n/routing";
 import { useTRPC } from "~/lib/trpc/client";
-import type { GetOwnPlantsInput, GetPhotoByIdType } from "~/server/api/root";
+
+import { modulePaths } from "~/assets/constants";
 
 interface PhotoConnectPlantsProps {
   image: GetPhotoByIdType;

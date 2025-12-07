@@ -1,7 +1,9 @@
 "use client";
 
 import * as React from "react";
+
 import { useTranslations } from "next-intl";
+
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -11,6 +13,7 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "~/components/ui/navigation-menu";
+
 import { Link } from "~/lib/i18n/routing";
 import { getProcessedNavigationData } from "~/lib/navigation";
 import { cn } from "~/lib/utils";

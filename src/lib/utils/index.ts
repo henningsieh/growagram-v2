@@ -4,7 +4,6 @@ import { formatDistanceToNow as dateFnsFormatDistanceToNow } from "date-fns";
 import type { Locale as DateFnsLocale } from "date-fns";
 import { de as deLocale, enUS as enUSLocale } from "date-fns/locale";
 import { twMerge } from "tailwind-merge";
-import { APP_SETTINGS, GROW_FILTER_EMOJIS } from "~/assets/constants";
 
 /**
  * Grow filter helper functions for emoji and translation key retrieval
@@ -20,6 +19,8 @@ import {
   GrowEnvironment,
 } from "~/types/grow";
 import type { Locale } from "~/types/locale";
+
+import { APP_SETTINGS, GROW_FILTER_EMOJIS } from "~/assets/constants";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));

@@ -1,12 +1,18 @@
 // src/app/[locale]/(protected)/grows/layout.tsx:
 import { Metadata } from "next";
+
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
-import { PaginationItemsPerPage } from "~/assets/constants";
+
 import { SortOrder } from "~/components/atom/sort-filter-controls";
+
+import type { GetOwnGrowsInput } from "~/server/api/root";
+
+import { GrowsSortField } from "~/types/grow";
+
 import { getQueryClient, trpc } from "~/lib/trpc/server";
 import { generatePageMetadata } from "~/lib/utils/metadata";
-import type { GetOwnGrowsInput } from "~/server/api/root";
-import { GrowsSortField } from "~/types/grow";
+
+import { PaginationItemsPerPage } from "~/assets/constants";
 
 export async function generateMetadata({
   params,

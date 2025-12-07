@@ -1,12 +1,15 @@
 "use client";
 
 import * as React from "react";
+
 import { useTranslations } from "next-intl";
+
 import { useMutation } from "@tanstack/react-query";
 import { useQueryClient } from "@tanstack/react-query";
+
 import { MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
-import { BAN_DURATIONS, modulePaths } from "~/assets/constants";
+
 import { Button } from "~/components/ui/button";
 import {
   DropdownMenu,
@@ -20,10 +23,14 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
+
+import type { AdminUserListItem } from "~/server/api/root";
+
 import { useRouter } from "~/lib/i18n/routing";
 import { useTRPC } from "~/lib/trpc/client";
 import { isUserBanned } from "~/lib/utils";
-import type { AdminUserListItem } from "~/server/api/root";
+
+import { BAN_DURATIONS, modulePaths } from "~/assets/constants";
 
 interface ActionsCellProps {
   user: AdminUserListItem;

@@ -1,9 +1,13 @@
 // src/hooks/use-likes.tsx:
 import * as React from "react";
+
 import { useSession } from "next-auth/react";
+
 import { useQuery } from "@tanstack/react-query";
-import { useTRPC } from "~/lib/trpc/client";
+
 import { LikeableEntityType } from "~/types/like";
+
+import { useTRPC } from "~/lib/trpc/client";
 
 export const useLikeStatus = (
   entityId: string,

@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+
 import {
   Bar,
   BarChart,
@@ -10,8 +11,10 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { calculateGrowthProgress } from "~/lib/utils/calculateGrowthProgress";
+
 import type { PlantByIdType } from "~/server/api/root";
+
+import { calculateGrowthProgress } from "~/lib/utils/calculateGrowthProgress";
 
 interface PlantsOverviewChartProps {
   plantsData?: PlantByIdType[];

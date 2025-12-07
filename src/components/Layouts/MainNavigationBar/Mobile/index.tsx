@@ -1,8 +1,11 @@
 "use client";
 
 import * as React from "react";
+
 import { useTranslations } from "next-intl";
+
 import { MenuIcon } from "lucide-react";
+
 import { Button } from "~/components/ui/button";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { Separator } from "~/components/ui/separator";
@@ -13,9 +16,11 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "~/components/ui/sheet";
+
+import type { ProcessedNavigationItem } from "~/types/navigation";
+
 import { Link } from "~/lib/i18n/routing";
 import { getProcessedNavigationData } from "~/lib/navigation";
-import type { ProcessedNavigationItem } from "~/types/navigation";
 
 export default function MobileNavigationMenu() {
   const [open, setOpen] = React.useState(false);

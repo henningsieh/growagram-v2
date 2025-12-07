@@ -1,12 +1,16 @@
 // src/app/[locale]/(protected)/photos/[id]/form/page.tsx:
 import { notFound } from "next/navigation";
-import { modulePaths } from "~/assets/constants";
+
 import { BreadcrumbSetter } from "~/components/Layouts/Breadcrumbs/breadcrumb-setter";
 import PhotoConnectPlants from "~/components/features/Photos/photo-connect-plants";
-import { createBreadcrumbs } from "~/lib/breadcrumbs/breadcrumbs";
-import { caller } from "~/lib/trpc/server";
+
 import type { GetPhotoByIdInput } from "~/server/api/root";
 import type { GetPhotoByIdType } from "~/server/api/root";
+
+import { createBreadcrumbs } from "~/lib/breadcrumbs/breadcrumbs";
+import { caller } from "~/lib/trpc/server";
+
+import { modulePaths } from "~/assets/constants";
 
 export default async function EditPhotoPage({
   params,

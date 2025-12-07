@@ -1,5 +1,6 @@
 // src/app/[locale]/(protected)/dashboard/layout.tsx:
 import { Metadata } from "next";
+
 import { generatePageMetadata } from "~/lib/utils/metadata";
 
 export async function generateMetadata({

@@ -1,29 +1,19 @@
 "use client";
 
 import * as React from "react";
-import type { VariantProps } from "class-variance-authority";
-import type { LucideIcon } from "lucide-react";
-import { MoreHorizontal, ShieldIcon } from "lucide-react";
-import { CustomAvatar } from "~/components/atom/custom-avatar";
-import { Button, buttonVariants } from "~/components/ui/button";
+
+import { ShieldIcon } from "lucide-react";
+
 import { CardHeader } from "~/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu";
-import { Link } from "~/lib/i18n/routing";
+
+import { ActionItem, ActionsMenu } from "~/components/atom/actions-menu";
+import { CustomAvatar } from "~/components/atom/custom-avatar";
+
 import type { OwnUserDataType } from "~/server/api/root";
+
 import { UserRoles } from "~/types/user";
 
-export interface ActionItem {
-  icon: LucideIcon;
-  label: string;
-  onClick: () => void;
-  variant?: VariantProps<typeof buttonVariants>["variant"];
-  disabled?: boolean;
-}
+import { Link } from "~/lib/i18n/routing";
 
 interface SocialHeaderProps {
   user: OwnUserDataType;
@@ -74,38 +64,7 @@ function AvatarCardHeader({
         </div>
       </div>
       {showActions && actions && actions.length > 0 && (
-        <DropdownMenu>
-          <DropdownMenuTrigger
-            asChild
-            className="text-muted-foreground hover:text-foreground"
-          >
-            <Button variant="ghost" size="icon" aria-label="More actions">
-              <MoreHorizontal className="h-6 w-6" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="min-w-6" align="end">
-            {actions.map((action, index) => {
-              const Icon = action.icon;
-              return (
-                <DropdownMenuItem
-                  className="px-0 py-0.5 focus:bg-transparent"
-                  key={`${action.label}-${index}`}
-                >
-                  <Button
-                    size={"sm"}
-                    className="flex w-full items-center justify-start"
-                    variant={action.variant}
-                    disabled={action.disabled}
-                    onClick={action.onClick}
-                  >
-                    <Icon className="mr-2 h-4 w-4" />
-                    {action.label}
-                  </Button>
-                </DropdownMenuItem>
-              );
-            })}
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <ActionsMenu actions={actions} />
       )}
     </CardHeader>
   );

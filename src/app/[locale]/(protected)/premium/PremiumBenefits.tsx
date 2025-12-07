@@ -1,5 +1,6 @@
 // src/app/[locale]/(protected)/premium/PremiumBenefits.tsx:
 import { useTranslations } from "next-intl";
+
 import { CheckCircle } from "lucide-react";
 
 const benefits = [

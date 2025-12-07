@@ -1,4 +1,5 @@
 import { DefaultSession } from "next-auth";
+
 import { UserRoles } from "~/types/user";
 
 // Extend the default types to include our custom properties

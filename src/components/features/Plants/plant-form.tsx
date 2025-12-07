@@ -1,21 +1,15 @@
 "use client";
 
 // src/components/features/Plants/plant-form.tsx:
-import type {
-  CreateOrEditPlantInput,
-  GetOwnPlantsInput,
-  GetPlantByIdType,
-} from "~/server/api/root";
-import { plantFormSchema } from "~/types/zodSchema";
-
 import * as React from "react";
 
 import { useTranslations } from "next-intl";
 
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
 import { useMutation } from "@tanstack/react-query";
 import { useQueryClient } from "@tanstack/react-query";
+
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   FlowerIcon,
   LeafIcon,
@@ -60,6 +54,14 @@ import {
 import FormContent from "~/components/Layouts/form-content";
 import PageHeader from "~/components/Layouts/page-header";
 import SpinningLoader from "~/components/atom/spinning-loader";
+
+import type {
+  CreateOrEditPlantInput,
+  GetOwnPlantsInput,
+  GetPlantByIdType,
+} from "~/server/api/root";
+
+import { plantFormSchema } from "~/types/zodSchema";
 
 import { useRouter } from "~/lib/i18n/routing";
 import { useTRPC } from "~/lib/trpc/client";

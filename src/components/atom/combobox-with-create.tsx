@@ -1,7 +1,10 @@
 import * as React from "react";
+
 import { useTranslations } from "next-intl";
+
 import { Check, ChevronsUpDown, Plus } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+
 import { Button } from "~/components/ui/button";
 import {
   Command,
@@ -17,6 +20,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "~/components/ui/popover";
+
 import { cn } from "~/lib/utils";
 
 export type ComboboxOption = {

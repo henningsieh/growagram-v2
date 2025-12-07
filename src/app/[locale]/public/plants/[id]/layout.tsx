@@ -1,15 +1,17 @@
 // src/app/[locale]/(protected)/grows/[id]/form/layout.tsx:
 import { asc } from "drizzle-orm";
-import { db } from "~/lib/db";
-import { plants } from "~/lib/db/schema";
+
 import type { GetPlantByIdInput } from "~/server/api/root";
 
+import { db } from "~/lib/db";
+import { plants } from "~/lib/db/schema";
+
 // Allow both static and dynamic rendering
-export const dynamic = "force-dynamic";
+// export const dynamic = "force-dynamic";
 // Revalidate cache every hour
-export const revalidate = 3600;
+// export const revalidate = 3600;
 // Enable dynamic parameters
-export const dynamicParams = true;
+// export const dynamicParams = true;
 
 // Pre-generate pages for all plants using direct DB query
 export async function generateStaticParams() {

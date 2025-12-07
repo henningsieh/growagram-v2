@@ -1,13 +1,18 @@
 // src/app/[locale]/(protected)/admin/page.tsx:
-import { getTranslations } from "next-intl/server";
 import { forbidden } from "next/navigation";
-import { modulePaths } from "~/assets/constants";
+
+import { getTranslations } from "next-intl/server";
+
 import { BreadcrumbSetter } from "~/components/Layouts/Breadcrumbs/breadcrumb-setter";
 import PageHeader from "~/components/Layouts/page-header";
 import { AdminArea } from "~/components/features/Admin/UserManagement/admin-area";
+
+import { UserRoles } from "~/types/user";
+
 import { auth } from "~/lib/auth";
 import { createBreadcrumbs } from "~/lib/breadcrumbs/breadcrumbs";
-import { UserRoles } from "~/types/user";
+
+import { modulePaths } from "~/assets/constants";
 
 export default async function AdminPage() {
   const session = await auth();

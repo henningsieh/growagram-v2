@@ -2,10 +2,12 @@
 import { and, count, desc, eq } from "drizzle-orm";
 import EventEmitter, { on } from "node:events";
 import { z } from "zod";
+
+import { NotificationEvent } from "~/types/notification";
+
 import { notifications } from "~/lib/db/schema";
 import { ServerSideNotificationService } from "~/lib/notifications/server-side";
 import { createTRPCRouter, protectedProcedure } from "~/lib/trpc/init";
-import { NotificationEvent } from "~/types/notification";
 
 interface NotificationEvents {
   notification: (data: NotificationEvent) => void;

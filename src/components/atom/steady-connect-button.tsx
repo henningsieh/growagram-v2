@@ -2,7 +2,9 @@
 
 // eslint-disable-next-line no-restricted-imports
 import { useTranslations } from "next-intl";
+
 import { Button } from "~/components/ui/button";
+
 import { connectToSteady } from "~/server/actions/connectToSteady";
 
 export default function ConnectSteadyHQButton() {

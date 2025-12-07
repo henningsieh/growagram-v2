@@ -1,13 +1,12 @@
 "use client";
 
 import * as React from "react";
+
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
+
 import { ArrowRightIcon, BellIcon, ListChecksIcon } from "lucide-react";
-import {
-  NotificationItem,
-  NotificationSkeleton,
-} from "~/components/features/Notifications/notification-item";
+
 import { Button } from "~/components/ui/button";
 import {
   Popover,
@@ -16,9 +15,16 @@ import {
 } from "~/components/ui/popover";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { useNotifications } from "~/hooks/use-notifications";
+
+import {
+  NotificationItem,
+  NotificationSkeleton,
+} from "~/components/features/Notifications/notification-item";
+
 import { Link } from "~/lib/i18n/routing";
 import { cn } from "~/lib/utils";
+
+import { useNotifications } from "~/hooks/use-notifications";
 
 export function Notifications() {
   const { data: session } = useSession();

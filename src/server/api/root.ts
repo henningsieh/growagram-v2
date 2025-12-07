@@ -15,7 +15,7 @@ import { notificationRouter } from "~/server/api/routers/notifications";
 import { adminRouter } from "~/server/api/routers/admin";
 import { createTRPCRouter, publicProcedure } from "~/lib/trpc/init";
 
-import { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
+import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 
 /**
  * This is the primary router for the server.

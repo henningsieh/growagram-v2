@@ -1,11 +1,17 @@
 // src/app/[locale]/(protected)/photos/layout.tsx:
 import { getTranslations } from "next-intl/server";
+
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
-import { PaginationItemsPerPage } from "~/assets/constants";
+
 import { SortOrder } from "~/components/atom/sort-filter-controls";
-import { getQueryClient, trpc } from "~/lib/trpc/server";
+
 import type { GetOwnPhotosInput } from "~/server/api/root";
+
 import { PhotosSortField } from "~/types/image";
+
+import { getQueryClient, trpc } from "~/lib/trpc/server";
+
+import { PaginationItemsPerPage } from "~/assets/constants";
 
 export async function generateMetadata() {
   const t = await getTranslations("Navigation");

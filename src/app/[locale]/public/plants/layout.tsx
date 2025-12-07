@@ -1,9 +1,13 @@
 import { Metadata } from "next";
+
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
-import { PaginationItemsPerPage } from "~/assets/constants";
+
+import type { GetAllPlantsInput } from "~/server/api/root";
+
 import { getQueryClient, trpc } from "~/lib/trpc/server";
 import { generatePageMetadata } from "~/lib/utils/metadata";
-import type { GetAllPlantsInput } from "~/server/api/root";
+
+import { PaginationItemsPerPage } from "~/assets/constants";
 
 export async function generateMetadata({
   params,

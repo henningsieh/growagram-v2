@@ -2,8 +2,19 @@
 import { TRPCError } from "@trpc/server";
 import { and, count, eq, ilike, isNull, lt, or } from "drizzle-orm";
 import { z } from "zod";
-import { PaginationItemsPerPage } from "~/assets/constants";
+
 import { SortOrder } from "~/components/atom/sort-filter-controls";
+
+import { connectPlantWithImagesQuery } from "~/server/api/routers/plantImages";
+
+import { PlantsSortField } from "~/types/plant";
+import {
+  breederFormSchema,
+  plantExplorationSchema,
+  plantFormSchema,
+  strainFormSchema,
+} from "~/types/zodSchema";
+
 import {
   breeders,
   cannabisStrains,
@@ -12,14 +23,8 @@ import {
   plants,
 } from "~/lib/db/schema";
 import { protectedProcedure, publicProcedure } from "~/lib/trpc/init";
-import { connectPlantWithImagesQuery } from "~/server/api/routers/plantImages";
-import { PlantsSortField } from "~/types/plant";
-import {
-  breederFormSchema,
-  plantExplorationSchema,
-  plantFormSchema,
-  strainFormSchema,
-} from "~/types/zodSchema";
+
+import { PaginationItemsPerPage } from "~/assets/constants";
 
 export const plantRouter = {
   // Get paginated plants for the current user

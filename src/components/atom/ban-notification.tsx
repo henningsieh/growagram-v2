@@ -1,12 +1,17 @@
 "use client";
 
 import { useEffect } from "react";
+
+import { useSearchParams } from "next/navigation";
+
 import { useTranslations } from "next-intl";
 import { useLocale } from "next-intl";
-import { useSearchParams } from "next/navigation";
+
 import { toast } from "sonner";
-import { formatAbsoluteDate, formatAbsoluteTime } from "~/lib/utils";
+
 import type { Locale } from "~/types/locale";
+
+import { formatAbsoluteDate, formatAbsoluteTime } from "~/lib/utils";
 
 export function BanNotification() {
   const searchParams = useSearchParams();

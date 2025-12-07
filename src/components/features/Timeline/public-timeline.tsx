@@ -1,16 +1,24 @@
 "use client";
 
 import * as React from "react";
+
 import { useTranslations } from "next-intl";
+
 import { useInfiniteQuery } from "@tanstack/react-query";
+
 import { RefreshCwIcon } from "lucide-react";
-import { PaginationItemsPerPage } from "~/assets/constants";
+
+import { Button } from "~/components/ui/button";
+
 import InfiniteScrollLoader from "~/components/atom/infinite-scroll-loader";
 import SpinningLoader from "~/components/atom/spinning-loader";
 import PostCard from "~/components/features/Timeline/Post/post-card";
-import { Button } from "~/components/ui/button";
-import { useTRPC } from "~/lib/trpc/client";
+
 import type { GetPostType } from "~/server/api/root";
+
+import { useTRPC } from "~/lib/trpc/client";
+
+import { PaginationItemsPerPage } from "~/assets/constants";
 
 export default function PublicTimeline() {
   const t = useTranslations("Timeline");

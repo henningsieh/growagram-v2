@@ -1,4 +1,8 @@
+// src/app/[locale]/layout.tsx:
+import { env } from "~/env";
+
 import type React from "react";
+import { Suspense } from "react";
 
 import type { Metadata } from "next";
 import { Grandstander, Nunito } from "next/font/google";
@@ -40,6 +44,7 @@ const grandstander = Grandstander({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(env.NEXTAUTH_URL),
   title: "Grow A Gram 🪴",
   description: "Show your Grow",
   icons: {
@@ -56,16 +61,48 @@ export const metadata: Metadata = {
   },
 };
 
+// Separate component that handles the async data fetching
+async function IntlProvider({
+  children,
+  locale,
+}: {
+  children: React.ReactNode;
+  locale: string;
+}) {
+  const messages = await getMessages({ locale });
+
+  return (
+    <NextIntlClientProvider messages={messages} locale={locale}>
+      {children}
+    </NextIntlClientProvider>
+  );
+}
+
+// Loading fallback component - simple loading state without translations
+function IntlProviderSkeleton() {
+  return (
+    <div className="flex h-screen items-center justify-center">
+      <div className="flex flex-col items-center space-y-4">
+        <div className="border-primary h-8 w-8 animate-spin rounded-full border-4 border-t-transparent"></div>
+        <p className="text-muted-foreground">Loading...</p>
+      </div>
+    </div>
+  );
+}
+
 type AppLayoutProps = {
   children: React.ReactNode;
   params: Promise<{ locale: string }>;
 };
 
-export default async function AppLayout(props: AppLayoutProps) {
+async function AppLayoutContent({ children, params }: AppLayoutProps) {
+  const locale = (await params).locale;
+
   return (
     <html
       className={`scroll-smooth ${nunito.variable} ${grandstander.variable}`}
-      lang={(await props.params).locale}
+      lang={locale}
+      data-scroll-behavior="smooth"
       suppressHydrationWarning
     >
       <body className="bg-background min-h-screen overflow-x-hidden font-sans antialiased">
@@ -83,31 +120,41 @@ export default async function AppLayout(props: AppLayoutProps) {
             disableTransitionOnChange={false}
           >
             <div className="texture pointer-events-none fixed inset-0 z-0"></div>
-            {/* Providing all messages to the client */}
-            <NextIntlClientProvider messages={await getMessages()}>
-              <SessionProvider>
-                <TRPCReactProvider>
-                  <NuqsAdapter>
-                    <PhotoModalProvider>
-                      <BreadcrumbProvider>
-                        <Toaster richColors position="bottom-left" />
-                        <BanNotification />
-                        <MainNavigationBar />
-                        <div className="relative mx-auto flex min-h-screen max-w-7xl flex-col">
-                          <div className="flex w-full flex-1">
-                            {props.children}
+            {/* Providing all messages to the client with Suspense boundary */}
+            <Suspense key={locale} fallback={<IntlProviderSkeleton />}>
+              <IntlProvider locale={locale}>
+                <SessionProvider>
+                  <TRPCReactProvider>
+                    <NuqsAdapter>
+                      <PhotoModalProvider>
+                        <BreadcrumbProvider>
+                          <Toaster richColors position="bottom-left" />
+                          <BanNotification />
+                          <MainNavigationBar />
+                          <div className="relative mx-auto flex min-h-screen max-w-7xl flex-col">
+                            <div className="flex w-full flex-1">{children}</div>
                           </div>
-                        </div>
-                        <AppFooter />
-                      </BreadcrumbProvider>
-                    </PhotoModalProvider>
-                  </NuqsAdapter>
-                </TRPCReactProvider>
-              </SessionProvider>
-            </NextIntlClientProvider>
+                          <AppFooter />
+                        </BreadcrumbProvider>
+                      </PhotoModalProvider>
+                    </NuqsAdapter>
+                  </TRPCReactProvider>
+                </SessionProvider>
+              </IntlProvider>
+            </Suspense>
           </ThemeProvider>
         </EnhancedProgressProvider>
       </body>
     </html>
+  );
+}
+
+export default function AppLayout(props: AppLayoutProps) {
+  return (
+    <Suspense fallback={<IntlProviderSkeleton />}>
+      <AppLayoutContent params={props.params}>
+        {props.children}
+      </AppLayoutContent>
+    </Suspense>
   );
 }

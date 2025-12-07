@@ -1,15 +1,21 @@
 "use client";
 
 import * as React from "react";
-import { useTranslations } from "next-intl";
+
 import Image from "next/image";
+
+import { useTranslations } from "next-intl";
+
 import { FocusTrap } from "focus-trap-react";
 import { ExpandIcon, MaximizeIcon, X } from "lucide-react";
 import { createPortal } from "react-dom";
+
 import { Button } from "~/components/ui/button";
 import { Switch } from "~/components/ui/switch";
-import { useIsMobile } from "~/hooks/use-mobile";
+
 import { cn } from "~/lib/utils";
+
+import { useIsMobile } from "~/hooks/use-mobile";
 
 interface ImageModalContextType {
   openImageModal: (imageUrl: string) => void;

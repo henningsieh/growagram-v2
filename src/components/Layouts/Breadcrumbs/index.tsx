@@ -1,7 +1,9 @@
 "use client";
 
 import * as React from "react";
+
 import { useTranslations } from "next-intl";
+
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -10,6 +12,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "~/components/ui/breadcrumb";
+
 import { useBreadcrumbs } from "~/lib/breadcrumbs/breadcrumb-context";
 import { Link } from "~/lib/i18n/routing";
 

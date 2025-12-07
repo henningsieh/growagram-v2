@@ -11,6 +11,15 @@ last_updated: 2025-01-07
 
 # GrowAGram - Coding Guideline
 
+## 📚 Library Documentation Policy
+
+For all open source libraries and frameworks used in this project (e.g., Next.js, React, tRPC, Drizzle ORM, Tailwind CSS, etc.), always reference the official documentation for API details, usage, and examples.  
+Do **not** duplicate full library documentation in these instruction files.  
+The AI and agent should use the **Context7 MCP server** to fetch up-to-date documentation or code examples for these libraries as needed.  
+These instructions focus on project-specific conventions, integration patterns, and custom usage relevant to GrowAGram.
+
+> Note: The Context7 MCP server is integrated at the platform/tooling level. No manual configuration or endpoint is required in this repository.
+
 ## Navigation & Quick Reference
 
 This document serves as the main entry point for all development guidelines. For detailed information on specific topics, refer to the specialized instruction files below:

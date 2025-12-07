@@ -1,13 +1,17 @@
 // src/app/[locale]/(protected)/dashboard/page.tsx:
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
-import { PaginationItemsPerPage } from "~/assets/constants";
+
 import { BreadcrumbSetter } from "~/components/Layouts/Breadcrumbs/breadcrumb-setter";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
 import { DashboardContent } from "~/components/features/Dashboard/dashboard-content";
-import { createBreadcrumbs } from "~/lib/breadcrumbs/breadcrumbs";
-import { getQueryClient, trpc } from "~/lib/trpc/server";
+
 import { GrowsSortField } from "~/types/grow";
 import { PlantsSortField } from "~/types/plant";
+
+import { createBreadcrumbs } from "~/lib/breadcrumbs/breadcrumbs";
+import { getQueryClient, trpc } from "~/lib/trpc/server";
+
+import { PaginationItemsPerPage } from "~/assets/constants";
 
 export default function Dashboard() {
   // For the dashboard page, we pass an empty array to get just the dashboard breadcrumb marked as current

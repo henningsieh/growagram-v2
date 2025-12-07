@@ -54,8 +54,22 @@
   },
   "typescript.tsserver.maxTsServerMemory": 2048,
   "typescript.disableAutomaticTypeAcquisition": true,
-  "typescript.tsserver.enable": false
 
-  // "typescript.experimental.useTsgo": false,
-  // "typescript.tsdk": "node_modules/typescript/lib"
+  "typescript.tsserver.enable": false,
+  "typescript.experimental.useTsgo": false,
+  "typescript.tsdk": "node_modules/typescript/lib",
+
+  "chat.mcp.serverSampling": {
+    "growagram/.vscode/mcp.json: context7": {
+      "allowedModels": [
+        "github.copilot-chat/gpt-4.1",
+        "github.copilot-chat/claude-3.7-sonnet",
+        "github.copilot-chat/claude-3.7-sonnet-thought",
+        "github.copilot-chat/claude-sonnet-4",
+        "github.copilot-chat/gemini-2.5-pro",
+        "github.copilot-chat/o3-mini",
+        "github.copilot-chat/o4-mini"
+      ]
+    }
+  }
 }

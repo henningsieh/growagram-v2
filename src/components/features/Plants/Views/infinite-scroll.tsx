@@ -2,19 +2,26 @@
 
 // src/components/features/Plants/Views/infinite-scroll.tsx:
 import * as React from "react";
+
 import { useTranslations } from "next-intl";
+
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useQueryClient } from "@tanstack/react-query";
-import { PaginationItemsPerPage, modulePaths } from "~/assets/constants";
+
 import ResponsiveGrid from "~/components/Layouts/responsive-grid";
 import InfiniteScrollLoader from "~/components/atom/infinite-scroll-loader";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
 import SpinningLoader from "~/components/atom/spinning-loader";
 import PlantCard from "~/components/features/Plants/plant-card";
+
+import type { GetOwnPlantsInput, GetOwnPlantsType } from "~/server/api/root";
+
+import { PlantsSortField } from "~/types/plant";
+
 import { useRouter } from "~/lib/i18n/routing";
 import { useTRPC } from "~/lib/trpc/client";
-import type { GetOwnPlantsInput, GetOwnPlantsType } from "~/server/api/root";
-import { PlantsSortField } from "~/types/plant";
+
+import { PaginationItemsPerPage, modulePaths } from "~/assets/constants";
 
 export default function InfiniteScrollPlantsView({
   sortField,

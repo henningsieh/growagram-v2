@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
-import { SessionProvider } from "next-auth/react";
 import { Inter } from "next/font/google";
 // eslint-disable-next-line no-restricted-imports
 import Link from "next/link";
+
+import { SessionProvider } from "next-auth/react";
+
 import { auth } from "~/lib/auth";
+
 // import { TRPCReactProvider } from "~/lib/trpc/react";
 import "../../styles/globals.css";
 

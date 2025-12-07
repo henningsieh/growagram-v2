@@ -1,6 +1,7 @@
 // src/lib/i18n/routing.ts:
 import { createNavigation } from "next-intl/navigation";
 import { defineRouting } from "next-intl/routing";
+
 import { APP_SETTINGS } from "~/assets/constants";
 
 export const routing = defineRouting({

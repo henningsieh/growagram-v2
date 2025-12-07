@@ -2,9 +2,11 @@
 
 // src/components/Layouts/Sidebar/index.tsx:
 import * as React from "react";
+
 import type { Session } from "next-auth";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
+
 import {
   BellIcon,
   ChevronRight,
@@ -15,9 +17,7 @@ import {
   SparklesIcon,
   UserPenIcon,
 } from "lucide-react";
-import { modulePaths } from "~/assets/constants";
-import { NavigationBreadcrumbs } from "~/components/Layouts/Breadcrumbs";
-import { CustomAvatar } from "~/components/atom/custom-avatar";
+
 import {
   Collapsible,
   CollapsibleContent,
@@ -53,10 +53,18 @@ import {
   SidebarTrigger,
   useSidebar,
 } from "~/components/ui/sidebar";
-import { useSignOut } from "~/hooks/use-auth";
+
+import { NavigationBreadcrumbs } from "~/components/Layouts/Breadcrumbs";
+import { CustomAvatar } from "~/components/atom/custom-avatar";
+
+import { UserRoles } from "~/types/user";
+
 import { Link } from "~/lib/i18n/routing";
 import { sidebarItems, translateSidebar } from "~/lib/sidebar";
-import { UserRoles } from "~/types/user";
+
+import { useSignOut } from "~/hooks/use-auth";
+
+import { modulePaths } from "~/assets/constants";
 
 /**
  * ProtectedSidebar: Main sidebar component for authenticated users

@@ -2,7 +2,9 @@
 
 import { useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
+
 import { ComputerIcon, MoonIcon, SunIcon } from "lucide-react";
+
 import { Button } from "~/components/ui/button";
 import {
   DropdownMenu,

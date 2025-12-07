@@ -1,4 +1,5 @@
 import * as Icons from "lucide-react";
+
 import type { IconComponent, IconType } from "~/types/icons";
 
 export function getIconComponent(iconName: string): IconComponent {

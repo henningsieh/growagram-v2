@@ -1,5 +1,6 @@
 // src/components/Layouts/InfiniteScrollLoader.tsx:
 import * as React from "react";
+
 import SpinningLoader from "~/components/atom/spinning-loader";
 
 interface InfiniteScrollLoaderProps {

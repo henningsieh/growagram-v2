@@ -1,15 +1,21 @@
 import * as React from "react";
+
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
+
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
 import { useSubscription } from "@trpc/tanstack-react-query";
 import { toast } from "sonner";
-import { useTRPC } from "~/lib/trpc/client";
+
 import {
   type GetAllNotificationType,
   type GetAllNotificationsInput,
 } from "~/server/api/root";
+
 import { NotificationEventType } from "~/types/notification";
+
+import { useTRPC } from "~/lib/trpc/client";
 
 interface UseNotificationsReturn {
   all: GetAllNotificationType[];

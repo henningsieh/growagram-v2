@@ -1,21 +1,29 @@
 "use client";
 
 import * as React from "react";
-import { useTranslations } from "next-intl";
+
 // src/components/features/Grows/Views/paginated.tsx:
 import { useSearchParams } from "next/navigation";
+
+import { useTranslations } from "next-intl";
+
 import { useQuery } from "@tanstack/react-query";
 import { useQueryClient } from "@tanstack/react-query";
-import { PaginationItemsPerPage } from "~/assets/constants";
+
 import ResponsiveGrid from "~/components/Layouts/responsive-grid";
 import ItemsPagination from "~/components/atom/item-pagination";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
 import SpinningLoader from "~/components/atom/spinning-loader";
 import { GrowCard } from "~/components/features/Grows/grow-card";
+
+import type { GetOwnGrowsInput } from "~/server/api/root";
+
+import { GrowsSortField } from "~/types/grow";
+
 import { useRouter } from "~/lib/i18n/routing";
 import { useTRPC } from "~/lib/trpc/client";
-import type { GetOwnGrowsInput } from "~/server/api/root";
-import { GrowsSortField } from "~/types/grow";
+
+import { PaginationItemsPerPage } from "~/assets/constants";
 
 export default function PaginatedGrowsView({
   sortField,

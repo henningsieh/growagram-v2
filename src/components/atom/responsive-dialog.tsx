@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { cn } from "~/lib/utils";
 
 import {
   Dialog,
@@ -21,6 +20,9 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "~/components/ui/drawer";
+
+import { cn } from "~/lib/utils";
+
 import { useIsMobile } from "~/hooks/use-mobile";
 
 interface ResponsiveDialogProps {
@@ -35,7 +37,8 @@ interface ResponsiveDialogContextType {
   isMobile: boolean;
 }
 
-const ResponsiveDialogContext = React.createContext<ResponsiveDialogContextType | null>(null);
+const ResponsiveDialogContext =
+  React.createContext<ResponsiveDialogContextType | null>(null);
 
 function ResponsiveDialogRoot({
   children,
@@ -63,9 +66,7 @@ function ResponsiveDialogRoot({
     <ResponsiveDialogContext.Provider value={{ isMobile }}>
       <Drawer open={open} onOpenChange={onOpenChange}>
         {trigger && <DrawerTrigger asChild>{trigger}</DrawerTrigger>}
-        <DrawerContent>
-          {children}
-        </DrawerContent>
+        <DrawerContent>{children}</DrawerContent>
       </Drawer>
     </ResponsiveDialogContext.Provider>
   );
@@ -74,7 +75,9 @@ function ResponsiveDialogRoot({
 function ResponsiveDialogHeader({ children }: { children: React.ReactNode }) {
   const context = React.useContext(ResponsiveDialogContext);
   if (!context) {
-    throw new Error("ResponsiveDialogHeader must be used within ResponsiveDialog");
+    throw new Error(
+      "ResponsiveDialogHeader must be used within ResponsiveDialog",
+    );
   }
 
   if (!context.isMobile) {
@@ -84,23 +87,43 @@ function ResponsiveDialogHeader({ children }: { children: React.ReactNode }) {
   return <DrawerHeader className="text-left">{children}</DrawerHeader>;
 }
 
-function ResponsiveDialogTitle({ children, className }: { children: React.ReactNode; className?: string }) {
+function ResponsiveDialogTitle({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
   const context = React.useContext(ResponsiveDialogContext);
   if (!context) {
-    throw new Error("ResponsiveDialogTitle must be used within ResponsiveDialog");
+    throw new Error(
+      "ResponsiveDialogTitle must be used within ResponsiveDialog",
+    );
   }
 
   if (!context.isMobile) {
-    return <DialogTitle className={cn("text-3xl", className)}>{children}</DialogTitle>;
+    return (
+      <DialogTitle className={cn("text-3xl", className)}>
+        {children}
+      </DialogTitle>
+    );
   }
 
-  return <DrawerTitle className={cn("text-2xl", className)}>{children}</DrawerTitle>;
+  return (
+    <DrawerTitle className={cn("text-2xl", className)}>{children}</DrawerTitle>
+  );
 }
 
-function ResponsiveDialogDescription({ children }: { children: React.ReactNode }) {
+function ResponsiveDialogDescription({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const context = React.useContext(ResponsiveDialogContext);
   if (!context) {
-    throw new Error("ResponsiveDialogDescription must be used within ResponsiveDialog");
+    throw new Error(
+      "ResponsiveDialogDescription must be used within ResponsiveDialog",
+    );
   }
 
   if (!context.isMobile) {
@@ -110,10 +133,18 @@ function ResponsiveDialogDescription({ children }: { children: React.ReactNode }
   return <DrawerDescription>{children}</DrawerDescription>;
 }
 
-function ResponsiveDialogContent({ children, className }: { children: React.ReactNode; className?: string }) {
+function ResponsiveDialogContent({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
   const context = React.useContext(ResponsiveDialogContext);
   if (!context) {
-    throw new Error("ResponsiveDialogContent must be used within ResponsiveDialog");
+    throw new Error(
+      "ResponsiveDialogContent must be used within ResponsiveDialog",
+    );
   }
 
   if (!context.isMobile) {
@@ -126,12 +157,14 @@ function ResponsiveDialogContent({ children, className }: { children: React.Reac
 function ResponsiveDialogFooter({ children }: { children: React.ReactNode }) {
   const context = React.useContext(ResponsiveDialogContext);
   if (!context) {
-    throw new Error("ResponsiveDialogFooter must be used within ResponsiveDialog");
+    throw new Error(
+      "ResponsiveDialogFooter must be used within ResponsiveDialog",
+    );
   }
 
   if (!context.isMobile) {
     return (
-      <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:space-x-2 sm:space-y-0 pt-4">
+      <div className="flex flex-col-reverse gap-2 pt-4 sm:flex-row sm:justify-end sm:space-y-0 sm:space-x-2">
         {children}
       </div>
     );
@@ -144,15 +177,17 @@ function ResponsiveDialogFooter({ children }: { children: React.ReactNode }) {
   );
 }
 
-function ResponsiveDialogClose({ 
-  children, 
-  ...props 
-}: { 
-  children: React.ReactNode; 
+function ResponsiveDialogClose({
+  children,
+  ...props
+}: {
+  children: React.ReactNode;
 } & React.ComponentProps<typeof DrawerClose>) {
   const context = React.useContext(ResponsiveDialogContext);
   if (!context) {
-    throw new Error("ResponsiveDialogClose must be used within ResponsiveDialog");
+    throw new Error(
+      "ResponsiveDialogClose must be used within ResponsiveDialog",
+    );
   }
 
   if (!context.isMobile) {

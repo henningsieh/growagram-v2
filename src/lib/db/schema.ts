@@ -1,4 +1,5 @@
 import type { AdapterAccountType } from "next-auth/adapters";
+
 import type { InferSelectModel } from "drizzle-orm";
 import { relations, sql } from "drizzle-orm";
 import {
@@ -13,6 +14,7 @@ import {
   timestamp,
   uniqueIndex,
 } from "drizzle-orm/pg-core";
+
 import { CommentableEntityType } from "~/types/comment";
 import {
   CultureMedium,

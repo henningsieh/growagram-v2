@@ -1,17 +1,19 @@
 "use client";
 
 import * as React from "react";
+
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
+
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMutation } from "@tanstack/react-query";
+
 import { useSubscription } from "@trpc/tanstack-react-query";
 import { AnimatePresence, motion } from "framer-motion";
 import { Loader2, MessageCircleIcon, Send, X } from "lucide-react";
 import { createPortal } from "react-dom";
 import { toast } from "sonner";
-import { CustomAvatar } from "~/components/atom/custom-avatar";
-import SpinningLoader from "~/components/atom/spinning-loader";
+
 import { Button } from "~/components/ui/button";
 import {
   Card,
@@ -22,6 +24,10 @@ import {
 } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
 import { ScrollArea } from "~/components/ui/scroll-area";
+
+import { CustomAvatar } from "~/components/atom/custom-avatar";
+import SpinningLoader from "~/components/atom/spinning-loader";
+
 import { useTRPC } from "~/lib/trpc/client";
 
 export function ChatModal({

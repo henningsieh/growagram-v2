@@ -1,15 +1,21 @@
 // src/components/features/Comments/comments.tsx:
 import * as React from "react";
+
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
+
 import { Send } from "lucide-react";
+
+import { Button } from "~/components/ui/button";
+import { Input } from "~/components/ui/input";
+
 import { CustomAvatar } from "~/components/atom/custom-avatar";
 import SpinningLoader from "~/components/atom/spinning-loader";
 import CommentsTree from "~/components/features/Comments/comments-tree";
-import { Button } from "~/components/ui/button";
-import { Input } from "~/components/ui/input";
-import { useComments } from "~/hooks/use-comments";
+
 import { CommentableEntityType } from "~/types/comment";
+
+import { useComments } from "~/hooks/use-comments";
 
 interface CommentsProps {
   entityId: string;

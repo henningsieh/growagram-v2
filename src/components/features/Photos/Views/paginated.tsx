@@ -1,21 +1,29 @@
 "use client";
 
 import * as React from "react";
-import { useTranslations } from "next-intl";
+
 // src/components/features/Photos/Views/paginated.tsx:
 import { useSearchParams } from "next/navigation";
+
+import { useTranslations } from "next-intl";
+
 import { useQuery } from "@tanstack/react-query";
 import { useQueryClient } from "@tanstack/react-query";
-import { PaginationItemsPerPage } from "~/assets/constants";
+
 import ResponsiveGrid from "~/components/Layouts/responsive-grid";
 import ItemsPagination from "~/components/atom/item-pagination";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
 import SpinningLoader from "~/components/atom/spinning-loader";
 import PhotoCard from "~/components/features/Photos/photo-card";
+
+import type { GetOwnPhotosInput } from "~/server/api/root";
+
+import { PhotosSortField } from "~/types/image";
+
 import { useRouter } from "~/lib/i18n/routing";
 import { useTRPC } from "~/lib/trpc/client";
-import type { GetOwnPhotosInput } from "~/server/api/root";
-import { PhotosSortField } from "~/types/image";
+
+import { PaginationItemsPerPage } from "~/assets/constants";
 
 export default function PhotosPaginatedView({
   sortField,

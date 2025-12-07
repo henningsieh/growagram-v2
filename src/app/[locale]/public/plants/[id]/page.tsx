@@ -1,9 +1,12 @@
 // src/app/[locale]/public/plants/[id]/page.tsx:
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+
 import PlantCard from "~/components/features/Plants/plant-card";
-import { caller } from "~/lib/trpc/server";
+
 import type { GetPlantByIdInput } from "~/server/api/root";
+
+import { caller } from "~/lib/trpc/server";
 
 // Using caller for data fetching
 

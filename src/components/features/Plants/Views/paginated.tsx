@@ -2,20 +2,28 @@
 
 // src/components/features/Plants/Views/paginated.tsx:
 import * as React from "react";
-import { useTranslations } from "next-intl";
+
 import { useSearchParams } from "next/navigation";
+
+import { useTranslations } from "next-intl";
+
 import { useQuery } from "@tanstack/react-query";
 import { useQueryClient } from "@tanstack/react-query";
-import { PaginationItemsPerPage } from "~/assets/constants";
+
 import ResponsiveGrid from "~/components/Layouts/responsive-grid";
 import ItemsPagination from "~/components/atom/item-pagination";
 import { SortOrder } from "~/components/atom/sort-filter-controls";
 import SpinningLoader from "~/components/atom/spinning-loader";
 import PlantCard from "~/components/features/Plants/plant-card";
+
+import type { GetOwnPlantsInput } from "~/server/api/root";
+
+import { PlantsSortField } from "~/types/plant";
+
 import { useRouter } from "~/lib/i18n/routing";
 import { useTRPC } from "~/lib/trpc/client";
-import type { GetOwnPlantsInput } from "~/server/api/root";
-import { PlantsSortField } from "~/types/plant";
+
+import { PaginationItemsPerPage } from "~/assets/constants";
 
 export default function PaginatedPlantsView({
   sortField,

@@ -1,9 +1,13 @@
-import { NextResponse } from "next/server";
-import { eq } from "drizzle-orm";
-import { modulePaths } from "~/assets/constants";
 import { env } from "~/env";
+
+import { NextResponse } from "next/server";
+
+import { eq } from "drizzle-orm";
+
 import { db } from "~/lib/db";
 import { users, verificationTokens } from "~/lib/db/schema";
+
+import { modulePaths } from "~/assets/constants";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);

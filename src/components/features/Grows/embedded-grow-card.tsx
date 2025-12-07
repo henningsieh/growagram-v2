@@ -1,17 +1,12 @@
 "use client";
 
 import * as React from "react";
+
 import { useLocale, useTranslations } from "next-intl";
+
 import { AnimatePresence, motion } from "framer-motion";
 import { Calendar1Icon, TentTreeIcon } from "lucide-react";
-import { modulePaths } from "~/assets/constants";
-import {
-  HybridTooltip,
-  HybridTooltipContent,
-  HybridTooltipTrigger,
-  TouchProvider,
-} from "~/components/atom/hybrid-tooltip";
-import { EnhancedPlantCard } from "~/components/features/Plants/enhanced-plant-card.tsx";
+
 import { Button } from "~/components/ui/button";
 import {
   Card,
@@ -20,11 +15,25 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
-import { useIsMobile } from "~/hooks/use-mobile";
+
+import {
+  HybridTooltip,
+  HybridTooltipContent,
+  HybridTooltipTrigger,
+  TouchProvider,
+} from "~/components/atom/hybrid-tooltip";
+import { EnhancedPlantCard } from "~/components/features/Plants/enhanced-plant-card.tsx";
+
+import type { GetAllGrowType } from "~/server/api/root";
+
+import { Locale } from "~/types/locale";
+
 import { Link } from "~/lib/i18n/routing";
 import { type DateFormatOptions, formatAbsoluteDate } from "~/lib/utils";
-import type { GetAllGrowType } from "~/server/api/root";
-import { Locale } from "~/types/locale";
+
+import { useIsMobile } from "~/hooks/use-mobile";
+
+import { modulePaths } from "~/assets/constants";
 
 interface EmbeddedGrowCardProps {
   grow: GetAllGrowType;

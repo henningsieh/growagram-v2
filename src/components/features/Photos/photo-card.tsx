@@ -2,31 +2,27 @@
 
 // src/components/features/Photos/photo-card.tsx:
 import { useState } from "react";
+
+import Image from "next/image";
+
 import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
-import Image from "next/image";
+
 import { useMutation } from "@tanstack/react-query";
 import { useQueryClient } from "@tanstack/react-query";
+
 import {
   Camera,
+  Edit3Icon,
   FileIcon,
   Flower2Icon,
   MessageSquareTextIcon,
   TagsIcon,
+  Trash2Icon,
   UploadCloud,
 } from "lucide-react";
 import { toast } from "sonner";
-import { modulePaths } from "~/assets/constants";
-import { useImageModal } from "~/components/Layouts/photo-modal-provider";
-import { RESPONSIVE_IMAGE_SIZES } from "~/components/Layouts/responsive-grid";
-import AvatarCardHeader from "~/components/atom/avatar-card-header";
-import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
-import { EntityDateInfo } from "~/components/atom/entity-date-info";
-import { OwnerDropdownMenu } from "~/components/atom/owner-dropdown-menu";
-import { SocialCardFooter } from "~/components/atom/social-card-footer";
-import { SortOrder } from "~/components/atom/sort-filter-controls";
-import { Comments } from "~/components/features/Comments/comments";
-import { PostFormModal } from "~/components/features/Timeline/Post/post-form-modal";
+
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardTitle } from "~/components/ui/card";
@@ -36,17 +32,35 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "~/components/ui/tooltip";
-import { useComments } from "~/hooks/use-comments";
-import { useLikeStatus } from "~/hooks/use-likes";
-import { Link, useRouter } from "~/lib/i18n/routing";
-import { useTRPC } from "~/lib/trpc/client";
-import { cn, formatDateTime } from "~/lib/utils";
+
+import { useImageModal } from "~/components/Layouts/photo-modal-provider";
+import { RESPONSIVE_IMAGE_SIZES } from "~/components/Layouts/responsive-grid";
+import { ActionItem, ActionsMenu } from "~/components/atom/actions-menu";
+import AvatarCardHeader from "~/components/atom/avatar-card-header";
+import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
+import { EntityDateInfo } from "~/components/atom/entity-date-info";
+import { SocialCardFooter } from "~/components/atom/social-card-footer";
+import { SortOrder } from "~/components/atom/sort-filter-controls";
+import { Comments } from "~/components/features/Comments/comments";
+import { PostFormModal } from "~/components/features/Timeline/Post/post-form-modal";
+
 import type { GetOwnPhotoType } from "~/server/api/root";
+
 import { CommentableEntityType } from "~/types/comment";
 import { PhotosSortField } from "~/types/image";
 import { LikeableEntityType } from "~/types/like";
 import { Locale } from "~/types/locale";
 import { PostableEntityType } from "~/types/post";
+import { UserRoles } from "~/types/user";
+
+import { Link, useRouter } from "~/lib/i18n/routing";
+import { useTRPC } from "~/lib/trpc/client";
+import { cn, formatDateTime } from "~/lib/utils";
+
+import { useComments } from "~/hooks/use-comments";
+import { useLikeStatus } from "~/hooks/use-likes";
+
+import { modulePaths } from "~/assets/constants";
 
 interface PhotoCardProps {
   photo: GetOwnPhotoType;
@@ -80,7 +94,7 @@ export default function PhotoCard({
   const { commentCount, commentCountLoading, isCommentsOpen, toggleComments } =
     useComments(photo.id, CommentableEntityType.Photo);
 
-  const [isSocial, setIsSocial] = useState(isSocialProp);
+  const [isSocial] = useState(isSocialProp);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
 
@@ -126,6 +140,32 @@ export default function PhotoCard({
     setIsDeleteDialogOpen(false);
   };
 
+  // Build actions array for both social and non-social modes
+  const photoActions: ActionItem[] = [];
+
+  // Owner actions: Edit (only for photo owners)
+  if (user && user.id === photo.ownerId) {
+    photoActions.push({
+      icon: Edit3Icon,
+      label: t("edit-button-label"),
+      variant: "ghost",
+      onClick: () => {
+        router.push(`${modulePaths.PHOTOS.path}/${photo.id}/form`);
+      },
+    });
+  }
+
+  // Admin/Owner actions: Delete (for photo owners OR admins)
+  if (user && (user.id === photo.ownerId || user.role === UserRoles.ADMIN)) {
+    photoActions.push({
+      icon: Trash2Icon,
+      label: t("delete-button-label"),
+      variant: "destructive",
+      onClick: handleDelete,
+      disabled: deleteMutation.isPending,
+    });
+  }
+
   const { openImageModal } = useImageModal();
   const [isImageHovered, setIsImageHovered] = useState(false);
 
@@ -155,52 +195,52 @@ export default function PhotoCard({
         className={cn(
           `border-input relative flex flex-col overflow-hidden rounded-md border py-0 shadow-none`,
           isSocial && "border-none",
+          !isSocial && !!!photo.plantImages.length && "border-secondary/50",
         )}
       >
         {/* "NEW" Banner */}
         {!isSocial && !!!photo.plantImages.length && (
-          <div className="bg-secondary absolute top-[12px] left-[-36px] z-10 w-[110px] rotate-[-45deg] cursor-default px-[40px] py-[1px] text-[14px] font-semibold tracking-widest text-white">
+          <div className="bg-secondary absolute top-[12px] left-[-36px] z-10 w-[110px] rotate-[-45deg] cursor-default px-[40px] py-[1px] text-[14px] leading-4 font-semibold tracking-widest text-white">
             {t("newNotConnteched")}
           </div>
         )}
 
-        {isSocial && <AvatarCardHeader user={photo.owner} />}
+        {isSocial && (
+          <AvatarCardHeader
+            user={photo.owner}
+            actions={photoActions}
+            showActions={photoActions.length > 0}
+          />
+        )}
 
         <CardContent
           className={`grid gap-2 p-2 ${isSocial && "ml-12 pr-2 pl-0"}`}
         >
-          <div className="flex min-w-0 items-center justify-between gap-2">
+          <div className="flex min-w-0 justify-between gap-2">
             {/* Title Link */}
-            <CardTitle as="h3" className="min-w-0 flex-1">
+            <CardTitle as="h3" className="z-0 min-w-0 flex-1">
               <Button
                 asChild
                 variant="link"
-                className="text-primary decoration-primary flex min-w-0 items-center justify-start gap-2 px-0"
+                className="text-primary decoration-primary flex min-w-0 justify-start p-0"
               >
                 <Link
                   href={`/public${modulePaths.PHOTOS.path}/${photo.id}`}
                   className="flex min-w-0 items-center gap-2"
                 >
-                  <FileIcon className="flex-shrink-0" size={20} />
-                  <span className="truncate text-xl leading-normal font-semibold">
+                  <FileIcon
+                    strokeWidth={3.6}
+                    className="size-6 flex-shrink-0"
+                  />
+                  <span className="truncate text-2xl font-semibold">
                     {photo.originalFilename}
                   </span>
                 </Link>
               </Button>
             </CardTitle>
 
-            {/* DropdownMenu for plant's owner */}
-            {user && user.id === photo.ownerId && (
-              <div className="w-8 flex-none">
-                <OwnerDropdownMenu
-                  isSocial={isSocial}
-                  setIsSocial={setIsSocial}
-                  isDeleting={deleteMutation.isPending}
-                  handleDelete={handleDelete}
-                  entityId={photo.id}
-                  entityType="Photos"
-                />
-              </div>
+            {!isSocial && photoActions.length > 0 && (
+              <ActionsMenu actions={photoActions} />
             )}
           </div>
 

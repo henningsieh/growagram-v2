@@ -1,5 +1,6 @@
-import * as React from "react";
 import { Chat } from "~/app/Chat/channels/[channelId]/chat";
+
+import * as React from "react";
 
 export default async function Home(
   props: Readonly<{ params: Promise<{ channelId: string }> }>,

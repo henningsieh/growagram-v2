@@ -1,5 +1,6 @@
 // src/app/api/token/user-details/route.ts:
 import { env } from "~/env";
+
 import { db } from "~/lib/db";
 
 export async function GET(req: Request) {

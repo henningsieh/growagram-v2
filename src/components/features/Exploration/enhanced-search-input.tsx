@@ -1,13 +1,18 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
+
 import { useTranslations } from "next-intl";
+
 import { useQuery } from "@tanstack/react-query";
+
 import { useDebounce } from "@uidotdev/usehooks";
 import { Search, User } from "lucide-react";
+
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
+
 import { useTRPC } from "~/lib/trpc/client";
 
 interface EnhancedSearchInputProps {

@@ -1,10 +1,15 @@
+// src/components/features/Dashboard/dashboard-content.tsx
 "use client";
 
 import * as React from "react";
+
+import { usePathname, useSearchParams } from "next/navigation";
+
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
-import { usePathname, useSearchParams } from "next/navigation";
+
 import { skipToken, useQuery } from "@tanstack/react-query";
+
 import {
   Flower2Icon,
   ImageIcon,
@@ -12,13 +17,7 @@ import {
   UsersIcon,
   Wheat,
 } from "lucide-react";
-import { PaginationItemsPerPage } from "~/assets/constants";
-import PageHeader from "~/components/Layouts/page-header";
-import { SortOrder } from "~/components/atom/sort-filter-controls";
-import { ActivePlantsCard } from "~/components/features/Dashboard/active-plants-card";
-import { PlantsOverviewChart } from "~/components/features/Dashboard/dashboard-overview-chart";
-import { RecentPhotosWidget } from "~/components/features/Dashboard/recent-photos-widget";
-import { NotificationsFeed } from "~/components/features/Notifications/notifications-feed";
+
 import {
   Card,
   CardContent,
@@ -29,20 +28,60 @@ import {
 } from "~/components/ui/card";
 import { Skeleton } from "~/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { useTRPC } from "~/lib/trpc/client";
+
+import PageHeader from "~/components/Layouts/page-header";
+import { SortOrder } from "~/components/atom/sort-filter-controls";
+import { ActivePlantsCard } from "~/components/features/Dashboard/active-plants-card";
+import { PlantsOverviewChart } from "~/components/features/Dashboard/dashboard-overview-chart";
+import { RecentPhotosWidget } from "~/components/features/Dashboard/recent-photos-widget";
+import { NotificationsFeed } from "~/components/features/Notifications/notifications-feed";
+
 import { GrowsSortField } from "~/types/grow";
 import { PlantsSortField } from "~/types/plant";
+
+import { useTRPC } from "~/lib/trpc/client";
+
+import { PaginationItemsPerPage } from "~/assets/constants";
+
+// src/components/features/Dashboard/dashboard-content.tsx
+
+// Custom hooks with error handling for SSR/prerendering
+function useSafePathname() {
+  try {
+    return usePathname();
+  } catch {
+    return "/";
+  }
+}
+
+function useSafeSearchParams() {
+  try {
+    return useSearchParams();
+  } catch {
+    return new URLSearchParams();
+  }
+}
 
 export function DashboardContent() {
   const trpc = useTRPC();
   const t = useTranslations("Platform");
   const [activeTab, setActiveTab] = React.useState("overview");
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
+  const [isMounted, setIsMounted] = React.useState(false);
+
+  // Use safe versions of these hooks
+  const pathname = useSafePathname();
+  const searchParams = useSafeSearchParams();
   const { data: session } = useSession();
 
-  // Handle URL hash for tab selection
+  // Track client-side mounting
   React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  // Handle URL hash for tab selection - only run on client
+  React.useEffect(() => {
+    if (!isMounted) return;
+
     // Function to handle hash changes
     const handleHashChange = () => {
       const hash = window.location.hash.substring(1);
@@ -65,7 +104,7 @@ export function DashboardContent() {
     return () => {
       window.removeEventListener("hashchange", handleHashChange);
     };
-  }, [pathname, searchParams]);
+  }, [pathname, searchParams, isMounted]);
 
   // Use tRPC hooks with TanStack React Query
   const { data: growsData, isLoading: isLoadingGrows } = useQuery(
@@ -133,8 +172,10 @@ export function DashboardContent() {
             value={activeTab}
             onValueChange={(value) => {
               setActiveTab(value);
-              // Update URL hash without full page reload
-              window.history.replaceState(null, "", `#${value}`);
+              // Update URL hash without full page reload - only on client
+              if (isMounted && typeof window !== "undefined") {
+                window.history.replaceState(null, "", `#${value}`);
+              }
             }}
             className="space-y-4"
           >
@@ -232,20 +273,6 @@ export function DashboardContent() {
                     <UsersIcon className="size-6" />
                   </CardHeader>
                   <CardContent className="space-y-3">
-                    {/* <div className="flex items-center space-x-3">
-                          <CustomAvatar
-                            size={36}
-                            src={user.image || undefined}
-                            alt={user.name || "User avatar"}
-                            fallback="User2"
-                          />
-                          <div>
-                            <div className="font-semibold">{user.name}</div>
-                            <div className="text-xs text-muted-foreground">
-                              @{user.username}
-                            </div>
-                          </div>
-                        </div> */}
                     <div className="flex space-x-8">
                       <div className="space-y-4">
                         <div className="text-3xl font-bold">
@@ -272,7 +299,6 @@ export function DashboardContent() {
                         </div>
                       </div>
                     </div>
-                    {/*  */}
                   </CardContent>
                 </Card>
               </div>
@@ -303,7 +329,9 @@ export function DashboardContent() {
                 <CardContent>
                   <div className="space-y-8">
                     {/* Use a state to control mounting */}
-                    {activeTab === "activity" && <NotificationsFeed />}
+                    {activeTab === "activity" && isMounted && (
+                      <NotificationsFeed />
+                    )}
                   </div>
                 </CardContent>
               </Card>

@@ -1,12 +1,10 @@
 import * as React from "react";
+
 import { useTranslations } from "next-intl";
+
 import { AlertCircle } from "lucide-react";
 import { toast } from "sonner";
-import ItemsPagination from "~/components/atom/item-pagination";
-import {
-  NotificationItem,
-  NotificationSkeleton,
-} from "~/components/features/Notifications/notification-item";
+
 import {
   Card,
   CardContent,
@@ -14,6 +12,13 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
+
+import ItemsPagination from "~/components/atom/item-pagination";
+import {
+  NotificationItem,
+  NotificationSkeleton,
+} from "~/components/features/Notifications/notification-item";
+
 import { useNotifications } from "~/hooks/use-notifications";
 
 const PAGE_SIZE = 3;

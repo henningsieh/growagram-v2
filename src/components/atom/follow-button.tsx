@@ -1,13 +1,18 @@
 "use client";
 
 import * as React from "react";
+
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
+
 import { useMutation } from "@tanstack/react-query";
 import { useQueryClient } from "@tanstack/react-query";
+
 import { UserMinusIcon, UserPlusIcon } from "lucide-react";
 import { toast } from "sonner";
+
 import { Button } from "~/components/ui/button";
+
 import { useTRPC } from "~/lib/trpc/client";
 
 interface FollowButtonProps {

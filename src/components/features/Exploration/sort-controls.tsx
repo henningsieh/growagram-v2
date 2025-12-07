@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+
 import {
   ArrowDown01Icon,
   ArrowUp10Icon,
@@ -9,10 +10,7 @@ import {
   ClockIcon,
   TagIcon,
 } from "lucide-react";
-import {
-  type SortOption,
-  SortOrder,
-} from "~/components/atom/sort-filter-controls";
+
 import { Label } from "~/components/ui/label";
 import {
   Select,
@@ -21,6 +19,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
+
+import {
+  type SortOption,
+  SortOrder,
+} from "~/components/atom/sort-filter-controls";
+
 import { GrowsSortField } from "~/types/grow";
 
 interface SortControlsProps {

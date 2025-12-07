@@ -1,9 +1,12 @@
 // src/app/[locale]/public/timeline/following/layout.tsx:
 import { Metadata } from "next";
+
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
-import { PaginationItemsPerPage } from "~/assets/constants";
+
 import { getQueryClient, trpc } from "~/lib/trpc/server";
 import { generatePageMetadata } from "~/lib/utils/metadata";
+
+import { PaginationItemsPerPage } from "~/assets/constants";
 
 export async function generateMetadata({
   params,

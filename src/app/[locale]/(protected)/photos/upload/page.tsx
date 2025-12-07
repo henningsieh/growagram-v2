@@ -1,12 +1,15 @@
 // src/app/[locale]/(protected)/photos/upload/page.tsx:
 import { getTranslations } from "next-intl/server";
-import { modulePaths } from "~/assets/constants";
+
 import { BreadcrumbSetter } from "~/components/Layouts/Breadcrumbs/breadcrumb-setter";
 import FormContent from "~/components/Layouts/form-content";
 import PageHeader from "~/components/Layouts/page-header";
 import PhotoUpload from "~/components/features/Photos/image-upload";
+
 import { auth } from "~/lib/auth";
 import { createBreadcrumbs } from "~/lib/breadcrumbs/breadcrumbs";
+
+import { modulePaths } from "~/assets/constants";
 
 export default async function ImageUploadPage() {
   const session = await auth();

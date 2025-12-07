@@ -1,11 +1,15 @@
 import { useTranslations } from "next-intl";
+
 import { CannabisIcon, DnaIcon, FlaskConical } from "lucide-react";
+
+import { Badge } from "~/components/ui/badge";
+
 import {
   HybridTooltip,
   HybridTooltipContent,
   HybridTooltipTrigger,
 } from "~/components/atom/hybrid-tooltip";
-import { Badge } from "~/components/ui/badge";
+
 import { StrainType } from "~/server/api/root";
 
 export default function StrainBadge({ strain }: { strain: StrainType }) {

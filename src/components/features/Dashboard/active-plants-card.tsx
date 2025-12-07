@@ -1,8 +1,9 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+
 import { Sprout } from "lucide-react";
-import { EnhancedPlantCard } from "~/components/features/Plants/enhanced-plant-card";
+
 import { Button } from "~/components/ui/button";
 import {
   Card,
@@ -12,8 +13,12 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 import { Skeleton } from "~/components/ui/skeleton";
-import { Link } from "~/lib/i18n/routing";
+
+import { EnhancedPlantCard } from "~/components/features/Plants/enhanced-plant-card";
+
 import type { GetOwnPlantsType } from "~/server/api/root";
+
+import { Link } from "~/lib/i18n/routing";
 
 interface ActivePlantsCardProps {
   plantsData?: {

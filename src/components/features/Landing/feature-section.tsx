@@ -1,7 +1,9 @@
 "use client";
 
 import type React from "react";
+
 import { useTranslations } from "next-intl";
+
 import { motion } from "framer-motion";
 import {
   ArrowRight,
@@ -10,6 +12,7 @@ import {
   ShieldCheck,
   Users,
 } from "lucide-react";
+
 import {
   Card,
   CardContent,

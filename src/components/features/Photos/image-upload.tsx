@@ -2,28 +2,38 @@
 
 // src/components/features/Photos/image-upload.tsx:
 import * as React from "react";
-import { useLocale, useTranslations } from "next-intl";
+
 import Image from "next/image";
+
+import { useLocale, useTranslations } from "next-intl";
+
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+
 import { CloudUpload, Upload, X } from "lucide-react";
 import { toast } from "sonner";
-import {
-  ACCEPTED_IMAGE_TYPES,
-  MAX_UPLOAD_FILE_SIZE,
-  modulePaths,
-} from "~/assets/constants";
-import SpinningLoader from "~/components/atom/spinning-loader";
+
 import { Button } from "~/components/ui/button";
 import { Card, CardContent, CardFooter } from "~/components/ui/card";
 import { Label } from "~/components/ui/label";
 import { Progress as ProgressBar } from "~/components/ui/progress";
+
+import SpinningLoader from "~/components/atom/spinning-loader";
+
+import type { CreatePhotoInput } from "~/server/api/root";
+
+import { Locale } from "~/types/locale";
+
 import { useRouter } from "~/lib/i18n/routing";
 import { useTRPC } from "~/lib/trpc/client";
 import { cn, formatDateTime } from "~/lib/utils";
 import { readExif } from "~/lib/utils/readExif";
 import { uploadToS3 } from "~/lib/utils/uploadToS3";
-import type { CreatePhotoInput } from "~/server/api/root";
-import { Locale } from "~/types/locale";
+
+import {
+  ACCEPTED_IMAGE_TYPES,
+  MAX_UPLOAD_FILE_SIZE,
+  modulePaths,
+} from "~/assets/constants";
 
 interface FilePreview {
   file: File;

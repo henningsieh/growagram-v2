@@ -2,10 +2,13 @@
 
 // src/app/[locale]/(protected)/photos/page.tsx:
 import * as React from "react";
-import { useTranslations } from "next-intl";
+
 import { useSearchParams } from "next/navigation";
+
+import { useTranslations } from "next-intl";
+
 import { Infinity, Camera, UploadCloud } from "lucide-react";
-import { modulePaths } from "~/assets/constants";
+
 import { BreadcrumbSetter } from "~/components/Layouts/Breadcrumbs/breadcrumb-setter";
 import PageHeader from "~/components/Layouts/page-header";
 import {
@@ -14,9 +17,13 @@ import {
 } from "~/components/atom/sort-filter-controls";
 import PhotosInfiniteScrollView from "~/components/features/Photos/Views/infinite-scroll";
 import PhotosPaginatedView from "~/components/features/Photos/Views/paginated";
+
+import { PhotosSortField, PhotosViewMode } from "~/types/image";
+
 import { createBreadcrumbs } from "~/lib/breadcrumbs/breadcrumbs";
 import { useRouter } from "~/lib/i18n/routing";
-import { PhotosSortField, PhotosViewMode } from "~/types/image";
+
+import { modulePaths } from "~/assets/constants";
 
 export default function MyPhotosPage() {
   const router = useRouter();

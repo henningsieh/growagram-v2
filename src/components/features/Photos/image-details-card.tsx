@@ -1,12 +1,19 @@
 // src/components/features/Images/image-details-card.tsx:
 import * as React from "react";
-import { useTranslations } from "next-intl";
+
 import Image from "next/image";
+
+import { useTranslations } from "next-intl";
+
 import { CameraIcon, FileIcon, UploadCloudIcon } from "lucide-react";
+
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import { formatDateTime } from "~/lib/utils";
+
 import type { GetOwnPhotoType } from "~/server/api/root";
+
 import { Locale } from "~/types/locale";
+
+import { formatDateTime } from "~/lib/utils";
 
 interface ImageDetailsProps {
   image: GetOwnPhotoType;

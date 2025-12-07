@@ -2,10 +2,13 @@
 
 // src/app/[locale]/(protected)/plants/page.tsx:
 import * as React from "react";
-import { useTranslations } from "next-intl";
+
 import { useSearchParams } from "next/navigation";
+
+import { useTranslations } from "next-intl";
+
 import { Infinity, Calendar1Icon, Edit3Icon, TagIcon } from "lucide-react";
-import { modulePaths } from "~/assets/constants";
+
 import { BreadcrumbSetter } from "~/components/Layouts/Breadcrumbs/breadcrumb-setter";
 import PageHeader from "~/components/Layouts/page-header";
 import {
@@ -14,9 +17,13 @@ import {
 } from "~/components/atom/sort-filter-controls";
 import InfiniteScrollPlantsView from "~/components/features/Plants/Views/infinite-scroll";
 import PaginatedPlantsView from "~/components/features/Plants/Views/paginated";
+
+import { PlantsSortField, PlantsViewMode } from "~/types/plant";
+
 import { createBreadcrumbs } from "~/lib/breadcrumbs/breadcrumbs";
 import { useRouter } from "~/lib/i18n/routing";
-import { PlantsSortField, PlantsViewMode } from "~/types/plant";
+
+import { modulePaths } from "~/assets/constants";
 
 export default function MyPlantsPage() {
   const router = useRouter();

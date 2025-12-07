@@ -1,14 +1,22 @@
 import * as React from "react";
+
 import { useLocale, useTranslations } from "next-intl";
+
 import { SparklesIcon, SquareCheckBigIcon } from "lucide-react";
-import { CustomAvatar } from "~/components/atom/custom-avatar";
+
 import { Button } from "~/components/ui/button";
 import { Skeleton } from "~/components/ui/skeleton";
-import { useNotifications } from "~/hooks/use-notifications";
+
+import { CustomAvatar } from "~/components/atom/custom-avatar";
+
+import type { GetAllNotificationType } from "~/server/api/root";
+
+import type { Locale } from "~/types/locale";
+
 import { Link } from "~/lib/i18n/routing";
 import { cn, formatDateTime } from "~/lib/utils";
-import type { GetAllNotificationType } from "~/server/api/root";
-import type { Locale } from "~/types/locale";
+
+import { useNotifications } from "~/hooks/use-notifications";
 
 interface NotificationItemProps extends GetAllNotificationType {
   close?: () => void;

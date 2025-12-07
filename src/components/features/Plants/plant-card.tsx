@@ -2,9 +2,12 @@
 
 // src/components/features/plant/plant-card.tsx:
 import * as React from "react";
+
 import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
+
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+
 import {
   DotIcon,
   Edit3Icon,
@@ -12,21 +15,7 @@ import {
   Trash2Icon,
 } from "lucide-react";
 import { toast } from "sonner";
-import { modulePaths } from "~/assets/constants";
-import AvatarCardHeader, {
-  ActionItem,
-} from "~/components/atom/avatar-card-header";
-import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
-import { EntityDateInfo } from "~/components/atom/entity-date-info";
-import GrowBadge from "~/components/atom/grow-badge";
-import { TouchProvider } from "~/components/atom/hybrid-tooltip";
-import { OwnerDropdownMenu } from "~/components/atom/owner-dropdown-menu";
-import { SocialCardFooter } from "~/components/atom/social-card-footer";
-import StrainBadge from "~/components/atom/strain-badge";
-import { Comments } from "~/components/features/Comments/comments";
-import { ImageCarousel } from "~/components/features/Plants/image-carousel";
-import { PlantProgressAndDates } from "~/components/features/Plants/plant-progress-and-dates";
-import { PostFormModal } from "~/components/features/Timeline/Post/post-form-modal";
+
 import { Button } from "~/components/ui/button";
 import {
   Card,
@@ -34,17 +23,36 @@ import {
   CardDescription,
   CardTitle,
 } from "~/components/ui/card";
-import { useComments } from "~/hooks/use-comments";
-import { useLikeStatus } from "~/hooks/use-likes";
-import { Link, useRouter } from "~/lib/i18n/routing";
-import { useTRPC } from "~/lib/trpc/client";
-import { cn, formatDateTime } from "~/lib/utils";
+
+import { ActionItem, ActionsMenu } from "~/components/atom/actions-menu";
+import AvatarCardHeader from "~/components/atom/avatar-card-header";
+import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
+import { EntityDateInfo } from "~/components/atom/entity-date-info";
+import GrowBadge from "~/components/atom/grow-badge";
+import { TouchProvider } from "~/components/atom/hybrid-tooltip";
+import { SocialCardFooter } from "~/components/atom/social-card-footer";
+import StrainBadge from "~/components/atom/strain-badge";
+import { Comments } from "~/components/features/Comments/comments";
+import { ImageCarousel } from "~/components/features/Plants/image-carousel";
+import { PlantProgressAndDates } from "~/components/features/Plants/plant-progress-and-dates";
+import { PostFormModal } from "~/components/features/Timeline/Post/post-form-modal";
+
 import type { PlantByIdType, PlantGrowType } from "~/server/api/root";
+
 import { CommentableEntityType } from "~/types/comment";
 import { LikeableEntityType } from "~/types/like";
 import { Locale } from "~/types/locale";
 import { PostableEntityType } from "~/types/post";
 import { UserRoles } from "~/types/user";
+
+import { Link, useRouter } from "~/lib/i18n/routing";
+import { useTRPC } from "~/lib/trpc/client";
+import { cn, formatDateTime } from "~/lib/utils";
+
+import { useComments } from "~/hooks/use-comments";
+import { useLikeStatus } from "~/hooks/use-likes";
+
+import { modulePaths } from "~/assets/constants";
 
 interface PlantCardProps {
   plant: PlantByIdType;
@@ -66,7 +74,7 @@ export default function PlantCard({
   const tCommon = useTranslations("Platform");
   const t = useTranslations("Plants");
 
-  const [isSocial, setIsSocial] = React.useState(isSocialProp);
+  const [isSocial] = React.useState(isSocialProp);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);
   const [isPostModalOpen, setIsPostModalOpen] = React.useState(false);
 
@@ -110,11 +118,12 @@ export default function PlantCard({
     setIsDeleteDialogOpen(false);
   };
 
-  const growActions: ActionItem[] = [];
+  // Build actions array for both social and non-social modes
+  const plantActions: ActionItem[] = [];
 
-  // Edit Action (visible to owner only)
+  // Owner actions: Edit (only for plant owners)
   if (user && user.id === plant.ownerId) {
-    growActions.push({
+    plantActions.push({
       icon: Edit3Icon,
       label: t("edit-button-label"),
       variant: "ghost",
@@ -124,9 +133,9 @@ export default function PlantCard({
     });
   }
 
-  // Delete Action (visible to owner and admin)
+  // Admin/Owner actions: Delete (for plant owners OR admins)
   if (user && (user.id === plant.ownerId || user.role === UserRoles.ADMIN)) {
-    growActions.push({
+    plantActions.push({
       icon: Trash2Icon,
       label: t("delete-button-label"),
       variant: "destructive",
@@ -174,15 +183,15 @@ export default function PlantCard({
             <AvatarCardHeader
               user={plant.owner}
               dateElement={dateElement}
-              actions={growActions}
-              showActions={growActions.length > 0}
+              actions={plantActions}
+              showActions={plantActions.length > 0}
             />
           )}
 
           <CardContent
             className={`flex h-full flex-col gap-1 ${isSocial ? "ml-12 pr-2 pl-0" : "p-2"}`}
           >
-            <div className="flex min-w-0 items-center justify-between gap-2">
+            <div className="flex min-w-0 justify-between gap-2">
               {/* Title Link */}
               <CardTitle as="h3" className="min-w-0 flex-1">
                 <Button
@@ -198,16 +207,8 @@ export default function PlantCard({
                 </Button>
               </CardTitle>
 
-              {/* DropdownMenu for plant's owner */}
-              {user && user.id === plant.ownerId && (
-                <OwnerDropdownMenu
-                  isSocial={isSocial}
-                  setIsSocial={setIsSocial}
-                  isDeleting={deleteMutation.isPending}
-                  handleDelete={handleDelete}
-                  entityId={plant.id}
-                  entityType="Plants"
-                />
+              {!isSocial && plantActions.length > 0 && (
+                <ActionsMenu actions={plantActions} />
               )}
             </div>
 

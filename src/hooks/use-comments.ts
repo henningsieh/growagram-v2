@@ -1,16 +1,24 @@
 // src/hooks/use-comments.tsx:
 import * as React from "react";
+
+import { useSearchParams } from "next/navigation";
+
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
-import { useSearchParams } from "next/navigation";
+
 import { useQuery } from "@tanstack/react-query";
 import { useMutation } from "@tanstack/react-query";
 import { useQueryClient } from "@tanstack/react-query";
+
 import { toast } from "sonner";
+
 import { SortOrder } from "~/components/atom/sort-filter-controls";
-import { useTRPC } from "~/lib/trpc/client";
+
 import type { GetCommentsInput, GetCommentsType } from "~/server/api/root";
+
 import { CommentableEntityType } from "~/types/comment";
+
+import { useTRPC } from "~/lib/trpc/client";
 
 export const useComments = (
   entityId: string,

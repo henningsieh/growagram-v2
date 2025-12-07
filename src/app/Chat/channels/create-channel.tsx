@@ -1,11 +1,15 @@
 "use client";
 
 import * as React from "react";
+
 // eslint-disable-next-line no-restricted-imports
 import { useRouter } from "next/navigation";
+
+import { useMutation } from "@tanstack/react-query";
+
 import * as Headless from "@headlessui/react";
 import { PlusIcon } from "@heroicons/react/24/outline";
-import { useMutation } from "@tanstack/react-query";
+
 import { Button } from "~/components/button";
 import {
   Dialog,
@@ -14,6 +18,7 @@ import {
   DialogTitle,
 } from "~/components/dialog";
 import { Input, Label } from "~/components/input";
+
 import { useTRPC } from "~/lib/trpc/client";
 
 export function CreateChannelDialog() {

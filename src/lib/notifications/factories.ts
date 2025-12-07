@@ -1,11 +1,14 @@
-import { db } from "~/lib/db";
-import { notifications } from "~/lib/db/schema";
 import { ee } from "~/server/api/routers/notifications";
+
 import {
   type NotificationCreationResult,
   NotificationEventType,
   type NotificationFactoryData,
 } from "~/types/notification";
+
+import { db } from "~/lib/db";
+import { notifications } from "~/lib/db/schema";
+
 import { NotificationRecipientResolver } from "./recipients";
 
 /**

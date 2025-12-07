@@ -1,9 +1,11 @@
 // src/server/api/routers/chat.ts
 import EventEmitter from "events";
 import { z } from "zod";
+
+import type { ChatMessage } from "~/types/chat";
+
 import { chatMessages } from "~/lib/db/schema";
 import { protectedProcedure } from "~/lib/trpc/init";
-import type { ChatMessage } from "~/types/chat";
 
 const ee = new EventEmitter();
 

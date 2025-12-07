@@ -1,14 +1,5 @@
 "use client";
 
-import * as React from "react";
-import { signIn, useSession } from "next-auth/react";
-import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
-import { useMutation } from "@tanstack/react-query";
-import { TRPCClientErrorLike } from "@trpc/client";
-import { DefaultErrorShape } from "@trpc/server/unstable-core-do-not-import";
-import { useSubscription } from "@trpc/tanstack-react-query";
-import { cx } from "class-variance-authority";
-import { format, formatDistanceToNow, isToday } from "date-fns";
 import {
   useLivePosts,
   useThrottledIsTypingMutation,
@@ -18,9 +9,24 @@ import {
   pluralize,
   run,
 } from "~/app/Chat/channels/[channelId]/utils";
+
+import * as React from "react";
+
+import { signIn, useSession } from "next-auth/react";
+
+import { useMutation } from "@tanstack/react-query";
+
+import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
+import { TRPCClientErrorLike } from "@trpc/client";
+import { DefaultErrorShape } from "@trpc/server/unstable-core-do-not-import";
+import { useSubscription } from "@trpc/tanstack-react-query";
+import { cx } from "class-variance-authority";
+import { format, formatDistanceToNow, isToday } from "date-fns";
+
 import { Avatar } from "~/components/avatar";
 import { Button } from "~/components/button";
 import { Textarea } from "~/components/input";
+
 import { useTRPC } from "~/lib/trpc/client";
 
 type SubscriptionError = TRPCClientErrorLike<{

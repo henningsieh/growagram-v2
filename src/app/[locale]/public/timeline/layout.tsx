@@ -1,10 +1,14 @@
 // src/app/[locale]/public/timeline/layout.tsx:
 import { Metadata } from "next";
+
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
-import { PaginationItemsPerPage } from "~/assets/constants";
+
 import { TimelineNavigationLayout } from "~/components/features/Timeline/timeline-navigation-layout";
+
 import { getQueryClient, trpc } from "~/lib/trpc/server";
 import { generatePageMetadata } from "~/lib/utils/metadata";
+
+import { PaginationItemsPerPage } from "~/assets/constants";
 
 export async function generateMetadata({
   params,

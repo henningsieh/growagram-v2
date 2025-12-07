@@ -2,8 +2,9 @@
 
 // src/server/actions/connectToSteady.ts:
 // eslint-disable-next-line no-restricted-imports
-import { redirect } from "next/navigation";
 import { env } from "~/env";
+
+import { redirect } from "next/navigation";
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export async function connectToSteady() {

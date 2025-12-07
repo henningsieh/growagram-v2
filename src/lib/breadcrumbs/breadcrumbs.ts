@@ -1,5 +1,7 @@
-import { modulePaths } from "~/assets/constants";
+// src/lib/breadcrumbs/breadcrumbs.ts:
 import type { BreadcrumbItem } from "~/lib/breadcrumbs/breadcrumb-context";
+
+import { modulePaths } from "~/assets/constants";
 
 // Helper to create breadcrumbs with translation keys
 export function createBreadcrumbs(

@@ -1,14 +1,20 @@
 "use client";
 
+import Image from "next/image";
+
 import { useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
-import Image from "next/image";
+
 import { motion } from "framer-motion";
 import { ChevronRight } from "lucide-react";
-import { modulePaths } from "~/assets/constants";
-import FeatureSection from "~/components/features/Landing/feature-section.tsx";
+
 import { Button } from "~/components/ui/button";
+
+import FeatureSection from "~/components/features/Landing/feature-section.tsx";
+
 import { Link } from "~/lib/i18n/routing";
+
+import { modulePaths } from "~/assets/constants";
 
 // Animation variants
 const containerVariants = {

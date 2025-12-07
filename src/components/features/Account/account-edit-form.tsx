@@ -2,11 +2,14 @@
 
 // src/components/features/Account/edit-form.tsx:
 import * as React from "react";
+
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
-import { zodResolver } from "@hookform/resolvers/zod";
+
 import { useQuery } from "@tanstack/react-query";
 import { useMutation } from "@tanstack/react-query";
+
+import { zodResolver } from "@hookform/resolvers/zod";
 import { AnimatePresence, motion } from "framer-motion";
 import { debounce } from "lodash";
 import {
@@ -20,10 +23,7 @@ import {
 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import FormContent from "~/components/Layouts/form-content";
-import PageHeader from "~/components/Layouts/page-header";
-import AvatarCardHeader from "~/components/atom/avatar-card-header";
-import SpinningLoader from "~/components/atom/spinning-loader";
+
 import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
 import { Button } from "~/components/ui/button";
 import {
@@ -43,11 +43,20 @@ import {
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
 import { Separator } from "~/components/ui/separator";
-import { useIsMobile } from "~/hooks/use-mobile";
+
+import FormContent from "~/components/Layouts/form-content";
+import PageHeader from "~/components/Layouts/page-header";
+import AvatarCardHeader from "~/components/atom/avatar-card-header";
+import SpinningLoader from "~/components/atom/spinning-loader";
+
+import type { EditUserInput, OwnUserDataType } from "~/server/api/root";
+
+import { userEditSchema } from "~/types/zodSchema";
+
 import { useRouter } from "~/lib/i18n/routing";
 import { useTRPC } from "~/lib/trpc/client";
-import type { EditUserInput, OwnUserDataType } from "~/server/api/root";
-import { userEditSchema } from "~/types/zodSchema";
+
+import { useIsMobile } from "~/hooks/use-mobile";
 
 const formVariants = {
   hidden: { opacity: 0 },

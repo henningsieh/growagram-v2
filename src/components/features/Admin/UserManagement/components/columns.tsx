@@ -1,19 +1,27 @@
 import { useTranslations } from "next-intl";
+
 import { ColumnDef } from "@tanstack/react-table";
+
 import { ArrowUpDown, Ban, Clock } from "lucide-react";
-import { CustomAvatar } from "~/components/atom/custom-avatar";
+
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Checkbox } from "~/components/ui/checkbox";
+
+import { CustomAvatar } from "~/components/atom/custom-avatar";
+
+import type { AdminUserListItem } from "~/server/api/root";
+
+import type { Locale } from "~/types/locale";
+import { UserRoles } from "~/types/user";
+
 import {
   formatAbsoluteDate,
   formatDateTime,
   getBanExpirationDate,
   isPermanentBan,
 } from "~/lib/utils";
-import type { AdminUserListItem } from "~/server/api/root";
-import type { Locale } from "~/types/locale";
-import { UserRoles } from "~/types/user";
+
 import { ActionsCell } from "./actions-cell";
 
 export function createColumns(

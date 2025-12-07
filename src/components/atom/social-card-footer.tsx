@@ -1,12 +1,14 @@
 // src/components/atom/social-card-footer.tsx
 import * as React from "react";
-import { useSession } from "next-auth/react";
-import { useTranslations } from "next-intl";
+
 // eslint-disable-next-line no-restricted-imports
 import Link from "next/link";
+
+import { useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
+
 import { ChartColumnIcon, MessagesSquareIcon, ShareIcon } from "lucide-react";
-import { LikeButton } from "~/components/atom/like-button";
-import SpinningLoader from "~/components/atom/spinning-loader";
+
 import { Button } from "~/components/ui/button";
 import {
   Tooltip,
@@ -14,9 +16,14 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "~/components/ui/tooltip";
+
+import { LikeButton } from "~/components/atom/like-button";
+import SpinningLoader from "~/components/atom/spinning-loader";
+
+import { LikeableEntityType } from "~/types/like";
+
 import { usePathname } from "~/lib/i18n/routing";
 import { cn } from "~/lib/utils";
-import { LikeableEntityType } from "~/types/like";
 
 interface CardFooterProps {
   entityId: string;

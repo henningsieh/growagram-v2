@@ -1,10 +1,13 @@
 // src/app/[locale]/(protected)/account/page.tsx:
-import { modulePaths } from "~/assets/constants";
 import { BreadcrumbSetter } from "~/components/Layouts/Breadcrumbs/breadcrumb-setter";
 import AccountInfo from "~/components/features/Account/account-info";
+
+import type { GetOwnUserDataType } from "~/server/api/root";
+
 import { auth } from "~/lib/auth";
 import { createBreadcrumbs } from "~/lib/breadcrumbs/breadcrumbs";
-import type { GetOwnUserDataType } from "~/server/api/root";
+
+import { modulePaths } from "~/assets/constants";
 
 export default async function AccountPage() {
   const session = await auth();

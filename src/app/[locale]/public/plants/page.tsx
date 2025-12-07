@@ -1,15 +1,22 @@
 "use client";
 
 import * as React from "react";
+
 import { useTranslations } from "next-intl";
+
 import { useInfiniteQuery } from "@tanstack/react-query";
+
 import { motion } from "framer-motion";
-import { PaginationItemsPerPage } from "~/assets/constants";
+
 import InfiniteScrollLoader from "~/components/atom/infinite-scroll-loader";
 import SpinningLoader from "~/components/atom/spinning-loader";
 import PlantCard from "~/components/features/Plants/plant-card";
-import { useTRPC } from "~/lib/trpc/client";
+
 import type { GetAllPlantsInput, GetAllPlantsType } from "~/server/api/root";
+
+import { useTRPC } from "~/lib/trpc/client";
+
+import { PaginationItemsPerPage } from "~/assets/constants";
 
 export default function PublicPlantsPage() {
   const t = useTranslations("Plants");

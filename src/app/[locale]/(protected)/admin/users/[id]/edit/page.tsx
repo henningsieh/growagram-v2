@@ -1,9 +1,13 @@
 // src/app/[locale]/(protected)/admin/users/[id]/edit/page.tsx
 import { forbidden, notFound } from "next/navigation";
+
 import AdminUserEditForm from "~/components/features/Admin/UserManagement/components/edit-user-form";
-import { auth } from "~/lib/auth";
+
 import { AdminGetUserByIdInput } from "~/server/api/root";
+
 import { UserRoles } from "~/types/user";
+
+import { auth } from "~/lib/auth";
 
 interface EditUserPageProps {
   params: Promise<AdminGetUserByIdInput>;

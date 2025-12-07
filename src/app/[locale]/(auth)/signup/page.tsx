@@ -2,15 +2,17 @@
 
 // src/app/[locale]/(auth)/signup/page.tsx:
 import * as React from "react";
+
 import { useLocale, useTranslations } from "next-intl";
-import { zodResolver } from "@hookform/resolvers/zod";
+
 import { useMutation } from "@tanstack/react-query";
+
+import { zodResolver } from "@hookform/resolvers/zod";
 import { TRPCClientError } from "@trpc/client";
 import { motion } from "framer-motion";
 import { AtSign, ClipboardPenLineIcon, Mail, UserIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { modulePaths } from "~/assets/constants";
-import SpinningLoader from "~/components/atom/spinning-loader";
+
 import { Button } from "~/components/ui/button";
 import {
   Card,
@@ -29,11 +31,18 @@ import {
   FormMessage,
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
-import { Link, useRouter } from "~/lib/i18n/routing";
-import { useTRPC } from "~/lib/trpc/client";
+
+import SpinningLoader from "~/components/atom/spinning-loader";
+
 import { RegisterUserInput } from "~/server/api/root";
+
 import type { Locale } from "~/types/locale";
 import { createRegisterSchema } from "~/types/zodSchema";
+
+import { Link, useRouter } from "~/lib/i18n/routing";
+import { useTRPC } from "~/lib/trpc/client";
+
+import { modulePaths } from "~/assets/constants";
 
 const formVariants = {
   hidden: { opacity: 0 },

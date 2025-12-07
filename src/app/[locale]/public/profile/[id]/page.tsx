@@ -1,10 +1,14 @@
 import { notFound } from "next/navigation";
+
+import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
+
 import { FollowButton } from "~/components/atom/follow-button";
 import ProfileTabs from "~/components/features/PublicProfile/profile-tabs";
-import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
+
+import type { GetPublicUserProfileInput } from "~/server/api/root";
+
 import { auth } from "~/lib/auth";
 import { caller } from "~/lib/trpc/server";
-import type { GetPublicUserProfileInput } from "~/server/api/root";
 
 export default async function ProfilePage({
   params,

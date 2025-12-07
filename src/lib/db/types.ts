@@ -1,5 +1,6 @@
 // src/lib/db/types.ts
 import type { InferInsertModel, InferSelectModel } from "drizzle-orm";
+
 import {
   accounts,
   authenticators,

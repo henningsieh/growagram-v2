@@ -2,14 +2,17 @@
 
 // src/app/[locale]/(auth)/signin/page.tsx:
 import * as React from "react";
+
+import { useSearchParams } from "next/navigation";
+
 import { signIn } from "next-auth/react";
 import { useTranslations } from "next-intl";
-import { useSearchParams } from "next/navigation";
+
 import { Loader2, LogInIcon, MailCheckIcon } from "lucide-react";
 import { FaDiscord, FaFacebook, FaGithub, FaTwitter } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { toast } from "sonner";
-import { modulePaths } from "~/assets/constants";
+
 import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
 import { Button } from "~/components/ui/button";
 import {
@@ -22,7 +25,10 @@ import {
 } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
+
 import { Link, useRouter } from "~/lib/i18n/routing";
+
+import { modulePaths } from "~/assets/constants";
 
 export default function SignInPage() {
   const router = useRouter();

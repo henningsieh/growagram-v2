@@ -1,8 +1,12 @@
 import { TentTreeIcon } from "lucide-react";
-import { modulePaths } from "~/assets/constants";
+
 import { Badge } from "~/components/ui/badge";
-import { Link } from "~/lib/i18n/routing";
+
 import { PlantGrowType } from "~/server/api/root";
+
+import { Link } from "~/lib/i18n/routing";
+
+import { modulePaths } from "~/assets/constants";
 
 /**
  * GrowBadge Component

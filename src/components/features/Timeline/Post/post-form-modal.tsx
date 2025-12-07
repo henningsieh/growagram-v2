@@ -1,16 +1,18 @@
 "use client";
 
-import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { zodResolver } from "@hookform/resolvers/zod";
+
+import { useTranslations } from "next-intl";
+
 import { useMutation } from "@tanstack/react-query";
+
+import { zodResolver } from "@hookform/resolvers/zod";
 import { AnimatePresence, motion } from "framer-motion";
 import { ShareIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { EmbeddedGrowCard } from "~/components/features/Grows/embedded-grow-card";
-import { EnhancedPlantCard } from "~/components/features/Plants/enhanced-plant-card.tsx";
+
 import { Button } from "~/components/ui/button";
 import {
   Dialog,
@@ -29,15 +31,21 @@ import {
   FormMessage,
 } from "~/components/ui/form";
 import { Textarea } from "~/components/ui/textarea";
-import { useRouter } from "~/lib/i18n/routing";
-import { useTRPC } from "~/lib/trpc/client";
+
+import { EmbeddedGrowCard } from "~/components/features/Grows/embedded-grow-card";
+import { EnhancedPlantCard } from "~/components/features/Plants/enhanced-plant-card.tsx";
+
 import type {
   GetOwnGrowType,
   GetOwnPhotoType,
   GetOwnPlantType,
 } from "~/server/api/root";
+
 import { PostableEntityType } from "~/types/post";
 import { postSchema } from "~/types/zodSchema";
+
+import { useRouter } from "~/lib/i18n/routing";
+import { useTRPC } from "~/lib/trpc/client";
 
 type PostFormValues = z.infer<typeof postSchema>;
 

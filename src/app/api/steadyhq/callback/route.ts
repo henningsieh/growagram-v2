@@ -1,11 +1,16 @@
 // src/app/api/steadyhq/callback/route.ts:
-import "next-auth";
-import { NextResponse } from "next/server";
-import axios from "axios";
-import { modulePaths } from "~/assets/constants";
 import { env } from "~/env";
+
+import { NextResponse } from "next/server";
+
+import "next-auth";
+
+import axios from "axios";
+
 import { auth } from "~/lib/auth";
 import { caller } from "~/lib/trpc/server";
+
+import { modulePaths } from "~/assets/constants";
 
 // this Auth wrapper has bogus return type,
 // so we need to cast it to any. See below!

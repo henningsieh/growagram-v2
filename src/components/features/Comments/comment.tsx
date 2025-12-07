@@ -1,36 +1,45 @@
 //src/components/features/Comments/comment.tsx:
 import * as React from "react";
+
+import { useSearchParams } from "next/navigation";
+
 import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
-import { useSearchParams } from "next/navigation";
+
 import { useQuery } from "@tanstack/react-query";
 import { useMutation } from "@tanstack/react-query";
 import { useQueryClient } from "@tanstack/react-query";
+
 import { AnimatePresence, motion } from "framer-motion";
 import { DotIcon, Reply, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
-import AvatarCardHeader, {
-  ActionItem,
-} from "~/components/atom/avatar-card-header";
+
+import { Button } from "~/components/ui/button";
+import { Input } from "~/components/ui/input";
+
+import { ActionItem } from "~/components/atom/actions-menu";
+import AvatarCardHeader from "~/components/atom/avatar-card-header";
 import { DeleteConfirmationDialog } from "~/components/atom/confirm-delete";
 import { CustomAvatar } from "~/components/atom/custom-avatar";
 import { HighlightElement } from "~/components/atom/highlight-element";
 import { SocialCardFooter } from "~/components/atom/social-card-footer";
 import SpinningLoader from "~/components/atom/spinning-loader";
-import { Button } from "~/components/ui/button";
-import { Input } from "~/components/ui/input";
-import { useComments } from "~/hooks/use-comments";
-import { useLikeStatus } from "~/hooks/use-likes";
-import { useTRPC } from "~/lib/trpc/client";
-import { formatDateTime } from "~/lib/utils";
+
 import type {
   GetCommentType,
   GetCommentsInput,
   GetRepliesInput,
 } from "~/server/api/root";
+
 import { LikeableEntityType } from "~/types/like";
 import { Locale } from "~/types/locale";
 import { UserRoles } from "~/types/user";
+
+import { useTRPC } from "~/lib/trpc/client";
+import { formatDateTime } from "~/lib/utils";
+
+import { useComments } from "~/hooks/use-comments";
+import { useLikeStatus } from "~/hooks/use-likes";
 
 interface CommentProps {
   comment: GetCommentType;

@@ -1,16 +1,22 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+
 import { AnimatePresence, motion } from "framer-motion";
 import { AtSign, Edit, Mail, Shield, User } from "lucide-react";
+
+import { Button } from "~/components/ui/button";
+import { Card, CardContent } from "~/components/ui/card";
+
 import FormContent from "~/components/Layouts/form-content";
 import PageHeader from "~/components/Layouts/page-header";
 import { CustomAvatar } from "~/components/atom/custom-avatar";
-import { Button } from "~/components/ui/button";
-import { Card, CardContent } from "~/components/ui/card";
-import { useIsMobile } from "~/hooks/use-mobile";
-import { Link } from "~/lib/i18n/routing";
+
 import type { OwnUserDataType } from "~/server/api/root";
+
+import { Link } from "~/lib/i18n/routing";
+
+import { useIsMobile } from "~/hooks/use-mobile";
 
 const containerVariants = {
   hidden: { opacity: 0 },

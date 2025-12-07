@@ -1,11 +1,15 @@
 // src/app/[locale]/(protected)/plants/[id]/form/page.tsx:
 import { notFound } from "next/navigation";
-import { modulePaths } from "~/assets/constants";
+
 import { BreadcrumbSetter } from "~/components/Layouts/Breadcrumbs/breadcrumb-setter";
 import PlantForm from "~/components/features/Plants/plant-form";
+
+import type { GetPlantByIdInput, GetPlantByIdType } from "~/server/api/root";
+
 import { createBreadcrumbs } from "~/lib/breadcrumbs/breadcrumbs";
 import { caller } from "~/lib/trpc/server";
-import type { GetPlantByIdInput, GetPlantByIdType } from "~/server/api/root";
+
+import { modulePaths } from "~/assets/constants";
 
 export default async function EditPlantPage({
   params,

@@ -1,10 +1,12 @@
 "use client";
 
-import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useParams } from "next/navigation";
+
+import { useTranslations } from "next-intl";
+
 import { LanguagesIcon } from "lucide-react";
-import { APP_SETTINGS } from "~/assets/constants";
+
 import { Button } from "~/components/ui/button";
 import {
   DropdownMenu,
@@ -12,7 +14,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
+
 import { usePathname, useRouter } from "~/lib/i18n/routing";
+
+import { APP_SETTINGS } from "~/assets/constants";
 
 // Use URL imports for flags instead of direct SVG imports
 const FLAG_IMAGES = {

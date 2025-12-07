@@ -1,12 +1,18 @@
 // src/app/[locale]/(protected)/plants/layout.tsx:
 import { Metadata } from "next";
+
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
-import { PaginationItemsPerPage } from "~/assets/constants";
+
 import { SortOrder } from "~/components/atom/sort-filter-controls";
+
+import type { GetOwnPlantsInput } from "~/server/api/root";
+
+import { PlantsSortField } from "~/types/plant";
+
 import { getQueryClient, trpc } from "~/lib/trpc/server";
 import { generatePageMetadata } from "~/lib/utils/metadata";
-import type { GetOwnPlantsInput } from "~/server/api/root";
-import { PlantsSortField } from "~/types/plant";
+
+import { PaginationItemsPerPage } from "~/assets/constants";
 
 export async function generateMetadata({
   params,

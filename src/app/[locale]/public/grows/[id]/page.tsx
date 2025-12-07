@@ -1,9 +1,12 @@
 // src/app/[locale]/public/grows/[id]/page.tsx:
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+
 import { GrowCard } from "~/components/features/Grows/grow-card";
-import { caller } from "~/lib/trpc/server";
+
 import type { GetGrowByIdInput } from "~/server/api/root";
+
+import { caller } from "~/lib/trpc/server";
 
 type PublicGrowByIdProps = {
   params: Promise<GetGrowByIdInput>;

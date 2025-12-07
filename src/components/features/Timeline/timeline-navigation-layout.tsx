@@ -1,14 +1,19 @@
 "use client";
 
 import * as React from "react";
+
 import { useTranslations } from "next-intl";
+
 import type { VariantProps } from "class-variance-authority";
 import { ClockIcon, UsersIcon } from "lucide-react";
-import { modulePaths } from "~/assets/constants";
+
 import { Button, buttonVariants } from "~/components/ui/button";
 import { ScrollArea } from "~/components/ui/scroll-area";
+
 import { Link, usePathname } from "~/lib/i18n/routing";
 import { cn } from "~/lib/utils";
+
+import { modulePaths } from "~/assets/constants";
 
 interface TimelineNavigationLayoutProps {
   children: React.ReactNode;

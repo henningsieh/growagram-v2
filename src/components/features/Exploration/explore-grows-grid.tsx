@@ -1,15 +1,21 @@
 "use client";
 
 import * as React from "react";
+
 import { useTranslations } from "next-intl";
+
 import { useInfiniteQuery } from "@tanstack/react-query";
+
 import { motion } from "framer-motion";
+
 import ResponsiveGrid from "~/components/Layouts/responsive-grid";
 import InfiniteScrollLoader from "~/components/atom/infinite-scroll-loader";
 import SpinningLoader from "~/components/atom/spinning-loader";
 import { GrowCard } from "~/components/features/Grows/grow-card";
-import { useTRPC } from "~/lib/trpc/client";
+
 import type { ExploreGrowsInput } from "~/server/api/root";
+
+import { useTRPC } from "~/lib/trpc/client";
 
 interface ExploreGrowsGridProps {
   filters: ExploreGrowsInput;

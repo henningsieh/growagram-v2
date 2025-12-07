@@ -1,10 +1,14 @@
 "use client";
 
 import * as React from "react";
+
 import { useTranslations } from "next-intl";
+
 import { Shield, Users } from "lucide-react";
+
 import { Card, CardHeader } from "~/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
+
 import { UsersTable } from "./components/users-table";
 
 export function AdminArea() {

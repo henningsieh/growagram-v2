@@ -1,13 +1,15 @@
 // src/lib/sidebar/index.ts:
 import * as Icons from "lucide-react";
 import type { LucideIcon } from "lucide-react";
-import sidebarJsonData from "~/lib/sidebar/data.json";
+
 import {
   IconComponent,
   IconType,
   ProcessedNavItem,
   ProcessedSidebarItems,
 } from "~/types/sidebar";
+
+import sidebarJsonData from "~/lib/sidebar/data.json";
 
 // Helper function to convert icon strings to actual Lucide components
 function getIconComponent(iconName: string): IconComponent {

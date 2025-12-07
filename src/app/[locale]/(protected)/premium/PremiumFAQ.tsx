@@ -2,6 +2,7 @@
 
 // src/app/[locale]/(protected)/premium/PremiumFAQ.tsx:
 import { useTranslations } from "next-intl";
+
 import {
   Accordion,
   AccordionContent,

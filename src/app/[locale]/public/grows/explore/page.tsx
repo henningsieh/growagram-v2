@@ -1,10 +1,12 @@
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
+
 import { parseAsString } from "nuqs/server";
-import { PaginationItemsPerPage } from "~/assets/constants";
+
 import { SortOrder } from "~/components/atom/sort-filter-controls";
 import { ExploreGrowsClient } from "~/components/features/Exploration/explore-grows-client";
-import { getQueryClient, trpc } from "~/lib/trpc/server";
+
 import type { ExploreGrowsInput } from "~/server/api/root";
+
 import {
   CultureMedium,
   FertilizerForm,
@@ -12,6 +14,10 @@ import {
   GrowEnvironment,
   GrowsSortField,
 } from "~/types/grow";
+
+import { getQueryClient, trpc } from "~/lib/trpc/server";
+
+import { PaginationItemsPerPage } from "~/assets/constants";
 
 interface ExploreGrowsPageProps {
   searchParams: Promise<Record<string, string | string[] | undefined>>;

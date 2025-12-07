@@ -1,9 +1,20 @@
 "use client";
 
 import React from "react";
+
 import { useTranslations } from "next-intl";
+
 import { Search, User, X } from "lucide-react";
+
 import { Badge } from "~/components/ui/badge";
+
+import {
+  CultureMedium,
+  FertilizerForm,
+  FertilizerType,
+  GrowEnvironment,
+} from "~/types/grow";
+
 import {
   getCultureMediumEmoji,
   getCultureMediumTranslationKey,
@@ -14,12 +25,6 @@ import {
   getGrowEnvironmentEmoji,
   getGrowEnvironmentTranslationKey,
 } from "~/lib/utils";
-import {
-  CultureMedium,
-  FertilizerForm,
-  FertilizerType,
-  GrowEnvironment,
-} from "~/types/grow";
 
 interface ActiveFiltersBadgesProps {
   filters: {

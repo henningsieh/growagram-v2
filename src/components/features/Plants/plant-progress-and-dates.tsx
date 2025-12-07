@@ -1,5 +1,6 @@
 // src/components/features/Plants/plant-progress-and-dates.tsx:
 import { useLocale, useTranslations } from "next-intl";
+
 import {
   FlowerIcon,
   LeafIcon,
@@ -8,18 +9,23 @@ import {
   SproutIcon,
   WheatIcon,
 } from "lucide-react";
+
+import { Badge } from "~/components/ui/badge";
+import { Card, CardContent, CardHeader } from "~/components/ui/card";
+import { Progress } from "~/components/ui/progress";
+
 import {
   HybridTooltip,
   HybridTooltipContent,
   HybridTooltipTrigger,
 } from "~/components/atom/hybrid-tooltip";
-import { Badge } from "~/components/ui/badge";
-import { Card, CardContent, CardHeader } from "~/components/ui/card";
-import { Progress } from "~/components/ui/progress";
+
+import type { PlantByIdType } from "~/server/api/root";
+
+import { Locale } from "~/types/locale";
+
 import { formatAbsoluteDate } from "~/lib/utils";
 import { calculateGrowthProgress } from "~/lib/utils/calculateGrowthProgress";
-import type { PlantByIdType } from "~/server/api/root";
-import { Locale } from "~/types/locale";
 
 export function PlantProgressAndDates({ plant }: { plant: PlantByIdType }) {
   const locale = useLocale();

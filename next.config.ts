@@ -1,11 +1,28 @@
 // next.config.mjs
 import type { NextConfig } from "next";
+
 import createNextIntlPlugin from "next-intl/plugin";
+
 import type { Configuration as WebpackConfig } from "webpack";
 
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+const nextConfig: NextConfig = {
   experimental: {
+    // Forward browser logs to the terminal for easier debugging
+    browserDebugInfoInTerminal: true,
+
+    // Activate new client-side router improvements
+    clientSegmentCache: true,
+
+    // Explore route composition and segment overrides via DevTools
+    devtoolSegmentExplorer: true,
+
+    // Enable new caching and pre-rendering behavior
+    cacheComponents: true, // will be renamed to cacheComponents in Next.js 16
+
+    // Enable persistent caching for the turbopack dev server and build.
+    turbopackPersistentCaching: true,
+
+    // Increase the body size limit for server actions
     serverActions: {
       bodySizeLimit: "30mb",
     },
